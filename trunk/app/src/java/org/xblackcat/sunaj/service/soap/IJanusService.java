@@ -9,7 +9,7 @@ import org.xblackcat.sunaj.service.soap.data.UsersList;
  * @author Alexey
  */
 
-public interface IJanusConnector {
+public interface IJanusService {
     /**
      * Tests a connection with Janus WS.
      *

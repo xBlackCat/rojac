@@ -23,17 +23,17 @@ import java.rmi.RemoteException;
  * @author Alexey
  */
 
-public class JanusConnector implements IJanusConnector {
-    private static final Log log = LogFactory.getLog(JanusConnector.class);
+public class JanusService implements IJanusService {
+    private static final Log log = LogFactory.getLog(JanusService.class);
 
     private final String userName;
     private final String password;
 
     private JanusATSoap soap;
 
-    public static IJanusConnector getInstance(String userName, String password) throws JanusServiceException {
+    public static IJanusService getInstance(String userName, String password) throws JanusServiceException {
         try {
-            JanusConnector c = new JanusConnector(userName, password);
+            JanusService c = new JanusService(userName, password);
             c.init();
             c.testConnection();
             return c;
@@ -42,7 +42,7 @@ public class JanusConnector implements IJanusConnector {
         }
     }
 
-    public JanusConnector(String userName, String password) {
+    public JanusService(String userName, String password) {
         this.userName = userName;
         this.password = password;
     }
