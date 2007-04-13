@@ -10,6 +10,9 @@ import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.sunaj.service.options.IOptionsService;
+import org.xblackcat.sunaj.service.options.MultiUserOptionsService;
+import org.xblackcat.sunaj.service.options.Property;
 import org.xblackcat.sunaj.service.soap.data.ForumsList;
 import org.xblackcat.sunaj.service.soap.data.UsersList;
 import ru.rsdn.Janus.*;
@@ -48,9 +51,8 @@ public class JanusService implements IJanusService {
     }
 
     public void testConnection() throws JanusServiceException {
-        if (log.isDebugEnabled()) {
-            log.debug("Perform check connection.");
-        }
+        log.debug("Perform check connection.");
+        
         try {
             soap.check();
         } catch (RemoteException e) {
@@ -62,15 +64,15 @@ public class JanusService implements IJanusService {
     }
 
     public ForumsList getForumsList() throws JanusServiceException {
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieve the forums list from the Janus WS.");
-        }
+        log.info("Retrieve the forums list from the Janus WS.");
+
         ForumResponse list;
         try {
             list = soap.getForumList(new ForumRequest(userName, password));
         } catch (RemoteException e) {
             throw new JanusServiceException("Can not obtain the forum list.", e);
         }
+
         JanusForumInfo[] forumInfos = list.getForumList();
         JanusForumGroupInfo[] groupInfos = list.getGroupList();
         if (log.isDebugEnabled()) {
@@ -80,9 +82,8 @@ public class JanusService implements IJanusService {
     }
 
     public UsersList getNewUsers(byte[] verRow) throws JanusServiceException {
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieve the users list from the Janus WS.");
-        }
+        log.info("Retrieve the users list from the Janus WS.");
+
         UserResponse list;
         try {
             list = soap.getNewUsers(new UserRequest(userName, password, verRow, 100));
@@ -93,9 +94,10 @@ public class JanusService implements IJanusService {
     }
 
     private void init() throws ServiceException {
-        if (log.isDebugEnabled()) {
-            log.debug("Start Janus SAOP service initialization for user " + userName);
-        }
+        IOptionsService os = MultiUserOptionsService.getInstance();
+
+        log.info("Janus SAOP service initialization has been started.");
+
         JanusATLocator jl = new JanusATLocator();
         SimpleProvider clientConfig = new SimpleProvider();
         SimpleChain reqHandler = new SimpleChain();
@@ -112,14 +114,13 @@ public class JanusService implements IJanusService {
 
         // Compress the request
 //		soap._setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
-        // Tell the server it can compress the response
-        soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+        if (os.getProperty(Property.SERVICE_JANUS_USE_GZIP)) {
+            log.info("Data compression is enabled.");
+            // Tell the server it can compress the response
+            soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+        }
 
         this.soap = soap;
-        // set true to instruct axis client to send cookies
-        if (log.isDebugEnabled()) {
-            log.debug("Initialization has done successfuly.");
-        }
+        log.info("Initialization has done.");
     }
-
 }
