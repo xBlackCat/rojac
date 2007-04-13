@@ -1,11 +1,10 @@
 package org.xblackcat.sunaj;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.sunaj.service.soap.IJanusConnector;
-import org.xblackcat.sunaj.service.soap.JanusConnector;
-import org.xblackcat.sunaj.service.soap.data.UsersList;
+import org.xblackcat.sunaj.service.options.IOptionsService;
+import org.xblackcat.sunaj.service.options.MultiUserOptionsService;
+import org.xblackcat.sunaj.service.options.Property;
 
 /**
  * Date: 26 бер 2007
@@ -20,23 +19,14 @@ public class SunajLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        IJanusConnector con = JanusConnector.getInstance("xBlackCat", "tryt0guess");
-
         if (log.isInfoEnabled()) {
-            log.info("\nInitialized\n================================================================================");
+            log.info("Application started.");
         }
+        IOptionsService os = MultiUserOptionsService.getInstance();
 
-        con.testConnection();
-
-        byte[] verRow = ArrayUtils.EMPTY_BYTE_ARRAY;
-        for (int i = 0; i < 5; i++) {
-            UsersList users = con.getNewUsers(verRow);
-            if (log.isInfoEnabled()) {
-                log.info("Version: " + ArrayUtils.toString(users.getVersion()));
-                log.info("New users: " + ArrayUtils.toString(users.getUsers()));
-            }
-            verRow = users.getVersion();
+        Property<Boolean> p = Property.SERVICE_JANUS_USE_GZIP;
+        if (log.isDebugEnabled()) {
+            log.debug(p + " = " + os.getProperty(p));
         }
     }
-
 }

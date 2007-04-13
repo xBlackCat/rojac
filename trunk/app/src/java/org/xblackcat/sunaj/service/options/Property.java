@@ -13,6 +13,11 @@ import java.util.Map;
  */
 
 public final class Property<T> {
+    /**
+     * Complete map of properties names to its objects.
+     */
+    private static final Map<String, Property<?>> ALL_PROPERTIES = new HashMap<String, Property<?>>();
+
     /*
       * Janus synchronizator properties
       */
@@ -35,11 +40,6 @@ public final class Property<T> {
         Collection<Property<?>> properties = ALL_PROPERTIES.values();
         return properties.toArray(new Property[properties.size()]);
     }
-
-    /**
-     * Complete map of properties names to its objects.
-     */
-    private static final Map<String, Property<?>> ALL_PROPERTIES = new HashMap<String, Property<?>>();
 
     private final String name;
     private final Class<T> type;
