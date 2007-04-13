@@ -7,18 +7,18 @@ package org.xblackcat.sunaj.service.soap;
  */
 
 public class JanusServiceException extends Exception {
-	public JanusServiceException() {
-	}
+    public JanusServiceException() {
+    }
 
-	public JanusServiceException(Throwable cause) {
-		super(cause);
-	}
+    public JanusServiceException(Throwable cause) {
+        super(cause);
+    }
 
-	public JanusServiceException(String message) {
-		super(message);
-	}
+    public JanusServiceException(String message) {
+        super(message);
+    }
 
-	public JanusServiceException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public JanusServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

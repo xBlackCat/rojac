@@ -9,44 +9,44 @@ import ru.rsdn.Janus.JanusForumGroupInfo;
  */
 
 public final class ForumGroupInfo {
-	private final int forumGroupId;
-	private final String forumGroupName;
-	private final int sortOrder;
+    private final int forumGroupId;
+    private final String forumGroupName;
+    private final int sortOrder;
 
-	public ForumGroupInfo(int forumGroupId, String forumGroupName, int sortOrder) {
-		this.forumGroupId = forumGroupId;
-		this.forumGroupName = forumGroupName;
-		this.sortOrder = sortOrder;
-	}
+    public ForumGroupInfo(int forumGroupId, String forumGroupName, int sortOrder) {
+        this.forumGroupId = forumGroupId;
+        this.forumGroupName = forumGroupName;
+        this.sortOrder = sortOrder;
+    }
 
-	public ForumGroupInfo(JanusForumGroupInfo i) {
-		this(i.getForumGroupId(), i.getForumGroupName(), i.getSortOrder());
-	}
+    public ForumGroupInfo(JanusForumGroupInfo i) {
+        this(i.getForumGroupId(), i.getForumGroupName(), i.getSortOrder());
+    }
 
-	public int getForumGroupId() {
-		return forumGroupId;
-	}
+    public int getForumGroupId() {
+        return forumGroupId;
+    }
 
-	public String getForumGroupName() {
-		return forumGroupName;
-	}
+    public String getForumGroupName() {
+        return forumGroupName;
+    }
 
-	public int getSortOrder() {
-		return sortOrder;
-	}
+    public int getSortOrder() {
+        return sortOrder;
+    }
 
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-		ForumGroupInfo that = (ForumGroupInfo) o;
+        ForumGroupInfo that = (ForumGroupInfo) o;
 
-		if (forumGroupId != that.forumGroupId) return false;
+        if (forumGroupId != that.forumGroupId) return false;
 
-		return true;
-	}
+        return true;
+    }
 
-	public int hashCode() {
-		return forumGroupId;
-	}
+    public int hashCode() {
+        return forumGroupId;
+    }
 }

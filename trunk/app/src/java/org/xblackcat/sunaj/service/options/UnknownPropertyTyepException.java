@@ -7,18 +7,18 @@ package org.xblackcat.sunaj.service.options;
  */
 
 public class UnknownPropertyTyepException extends RuntimeException {
-	public UnknownPropertyTyepException() {
-	}
+    public UnknownPropertyTyepException() {
+    }
 
-	public UnknownPropertyTyepException(String message) {
-		super(message);
-	}
+    public UnknownPropertyTyepException(String message) {
+        super(message);
+    }
 
-	public UnknownPropertyTyepException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public UnknownPropertyTyepException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public UnknownPropertyTyepException(Throwable cause) {
-		super(cause);
-	}
+    public UnknownPropertyTyepException(Throwable cause) {
+        super(cause);
+    }
 }
