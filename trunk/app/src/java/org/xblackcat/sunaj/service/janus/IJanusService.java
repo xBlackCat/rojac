@@ -1,6 +1,8 @@
 package org.xblackcat.sunaj.service.janus;
 
 import org.xblackcat.sunaj.service.janus.data.ForumsList;
+import org.xblackcat.sunaj.service.janus.data.NewMessage;
+import org.xblackcat.sunaj.service.janus.data.NewRating;
 import org.xblackcat.sunaj.service.janus.data.PostInfo;
 import org.xblackcat.sunaj.service.janus.data.TopicMessages;
 import org.xblackcat.sunaj.service.janus.data.UsersList;
@@ -56,7 +58,17 @@ public interface IJanusService {
      *
      * @return the status of the commit.
      *
-     * @throws JanusServiceException
+     * @throws JanusServiceException throws if any errors occurs.
      */
     PostInfo commitChanges() throws JanusServiceException;
+
+    /**
+     * Posts the changes to the RSDN forum.
+     *
+     * @param messages new messages to post.
+     * @param ratings  new ratings to post.
+     *
+     * @throws JanusServiceException throws if any errors occurs.
+     */
+    void postChanges(NewMessage[] messages, NewRating[] ratings) throws JanusServiceException;
 }

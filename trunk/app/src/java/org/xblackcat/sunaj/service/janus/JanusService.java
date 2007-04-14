@@ -12,6 +12,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.sunaj.service.janus.data.ForumsList;
+import org.xblackcat.sunaj.service.janus.data.NewMessage;
+import org.xblackcat.sunaj.service.janus.data.NewRating;
 import org.xblackcat.sunaj.service.janus.data.PostInfo;
 import org.xblackcat.sunaj.service.janus.data.TopicMessages;
 import org.xblackcat.sunaj.service.janus.data.UsersList;
@@ -132,6 +134,32 @@ public class JanusService implements IJanusService {
             log.debug(ids.length + " message(s) commited and " + exceptions.length + " exception(s) occurs.");
         }
         return new PostInfo(ids, exceptions);
+    }
+
+    public void postChanges(NewMessage[] messages, NewRating[] ratings) throws JanusServiceException {
+        log.info("Retrieve the users list from the Janus WS.");
+
+        PostMessageInfo[] newMessages = new PostMessageInfo[messages.length];
+        for (int i = 0; i < messages.length; i++) {
+            NewMessage m = messages[i];
+            newMessages[i] = new PostMessageInfo(m.getLocalMessageId(),
+                    m.getParentId(),
+                    m.getForumId(),
+                    m.getSubject(),
+                    m.getMessage());
+        }
+
+        PostRatingInfo[] newRates = new PostRatingInfo[ratings.length];
+        for (int i = 0; i < ratings.length; i++) {
+            NewRating r = ratings[i];
+            newRates[i] = new PostRatingInfo(r.getMessageId(), r.getRate());
+        }
+
+        try {
+            soap.postChange(new PostRequest(userName, password, newMessages, newRates));
+        } catch (RemoteException e) {
+            throw new JanusServiceException("Can not obtain the new users list.", e);
+        }
     }
 
     private void init() throws ServiceException {
