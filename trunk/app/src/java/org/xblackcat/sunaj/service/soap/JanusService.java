@@ -116,6 +116,22 @@ public class JanusService implements IJanusService {
         return new TopicMessages(messages, moderate, rating);
     }
 
+    public void commitChanges() throws JanusServiceException {
+        log.info("Retrieve the users list from the Janus WS.");
+
+        PostResponse post;
+        try {
+            post = soap.postChangeCommit();
+        } catch (RemoteException e) {
+            throw new JanusServiceException("Can not obtain the new users list.", e);
+        }
+        PostExceptionInfo[] exceptions = post.getExceptions();
+        int[] ids = post.getCommitedIds();
+        if (log.isDebugEnabled()) {
+            log.debug(ids.length + " message(s) commited and " + exceptions.length + " exception(s) occurs.");
+        }
+    }
+
     private void init() throws ServiceException {
         IOptionsService os = MultiUserOptionsService.getInstance();
 
