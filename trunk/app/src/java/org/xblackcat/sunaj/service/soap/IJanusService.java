@@ -1,6 +1,7 @@
 package org.xblackcat.sunaj.service.soap;
 
 import org.xblackcat.sunaj.service.soap.data.ForumsList;
+import org.xblackcat.sunaj.service.soap.data.TopicMessages;
 import org.xblackcat.sunaj.service.soap.data.UsersList;
 
 /**
@@ -28,4 +29,6 @@ public interface IJanusService {
     ForumsList getForumsList() throws JanusServiceException;
 
     UsersList getNewUsers(byte[] verRow) throws JanusServiceException;
+
+    TopicMessages getTopicByMessage(int[] messageIds) throws JanusServiceException;
 }

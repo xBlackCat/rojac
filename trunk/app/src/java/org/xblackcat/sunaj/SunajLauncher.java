@@ -1,10 +1,12 @@
 package org.xblackcat.sunaj;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.sunaj.service.options.IOptionsService;
-import org.xblackcat.sunaj.service.options.MultiUserOptionsService;
-import org.xblackcat.sunaj.service.options.Property;
+import org.xblackcat.sunaj.service.soap.IJanusService;
+import org.xblackcat.sunaj.service.soap.JanusService;
+import org.xblackcat.sunaj.service.soap.JanusServiceException;
+import org.xblackcat.sunaj.service.soap.data.TopicMessages;
 
 /**
  * Date: 26 бер 2007
@@ -19,14 +21,24 @@ public class SunajLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        if (log.isInfoEnabled()) {
-            log.info("Application started.");
-        }
-        IOptionsService os = MultiUserOptionsService.getInstance();
+        IJanusService con = JanusService.getInstance("xBlackCat", "tryt0guess");
 
-        Property<Boolean> p = Property.SERVICE_JANUS_USE_GZIP;
-        if (log.isDebugEnabled()) {
-            log.debug(p + " = " + os.getProperty(p));
+        if (log.isInfoEnabled()) {
+            log.info("\nInitialized\n================================================================================");
+        }
+
+        con.testConnection();
+
+        testGetTopicByMessagesIds(con);
+    }
+
+    private static void testGetTopicByMessagesIds(IJanusService con) throws JanusServiceException {
+        TopicMessages t = con.getTopicByMessage(new int[]{2447774, 2447998});
+
+        if (log.isInfoEnabled()) {
+            log.info("Messages: " + ArrayUtils.toString(t.getMessages()));
+            log.info("Moderates: " + ArrayUtils.toString(t.getModerates()));
+            log.info("Raitings: " + ArrayUtils.toString(t.getRatings()));
         }
     }
 }

@@ -8,12 +8,14 @@ import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.CommonsHTTPSender;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.axis.transport.http.HTTPTransport;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.MultiUserOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
 import org.xblackcat.sunaj.service.soap.data.ForumsList;
+import org.xblackcat.sunaj.service.soap.data.TopicMessages;
 import org.xblackcat.sunaj.service.soap.data.UsersList;
 import ru.rsdn.Janus.*;
 
@@ -52,7 +54,7 @@ public class JanusService implements IJanusService {
 
     public void testConnection() throws JanusServiceException {
         log.debug("Perform check connection.");
-        
+
         try {
             soap.check();
         } catch (RemoteException e) {
@@ -76,7 +78,7 @@ public class JanusService implements IJanusService {
         JanusForumInfo[] forumInfos = list.getForumList();
         JanusForumGroupInfo[] groupInfos = list.getGroupList();
         if (log.isDebugEnabled()) {
-            log.debug("Have got " + forumInfos.length + " forum(s) in " + groupInfos.length + " group(s).");
+            log.debug("Got " + forumInfos.length + " forum(s) in " + groupInfos.length + " group(s).");
         }
         return new ForumsList(forumInfos, groupInfos);
     }
@@ -91,6 +93,27 @@ public class JanusService implements IJanusService {
             throw new JanusServiceException("Can not obtain the new users list.", e);
         }
         return new UsersList(list);
+    }
+
+    public TopicMessages getTopicByMessage(int[] messageIds) throws JanusServiceException {
+        log.info("Retrieve the topics by messages from the Janus WS.");
+        if (log.isDebugEnabled()) {
+            log.debug("Messages ids are: " + ArrayUtils.toString(messageIds));
+        }
+
+        TopicResponse list;
+        try {
+            list = soap.getTopicByMessage(new TopicRequest(userName, password, messageIds));
+        } catch (RemoteException e) {
+            throw new JanusServiceException("Can not obtain the new users list.", e);
+        }
+        JanusMessageInfo[] messages = list.getMessages();
+        JanusModerateInfo[] moderate = list.getModerate();
+        JanusRatingInfo[] rating = list.getRating();
+        if (log.isDebugEnabled()) {
+            log.debug("Got " + messages.length + " message(s), " + moderate.length + " modarators note(s) and " + rating.length + " user raiting(s).");
+        }
+        return new TopicMessages(messages, moderate, rating);
     }
 
     private void init() throws ServiceException {
