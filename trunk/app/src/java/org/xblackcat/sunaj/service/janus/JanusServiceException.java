@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.soap;
+package org.xblackcat.sunaj.service.janus;
 
 /**
  * Date: 10 квіт 2007

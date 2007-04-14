@@ -3,10 +3,10 @@ package org.xblackcat.sunaj;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.sunaj.service.soap.IJanusService;
-import org.xblackcat.sunaj.service.soap.JanusService;
-import org.xblackcat.sunaj.service.soap.JanusServiceException;
-import org.xblackcat.sunaj.service.soap.data.TopicMessages;
+import org.xblackcat.sunaj.service.janus.IJanusService;
+import org.xblackcat.sunaj.service.janus.JanusService;
+import org.xblackcat.sunaj.service.janus.JanusServiceException;
+import org.xblackcat.sunaj.service.janus.data.TopicMessages;
 
 /**
  * Date: 26 бер 2007

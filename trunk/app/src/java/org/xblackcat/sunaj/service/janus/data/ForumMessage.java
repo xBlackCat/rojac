@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.soap.data;
+package org.xblackcat.sunaj.service.janus.data;
 
 import ru.rsdn.Janus.JanusMessageInfo;
 import ru.rsdn.Janus.UserRole;

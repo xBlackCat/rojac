@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.soap;
+package org.xblackcat.sunaj.service.janus;
 
 import org.apache.axis.Handler;
 import org.apache.axis.SimpleChain;
@@ -11,12 +11,13 @@ import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.sunaj.service.janus.data.ForumsList;
+import org.xblackcat.sunaj.service.janus.data.PostInfo;
+import org.xblackcat.sunaj.service.janus.data.TopicMessages;
+import org.xblackcat.sunaj.service.janus.data.UsersList;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.MultiUserOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
-import org.xblackcat.sunaj.service.soap.data.ForumsList;
-import org.xblackcat.sunaj.service.soap.data.TopicMessages;
-import org.xblackcat.sunaj.service.soap.data.UsersList;
 import ru.rsdn.Janus.*;
 
 import javax.xml.rpc.ServiceException;
@@ -83,12 +84,12 @@ public class JanusService implements IJanusService {
         return new ForumsList(forumInfos, groupInfos);
     }
 
-    public UsersList getNewUsers(byte[] verRow) throws JanusServiceException {
+    public UsersList getNewUsers(byte[] verRow, int maxOutput) throws JanusServiceException {
         log.info("Retrieve the users list from the Janus WS.");
 
         UserResponse list;
         try {
-            list = soap.getNewUsers(new UserRequest(userName, password, verRow, 100));
+            list = soap.getNewUsers(new UserRequest(userName, password, verRow, maxOutput));
         } catch (RemoteException e) {
             throw new JanusServiceException("Can not obtain the new users list.", e);
         }
@@ -116,7 +117,7 @@ public class JanusService implements IJanusService {
         return new TopicMessages(messages, moderate, rating);
     }
 
-    public void commitChanges() throws JanusServiceException {
+    public PostInfo commitChanges() throws JanusServiceException {
         log.info("Retrieve the users list from the Janus WS.");
 
         PostResponse post;
@@ -130,6 +131,7 @@ public class JanusService implements IJanusService {
         if (log.isDebugEnabled()) {
             log.debug(ids.length + " message(s) commited and " + exceptions.length + " exception(s) occurs.");
         }
+        return new PostInfo(ids, exceptions);
     }
 
     private void init() throws ServiceException {
