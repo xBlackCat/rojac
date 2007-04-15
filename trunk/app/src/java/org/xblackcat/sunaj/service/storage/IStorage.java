@@ -29,9 +29,9 @@ public interface IStorage {
 
     void storeNewRating(NewRating nr) throws StorageException;
 
-    void storeRatingInfo(Rating ri) throws StorageException;
+    void storeRating(Rating ri) throws StorageException;
 
-    void storeUserInfo(User ui) throws StorageException;
+    void storeUser(User ui) throws StorageException;
 
     /* Removing routines */
 
@@ -47,9 +47,9 @@ public interface IStorage {
 
     boolean removeNewRating(int id) throws StorageException;
 
-    boolean removeRatingInfo(int id) throws StorageException;
+    boolean removeRating(int id) throws StorageException;
 
-    boolean removeUserInfo(int id) throws StorageException;
+    boolean removeUser(int id) throws StorageException;
 
     /* Data extracting routines */
 
@@ -57,7 +57,7 @@ public interface IStorage {
 
     int[] getForumIdsInGroup(int forumGroupId) throws StorageException;
 
-    int[] getAllForumIdss() throws StorageException;
+    int[] getAllForumIds() throws StorageException;
 
 
     ForumGroup getForumGroupById(int forumGroupId) throws StorageException;
