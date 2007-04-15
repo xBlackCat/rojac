@@ -10,7 +10,7 @@ import java.util.Date;
  * @author ASUS
  */
 
-public final class RatingInfo {
+public final class Rating {
     private final int messageId;
     private final int topicId;
     private final int userId;
@@ -18,7 +18,7 @@ public final class RatingInfo {
     private final int rate;
     private final long rateDate;
 
-    public RatingInfo(int messageId, int topicId, int userId, int userRating, int rate, long rateDate) {
+    public Rating(int messageId, int topicId, int userId, int userRating, int rate, long rateDate) {
         this.messageId = messageId;
         this.topicId = topicId;
         this.userId = userId;
@@ -27,7 +27,7 @@ public final class RatingInfo {
         this.rateDate = rateDate;
     }
 
-    public RatingInfo(JanusRatingInfo i) {
+    public Rating(JanusRatingInfo i) {
         this(i.getMessageId(), i.getTopicId(), i.getUserId(), i.getUserRating(), i.getRate(), i.getRateDate().getTimeInMillis());
     }
 
@@ -59,7 +59,7 @@ public final class RatingInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        RatingInfo that = (RatingInfo) o;
+        Rating that = (Rating) o;
 
         if (messageId != that.messageId) return false;
         if (rate != that.rate) return false;

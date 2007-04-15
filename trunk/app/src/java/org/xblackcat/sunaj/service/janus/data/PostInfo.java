@@ -1,6 +1,5 @@
 package org.xblackcat.sunaj.service.janus.data;
 
-import org.xblackcat.sunaj.service.data.PostException;
 import ru.rsdn.Janus.PostExceptionInfo;
 
 /**

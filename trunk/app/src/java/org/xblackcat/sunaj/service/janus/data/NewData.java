@@ -2,7 +2,7 @@ package org.xblackcat.sunaj.service.janus.data;
 
 import org.xblackcat.sunaj.service.data.ForumMessage;
 import org.xblackcat.sunaj.service.data.ModerateInfo;
-import org.xblackcat.sunaj.service.data.RatingInfo;
+import org.xblackcat.sunaj.service.data.Rating;
 import org.xblackcat.sunaj.service.data.Version;
 import ru.rsdn.Janus.JanusMessageInfo;
 import ru.rsdn.Janus.JanusModerateInfo;
@@ -22,7 +22,7 @@ public final class NewData {
     private final Version moderateRowVersion;
 
     private final ForumMessage[] messages;
-    private final RatingInfo[] ratings;
+    private final Rating[] ratings;
     private final ModerateInfo[] moderates;
 
     public NewData(int ownUserId, Version forumRowVersion, Version ratingRowVersion, Version moderateRowVersion, JanusMessageInfo[] mes, JanusModerateInfo[] mod, JanusRatingInfo[] r) {
@@ -41,9 +41,9 @@ public final class NewData {
             moderates[i] = new ModerateInfo(mod[i]);
         }
 
-        ratings = new RatingInfo[r.length];
+        ratings = new Rating[r.length];
         for (int i = 0; i < r.length; i++) {
-            ratings[i] = new RatingInfo(r[i]);
+            ratings[i] = new Rating(r[i]);
         }
     }
 
@@ -67,7 +67,7 @@ public final class NewData {
         return messages;
     }
 
-    public RatingInfo[] getRatings() {
+    public Rating[] getRatings() {
         return ratings;
     }
 
