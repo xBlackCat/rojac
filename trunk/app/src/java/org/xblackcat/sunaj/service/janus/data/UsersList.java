@@ -11,15 +11,15 @@ import ru.rsdn.Janus.UserResponse;
 
 public final class UsersList {
     private final UserInfo[] users;
-    private final byte[] version;
+    private final Version version;
 
-    public UsersList(UserInfo[] users, byte[] version) {
+    public UsersList(UserInfo[] users, Version version) {
         this.users = users;
         this.version = version;
     }
 
     public UsersList(UserResponse r) {
-        this.version = r.getLastRowVersion();
+        this.version = new Version(r.getLastRowVersion());
 
         JanusUserInfo[] users = r.getUsers();
         this.users = new UserInfo[users.length];
@@ -32,7 +32,7 @@ public final class UsersList {
         return users;
     }
 
-    public byte[] getVersion() {
+    public Version getVersion() {
         return version;
     }
 }

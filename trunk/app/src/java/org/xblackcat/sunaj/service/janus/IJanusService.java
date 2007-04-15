@@ -1,11 +1,6 @@
 package org.xblackcat.sunaj.service.janus;
 
-import org.xblackcat.sunaj.service.janus.data.ForumsList;
-import org.xblackcat.sunaj.service.janus.data.NewMessage;
-import org.xblackcat.sunaj.service.janus.data.NewRating;
-import org.xblackcat.sunaj.service.janus.data.PostInfo;
-import org.xblackcat.sunaj.service.janus.data.TopicMessages;
-import org.xblackcat.sunaj.service.janus.data.UsersList;
+import org.xblackcat.sunaj.service.janus.data.*;
 
 /**
  * Date: 10 квіт 2007
@@ -40,7 +35,7 @@ public interface IJanusService {
      *
      * @throws JanusServiceException throws if any errors occurs.
      */
-    UsersList getNewUsers(byte[] verRow, int maxOutput) throws JanusServiceException;
+    UsersList getNewUsers(Version verRow, int maxOutput) throws JanusServiceException;
 
     /**
      * Loads whole topics for given messages.
@@ -71,4 +66,22 @@ public interface IJanusService {
      * @throws JanusServiceException throws if any errors occurs.
      */
     void postChanges(NewMessage[] messages, NewRating[] ratings) throws JanusServiceException;
+
+    /**
+     * Gets new messages from Janus WS.
+     *
+     * @param subscribedForums list of subscribed forums.
+     * @param firstForumRequest
+     * @param ratingVer last rating row version.
+     * @param messageVer last messages row version.
+     * @param moderateVer last moderate info row version.
+     * @param breakMsgIds ???
+     * @param breakTopicIds ???
+     * @param maxOutput amount of messages in response.
+     *
+     * @return new messages and other information.
+     *
+     * @throws JanusServiceException throws if any errors occurs.
+     */
+    NewData getNewData(int[] subscribedForums, boolean[] firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
 }

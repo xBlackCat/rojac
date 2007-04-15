@@ -11,16 +11,12 @@ import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.sunaj.service.janus.data.ForumsList;
-import org.xblackcat.sunaj.service.janus.data.NewMessage;
-import org.xblackcat.sunaj.service.janus.data.NewRating;
-import org.xblackcat.sunaj.service.janus.data.PostInfo;
-import org.xblackcat.sunaj.service.janus.data.TopicMessages;
-import org.xblackcat.sunaj.service.janus.data.UsersList;
+import org.xblackcat.sunaj.service.janus.data.*;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.MultiUserOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
 import ru.rsdn.Janus.*;
+import ru.rsdn.Janus.PostExceptionInfo;
 
 import javax.xml.rpc.ServiceException;
 import java.rmi.RemoteException;
@@ -86,12 +82,12 @@ public class JanusService implements IJanusService {
         return new ForumsList(forumInfos, groupInfos);
     }
 
-    public UsersList getNewUsers(byte[] verRow, int maxOutput) throws JanusServiceException {
+    public UsersList getNewUsers(Version verRow, int maxOutput) throws JanusServiceException {
         log.info("Retrieve the users list from the Janus WS.");
 
         UserResponse list;
         try {
-            list = soap.getNewUsers(new UserRequest(userName, password, verRow, maxOutput));
+            list = soap.getNewUsers(new UserRequest(userName, password, verRow.getBytes(), maxOutput));
         } catch (RemoteException e) {
             throw new JanusServiceException("Can not obtain the new users list.", e);
         }
@@ -160,6 +156,52 @@ public class JanusService implements IJanusService {
         } catch (RemoteException e) {
             throw new JanusServiceException("Can not obtain the new users list.", e);
         }
+    }
+
+    public NewData getNewData(int[] subscribedForums, boolean[] firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException {
+        log.info("Retrieve the users list from the Janus WS.");
+
+        boolean hasIndividualConfig = firstForumRequest != null && subscribedForums.length == firstForumRequest.length;
+
+        RequestForumInfo[] rfi = new RequestForumInfo[subscribedForums.length];
+        for (int i = 0; i < subscribedForums.length; i++) {
+            rfi[i] = new RequestForumInfo(subscribedForums[i], hasIndividualConfig && firstForumRequest[i]);
+        }
+
+        ChangeResponse list;
+        try {
+            list = soap.getNewData(new ChangeRequest(userName, password,
+                    rfi,
+                    ratingVer.getBytes(),
+                    messageVer.getBytes(),
+                    moderateVer.getBytes(),
+                    breakMsgIds, breakTopicIds,
+                    maxOutput));
+        } catch (RemoteException e) {
+            throw new JanusServiceException("Can not obtain the new users list.", e);
+        }
+        Version forumRowVersion = new Version(list.getLastForumRowVersion());
+        Version ratingRowVersion = new Version(list.getLastRatingRowVersion());
+        Version moderateRowVerion = new Version(list.getLastModerateRowVersion());
+
+        JanusMessageInfo[] newMessages = list.getNewMessages();
+        JanusModerateInfo[] newModerate = list.getNewModerate();
+        JanusRatingInfo[] newRating = list.getNewRating();
+
+        int ownId = list.getUserId();
+
+        if (log.isDebugEnabled()) {
+            log.debug("New data statistics: " +
+                    "own user id is " + ownId + ", " +
+                    newMessages.length + " new message(s), " +
+                    newRating.length + " new rating(s), " +
+                    newModerate.length + " new moderate info(s)" +
+                    ", forums version is " + forumRowVersion +
+                    ", rating version is " + ratingRowVersion +
+                    ", moderate version is " + moderateRowVerion
+            );
+        }
+        return new NewData(ownId, forumRowVersion, ratingRowVersion, ratingRowVersion, newMessages, newModerate, newRating);
     }
 
     private void init() throws ServiceException {
