@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.janus.data;
 
-import org.xblackcat.sunaj.service.data.UserInfo;
+import org.xblackcat.sunaj.service.data.User;
 import org.xblackcat.sunaj.service.data.Version;
 import ru.rsdn.Janus.JanusUserInfo;
 import ru.rsdn.Janus.UserResponse;
@@ -12,10 +12,10 @@ import ru.rsdn.Janus.UserResponse;
  */
 
 public final class UsersList {
-    private final UserInfo[] users;
+    private final User[] users;
     private final Version version;
 
-    public UsersList(UserInfo[] users, Version version) {
+    public UsersList(User[] users, Version version) {
         this.users = users;
         this.version = version;
     }
@@ -24,13 +24,13 @@ public final class UsersList {
         this.version = new Version(r.getLastRowVersion());
 
         JanusUserInfo[] users = r.getUsers();
-        this.users = new UserInfo[users.length];
+        this.users = new User[users.length];
         for (int i = 0; i < users.length; i++) {
-            this.users[i] = new UserInfo(users[i]);
+            this.users[i] = new User(users[i]);
         }
     }
 
-    public UserInfo[] getUsers() {
+    public User[] getUsers() {
         return users;
     }
 

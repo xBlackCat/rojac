@@ -8,7 +8,7 @@ import ru.rsdn.Janus.JanusUserInfo;
  * @author Alexey
  */
 
-public final class UserInfo {
+public final class User {
     private final int userId;
     private final String userName;
     private final String userNick;
@@ -19,7 +19,7 @@ public final class UserInfo {
     private final String whereFrom;
     private final String origin;
 
-    public UserInfo(int userId, String userName, String userNick, String realName, String publicEmail, String homePage, String specialization, String whereFrom, String origin) {
+    public User(int userId, String userName, String userNick, String realName, String publicEmail, String homePage, String specialization, String whereFrom, String origin) {
         this.userId = userId;
         this.userName = userName;
         this.userNick = userNick;
@@ -31,7 +31,7 @@ public final class UserInfo {
         this.origin = origin;
     }
 
-    public UserInfo(JanusUserInfo i) {
+    public User(JanusUserInfo i) {
         this(i.getUserId(), i.getUserName(), i.getUserNick(), i.getRealName(), i.getPublicEmail(),
                 i.getHomePage(), i.getSpecialization(), i.getWhereFrom(), i.getOrigin());
     }
@@ -76,9 +76,9 @@ public final class UserInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserInfo userInfo = (UserInfo) o;
+        User user = (User) o;
 
-        if (userId != userInfo.userId) return false;
+        if (userId != user.userId) return false;
 
         return true;
     }
