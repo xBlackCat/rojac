@@ -1,5 +1,9 @@
-package org.xblackcat.sunaj.service.data;
+package org.xblackcat.sunaj.service.janus.data;
 
+import org.xblackcat.sunaj.service.data.ForumMessage;
+import org.xblackcat.sunaj.service.data.ModerateInfo;
+import org.xblackcat.sunaj.service.data.RatingInfo;
+import org.xblackcat.sunaj.service.data.Version;
 import ru.rsdn.Janus.JanusMessageInfo;
 import ru.rsdn.Janus.JanusModerateInfo;
 import ru.rsdn.Janus.JanusRatingInfo;
