@@ -1,5 +1,7 @@
 package org.xblackcat.sunaj.service.janus.data;
 
+import org.xblackcat.sunaj.service.data.Forum;
+import org.xblackcat.sunaj.service.data.ForumGroup;
 import ru.rsdn.Janus.JanusForumGroupInfo;
 import ru.rsdn.Janus.JanusForumInfo;
 
@@ -12,26 +14,26 @@ import ru.rsdn.Janus.JanusForumInfo;
  */
 
 public final class ForumsList {
-    private final ForumInfo[] forums;
-    private final ForumGroupInfo[] fourumGroups;
+    private final Forum[] forums;
+    private final ForumGroup[] fourumGroups;
 
     public ForumsList(JanusForumInfo[] infos, JanusForumGroupInfo[] groups) {
-        forums = new ForumInfo[infos.length];
+        forums = new Forum[infos.length];
         for (int i = 0; i < infos.length; i++) {
-            forums[i] = new ForumInfo(infos[i]);
+            forums[i] = new Forum(infos[i]);
         }
 
-        fourumGroups = new ForumGroupInfo[groups.length];
+        fourumGroups = new ForumGroup[groups.length];
         for (int i = 0; i < groups.length; i++) {
-            fourumGroups[i] = new ForumGroupInfo(groups[i]);
+            fourumGroups[i] = new ForumGroup(groups[i]);
         }
     }
 
-    public ForumInfo[] getForums() {
+    public Forum[] getForums() {
         return forums;
     }
 
-    public ForumGroupInfo[] getFourumGroups() {
+    public ForumGroup[] getFourumGroups() {
         return fourumGroups;
     }
 }

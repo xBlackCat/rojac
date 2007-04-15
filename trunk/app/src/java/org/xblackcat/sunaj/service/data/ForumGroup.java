@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.janus.data;
+package org.xblackcat.sunaj.service.data;
 
 import ru.rsdn.Janus.JanusForumGroupInfo;
 
@@ -8,18 +8,18 @@ import ru.rsdn.Janus.JanusForumGroupInfo;
  * @author Alexey
  */
 
-public final class ForumGroupInfo {
+public final class ForumGroup {
     private final int forumGroupId;
     private final String forumGroupName;
     private final int sortOrder;
 
-    public ForumGroupInfo(int forumGroupId, String forumGroupName, int sortOrder) {
+    public ForumGroup(int forumGroupId, String forumGroupName, int sortOrder) {
         this.forumGroupId = forumGroupId;
         this.forumGroupName = forumGroupName;
         this.sortOrder = sortOrder;
     }
 
-    public ForumGroupInfo(JanusForumGroupInfo i) {
+    public ForumGroup(JanusForumGroupInfo i) {
         this(i.getForumGroupId(), i.getForumGroupName(), i.getSortOrder());
     }
 
@@ -39,7 +39,7 @@ public final class ForumGroupInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ForumGroupInfo that = (ForumGroupInfo) o;
+        ForumGroup that = (ForumGroup) o;
 
         if (forumGroupId != that.forumGroupId) return false;
 

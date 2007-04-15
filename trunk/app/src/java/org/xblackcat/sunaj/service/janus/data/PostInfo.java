@@ -1,5 +1,8 @@
 package org.xblackcat.sunaj.service.janus.data;
 
+import org.xblackcat.sunaj.service.data.PostException;
+import ru.rsdn.Janus.PostExceptionInfo;
+
 /**
  * Date: 14.04.2007
  *
@@ -8,14 +11,14 @@ package org.xblackcat.sunaj.service.janus.data;
 
 public final class PostInfo {
     private final int[] commited;
-    private final PostExceptionInfo[] exceptions;
+    private final PostException[] exceptions;
 
-    public PostInfo(int[] commited, ru.rsdn.Janus.PostExceptionInfo[] exceptions) {
+    public PostInfo(int[] commited, PostExceptionInfo[] exceptions) {
         this.commited = commited;
         
-        this.exceptions = new PostExceptionInfo[exceptions.length];
+        this.exceptions = new PostException[exceptions.length];
         for (int i = 0; i < exceptions.length; i++) {
-            this.exceptions[i] = new PostExceptionInfo(exceptions[i]);
+            this.exceptions[i] = new PostException(exceptions[i]);
         }
     }
 
@@ -23,7 +26,7 @@ public final class PostInfo {
         return commited;
     }
 
-    public PostExceptionInfo[] getExceptions() {
+    public PostException[] getExceptions() {
         return exceptions;
     }
 }

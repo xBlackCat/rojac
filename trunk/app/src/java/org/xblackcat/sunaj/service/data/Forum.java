@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.janus.data;
+package org.xblackcat.sunaj.service.data;
 
 import ru.rsdn.Janus.JanusForumInfo;
 
@@ -8,7 +8,7 @@ import ru.rsdn.Janus.JanusForumInfo;
  * @author Alexey
  */
 
-public final class ForumInfo {
+public final class Forum {
     private final int forumId;
     private final int forumGroupId;
     private final String shortForumName;
@@ -17,7 +17,7 @@ public final class ForumInfo {
     private final int inTop;
     private final int rateLimit;
 
-    public ForumInfo(int forumId, int forumGroupId, int inTop, int rated, int rateLimit, String shortForumName, String forumName) {
+    public Forum(int forumId, int forumGroupId, int inTop, int rated, int rateLimit, String shortForumName, String forumName) {
         this.forumGroupId = forumGroupId;
         this.forumId = forumId;
         this.forumName = forumName;
@@ -27,7 +27,7 @@ public final class ForumInfo {
         this.shortForumName = shortForumName;
     }
 
-    public ForumInfo(JanusForumInfo i) {
+    public Forum(JanusForumInfo i) {
         this(i.getForumId(), i.getForumGroupId(), i.getInTop(), i.getRated(), i.getRateLimit(), i.getShortForumName(), i.getForumName());
     }
 
@@ -63,10 +63,10 @@ public final class ForumInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ForumInfo forumInfo = (ForumInfo) o;
+        Forum forum = (Forum) o;
 
-        if (forumGroupId != forumInfo.forumGroupId) return false;
-        if (forumId != forumInfo.forumId) return false;
+        if (forumGroupId != forum.forumGroupId) return false;
+        if (forumId != forum.forumId) return false;
 
         return true;
     }

@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.janus.data;
+package org.xblackcat.sunaj.service.data;
 
 /**
  * Date: 14.04.2007
@@ -6,18 +6,18 @@ package org.xblackcat.sunaj.service.janus.data;
  * @author ASUS
  */
 
-public final class PostExceptionInfo {
+public final class PostException {
     private final String exception;
     private final int localMessageId;
     private final String info;
 
-    public PostExceptionInfo(String exception, int localMessageId, String info) {
+    public PostException(String exception, int localMessageId, String info) {
         this.exception = exception;
         this.localMessageId = localMessageId;
         this.info = info;
     }
 
-    public PostExceptionInfo(ru.rsdn.Janus.PostExceptionInfo i) {
+    public PostException(ru.rsdn.Janus.PostExceptionInfo i) {
         this(i.getException(), i.getLocalMessageId(), i.getInfo());
     }
 
@@ -37,7 +37,7 @@ public final class PostExceptionInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PostExceptionInfo that = (PostExceptionInfo) o;
+        PostException that = (PostException) o;
 
         if (localMessageId != that.localMessageId) return false;
         if (!exception.equals(that.exception)) return false;
