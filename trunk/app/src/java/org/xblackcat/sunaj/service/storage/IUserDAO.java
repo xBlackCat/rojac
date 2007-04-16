@@ -1,0 +1,19 @@
+package org.xblackcat.sunaj.service.storage;
+
+import org.xblackcat.sunaj.service.data.User;
+
+/**
+ * Date: 16.04.2007
+ *
+ * @author ASUS
+ */
+
+public interface IUserDAO {
+    void storeUser(User ui) throws StorageException;
+
+    boolean removeUser(int id) throws StorageException;
+
+    User getUserById(int id) throws StorageException;
+
+    int[] getAllUserIds() throws StorageException;
+}
