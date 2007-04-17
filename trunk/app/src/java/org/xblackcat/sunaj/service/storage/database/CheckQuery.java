@@ -7,7 +7,8 @@ package org.xblackcat.sunaj.service.storage.database;
  */
 
 public enum CheckQuery implements IPropertiable {
-    CHECK_FORUM_GROUP_TABLE;
+    CHECK_FORUM_GROUP_TABLE,
+    CHECK_FORUM_TABLE;
 
     private final String properyName = this.name().toLowerCase().replace('_', '.');
 
