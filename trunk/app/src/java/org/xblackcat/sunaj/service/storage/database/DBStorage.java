@@ -58,19 +58,26 @@ public class DBStorage implements IStorage {
     }
 
     /* Initialization routines */
-    public boolean checkStructure() throws StorageException {
+    public boolean checkStructure() {
         if (log.isInfoEnabled()) {
             log.info("Check database storage structure started.");
         }
-        for (Map.Entry<CheckQuery, String> e : checkQueries.entrySet()) {
+        for (Map.Entry<CheckQuery, String> entry : checkQueries.entrySet()) {
             if (log.isDebugEnabled()) {
-                log.debug("Checking: " + e.getKey());
+                log.debug("Checking: " + entry.getKey());
             }
-            Boolean c = helper.executeSingle(new ToBooleanConvertor(), e.getValue());
-            if (!Boolean.TRUE.equals(c)) {
-                // If c is null or FALSE - abort.
+            try {
+                Boolean c = helper.executeSingle(new ToBooleanConvertor(), entry.getValue());
+                if (!Boolean.TRUE.equals(c)) {
+                    // If c is null or FALSE - abort.
+                    if (log.isDebugEnabled()) {
+                        log.debug(entry.getKey() + " check failed.");
+                    }
+                    return false;
+                }
+            } catch (StorageException e) {
                 if (log.isDebugEnabled()) {
-                    log.debug(e.getKey() + " check failed.");
+                    log.debug(entry.getKey() + " check failed.", e);
                 }
                 return false;
             }
@@ -86,7 +93,13 @@ public class DBStorage implements IStorage {
             if (log.isDebugEnabled()) {
                 log.debug("Performing: " + e.getKey());
             }
-            helper.update(e.getValue());
+            try {
+                helper.update(e.getValue());
+            } catch (StorageException $) {
+                if (log.isWarnEnabled()) {
+                    log.warn("Can not perform initialization step: " + e.getKey(), $);
+                }
+            }
         }
     }
 

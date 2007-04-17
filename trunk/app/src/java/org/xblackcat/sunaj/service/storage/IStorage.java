@@ -8,7 +8,7 @@ package org.xblackcat.sunaj.service.storage;
 
 public interface IStorage {
     /* Initialization routines */
-    boolean checkStructure() throws StorageException;
+    boolean checkStructure();
 
     void initialize() throws StorageException;
 

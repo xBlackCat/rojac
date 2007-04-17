@@ -36,7 +36,7 @@ public class CachedStorage implements IStorage {
         userDAO = new CachedUserDAO(storage.getUserDAO());
     }
 
-    public boolean checkStructure() throws StorageException {
+    public boolean checkStructure() {
         return storage.checkStructure();
     }
 
