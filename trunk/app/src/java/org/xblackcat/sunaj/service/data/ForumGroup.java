@@ -49,4 +49,13 @@ public final class ForumGroup {
     public int hashCode() {
         return forumGroupId;
     }
+
+    public String toString() {
+        StringBuilder str = new StringBuilder("ForumGroup[");
+        str.append("forumGroupId=").append(forumGroupId).append(", ");
+        str.append("forumGroupName=").append(forumGroupName).append(", ");
+        str.append("sortOrder=").append(sortOrder).append(']');
+        return str.toString();
+    }
+
 }

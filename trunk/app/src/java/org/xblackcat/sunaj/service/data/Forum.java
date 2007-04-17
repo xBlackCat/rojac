@@ -77,4 +77,16 @@ public final class Forum {
         result = 31 * result + forumGroupId;
         return result;
     }
+
+    public String toString() {
+        StringBuilder str = new StringBuilder("Forum[");
+        str.append("forumId=").append(forumId).append(", ");
+        str.append("forumGroupId=").append(forumGroupId).append(", ");
+        str.append("shortForumName=").append(shortForumName).append(", ");
+        str.append("forumName=").append(forumName).append(", ");
+        str.append("rated=").append(rated).append(", ");
+        str.append("inTop=").append(inTop).append(", ");
+        str.append("rateLimit=").append(rateLimit).append(']');
+        return str.toString();
+    }
 }

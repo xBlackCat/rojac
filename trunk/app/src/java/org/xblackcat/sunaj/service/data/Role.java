@@ -19,4 +19,8 @@ public enum Role {
     public static Role getUserType(UserRole ur) {
         return valueOf(ur.getValue());
     }
+
+    public String toString() {
+        return "UserRole[" + name() + '"';
+    }
 }
