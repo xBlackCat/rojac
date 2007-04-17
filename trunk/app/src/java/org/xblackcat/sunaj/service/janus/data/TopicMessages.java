@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.janus.data;
 
-import org.xblackcat.sunaj.service.data.ForumMessage;
+import org.xblackcat.sunaj.service.data.Message;
 import org.xblackcat.sunaj.service.data.ModerateInfo;
 import org.xblackcat.sunaj.service.data.Rating;
 import ru.rsdn.Janus.JanusMessageInfo;
@@ -14,14 +14,14 @@ import ru.rsdn.Janus.JanusRatingInfo;
  */
 
 public final class TopicMessages {
-    private final ForumMessage[] messages;
+    private final Message[] messages;
     private final ModerateInfo[] moderates;
     private final Rating[] ratings;
 
     public TopicMessages(JanusMessageInfo[] mes, JanusModerateInfo[] mod, JanusRatingInfo[] r) {
-        messages = new ForumMessage[mes.length];
+        messages = new Message[mes.length];
         for (int i = 0; i < mes.length; i++) {
-            messages[i] = new ForumMessage(mes[i]);
+            messages[i] = new Message(mes[i]);
         }
 
         moderates = new ModerateInfo[mod.length];
@@ -35,7 +35,7 @@ public final class TopicMessages {
         }
     }
 
-    public ForumMessage[] getMessages() {
+    public Message[] getMessages() {
         return messages;
     }
 

@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage;
 
-import org.xblackcat.sunaj.service.data.ForumMessage;
+import org.xblackcat.sunaj.service.data.Message;
 
 /**
  * Date: 16.04.2007
@@ -9,11 +9,11 @@ import org.xblackcat.sunaj.service.data.ForumMessage;
  */
 
 public interface IMessageDAO {
-    void storeForumMessage(ForumMessage fm) throws StorageException;
+    void storeForumMessage(Message fm) throws StorageException;
 
     boolean removeForumMessage(int id) throws StorageException;
 
-    ForumMessage getMessageById(int messageId) throws StorageException;
+    Message getMessageById(int messageId) throws StorageException;
 
     int[] getMessageIdsByParentId(int parentMessageId) throws StorageException;
 

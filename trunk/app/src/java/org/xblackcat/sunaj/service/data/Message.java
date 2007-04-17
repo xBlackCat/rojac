@@ -11,7 +11,7 @@ import java.util.Date;
  * @author ASUS
  */
 
-public final class ForumMessage {
+public final class Message {
     private final int messageId;
     private final int topicId;
     private final int parentId;
@@ -28,10 +28,14 @@ public final class ForumMessage {
     private final String userTitle;
     private final int userTitleColor;
     private final long lastModerated;
+    // Sunaj-related values
+    private final boolean notifyOnResponse;
+    private final Integer favoriteIndex;
 
-    public ForumMessage(int articleId, int forumId, long lastModerated, String message, long messageDate, int messageId,
+    public Message(int articleId, int forumId, long lastModerated, String message, long messageDate, int messageId,
                         String messageName, int parentId, String subject, int topicId, long updateDate, int userId,
-                        String userNick, UserRole userRole, String userTitle, int userTitleColor) {
+                        String userNick, UserRole userRole, String userTitle, int userTitleColor,
+                        boolean notifyOnResponse, Integer favoriteIndex) {
         this.articleId = articleId;
         this.forumId = forumId;
         this.lastModerated = lastModerated;
@@ -48,13 +52,15 @@ public final class ForumMessage {
         this.userRole = Role.getUserType(userRole);
         this.userTitle = userTitle;
         this.userTitleColor = userTitleColor;
+        this.notifyOnResponse = notifyOnResponse;
+        this.favoriteIndex = favoriteIndex;
     }
 
-    public ForumMessage(JanusMessageInfo i) {
+    public Message(JanusMessageInfo i) {
         this(i.getArticleId(), i.getForumId(), i.getLastModerated().getTimeInMillis(), i.getMessage(),
                 i.getMessageDate().getTimeInMillis(), i.getMessageId(), i.getMessageName(),
                 i.getParentId(), i.getSubject(), i.getTopicId(), i.getUpdateDate().getTimeInMillis(),
-                i.getUserId(), i.getUserNick(), i.getUserRole(), i.getUserTitle(), i.getUserTitleColor());
+                i.getUserId(), i.getUserNick(), i.getUserRole(), i.getUserTitle(), i.getUserTitleColor(), false, null);
     }
 
     public int getArticleId() {

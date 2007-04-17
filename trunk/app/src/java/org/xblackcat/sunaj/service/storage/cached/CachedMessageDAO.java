@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.cached;
 
-import org.xblackcat.sunaj.service.data.ForumMessage;
+import org.xblackcat.sunaj.service.data.Message;
 import org.xblackcat.sunaj.service.storage.IMessageDAO;
 import org.xblackcat.sunaj.service.storage.StorageException;
 
@@ -10,7 +10,7 @@ import org.xblackcat.sunaj.service.storage.StorageException;
 * @author ASUS
 */
 final class CachedMessageDAO implements IMessageDAO ,IPurgable{
-    private final Cache<ForumMessage> messageCache = new Cache<ForumMessage>();
+    private final Cache<Message> messageCache = new Cache<Message>();
     private final Cache<int[]> childrenMessagesCache = new Cache<int[]>();
 
     private final IMessageDAO messageDAO;
@@ -19,7 +19,7 @@ final class CachedMessageDAO implements IMessageDAO ,IPurgable{
         this.messageDAO = messageDAO;
     }
 
-    public void storeForumMessage(ForumMessage fm) throws StorageException {
+    public void storeForumMessage(Message fm) throws StorageException {
         messageDAO.storeForumMessage(fm);
         if (fm.getParentId() != 0) {
             childrenMessagesCache.remove(fm.getParentId());
@@ -35,8 +35,8 @@ final class CachedMessageDAO implements IMessageDAO ,IPurgable{
         }
     }
 
-    public ForumMessage getMessageById(int messageId) throws StorageException {
-        ForumMessage message = messageCache.get(messageId);
+    public Message getMessageById(int messageId) throws StorageException {
+        Message message = messageCache.get(messageId);
         if (message == null) {
             message = messageDAO.getMessageById(messageId);
             if (message != null) {
