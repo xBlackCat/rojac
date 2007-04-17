@@ -59,8 +59,8 @@ public class DBStorage implements IStorage {
 
     /* Initialization routines */
     public boolean checkStructure() throws StorageException {
-        if (log.isDebugEnabled()) {
-            log.debug("Check database storage structure started.");
+        if (log.isInfoEnabled()) {
+            log.info("Check database storage structure started.");
         }
         for (Map.Entry<CheckQuery, String> e : checkQueries.entrySet()) {
             if (log.isDebugEnabled()) {
@@ -79,6 +79,9 @@ public class DBStorage implements IStorage {
     }
 
     public void initialize() throws StorageException {
+        if (log.isInfoEnabled()) {
+            log.info("The storage initialization started.");
+        }
         for (Map.Entry<InitializeQuery,String> e : initializeQueries.entrySet()) {
             if (log.isDebugEnabled()) {
                 log.debug("Performing: " + e.getKey());
@@ -180,7 +183,7 @@ public class DBStorage implements IStorage {
         if (!queries.isEmpty()) {
             if (log.isWarnEnabled()) {
                 log.warn("There are unused properties exists in " + name);
-                for (Map.Entry<String, String> entry : (Iterable<? extends Map.Entry<String, String>>) queries.entrySet()) {
+                for (Map.Entry<Object,Object> entry : queries.entrySet()) {
                     log.warn("Property: " + entry.getKey() + " = " + entry.getValue());
                 }
             }
