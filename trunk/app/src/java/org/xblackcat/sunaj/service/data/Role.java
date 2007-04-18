@@ -21,6 +21,6 @@ public enum Role {
     }
 
     public String toString() {
-        return "UserRole[" + name() + '"';
+        return "UserRole[" + name() + ']';
     }
 }
