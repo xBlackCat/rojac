@@ -6,12 +6,16 @@ package org.xblackcat.sunaj.service.storage.database;
  * @author ASUS
  */
 
-public enum DataQuery implements IPropertiable{
+public enum DataQuery implements IPropertiable {
     ;
-    
+
     private final String properyName = this.name().toLowerCase().replace('_', '.');
 
     public String getPropertyName() {
         return properyName;
+    }
+
+    public String toString() {
+        return name() + '[' + properyName + ']';
     }
 }

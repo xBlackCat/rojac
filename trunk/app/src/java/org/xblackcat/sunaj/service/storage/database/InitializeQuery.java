@@ -7,12 +7,18 @@ package org.xblackcat.sunaj.service.storage.database;
  */
 
 public enum InitializeQuery implements IPropertiable {
-    CREATE_FORUM_GROUP_TABLE,
-    CREATE_FORUM_TABLE;
+    CREATE_TABLE_FORUM_GROUP,
+    CREATE_TABLE_FORUM,
+    CREATE_TABLE_NEW_RATING,
+    CREATE_TABLE_RATING;
 
     private final String properyName = this.name().toLowerCase().replace('_', '.');
 
     public String getPropertyName() {
         return properyName;
+    }
+
+    public String toString() {
+        return name() + '[' + properyName + ']';
     }
 }
