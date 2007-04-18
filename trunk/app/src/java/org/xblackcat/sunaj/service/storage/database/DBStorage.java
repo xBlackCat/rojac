@@ -180,26 +180,31 @@ public class DBStorage implements IStorage {
         return new SimpleConnectionFactory(url, name, dbPassword);
     }
 
-    private <T extends Enum<T> & IPropertiable> Map<T, String> loadSQLs(String name, Class<T> type) throws IOException {
+    private <T extends Enum<T> & IPropertiable> Map<T, String> loadSQLs(String name, Class<T> type) throws IOException, StorageInitializationException {
         Properties queries = new Properties();
         queries.load(getClass().getResourceAsStream(name));
 
         Map<T, String> qs = new EnumMap<T, String>(type);
         for (T q : type.getEnumConstants()) {
             String sql = (String) queries.remove(q.getPropertyName());
-            if (log.isDebugEnabled()) {
-                log.debug("Property '" + q.getPropertyName() + "' initialized with SQL: " + sql);
+            if (sql != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Property '" + q.getPropertyName() + "' initialized with SQL: " + sql);
+                }
+                qs.put(q, sql);
+            } else {
+                throw new StorageInitializationException(q + " is not initialized.");
             }
-            qs.put(q, sql);
         }
 
         if (!queries.isEmpty()) {
             if (log.isWarnEnabled()) {
-                log.warn("There are unused properties exists in " + name);
+                log.warn("There are unused properties in " + name);
                 for (Map.Entry<Object,Object> entry : queries.entrySet()) {
                     log.warn("Property: " + entry.getKey() + " = " + entry.getValue());
                 }
             }
+            throw new StorageInitializationException("There are some excess properties in " + name);
         }
 
         return Collections.unmodifiableMap(qs);

@@ -87,8 +87,11 @@ public final class QueryHelper implements IQueryHelper {
 
     static PreparedStatement constructSql(Connection con, String sql, Object... parameters) throws SQLException {
         PreparedStatement pstmt = con.prepareStatement(sql);
-        for (int i = 0; i < parameters.length; i++) {
-            pstmt.setObject(i + 1, parameters[i]);
+        // Fill parameters if any
+        if (parameters != null) {
+            for (int i = 0; i < parameters.length; i++) {
+                pstmt.setObject(i + 1, parameters[i]);
+            }
         }
         return pstmt;
     }
