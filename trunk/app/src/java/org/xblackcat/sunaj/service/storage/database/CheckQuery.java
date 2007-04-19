@@ -7,6 +7,7 @@ package org.xblackcat.sunaj.service.storage.database;
  */
 
 public enum CheckQuery implements IPropertiable {
+    // Table checking queries
     CHECK_TABLE_VERSION,
     CHECK_TABLE_FORUM_GROUP,
     CHECK_TABLE_FORUM,

@@ -16,8 +16,10 @@ public final class Forum {
     private final int rated;
     private final int inTop;
     private final int rateLimit;
+    private final boolean subscribed;
 
-    public Forum(int forumId, int forumGroupId, int inTop, int rated, int rateLimit, String shortForumName, String forumName) {
+    public Forum(int forumId, int forumGroupId, int inTop, int rated, int rateLimit, String shortForumName, String forumName, boolean subscribed) {
+        this.subscribed = subscribed;
         this.forumGroupId = forumGroupId;
         this.forumId = forumId;
         this.forumName = forumName;
@@ -28,7 +30,7 @@ public final class Forum {
     }
 
     public Forum(JanusForumInfo i) {
-        this(i.getForumId(), i.getForumGroupId(), i.getInTop(), i.getRated(), i.getRateLimit(), i.getShortForumName(), i.getForumName());
+        this(i.getForumId(), i.getForumGroupId(), i.getInTop(), i.getRated(), i.getRateLimit(), i.getShortForumName(), i.getForumName(), false);
     }
 
     public int getForumGroupId() {
@@ -57,6 +59,10 @@ public final class Forum {
 
     public String getShortForumName() {
         return shortForumName;
+    }
+
+    public boolean isSubscribed() {
+        return subscribed;
     }
 
     public boolean equals(Object o) {

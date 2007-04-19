@@ -7,6 +7,7 @@ package org.xblackcat.sunaj.service.storage.database;
  */
 
 public enum InitializeQuery implements IPropertiable {
+    // Table creation queries
     CREATE_TABLE_VERSION,
     CREATE_TABLE_FORUM_GROUP,
     CREATE_TABLE_FORUM,

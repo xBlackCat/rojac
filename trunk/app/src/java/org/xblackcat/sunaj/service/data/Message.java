@@ -30,12 +30,14 @@ public final class Message {
     private final long lastModerated;
     // Sunaj-related values
     private final boolean notifyOnResponse;
+    private final boolean read;
     private final Integer favoriteIndex;
 
     public Message(int articleId, int forumId, long lastModerated, String message, long messageDate, int messageId,
-                        String messageName, int parentId, String subject, int topicId, long updateDate, int userId,
-                        String userNick, UserRole userRole, String userTitle, int userTitleColor,
-                        boolean notifyOnResponse, Integer favoriteIndex) {
+                   String messageName, int parentId, String subject, int topicId, long updateDate, int userId,
+                   String userNick, UserRole userRole, String userTitle, int userTitleColor,
+                   boolean notifyOnResponse, boolean read, Integer favoriteIndex) {
+        this.read = read;
         this.articleId = articleId;
         this.forumId = forumId;
         this.lastModerated = lastModerated;
@@ -60,7 +62,7 @@ public final class Message {
         this(i.getArticleId(), i.getForumId(), i.getLastModerated().getTimeInMillis(), i.getMessage(),
                 i.getMessageDate().getTimeInMillis(), i.getMessageId(), i.getMessageName(),
                 i.getParentId(), i.getSubject(), i.getTopicId(), i.getUpdateDate().getTimeInMillis(),
-                i.getUserId(), i.getUserNick(), i.getUserRole(), i.getUserTitle(), i.getUserTitleColor(), false, null);
+                i.getUserId(), i.getUserNick(), i.getUserRole(), i.getUserTitle(), i.getUserTitleColor(), false, false, null);
     }
 
     public int getArticleId() {
@@ -127,6 +129,27 @@ public final class Message {
         return userTitleColor;
     }
 
+    /**
+     * Returns <code>true</code> if it is necessary to send notification on response on this message.
+     *
+     * @return
+     */
+    public boolean isNotifyOnResponse() {
+        return notifyOnResponse;
+    }
+
+    /**
+     * Returns the readness status of the message.
+     * @return
+     */
+    public boolean isRead() {
+        return read;
+    }
+
+    public Integer getFavoriteIndex() {
+        return favoriteIndex;
+    }
+
     public String toString() {
         StringBuilder str = new StringBuilder("Message[");
         str.append("messageId=").append(messageId).append(", ");
@@ -134,16 +157,19 @@ public final class Message {
         str.append("parentId=").append(parentId).append(", ");
         str.append("userId=").append(userId).append(", ");
         str.append("forumId=").append(forumId).append(", ");
-        str.append("subject=").append(subject).append(", ");
-        str.append("messageName=").append(messageName).append(", ");
         str.append("userNick=").append(userNick).append(", ");
-        str.append("message=").append(message).append(", ");
         str.append("articleId=").append(articleId).append(", ");
         str.append("messageDate=").append(messageDate).append(", ");
         str.append("updateDate=").append(updateDate).append(", ");
         str.append("userRole=").append(userRole).append(", ");
         str.append("userTitle=").append(userTitle).append(", ");
         str.append("userTitleColor=").append(userTitleColor).append(", ");
+        str.append("notifyOnResponse=").append(notifyOnResponse).append(", ");
+        str.append("read=").append(read).append(", ");
+        str.append("favoriteIndex=").append(favoriteIndex).append(", ");
+        str.append("messageName=").append(messageName).append(", ");
+        str.append("subject=").append(subject).append(", ");
+        str.append("message=").append(message).append(", ");
         str.append("lastModerated=").append(new Date(lastModerated)).append(']');
         return str.toString();
     }
