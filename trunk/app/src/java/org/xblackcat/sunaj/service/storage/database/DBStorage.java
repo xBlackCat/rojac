@@ -9,11 +9,14 @@ import org.xblackcat.sunaj.service.storage.database.convert.ToBooleanConvertor;
 import org.xblackcat.sunaj.service.storage.database.helper.IQueryHelper;
 import org.xblackcat.sunaj.service.storage.database.helper.QueryHelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Date: 17.04.2007
@@ -25,7 +28,7 @@ public class DBStorage implements IStorage {
     private static final Log log = LogFactory.getLog(DBStorage.class);
 
     private static final String DSSTORAGE_JDBC_CLASS = "db.jdbc.driver.class";
-    private static final String DSSTORAGE_URL = "db.connection.url";
+    private static final String DSSTORAGE_URL = "db.connection.url.pattern";
     private static final String DSSTORAGE_USER = "db.access.user";
     private static final String DSSTORAGE_PASSWORD = "db.access.password";
 
@@ -44,16 +47,12 @@ public class DBStorage implements IStorage {
             this.initializeQueries = loadSQLs('/' + propRoot + "/initialize.properties", InitializeQuery.class);
 
             helper = new QueryHelper(cf);
+        } catch (StorageInitializationException e) {
+            throw e;
         } catch (IOException e) {
-            throw new StorageException("Can not setup storage factory.", e);
-        } catch (ClassNotFoundException e) {
-            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
-        } catch (IllegalAccessException e) {
-            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
-        } catch (InstantiationException e) {
-            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
+            throw new StorageInitializationException("Can not setup storage factory.", e);
         } catch (Exception e) {
-            throw new StorageException("Exception occurs while DB storage initializating.", e);
+            throw new StorageInitializationException("Exception occurs while DB storage initializating.", e);
         }
     }
 
@@ -89,7 +88,7 @@ public class DBStorage implements IStorage {
         if (log.isInfoEnabled()) {
             log.info("The storage initialization started.");
         }
-        for (Map.Entry<InitializeQuery,String> e : initializeQueries.entrySet()) {
+        for (Map.Entry<InitializeQuery, String> e : initializeQueries.entrySet()) {
             if (log.isDebugEnabled()) {
                 log.debug("Performing: " + e.getKey());
             }
@@ -147,20 +146,32 @@ public class DBStorage implements IStorage {
         return initializeQueries.get(q);
     }
 
-    private IConnectionFactory initializeConnectionFactory(String name) throws Exception {
+    private IConnectionFactory initializeConnectionFactory(String name) throws StorageInitializationException {
         if (log.isDebugEnabled()) {
             log.debug("Loading database connection properties.");
         }
         // The properties file should be located in /<propRoot>/database.properties
         Properties databaseProperties = new Properties();
-        databaseProperties.load(getClass().getResourceAsStream(name));
+        try {
+            databaseProperties.load(getClass().getResourceAsStream(name));
+        } catch (IOException e) {
+            throw new StorageInitializationException("Can not load config from the database.properties", e);
+        }
 
         String jdbcClass = databaseProperties.getProperty(DSSTORAGE_JDBC_CLASS);
         if (jdbcClass == null) {
             throw new StorageInitializationException("The " + DSSTORAGE_JDBC_CLASS + " property is not defined.");
         }
 
-        Class.forName(jdbcClass).newInstance();
+        try {
+            Class.forName(jdbcClass).newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
+        } catch (IllegalAccessException e) {
+            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
+        } catch (InstantiationException e) {
+            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
+        }
 
         String url = databaseProperties.getProperty(DSSTORAGE_URL);
         if (url == null) {
@@ -176,6 +187,35 @@ public class DBStorage implements IStorage {
         if (dbPassword == null) {
             throw new StorageInitializationException("The " + DSSTORAGE_PASSWORD + " property is not defined.");
         }
+
+        // Set the system properties in the url string
+        if (log.isTraceEnabled()) {
+            log.trace("Initial url: " + url);
+        }
+        Pattern p = Pattern.compile("\\{\\$([\\w\\.]+)\\}");
+        boolean tryAgaing;
+        do {
+            tryAgaing = false;
+            Matcher m = p.matcher(url);
+            while (m.find()) {
+                String property = m.group(1);
+                if (log.isTraceEnabled()) {
+                    log.trace("Found property " + m.group() + " in the url.");
+                }
+                String val = System.getProperty(property);
+                if (log.isTraceEnabled()) {
+                    log.trace(m.group() + " = " + val);
+                }
+                if (val != null) {
+                    val = val.replace(File.separatorChar, '/');
+                    url = url.replaceAll("\\{\\$" + property + "\\}", val);
+                    if (log.isTraceEnabled()) {
+                        log.trace("Url after replace: " + url);
+                    }
+                    tryAgaing = true;
+                }
+            }
+        } while (tryAgaing);
 
         return new SimpleConnectionFactory(url, name, dbPassword);
     }
@@ -200,7 +240,7 @@ public class DBStorage implements IStorage {
         if (!queries.isEmpty()) {
             if (log.isWarnEnabled()) {
                 log.warn("There are unused properties in " + name);
-                for (Map.Entry<Object,Object> entry : queries.entrySet()) {
+                for (Map.Entry<Object, Object> entry : queries.entrySet()) {
                     log.warn("Property: " + entry.getKey() + " = " + entry.getValue());
                 }
             }
