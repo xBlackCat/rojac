@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.cached;
 
-import org.xblackcat.sunaj.service.data.ModerateInfo;
+import org.xblackcat.sunaj.service.data.Moderate;
 import org.xblackcat.sunaj.service.storage.IModerateDAO;
 import org.xblackcat.sunaj.service.storage.StorageException;
 
@@ -10,7 +10,7 @@ import org.xblackcat.sunaj.service.storage.StorageException;
  * @author ASUS
  */
 final class CachedModerateDAO implements IModerateDAO,IPurgable {
-    private final Cache<ModerateInfo> moderateCache = new Cache<ModerateInfo>();
+    private final Cache<Moderate> moderateCache = new Cache<Moderate>();
     private final Cache<int[]> messageModaratesCache = new Cache<int[]>();
 
     private final IModerateDAO moderateDAO;
@@ -19,7 +19,7 @@ final class CachedModerateDAO implements IModerateDAO,IPurgable {
         this.moderateDAO = moderateDAO;
     }
 
-    public void storeModerateInfo(ModerateInfo mi) throws StorageException {
+    public void storeModerateInfo(Moderate mi) throws StorageException {
         moderateDAO.storeModerateInfo(mi);
         messageModaratesCache.remove(mi.getMessageId());
     }
@@ -33,8 +33,8 @@ final class CachedModerateDAO implements IModerateDAO,IPurgable {
         }
     }
 
-    public ModerateInfo getModerateInfoById(int id) throws StorageException {
-        ModerateInfo forum = moderateCache.get(id);
+    public Moderate getModerateInfoById(int id) throws StorageException {
+        Moderate forum = moderateCache.get(id);
         if (forum == null) {
             forum = moderateDAO.getModerateInfoById(id);
             if (forum != null) {

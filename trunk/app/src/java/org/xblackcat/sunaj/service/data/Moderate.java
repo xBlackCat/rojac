@@ -10,20 +10,20 @@ import java.util.Date;
  * @author ASUS
  */
 
-public final class ModerateInfo {
+public final class Moderate {
     private final int messageId;
     private final int userId;
     private final int forumId;
     private final long creationTime;
 
-    public ModerateInfo(int messageId, int userId, int forumId, long creationTime) {
+    public Moderate(int messageId, int userId, int forumId, long creationTime) {
         this.messageId = messageId;
         this.userId = userId;
         this.forumId = forumId;
         this.creationTime = creationTime;
     }
 
-    public ModerateInfo(JanusModerateInfo i) {
+    public Moderate(JanusModerateInfo i) {
         this(i.getMessageId(), i.getUserId(), i.getForumId(), i.getCreate().getTimeInMillis());
     }
 
@@ -47,7 +47,7 @@ public final class ModerateInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ModerateInfo that = (ModerateInfo) o;
+        Moderate that = (Moderate) o;
 
         if (creationTime != that.creationTime) return false;
         if (forumId != that.forumId) return false;
@@ -67,7 +67,7 @@ public final class ModerateInfo {
     }
 
     public String toString() {
-        StringBuilder str = new StringBuilder("ModerateInfo[");
+        StringBuilder str = new StringBuilder("Moderate[");
         str.append("messageId=").append(messageId).append(", ");
         str.append("userId=").append(userId).append(", ");
         str.append("forumId=").append(forumId).append(", ");

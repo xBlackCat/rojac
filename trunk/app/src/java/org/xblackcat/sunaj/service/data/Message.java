@@ -1,7 +1,6 @@
 package org.xblackcat.sunaj.service.data;
 
 import ru.rsdn.Janus.JanusMessageInfo;
-import ru.rsdn.Janus.UserRole;
 
 import java.util.Date;
 
@@ -35,7 +34,7 @@ public final class Message {
 
     public Message(int articleId, int forumId, long lastModerated, String message, long messageDate, int messageId,
                    String messageName, int parentId, String subject, int topicId, long updateDate, int userId,
-                   String userNick, UserRole userRole, String userTitle, int userTitleColor,
+                   String userNick, Role userRole, String userTitle, int userTitleColor,
                    boolean notifyOnResponse, boolean read, Integer favoriteIndex) {
         this.read = read;
         this.articleId = articleId;
@@ -51,7 +50,7 @@ public final class Message {
         this.updateDate = updateDate;
         this.userId = userId;
         this.userNick = userNick;
-        this.userRole = Role.getUserType(userRole);
+        this.userRole = userRole;
         this.userTitle = userTitle;
         this.userTitleColor = userTitleColor;
         this.notifyOnResponse = notifyOnResponse;
@@ -62,7 +61,8 @@ public final class Message {
         this(i.getArticleId(), i.getForumId(), i.getLastModerated().getTimeInMillis(), i.getMessage(),
                 i.getMessageDate().getTimeInMillis(), i.getMessageId(), i.getMessageName(),
                 i.getParentId(), i.getSubject(), i.getTopicId(), i.getUpdateDate().getTimeInMillis(),
-                i.getUserId(), i.getUserNick(), i.getUserRole(), i.getUserTitle(), i.getUserTitleColor(), false, false, null);
+                i.getUserId(), i.getUserNick(), Role.getUserType(i.getUserRole()), i.getUserTitle(),
+                i.getUserTitleColor(), false, false, null);
     }
 
     public int getArticleId() {

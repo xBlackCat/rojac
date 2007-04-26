@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage;
 
-import org.xblackcat.sunaj.service.data.ModerateInfo;
+import org.xblackcat.sunaj.service.data.Moderate;
 
 /**
  * Date: 16.04.2007
@@ -9,11 +9,11 @@ import org.xblackcat.sunaj.service.data.ModerateInfo;
  */
 
 public interface IModerateDAO {
-    void storeModerateInfo(ModerateInfo mi) throws StorageException;
+    void storeModerateInfo(Moderate mi) throws StorageException;
 
     boolean removeModerateInfo(int id) throws StorageException;
 
-    ModerateInfo getModerateInfoById(int id) throws StorageException;
+    Moderate getModerateInfoById(int id) throws StorageException;
 
     int[] getModerateIdsByMessageId(int messageId) throws StorageException;
 
