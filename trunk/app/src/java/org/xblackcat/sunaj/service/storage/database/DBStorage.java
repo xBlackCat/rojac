@@ -8,15 +8,13 @@ import org.xblackcat.sunaj.service.storage.database.connection.SimpleConnectionF
 import org.xblackcat.sunaj.service.storage.database.convert.ToBooleanConvertor;
 import org.xblackcat.sunaj.service.storage.database.helper.IQueryHelper;
 import org.xblackcat.sunaj.service.storage.database.helper.QueryHelper;
+import org.xblackcat.sunaj.util.ResourceUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Date: 17.04.2007
@@ -192,30 +190,10 @@ public class DBStorage implements IStorage {
         if (log.isTraceEnabled()) {
             log.trace("Initial url: " + url);
         }
-        Pattern p = Pattern.compile("\\{\\$([\\w\\.]+)\\}");
-        boolean tryAgaing;
-        do {
-            tryAgaing = false;
-            Matcher m = p.matcher(url);
-            while (m.find()) {
-                String property = m.group(1);
-                if (log.isTraceEnabled()) {
-                    log.trace("Found property " + m.group() + " in the url.");
-                }
-                String val = System.getProperty(property);
-                if (log.isTraceEnabled()) {
-                    log.trace(m.group() + " = " + val);
-                }
-                if (val != null) {
-                    val = val.replace(File.separatorChar, '/');
-                    url = url.replaceAll("\\{\\$" + property + "\\}", val);
-                    if (log.isTraceEnabled()) {
-                        log.trace("Url after replace: " + url);
-                    }
-                    tryAgaing = true;
-                }
-            }
-        } while (tryAgaing);
+        url = ResourceUtils.putSystemProperties(url);
+        if (log.isTraceEnabled()) {
+            log.trace("Url after replace: " + url);
+        }
 
         return new SimpleConnectionFactory(url, name, dbPassword);
     }
