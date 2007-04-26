@@ -40,9 +40,9 @@ public class DBStorage implements IStorage {
         try {
             IConnectionFactory cf = initializeConnectionFactory('/' + propRoot + "/database.properties");
 
-            this.queries = loadSQLs('/' + propRoot + "/sql.properties", DataQuery.class);
-            this.checkQueries = loadSQLs('/' + propRoot + "/check.properties", CheckQuery.class);
-            this.initializeQueries = loadSQLs('/' + propRoot + "/initialize.properties", InitializeQuery.class);
+            this.queries = loadSQLs('/' + propRoot + "/sql.data.properties", DataQuery.class);
+            this.checkQueries = loadSQLs('/' + propRoot + "/sql.check.properties", CheckQuery.class);
+            this.initializeQueries = loadSQLs('/' + propRoot + "/sql.initialize.properties", InitializeQuery.class);
 
             helper = new QueryHelper(cf);
         } catch (StorageInitializationException e) {
