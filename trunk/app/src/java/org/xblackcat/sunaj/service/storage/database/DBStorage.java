@@ -5,12 +5,14 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.sunaj.service.storage.*;
 import org.xblackcat.sunaj.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.sunaj.service.storage.database.connection.SimpleConnectionFactory;
-import org.xblackcat.sunaj.service.storage.database.convert.ToBooleanConvertor;
+import org.xblackcat.sunaj.service.storage.database.convert.IToObjectConvertor;
+import org.xblackcat.sunaj.service.storage.database.convert.ToScalarConvertor;
 import org.xblackcat.sunaj.service.storage.database.helper.IQueryHelper;
 import org.xblackcat.sunaj.service.storage.database.helper.QueryHelper;
 import org.xblackcat.sunaj.util.ResourceUtils;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -22,7 +24,7 @@ import java.util.Properties;
  * @author ASUS
  */
 
-public class DBStorage implements IStorage {
+public class DBStorage implements IStorage, IQueryExecutor {
     private static final Log log = LogFactory.getLog(DBStorage.class);
 
     private static final String DSSTORAGE_JDBC_CLASS = "db.jdbc.driver.class";
@@ -35,6 +37,7 @@ public class DBStorage implements IStorage {
     private final Map<InitializeQuery, String> initializeQueries;
 
     private final IQueryHelper helper;
+    private final DBForumDAO forumDAO;
 
     public DBStorage(String propRoot) throws StorageException {
         try {
@@ -50,8 +53,11 @@ public class DBStorage implements IStorage {
         } catch (IOException e) {
             throw new StorageInitializationException("Can not setup storage factory.", e);
         } catch (Exception e) {
-            throw new StorageInitializationException("Exception occurs while DB storage initializating.", e);
+            throw new StorageInitializationException("Unspecified exception occurs while DB storage initializating.", e);
         }
+
+        // Initialize the object DAOs
+        forumDAO = new DBForumDAO(this);
     }
 
     /* Initialization routines */
@@ -64,7 +70,7 @@ public class DBStorage implements IStorage {
                 log.debug("Checking: " + entry.getKey());
             }
             try {
-                Boolean c = helper.executeSingle(new ToBooleanConvertor(), entry.getValue());
+                Boolean c = helper.executeSingle(new ToScalarConvertor<Boolean>(), entry.getValue());
                 if (!Boolean.TRUE.equals(c)) {
                     // If c is null or FALSE - abort.
                     if (log.isDebugEnabled()) {
@@ -101,7 +107,7 @@ public class DBStorage implements IStorage {
     }
 
     public IForumDAO getForumDAO() {
-        return null;
+        return forumDAO;
     }
 
     public IForumGroupDAO getForumGroupDAO() {
@@ -130,6 +136,18 @@ public class DBStorage implements IStorage {
 
     public IUserDAO getUserDAO() {
         return null;
+    }
+
+    public int update(DataQuery sql, Object... params) throws StorageException {
+        return helper.update(getQuery(sql), params);
+    }
+
+    public <T> T executeSingle(IToObjectConvertor<T> c, DataQuery sql, Object ... params) throws StorageException {
+        return helper.executeSingle(c, getQuery(sql), params);
+    }
+
+    public <T> Collection<T> execute(IToObjectConvertor<T> c, DataQuery sql, Object ... params) throws StorageException {
+        return helper.execute(c, getQuery(sql), params);
     }
 
     protected String getQuery(DataQuery q) {
