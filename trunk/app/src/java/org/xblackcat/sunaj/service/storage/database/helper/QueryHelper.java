@@ -67,13 +67,13 @@ public final class QueryHelper implements IQueryHelper {
         }
     }
 
-    public void update(String sql, Object... parameters) throws StorageException {
+    public int update(String sql, Object... parameters) throws StorageException {
         try {
             Connection con = connectionFactory.getConnection();
             try {
                 PreparedStatement st = constructSql(con, sql, parameters);
                 try {
-                    st.executeUpdate();
+                   return st.executeUpdate();
                 } finally {
                     st.close();
                 }
@@ -85,7 +85,7 @@ public final class QueryHelper implements IQueryHelper {
         }
     }
 
-    static PreparedStatement constructSql(Connection con, String sql, Object... parameters) throws SQLException {
+    private static PreparedStatement constructSql(Connection con, String sql, Object... parameters) throws SQLException {
         PreparedStatement pstmt = con.prepareStatement(sql);
         // Fill parameters if any
         if (parameters != null) {

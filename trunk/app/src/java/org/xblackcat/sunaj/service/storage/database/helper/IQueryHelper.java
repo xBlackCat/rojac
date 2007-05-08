@@ -16,5 +16,5 @@ public interface IQueryHelper {
 
     <T> T executeSingle(IToObjectConvertor<T> c, String sql, Object... parameters) throws StorageException;
 
-    void update(String sql, Object... parameters) throws StorageException;
+    int update(String sql, Object... parameters) throws StorageException;
 }
