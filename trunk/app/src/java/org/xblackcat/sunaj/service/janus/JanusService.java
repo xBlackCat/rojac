@@ -52,7 +52,7 @@ public class JanusService implements IJanusService {
         }
     }
 
-    public JanusService(String userName, String password) {
+    private JanusService(String userName, String password) {
         this.userName = userName;
         this.password = password;
     }
