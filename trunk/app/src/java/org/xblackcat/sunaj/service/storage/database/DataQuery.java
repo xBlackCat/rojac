@@ -117,7 +117,32 @@ public enum DataQuery implements IPropertiable {
      * <p/>
      * message id(int), topic id(int), user id(int), user rating(int), rate(int), rate date(long)
      */
-    STORE_OBJECTS_RATING
+    STORE_OBJECTS_RATING,
+
+    // Object removing queries.
+    /**
+     * The query for removing the forum object by its id
+     */
+    REMOVE_OBJECT_FORUM,
+
+    // Queries for getting all the ids of the objects
+    GET_IDS_FORUM,
+
+    // Queries for getting object by its id
+    GET_OBJECT_VERSION,
+    GET_OBJECT_FORUM,
+    GET_OBJECT_FORUM_GROUP,
+    GET_OBJECT_MESSAGE,
+    GET_OBJECT_NEW_MESSAGE,
+    GET_OBJECT_USER,
+
+    // Other queries
+    /**
+     * The query for retrieving ids for the specified forum group. SQL parameters:
+     * <p/>
+     * forum_group_id(int)
+     */
+    GET_IDS_FORUM_BY_FORUM_GROUP,
     ;
 
     private final String properyName = this.name().toLowerCase().replace('_', '.');
@@ -127,6 +152,6 @@ public enum DataQuery implements IPropertiable {
     }
 
     public String toString() {
-        return name() + '[' + properyName + ']';
+        return super.toString() + '[' + properyName + ']';
     }
 }
