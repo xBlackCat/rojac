@@ -16,10 +16,10 @@ import java.util.Collection;
  * @author ASUS
  */
 
-public class DBForumGroupDAO implements IForumGroupDAO {
+class DBForumGroupDAO implements IForumGroupDAO {
     private final IQueryExecutor helper;
 
-    public DBForumGroupDAO(IQueryExecutor helper) {
+    DBForumGroupDAO(IQueryExecutor helper) {
         this.helper = helper;
     }
 

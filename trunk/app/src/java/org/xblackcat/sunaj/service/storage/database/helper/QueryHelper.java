@@ -73,7 +73,7 @@ public final class QueryHelper implements IQueryHelper {
             try {
                 PreparedStatement st = constructSql(con, sql, parameters);
                 try {
-                   return st.executeUpdate();
+                    return st.executeUpdate();
                 } finally {
                     st.close();
                 }

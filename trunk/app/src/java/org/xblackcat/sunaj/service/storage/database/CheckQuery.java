@@ -16,8 +16,7 @@ public enum CheckQuery implements IPropertiable {
     CHECK_TABLE_MODERATE,
     CHECK_TABLE_NEW_MESSAGE,
     CHECK_TABLE_USER,
-    CHECK_TABLE_RATING
-    ;
+    CHECK_TABLE_RATING;
 
     private final String properyName = this.name().toLowerCase().replace('_', '.');
 

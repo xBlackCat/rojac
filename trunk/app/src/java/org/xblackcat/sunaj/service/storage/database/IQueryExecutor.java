@@ -12,7 +12,7 @@ import java.util.Collection;
 interface IQueryExecutor {
     int update(DataQuery sql, Object... params) throws StorageException;
 
-    <T> T executeSingle(IToObjectConvertor<T> c, DataQuery sql, Object ... params) throws StorageException;
+    <T> T executeSingle(IToObjectConvertor<T> c, DataQuery sql, Object... params) throws StorageException;
 
-    <T> Collection<T> execute(IToObjectConvertor<T> c, DataQuery sql, Object ... params) throws StorageException;
+    <T> Collection<T> execute(IToObjectConvertor<T> c, DataQuery sql, Object... params) throws StorageException;
 }

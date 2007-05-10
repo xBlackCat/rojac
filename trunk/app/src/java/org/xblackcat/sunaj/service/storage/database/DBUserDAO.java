@@ -16,10 +16,10 @@ import java.util.Collection;
  * @author ASUS
  */
 
-public class DBUserDAO implements IUserDAO {
+class DBUserDAO implements IUserDAO {
     private final IQueryExecutor helper;
 
-    public DBUserDAO(IQueryExecutor helper) {
+    DBUserDAO(IQueryExecutor helper) {
         this.helper = helper;
     }
 

@@ -39,7 +39,7 @@ public class ToMessageConvertor implements IToObjectConvertor<Message> {
         String userNick = rs.getString(17);
         String userTitle = rs.getString(18);
         String message = rs.getString(19);
-        return new Message(articleId, forumId, moderateDate, message, messageDate,id, messageName, parentId, subject,
+        return new Message(articleId, forumId, moderateDate, message, messageDate, id, messageName, parentId, subject,
                 topicId, updateDate, userId, userNick, Role.values()[userRole], userTitle, userTitleColor,
                 notifyOnResponse, read, favorite);
     }

@@ -143,7 +143,7 @@ public enum DataQuery implements IPropertiable {
     REMOVE_OBJECT_USER,
 
     /**
-     * The query for removing the rating objects by message id. 
+     * The query for removing the rating objects by message id.
      */
     REMOVE_OBJECTS_RATING,
 

@@ -12,9 +12,9 @@ import java.util.Collection;
 
 /**
  * Date: 8 трав 2007
-*
-* @author ASUS
-*/
+ *
+ * @author ASUS
+ */
 final class DBForumDAO implements IForumDAO {
     private final IQueryExecutor helper;
 

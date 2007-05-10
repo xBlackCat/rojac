@@ -13,10 +13,10 @@ import java.util.Collection;
  * @author ASUS
  */
 
-public class DBRatingDAO implements IRatingDAO {
+class DBRatingDAO implements IRatingDAO {
     private final IQueryExecutor helper;
 
-    public DBRatingDAO(IQueryExecutor helper) {
+    DBRatingDAO(IQueryExecutor helper) {
         this.helper = helper;
     }
 

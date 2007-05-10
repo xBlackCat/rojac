@@ -148,11 +148,11 @@ public class DBStorage implements IStorage, IQueryExecutor {
         return helper.update(getQuery(sql), params);
     }
 
-    public <T> T executeSingle(IToObjectConvertor<T> c, DataQuery sql, Object ... params) throws StorageException {
+    public <T> T executeSingle(IToObjectConvertor<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.executeSingle(c, getQuery(sql), params);
     }
 
-    public <T> Collection<T> execute(IToObjectConvertor<T> c, DataQuery sql, Object ... params) throws StorageException {
+    public <T> Collection<T> execute(IToObjectConvertor<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.execute(c, getQuery(sql), params);
     }
 

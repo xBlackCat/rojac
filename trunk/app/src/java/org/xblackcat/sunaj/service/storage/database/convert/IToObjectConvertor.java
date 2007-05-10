@@ -12,7 +12,9 @@ import java.sql.SQLException;
 public interface IToObjectConvertor<T> {
     /**
      * Converts
+     *
      * @param rs
+     *
      * @return
      */
     T convert(ResultSet rs) throws SQLException;
