@@ -69,55 +69,55 @@ public enum DataQuery implements IPropertiable {
      * <p/>
      * type(int), version_data(byte[64])
      */
-    STORE_OBJECTS_VERSION,
+    STORE_OBJECT_VERSION,
     /**
      * The query for storing the forum group object. Set the object parameters in following order:
      * <p/>
      * id(int), name(String), sort_order(int)
      */
-    STORE_OBJECTS_FORUM_GROUP,
+    STORE_OBJECT_FORUM_GROUP,
     /**
      * The query for storing the forum object. Set the object parameters in following order:
      * <p/>
      * id(int), forum group(int), rated(int), inTop(int), rateLimit(int), subscribed(boolean), short name(String), name(String)
      */
-    STORE_OBJECTS_FORUM,
+    STORE_OBJECT_FORUM,
     /**
      * The query for storing the new rating object. Set the object parameters in following order:
      * <p/>
      * id(int), message id(int), rate(int)
      */
-    STORE_OBJECTS_NEW_RATING,
+    STORE_OBJECT_NEW_RATING,
     /**
      * The query for storing the message object. Set the object parameters in following order:
      * <p/>
      * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color (int), user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update date (long), moderated date (long), subject (String), message name (String), user nick (String), user title (String), message (String)
      */
-    STORE_OBJECTS_MESSAGE,
+    STORE_OBJECT_MESSAGE,
     /**
      * The query for storing the moderate object. Set the object parameters in following order:
      * <p/>
      * message id(int), user id(int), forum id(int), creation time(long)
      */
-    STORE_OBJECTS_MODERATE,
+    STORE_OBJECT_MODERATE,
     /**
      * The query for storing the new message object. Set the object parameters in following order:
      * <p/>
      * id (int), parent id(int), forum id(int), subject(String), message(String)
      */
-    STORE_OBJECTS_NEW_MESSAGE,
+    STORE_OBJECT_NEW_MESSAGE,
     /**
      * The query for storing the user object. Set the object parameters in following order:
      * <p/>
      * id (int), name (String), nick (String), real_name (String), email (String), home_page (String), specialization (String), where_from (String), origin (String)
      */
-    STORE_OBJECTS_USER,
+    STORE_OBJECT_USER,
     /**
      * The query for storing the rating object. Set the object parameters in following order:
      * <p/>
      * message id(int), topic id(int), user id(int), user rating(int), rate(int), rate date(long)
      */
-    STORE_OBJECTS_RATING,
+    STORE_OBJECT_RATING,
 
     // Object removing queries.
     /**

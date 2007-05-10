@@ -23,7 +23,7 @@ final class DBForumDAO implements IForumDAO {
     }
 
     public void storeForum(Forum f) throws StorageException {
-        helper.update(DataQuery.STORE_OBJECTS_FORUM,
+        helper.update(DataQuery.STORE_OBJECT_FORUM,
                 f.getForumId(),
                 f.getForumGroupId(),
                 f.getRated(),
