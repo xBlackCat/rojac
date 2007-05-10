@@ -127,7 +127,6 @@ public enum DataQuery implements IPropertiable {
      */
     GET_OBJECTS_RATING_BY_MESSAGE_ID,
 
-
     // Object removing queries.
     /**
      * The query for removing the forum object by its id
@@ -163,12 +162,17 @@ public enum DataQuery implements IPropertiable {
 
     // Other queries
     /**
+     * Query for updating the version info object. SQL paramerets are:
+     * <p/>
+     * version_data(byte[64]), version_type (int)
+     */
+    UPDATE_OBJECT_VERSION,
+    /**
      * The query for retrieving ids for the specified forum group. SQL parameters:
      * <p/>
      * forum_group_id(int)
      */
-    GET_IDS_FORUM_BY_FORUM_GROUP,
-    ;
+    GET_IDS_FORUM_BY_FORUM_GROUP,;
 
     private final String properyName = this.name().toLowerCase().replace('_', '.');
 

@@ -84,4 +84,8 @@ public class CachedStorage implements IStorage {
         return userDAO;
     }
 
+    public IVersionDAO getVersionDAO() {
+        return storage.getVersionDAO();
+    }
+
 }
