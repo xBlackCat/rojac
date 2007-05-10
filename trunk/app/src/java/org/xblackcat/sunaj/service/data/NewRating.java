@@ -7,12 +7,18 @@ package org.xblackcat.sunaj.service.data;
  */
 
 public final class NewRating {
+    private final int id;
     private final int messageId;
     private final int rate;
 
-    public NewRating(int messageId, int rate) {
+    public NewRating(int id, int messageId, int rate) {
+        this.id = id;
         this.messageId = messageId;
         this.rate = rate;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getMessageId() {
@@ -25,6 +31,7 @@ public final class NewRating {
 
     public String toString() {
         StringBuilder str = new StringBuilder("NewRating[");
+        str.append("id=").append(id).append(", ");
         str.append("messageId=").append(messageId).append(", ");
         str.append("rate=").append(rate).append(']');
         return str.toString();

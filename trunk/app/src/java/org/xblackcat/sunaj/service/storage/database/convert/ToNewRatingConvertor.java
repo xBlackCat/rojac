@@ -13,8 +13,9 @@ import java.sql.SQLException;
 
 public class ToNewRatingConvertor implements IToObjectConvertor<NewRating> {
     public NewRating convert(ResultSet rs) throws SQLException {
-        int messageId = rs.getInt(1);
-        int rate = rs.getInt(2);
-        return new NewRating(messageId, rate);
+        int id = rs.getInt(1);
+        int messageId = rs.getInt(2);
+        int rate = rs.getInt(3);
+        return new NewRating(id, messageId, rate);
     }
 }

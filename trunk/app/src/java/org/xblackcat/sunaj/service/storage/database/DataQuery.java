@@ -29,7 +29,7 @@ public enum DataQuery implements IPropertiable {
     /**
      * The query should fetch the new rating object properties in following order:
      * <p/>
-     * message id(int), rate(int)
+     * id(int), message id(int), rate(int)
      */
     GET_OBJECTS_NEW_RATING,
     /**
@@ -85,7 +85,7 @@ public enum DataQuery implements IPropertiable {
     /**
      * The query for storing the new rating object. Set the object parameters in following order:
      * <p/>
-     * message id(int), rate(int)
+     * id(int), message id(int), rate(int)
      */
     STORE_OBJECTS_NEW_RATING,
     /**
