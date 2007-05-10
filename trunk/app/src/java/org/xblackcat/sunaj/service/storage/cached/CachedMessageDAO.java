@@ -6,10 +6,10 @@ import org.xblackcat.sunaj.service.storage.StorageException;
 
 /**
  * Date: 16.04.2007
-*
-* @author ASUS
-*/
-final class CachedMessageDAO implements IMessageDAO ,IPurgable{
+ *
+ * @author ASUS
+ */
+final class CachedMessageDAO implements IMessageDAO, IPurgable {
     private final Cache<Message> messageCache = new Cache<Message>();
     private final Cache<int[]> childrenMessagesCache = new Cache<int[]>();
 
@@ -61,16 +61,8 @@ final class CachedMessageDAO implements IMessageDAO ,IPurgable{
         return messageDAO.getMessageIdsByTopicId(topicId);
     }
 
-    public int[] getMessageIdsByUserId(int userId) throws StorageException {
-        return messageDAO.getMessageIdsByUserId(userId);
-    }
-
-    public int[] getMessageIdsByForumId(int forumId) throws StorageException {
-        return messageDAO.getMessageIdsByForumId(forumId);
-    }
-
-    public int[] getMessageIdsByParentAndTopicIds(int parentId, int topicId) throws StorageException {
-        return messageDAO.getMessageIdsByParentAndTopicIds(parentId, topicId);
+    public int[] getTopicMessageIdsByForumId(int forumId) throws StorageException {
+        return messageDAO.getTopicMessageIdsByForumId(forumId);
     }
 
     public int[] getAllMessageIds() throws StorageException {

@@ -91,7 +91,9 @@ public enum DataQuery implements IPropertiable {
     /**
      * The query for storing the message object. Set the object parameters in following order:
      * <p/>
-     * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color (int), user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update date (long), moderated date (long), subject (String), message name (String), user nick (String), user title (String), message (String)
+     * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color (int),
+     * user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update date (long),
+     *  moderated date (long), subject (String), message name (String), user nick (String), user title (String), message (String)
      */
     STORE_OBJECT_MESSAGE,
     /**
@@ -154,6 +156,10 @@ public enum DataQuery implements IPropertiable {
      * The query for removing the new message object by its id
      */
     REMOVE_OBJECT_NEW_MESSAGE,
+    /**
+     * The query for removing the message object by its id
+     */
+    REMOVE_OBJECT_MESSAGE,
 
     /**
      * The query for removing the rating objects by message id.
@@ -169,6 +175,7 @@ public enum DataQuery implements IPropertiable {
     GET_IDS_FORUM_GROUP,
     GET_IDS_NEW_RATING,
     GET_IDS_NEW_MESSAGE,
+    GET_IDS_MESSAGE,
     GET_IDS_USER,
 
     // Queries for getting object by its id
@@ -194,6 +201,9 @@ public enum DataQuery implements IPropertiable {
      */
     GET_IDS_FORUM_BY_FORUM_GROUP,
     GET_IDS_NEW_RATING_BY_MESSAGE_ID,
+    GET_IDS_MESSAGE_BY_PARENT_ID,
+    GET_IDS_MESSAGE_BY_TOPIC_ID,
+    GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,
     ;
 
     private final String properyName = this.name().toLowerCase().replace('_', '.');

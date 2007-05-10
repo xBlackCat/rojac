@@ -19,11 +19,7 @@ public interface IMessageDAO {
 
     int[] getMessageIdsByTopicId(int topicId) throws StorageException;
 
-    int[] getMessageIdsByUserId(int userId) throws StorageException;
-
-    int[] getMessageIdsByForumId(int forumId) throws StorageException;
-
-    int[] getMessageIdsByParentAndTopicIds(int parentId, int topicId) throws StorageException;
-
     int[] getAllMessageIds() throws StorageException;
+
+    int[] getTopicMessageIdsByForumId(int forumId) throws StorageException;
 }
