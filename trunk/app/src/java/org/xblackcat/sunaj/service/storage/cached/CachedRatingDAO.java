@@ -10,8 +10,7 @@ import org.xblackcat.sunaj.service.storage.StorageException;
 * @author ASUS
 */
 final class CachedRatingDAO implements IRatingDAO, IPurgable {
-    private final Cache<Rating> ratingCache = new Cache<Rating>();
-    private final Cache<int[]> ratingsForMessageCache = new Cache<int[]>();
+    private final Cache<Rating[]> ratingsForMessageCache = new Cache<Rating[]>();
 
     private final IRatingDAO storage;
 
@@ -24,30 +23,19 @@ final class CachedRatingDAO implements IRatingDAO, IPurgable {
         ratingsForMessageCache.remove(ri.getMessageId());
     }
 
-    public boolean removeRating(int id) throws StorageException {
-        if (storage.removeRating(id)) {
-            ratingCache.remove(id);
+    public boolean removeRatingsByMessageId(int messageId) throws StorageException {
+        if (storage.removeRatingsByMessageId(messageId)) {
+            ratingsForMessageCache.remove(messageId);
             return true;
         } else {
             return false;
         }
     }
 
-    public Rating getRatingById(int id) throws StorageException {
-        Rating rating = ratingCache.get(id);
-        if (rating == null) {
-            rating = storage.getRatingById(id);
-            if (rating != null) {
-                ratingCache.put(id, rating);
-            }
-        }
-        return rating;
-    }
-
-    public int[] getRatingIdsByMessageId(int messageId) throws StorageException {
-        int[] ratings = ratingsForMessageCache.get(messageId);
+    public Rating[] getRatingsByMessageId(int messageId) throws StorageException {
+        Rating[] ratings = ratingsForMessageCache.get(messageId);
         if (ratings == null) {
-            ratings = storage.getRatingIdsByMessageId(messageId);
+            ratings = storage.getRatingsByMessageId(messageId);
             if (ratings != null) {
                 ratingsForMessageCache.put(messageId, ratings);
             }
@@ -55,12 +43,11 @@ final class CachedRatingDAO implements IRatingDAO, IPurgable {
         return ratings;
     }
 
-    public int[] getAllRatingIds() throws StorageException {
-        return storage.getAllRatingIds();
+    public Rating[] getAllRatings() throws StorageException {
+        return storage.getAllRatings();
     }
 
     public void purge() {
-        ratingCache.purge();
         ratingsForMessageCache.purge();
     }
 }

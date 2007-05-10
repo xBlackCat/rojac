@@ -119,11 +119,25 @@ public enum DataQuery implements IPropertiable {
      */
     STORE_OBJECT_RATING,
 
+    // Get objects by its properties
+    /**
+     * The query should fetch the rating object properties in following order:
+     * <p/>
+     * message id(int), topic id(int), user id(int), user rating(int), rate(int), rate date(long)
+     */
+    GET_OBJECTS_RATING_BY_MESSAGE_ID,
+
+
     // Object removing queries.
     /**
      * The query for removing the forum object by its id
      */
     REMOVE_OBJECT_FORUM,
+
+    /**
+     * The query for removing the rating objects by message id. 
+     */
+    REMOVE_OBJECTS_RATING,
 
     // Queries for getting all the ids of the objects
     GET_IDS_FORUM,
@@ -135,6 +149,7 @@ public enum DataQuery implements IPropertiable {
     GET_OBJECT_MESSAGE,
     GET_OBJECT_NEW_MESSAGE,
     GET_OBJECT_USER,
+    GET_OBJECT_NEW_RATING,
 
     // Other queries
     /**
