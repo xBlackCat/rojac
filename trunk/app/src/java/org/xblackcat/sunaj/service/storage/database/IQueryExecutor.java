@@ -15,4 +15,6 @@ interface IQueryExecutor {
     <T> T executeSingle(IToObjectConvertor<T> c, DataQuery sql, Object... params) throws StorageException;
 
     <T> Collection<T> execute(IToObjectConvertor<T> c, DataQuery sql, Object... params) throws StorageException;
+
+    int[] getIds(DataQuery sql, Object... params) throws StorageException;
 }

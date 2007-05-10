@@ -1,5 +1,6 @@
 package org.xblackcat.sunaj.service.storage.database;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.sunaj.service.storage.*;
@@ -160,6 +161,20 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
     public <T> Collection<T> execute(IToObjectConvertor<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.execute(c, getQuery(sql), params);
+    }
+
+    public int[] getIds(DataQuery sql, Object... params) throws StorageException {
+        Collection<Integer> objIds = execute(new ToScalarConvertor<Integer>(), sql, params);
+        int[] ids;
+
+        try {
+            // Conver collection of Integer to array of int.
+            ids = ArrayUtils.toPrimitive(objIds.toArray(new Integer[objIds.size()]));
+        } catch (NullPointerException e) {
+            throw new StorageDataException("Got null instead of real value.", e);
+        }
+
+        return ids;
     }
 
     protected String getQuery(DataQuery q) {

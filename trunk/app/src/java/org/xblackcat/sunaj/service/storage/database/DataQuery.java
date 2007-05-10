@@ -140,6 +140,10 @@ public enum DataQuery implements IPropertiable {
      * The query for removing the user object by its id
      */
     REMOVE_OBJECT_USER,
+    /**
+     * The query for removing the new rating object by its id
+     */
+    REMOVE_OBJECT_NEW_RATING,
 
     /**
      * The query for removing the rating objects by message id.
@@ -149,6 +153,7 @@ public enum DataQuery implements IPropertiable {
     // Queries for getting all the ids of the objects
     GET_IDS_FORUM,
     GET_IDS_FORUM_GROUP,
+    GET_IDS_NEW_RATING,
     GET_IDS_USER,
 
     // Queries for getting object by its id
@@ -172,7 +177,9 @@ public enum DataQuery implements IPropertiable {
      * <p/>
      * forum_group_id(int)
      */
-    GET_IDS_FORUM_BY_FORUM_GROUP,;
+    GET_IDS_FORUM_BY_FORUM_GROUP,
+    GET_IDS_NEW_RATING_BY_MESSAGE_ID,
+    ;
 
     private final String properyName = this.name().toLowerCase().replace('_', '.');
 

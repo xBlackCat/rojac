@@ -1,14 +1,9 @@
 package org.xblackcat.sunaj.service.storage.database;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.sunaj.service.data.Forum;
 import org.xblackcat.sunaj.service.storage.IForumDAO;
-import org.xblackcat.sunaj.service.storage.StorageDataException;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.convert.ToForumConvertor;
-import org.xblackcat.sunaj.service.storage.database.convert.ToScalarConvertor;
-
-import java.util.Collection;
 
 /**
  * Date: 8 трав 2007
@@ -43,30 +38,10 @@ final class DBForumDAO implements IForumDAO {
     }
 
     public int[] getForumIdsInGroup(int forumGroupId) throws StorageException {
-        Collection<Integer> objIds = helper.execute(new ToScalarConvertor<Integer>(), DataQuery.GET_IDS_FORUM_BY_FORUM_GROUP, forumGroupId);
-        int[] ids;
-
-        try {
-            // Conver collection of Integer to array of int.
-            ids = ArrayUtils.toPrimitive(objIds.toArray(new Integer[objIds.size()]));
-        } catch (NullPointerException e) {
-            throw new StorageDataException("Got null instead of real value.", e);
-        }
-
-        return ids;
+        return helper.getIds(DataQuery.GET_IDS_FORUM_BY_FORUM_GROUP, forumGroupId);
     }
 
     public int[] getAllForumIds() throws StorageException {
-        Collection<Integer> objIds = helper.execute(new ToScalarConvertor<Integer>(), DataQuery.GET_IDS_FORUM);
-        int[] ids;
-
-        try {
-            // Conver collection of Integer to array of int.
-            ids = ArrayUtils.toPrimitive(objIds.toArray(new Integer[objIds.size()]));
-        } catch (NullPointerException e) {
-            throw new StorageDataException("Got null instead of real value.", e);
-        }
-
-        return ids;
+        return helper.getIds( DataQuery.GET_IDS_FORUM);
     }
 }
