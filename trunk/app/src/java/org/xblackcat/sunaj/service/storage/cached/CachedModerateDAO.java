@@ -10,8 +10,7 @@ import org.xblackcat.sunaj.service.storage.StorageException;
  * @author ASUS
  */
 final class CachedModerateDAO implements IModerateDAO,IPurgable {
-    private final Cache<Moderate> moderateCache = new Cache<Moderate>();
-    private final Cache<int[]> messageModaratesCache = new Cache<int[]>();
+    private final Cache<Moderate[]> messageModaratesCache = new Cache<Moderate[]>();
 
     private final IModerateDAO moderateDAO;
 
@@ -24,30 +23,19 @@ final class CachedModerateDAO implements IModerateDAO,IPurgable {
         messageModaratesCache.remove(mi.getMessageId());
     }
 
-    public boolean removeModerateInfo(int id) throws StorageException {
-        if (moderateDAO.removeModerateInfo(id)) {
-            moderateCache.remove(id);
+    public boolean removeModerateInfosByMessageId(int id) throws StorageException {
+        if (moderateDAO.removeModerateInfosByMessageId(id)) {
+            messageModaratesCache.remove(id);
             return true;
         } else {
             return false;
         }
     }
 
-    public Moderate getModerateInfoById(int id) throws StorageException {
-        Moderate forum = moderateCache.get(id);
-        if (forum == null) {
-            forum = moderateDAO.getModerateInfoById(id);
-            if (forum != null) {
-                moderateCache.put(id, forum);
-            }
-        }
-        return forum;
-    }
-
-    public int[] getModerateIdsByMessageId(int messageId) throws StorageException {
-        int[] moderates = messageModaratesCache.get(messageId);
+    public Moderate[] getModeratesByMessageId(int messageId) throws StorageException {
+        Moderate[] moderates = messageModaratesCache.get(messageId);
         if (moderates != null) {
-            moderates = moderateDAO.getModerateIdsByMessageId(messageId);
+            moderates = moderateDAO.getModeratesByMessageId(messageId);
             if (moderates != null) {
                 messageModaratesCache.put(messageId, moderates);
             }
@@ -55,20 +43,7 @@ final class CachedModerateDAO implements IModerateDAO,IPurgable {
         return moderates;
     }
 
-    public int[] getModerateIdsByUserIds(int userId) throws StorageException {
-        return moderateDAO.getModerateIdsByUserIds(userId);
-    }
-
-    public int[] getModerateIdsByForumIds(int forumId) throws StorageException {
-        return moderateDAO.getModerateIdsByForumIds(forumId);
-    }
-
-    public int[] getAllModerateIds() throws StorageException {
-        return moderateDAO.getAllModerateIds();
-    }
-
     public void purge() {
-        moderateCache.purge();
         messageModaratesCache.purge();
     }
 }

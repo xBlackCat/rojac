@@ -126,6 +126,12 @@ public enum DataQuery implements IPropertiable {
      * message id(int), topic id(int), user id(int), user rating(int), rate(int), rate date(long)
      */
     GET_OBJECTS_RATING_BY_MESSAGE_ID,
+    /**
+     * The query should fetch the moderate object properties in following order:
+     * <p/>
+     * message id(int), user id(int), forum id(int), creation time(long)
+     */
+    GET_OBJECTS_MODERATE_BY_MESSAGE_ID,
 
     // Object removing queries.
     /**
@@ -149,6 +155,10 @@ public enum DataQuery implements IPropertiable {
      * The query for removing the rating objects by message id.
      */
     REMOVE_OBJECTS_RATING,
+    /**
+     * The query for removing the moderate objects by message id.
+     */
+    REMOVE_OBJECTS_MODERATE,
 
     // Queries for getting all the ids of the objects
     GET_IDS_FORUM,
