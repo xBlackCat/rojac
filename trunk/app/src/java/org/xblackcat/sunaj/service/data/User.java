@@ -9,7 +9,7 @@ import ru.rsdn.Janus.JanusUserInfo;
  */
 
 public final class User {
-    private final int userId;
+    private final int id;
     private final String userName;
     private final String userNick;
     private final String realName;
@@ -19,8 +19,8 @@ public final class User {
     private final String whereFrom;
     private final String origin;
 
-    public User(int userId, String userName, String userNick, String realName, String publicEmail, String homePage, String specialization, String whereFrom, String origin) {
-        this.userId = userId;
+    public User(int id, String userName, String userNick, String realName, String publicEmail, String homePage, String specialization, String whereFrom, String origin) {
+        this.id = id;
         this.userName = userName;
         this.userNick = userNick;
         this.realName = realName;
@@ -36,8 +36,8 @@ public final class User {
                 i.getHomePage(), i.getSpecialization(), i.getWhereFrom(), i.getOrigin());
     }
 
-    public int getUserId() {
-        return userId;
+    public int getId() {
+        return id;
     }
 
     public String getUserName() {
@@ -78,19 +78,19 @@ public final class User {
 
         User user = (User) o;
 
-        if (userId != user.userId) return false;
+        if (id != user.id) return false;
 
         return true;
     }
 
     public int hashCode() {
-        return userId;
+        return id;
     }
 
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("User[id=");
-        str.append(userId);
+        str.append(id);
         str.append(", nick=");
         str.append(userNick);
         str.append(", name=");

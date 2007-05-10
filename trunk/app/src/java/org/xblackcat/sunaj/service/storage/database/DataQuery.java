@@ -133,6 +133,10 @@ public enum DataQuery implements IPropertiable {
      * The query for removing the forum object by its id
      */
     REMOVE_OBJECT_FORUM,
+    /**
+     * The query for removing the user object by its id
+     */
+    REMOVE_OBJECT_USER,
 
     /**
      * The query for removing the rating objects by message id. 
@@ -141,6 +145,7 @@ public enum DataQuery implements IPropertiable {
 
     // Queries for getting all the ids of the objects
     GET_IDS_FORUM,
+    GET_IDS_USER,
 
     // Queries for getting object by its id
     GET_OBJECT_VERSION,

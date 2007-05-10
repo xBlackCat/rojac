@@ -39,6 +39,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
     private final IQueryHelper helper;
     private final DBForumDAO forumDAO;
     private final DBRatingDAO ratingDAO;
+    private final DBUserDAO userDAO;
 
     public DBStorage(String propRoot) throws StorageException {
         try {
@@ -60,6 +61,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
         // Initialize the object DAOs
         forumDAO = new DBForumDAO(this);
         ratingDAO = new DBRatingDAO(this);
+        userDAO = new DBUserDAO(this);
     }
 
     /* Initialization routines */
@@ -137,7 +139,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     public IUserDAO getUserDAO() {
-        return null;
+        return userDAO;
     }
 
     public int update(DataQuery sql, Object... params) throws StorageException {
