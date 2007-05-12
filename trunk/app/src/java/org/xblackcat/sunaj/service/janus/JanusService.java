@@ -1,5 +1,6 @@
 package org.xblackcat.sunaj.service.janus;
 
+import org.apache.axis.Chain;
 import org.apache.axis.Handler;
 import org.apache.axis.SimpleChain;
 import org.apache.axis.SimpleTargetedChain;
@@ -217,8 +218,8 @@ public class JanusService implements IJanusService {
 
         JanusATLocator jl = new JanusATLocator();
         SimpleProvider clientConfig = new SimpleProvider();
-        SimpleChain reqHandler = new SimpleChain();
-        SimpleChain respHandler = new SimpleChain();
+        Chain reqHandler = new SimpleChain();
+        Chain respHandler = new SimpleChain();
 
         Handler pivot = new CommonsHTTPSender();
         Handler transport = new SimpleTargetedChain(reqHandler, pivot, respHandler);
