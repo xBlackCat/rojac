@@ -1,8 +1,6 @@
 package org.xblackcat.sunaj.service.storage.cached;
 
 import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -12,33 +10,31 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author ASUS
  */
 
-final class Cache<T> implements IPurgable {
-    private final Map<Object, SoftReference<T>> cache = new HashMap<Object, SoftReference<T>>();
+final class ObjectCache<T> implements IPurgable {
+    private SoftReference<T> cache;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
 
     private final Lock rl = lock.readLock();
     private final Lock wl = lock.writeLock();
 
-    Cache() {
+    ObjectCache() {
     }
 
     public void purge() {
         wl.lock();
         try {
-            cache.clear();
+            cache = null;
         } finally {
             wl.unlock();
         }
     }
 
-    public T get(Object id) {
+    public T get() {
         rl.lock();
         T o = null;
         try {
-            SoftReference<T> ref = cache.get(id);
-            if (ref != null) {
-                o = ref.get();
-                // TODO: remove record if weak reference is invalidated 
+            if (cache != null) {
+                o = cache.get();
             }
         } finally {
             rl.unlock();
@@ -46,19 +42,10 @@ final class Cache<T> implements IPurgable {
         return o;
     }
 
-    public void put(Object id, T o) {
+    public void put(T o) {
         wl.lock();
         try {
-            cache.put(id, new SoftReference<T>(o));
-        } finally {
-            wl.unlock();
-        }
-    }
-
-    public void remove(Object id) {
-        wl.lock();
-        try {
-            cache.remove(id);
+            cache = new SoftReference<T>(o);
         } finally {
             wl.unlock();
         }

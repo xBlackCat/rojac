@@ -41,6 +41,10 @@ final class DBForumDAO implements IForumDAO {
         return helper.getIds(DataQuery.GET_IDS_FORUM_BY_FORUM_GROUP, forumGroupId);
     }
 
+    public int[] getSubscribedForumIds() throws StorageException {
+        return helper.getIds(DataQuery.GET_IDS_FORUM_SUBSCRIBED);
+    }
+
     public int[] getAllForumIds() throws StorageException {
         return helper.getIds( DataQuery.GET_IDS_FORUM);
     }

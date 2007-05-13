@@ -21,7 +21,9 @@ class DBVersionDAO implements IVersionDAO {
 
     public void updateVersionInfo(VersionInfo v) throws StorageException {
         if (getVersionInfo(v.getType()) != null) {
-            helper.update(DataQuery.UPDATE_OBJECT_VERSION, v.getVersion().getBytes(), v.getType());
+            helper.update(DataQuery.UPDATE_OBJECT_VERSION,
+                    v.getVersion().getBytes(),
+                    v.getType().ordinal());
         } else {
             helper.update(DataQuery.STORE_OBJECT_VERSION,
                     v.getType().ordinal(),

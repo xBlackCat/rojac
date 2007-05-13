@@ -18,4 +18,6 @@ public interface IForumDAO {
     int[] getForumIdsInGroup(int forumGroupId) throws StorageException;
 
     int[] getAllForumIds() throws StorageException;
+
+    int[] getSubscribedForumIds() throws StorageException;
 }

@@ -65,6 +65,10 @@ final class CachedMessageDAO implements IMessageDAO, IPurgable {
         return messageDAO.getTopicMessageIdsByForumId(forumId);
     }
 
+    public boolean isMessagesExistInForum(int forumId) throws StorageException {
+        return messageDAO.isMessagesExistInForum(forumId);
+    }
+
     public int[] getAllMessageIds() throws StorageException {
         return messageDAO.getAllMessageIds();
     }

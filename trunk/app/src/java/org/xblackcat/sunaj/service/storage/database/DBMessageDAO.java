@@ -4,6 +4,7 @@ import org.xblackcat.sunaj.service.data.Message;
 import org.xblackcat.sunaj.service.storage.IMessageDAO;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.convert.ToMessageConvertor;
+import org.xblackcat.sunaj.service.storage.database.convert.ToScalarConvertor;
 
 /**
  * Date: 10 трав 2007
@@ -59,6 +60,10 @@ class DBMessageDAO implements IMessageDAO {
 
     public int[] getTopicMessageIdsByForumId(int forumId) throws StorageException {
         return helper.getIds(DataQuery.GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID, forumId);
+    }
+
+    public boolean isMessagesExistInForum(int forumId) throws StorageException {
+        return helper.executeSingle(new ToScalarConvertor<Integer>(), DataQuery.IS_MESSAGES_EXIST_IN_FORUM, forumId) != null;
     }
 
     public int[] getAllMessageIds() throws StorageException {

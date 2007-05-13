@@ -200,9 +200,11 @@ public enum DataQuery implements IPropertiable {
      * forum_group_id(int)
      */
     GET_IDS_FORUM_BY_FORUM_GROUP,
+    GET_IDS_FORUM_SUBSCRIBED,
     GET_IDS_NEW_RATING_BY_MESSAGE_ID,
     GET_IDS_MESSAGE_BY_PARENT_ID,
     GET_IDS_MESSAGE_BY_TOPIC_ID,
+    IS_MESSAGES_EXIST_IN_FORUM,
     GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,
     ;
 

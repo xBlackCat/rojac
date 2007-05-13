@@ -11,6 +11,7 @@ import org.xblackcat.sunaj.service.storage.StorageException;
  */
 final class CachedForumDAO implements IForumDAO, IPurgable {
     private final Cache<Forum> forumCache = new Cache<Forum>();
+    private final ObjectCache<int[]> subscribedForums = new ObjectCache<int[]>();
 
     private final IForumDAO forumDAO;
 
@@ -50,7 +51,19 @@ final class CachedForumDAO implements IForumDAO, IPurgable {
         return forumDAO.getAllForumIds();
     }
 
+    public int[] getSubscribedForumIds() throws StorageException {
+        int[] ids = subscribedForums.get();
+        if (ids == null) {
+            ids = forumDAO.getSubscribedForumIds();
+            if (ids != null) {
+                subscribedForums.put(ids);
+            }
+        }
+        return ids;
+    }
+
     public void purge() {
         forumCache.purge();
+        subscribedForums.purge();
     }
 }

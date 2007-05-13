@@ -22,4 +22,6 @@ public interface IMessageDAO {
     int[] getAllMessageIds() throws StorageException;
 
     int[] getTopicMessageIdsByForumId(int forumId) throws StorageException;
+
+    boolean isMessagesExistInForum(int forumId) throws StorageException;
 }
