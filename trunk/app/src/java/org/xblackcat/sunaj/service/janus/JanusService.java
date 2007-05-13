@@ -126,7 +126,7 @@ public class JanusService implements IJanusService {
     }
 
     public PostInfo commitChanges() throws JanusServiceException {
-        log.info("Retrieve the users list from the Janus WS.");
+        log.info("Commit the local changes to the Janus WS.");
 
         PostResponse post;
         try {
@@ -143,7 +143,7 @@ public class JanusService implements IJanusService {
     }
 
     public void postChanges(NewMessage[] messages, NewRating[] ratings) throws JanusServiceException {
-        log.info("Retrieve the users list from the Janus WS.");
+        log.info("Post the changes to the Janus WS.");
 
         PostMessageInfo[] newMessages = new PostMessageInfo[messages.length];
         for (int i = 0; i < messages.length; i++) {
@@ -169,7 +169,7 @@ public class JanusService implements IJanusService {
     }
 
     public NewData getNewData(int[] subscribedForums, boolean[] firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException {
-        log.info("Retrieve the users list from the Janus WS.");
+        log.info("Retrieve the messages from the Janus WS.");
 
         boolean hasIndividualConfig = firstForumRequest != null && subscribedForums.length == firstForumRequest.length;
 
