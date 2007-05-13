@@ -54,7 +54,7 @@ public class SimpleSynchronizer implements ISynchronizer {
                 if (log.isInfoEnabled()) {
                     log.info("Loading new users information.");
                 }
-                Integer limit = os.getProperty(Property.SYNCHRONIZER_LOAD_USERS_LIMIT);
+                Integer limit = os.getProperty(Property.SYNCHRONIZER_LOAD_USERS_PORTION);
                 try {
                     VersionInfo versionInfo = vDAO.getVersionInfo(VersionType.USERS_ROW_VERSION);
                     Version localUsersVersion = versionInfo == null ? new Version() : versionInfo.getVersion();
@@ -89,6 +89,7 @@ public class SimpleSynchronizer implements ISynchronizer {
             }
 
             // TODO: load new messages
+            
 
             if (os.getProperty(Property.SYNCHRONIZER_LOAD_BROKEN_TOPICS_AT_ONCE)) {
                 // TODO: Search and load broken topics.

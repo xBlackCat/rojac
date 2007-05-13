@@ -29,7 +29,8 @@ public final class Property<T> {
 
     public static final Property<Boolean> SYNCHRONIZER_LOAD_BROKEN_TOPICS_AT_ONCE = new Property<Boolean>("sunaj.synchronizer.load_boken_topics_at_once", Boolean.class);
     public static final Property<Boolean> SYNCHRONIZER_LOAD_USERS = new Property<Boolean>("sunaj.synchronizer.load.users", Boolean.class);
-    public static final Property<Integer> SYNCHRONIZER_LOAD_USERS_LIMIT = new Property<Integer>("sunaj.synchronizer.load.users.limit", Integer.class);
+    public static final Property<Integer> SYNCHRONIZER_LOAD_USERS_PORTION = new Property<Integer>("sunaj.synchronizer.load.users.portion", Integer.class);
+    public static final Property<Integer> SYNCHRONIZER_LOAD_MESSAGES_PORTION = new Property<Integer>("sunaj.synchronizer.load.messages.portion", Integer.class);
 
     public static Property<?> getPropertyForName(String name) {
         return ALL_PROPERTIES.get(name);
