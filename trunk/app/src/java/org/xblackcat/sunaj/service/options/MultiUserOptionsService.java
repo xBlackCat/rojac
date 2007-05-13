@@ -16,19 +16,14 @@ import java.util.Properties;
  * @author Alexey
  */
 
-public final class MultiUserOptionsService extends AbstractOptionsService {
+ final class MultiUserOptionsService extends AbstractOptionsService {
     private static final Log log = LogFactory.getLog(MultiUserOptionsService.class);
 
-    private static MultiUserOptionsService instance = new MultiUserOptionsService();
     private static final String DEFAULT_CONFIG_BUNDLE_NAME = "/default_config.properties";
-
-    public static IOptionsService getInstance() {
-        return instance;
-    }
 
     private String userConfigFileName;
 
-    private MultiUserOptionsService() {
+    MultiUserOptionsService() {
         String userHome = System.getProperty("user.home");
         
         if (log.isDebugEnabled()) {
@@ -106,6 +101,10 @@ public final class MultiUserOptionsService extends AbstractOptionsService {
     }
 
     protected String setProperty(String key, String value) {
-        return System.setProperty(key, value);
+        if (value == null) {
+            return System.clearProperty(key);
+        } else {
+            return System.setProperty(key, value);
+        }
     }
 }

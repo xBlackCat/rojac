@@ -6,7 +6,7 @@ package org.xblackcat.sunaj.service.options;
  * @author Alexey
  */
 
-public abstract class AbstractOptionsService implements IOptionsService {
+abstract class AbstractOptionsService implements IOptionsService {
     public <T> T getProperty(Property<T> key) {
         String name = key.getName();
         Class<T> type = key.getType();
@@ -14,33 +14,33 @@ public abstract class AbstractOptionsService implements IOptionsService {
         String val = getProperty(name);
 
         // Holding string parameters
-        if (type == String.class) {
+        if (type.equals(String.class)) {
             return (T) val;
         }
 
         // Holding primitive parameters
-        if (type == Boolean.class) {
+        if (type.equals(Boolean.class)) {
             return (T) convertToBoolean(val);
         }
-        if (type == Integer.class) {
+        if (type.equals(Integer.class)) {
             return (T) convertToInt(val);
         }
-        if (type == Long.class) {
+        if (type.equals(Long.class)) {
             return (T) convertToLong(val);
         }
-        if (type == Short.class) {
+        if (type.equals(Short.class)) {
             return (T) convertToShort(val);
         }
-        if (type == Byte.class) {
+        if (type.equals(Byte.class)) {
             return (T) convertToByte(val);
         }
-        if (type == Character.class) {
+        if (type.equals(Character.class)) {
             return (T) convertToChar(val);
         }
-        if (type == Float.class) {
+        if (type.equals(Float.class)) {
             return (T) convertToFloat(val);
         }
-        if (type == Double.class) {
+        if (type.equals(Double.class)) {
             return (T) convertToDouble(val);
         }
 
@@ -49,7 +49,7 @@ public abstract class AbstractOptionsService implements IOptionsService {
             return (T) convertToEnum((Class<Enum>) type, val);
         }
 
-        throw new UnknownPropertyTyepException("Can not identify the property " + key);
+        throw new UnknownPropertyTypeException("Can not identify the property " + key);
     }
 
     public <T> T setProperty(Property<T> key, T newValue) {
@@ -57,40 +57,40 @@ public abstract class AbstractOptionsService implements IOptionsService {
         Class<T> type = key.getType();
 
         // Holding string parameters
-        if (type == String.class) {
+        if (type.equals(String.class)) {
             return (T) setProperty(name, (String) newValue);
         }
 
         // Holding primitive parameters
-        if (type == Boolean.class) {
+        if (type.equals(Boolean.class)) {
             String val = setProperty(name, String.valueOf(newValue));
             return (T) convertToBoolean(val);
         }
-        if (type == Integer.class) {
+        if (type.equals(Integer.class)) {
             String val = setProperty(name, String.valueOf(newValue));
             return (T) convertToInt(val);
         }
-        if (type == Long.class) {
+        if (type.equals(Long.class)) {
             String val = setProperty(name, String.valueOf(newValue));
             return (T) convertToLong(val);
         }
-        if (type == Short.class) {
+        if (type.equals(Short.class)) {
             String val = setProperty(name, String.valueOf(newValue));
             return (T) convertToShort(val);
         }
-        if (type == Byte.class) {
+        if (type.equals(Byte.class)) {
             String val = setProperty(name, String.valueOf(newValue));
             return (T) convertToByte(val);
         }
-        if (type == Character.class) {
+        if (type.equals(Character.class)) {
             String val = setProperty(name, String.valueOf(newValue));
             return (T) convertToChar(val);
         }
-        if (type == Float.class) {
+        if (type.equals(Float.class)) {
             String val = setProperty(name, String.valueOf(newValue));
             return (T) convertToFloat(val);
         }
-        if (type == Double.class) {
+        if (type.equals(Double.class)) {
             String val = setProperty(name, String.valueOf(newValue));
             return (T) convertToDouble(val);
         }
@@ -101,7 +101,7 @@ public abstract class AbstractOptionsService implements IOptionsService {
             return (T) convertToEnum((Class<Enum>) type, val);
         }
 
-        throw new UnknownPropertyTyepException("Can not identify the property " + key);
+        throw new UnknownPropertyTypeException("Can not identify the property " + key);
     }
 
     protected abstract String getProperty(String key);
@@ -111,7 +111,7 @@ public abstract class AbstractOptionsService implements IOptionsService {
     /*
       * Util methods for converting values.
       */
-    private static Enum convertToEnum(Class<Enum> enumClass, String val) {
+    private static <T extends Enum<T>> T convertToEnum(Class<T> enumClass, String val) {
         if (val != null) {
             return Enum.valueOf(enumClass, val);
         } else {

@@ -21,7 +21,7 @@ import org.xblackcat.sunaj.service.janus.data.PostInfo;
 import org.xblackcat.sunaj.service.janus.data.TopicMessages;
 import org.xblackcat.sunaj.service.janus.data.UsersList;
 import org.xblackcat.sunaj.service.options.IOptionsService;
-import org.xblackcat.sunaj.service.options.MultiUserOptionsService;
+import org.xblackcat.sunaj.service.options.OptionsServiceFactory;
 import org.xblackcat.sunaj.service.options.Property;
 import ru.rsdn.Janus.*;
 
@@ -90,13 +90,16 @@ public class JanusService implements IJanusService {
     }
 
     public UsersList getNewUsers(Version verRow, int maxOutput) throws JanusServiceException {
-        log.info("Retrieve the users list from the Janus WS.");
+        log.info("Retrieve the users list from the Janus WS. Limit = " + maxOutput);
 
         UserResponse list;
         try {
             list = soap.getNewUsers(new UserRequest(userName, password, verRow.getBytes(), maxOutput));
         } catch (RemoteException e) {
             throw new JanusServiceException("Can not obtain the new users list.", e);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Got " + list.getUsers().length + " new user(s)");
         }
         return new UsersList(list);
     }
@@ -212,7 +215,7 @@ public class JanusService implements IJanusService {
     }
 
     private void init() throws ServiceException {
-        IOptionsService os = MultiUserOptionsService.getInstance();
+        IOptionsService os = OptionsServiceFactory.getOptionsService();
 
         log.info("Janus SAOP service initialization has been started.");
 
