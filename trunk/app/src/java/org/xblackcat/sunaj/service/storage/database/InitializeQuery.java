@@ -16,7 +16,8 @@ public enum InitializeQuery implements IPropertiable {
     CREATE_TABLE_MODERATE,
     CREATE_TABLE_NEW_MESSAGE,
     CREATE_TABLE_USER,
-    CREATE_TABLE_RATING;
+    CREATE_TABLE_RATING,
+    CREATE_TABLE_EXTRA_MESSAGE;
 
     private final String properyName = this.name().toLowerCase().replace('_', '.');
 

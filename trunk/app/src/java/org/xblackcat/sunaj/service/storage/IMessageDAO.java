@@ -9,7 +9,7 @@ import org.xblackcat.sunaj.service.data.Message;
  */
 
 public interface IMessageDAO {
-    void storeForumMessage(Message fm) throws StorageException;
+    void storeMessage(Message fm) throws StorageException;
 
     boolean removeForumMessage(int id) throws StorageException;
 
@@ -23,5 +23,5 @@ public interface IMessageDAO {
 
     int[] getTopicMessageIdsByForumId(int forumId) throws StorageException;
 
-    boolean isMessagesExistInForum(int forumId) throws StorageException;
+    void updateMessage(Message mes) throws StorageException;
 }

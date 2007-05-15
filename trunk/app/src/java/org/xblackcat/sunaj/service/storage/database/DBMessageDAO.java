@@ -4,7 +4,6 @@ import org.xblackcat.sunaj.service.data.Message;
 import org.xblackcat.sunaj.service.storage.IMessageDAO;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.convert.ToMessageConvertor;
-import org.xblackcat.sunaj.service.storage.database.convert.ToScalarConvertor;
 
 /**
  * Date: 10 трав 2007
@@ -12,14 +11,14 @@ import org.xblackcat.sunaj.service.storage.database.convert.ToScalarConvertor;
  * @author ASUS
  */
 
-class DBMessageDAO implements IMessageDAO {
+final class DBMessageDAO implements IMessageDAO {
     private final IQueryExecutor helper;
 
-    public DBMessageDAO(IQueryExecutor helper) {
+    DBMessageDAO(IQueryExecutor helper) {
         this.helper = helper;
     }
 
-    public void storeForumMessage(Message fm) throws StorageException {
+    public void storeMessage(Message fm) throws StorageException {
         helper.update(DataQuery.STORE_OBJECT_MESSAGE,
                 fm.getMessageId(),
                 fm.getTopicId(),
@@ -62,8 +61,27 @@ class DBMessageDAO implements IMessageDAO {
         return helper.getIds(DataQuery.GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID, forumId);
     }
 
-    public boolean isMessagesExistInForum(int forumId) throws StorageException {
-        return helper.executeSingle(new ToScalarConvertor<Integer>(), DataQuery.IS_MESSAGES_EXIST_IN_FORUM, forumId) != null;
+    public void updateMessage(Message m) throws StorageException {
+        helper.update(DataQuery.UPDATE_OBJECT_MESSAGE,
+                m.getTopicId(),
+                m.getParentId(),
+                m.getUserId(),
+                m.getForumId(),
+                m.getArticleId(),
+                m.getUserTitleColor(),
+                m.getUserRole().ordinal(),
+                m.isNotifyOnResponse(),
+                m.isRead(),
+                m.getFavoriteIndex(),
+                m.getMessageDate(),
+                m.getUpdateDate(),
+                m.getLastModerated(),
+                m.getSubject(),
+                m.getMessageName(),
+                m.getUserNick(),
+                m.getUserTitle(),
+                m.getMessage(),
+                m.getMessageId());
     }
 
     public int[] getAllMessageIds() throws StorageException {

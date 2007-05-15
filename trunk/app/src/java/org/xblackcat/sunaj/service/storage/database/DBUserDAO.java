@@ -11,7 +11,7 @@ import org.xblackcat.sunaj.service.storage.database.convert.ToUserConvertor;
  * @author ASUS
  */
 
-class DBUserDAO implements IUserDAO {
+final class DBUserDAO implements IUserDAO {
     private final IQueryExecutor helper;
 
     DBUserDAO(IQueryExecutor helper) {

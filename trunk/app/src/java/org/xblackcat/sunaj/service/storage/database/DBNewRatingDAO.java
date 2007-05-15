@@ -11,7 +11,7 @@ import org.xblackcat.sunaj.service.storage.database.convert.ToNewRatingConvertor
  * @author ASUS
  */
 
-class DBNewRatingDAO implements INewRatingDAO {
+final class DBNewRatingDAO implements INewRatingDAO {
     private final IQueryExecutor helper;
 
     DBNewRatingDAO(IQueryExecutor helper) {
@@ -39,5 +39,9 @@ class DBNewRatingDAO implements INewRatingDAO {
 
     public int[] getAllNewRatingIds() throws StorageException {
         return helper.getIds(DataQuery.GET_IDS_NEW_RATING);
+    }
+
+    public void clearRatings() throws StorageException {
+        helper.update(DataQuery.REMOVE_ALL_OBJECTS_NEW_RATING);
     }
 }

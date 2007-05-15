@@ -11,7 +11,7 @@ import org.xblackcat.sunaj.service.storage.database.convert.ToForumGroupConverto
  * @author ASUS
  */
 
-class DBForumGroupDAO implements IForumGroupDAO {
+final class DBForumGroupDAO implements IForumGroupDAO {
     private final IQueryExecutor helper;
 
     DBForumGroupDAO(IQueryExecutor helper) {

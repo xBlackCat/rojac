@@ -16,4 +16,6 @@ public interface INewRatingDAO {
     NewRating getNewRating(int id) throws StorageException;
 
     int[] getAllNewRatingIds() throws StorageException;
+
+    void clearRatings() throws StorageException;
 }

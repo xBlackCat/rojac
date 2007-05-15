@@ -13,7 +13,7 @@ import java.util.Collection;
  * @author ASUS
  */
 
-class DBModerateDAO implements IModerateDAO {
+final class DBModerateDAO implements IModerateDAO {
     private final IQueryExecutor helper;
 
     DBModerateDAO(IQueryExecutor helper) {

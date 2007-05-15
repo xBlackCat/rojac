@@ -11,7 +11,7 @@ import org.xblackcat.sunaj.service.storage.database.convert.ToNewMessageConverto
  * @author ASUS
  */
 
-class DBNewMessageDAO implements INewMessageDAO {
+final class DBNewMessageDAO implements INewMessageDAO {
     private final IQueryExecutor helper;
 
     DBNewMessageDAO(IQueryExecutor helper) {

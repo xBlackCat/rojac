@@ -19,8 +19,6 @@ public class CachedStorage implements IStorage {
     private final CachedForumGroupDAO forumGroupDAO;
     private final CachedMessageDAO messageDAO;
     private final CachedModerateDAO moderateDAO;
-    private final CachedNewMessageDAO newMessageDAO;
-    private final CachedNewRatingDAO newRatingDAO;
     private final CachedRatingDAO ratingDAO;
     private final CachedUserDAO userDAO;
 
@@ -30,8 +28,6 @@ public class CachedStorage implements IStorage {
         forumGroupDAO = new CachedForumGroupDAO(storage.getForumGroupDAO());
         messageDAO = new CachedMessageDAO(storage.getMessageDAO());
         moderateDAO = new CachedModerateDAO(storage.getModerateDAO());
-        newMessageDAO = new CachedNewMessageDAO(storage.getNewMessageDAO());
-        newRatingDAO = new CachedNewRatingDAO(storage.getNewRatingDAO());
         ratingDAO = new CachedRatingDAO(storage.getRatingDAO());
         userDAO = new CachedUserDAO(storage.getUserDAO());
     }
@@ -46,8 +42,6 @@ public class CachedStorage implements IStorage {
         forumGroupDAO.purge();
         messageDAO.purge();
         moderateDAO.purge();
-        newMessageDAO.purge();
-        newRatingDAO.purge();
         ratingDAO.purge();
         userDAO.purge();
     }
@@ -69,11 +63,11 @@ public class CachedStorage implements IStorage {
     }
 
     public INewMessageDAO getNewMessageDAO() {
-        return newMessageDAO;
+        return storage.getNewMessageDAO();
     }
 
     public INewRatingDAO getNewRatingDAO() {
-        return newRatingDAO;
+        return storage.getNewRatingDAO();
     }
 
     public IRatingDAO getRatingDAO() {
@@ -86,6 +80,10 @@ public class CachedStorage implements IStorage {
 
     public IVersionDAO getVersionDAO() {
         return storage.getVersionDAO();
+    }
+
+    public IMiscDAO getMiscDAO() {
+        return storage.getMiscDAO();
     }
 
 }

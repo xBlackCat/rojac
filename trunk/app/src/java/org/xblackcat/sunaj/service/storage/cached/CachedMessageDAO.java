@@ -19,8 +19,8 @@ final class CachedMessageDAO implements IMessageDAO, IPurgable {
         this.messageDAO = messageDAO;
     }
 
-    public void storeForumMessage(Message fm) throws StorageException {
-        messageDAO.storeForumMessage(fm);
+    public void storeMessage(Message fm) throws StorageException {
+        messageDAO.storeMessage(fm);
         if (fm.getParentId() != 0) {
             childrenMessagesCache.remove(fm.getParentId());
         }
@@ -65,8 +65,9 @@ final class CachedMessageDAO implements IMessageDAO, IPurgable {
         return messageDAO.getTopicMessageIdsByForumId(forumId);
     }
 
-    public boolean isMessagesExistInForum(int forumId) throws StorageException {
-        return messageDAO.isMessagesExistInForum(forumId);
+    public void updateMessage(Message mes) throws StorageException {
+        messageCache.remove(mes.getMessageId());
+        messageDAO.updateMessage(mes);
     }
 
     public int[] getAllMessageIds() throws StorageException {

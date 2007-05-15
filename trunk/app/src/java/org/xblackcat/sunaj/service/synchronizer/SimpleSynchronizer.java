@@ -1,5 +1,6 @@
 package org.xblackcat.sunaj.service.synchronizer;
 
+import gnu.trove.TIntHashSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,14 +9,17 @@ import org.xblackcat.sunaj.service.janus.IJanusService;
 import org.xblackcat.sunaj.service.janus.JanusService;
 import org.xblackcat.sunaj.service.janus.JanusServiceException;
 import org.xblackcat.sunaj.service.janus.data.NewData;
+import org.xblackcat.sunaj.service.janus.data.PostException;
+import org.xblackcat.sunaj.service.janus.data.PostInfo;
+import org.xblackcat.sunaj.service.janus.data.TopicMessages;
 import org.xblackcat.sunaj.service.janus.data.UsersList;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.OptionsServiceFactory;
 import org.xblackcat.sunaj.service.options.Property;
 import org.xblackcat.sunaj.service.storage.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Date: 12 трав 2007
@@ -45,20 +49,78 @@ public class SimpleSynchronizer implements ISynchronizer {
         IOptionsService os = OptionsServiceFactory.getOptionsService();
 
         try {
+            postChanges();
+
             if (os.getProperty(Property.SYNCHRONIZER_LOAD_USERS)) {
                 loadUsers();
             }
 
             loadNewMessages();
-
-
-            if (os.getProperty(Property.SYNCHRONIZER_LOAD_BROKEN_TOPICS_AT_ONCE)) {
-                // TODO: Search and load broken topics.
-            }
         } catch (SynchronizationException e) {
             // Log the exception to console.
             log.error("Synchronization failed.", e);
             throw e;
+        }
+    }
+
+    private void postChanges() throws SynchronizationException {
+        INewRatingDAO nrDAO = storage.getNewRatingDAO();
+        INewMessageDAO nmDAO = storage.getNewMessageDAO();
+
+        Collection<NewRating> nr = new ArrayList<NewRating>();
+        try {
+            int[] newRatingIds = nrDAO.getAllNewRatingIds();
+
+            for (int id : newRatingIds) {
+                nr.add(nrDAO.getNewRating(id));
+            }
+        } catch (StorageException e) {
+            throw new SynchronizationException("Can not post your ratings.", e);
+        }
+
+        Collection<NewMessage> nm = new ArrayList<NewMessage>();
+        try {
+            int[] messageIds = nmDAO.getAllNewMessageIds();
+
+            for (int id : messageIds) {
+                nm.add(nmDAO.getNewMessageById(id));
+            }
+        } catch (StorageException e) {
+            throw new SynchronizationException("Can not post your messages.", e);
+        }
+
+        if (nr.isEmpty() && nm.isEmpty()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Nothing to post.");
+            }
+            return;
+        }
+
+        PostInfo postInfo;
+        try {
+            js.postChanges(nm.toArray(new NewMessage[nm.size()]), nr.toArray(new NewRating[nr.size()]));
+            postInfo = js.commitChanges();
+        } catch (JanusServiceException e) {
+            throw new SynchronizationException("Can not post your changes to the RSDN.", e);
+        }
+
+        try {
+            // Assume that all the ratings are commited.
+            nrDAO.clearRatings();
+
+            // Remove the commited messages from the storage.
+            for (int lmID : postInfo.getCommited()) {
+                nmDAO.removeNewMessage(lmID);
+            }
+
+            // Show all the PostExceptions if any
+            for (PostException pe : postInfo.getExceptions()) {
+                if (log.isWarnEnabled()) {
+                    log.warn(pe);
+                }
+            }
+        } catch (StorageException e) {
+            throw new SynchronizationException("Unable to process the commit response.", e);
         }
     }
 
@@ -81,28 +143,29 @@ public class SimpleSynchronizer implements ISynchronizer {
             Version moderatesVersion = getVersion(VersionType.MODERATE_ROW_VERSION);
             Version ratingsVersion = getVersion(VersionType.RATING_ROW_VERSION);
 
-            int[] brokenTopicIds = getBrokenTopicIds();
-            int[] brokenMessageIds = new int[0];
-
-
             IRatingDAO rDAO = storage.getRatingDAO();
             IMessageDAO mDAO = storage.getMessageDAO();
             IModerateDAO modDAO = storage.getModerateDAO();
 
-            Set<Integer> topics = new HashSet<Integer>();
+            TIntHashSet topics = new TIntHashSet();
 
             NewData data;
             do {
-                boolean[] forumRequest = getForumsStatus(forumIds);
+                boolean s = messagesVersion.getBytes().length == 0;
 
-                data = js.getNewData(forumIds, forumRequest,
+                boolean[] status = new boolean[forumIds.length];
+                for (int i = 0; i < forumIds.length; i++) {
+                    status[i] = s;
+                }
+
+                data = js.getNewData(forumIds, status,
                         ratingsVersion, messagesVersion, moderatesVersion,
                         ArrayUtils.EMPTY_INT_ARRAY, ArrayUtils.EMPTY_INT_ARRAY,
                         limit);
 
 
                 for (Message mes : data.getMessages()) {
-                    mDAO.storeForumMessage(mes);
+                    mDAO.storeMessage(mes);
                     int topicId = mes.getTopicId();
                     if (topicId != 0) {
                         topics.add(topicId);
@@ -125,23 +188,46 @@ public class SimpleSynchronizer implements ISynchronizer {
 
             } while (data.getMessages().length > 0);
 
-            // TODO: load the broken topics and extra messages.
+            // remove existing ids from downloaded topic ids.
+            int[] messageIds = topics.toArray();
+            for (int mId : messageIds) {
+                if (mDAO.getMessageById(mId) != null) {
+                    topics.remove(mId);
+                }
+            }
 
+            if (log.isInfoEnabled()) {
+                log.info("Found broken topics: " + ArrayUtils.toString(topics.toArray()));
+            }
+
+            IMiscDAO eDAO = storage.getMiscDAO();
+
+            topics.addAll(eDAO.getExtraMessages());
+
+            TopicMessages fullTopics = js.getTopicByMessage(topics.toArray());
+            for (Message mes : fullTopics.getMessages()) {
+                int mId = mes.getMessageId();
+                if (mDAO.getMessageById(mId) == null) {
+                    mDAO.storeMessage(mes);
+                } else {
+                    mDAO.updateMessage(mes);
+                }
+                modDAO.removeModerateInfosByMessageId(mId);
+                rDAO.removeRatingsByMessageId(mId);
+            }
+            for (Moderate mod : fullTopics.getModerates()) {
+                modDAO.storeModerateInfo(mod);
+            }
+            for (Rating r : fullTopics.getRatings()) {
+                rDAO.storeRating(r);
+            }
+
+            eDAO.clearExtraMessages();
         } catch (StorageException e) {
             throw new SynchronizationException("Can not obtain local versions.", e);
         } catch (JanusServiceException e) {
             throw new SynchronizationException("Can not download the new messages", e);
         }
-    }
-
-    private boolean[] getForumsStatus(int[] forumIds) throws StorageException {
-        IMessageDAO mDAO = storage.getMessageDAO();
-
-        boolean[] status = new boolean[forumIds.length];
-        for (int i = 0; i < forumIds.length; i++) {
-            status[i] = !mDAO.isMessagesExistInForum(forumIds[i]);
-        }
-        return status;
     }
 
     private void loadUsers() throws SynchronizationException {
@@ -191,14 +277,4 @@ public class SimpleSynchronizer implements ISynchronizer {
         return versionInfo == null ? new Version() : versionInfo.getVersion();
     }
 
-    /**
-     * Looks for broken topics: the messages which has no parent in local database.
-     *
-     * @return array of the broken topic ids.
-     */
-    private int[] getBrokenTopicIds() {
-        IMessageDAO mDAO = storage.getMessageDAO();
-
-        return new int[0];
-    }
 }

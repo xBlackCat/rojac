@@ -29,4 +29,6 @@ public interface IStorage {
     IUserDAO getUserDAO();
 
     IVersionDAO getVersionDAO();
+
+    IMiscDAO getMiscDAO();
 }

@@ -93,7 +93,7 @@ public enum DataQuery implements IPropertiable {
      * <p/>
      * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color (int),
      * user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update date (long),
-     *  moderated date (long), subject (String), message name (String), user nick (String), user title (String), message (String)
+     * moderated date (long), subject (String), message name (String), user nick (String), user title (String), message (String)
      */
     STORE_OBJECT_MESSAGE,
     /**
@@ -120,6 +120,12 @@ public enum DataQuery implements IPropertiable {
      * message id(int), topic id(int), user id(int), user rating(int), rate(int), rate date(long)
      */
     STORE_OBJECT_RATING,
+    /**
+     * The query for storing the extra messages to download. Set the parameter:
+     * <p/>
+     * messageId (int)
+     */
+    STORE_OBJECT_EXTRA_MESSAGE,
 
     // Get objects by its properties
     /**
@@ -160,6 +166,10 @@ public enum DataQuery implements IPropertiable {
      * The query for removing the message object by its id
      */
     REMOVE_OBJECT_MESSAGE,
+    /**
+     * The query for removing the extra message from the table
+     */
+    REMOVE_OBJECT_EXTRA_MESSAGE,
 
     /**
      * The query for removing the rating objects by message id.
@@ -169,6 +179,11 @@ public enum DataQuery implements IPropertiable {
      * The query for removing the moderate objects by message id.
      */
     REMOVE_OBJECTS_MODERATE,
+    /**
+     * The query for clearing all the extra messages.
+     */
+    REMOVE_ALL_OBJECTS_EXTRA_MESSAGE,
+    REMOVE_ALL_OBJECTS_NEW_RATING,
 
     // Queries for getting all the ids of the objects
     GET_IDS_FORUM,
@@ -177,6 +192,7 @@ public enum DataQuery implements IPropertiable {
     GET_IDS_NEW_MESSAGE,
     GET_IDS_MESSAGE,
     GET_IDS_USER,
+    GET_IDS_EXTRA_MESSAGE,
 
     // Queries for getting object by its id
     GET_OBJECT_VERSION,
@@ -194,6 +210,7 @@ public enum DataQuery implements IPropertiable {
      * version_data(byte[64]), version_type (int)
      */
     UPDATE_OBJECT_VERSION,
+    UPDATE_OBJECT_MESSAGE,
     /**
      * The query for retrieving ids for the specified forum group. SQL parameters:
      * <p/>
@@ -205,8 +222,7 @@ public enum DataQuery implements IPropertiable {
     GET_IDS_MESSAGE_BY_PARENT_ID,
     GET_IDS_MESSAGE_BY_TOPIC_ID,
     IS_MESSAGES_EXIST_IN_FORUM,
-    GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,
-    ;
+    GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,;
 
     private final String properyName = this.name().toLowerCase().replace('_', '.');
 

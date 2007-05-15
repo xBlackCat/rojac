@@ -12,7 +12,7 @@ import org.xblackcat.sunaj.service.storage.database.convert.ToVersionInfoConvert
  * @author ASUS
  */
 
-class DBVersionDAO implements IVersionDAO {
+final class DBVersionDAO implements IVersionDAO {
     private final IQueryExecutor helper;
 
     DBVersionDAO(IQueryExecutor helper) {
