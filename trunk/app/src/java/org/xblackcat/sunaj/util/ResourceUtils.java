@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,7 @@ public class ResourceUtils {
     private static final Log log = LogFactory.getLog(ResourceUtils.class);
 
     private static final Pattern PROPERTY_PATTERN = Pattern.compile("\\{\\$([\\w\\.]+)\\}");
+    private static final Pattern TO_KEY_PATTERN = Pattern.compile("_");
 
     private ResourceUtils() {
     }
@@ -29,9 +31,9 @@ public class ResourceUtils {
      * @return a new string with put system properties.
      */
     public static String putSystemProperties(String s) {
-        boolean tryAgaing;
+        boolean tryAgain;
         do {
-            tryAgaing = false;
+            tryAgain = false;
             Matcher m = PROPERTY_PATTERN.matcher(s);
             while (m.find()) {
                 String property = m.group(1);
@@ -45,10 +47,42 @@ public class ResourceUtils {
                 if (val != null) {
                     val = val.replace(File.separatorChar, '/');
                     s = s.replaceAll("\\{\\$" + property + "\\}", val);
-                    tryAgaing = true;
+                    tryAgain = true;
                 }
             }
-        } while (tryAgaing);
+        } while (tryAgain);
         return s;
+    }
+
+    /**
+     * Converts constant names to equivalent property key. For example, constant name <code>EXAMPLE_NAME</code> will
+     * converted to <code>example.name</code>. If specified name is <code>null</code> the <code>null</code> will
+     * returned.
+     *
+     * @param name name to convert.
+     *
+     * @return converted name.
+     */
+    public static String constantToProperty(String name) {
+        if (name == null) {
+            return null;
+        }
+
+        return TO_KEY_PATTERN.matcher(name.toLowerCase()).replaceAll(".");
+    }
+
+    static URL getResource(String r) {
+        URL url = ImageUtils.class.getResource(r);
+        if (url == null) {
+            url = ImageUtils.class.getClassLoader().getResource(r);
+        }
+        if (url == null) {
+            url = Thread.currentThread().getContextClassLoader().getResource(r);
+        }
+        if (url == null) {
+            url = ClassLoader.getSystemResource(r);
+        }
+
+        return url;
     }
 }
