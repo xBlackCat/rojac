@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.data;
+package org.xblackcat.sunaj.data;
 
 import org.xblackcat.sunaj.i18n.Messages;
 import org.xblackcat.sunaj.util.ResourceUtils;

@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.service.storage;
 
-import org.xblackcat.sunaj.service.data.VersionInfo;
-import org.xblackcat.sunaj.service.data.VersionType;
+import org.xblackcat.sunaj.data.VersionInfo;
+import org.xblackcat.sunaj.data.VersionType;
 
 /**
  * Date: 10 трав 2007

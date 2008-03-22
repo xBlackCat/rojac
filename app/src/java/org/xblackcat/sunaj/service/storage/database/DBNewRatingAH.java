@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.service.storage.database;
 
-import org.xblackcat.sunaj.service.data.Mark;
-import org.xblackcat.sunaj.service.data.NewRating;
+import org.xblackcat.sunaj.data.Mark;
+import org.xblackcat.sunaj.data.NewRating;
 import org.xblackcat.sunaj.service.storage.INewRatingAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.convert.Converters;

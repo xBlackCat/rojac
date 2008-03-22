@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.data;
+package org.xblackcat.sunaj.data;
 
 /**
  * Date: 26 квіт 2007

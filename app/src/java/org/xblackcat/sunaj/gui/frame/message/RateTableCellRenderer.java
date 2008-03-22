@@ -2,8 +2,8 @@ package org.xblackcat.sunaj.gui.frame.message;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.sunaj.data.User;
 import org.xblackcat.sunaj.service.ServiceFactory;
-import org.xblackcat.sunaj.service.data.User;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.storage.IStorage;
 import org.xblackcat.sunaj.service.storage.StorageException;

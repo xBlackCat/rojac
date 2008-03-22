@@ -78,6 +78,7 @@
   <component name="EmbeddedBrowser.BrowserComponent" xPos="-1" yPos="-1" width="600" height="200">
     <url href="http://anonymous content" />
   </component>
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="EncodingComponent">
     <option name="projectEncoding" />
   </component>

@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.service.storage.database.convert;
 
-import org.xblackcat.sunaj.service.data.Message;
-import org.xblackcat.sunaj.service.data.Role;
+import org.xblackcat.sunaj.data.Message;
+import org.xblackcat.sunaj.data.Role;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.cached;
 
-import org.xblackcat.sunaj.service.data.User;
+import org.xblackcat.sunaj.data.User;
 import org.xblackcat.sunaj.service.storage.IUserAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 

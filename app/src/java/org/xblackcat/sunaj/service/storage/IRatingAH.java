@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.service.storage;
 
-import org.xblackcat.sunaj.service.data.Mark;
-import org.xblackcat.sunaj.service.data.Rating;
+import org.xblackcat.sunaj.data.Mark;
+import org.xblackcat.sunaj.data.Rating;
 
 /**
  * Date: 16.04.2007

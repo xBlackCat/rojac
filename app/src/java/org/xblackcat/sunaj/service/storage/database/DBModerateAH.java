@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.database;
 
-import org.xblackcat.sunaj.service.data.Moderate;
+import org.xblackcat.sunaj.data.Moderate;
 import org.xblackcat.sunaj.service.storage.IModerateAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.convert.Converters;

@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.gui.frame.message;
 
-import org.xblackcat.sunaj.service.data.NewRating;
-import org.xblackcat.sunaj.service.data.Rating;
+import org.xblackcat.sunaj.data.NewRating;
+import org.xblackcat.sunaj.data.Rating;
 
 import javax.swing.table.AbstractTableModel;
 

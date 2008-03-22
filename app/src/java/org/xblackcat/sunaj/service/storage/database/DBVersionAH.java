@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.service.storage.database;
 
-import org.xblackcat.sunaj.service.data.VersionInfo;
-import org.xblackcat.sunaj.service.data.VersionType;
+import org.xblackcat.sunaj.data.VersionInfo;
+import org.xblackcat.sunaj.data.VersionType;
 import org.xblackcat.sunaj.service.storage.IVersionAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.convert.Converters;

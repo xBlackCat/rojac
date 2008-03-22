@@ -1,8 +1,8 @@
 package org.xblackcat.sunaj.gui.frame.message;
 
-import org.xblackcat.sunaj.service.data.Mark;
-import org.xblackcat.sunaj.service.data.NewRating;
-import org.xblackcat.sunaj.service.data.Rating;
+import org.xblackcat.sunaj.data.Mark;
+import org.xblackcat.sunaj.data.NewRating;
+import org.xblackcat.sunaj.data.Rating;
 
 /**
  * Date: 29 лют 2008

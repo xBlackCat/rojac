@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.service.janus.data;
 
-import org.xblackcat.sunaj.service.data.Forum;
-import org.xblackcat.sunaj.service.data.ForumGroup;
+import org.xblackcat.sunaj.data.Forum;
+import org.xblackcat.sunaj.data.ForumGroup;
 import ru.rsdn.Janus.JanusForumGroupInfo;
 import ru.rsdn.Janus.JanusForumInfo;
 
