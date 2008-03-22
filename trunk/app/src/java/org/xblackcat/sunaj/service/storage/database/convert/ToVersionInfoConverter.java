@@ -1,8 +1,8 @@
 package org.xblackcat.sunaj.service.storage.database.convert;
 
-import org.xblackcat.sunaj.service.data.Version;
-import org.xblackcat.sunaj.service.data.VersionInfo;
-import org.xblackcat.sunaj.service.data.VersionType;
+import org.xblackcat.sunaj.data.Version;
+import org.xblackcat.sunaj.data.VersionInfo;
+import org.xblackcat.sunaj.data.VersionType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

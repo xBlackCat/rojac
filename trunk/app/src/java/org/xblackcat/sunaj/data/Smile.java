@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.data;
+package org.xblackcat.sunaj.data;
 
 /**
  * Date: 5 ñ³÷ 2008

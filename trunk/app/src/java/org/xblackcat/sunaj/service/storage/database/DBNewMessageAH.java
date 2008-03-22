@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.database;
 
-import org.xblackcat.sunaj.service.data.NewMessage;
+import org.xblackcat.sunaj.data.NewMessage;
 import org.xblackcat.sunaj.service.storage.INewMessageAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.convert.Converters;

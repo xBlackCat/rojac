@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.database.convert;
 
-import org.xblackcat.sunaj.service.data.NewMessage;
+import org.xblackcat.sunaj.data.NewMessage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

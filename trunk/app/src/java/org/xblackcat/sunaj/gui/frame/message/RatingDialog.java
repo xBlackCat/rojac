@@ -2,9 +2,9 @@ package org.xblackcat.sunaj.gui.frame.message;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.sunaj.data.NewRating;
+import org.xblackcat.sunaj.data.Rating;
 import org.xblackcat.sunaj.service.ServiceFactory;
-import org.xblackcat.sunaj.service.data.NewRating;
-import org.xblackcat.sunaj.service.data.Rating;
 import org.xblackcat.sunaj.service.storage.IStorage;
 import org.xblackcat.sunaj.service.storage.StorageException;
 

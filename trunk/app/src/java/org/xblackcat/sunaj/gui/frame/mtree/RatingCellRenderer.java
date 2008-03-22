@@ -2,7 +2,7 @@ package org.xblackcat.sunaj.gui.frame.mtree;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.sunaj.service.data.Rating;
+import org.xblackcat.sunaj.data.Rating;
 import org.xblackcat.sunaj.service.storage.IRatingAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 

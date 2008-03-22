@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.database.convert;
 
-import org.xblackcat.sunaj.service.data.ForumGroup;
+import org.xblackcat.sunaj.data.ForumGroup;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

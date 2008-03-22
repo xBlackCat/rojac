@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.service.storage.cached;
 
-import org.xblackcat.sunaj.service.data.Mark;
-import org.xblackcat.sunaj.service.data.Rating;
+import org.xblackcat.sunaj.data.Mark;
+import org.xblackcat.sunaj.data.Rating;
 import org.xblackcat.sunaj.service.storage.IRatingAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 

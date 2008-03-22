@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.service.janus.data;
 
-import org.xblackcat.sunaj.service.data.User;
-import org.xblackcat.sunaj.service.data.Version;
+import org.xblackcat.sunaj.data.User;
+import org.xblackcat.sunaj.data.Version;
 import ru.rsdn.Janus.JanusUserInfo;
 import ru.rsdn.Janus.UserResponse;
 

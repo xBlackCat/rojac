@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.data;
+package org.xblackcat.sunaj.data;
 
 import ru.rsdn.Janus.JanusRatingInfo;
 

@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.database.convert;
 
-import org.xblackcat.sunaj.service.data.*;
+import org.xblackcat.sunaj.data.*;
 
 /**
  * Date: 28 лют 2008

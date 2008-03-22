@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage;
 
-import org.xblackcat.sunaj.service.data.Moderate;
+import org.xblackcat.sunaj.data.Moderate;
 
 /**
  * Date: 16.04.2007

@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage;
 
-import org.xblackcat.sunaj.service.data.ForumGroup;
+import org.xblackcat.sunaj.data.ForumGroup;
 
 /**
  * Date: 16.04.2007

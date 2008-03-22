@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.gui.frame.mtree;
 
-import org.xblackcat.sunaj.service.data.Message;
+import org.xblackcat.sunaj.data.Message;
 import org.xblackcat.sunaj.util.ResourceUtils;
 
 import javax.swing.*;

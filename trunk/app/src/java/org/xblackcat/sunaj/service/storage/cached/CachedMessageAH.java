@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.service.storage.cached;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.xblackcat.sunaj.service.data.Message;
+import org.xblackcat.sunaj.data.Message;
 import org.xblackcat.sunaj.service.storage.IMessageAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 

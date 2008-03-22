@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.database;
 
-import org.xblackcat.sunaj.service.data.ForumGroup;
+import org.xblackcat.sunaj.data.ForumGroup;
 import org.xblackcat.sunaj.service.storage.IForumGroupAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.convert.Converters;

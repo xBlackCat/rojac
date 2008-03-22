@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage;
 
-import org.xblackcat.sunaj.service.data.User;
+import org.xblackcat.sunaj.data.User;
 
 /**
  * Date: 16.04.2007

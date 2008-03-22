@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.gui.frame.message;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.xblackcat.sunaj.service.data.Mark;
+import org.xblackcat.sunaj.data.Mark;
 
 import javax.swing.*;
 
