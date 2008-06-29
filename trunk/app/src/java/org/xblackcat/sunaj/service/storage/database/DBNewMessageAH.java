@@ -38,7 +38,7 @@ final class DBNewMessageAH implements INewMessageAH {
     }
 
     public NewMessage[] getAllNewMessages() throws StorageException {
-        Collection<NewMessage> newMessages = helper.execute(Converters.TO_NEW_MESSAGE_CONVERTER, DataQuery.GET_IDS_NEW_MESSAGE);
+        Collection<NewMessage> newMessages = helper.execute(Converters.TO_NEW_MESSAGE_CONVERTER, DataQuery.GET_OBJECTS_NEW_MESSAGE);
         return newMessages.toArray(new NewMessage[newMessages.size()]);
     }
 }
