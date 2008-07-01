@@ -1,6 +1,7 @@
 package org.xblackcat.sunaj.service.janus;
 
 import org.xblackcat.sunaj.data.NewMessage;
+import org.xblackcat.sunaj.data.NewModerate;
 import org.xblackcat.sunaj.data.NewRating;
 import org.xblackcat.sunaj.data.Version;
 import org.xblackcat.sunaj.service.janus.data.ForumsList;
@@ -26,11 +27,13 @@ public interface IJanusService {
     /**
      * Retrieves a forums list from Janus WS.
      *
+     * @param verRow
+     *
      * @return RSDN forums list.
      *
      * @throws JanusServiceException throws if any errors occurs.
      */
-    ForumsList getForumsList() throws JanusServiceException;
+    ForumsList getForumsList(Version verRow) throws JanusServiceException;
 
     /**
      * Gets new users from the Janus WS.
@@ -67,24 +70,26 @@ public interface IJanusService {
     /**
      * Posts the changes to the RSDN forum.
      *
-     * @param messages new messages to post.
-     * @param ratings  new ratings to post.
+     * @param messages  new messages to post.
+     * @param ratings   new ratings to post.
+     * @param moderates new moderate actions to post.
+     * @param moderates
      *
      * @throws JanusServiceException throws if any errors occurs.
      */
-    void postChanges(NewMessage[] messages, NewRating[] ratings) throws JanusServiceException;
+    void postChanges(NewMessage[] messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException;
 
     /**
      * Gets new messages from Janus WS.
      *
-     * @param subscribedForums list of subscribed forums.
+     * @param subscribedForums  list of subscribed forums.
      * @param firstForumRequest
-     * @param ratingVer last rating row version.
-     * @param messageVer last messages row version.
-     * @param moderateVer last moderate info row version.
-     * @param breakMsgIds ???
-     * @param breakTopicIds ???
-     * @param maxOutput amount of messages in response.
+     * @param ratingVer         last rating row version.
+     * @param messageVer        last messages row version.
+     * @param moderateVer       last moderate info row version.
+     * @param breakMsgIds       ???
+     * @param breakTopicIds     ???
+     * @param maxOutput         amount of messages in response.
      *
      * @return new messages and other information.
      *

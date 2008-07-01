@@ -17,7 +17,6 @@ class ToVersionInfoConverter implements IToObjectConverter<VersionInfo> {
     public VersionInfo convert(ResultSet rs) throws SQLException {
         int type = rs.getInt(1);
         byte[] data = rs.getBytes(2);
-        // TODO: set number values to each type of the versions
-        return new VersionInfo(new Version(data), VersionType.values()[type]);
+        return new VersionInfo(new Version(data), VersionType.getType(type));
     }
 }

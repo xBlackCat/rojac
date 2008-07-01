@@ -1,12 +1,14 @@
 package org.xblackcat.sunaj.data;
 
+import ru.rsdn.Janus.PostMessageInfo;
+
 /**
  * Date: 14.04.2007
  *
  * @author ASUS
  */
 
-public final class NewMessage {
+public final class NewMessage implements IRSDNable<PostMessageInfo> {
     private final int localMessageId;
     private final int parentId;
     private final int forumId;
@@ -39,6 +41,16 @@ public final class NewMessage {
 
     public String getMessage() {
         return message;
+    }
+
+    public PostMessageInfo getRSDNObject() {
+        return new PostMessageInfo(
+                localMessageId,
+                parentId,
+                forumId,
+                subject,
+                message
+        );
     }
 
     public String toString() {

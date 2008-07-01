@@ -13,6 +13,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.sunaj.data.NewMessage;
+import org.xblackcat.sunaj.data.NewModerate;
 import org.xblackcat.sunaj.data.NewRating;
 import org.xblackcat.sunaj.data.Version;
 import org.xblackcat.sunaj.service.ServiceFactory;
@@ -23,6 +24,7 @@ import org.xblackcat.sunaj.service.janus.data.TopicMessages;
 import org.xblackcat.sunaj.service.janus.data.UsersList;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
+import org.xblackcat.sunaj.util.DataUtils;
 import ru.rsdn.Janus.*;
 
 import javax.xml.rpc.ServiceException;
@@ -59,7 +61,7 @@ public class JanusService implements IJanusService {
     }
 
     public void testConnection() throws JanusServiceException {
-        log.debug("Perform check connection.");
+        log.debug("Perform connection test.");
 
         try {
             soap.check();
@@ -67,16 +69,16 @@ public class JanusService implements IJanusService {
             throw new JanusServiceException(e);
         }
         if (log.isDebugEnabled()) {
-            log.debug("Check have done successfuly.");
+            log.debug("Connection has been established.");
         }
     }
 
-    public ForumsList getForumsList() throws JanusServiceException {
+    public ForumsList getForumsList(Version verRow) throws JanusServiceException {
         log.info("Retrieve the forums list from the Janus WS.");
 
         ForumResponse list;
         try {
-            list = soap.getForumList(new ForumRequest(userName, password));
+            list = soap.getForumList(new ForumRequest(userName, password, verRow.getBytes()));
         } catch (RemoteException e) {
             throw new JanusServiceException("Can not obtain the forum list.", e);
         }
@@ -114,7 +116,7 @@ public class JanusService implements IJanusService {
         try {
             list = soap.getTopicByMessage(new TopicRequest(userName, password, messageIds));
         } catch (RemoteException e) {
-            throw new JanusServiceException("Can not obtain the new users list.", e);
+            throw new JanusServiceException("Can not obtain extra messages.", e);
         }
         JanusMessageInfo[] messages = list.getMessages();
         JanusModerateInfo[] moderate = list.getModerate();
@@ -132,7 +134,7 @@ public class JanusService implements IJanusService {
         try {
             post = soap.postChangeCommit();
         } catch (RemoteException e) {
-            throw new JanusServiceException("Can not obtain the new users list.", e);
+            throw new JanusServiceException("Can not commit changes.", e);
         }
         PostExceptionInfo[] exceptions = post.getExceptions();
         int[] ids = post.getCommitedIds();
@@ -142,29 +144,19 @@ public class JanusService implements IJanusService {
         return new PostInfo(ids, exceptions);
     }
 
-    public void postChanges(NewMessage[] messages, NewRating[] ratings) throws JanusServiceException {
+    public void postChanges(NewMessage[] messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException {
         log.info("Post the changes to the Janus WS.");
 
-        PostMessageInfo[] newMessages = new PostMessageInfo[messages.length];
-        for (int i = 0; i < messages.length; i++) {
-            NewMessage m = messages[i];
-            newMessages[i] = new PostMessageInfo(m.getLocalMessageId(),
-                    m.getParentId(),
-                    m.getForumId(),
-                    m.getSubject(),
-                    m.getMessage());
-        }
-
-        PostRatingInfo[] newRates = new PostRatingInfo[ratings.length];
-        for (int i = 0; i < ratings.length; i++) {
-            NewRating r = ratings[i];
-            newRates[i] = new PostRatingInfo(r.getMessageId(), r.getRate().getValue());
-        }
-
         try {
-            soap.postChange(new PostRequest(userName, password, newMessages, newRates));
+            PostRequest postRequest = new PostRequest(
+                    userName,
+                    password,
+                    DataUtils.getRSDNObject(messages),
+                    DataUtils.getRSDNObject(ratings),
+                    DataUtils.getRSDNObject(moderates));
+            soap.postChange(postRequest);
         } catch (RemoteException e) {
-            throw new JanusServiceException("Can not obtain the new users list.", e);
+            throw new JanusServiceException("Can not post changes to RSDN.", e);
         }
     }
 
@@ -180,15 +172,21 @@ public class JanusService implements IJanusService {
 
         ChangeResponse list;
         try {
-            list = soap.getNewData(new ChangeRequest(userName, password,
-                    rfi,
-                    ratingVer.getBytes(),
-                    messageVer.getBytes(),
-                    moderateVer.getBytes(),
-                    breakMsgIds, breakTopicIds,
-                    maxOutput));
+            list = soap.getNewData(
+                    new ChangeRequest(
+                            userName,
+                            password,
+                            rfi,
+                            ratingVer.getBytes(),
+                            messageVer.getBytes(),
+                            moderateVer.getBytes(),
+                            breakMsgIds,
+                            breakTopicIds,
+                            maxOutput
+                    )
+            );
         } catch (RemoteException e) {
-            throw new JanusServiceException("Can not obtain the new users list.", e);
+            throw new JanusServiceException("Can not obtain the new data.", e);
         }
         Version forumRowVersion = new Version(list.getLastForumRowVersion());
         Version ratingRowVersion = new Version(list.getLastRatingRowVersion());

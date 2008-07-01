@@ -7,8 +7,6 @@ package org.xblackcat.sunaj.service.storage;
  */
 
 public interface IStorage {
-    /* Initialization routines */
-    boolean checkStructure();
 
     void initialize() throws StorageException;
 
@@ -21,6 +19,8 @@ public interface IStorage {
     IModerateAH getModerateAH();
 
     INewMessageAH getNewMessageAH();
+
+    INewModerateAH getNewModerateAH();
 
     INewRatingAH getNewRatingAH();
 

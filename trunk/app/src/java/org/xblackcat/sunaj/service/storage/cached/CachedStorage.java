@@ -32,10 +32,6 @@ public class CachedStorage implements IStorage {
         userDAO = new CachedUserAH(storage.getUserAH());
     }
 
-    public boolean checkStructure() {
-        return storage.checkStructure();
-    }
-
     public void initialize() throws StorageException {
         storage.initialize();
         forumDAO.purge();
@@ -64,6 +60,10 @@ public class CachedStorage implements IStorage {
 
     public INewMessageAH getNewMessageAH() {
         return storage.getNewMessageAH();
+    }
+
+    public INewModerateAH getNewModerateAH() {
+        return storage.getNewModerateAH();
     }
 
     public INewRatingAH getNewRatingAH() {

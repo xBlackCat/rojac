@@ -14,6 +14,7 @@ public final class Converters {
     public static final IToObjectConverter<Message> TO_MESSAGE_CONVERTER = new ToMessageConverter();
     public static final IToObjectConverter<Moderate> TO_MODERATE_CONVERTER = new ToModerateConverter();
     public static final IToObjectConverter<NewMessage> TO_NEW_MESSAGE_CONVERTER = new ToNewMessageConverter();
+    public static final IToObjectConverter<NewModerate> TO_NEW_MODERATE_CONVERTER = new ToNewModerateConverter();
     public static final IToObjectConverter<NewRating> TO_NEW_RATING_CONVERTER = new ToNewRatingConverter();
     public static final IToObjectConverter<Rating> TO_RATING_CONVERTER = new ToRatingConverter();
     public static final IToObjectConverter<User> TO_USER_CONVERTER = new ToUserConverter();

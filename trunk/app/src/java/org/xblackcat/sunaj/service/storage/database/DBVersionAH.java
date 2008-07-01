@@ -23,15 +23,15 @@ final class DBVersionAH implements IVersionAH {
         if (getVersionInfo(v.getType()) != null) {
             helper.update(DataQuery.UPDATE_OBJECT_VERSION,
                     v.getVersion().getBytes(),
-                    v.getType().ordinal());
+                    v.getType().getId());
         } else {
             helper.update(DataQuery.STORE_OBJECT_VERSION,
-                    v.getType().ordinal(),
+                    v.getType().getId(),
                     v.getVersion().getBytes());
         }
     }
 
     public VersionInfo getVersionInfo(VersionType type) throws StorageException {
-        return helper.executeSingle(Converters.TO_VERSION_INFO_CONVERTER, DataQuery.GET_OBJECT_VERSION, type.ordinal());
+        return helper.executeSingle(Converters.TO_VERSION_INFO_CONVERTER, DataQuery.GET_OBJECT_VERSION, type.getId());
     }
 }
