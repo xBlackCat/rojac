@@ -25,7 +25,11 @@ public final class Version {
     }
 
     private String getAsString() {
-        return new String(base64Version);
+        StringBuilder res = new StringBuilder();
+        for (byte b : base64Version) {
+            res.append(String.format(",%02x", b & 0xff));
+        }
+        return res.substring(1);
     }
 
     public String toString() {
