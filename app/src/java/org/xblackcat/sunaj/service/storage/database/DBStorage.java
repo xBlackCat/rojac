@@ -11,7 +11,7 @@ import org.xblackcat.sunaj.service.storage.database.convert.Converters;
 import org.xblackcat.sunaj.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.sunaj.service.storage.database.helper.IQueryHelper;
 import org.xblackcat.sunaj.service.storage.database.helper.QueryHelper;
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
 import java.util.*;

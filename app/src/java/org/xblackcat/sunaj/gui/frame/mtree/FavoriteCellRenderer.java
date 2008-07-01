@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.gui.frame.mtree;
 
 import org.xblackcat.sunaj.data.Message;
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 /**
  * Date: 15 груд 2007

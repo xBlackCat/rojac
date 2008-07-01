@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.database;
 
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 /**
  * Date: 17.04.2007
@@ -21,7 +21,7 @@ public enum InitializeQuery implements IPropertiable {
     CREATE_TABLE_RATING,
     CREATE_TABLE_EXTRA_MESSAGE;
 
-    private final String properyName = ResourceUtils.constantToPropertyName(this.name());
+    private final String properyName = ResourceUtils.constantToProperty(this.name());
 
     public String getPropertyName() {
         return properyName;

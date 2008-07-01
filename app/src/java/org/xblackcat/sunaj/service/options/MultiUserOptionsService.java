@@ -3,6 +3,7 @@ package org.xblackcat.sunaj.service.options;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.utils.ResourceUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,7 +54,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
 
         try {
             Properties p = new Properties();
-            p.load(MultiUserOptionsService.class.getResourceAsStream(DEFAULT_CONFIG_BUNDLE_NAME));
+            p.load(ResourceUtils.getResourceAsStream(DEFAULT_CONFIG_BUNDLE_NAME));
             loadFromResource(p, allProperties);
         } catch (IOException e) {
             log.error("Can not load the defaults.", e);

@@ -4,7 +4,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.sunaj.service.converter.ITagData;
 import org.xblackcat.sunaj.service.converter.ITagInfo;
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
 import java.util.regex.Matcher;

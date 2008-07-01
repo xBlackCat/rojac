@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.service.storage.database;
 
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 /**
  * Date: 17.04.2007
@@ -276,7 +276,7 @@ public enum DataQuery implements IPropertiable {
     IS_MESSAGES_EXIST_IN_FORUM,
     GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,;
 
-    private final String properyName = ResourceUtils.constantToPropertyName(this.name());
+    private final String properyName = ResourceUtils.constantToProperty(this.name());
 
     public String getPropertyName() {
         return properyName;

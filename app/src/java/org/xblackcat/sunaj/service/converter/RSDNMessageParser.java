@@ -2,7 +2,7 @@ package org.xblackcat.sunaj.service.converter;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
