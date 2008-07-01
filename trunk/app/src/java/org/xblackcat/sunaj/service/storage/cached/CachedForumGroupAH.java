@@ -12,18 +12,18 @@ import org.xblackcat.sunaj.service.storage.StorageException;
 final class CachedForumGroupAH implements IForumGroupAH,IPurgable {
     private final Cache<ForumGroup> forumGroupCache = new Cache<ForumGroup>();
 
-    private final IForumGroupAH forumGroupDAO;
+    private final IForumGroupAH forumGroupAH;
 
-    CachedForumGroupAH(IForumGroupAH forumGroupDAO) {
-        this.forumGroupDAO = forumGroupDAO;
+    CachedForumGroupAH(IForumGroupAH forumGroupAH) {
+        this.forumGroupAH = forumGroupAH;
     }
 
     public void storeForumGroup(ForumGroup fg) throws StorageException {
-        forumGroupDAO.storeForumGroup(fg);
+        forumGroupAH.storeForumGroup(fg);
     }
 
     public boolean removeForumGroup(int id) throws StorageException {
-        if (forumGroupDAO.removeForumGroup(id)) {
+        if (forumGroupAH.removeForumGroup(id)) {
             forumGroupCache.remove(id);
             return true;
         } else {
@@ -34,7 +34,7 @@ final class CachedForumGroupAH implements IForumGroupAH,IPurgable {
     public ForumGroup getForumGroupById(int forumGroupId) throws StorageException {
         ForumGroup forumGroup = forumGroupCache.get(forumGroupId);
         if (forumGroup == null) {
-            forumGroup = forumGroupDAO.getForumGroupById(forumGroupId);
+            forumGroup = forumGroupAH.getForumGroupById(forumGroupId);
             if (forumGroup != null) {
                 forumGroupCache.put(forumGroupId, forumGroup);
             }
@@ -43,7 +43,11 @@ final class CachedForumGroupAH implements IForumGroupAH,IPurgable {
     }
 
     public int[] getAllForumGroupIds() throws StorageException {
-        return forumGroupDAO.getAllForumGroupIds();
+        return forumGroupAH.getAllForumGroupIds();
+    }
+
+    public void updateForumGroup(ForumGroup fg) throws StorageException {
+        forumGroupAH.updateForumGroup(fg);
     }
 
     public void purge() {

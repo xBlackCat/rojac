@@ -12,19 +12,19 @@ import org.xblackcat.sunaj.service.storage.StorageException;
 final class CachedModerateAH implements IModerateAH,IPurgable {
     private final Cache<Moderate[]> messageModaratesCache = new Cache<Moderate[]>();
 
-    private final IModerateAH moderateDAO;
+    private final IModerateAH moderateAH;
 
-    CachedModerateAH(IModerateAH moderateDAO) {
-        this.moderateDAO = moderateDAO;
+    CachedModerateAH(IModerateAH moderateAH) {
+        this.moderateAH = moderateAH;
     }
 
     public void storeModerateInfo(Moderate mi) throws StorageException {
-        moderateDAO.storeModerateInfo(mi);
+        moderateAH.storeModerateInfo(mi);
         messageModaratesCache.remove(mi.getMessageId());
     }
 
     public boolean removeModerateInfosByMessageId(int id) throws StorageException {
-        if (moderateDAO.removeModerateInfosByMessageId(id)) {
+        if (moderateAH.removeModerateInfosByMessageId(id)) {
             messageModaratesCache.remove(id);
             return true;
         } else {
@@ -35,7 +35,7 @@ final class CachedModerateAH implements IModerateAH,IPurgable {
     public Moderate[] getModeratesByMessageId(int messageId) throws StorageException {
         Moderate[] moderates = messageModaratesCache.get(messageId);
         if (moderates != null) {
-            moderates = moderateDAO.getModeratesByMessageId(messageId);
+            moderates = moderateAH.getModeratesByMessageId(messageId);
             if (moderates != null) {
                 messageModaratesCache.put(messageId, moderates);
             }

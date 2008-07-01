@@ -45,6 +45,23 @@ final class DBForumAH implements IForumAH {
         return helper.getIds(DataQuery.GET_IDS_FORUM_SUBSCRIBED);
     }
 
+    public void updateForum(Forum f) throws StorageException {
+        helper.update(DataQuery.UPDATE_OBJECT_FORUM,
+                f.getForumGroupId(),
+                f.getRated(),
+                f.getInTop(),
+                f.getRateLimit(),
+                f.getShortForumName(),
+                f.getForumName(),
+                f.getForumId());
+    }
+
+    public void setSubscribeForum(int forumId, boolean subscribe) throws StorageException {
+        helper.update(DataQuery.UPDATE_OBJECT_FORUM_SUBSCRIBE,
+                subscribe,
+                forumId);
+    }
+
     public int[] getAllForumIds() throws StorageException {
         return helper.getIds( DataQuery.GET_IDS_FORUM);
     }

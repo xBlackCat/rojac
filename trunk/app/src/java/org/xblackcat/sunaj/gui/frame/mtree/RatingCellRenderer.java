@@ -13,10 +13,10 @@ import org.xblackcat.sunaj.service.storage.StorageException;
  */
 final class RatingCellRenderer extends MessageCellRenderer {
     private static final Log log = LogFactory.getLog(RatingCellRenderer.class);
-    private final IRatingAH ratingDAO;
+    private final IRatingAH ratingAH;
 
-    public RatingCellRenderer(IRatingAH ratingDAO) {
-        this.ratingDAO = ratingDAO;
+    public RatingCellRenderer(IRatingAH ratingAH) {
+        this.ratingAH = ratingAH;
     }
 
     protected boolean setupComponent(MessageItem item, boolean selected) {
@@ -25,7 +25,7 @@ final class RatingCellRenderer extends MessageCellRenderer {
         }
 
         try {
-            Rating[] ratings = ratingDAO.getRatingsByMessageId(item.getMessageId());
+            Rating[] ratings = ratingAH.getRatingsByMessageId(item.getMessageId());
 
             setText(ratingsToString(ratings));
         } catch (StorageException e) {

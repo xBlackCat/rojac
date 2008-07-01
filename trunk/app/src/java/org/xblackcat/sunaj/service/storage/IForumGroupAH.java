@@ -16,4 +16,6 @@ public interface IForumGroupAH extends AH {
     ForumGroup getForumGroupById(int forumGroupId) throws StorageException;
 
     int[] getAllForumGroupIds() throws StorageException;
+
+    void updateForumGroup(ForumGroup fg) throws StorageException;
 }

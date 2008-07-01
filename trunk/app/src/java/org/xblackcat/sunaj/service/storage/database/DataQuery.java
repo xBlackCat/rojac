@@ -263,7 +263,35 @@ public enum DataQuery implements IPropertiable {
      * version_data(byte[64]), version_type (int)
      */
     UPDATE_OBJECT_VERSION,
+    /**
+     * The query for updating the message object. Set the object parameters in following order:
+     * <p/>
+     * topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color (int), user
+     * role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update date
+     * (long), moderated date (long), subject (String), message name (String), user nick (String), user title (String),
+     * message (String), id (int)
+     */
     UPDATE_OBJECT_MESSAGE,
+    /**
+     * The query for updating the forum group object. Set the object parameters in following order:
+     * <p/>
+     * name(String), sort_order(int), id(int)
+     */
+    UPDATE_OBJECT_FORUM_GROUP,
+    /**
+     * The query for updating the forum object (except <code>subscribe </code> field). Set the object parameters in
+     * following order:
+     * <p/>
+     * forum group(int), rated(int), inTop(int), rateLimit(int), short name(String), name(String), id(int)
+     */
+    UPDATE_OBJECT_FORUM,
+    /**
+     * The query for updating the subscribe field of forum object. Set the object parameters in following order:
+     * <p/>
+     * subscribed(boolean), id(int)
+     */
+     UPDATE_OBJECT_FORUM_SUBSCRIBE,
+
     /**
      * The query for retrieving ids for the specified forum group. SQL parameters:
      * <p/>
@@ -285,4 +313,4 @@ public enum DataQuery implements IPropertiable {
     public String toString() {
         return super.toString() + '[' + properyName + ']';
     }
-}
+    }
