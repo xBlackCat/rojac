@@ -1,7 +1,7 @@
 package org.xblackcat.sunaj.data;
 
 import org.xblackcat.sunaj.i18n.Messages;
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.net.URL;

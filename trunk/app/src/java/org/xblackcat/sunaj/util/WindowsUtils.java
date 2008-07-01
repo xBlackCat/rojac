@@ -3,6 +3,7 @@ package org.xblackcat.sunaj.util;
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;

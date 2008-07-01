@@ -1,6 +1,6 @@
 package org.xblackcat.sunaj.i18n;
 
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -127,6 +127,7 @@ public enum Messages {
             try {
                 mes = new String(mes.getBytes("ISO-8859-1"), "UTF-8");
             } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("Invalid encoding for string of key " + key, e);
             }
             return String.format(l, mes, params).trim();
         } else {

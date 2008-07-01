@@ -3,7 +3,7 @@ package org.xblackcat.sunaj.service.converter.tag;
 import org.xblackcat.sunaj.data.Smile;
 import org.xblackcat.sunaj.service.converter.ITag;
 import org.xblackcat.sunaj.service.converter.ITagInfo;
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 /**
  * <p/>
