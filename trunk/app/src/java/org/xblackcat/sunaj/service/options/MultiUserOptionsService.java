@@ -79,8 +79,8 @@ public final class MultiUserOptionsService extends AnOptionsService {
 
             if (getProperty(p) == null) {
                 // Set property as string.
-                if (log.isDebugEnabled()) {
-                    log.debug("Set to the " + p + " value " + val);
+                if (log.isTraceEnabled()) {
+                    log.trace("Set to the " + p + " value " + val);
                 }
                 setProperty(key, val);
             }
