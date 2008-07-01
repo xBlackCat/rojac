@@ -12,18 +12,18 @@ import org.xblackcat.sunaj.service.storage.StorageException;
 final class CachedUserAH implements IUserAH, IPurgable {
     private final Cache<User> userCache = new Cache<User>();
 
-    private final IUserAH userDAO;
+    private final IUserAH userAH;
 
-    CachedUserAH(IUserAH userDAO) {
-        this.userDAO = userDAO;
+    CachedUserAH(IUserAH userAH) {
+        this.userAH = userAH;
     }
 
     public void storeUser(User ui) throws StorageException {
-        userDAO.storeUser(ui);
+        userAH.storeUser(ui);
     }
 
     public boolean removeUser(int id) throws StorageException {
-        if (userDAO.removeUser(id)) {
+        if (userAH.removeUser(id)) {
             userCache.remove(id);
             return true;
         } else {
@@ -34,7 +34,7 @@ final class CachedUserAH implements IUserAH, IPurgable {
     public User getUserById(int id) throws StorageException {
         User user = userCache.get(id);
         if (user == null) {
-            user = userDAO.getUserById(id);
+            user = userAH.getUserById(id);
             if (user != null) {
                 userCache.put(id, user);
             }
@@ -43,7 +43,7 @@ final class CachedUserAH implements IUserAH, IPurgable {
     }
 
     public int[] getAllUserIds() throws StorageException {
-        return userDAO.getAllUserIds();
+        return userAH.getAllUserIds();
     }
 
     public void purge() {

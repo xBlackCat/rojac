@@ -15,47 +15,47 @@ public class CachedStorage implements IStorage {
      * Caches
      */
 
-    private final CachedForumAH forumDAO;
-    private final CachedForumGroupAH forumGroupDAO;
-    private final CachedMessageAH messageDAO;
-    private final CachedModerateAH moderateDAO;
-    private final CachedRatingAH ratingDAO;
-    private final CachedUserAH userDAO;
+    private final CachedForumAH forumAH;
+    private final CachedForumGroupAH forumGroupAH;
+    private final CachedMessageAH messageAH;
+    private final CachedModerateAH moderateAH;
+    private final CachedRatingAH ratingAH;
+    private final CachedUserAH userAH;
 
     public CachedStorage(IStorage storage) {
         this.storage = storage;
-        forumDAO = new CachedForumAH(storage.getForumAH());
-        forumGroupDAO = new CachedForumGroupAH(storage.getForumGroupAH());
-        messageDAO = new CachedMessageAH(storage.getMessageAH());
-        moderateDAO = new CachedModerateAH(storage.getModerateAH());
-        ratingDAO = new CachedRatingAH(storage.getRatingAH());
-        userDAO = new CachedUserAH(storage.getUserAH());
+        forumAH = new CachedForumAH(storage.getForumAH());
+        forumGroupAH = new CachedForumGroupAH(storage.getForumGroupAH());
+        messageAH = new CachedMessageAH(storage.getMessageAH());
+        moderateAH = new CachedModerateAH(storage.getModerateAH());
+        ratingAH = new CachedRatingAH(storage.getRatingAH());
+        userAH = new CachedUserAH(storage.getUserAH());
     }
 
     public void initialize() throws StorageException {
         storage.initialize();
-        forumDAO.purge();
-        forumGroupDAO.purge();
-        messageDAO.purge();
-        moderateDAO.purge();
-        ratingDAO.purge();
-        userDAO.purge();
+        forumAH.purge();
+        forumGroupAH.purge();
+        messageAH.purge();
+        moderateAH.purge();
+        ratingAH.purge();
+        userAH.purge();
     }
 
     public IForumAH getForumAH() {
-        return forumDAO;
+        return forumAH;
     }
 
     public IForumGroupAH getForumGroupAH() {
-        return forumGroupDAO;
+        return forumGroupAH;
     }
 
     public IMessageAH getMessageAH() {
-        return messageDAO;
+        return messageAH;
     }
 
     public IModerateAH getModerateAH() {
-        return moderateDAO;
+        return moderateAH;
     }
 
     public INewMessageAH getNewMessageAH() {
@@ -71,11 +71,11 @@ public class CachedStorage implements IStorage {
     }
 
     public IRatingAH getRatingAH() {
-        return ratingDAO;
+        return ratingAH;
     }
 
     public IUserAH getUserAH() {
-        return userDAO;
+        return userAH;
     }
 
     public IVersionAH getVersionAH() {

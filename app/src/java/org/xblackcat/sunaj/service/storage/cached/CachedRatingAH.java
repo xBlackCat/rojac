@@ -13,19 +13,19 @@ import org.xblackcat.sunaj.service.storage.StorageException;
 final class CachedRatingAH implements IRatingAH, IPurgable {
     private final Cache<Rating[]> ratingsForMessageCache = new Cache<Rating[]>();
 
-    private final IRatingAH storage;
+    private final IRatingAH ratingAH;
 
-    CachedRatingAH(IRatingAH storage) {
-        this.storage = storage;
+    CachedRatingAH(IRatingAH ratingAH) {
+        this.ratingAH = ratingAH;
     }
 
     public void storeRating(Rating ri) throws StorageException {
-        storage.storeRating(ri);
+        ratingAH.storeRating(ri);
         ratingsForMessageCache.remove(ri.getMessageId());
     }
 
     public boolean removeRatingsByMessageId(int messageId) throws StorageException {
-        if (storage.removeRatingsByMessageId(messageId)) {
+        if (ratingAH.removeRatingsByMessageId(messageId)) {
             ratingsForMessageCache.remove(messageId);
             return true;
         } else {
@@ -36,7 +36,7 @@ final class CachedRatingAH implements IRatingAH, IPurgable {
     public Rating[] getRatingsByMessageId(int messageId) throws StorageException {
         Rating[] ratings = ratingsForMessageCache.get(messageId);
         if (ratings == null) {
-            ratings = storage.getRatingsByMessageId(messageId);
+            ratings = ratingAH.getRatingsByMessageId(messageId);
             if (ratings != null) {
                 ratingsForMessageCache.put(messageId, ratings);
             }
@@ -45,11 +45,11 @@ final class CachedRatingAH implements IRatingAH, IPurgable {
     }
 
     public Rating[] getAllRatings() throws StorageException {
-        return storage.getAllRatings();
+        return ratingAH.getAllRatings();
     }
 
     public Mark[] getRatingMarksByMessageId(int messageId) throws StorageException {
-        return storage.getRatingMarksByMessageId(messageId);
+        return ratingAH.getRatingMarksByMessageId(messageId);
     }
 
     public void purge() {

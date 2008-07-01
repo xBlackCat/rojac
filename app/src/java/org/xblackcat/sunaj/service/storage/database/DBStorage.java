@@ -35,17 +35,17 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
     private final IQueryHelper helper;
 
-    private final DBForumAH forumDAO;
-    private final DBRatingAH ratingDAO;
-    private final DBUserAH userDAO;
-    private final DBForumGroupAH forumGroupDAO;
-    private final DBVersionAH versionDAO;
-    private final DBNewRatingAH newRatingDAO;
-    private final DBModerateAH moderateDAO;
+    private final DBForumAH forumAH;
+    private final DBRatingAH ratingAH;
+    private final DBUserAH userAH;
+    private final DBForumGroupAH forumGroupAH;
+    private final DBVersionAH versionAH;
+    private final DBNewRatingAH newRatingAH;
+    private final DBModerateAH moderateAH;
     private final DBNewModerateAH newModerateAH;
-    private final DBNewMessageAH newMessageDAO;
-    private final DBMessageAH messageDAO;
-    private final DBMiscAH miscDAO;
+    private final DBNewMessageAH newMessageAH;
+    private final DBMessageAH messageAH;
+    private final DBMiscAH miscAH;
 
     public DBStorage(String propRoot) throws StorageException {
         try {
@@ -63,17 +63,17 @@ public class DBStorage implements IStorage, IQueryExecutor {
             throw new StorageInitializationException("Unspecified exception occurs while DB storage initializating.", e);
         }
 
-        // Initialize the object DAOs
-        forumDAO = new DBForumAH(this);
-        ratingDAO = new DBRatingAH(this);
-        userDAO = new DBUserAH(this);
-        forumGroupDAO = new DBForumGroupAH(this);
-        versionDAO = new DBVersionAH(this);
-        newRatingDAO = new DBNewRatingAH(this);
-        moderateDAO = new DBModerateAH(this);
-        newMessageDAO = new DBNewMessageAH(this);
-        messageDAO = new DBMessageAH(this);
-        miscDAO = new DBMiscAH(this);
+        // Initialize the object AHs
+        forumAH = new DBForumAH(this);
+        ratingAH = new DBRatingAH(this);
+        userAH = new DBUserAH(this);
+        forumGroupAH = new DBForumGroupAH(this);
+        versionAH = new DBVersionAH(this);
+        newRatingAH = new DBNewRatingAH(this);
+        moderateAH = new DBModerateAH(this);
+        newMessageAH = new DBNewMessageAH(this);
+        messageAH = new DBMessageAH(this);
+        miscAH = new DBMiscAH(this);
         newModerateAH = new DBNewModerateAH(this);
     }
 
@@ -166,23 +166,23 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     public IForumAH getForumAH() {
-        return forumDAO;
+        return forumAH;
     }
 
     public IForumGroupAH getForumGroupAH() {
-        return forumGroupDAO;
+        return forumGroupAH;
     }
 
     public IMessageAH getMessageAH() {
-        return messageDAO;
+        return messageAH;
     }
 
     public IModerateAH getModerateAH() {
-        return moderateDAO;
+        return moderateAH;
     }
 
     public INewMessageAH getNewMessageAH() {
-        return newMessageDAO;
+        return newMessageAH;
     }
 
     public INewModerateAH getNewModerateAH() {
@@ -190,23 +190,23 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     public INewRatingAH getNewRatingAH() {
-        return newRatingDAO;
+        return newRatingAH;
     }
 
     public IRatingAH getRatingAH() {
-        return ratingDAO;
+        return ratingAH;
     }
 
     public IUserAH getUserAH() {
-        return userDAO;
+        return userAH;
     }
 
     public IVersionAH getVersionAH() {
-        return versionDAO;
+        return versionAH;
     }
 
     public IMiscAH getMiscAH() {
-        return miscDAO;
+        return miscAH;
     }
 
     public int update(DataQuery sql, Object... params) throws StorageException {

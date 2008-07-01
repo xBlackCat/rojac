@@ -14,21 +14,21 @@ final class CachedMessageAH implements IMessageAH, IPurgable {
     private final Cache<Message> messageCache = new Cache<Message>();
     private final Cache<int[]> childrenMessagesCache = new Cache<int[]>();
 
-    private final IMessageAH messageDAO;
+    private final IMessageAH messageAH;
 
-    CachedMessageAH(IMessageAH messageDAO) {
-        this.messageDAO = messageDAO;
+    CachedMessageAH(IMessageAH messageAH) {
+        this.messageAH = messageAH;
     }
 
     public void storeMessage(Message fm) throws StorageException {
-        messageDAO.storeMessage(fm);
+        messageAH.storeMessage(fm);
         if (fm.getParentId() != 0) {
             childrenMessagesCache.remove(fm.getParentId());
         }
     }
 
     public boolean removeForumMessage(int id) throws StorageException {
-        if (messageDAO.removeForumMessage(id)) {
+        if (messageAH.removeForumMessage(id)) {
             messageCache.remove(id);
             return true;
         } else {
@@ -39,7 +39,7 @@ final class CachedMessageAH implements IMessageAH, IPurgable {
     public Message getMessageById(int messageId) throws StorageException {
         Message message = messageCache.get(messageId);
         if (message == null) {
-            message = messageDAO.getMessageById(messageId);
+            message = messageAH.getMessageById(messageId);
             if (message != null) {
                 messageCache.put(messageId, message);
             }
@@ -54,7 +54,7 @@ final class CachedMessageAH implements IMessageAH, IPurgable {
     public int[] getMessageIdsByParentId(int parentMessageId) throws StorageException {
         int[] messages = childrenMessagesCache.get(parentMessageId);
         if (messages == null) {
-            messages = messageDAO.getMessageIdsByParentId(parentMessageId);
+            messages = messageAH.getMessageIdsByParentId(parentMessageId);
             if (messages != null && parentMessageId != 0) {
                 childrenMessagesCache.put(parentMessageId, messages);
             }
@@ -63,20 +63,20 @@ final class CachedMessageAH implements IMessageAH, IPurgable {
     }
 
     public int[] getMessageIdsByTopicId(int topicId) throws StorageException {
-        return messageDAO.getMessageIdsByTopicId(topicId);
+        return messageAH.getMessageIdsByTopicId(topicId);
     }
 
     public int[] getTopicMessageIdsByForumId(int forumId) throws StorageException {
-        return messageDAO.getTopicMessageIdsByForumId(forumId);
+        return messageAH.getTopicMessageIdsByForumId(forumId);
     }
 
     public void updateMessage(Message mes) throws StorageException {
         messageCache.remove(mes.getMessageId());
-        messageDAO.updateMessage(mes);
+        messageAH.updateMessage(mes);
     }
 
     public int[] getAllMessageIds() throws StorageException {
-        return messageDAO.getAllMessageIds();
+        return messageAH.getAllMessageIds();
     }
 
     public void purge() {

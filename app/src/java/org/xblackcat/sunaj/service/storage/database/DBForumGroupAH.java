@@ -36,4 +36,11 @@ final class DBForumGroupAH implements IForumGroupAH {
     public int[] getAllForumGroupIds() throws StorageException {
         return helper.getIds(DataQuery.GET_IDS_FORUM_GROUP);
     }
+
+    public void updateForumGroup(ForumGroup fg) throws StorageException {
+        helper.update(DataQuery.UPDATE_OBJECT_FORUM_GROUP,
+                fg.getForumGroupName(),
+                fg.getSortOrder(),
+                fg.getForumGroupId());
+    }
 }

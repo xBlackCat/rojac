@@ -20,4 +20,15 @@ public interface IForumAH extends AH {
     int[] getAllForumIds() throws StorageException;
 
     int[] getSubscribedForumIds() throws StorageException;
+
+    /**
+     * Updates forum information. Notice that <code>isSubscribed</code>  field is not changed during operation.
+     *
+     * @param f
+     *
+     * @throws StorageException
+     */
+    void updateForum(Forum f) throws StorageException;
+
+    void setSubscribeForum(int forumId, boolean subscribe) throws StorageException;
 }

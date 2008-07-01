@@ -13,18 +13,18 @@ final class CachedForumAH implements IForumAH, IPurgable {
     private final Cache<Forum> forumCache = new Cache<Forum>();
     private final ObjectCache<int[]> subscribedForums = new ObjectCache<int[]>();
 
-    private final IForumAH forumDAO;
+    private final IForumAH forumAH;
 
-    CachedForumAH(IForumAH forumDAO) {
-        this.forumDAO = forumDAO;
+    CachedForumAH(IForumAH forumAH) {
+        this.forumAH = forumAH;
     }
 
     public void storeForum(Forum f) throws StorageException {
-        forumDAO.storeForum(f);
+        forumAH.storeForum(f);
     }
 
     public boolean removeForum(int id) throws StorageException {
-        if (forumDAO.removeForum(id)) {
+        if (forumAH.removeForum(id)) {
             forumCache.remove(id);
             return true;
         } else {
@@ -35,7 +35,7 @@ final class CachedForumAH implements IForumAH, IPurgable {
     public Forum getForumById(int forumId) throws StorageException {
         Forum forum = forumCache.get(forumId);
         if (forum == null) {
-            forum = forumDAO.getForumById(forumId);
+            forum = forumAH.getForumById(forumId);
             if (forum != null) {
                 forumCache.put(forumId, forum);
             }
@@ -44,22 +44,30 @@ final class CachedForumAH implements IForumAH, IPurgable {
     }
 
     public int[] getForumIdsInGroup(int forumGroupId) throws StorageException {
-        return forumDAO.getForumIdsInGroup(forumGroupId);
+        return forumAH.getForumIdsInGroup(forumGroupId);
     }
 
     public int[] getAllForumIds() throws StorageException {
-        return forumDAO.getAllForumIds();
+        return forumAH.getAllForumIds();
     }
 
     public int[] getSubscribedForumIds() throws StorageException {
         int[] ids = subscribedForums.get();
         if (ids == null) {
-            ids = forumDAO.getSubscribedForumIds();
+            ids = forumAH.getSubscribedForumIds();
             if (ids != null) {
                 subscribedForums.put(ids);
             }
         }
         return ids;
+    }
+
+    public void updateForum(Forum f) throws StorageException {
+        forumAH.updateForum(f);
+    }
+
+    public void setSubscribeForum(int forumId, boolean subscribe) throws StorageException {
+        forumAH.setSubscribeForum(forumId, subscribe);
     }
 
     public void purge() {
