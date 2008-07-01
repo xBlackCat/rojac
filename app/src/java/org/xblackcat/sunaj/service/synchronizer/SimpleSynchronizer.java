@@ -1,6 +1,5 @@
 package org.xblackcat.sunaj.service.synchronizer;
 
-import gnu.trove.TIntHashSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,6 +8,7 @@ import org.xblackcat.sunaj.service.ServiceFactory;
 import org.xblackcat.sunaj.service.janus.IJanusService;
 import org.xblackcat.sunaj.service.janus.JanusService;
 import org.xblackcat.sunaj.service.janus.JanusServiceException;
+import org.xblackcat.sunaj.service.janus.data.ForumsList;
 import org.xblackcat.sunaj.service.janus.data.NewData;
 import org.xblackcat.sunaj.service.janus.data.PostException;
 import org.xblackcat.sunaj.service.janus.data.PostInfo;
@@ -39,6 +39,57 @@ public class SimpleSynchronizer implements ISynchronizer {
         }
     }
 
+    public void updateForumList() throws SynchronizationException {
+        if (log.isInfoEnabled()) {
+            log.info("Forum list synchronization started.");
+        }
+        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
+
+        IVersionAH vAH = storage.getVersionAH();
+
+        VersionInfo vi;
+        try {
+            vi = vAH.getVersionInfo(VersionType.FORUM_ROW_VERSION);
+
+            if (vi == null) {
+                vi = new VersionInfo(new Version(), VersionType.FORUM_ROW_VERSION);
+            }
+        } catch (StorageException e) {
+            throw new SynchronizationException("Can not obtain last forum version", e);
+        }
+
+        ForumsList forumsList;
+        try {
+            forumsList = janusService.getForumsList(vi.getVersion());
+        } catch (JanusServiceException e) {
+            throw new SynchronizationException("Can not obtain forums list", e);
+        }
+
+        IForumAH fAH = storage.getForumAH();
+        IForumGroupAH gAH = storage.getForumGroupAH();
+
+        try {
+            for (ForumGroup fg : forumsList.getFourumGroups()) {
+                if (gAH.getForumGroupById(fg.getForumGroupId()) == null) {
+                    gAH.storeForumGroup(fg);
+                } else {
+                    gAH.updateForumGroup(fg);
+                }
+            }
+
+            for (Forum f : forumsList.getForums()) {
+                if (fAH.getForumById(f.getForumId()) == null) {
+                    fAH.storeForum(f);
+                } else {
+                    fAH.updateForum(f);
+                }
+            }
+        } catch (StorageException e) {
+            throw new SynchronizationException("Can not update forum list", e);
+        }
+
+    }
+
     public void synchronize() throws SynchronizationException {
         if (log.isInfoEnabled()) {
             log.info("Synchronization started.");
@@ -53,6 +104,8 @@ public class SimpleSynchronizer implements ISynchronizer {
             }
 
             loadNewMessages();
+
+            loadExtraMessage();
         } catch (SynchronizationException e) {
             // Log the exception to console.
             log.error("Synchronization failed.", e);
@@ -60,20 +113,56 @@ public class SimpleSynchronizer implements ISynchronizer {
         }
     }
 
+    private void loadExtraMessage() throws SynchronizationException {
+        int[] ids = ArrayUtils.EMPTY_INT_ARRAY;
+
+        if (ArrayUtils.isEmpty(ids)) {
+            return;
+        }
+
+        TopicMessages extra;
+        try {
+            extra = janusService.getTopicByMessage(ids);
+        } catch (JanusServiceException e) {
+            throw new SynchronizationException("Can not load extra messages.", e);
+        }
+        Message[] messages = extra.getMessages();
+        Moderate[] moderates = extra.getModerates();
+        Rating[] ratings = extra.getRatings();
+
+        IMessageAH ah = storage.getMessageAH();
+        try {
+            for (Message m : messages) {
+                ah.storeMessage(m);
+            }
+        } catch (StorageException e) {
+            throw new SynchronizationException("Can not store extra messages into storage", e);
+        }
+
+        IModerateAH moderateAH = storage.getModerateAH();
+
+    }
+
     private void postChanges() throws SynchronizationException {
-        INewRatingAH nrDAO = storage.getNewRatingAH();
-        INewMessageAH nmDAO = storage.getNewMessageAH();
+        INewRatingAH nrAH = storage.getNewRatingAH();
+        INewMessageAH nmeAH = storage.getNewMessageAH();
+        INewModerateAH nmoAH = storage.getNewModerateAH();
 
         NewRating[] newRatings;
         NewMessage[] newMessages;
+        NewModerate[] newModerates;
         try {
-            newRatings = nrDAO.getAllNewRatings();
-            newMessages = nmDAO.getAllNewMessages();
+            newRatings = nrAH.getAllNewRatings();
+            newMessages = nmeAH.getAllNewMessages();
+            newModerates = nmoAH.getAllNewModerates();
         } catch (StorageException e) {
             throw new SynchronizationException("Can not load your changes.", e);
         }
 
-        if (ArrayUtils.isEmpty(newRatings) && ArrayUtils.isEmpty(newMessages)) {
+        if (ArrayUtils.isEmpty(newRatings) &&
+                ArrayUtils.isEmpty(newMessages) &&
+                ArrayUtils.isEmpty(newModerates)) {
+
             if (log.isDebugEnabled()) {
                 log.debug("Nothing to post.");
             }
@@ -82,7 +171,7 @@ public class SimpleSynchronizer implements ISynchronizer {
 
         PostInfo postInfo;
         try {
-            janusService.postChanges(newMessages, newRatings);
+            janusService.postChanges(newMessages, newRatings, newModerates);
             postInfo = janusService.commitChanges();
         } catch (JanusServiceException e) {
             throw new SynchronizationException("Can not post your changes to the RSDN.", e);
@@ -90,11 +179,11 @@ public class SimpleSynchronizer implements ISynchronizer {
 
         try {
             // Assume that all the ratings are commited.
-            nrDAO.clearRatings();
+            nrAH.clearRatings();
 
             // Remove the commited messages from the storage.
             for (int lmID : postInfo.getCommited()) {
-                nmDAO.removeNewMessage(lmID);
+                nmeAH.removeNewMessage(lmID);
             }
 
             // Show all the PostExceptions if any
@@ -110,15 +199,18 @@ public class SimpleSynchronizer implements ISynchronizer {
 
     private void loadNewMessages() throws SynchronizationException {
         IOptionsService os = ServiceFactory.getInstance().getOptionsService();
-        IVersionAH vDAO = storage.getVersionAH();
+        IVersionAH vAH = storage.getVersionAH();
         try {
-//            int[] forumIds = storage.getForumDAO().getSubscribedForumIds();
-            int[] forumIds = new int[]{33};
+            int[] forumIds = storage.getForumAH().getSubscribedForumIds();
             if (ArrayUtils.isEmpty(forumIds)) {
                 if (log.isWarnEnabled()) {
                     log.warn("You should select at least one forum to start synchronization.");
                 }
                 return;
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("Load new messages for forums [id=" + ArrayUtils.toString(forumIds) + "]");
             }
 
             Integer limit = os.getProperty(Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION);
@@ -127,11 +219,12 @@ public class SimpleSynchronizer implements ISynchronizer {
             Version moderatesVersion = getVersion(VersionType.MODERATE_ROW_VERSION);
             Version ratingsVersion = getVersion(VersionType.RATING_ROW_VERSION);
 
-            IRatingAH rDAO = storage.getRatingAH();
-            IMessageAH mDAO = storage.getMessageAH();
-            IModerateAH modDAO = storage.getModerateAH();
+            IRatingAH rAH = storage.getRatingAH();
+            IMessageAH mAH = storage.getMessageAH();
+            IModerateAH modAH = storage.getModerateAH();
 
-            TIntHashSet topics = new TIntHashSet();
+            // Broken topic ids
+//            TIntHashSet topics = new TIntHashSet();
 
             NewData data;
             do {
@@ -145,37 +238,43 @@ public class SimpleSynchronizer implements ISynchronizer {
                 data = janusService.getNewData(forumIds, status,
                         ratingsVersion, messagesVersion, moderatesVersion,
                         ArrayUtils.EMPTY_INT_ARRAY, ArrayUtils.EMPTY_INT_ARRAY,
-                        limit);
+                        1);
 
 
                 for (Message mes : data.getMessages()) {
-                    mDAO.storeMessage(mes);
+                    if (mAH.getMessageById(mes.getMessageId()) != null) {
+                        mAH.updateMessage(mes);
+                    } else {
+                        mAH.storeMessage(mes);
+                    }
+/*
                     int topicId = mes.getTopicId();
                     if (topicId != 0) {
                         topics.add(topicId);
                     }
+*/
                 }
                 for (Moderate mod : data.getModerates()) {
-                    modDAO.storeModerateInfo(mod);
+                    modAH.storeModerateInfo(mod);
                 }
                 for (Rating r : data.getRatings()) {
-                    rDAO.storeRating(r);
+                    rAH.storeRating(r);
                 }
 
                 ratingsVersion = data.getRatingRowVersion();
                 messagesVersion = data.getForumRowVersion();
                 moderatesVersion = data.getModerateRowVersion();
 
-                vDAO.updateVersionInfo(new VersionInfo(messagesVersion, VersionType.MESSAGE_ROW_VERSION));
-                vDAO.updateVersionInfo(new VersionInfo(moderatesVersion, VersionType.MODERATE_ROW_VERSION));
-                vDAO.updateVersionInfo(new VersionInfo(ratingsVersion, VersionType.RATING_ROW_VERSION));
+                vAH.updateVersionInfo(new VersionInfo(messagesVersion, VersionType.MESSAGE_ROW_VERSION));
+                vAH.updateVersionInfo(new VersionInfo(moderatesVersion, VersionType.MODERATE_ROW_VERSION));
+                vAH.updateVersionInfo(new VersionInfo(ratingsVersion, VersionType.RATING_ROW_VERSION));
 
             } while (data.getMessages().length > 0);
 
             // remove existing ids from downloaded topic ids.
-            int[] messageIds = topics.toArray();
+/*            int[] messageIds = topics.toArray();
             for (int mId : messageIds) {
-                if (mDAO.getMessageById(mId) != null) {
+                if (mAH.getMessageById(mId) != null) {
                     topics.remove(mId);
                 }
             }
@@ -184,29 +283,30 @@ public class SimpleSynchronizer implements ISynchronizer {
                 log.info("Found broken topics: " + ArrayUtils.toString(topics.toArray()));
             }
 
-            IMiscAH eDAO = storage.getMiscAH();
+            IMiscAH eAH = storage.getMiscAH();
 
-            topics.addAll(eDAO.getExtraMessages());
+            topics.addAll(eAH.getExtraMessages());
 
             TopicMessages fullTopics = janusService.getTopicByMessage(topics.toArray());
             for (Message mes : fullTopics.getMessages()) {
                 int mId = mes.getMessageId();
-                if (mDAO.getMessageById(mId) == null) {
-                    mDAO.storeMessage(mes);
+                if (mAH.getMessageById(mId) == null) {
+                    mAH.storeMessage(mes);
                 } else {
-                    mDAO.updateMessage(mes);
+                    mAH.updateMessage(mes);
                 }
-                modDAO.removeModerateInfosByMessageId(mId);
-                rDAO.removeRatingsByMessageId(mId);
+                modAH.removeModerateInfosByMessageId(mId);
+                rAH.removeRatingsByMessageId(mId);
             }
             for (Moderate mod : fullTopics.getModerates()) {
-                modDAO.storeModerateInfo(mod);
+                modAH.storeModerateInfo(mod);
             }
             for (Rating r : fullTopics.getRatings()) {
-                rDAO.storeRating(r);
+                rAH.storeRating(r);
             }
 
-            eDAO.clearExtraMessages();
+            eAH.clearExtraMessages();
+*/
         } catch (StorageException e) {
             throw new SynchronizationException("Can not obtain local versions.", e);
         } catch (JanusServiceException e) {
@@ -216,8 +316,8 @@ public class SimpleSynchronizer implements ISynchronizer {
 
     private void loadUsers() throws SynchronizationException {
         IOptionsService os = ServiceFactory.getInstance().getOptionsService();
-        IVersionAH vDAO = storage.getVersionAH();
-        IUserAH uDAO = storage.getUserAH();
+        IVersionAH vAH = storage.getVersionAH();
+        IUserAH uAH = storage.getUserAH();
 
         if (log.isInfoEnabled()) {
             log.info("Loading new users information.");
@@ -231,18 +331,18 @@ public class SimpleSynchronizer implements ISynchronizer {
             UsersList users;
             do {
                 if (log.isDebugEnabled()) {
-                    log.debug("Load next portion of the new users. Portion limit = " + limit);
+                    log.debug("Load next portion of the new users. Portion limit = " + limit + " (" + totalUsersNumber + " already loaded).");
                 }
                 users = janusService.getNewUsers(localUsersVersion, limit);
                 totalUsersNumber += users.getUsers().length;
                 for (User user : users.getUsers()) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Store the " + user + " in the storage.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Store the " + user + " in the storage.");
                     }
-                    uDAO.storeUser(user);
+                    uAH.storeUser(user);
                 }
                 localUsersVersion = users.getVersion();
-                vDAO.updateVersionInfo(new VersionInfo(localUsersVersion, VersionType.USERS_ROW_VERSION));
+                vAH.updateVersionInfo(new VersionInfo(localUsersVersion, VersionType.USERS_ROW_VERSION));
             } while (users.getUsers().length > 0);
 
             if (log.isInfoEnabled()) {
@@ -256,8 +356,8 @@ public class SimpleSynchronizer implements ISynchronizer {
     }
 
     private Version getVersion(VersionType type) throws StorageException {
-        IVersionAH vDAO = storage.getVersionAH();
-        VersionInfo versionInfo = vDAO.getVersionInfo(type);
+        IVersionAH vAH = storage.getVersionAH();
+        VersionInfo versionInfo = vAH.getVersionInfo(type);
         return versionInfo == null ? new Version() : versionInfo.getVersion();
     }
 

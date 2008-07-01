@@ -121,28 +121,28 @@ public class DBStorage implements IStorage, IQueryExecutor {
         for (Map.Entry<SQL,List<SQL>> entry : initializeQueries.entrySet()) {
             boolean success = false;
             SQL check = entry.getKey();
-            if (log.isDebugEnabled()) {
-                log.debug("Perform check " + check);
+            if (log.isTraceEnabled()) {
+                log.trace("Perform check " + check);
             }
             try {
                 Boolean c = helper.executeSingle(Converters.TO_BOOLEAN_CONVERTER, check.getSql());
                 success = Boolean.TRUE.equals(c);
             } catch (StorageException e) {
                 if (log.isTraceEnabled()) {
-                    log.trace(check + " check failed.", e);
+                    log.trace(check + " check failed. Reason: " + e.getLocalizedMessage());
                 }
             }
 
             if (!success) {
                 // If c is null or FALSE - abort.
-                if (log.isDebugEnabled()) {
-                    log.debug(check + " check failed. Perform initialization.");
+                if (log.isTraceEnabled()) {
+                    log.trace(check + " check failed. Perform initialization.");
                 }
 
                 for (SQL sql : entry.getValue()) {
                     try {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Perform initialization command " + sql);
+                        if (log.isTraceEnabled()) {
+                            log.trace("Perform initialization command " + sql);
                         }
                         helper.update(sql.getSql());
                     } catch (StorageException e) {
@@ -153,8 +153,8 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
                 // Perform post-check
                 try {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Perform post-initialization check " + check);
+                    if (log.isTraceEnabled()) {
+                        log.trace("Perform post-initialization check " + check);
                     }
                     Boolean c = helper.executeSingle(Converters.TO_BOOLEAN_CONVERTER, check.getSql());
                     success = Boolean.TRUE.equals(c);
@@ -240,8 +240,8 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     private IConnectionFactory initializeConnectionFactory(String name) throws StorageInitializationException {
-        if (log.isDebugEnabled()) {
-            log.debug("Loading database connection properties.");
+        if (log.isTraceEnabled()) {
+            log.trace("Loading database connection properties.");
         }
         // The properties file should be located in /<propRoot>/database.properties
         Properties databaseProperties = new Properties();
@@ -301,8 +301,8 @@ public class DBStorage implements IStorage, IQueryExecutor {
         for (T q : type.getEnumConstants()) {
             String sql = (String) queries.remove(q.getPropertyName());
             if (sql != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Property '" + q.getPropertyName() + "' initialized with SQL: " + sql);
+                if (log.isTraceEnabled()) {
+                    log.trace("Property '" + q.getPropertyName() + "' initialized with SQL: " + sql);
                 }
                 qs.put(q, sql);
             } else {
