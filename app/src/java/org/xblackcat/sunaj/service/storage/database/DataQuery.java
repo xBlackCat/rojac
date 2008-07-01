@@ -25,7 +25,8 @@ public enum DataQuery implements IPropertiable {
     /**
      * The query should fetch the forum object properties in following order:
      * <p/>
-     * id(int), forum group(int), rated(int), inTop(int), rateLimit(int), subscribed(boolean), short name(String), name(String)
+     * id(int), forum group(int), rated(int), inTop(int), rateLimit(int), subscribed(boolean), short name(String),
+     * name(String)
      */
     GET_OBJECTS_FORUM,
     /**
@@ -37,7 +38,10 @@ public enum DataQuery implements IPropertiable {
     /**
      * The query should fetch the message object properties in following order:
      * <p/>
-     * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color (int), user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update date (long), moderated date (long), subject (String), message name (String), user nick (String), user title (String), message (String)
+     * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color
+     * (int), user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update
+     * date (long), moderated date (long), subject (String), message name (String), user nick (String), user title
+     * (String), message (String)
      */
     GET_OBJECTS_MESSAGE,
     /**
@@ -53,9 +57,16 @@ public enum DataQuery implements IPropertiable {
      */
     GET_OBJECTS_NEW_MESSAGE,
     /**
+     * The query should fetch the new moderate object properties in following order:
+     * <p/>
+     * id (int), message id (int), action (int), forum id(int), description(String), asModerator(boolean)
+     */
+    GET_OBJECTS_NEW_MODERATES,
+    /**
      * The query should fetch the user object properties in following order:
      * <p/>
-     * id (int), name (String), nick (String), real_name (String), email (String), home_page (String), specialization (String), where_from (String), origin (String)
+     * id (int), name (String), nick (String), real_name (String), email (String), home_page (String), specialization
+     * (String), where_from (String), origin (String)
      */
     GET_OBJECTS_USER,
     /**
@@ -81,7 +92,8 @@ public enum DataQuery implements IPropertiable {
     /**
      * The query for storing the forum object. Set the object parameters in following order:
      * <p/>
-     * id(int), forum group(int), rated(int), inTop(int), rateLimit(int), subscribed(boolean), short name(String), name(String)
+     * id(int), forum group(int), rated(int), inTop(int), rateLimit(int), subscribed(boolean), short name(String),
+     * name(String)
      */
     STORE_OBJECT_FORUM,
     /**
@@ -91,11 +103,18 @@ public enum DataQuery implements IPropertiable {
      */
     STORE_OBJECT_NEW_RATING,
     /**
+     * The query for storing the new moderate object. Set the object parameters in following order:
+     * <p/>
+     * id (int), message id (int), action (int), forum id(int), description(String), asModerator(boolean)
+     */
+    STORE_OBJECT_NEW_MODERATE,
+    /**
      * The query for storing the message object. Set the object parameters in following order:
      * <p/>
-     * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color (int),
-     * user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update date (long),
-     * moderated date (long), subject (String), message name (String), user nick (String), user title (String), message (String)
+     * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color
+     * (int), user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update
+     * date (long), moderated date (long), subject (String), message name (String), user nick (String), user title
+     * (String), message (String)
      */
     STORE_OBJECT_MESSAGE,
     /**
@@ -113,7 +132,8 @@ public enum DataQuery implements IPropertiable {
     /**
      * The query for storing the user object. Set the object parameters in following order:
      * <p/>
-     * id (int), name (String), nick (String), real_name (String), email (String), home_page (String), specialization (String), where_from (String), origin (String)
+     * id (int), name (String), nick (String), real_name (String), email (String), home_page (String), specialization
+     * (String), where_from (String), origin (String)
      */
     STORE_OBJECT_USER,
     /**
@@ -171,6 +191,10 @@ public enum DataQuery implements IPropertiable {
      */
     REMOVE_OBJECT_NEW_MESSAGE,
     /**
+     * The query for removing the new moderate object by its id
+     */
+    REMOVE_OBJECT_NEW_MODERATE,
+    /**
      * The query for removing the message object by its id
      */
     REMOVE_OBJECT_MESSAGE,
@@ -209,11 +233,17 @@ public enum DataQuery implements IPropertiable {
     GET_OBJECT_MESSAGE,
     GET_OBJECT_USER,
     /**
-     * The query should fetch the new rating object properties in following order:
+     * The query should fetch the new message object properties in following order:
      * <p/>
      * id(int), message id(int), rate(int)
      */
     GET_OBJECT_NEW_MESSAGE,
+    /**
+     * The query should fetch the new moderate object properties in following order:
+     * <p/>
+     * id (int), message id (int), action (int), forum id(int), description(String), asModerator(boolean)
+     */
+    GET_OBJECT_NEW_MODERATE,
 
     // Queries for getting parts of object by object id
     GET_OBJECT_MESSAGE_BODY,
@@ -244,8 +274,7 @@ public enum DataQuery implements IPropertiable {
     GET_IDS_MESSAGE_BY_PARENT_ID,
     GET_IDS_MESSAGE_BY_TOPIC_ID,
     IS_MESSAGES_EXIST_IN_FORUM,
-    GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,
-    ;
+    GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,;
 
     private final String properyName = ResourceUtils.constantToPropertyName(this.name());
 

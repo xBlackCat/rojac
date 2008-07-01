@@ -1,6 +1,7 @@
 package org.xblackcat.sunaj.service.storage.database;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.sunaj.service.storage.*;
@@ -13,11 +14,7 @@ import org.xblackcat.sunaj.service.storage.database.helper.QueryHelper;
 import org.xblackcat.sunaj.util.ResourceUtils;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Date: 17.04.2007
@@ -34,11 +31,10 @@ public class DBStorage implements IStorage, IQueryExecutor {
     private static final String DSSTORAGE_PASSWORD = "db.access.password";
 
     private final Map<DataQuery, String> queries;
-    private final Map<CheckQuery, String> checkQueries;
-    private final Map<InitializeQuery, String> initializeQueries;
+    private final Map<SQL, List<SQL>> initializeQueries;
 
     private final IQueryHelper helper;
-    
+
     private final DBForumAH forumDAO;
     private final DBRatingAH ratingDAO;
     private final DBUserAH userDAO;
@@ -46,6 +42,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
     private final DBVersionAH versionDAO;
     private final DBNewRatingAH newRatingDAO;
     private final DBModerateAH moderateDAO;
+    private final DBNewModerateAH newModerateAH;
     private final DBNewMessageAH newMessageDAO;
     private final DBMessageAH messageDAO;
     private final DBMiscAH miscDAO;
@@ -55,8 +52,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
             IConnectionFactory cf = initializeConnectionFactory('/' + propRoot + "/database.properties");
 
             this.queries = loadSQLs('/' + propRoot + "/sql.data.properties", DataQuery.class);
-            this.checkQueries = loadSQLs('/' + propRoot + "/sql.check.properties", CheckQuery.class);
-            this.initializeQueries = loadSQLs('/' + propRoot + "/sql.initialize.properties", InitializeQuery.class);
+            this.initializeQueries = loadInitializeSQLs('/' + propRoot + "/sql.check.properties", '/' + propRoot + "/sql.initialize.properties", '/' + propRoot + "/sql.depends.properties");
 
             helper = new QueryHelper(cf);
         } catch (StorageInitializationException e) {
@@ -78,49 +74,92 @@ public class DBStorage implements IStorage, IQueryExecutor {
         newMessageDAO = new DBNewMessageAH(this);
         messageDAO = new DBMessageAH(this);
         miscDAO = new DBMiscAH(this);
+        newModerateAH = new DBNewModerateAH(this);
+    }
+
+    private Map<SQL, List<SQL>> loadInitializeSQLs(String checkProp, String initProps, String config) throws IOException {
+        Properties check = new Properties();
+        Properties init = new Properties();
+        Properties clue = new Properties();
+        check.load(ResourceUtils.getResourceAsStream(checkProp));
+        init.load(ResourceUtils.getResourceAsStream(initProps));
+        clue.load(ResourceUtils.getResourceAsStream(config));
+
+        Map<SQL, List<SQL>> map = new HashMap<SQL, List<SQL>>();
+
+        for (Map.Entry<Object, Object> ce : check.entrySet()) {
+            String name = (String) ce.getKey();
+            String sql = (String) ce.getValue();
+
+            String inits = clue.getProperty(name, "");
+            List<SQL> sqls = new ArrayList<SQL>();
+            String[] initNames = inits.trim().split("\\s+,\\s+");
+            if (!ArrayUtils.isEmpty(initNames)) {
+                for (String initName : initNames) {
+                    String initSql = init.getProperty(initName);
+                    if (StringUtils.isBlank(initSql)) {
+                        if (log.isWarnEnabled()) {
+                            log.warn(initName + " SQL not defined (Used in " + name + "). Initialization routine can be work improperly.");
+                        }
+                    } else {
+                        sqls.add(new SQL(initName, initSql));
+                    }
+                }
+            }
+
+            map.put(new SQL(name, sql), sqls);
+        }
+
+        return Collections.unmodifiableMap(map);
     }
 
     /* Initialization routines */
-    public boolean checkStructure() {
+    public void initialize() throws StorageException {
         if (log.isInfoEnabled()) {
             log.info("Check database storage structure started.");
         }
-        for (Map.Entry<CheckQuery, String> entry : checkQueries.entrySet()) {
+        for (Map.Entry<SQL,List<SQL>> entry : initializeQueries.entrySet()) {
+            boolean success = false;
+            SQL check = entry.getKey();
             if (log.isDebugEnabled()) {
-                log.debug("Checking: " + entry.getKey());
+                log.debug("Perform check " + check);
             }
             try {
-                Boolean c = helper.executeSingle(Converters.TO_BOOLEAN_CONVERTER, entry.getValue());
-                if (!Boolean.TRUE.equals(c)) {
-                    // If c is null or FALSE - abort.
-                    if (log.isDebugEnabled()) {
-                        log.debug(entry.getKey() + " check failed.");
-                    }
-                    return false;
-                }
+                Boolean c = helper.executeSingle(Converters.TO_BOOLEAN_CONVERTER, check.getSql());
+                success = Boolean.TRUE.equals(c);
             } catch (StorageException e) {
-                if (log.isDebugEnabled()) {
-                    log.debug(entry.getKey() + " check failed.", e);
+                if (log.isTraceEnabled()) {
+                    log.trace(check + " check failed.", e);
                 }
-                return false;
             }
-        }
-        return true;
-    }
 
-    public void initialize() throws StorageException {
-        if (log.isInfoEnabled()) {
-            log.info("The storage initialization started.");
-        }
-        for (Map.Entry<InitializeQuery, String> e : initializeQueries.entrySet()) {
-            if (log.isDebugEnabled()) {
-                log.debug("Performing: " + e.getKey());
-            }
-            try {
-                helper.update(e.getValue());
-            } catch (StorageException $) {
-                if (log.isWarnEnabled()) {
-                    log.warn("Can not perform initialization step: " + e.getKey(), $);
+            if (!success) {
+                // If c is null or FALSE - abort.
+                if (log.isDebugEnabled()) {
+                    log.debug(check + " check failed. Perform initialization.");
+                }
+
+                for (SQL sql : entry.getValue()) {
+                    try {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Perform initialization command " + sql);
+                        }
+                        helper.update(sql.getSql());
+                    } catch (StorageException e) {
+                        log.error("Can not perform initialization procedure " + sql);
+                        throw new StorageInitializationException("Can not execute " + sql, e);
+                    }
+                }
+
+                // Perform post-check
+                try {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Perform post-initialization check " + check);
+                    }
+                    Boolean c = helper.executeSingle(Converters.TO_BOOLEAN_CONVERTER, check.getSql());
+                    success = Boolean.TRUE.equals(c);
+                } catch (StorageException e) {
+                    throw new StorageCheckException("Post check failed for " + check, e);
                 }
             }
         }
@@ -144,6 +183,10 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
     public INewMessageAH getNewMessageAH() {
         return newMessageDAO;
+    }
+
+    public INewModerateAH getNewModerateAH() {
+        return newModerateAH;
     }
 
     public INewRatingAH getNewRatingAH() {
@@ -194,14 +237,6 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
     protected String getQuery(DataQuery q) {
         return queries.get(q);
-    }
-
-    protected String getQuery(CheckQuery q) {
-        return checkQueries.get(q);
-    }
-
-    protected String getQuery(InitializeQuery q) {
-        return initializeQueries.get(q);
     }
 
     private IConnectionFactory initializeConnectionFactory(String name) throws StorageInitializationException {
@@ -286,5 +321,28 @@ public class DBStorage implements IStorage, IQueryExecutor {
         }
 
         return Collections.unmodifiableMap(qs);
+    }
+
+    private static class SQL {
+        private final String name;
+        private final String sql;
+
+        private SQL(String name, String sql) {
+            this.name = name;
+            this.sql = sql;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getSql() {
+            return sql;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }
