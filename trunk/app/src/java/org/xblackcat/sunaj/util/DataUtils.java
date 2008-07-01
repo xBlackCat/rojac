@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * Date: 27 черв 2008
@@ -29,5 +30,21 @@ public class DataUtils {
 
         T[] a = (T[]) Array.newInstance(c, ar.length);
         return res.toArray(a);
+    }
+
+    public static String construstDebugSQL(String sql, Object... params) {
+        String query = sql;
+
+        for (Object o : params) {
+            String str;
+            if (o instanceof String) {
+                str = "'" + Matcher.quoteReplacement(o.toString()) + "'";
+            } else {
+                str = Matcher.quoteReplacement(o.toString());
+            }
+            query = query.replaceFirst("\\?", str);
+        }
+
+        return query;
     }
 }

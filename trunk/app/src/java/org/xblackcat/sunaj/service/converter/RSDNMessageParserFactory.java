@@ -65,8 +65,8 @@ public final class RSDNMessageParserFactory {
             String groupName = e.getKey().toString();
             final String group = e.getValue().toString();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Process group " + groupName + ": " + group);
+            if (log.isTraceEnabled()) {
+                log.trace("Process group " + groupName + ": " + group);
             }
 
             String[] subTagNames = group.split(",");
@@ -99,16 +99,16 @@ public final class RSDNMessageParserFactory {
         Properties allTags = new Properties();
 
         allTags.load(ResourceUtils.getResourceAsStream(tagsResource));
-        if (log.isDebugEnabled()) {
-            log.debug("Parsers list has been loaded. Total " + allTags.size() + " items.");
+        if (log.isTraceEnabled()) {
+            log.trace("Parsers list has been loaded. Total " + allTags.size() + " items.");
         }
 
         for (Map.Entry<Object, Object> key : allTags.entrySet()) {
             String pName = key.getKey().toString();
             String pClassName = key.getValue().toString();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Loading parser " + pName + " [class = " + pClassName + "].");
+            if (log.isTraceEnabled()) {
+                log.trace("Loading parser " + pName + " [class = " + pClassName + "].");
             }
 
             ITag tag;
@@ -202,8 +202,8 @@ public final class RSDNMessageParserFactory {
         Properties subTagsList = new Properties();
         subTagsList.load(ResourceUtils.getResourceAsStream(subTagsResource));
 
-        if (log.isDebugEnabled()) {
-            log.debug("Tag rules list has been loaded. Total " + subTagsList.size() + " entries.");
+        if (log.isTraceEnabled()) {
+            log.trace("Tag rules list has been loaded. Total " + subTagsList.size() + " entries.");
         }
 
         final Collection<ITag> allTags = allTagsMap.values();
@@ -213,8 +213,8 @@ public final class RSDNMessageParserFactory {
             String tagName = e.getKey().toString();
             final String tagRule = e.getValue().toString();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Process rule for tag " + tagName + ": " + tagRule);
+            if (log.isTraceEnabled()) {
+                log.trace("Process rule for tag " + tagName + ": " + tagRule);
             }
 
             String[] subTagNames = StringUtils.isNotEmpty(tagRule) ? tagRule.split(",") : ArrayUtils.EMPTY_STRING_ARRAY;

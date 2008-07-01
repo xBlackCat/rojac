@@ -8,4 +8,6 @@ package org.xblackcat.sunaj.service.synchronizer;
 
 public interface ISynchronizer {
     void synchronize() throws SynchronizationException;
+
+    void updateForumList() throws SynchronizationException;
 }
