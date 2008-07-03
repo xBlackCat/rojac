@@ -25,6 +25,9 @@ public final class Version {
     }
 
     private String getAsString() {
+        if (ArrayUtils.isEmpty(base64Version)) {
+            return "empty";
+        }
         StringBuilder res = new StringBuilder();
         for (byte b : base64Version) {
             res.append(String.format(",%02x", b & 0xff));
