@@ -14,16 +14,16 @@ import java.util.Map;
  */
 
 public class OptionsServiceTest extends TestCase {
-    private static final Property<String> TEST_PROPERTY_STRING = new Property("sunaj.test.string", String.class);
-    private static final Property<Boolean> TEST_PROPERTY_BOOLEAN = new Property("sunaj.test.boolean", Boolean.class);
-    private static final Property<Character> TEST_PROPERTY_CHAR = new Property("sunaj.test.char", Character.class);
-    private static final Property<Byte> TEST_PROPERTY_BYTE = new Property("sunaj.test.byte", Byte.class);
-    private static final Property<Short> TEST_PROPERTY_SHORT = new Property("sunaj.test.short", Short.class);
-    private static final Property<Integer> TEST_PROPERTY_INT = new Property("sunaj.test.int", Integer.class);
-    private static final Property<Long> TEST_PROPERTY_LONG = new Property("sunaj.test.long", Long.class);
-    private static final Property<Double> TEST_PROPERTY_DOUBLE = new Property("sunaj.test.double", Double.class);
-    private static final Property<Float> TEST_PROPERTY_FLOAT = new Property("sunaj.test.float", Float.class);
-    private static final Property<TestEnum> TEST_PROPERTY_ENUM = new Property("sunaj.test.enum", TestEnum.class);
+    private static final Property<String> TEST_PROPERTY_STRING = Property.create("sunaj.test.string", String.class);
+    private static final Property<Boolean> TEST_PROPERTY_BOOLEAN = Property.create("sunaj.test.boolean", Boolean.class);
+    private static final Property<Character> TEST_PROPERTY_CHAR = Property.create("sunaj.test.char", Character.class);
+    private static final Property<Byte> TEST_PROPERTY_BYTE = Property.create("sunaj.test.byte", Byte.class);
+    private static final Property<Short> TEST_PROPERTY_SHORT = Property.create("sunaj.test.short", Short.class);
+    private static final Property<Integer> TEST_PROPERTY_INT = Property.create("sunaj.test.int", Integer.class);
+    private static final Property<Long> TEST_PROPERTY_LONG = Property.create("sunaj.test.long", Long.class);
+    private static final Property<Double> TEST_PROPERTY_DOUBLE = Property.create("sunaj.test.double", Double.class);
+    private static final Property<Float> TEST_PROPERTY_FLOAT = Property.create("sunaj.test.float", Float.class);
+    private static final Property<TestEnum> TEST_PROPERTY_ENUM = Property.create("sunaj.test.enum", TestEnum.class);
 
     private IOptionsService s;
 
