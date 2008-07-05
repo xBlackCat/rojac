@@ -228,17 +228,16 @@ public class SimpleSynchronizer implements ISynchronizer {
 
             NewData data;
             do {
-                boolean s = messagesVersion.getBytes().length == 0;
-
-                boolean[] status = new boolean[forumIds.length];
-                for (int i = 0; i < forumIds.length; i++) {
-                    status[i] = s;
-                }
-
-                data = janusService.getNewData(forumIds, status,
-                        ratingsVersion, messagesVersion, moderatesVersion,
-                        ArrayUtils.EMPTY_INT_ARRAY, ArrayUtils.EMPTY_INT_ARRAY,
-                        1);
+                data = janusService.getNewData(
+                        forumIds,
+                        messagesVersion.getBytes().length == 0,
+                        ratingsVersion,
+                        messagesVersion,
+                        moderatesVersion,
+                        ArrayUtils.EMPTY_INT_ARRAY,
+                        ArrayUtils.EMPTY_INT_ARRAY,
+                        limit
+                );
 
 
                 for (Message mes : data.getMessages()) {
