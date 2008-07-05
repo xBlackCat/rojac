@@ -160,14 +160,12 @@ public class JanusService implements IJanusService {
         }
     }
 
-    public NewData getNewData(int[] subscribedForums, boolean[] firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException {
-        log.info("Retrieve the messages from the Janus WS.");
-
-        boolean hasIndividualConfig = firstForumRequest != null && subscribedForums.length == firstForumRequest.length;
+    public NewData getNewData(int[] subscribedForums, boolean firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException {
+        log.info("Retrieve the messages from the Janus WS. Portion limit = " + maxOutput);
 
         RequestForumInfo[] rfi = new RequestForumInfo[subscribedForums.length];
         for (int i = 0; i < subscribedForums.length; i++) {
-            rfi[i] = new RequestForumInfo(subscribedForums[i], hasIndividualConfig && firstForumRequest[i]);
+            rfi[i] = new RequestForumInfo(subscribedForums[i], firstForumRequest);
         }
 
         ChangeResponse list;
@@ -204,9 +202,9 @@ public class JanusService implements IJanusService {
                     newMessages.length + " new message(s), " +
                     newRating.length + " new rating(s), " +
                     newModerate.length + " new moderate info(s)" +
-                    ", forums version is " + forumRowVersion +
-                    ", rating version is " + ratingRowVersion +
-                    ", moderate version is " + moderateRowVerion
+                    ", messages version is " + forumRowVersion +
+                    ", ratings version is " + ratingRowVersion +
+                    ", moderates version is " + moderateRowVerion
             );
         }
         return new NewData(ownId, forumRowVersion, ratingRowVersion, ratingRowVersion, newMessages, newModerate, newRating);
