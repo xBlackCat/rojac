@@ -84,6 +84,8 @@ public class SimpleSynchronizer implements ISynchronizer {
                     fAH.updateForum(f);
                 }
             }
+
+            storage.getVersionAH().updateVersionInfo(new VersionInfo(forumsList.getVersion(), VersionType.FORUM_ROW_VERSION));
         } catch (StorageException e) {
             throw new SynchronizationException("Can not update forum list", e);
         }
