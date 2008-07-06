@@ -85,10 +85,11 @@ public class JanusService implements IJanusService {
 
         JanusForumInfo[] forumInfos = list.getForumList();
         JanusForumGroupInfo[] groupInfos = list.getGroupList();
+        Version version = new Version(list.getForumsRowVersion());
         if (log.isDebugEnabled()) {
-            log.debug("Got " + forumInfos.length + " forum(s) in " + groupInfos.length + " group(s).");
+            log.debug("Got " + forumInfos.length + " forum(s) in " + groupInfos.length + " group(s). Version: " + version);
         }
-        return new ForumsList(forumInfos, groupInfos);
+        return new ForumsList(forumInfos, groupInfos, version);
     }
 
     public UsersList getNewUsers(Version verRow, int maxOutput) throws JanusServiceException {
