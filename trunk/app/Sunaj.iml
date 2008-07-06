@@ -90,15 +90,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/wsdl4j-1.5.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/janus-wsdl.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -114,19 +105,6 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/commons-httpclient-3.1-rc1.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar://D:/Libs/apache/commons-httpclient-3.1-rc1.zip!/commons-httpclient-3.1-rc1/docs/apidocs" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://D:/Libs/apache/commons-httpclient-3.1-rc1-src.zip!/commons-httpclient-3.1-rc1/src/java" />
-        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
@@ -268,6 +246,24 @@
         <SOURCES>
           <root url="jar://$MODULE_DIR$/../../Utils/ResourceUtils/utils-resource.zip!/java" />
         </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/commons-httpclient-3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/wsdl4j-1.6.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntryProperties />
