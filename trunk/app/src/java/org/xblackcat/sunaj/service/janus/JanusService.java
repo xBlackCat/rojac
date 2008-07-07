@@ -1,14 +1,7 @@
 package org.xblackcat.sunaj.service.janus;
 
-import org.apache.axis.Chain;
-import org.apache.axis.Handler;
-import org.apache.axis.SimpleChain;
-import org.apache.axis.SimpleTargetedChain;
-import org.apache.axis.client.AxisClient;
-import org.apache.axis.configuration.SimpleProvider;
-import org.apache.axis.transport.http.CommonsHTTPSender;
+import org.apache.axis.configuration.FileProvider;
 import org.apache.axis.transport.http.HTTPConstants;
-import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,9 +18,11 @@ import org.xblackcat.sunaj.service.janus.data.UsersList;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
 import org.xblackcat.sunaj.util.DataUtils;
+import org.xblackcat.utils.ResourceUtils;
 import ru.rsdn.Janus.*;
 
 import javax.xml.rpc.ServiceException;
+import java.io.IOException;
 import java.rmi.RemoteException;
 
 /**
@@ -216,22 +211,16 @@ public class JanusService implements IJanusService {
 
         log.info("Janus SAOP service initialization has been started.");
 
-        JanusATLocator jl = new JanusATLocator();
-        SimpleProvider clientConfig = new SimpleProvider();
-        Chain reqHandler = new SimpleChain();
-        Chain respHandler = new SimpleChain();
-
-        Handler pivot = new CommonsHTTPSender();
-        Handler transport = new SimpleTargetedChain(reqHandler, pivot, respHandler);
-        clientConfig.deployTransport(HTTPTransport.DEFAULT_TRANSPORT_NAME, transport);
-        jl.setEngineConfiguration(clientConfig);
-        jl.setEngine(new AxisClient(clientConfig));
-        jl.setMaintainSession(true);
+        JanusATLocator jl;
+        try {
+            jl = new JanusATLocator(new FileProvider(ResourceUtils.getResourceAsStream("/client-config.wsdd")));
+        } catch (IOException e) {
+            throw new ServiceException("Can not load service configuration.", e);
+        }
 
         JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
 
         // Compress the request
-//		soap._setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
         if (os.getProperty(Property.SERVICE_JANUS_USE_GZIP)) {
             log.info("Data compression is enabled.");
             // Tell the server it can compress the response

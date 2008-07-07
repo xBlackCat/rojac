@@ -94,7 +94,7 @@ public final class SunajLauncher {
 
         ISynchronizer s = sf.getSynchronizer();
 
-        s.updateForumList();
+        //s.updateForumList();
 
         storage.getForumAH().setSubscribeForum(33, true);
 
