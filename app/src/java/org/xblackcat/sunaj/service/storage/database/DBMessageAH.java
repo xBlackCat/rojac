@@ -88,6 +88,12 @@ final class DBMessageAH implements IMessageAH {
                 m.getMessageId());
     }
 
+    public boolean isExist(int messageId) throws StorageException {
+        return helper.executeSingle(Converters.TO_BOOLEAN_CONVERTER,
+                DataQuery.IS_MESSAGES_EXIST,
+                messageId);
+    }
+
     public int[] getAllMessageIds() throws StorageException {
         return helper.getIds(DataQuery.GET_IDS_MESSAGE);
     }

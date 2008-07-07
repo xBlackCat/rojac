@@ -26,4 +26,6 @@ public interface IMessageAH extends AH {
     int[] getTopicMessageIdsByForumId(int forumId) throws StorageException;
 
     void updateMessage(Message mes) throws StorageException;
+
+    boolean isExist(int messageId) throws StorageException;
 }

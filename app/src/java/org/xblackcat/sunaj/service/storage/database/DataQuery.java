@@ -302,6 +302,10 @@ public enum DataQuery implements IPropertiable {
     GET_IDS_MESSAGE_BY_PARENT_ID,
     GET_IDS_MESSAGE_BY_TOPIC_ID,
     IS_MESSAGES_EXIST_IN_FORUM,
+    /**
+     * Checks is the message id exist
+     */
+    IS_MESSAGES_EXIST,
     GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,;
 
     private final String properyName = ResourceUtils.constantToProperty(this.name());
