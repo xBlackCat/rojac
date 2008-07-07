@@ -47,4 +47,15 @@ public class DataUtils {
 
         return query;
     }
+
+    /*
+    * Util methods for converting values.
+    */
+    public static <T extends Enum<T>> T convertToEnum(Class<T> enumClass, String val) {
+        if (val != null) {
+            return Enum.valueOf(enumClass, val);
+        } else {
+            return null;
+        }
+    }
 }
