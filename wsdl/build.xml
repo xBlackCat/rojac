@@ -4,31 +4,32 @@
   -->
 
 <project name="sunaj-wsdl" default="build">
+    <property environment="env"/>
     <property file="build.properties"/>
     <!-- Uncomment the following property if no tests compilation is needed -->
 
-        <dirname property="module.sunaj-wsdl.basedir" file="${ant.file.sunaj-wsdl}"/>
+    <dirname property="module.sunaj-wsdl.basedir" file="${ant.file.sunaj-wsdl}"/>
 
-        <property name="sunaj-wsdl.lib.dir" value="${module.sunaj-wsdl.basedir}/lib"/>
-        <property name="sunaj-wsdl.res.dir" value="${module.sunaj-wsdl.basedir}/res"/>
-        <property name="sunaj-wsdl.output.dir" value="${module.sunaj-wsdl.basedir}/classes"/>
-        <property name="sunaj-wsdl.testoutput.dir" value="${module.sunaj-wsdl.basedir}/classes"/>
+    <property name="sunaj-wsdl.lib.dir" value="${module.sunaj-wsdl.basedir}/lib"/>
+    <property name="sunaj-wsdl.res.dir" value="${module.sunaj-wsdl.basedir}/res"/>
+    <property name="sunaj-wsdl.output.dir" value="${module.sunaj-wsdl.basedir}/classes"/>
+    <property name="sunaj-wsdl.testoutput.dir" value="${module.sunaj-wsdl.basedir}/classes"/>
 
     <property name="skip.tests" value="true"/>
 
     <!-- Compiler options -->
 
-        <property name="compiler.debug" value="on"/>
-        <property name="compiler.generate.no.warnings" value="off"/>
-        <!--<property name="compiler.args" value="-target jsr14"/>-->
-        <property name="compiler.args" value=""/>
-        <property name="compiler.max.memory" value="128m"/>
-        <patternset id="compiler.resources">
-                <include name="**/?*.properties"/>
-                <include name="**/?*.xml"/>
-                <include name="**/?*.gif"/>
-                <include name="**/?*.png"/>
-                <include name="**/?*.jpeg"/>
+    <property name="compiler.debug" value="on"/>
+    <property name="compiler.generate.no.warnings" value="off"/>
+    <!--<property name="compiler.args" value="-target jsr14"/>-->
+    <property name="compiler.args" value=""/>
+    <property name="compiler.max.memory" value="128m"/>
+    <patternset id="compiler.resources">
+        <include name="**/?*.properties"/>
+        <include name="**/?*.xml"/>
+        <include name="**/?*.gif"/>
+        <include name="**/?*.png"/>
+        <include name="**/?*.jpeg"/>
         <include name="**/?*.jpg"/>
         <include name="**/?*.html"/>
         <include name="**/?*.dtd"/>
@@ -52,63 +53,67 @@
         </fileset>
     </path>
 
-        <path id="sunaj-wsdl.module.bootclasspath">
-            <!-- Paths to be included in compilation bootclasspath -->
-        </path>
+    <path id="sunaj-wsdl.module.bootclasspath">
+        <!-- Paths to be included in compilation bootclasspath -->
+    </path>
 
-        <path id="sunaj-wsdl.module.classpath">
-            <path refid="jdk.classpath"/>
-            <fileset dir="libs">
-                <include name="**/*.jar"/>
-            </fileset>
-        </path>
+    <path id="sunaj-wsdl.module.classpath">
+        <path refid="jdk.classpath"/>
+        <fileset dir="libs">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
 
     <property name="project.jdk.home" value="${jdk.home}"/>
     <property name="project.jdk.classpath" value="jdk.classpath"/>
 
-        <path id="sunaj-wsdl.module.sourcepath">
-            <dirset dir="${module.sunaj-wsdl.basedir}">
-                <include name="src/java"/>
-            </dirset>
-        </path>
+    <path id="sunaj-wsdl.module.sourcepath">
+        <dirset dir="${module.sunaj-wsdl.basedir}">
+            <include name="src/java"/>
+        </dirset>
+    </path>
 
-        <path id="sunaj-wsdl.module.test.sourcepath">
-            <dirset dir="${module.sunaj-wsdl.basedir}">
-                <include name="test/java"/>
-            </dirset>
-        </path>
+    <path id="sunaj-wsdl.module.test.sourcepath">
+        <dirset dir="${module.sunaj-wsdl.basedir}">
+            <include name="test/java"/>
+        </dirset>
+    </path>
 
     <target name="clean" description="cleanup all">
+        <deltree dir="dist"/>
+        <deltree dir="classes"/>
+        <deltree dir="src/java"/>
+        <mkdir dir="src/java"/>
     </target>
 
-        <target name="generate">
-                <taskdef resource="axis-tasks.properties">
-                        <classpath>
-                                <path refid="sunaj-wsdl.module.classpath"/>
-                        </classpath>
-                </taskdef>
-                <axis-wsdl2java output="src/java" testcase="false" url="http://rsdn.ru/ws/JanusAT.asmx?WSDL" verbose="true">
-                <mapping namespace="http://tempuri.org/" package="net.sf.forview.rsdn.wssync.imported" />
-                </axis-wsdl2java>
-        </target>
+    <target name="generate">
+        <taskdef resource="axis-tasks.properties">
+            <classpath>
+                <path refid="sunaj-wsdl.module.classpath"/>
+            </classpath>
+        </taskdef>
+        <axis-wsdl2java output="src/java" testcase="false" url="http://rsdn.ru/ws/JanusAT.asmx?WSDL" verbose="true">
+            <mapping namespace="http://tempuri.org/" package="net.sf.forview.rsdn.wssync.imported"/>
+        </axis-wsdl2java>
+    </target>
 
-        <target name="compile" description="compile module(s) Main production classes" depends="generate">
-            <mkdir dir="${sunaj-wsdl.output.dir}"/>
-            <javac destdir="${sunaj-wsdl.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
-                   memoryMaximumSize="${compiler.max.memory}" fork="true" executable="${jdk.home}/bin/javac">
-                <compilerarg line="${compiler.args}"/>
-                <bootclasspath refid="sunaj-wsdl.module.bootclasspath"/>
-                <classpath refid="sunaj-wsdl.module.classpath"/>
-                <src refid="sunaj-wsdl.module.sourcepath"/>
-            </javac>
-        </target>
+    <target name="compile" description="compile module(s) Main production classes" depends="generate">
+        <mkdir dir="${sunaj-wsdl.output.dir}"/>
+        <javac destdir="${sunaj-wsdl.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
+               memoryMaximumSize="${compiler.max.memory}" fork="true" executable="${jdk.home}/bin/javac">
+            <compilerarg line="${compiler.args}"/>
+            <bootclasspath refid="sunaj-wsdl.module.bootclasspath"/>
+            <classpath refid="sunaj-wsdl.module.classpath"/>
+            <src refid="sunaj-wsdl.module.sourcepath"/>
+        </javac>
+    </target>
 
-        <target name="build" depends="compile">
-                <mkdir dir="dist"/>
-                <jar file="dist/janus-wsdl.jar">
-                        <fileset dir="${sunaj-wsdl.output.dir}">
-                                <include name="**/*.class"/>
-                        </fileset>
+    <target name="build" depends="compile">
+        <mkdir dir="dist"/>
+        <jar file="dist/janus-wsdl.jar">
+            <fileset dir="${sunaj-wsdl.output.dir}">
+                <include name="**/*.class"/>
+            </fileset>
             <manifest>
                 <section name="ru/rsdn/Janus/">
                     <attribute name="Specification-Title" value="Janus RSDN SOAP proxy"/>
@@ -116,11 +121,11 @@
                     <attribute name="Specification-Vendor" value="RSDN team"/>
                 </section>
             </manifest>
-                </jar>
-                <zip file="dist/janus-wsdl_src.zip">
-                        <fileset dir="${module.sunaj-wsdl.basedir}/src/java">
-                                <include name="**/*.java"/>
-                        </fileset>
-                </zip>
-        </target>
+        </jar>
+        <zip file="dist/janus-wsdl_src.zip">
+            <fileset dir="${module.sunaj-wsdl.basedir}/src/java">
+                <include name="**/*.java"/>
+            </fileset>
+        </zip>
+    </target>
 </project>
