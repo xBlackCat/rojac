@@ -1,5 +1,6 @@
 package org.xblackcat.sunaj.service.janus;
 
+import org.apache.axis.configuration.BasicClientConfig;
 import org.apache.axis.configuration.FileProvider;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.lang.ArrayUtils;
@@ -214,22 +215,26 @@ public class JanusService implements IJanusService {
         log.info("Janus SAOP service initialization has been started.");
 
         JanusATLocator jl;
-        try {
-            jl = new JanusATLocator(new FileProvider(ResourceUtils.getResourceAsStream("/client-config.wsdd")));
-        } catch (IOException e) {
-            throw new ServiceException("Can not load service configuration.", e);
+        if (os.getProperty(Property.SUNAJ_DEBUG_MODE)) {
+            jl = new JanusATLocator(new BasicClientConfig());
+        } else {
+            try {
+                jl = new JanusATLocator(new FileProvider(ResourceUtils.getResourceAsStream("/client-config.wsdd")));
+            } catch (IOException e) {
+                throw new ServiceException("Can not load service configuration.", e);
+            }
+
+            JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
+
+            // Compress the request
+            if (os.getProperty(Property.SERVICE_JANUS_USE_GZIP)) {
+                log.info("Data compression is enabled.");
+                // Tell the server it can compress the response
+                soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+            }
         }
 
-        JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
-
-        // Compress the request
-        if (os.getProperty(Property.SERVICE_JANUS_USE_GZIP)) {
-            log.info("Data compression is enabled.");
-            // Tell the server it can compress the response
-            soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
-        }
-
-        this.soap = soap;
+        this.soap = jl.getJanusATSoap();
         log.info("Initialization has done.");
     }
 }

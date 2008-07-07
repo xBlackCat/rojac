@@ -18,6 +18,9 @@ public final class Property<T> {
      */
     private static final Map<String, Property<?>> ALL_PROPERTIES = new HashMap<String, Property<?>>();
 
+    // Global properties
+    public static final Property<Boolean> SUNAJ_DEBUG_MODE = create("sunaj.global.debug.mode", Boolean.class);
+
     /*
       * Janus synchronizator properties
       */

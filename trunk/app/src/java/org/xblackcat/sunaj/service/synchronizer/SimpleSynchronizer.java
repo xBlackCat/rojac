@@ -1,5 +1,6 @@
 package org.xblackcat.sunaj.service.synchronizer;
 
+import gnu.trove.TIntHashSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -106,8 +107,6 @@ public class SimpleSynchronizer implements ISynchronizer {
             }
 
             loadNewMessages();
-
-            loadExtraMessage();
         } catch (SynchronizationException e) {
             // Log the exception to console.
             log.error("Synchronization failed.", e);
@@ -115,9 +114,7 @@ public class SimpleSynchronizer implements ISynchronizer {
         }
     }
 
-    private void loadExtraMessage() throws SynchronizationException {
-        int[] ids = ArrayUtils.EMPTY_INT_ARRAY;
-
+    private void loadExtraMessage(int[] ids) throws SynchronizationException {
         if (ArrayUtils.isEmpty(ids)) {
             return;
         }
@@ -135,7 +132,11 @@ public class SimpleSynchronizer implements ISynchronizer {
         IMessageAH ah = storage.getMessageAH();
         try {
             for (Message m : messages) {
-                ah.storeMessage(m);
+                if (ah.isExist(m.getMessageId())) {
+                    ah.updateMessage(m);
+                } else {
+                    ah.storeMessage(m);
+                }
             }
         } catch (StorageException e) {
             throw new SynchronizationException("Can not store extra messages into storage", e);
@@ -226,10 +227,14 @@ public class SimpleSynchronizer implements ISynchronizer {
             IModerateAH modAH = storage.getModerateAH();
 
             // Broken topic ids
-//            TIntHashSet topics = new TIntHashSet();
+            TIntHashSet topics = new TIntHashSet();
 
             NewData data;
             do {
+                if (ratingsVersion.isEmpty()) {
+                    ratingsVersion = moderatesVersion;
+                }
+
                 data = janusService.getNewData(
                         forumIds,
                         messagesVersion.getBytes().length == 0,
@@ -243,17 +248,17 @@ public class SimpleSynchronizer implements ISynchronizer {
 
 
                 for (Message mes : data.getMessages()) {
-                    if (mAH.getMessageById(mes.getMessageId()) != null) {
+                    if (mAH.isExist(mes.getMessageId())) {
                         mAH.updateMessage(mes);
                     } else {
                         mAH.storeMessage(mes);
                     }
-/*
+
                     int topicId = mes.getTopicId();
                     if (topicId != 0) {
                         topics.add(topicId);
                     }
-*/
+
                 }
                 for (Moderate mod : data.getModerates()) {
                     modAH.storeModerateInfo(mod);
@@ -273,9 +278,9 @@ public class SimpleSynchronizer implements ISynchronizer {
             } while (data.getMessages().length > 0);
 
             // remove existing ids from downloaded topic ids.
-/*            int[] messageIds = topics.toArray();
+            int[] messageIds = topics.toArray();
             for (int mId : messageIds) {
-                if (mAH.getMessageById(mId) != null) {
+                if (mAH.isExist(mId)) {
                     topics.remove(mId);
                 }
             }
@@ -288,26 +293,9 @@ public class SimpleSynchronizer implements ISynchronizer {
 
             topics.addAll(eAH.getExtraMessages());
 
-            TopicMessages fullTopics = janusService.getTopicByMessage(topics.toArray());
-            for (Message mes : fullTopics.getMessages()) {
-                int mId = mes.getMessageId();
-                if (mAH.getMessageById(mId) == null) {
-                    mAH.storeMessage(mes);
-                } else {
-                    mAH.updateMessage(mes);
-                }
-                modAH.removeModerateInfosByMessageId(mId);
-                rAH.removeRatingsByMessageId(mId);
-            }
-            for (Moderate mod : fullTopics.getModerates()) {
-                modAH.storeModerateInfo(mod);
-            }
-            for (Rating r : fullTopics.getRatings()) {
-                rAH.storeRating(r);
-            }
+            loadExtraMessage(topics.toArray());
 
             eAH.clearExtraMessages();
-*/
         } catch (StorageException e) {
             throw new SynchronizationException("Can not obtain local versions.", e);
         } catch (JanusServiceException e) {

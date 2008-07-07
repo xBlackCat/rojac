@@ -75,6 +75,10 @@ final class CachedMessageAH implements IMessageAH, IPurgable {
         messageAH.updateMessage(mes);
     }
 
+    public boolean isExist(int messageId) throws StorageException {
+        return messageAH.isExist(messageId);
+    }
+
     public int[] getAllMessageIds() throws StorageException {
         return messageAH.getAllMessageIds();
     }

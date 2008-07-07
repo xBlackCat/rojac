@@ -38,4 +38,17 @@ public final class Version {
     public String toString() {
         return "Version[id=" + getAsString() + ']';
     }
+
+    public boolean isEmpty() {
+        if (ArrayUtils.isEmpty(base64Version)) {
+            return true;
+        } else {
+            for (byte b : base64Version) {
+                if (b != 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 }
