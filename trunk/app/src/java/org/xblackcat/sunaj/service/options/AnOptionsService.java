@@ -1,5 +1,7 @@
 package org.xblackcat.sunaj.service.options;
 
+import org.xblackcat.sunaj.util.DataUtils;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +44,7 @@ abstract class AnOptionsService implements IOptionsService {
         } else {
             // Check if the type of property is enum
             if (Enum.class.isAssignableFrom(type)) {
-                return (T) convertToEnum((Class<Enum>) type, val);
+                return (T) DataUtils.convertToEnum((Class<Enum>) type, val);
             }
         }
 
@@ -62,7 +64,7 @@ abstract class AnOptionsService implements IOptionsService {
             // Check if the type of property is enum
             if (Enum.class.isAssignableFrom(type)) {
                 String val = setProperty(name, ((Enum) newValue).name());
-                return (T) convertToEnum((Class<Enum>) type, val);
+                return (T) DataUtils.convertToEnum((Class<Enum>) type, val);
             }
         }
 
@@ -72,15 +74,4 @@ abstract class AnOptionsService implements IOptionsService {
     protected abstract String getProperty(String key);
 
     protected abstract String setProperty(String key, String value);
-
-    /*
-      * Util methods for converting values.
-      */
-    private static <T extends Enum<T>> T convertToEnum(Class<T> enumClass, String val) {
-        if (val != null) {
-            return Enum.valueOf(enumClass, val);
-        } else {
-            return null;
-        }
-    }
 }
