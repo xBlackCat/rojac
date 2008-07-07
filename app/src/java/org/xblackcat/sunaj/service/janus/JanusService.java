@@ -157,7 +157,9 @@ public class JanusService implements IJanusService {
     }
 
     public NewData getNewData(int[] subscribedForums, boolean firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException {
-        log.info("Retrieve the messages from the Janus WS. Portion limit = " + maxOutput);
+        if (log.isInfoEnabled()) {
+            log.info("Retrieve the messages from the Janus WS. Portion limit = " + maxOutput);
+        }
 
         RequestForumInfo[] rfi = new RequestForumInfo[subscribedForums.length];
         for (int i = 0; i < subscribedForums.length; i++) {
@@ -203,7 +205,7 @@ public class JanusService implements IJanusService {
                     ", moderates version is " + moderateRowVerion
             );
         }
-        return new NewData(ownId, forumRowVersion, ratingRowVersion, ratingRowVersion, newMessages, newModerate, newRating);
+        return new NewData(ownId, forumRowVersion, ratingRowVersion, moderateRowVerion, newMessages, newModerate, newRating);
     }
 
     private void init() throws ServiceException {
