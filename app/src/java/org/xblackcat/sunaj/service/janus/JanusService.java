@@ -18,7 +18,7 @@ import org.xblackcat.sunaj.service.janus.data.TopicMessages;
 import org.xblackcat.sunaj.service.janus.data.UsersList;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
-import org.xblackcat.sunaj.util.DataUtils;
+import org.xblackcat.sunaj.util.SunajUtils;
 import org.xblackcat.utils.ResourceUtils;
 import ru.rsdn.Janus.*;
 
@@ -148,9 +148,9 @@ public class JanusService implements IJanusService {
             PostRequest postRequest = new PostRequest(
                     userName,
                     password,
-                    DataUtils.getRSDNObject(messages),
-                    DataUtils.getRSDNObject(ratings),
-                    DataUtils.getRSDNObject(moderates));
+                    SunajUtils.getRSDNObject(messages),
+                    SunajUtils.getRSDNObject(ratings),
+                    SunajUtils.getRSDNObject(moderates));
             soap.postChange(postRequest);
         } catch (RemoteException e) {
             throw new JanusServiceException("Can not post changes to RSDN.", e);

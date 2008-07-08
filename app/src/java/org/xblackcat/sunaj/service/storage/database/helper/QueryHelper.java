@@ -4,7 +4,7 @@ import org.xblackcat.sunaj.service.storage.StorageDataException;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.sunaj.service.storage.database.convert.IToObjectConverter;
-import org.xblackcat.sunaj.util.DataUtils;
+import org.xblackcat.sunaj.util.SunajUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -52,14 +52,14 @@ public final class QueryHelper implements IQueryHelper {
                 con.close();
             }
         } catch (SQLException e) {
-            throw new StorageException("Can not execute query " + DataUtils.construstDebugSQL(sql, parameters), e);
+            throw new StorageException("Can not execute query " + SunajUtils.construstDebugSQL(sql, parameters), e);
         }
     }
 
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         Collection<T> col = execute(c, sql, parameters);
         if (col.size() > 1) {
-            throw new StorageDataException("Expected one or zero results on query " + DataUtils.construstDebugSQL(sql, parameters));
+            throw new StorageDataException("Expected one or zero results on query " + SunajUtils.construstDebugSQL(sql, parameters));
         }
         if (col.isEmpty()) {
             return null;
@@ -82,7 +82,7 @@ public final class QueryHelper implements IQueryHelper {
                 con.close();
             }
         } catch (SQLException e) {
-            throw new StorageException("Can not execute query " + DataUtils.construstDebugSQL(sql, parameters), e);
+            throw new StorageException("Can not execute query " + SunajUtils.construstDebugSQL(sql, parameters), e);
         }
     }
 

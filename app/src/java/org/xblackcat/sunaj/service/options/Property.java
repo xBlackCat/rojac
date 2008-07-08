@@ -1,5 +1,6 @@
 package org.xblackcat.sunaj.service.options;
 
+import javax.swing.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +22,10 @@ public final class Property<T> {
     // Global properties
     public static final Property<Boolean> SUNAJ_DEBUG_MODE = create("sunaj.global.debug.mode", Boolean.class);
 
-    /*
-      * Janus synchronizator properties
-      */
+    // GUI properties
+    public static final Property<LookAndFeel> SUNAJ_GUI_LOOK_AND_FEEL = create("sunaj.gui.laf", LookAndFeel.class);
+
+    // Janus synchronizator properties
 
     /**
      * This boolean property indicated is should be used GZip compression while retrieving information from Janus WS.

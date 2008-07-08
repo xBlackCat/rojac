@@ -1,6 +1,8 @@
 package org.xblackcat.sunaj.service.options;
 
-import org.xblackcat.sunaj.util.DataUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.xblackcat.sunaj.util.SunajUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +15,8 @@ import java.util.Map;
  */
 
 abstract class AnOptionsService implements IOptionsService {
+    private static final Log log = LogFactory.getLog(AnOptionsService.class);
+
     private final Map<Class<?>, IConverter<?>> converters;
 
     public AnOptionsService() {
@@ -27,46 +31,66 @@ abstract class AnOptionsService implements IOptionsService {
         map.put(Long.class, new LongConverter());
         map.put(Short.class, new ShortConverter());
         map.put(String.class, new StringConverter());
-        
+        map.put(Class.class, new ClassConverter());
+
+        // Global converter
+        map.put(Object.class, new ObjectConverter());
+
         converters = Collections.unmodifiableMap(map);
     }
 
     public <T> T getProperty(Property<T> key) {
         String name = key.getName();
-        Class<T> type = key.getType();
+        Class<?> type = key.getType();
 
         String val = getProperty(name);
 
-        IConverter<T> conv = (IConverter<T>) converters.get(type);
-
-        if (conv != null) {
-            return conv.convert(val);
-        } else {
-            // Check if the type of property is enum
-            if (Enum.class.isAssignableFrom(type)) {
-                return (T) DataUtils.convertToEnum((Class<Enum>) type, val);
-            }
+        if (Enum.class.isAssignableFrom(type)) {
+            return (T) SunajUtils.convertToEnum((Class<Enum>) type, val);
         }
+        IConverter<?> conv;
+
+        do {
+            conv = converters.get(type);
+            if (conv != null) {
+                try {
+                    return (T) conv.convert(val);
+                } catch (RuntimeException e) {
+                    log.error("Can not load property " + name, e);
+                    throw e;
+                }
+            }
+
+            type = type.getSuperclass();
+        } while (conv == null);
 
         throw new UnknownPropertyTypeException("Can not identify the property " + key);
     }
 
     public <T> T setProperty(Property<T> key, T newValue) {
         String name = key.getName();
-        Class<T> type = key.getType();
+        Class<?> type = key.getType();
 
-        IConverter<T> conv = (IConverter<T>) converters.get(type);
-
-        if (conv != null) {
-            String val = setProperty(name, conv.toString(newValue));
-            return conv.convert(val);
-        } else {
-            // Check if the type of property is enum
-            if (Enum.class.isAssignableFrom(type)) {
-                String val = setProperty(name, ((Enum) newValue).name());
-                return (T) DataUtils.convertToEnum((Class<Enum>) type, val);
-            }
+        if (Enum.class.isAssignableFrom(type)) {
+            String val = setProperty(name, ((Enum) newValue).name());
+            return (T) SunajUtils.convertToEnum((Class<Enum>) type, val);
         }
+        IConverter conv;
+
+        do {
+            conv = converters.get(type);
+            if (conv != null) {
+                try {
+                    String val = setProperty(name, conv.toString(newValue));
+                    return (T) conv.convert(val);
+                } catch (RuntimeException e) {
+                    log.error("Can not load property " + name, e);
+                    throw e;
+                }
+            }
+
+            type = type.getSuperclass();
+        } while (conv == null);
 
         throw new UnknownPropertyTypeException("Can not identify the property " + key);
     }

@@ -11,7 +11,7 @@ import ru.rsdn.Janus.PostRatingInfo;
  * @author xBlackCat
  */
 
-public class DataUtilsTest extends TestCase {
+public class SunajUtilsTest extends TestCase {
     public void testArrayConvertor() {
         NewRating[] r = new NewRating[] {
                 new NewRating(0, 0, Mark.Agree.getValue()),
@@ -19,7 +19,7 @@ public class DataUtilsTest extends TestCase {
                 new NewRating(2, 2, Mark.Agree.getValue()),
         };
 
-        PostRatingInfo[] oo = DataUtils.getRSDNObject(r);
+        PostRatingInfo[] oo = SunajUtils.getRSDNObject(r);
 
         assertEquals(oo.length, r.length);
         for (PostRatingInfo o : oo) {

@@ -1,7 +1,9 @@
 package org.xblackcat.sunaj.util;
 
+import org.flexdock.util.SwingUtility;
 import org.xblackcat.sunaj.data.IRSDNable;
 
+import javax.swing.*;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
@@ -15,12 +17,12 @@ import java.util.regex.Matcher;
  * @author xBlackCat
  */
 
-public class DataUtils {
-    private DataUtils() {
+public class SunajUtils {
+    private SunajUtils() {
     }
 
     public static <T extends Serializable> T[] getRSDNObject(IRSDNable<T>[] ar) {
-        Class<T> c = (Class<T>) ((ParameterizedType)ar.getClass().getComponentType().getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        Class<T> c = (Class<T>) ((ParameterizedType) ar.getClass().getComponentType().getGenericInterfaces()[0]).getActualTypeArguments()[0];
 
         List<T> res = new ArrayList<T>(ar.length);
 
@@ -57,5 +59,10 @@ public class DataUtils {
         } else {
             return null;
         }
+    }
+
+    public static void setLookAndFeel(LookAndFeel laf) throws UnsupportedLookAndFeelException {
+        UIManager.setLookAndFeel(laf);
+        SwingUtility.setPlaf(laf.getClass());
     }
 }
