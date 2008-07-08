@@ -14,6 +14,8 @@ import java.util.Map;
  */
 
 public class OptionsServiceTest extends TestCase {
+    private static final Property<Class> TEST_PROPERTY_CLASS = Property.create("sunaj.test.class", Class.class);
+    private static final Property<TestClass> TEST_PROPERTY_OBJECT = Property.create("sunaj.test.object", TestClass.class);
     private static final Property<String> TEST_PROPERTY_STRING = Property.create("sunaj.test.string", String.class);
     private static final Property<Boolean> TEST_PROPERTY_BOOLEAN = Property.create("sunaj.test.boolean", Boolean.class);
     private static final Property<Character> TEST_PROPERTY_CHAR = Property.create("sunaj.test.char", Character.class);
@@ -119,6 +121,26 @@ public class OptionsServiceTest extends TestCase {
         assertEquals(value, s.getProperty(TEST_PROPERTY_FLOAT));
 
         assertEquals(value, s.setProperty(TEST_PROPERTY_FLOAT, 0.234f));
+    }
+
+    public void testClassValueProperties() {
+        TestClass value = new TestClass();
+
+        assertEquals(null, s.setProperty(TEST_PROPERTY_OBJECT, value));
+
+        assertEquals(value, s.getProperty(TEST_PROPERTY_OBJECT));
+
+        assertEquals(value, s.setProperty(TEST_PROPERTY_OBJECT, new TestClass()));
+    }
+
+    public void testObjectValueProperties() {
+        Class value = TestClass.class;
+
+        assertEquals(null, s.setProperty(TEST_PROPERTY_CLASS, value));
+
+        assertEquals(value, s.getProperty(TEST_PROPERTY_CLASS));
+
+        assertEquals(value, s.setProperty(TEST_PROPERTY_CLASS, Object.class));
     }
 
     public void testEnumValueProperties() {
