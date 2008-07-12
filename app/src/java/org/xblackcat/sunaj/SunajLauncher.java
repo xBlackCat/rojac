@@ -2,6 +2,7 @@ package org.xblackcat.sunaj;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.flexdock.util.SwingUtility;
 import org.xblackcat.sunaj.gui.LoginDialog;
 import org.xblackcat.sunaj.gui.MainFrame;
 import org.xblackcat.sunaj.service.ServiceFactory;
@@ -14,7 +15,6 @@ import org.xblackcat.sunaj.service.synchronizer.ISynchronizer;
 import org.xblackcat.sunaj.service.synchronizer.SimpleSynchronizer;
 import org.xblackcat.sunaj.service.synchronizer.SynchronizationException;
 import org.xblackcat.sunaj.util.SunajUtils;
-import org.xblackcat.sunaj.util.WindowsUtils;
 
 import javax.swing.*;
 
@@ -47,14 +47,14 @@ public final class SunajLauncher {
         while (os.getProperty(Property.RSDN_USER_NAME) == null ||
                 os.getProperty(Property.RSDN_USER_PASSWORD) == null) {
             LoginDialog ld = new LoginDialog(mainFrame);
-            WindowsUtils.moveToScreenCenter(ld);
+            SwingUtility.centerOnScreen(ld);
             if (ld.showLoginDialog()) {
                 System.exit(0);
             }
         }
 
         mainFrame.setVisible(true);
-        WindowsUtils.moveToScreenCenter(mainFrame);
+        SwingUtility.centerOnScreen(mainFrame);
     }
 
     private static void testStorage() throws StorageException, SynchronizationException {
