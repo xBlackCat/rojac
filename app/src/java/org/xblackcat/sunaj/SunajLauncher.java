@@ -2,8 +2,10 @@ package org.xblackcat.sunaj;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.sunaj.gui.LoginDialog;
 import org.xblackcat.sunaj.gui.MainFrame;
 import org.xblackcat.sunaj.service.ServiceFactory;
+import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
 import org.xblackcat.sunaj.service.storage.IStorage;
 import org.xblackcat.sunaj.service.storage.StorageException;
@@ -32,16 +34,25 @@ public final class SunajLauncher {
         // Initialize service
         ServiceFactory sf = ServiceFactory.getInstance();
 
-        LookAndFeel laf = sf.getOptionsService().getProperty(Property.SUNAJ_GUI_LOOK_AND_FEEL);
+        IOptionsService os = sf.getOptionsService();
+        LookAndFeel laf = os.getProperty(Property.SUNAJ_GUI_LOOK_AND_FEEL);
         try {
             SunajUtils.setLookAndFeel(laf);
         } catch (UnsupportedLookAndFeelException e) {
             throw new SunajException("Can not initialize " + laf.getName() + " L&F.", e);
         }
 
-        testStorage();
-
         MainFrame mainFrame = new MainFrame();
+//        testStorage();
+        while (os.getProperty(Property.RSDN_USER_NAME) == null ||
+                os.getProperty(Property.RSDN_USER_PASSWORD) == null) {
+            LoginDialog ld = new LoginDialog(mainFrame);
+            WindowsUtils.moveToScreenCenter(ld);
+            if (ld.showLoginDialog()) {
+                System.exit(0);
+            }
+        }
+
         mainFrame.setVisible(true);
         WindowsUtils.moveToScreenCenter(mainFrame);
     }

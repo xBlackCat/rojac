@@ -32,6 +32,7 @@ abstract class AnOptionsService implements IOptionsService {
         map.put(Short.class, new ShortConverter());
         map.put(String.class, new StringConverter());
         map.put(Class.class, new ClassConverter());
+        map.put(Password.class, new PasswordConverter());
 
         // Global converter
         map.put(Object.class, new ObjectConverter());
@@ -72,7 +73,8 @@ abstract class AnOptionsService implements IOptionsService {
         Class<?> type = key.getType();
 
         if (Enum.class.isAssignableFrom(type)) {
-            String val = setProperty(name, ((Enum) newValue).name());
+            String v = newValue == null ?  null : ((Enum) newValue).name();
+            String val = setProperty(name, v);
             return (T) SunajUtils.convertToEnum((Class<Enum>) type, val);
         }
         IConverter conv;

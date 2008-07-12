@@ -1,10 +1,15 @@
 package org.xblackcat.sunaj.gui;
 
 import org.xblackcat.sunaj.i18n.Messages;
+import org.xblackcat.sunaj.service.ServiceFactory;
+import org.xblackcat.sunaj.service.options.IOptionsService;
+import org.xblackcat.sunaj.service.options.Property;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -26,9 +31,28 @@ public class MainFrame extends JFrame {
 
         initializeToolBars();
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                storeSettings();
+
+                System.exit(0);
+            }
+        });
 
         pack();
+    }
+
+    private void storeSettings() {
+        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
+
+        if (!os.getProperty(Property.RSDN_USER_PASSWORD_SAVE)) {
+            os.setProperty(Property.RSDN_USER_PASSWORD, null);
+        }
+
+        os.storeSettings();
     }
 
     private void initialize() {

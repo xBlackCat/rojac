@@ -29,4 +29,10 @@ public interface IOptionsService {
      * @throws NullPointerException if property name is <code>null</code>.
      */
     <T> T setProperty(Property<T> name, T newValue);
+
+    /**
+     * Somehow store settings.
+     * @return <code>true</code> if settings are stored successfuly.
+     */
+    boolean storeSettings();
 }

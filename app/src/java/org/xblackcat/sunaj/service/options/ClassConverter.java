@@ -21,6 +21,10 @@ public class ClassConverter implements IConverter<Class<?>> {
     }
 
     public String toString(Class<?> o) {
+        if (o == null) {
+            return null;
+        }
+
         return o.getName();
     }
 }

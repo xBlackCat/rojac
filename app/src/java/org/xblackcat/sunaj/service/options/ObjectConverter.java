@@ -22,6 +22,10 @@ public class ObjectConverter implements IConverter<Object> {
     }
 
     public String toString(Object o) {
+        if (o == null) {
+            return null;
+        }
+
         return o.getClass().getName();
     }
 }

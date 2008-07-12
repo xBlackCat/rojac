@@ -176,6 +176,10 @@ public class OptionsServiceTest extends TestCase {
             }
             return s;
         }
+
+        public boolean storeSettings() {
+            return false;
+        }
     }
 
     private static enum TestEnum {
