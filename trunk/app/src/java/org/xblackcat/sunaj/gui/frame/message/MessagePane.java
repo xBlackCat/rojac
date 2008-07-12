@@ -3,7 +3,7 @@ package org.xblackcat.sunaj.gui.frame.message;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.flexdock.util.SwingUtility;
+import org.xblackcat.sunaj.SunajException;
 import org.xblackcat.sunaj.data.Mark;
 import org.xblackcat.sunaj.data.Message;
 import org.xblackcat.sunaj.gui.frame.IInternationazable;
@@ -12,10 +12,12 @@ import org.xblackcat.sunaj.i18n.JLOptionPane;
 import org.xblackcat.sunaj.i18n.Messages;
 import org.xblackcat.sunaj.service.ServiceFactory;
 import org.xblackcat.sunaj.service.converter.IMessageParser;
+import org.xblackcat.sunaj.service.options.Property;
 import org.xblackcat.sunaj.service.storage.IStorage;
 import org.xblackcat.sunaj.service.storage.StorageException;
-import org.xblackcat.sunaj.util.ResourceUtils;
+import org.xblackcat.sunaj.util.SunajUtils;
 import org.xblackcat.sunaj.util.WindowsUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -311,12 +313,19 @@ public class MessagePane extends JPanel implements IMessageViewer, IInternationa
     }
 
     public static void main(String[] args) {
-        ServiceFactory.getInstance(); // Initialize services
+        ServiceFactory sf = ServiceFactory.getInstance();
+
+        LookAndFeel laf = sf.getOptionsService().getProperty(Property.SUNAJ_GUI_LOOK_AND_FEEL);
+        try {
+            SunajUtils.setLookAndFeel(laf);
+        } catch (UnsupportedLookAndFeelException e) {
+            throw new SunajException("Can not initialize " + laf.getName() + " L&F.", e);
+        }
+
         Messages.setLocale(new Locale("ru", "RU"));
-        SwingUtility.setPlaf("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 
         MessagePane cp = new MessagePane();
-        WindowsUtils.showTestFrame(cp, false);
+        WindowsUtils.showTestFrame(cp);
 //        cp.viewMessage(2483908);// Biggest message
         cp.viewMessage(2484167);
     }

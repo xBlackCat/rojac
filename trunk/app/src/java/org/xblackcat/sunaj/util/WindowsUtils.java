@@ -1,6 +1,5 @@
 package org.xblackcat.sunaj.util;
 
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.utils.ResourceUtils;
@@ -24,14 +23,7 @@ public class WindowsUtils {
     private WindowsUtils() {
     }
 
-    public static void showTestFrame(Container contentPane, boolean javaLAF) {
-        if (!javaLAF) {
-            try {
-                UIManager.setLookAndFeel(new WindowsLookAndFeel());
-            } catch (UnsupportedLookAndFeelException e) {
-                log.error("Can not initialize Windows L&F. The default L&F will be used", e);
-            }
-        }
+    public static void showTestFrame(Container contentPane) {
         JFrame f = new JFrame("Message pane test");
 
         f.setContentPane(contentPane);
