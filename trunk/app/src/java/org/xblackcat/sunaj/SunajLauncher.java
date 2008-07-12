@@ -9,8 +9,7 @@ import org.xblackcat.sunaj.service.storage.IStorage;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.cached.CachedStorage;
 import org.xblackcat.sunaj.service.synchronizer.ISynchronizer;
-import org.xblackcat.sunaj.service.synchronizer.ISynchronizerFactory;
-import org.xblackcat.sunaj.service.synchronizer.SimpleSynchronizerFactory;
+import org.xblackcat.sunaj.service.synchronizer.SimpleSynchronizer;
 import org.xblackcat.sunaj.service.synchronizer.SynchronizationException;
 import org.xblackcat.sunaj.util.SunajUtils;
 import org.xblackcat.sunaj.util.WindowsUtils;
@@ -51,9 +50,7 @@ public final class SunajLauncher {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         storage.initialize();
 
-        ISynchronizerFactory sf = new SimpleSynchronizerFactory("xBlackCat", "tryt0guess", new CachedStorage(storage));
-
-        ISynchronizer s = sf.getSynchronizer();
+        ISynchronizer s = new SimpleSynchronizer("xBlackCat", "tryt0guess", new CachedStorage(storage));
 
         //s.updateForumList();
 
