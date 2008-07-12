@@ -70,6 +70,7 @@ public final class ServiceFactory {
 
         try {
             storage = new DBStorage(mainProperties.getProperty("sunaj.service.database.engine.config"));
+            storage.initialize();
         } catch (StorageException e) {
             throw new SunajException("Can't initialize database storage engine.", e);
         }

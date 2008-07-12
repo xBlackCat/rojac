@@ -62,7 +62,6 @@ public final class SunajLauncher {
 
     private static void testStorage() throws StorageException, SynchronizationException {
         IStorage storage = ServiceFactory.getInstance().getStorage();
-        storage.initialize();
 
         ISynchronizer s = new SimpleSynchronizer("xBlackCat", "tryt0guess", new CachedStorage(storage));
 

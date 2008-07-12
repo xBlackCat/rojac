@@ -8,15 +8,26 @@ import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.xblackcat.sunaj.data.Forum;
 import org.xblackcat.sunaj.gui.model.ForumListModel;
+import org.xblackcat.sunaj.gui.model.ForumViewMode;
+import org.xblackcat.sunaj.gui.model.ForumViewModeModel;
+import org.xblackcat.sunaj.gui.render.ForumCellRenderer;
+import org.xblackcat.sunaj.gui.render.ForumListModeRenderer;
 import org.xblackcat.sunaj.i18n.Messages;
 import org.xblackcat.sunaj.service.ServiceFactory;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
 import org.xblackcat.sunaj.service.storage.IStorage;
 import org.xblackcat.sunaj.service.storage.StorageException;
+import org.xblackcat.sunaj.util.WindowsUtils;
 
 import javax.swing.*;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -137,21 +148,51 @@ public class MainFrame extends JFrame {
         forumsPane.add(new JScrollPane(forums));
 
         forums.setCellRenderer(new ForumCellRenderer());
-        
+        forums.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    // TODO: show forum popup menu.
+                } else if (e.getClickCount() > 1) {
+                    // TODO: make double-click action
+                }
+            }
+        });
+
+        JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 2));
+
+        final ForumViewModeModel modeModel = new ForumViewModeModel();
+        final JComboBox viewMode = new JComboBox(modeModel);
+
+        viewMode.setEditable(false);
+        viewMode.setRenderer(new ForumListModeRenderer());
+
+        modeModel.addListDataListener(new ListDataListener() {
+            public void intervalAdded(ListDataEvent e) {
+            }
+
+            public void intervalRemoved(ListDataEvent e) {
+            }
+
+            public void contentsChanged(ListDataEvent e) {
+                if (e.getIndex0() == -1 && e.getIndex1() == -1) {
+                    ForumViewMode vm = modeModel.getSelectedItem();
+                    viewMode.setToolTipText(vm.getTooltip());
+                    forumsModel.setMode(vm);
+                }
+            }
+        });
+
+        buttonsPane.add(viewMode);
+        buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(MainFrame.this, "Test");
+            }
+        }, Messages.VIEW_FORUMS_BUTTON_UPDATE));
+
+        forumsPane.add(buttonsPane, BorderLayout.NORTH);
+
         return forumsPane;
-    }
-
-    private static class ForumCellRenderer extends DefaultListCellRenderer {
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-            Forum f = (Forum) value;
-
-            setText(f.getForumName());
-
-            return this;
-        }
     }
 
 }
