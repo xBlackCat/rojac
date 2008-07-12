@@ -3,6 +3,7 @@ package org.xblackcat.sunaj.gui.frame.message;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.flexdock.util.SwingUtility;
 import org.xblackcat.sunaj.SunajException;
 import org.xblackcat.sunaj.data.Mark;
 import org.xblackcat.sunaj.data.Message;
@@ -89,7 +90,7 @@ public class MessagePane extends JPanel implements IMessageViewer, IInternationa
         marksButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 RatingDialog rd = new RatingDialog(SwingUtilities.windowForComponent(MessagePane.this), messageId);
-                WindowsUtils.moveToComponentCenter(rd, marksButton);
+                SwingUtility.center(rd, marksButton);
                 rd.setVisible(true);
             }
         });

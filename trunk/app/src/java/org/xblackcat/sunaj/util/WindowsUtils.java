@@ -2,6 +2,7 @@ package org.xblackcat.sunaj.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.flexdock.util.SwingUtility;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -31,41 +32,7 @@ public class WindowsUtils {
         f.setVisible(true);
         f.setSize(300, 300);
 
-        WindowsUtils.moveToScreenCenter(f);
-    }
-
-    public static void moveToScreenCenter(Window window) {
-        int x = (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() - window.getWidth()) >> 1;
-        int y = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() - window.getHeight()) >> 1;
-        window.setLocation(x, y);
-    }
-
-    public static void moveToComponentCenter(Window window, Component c) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        Point p = c.getLocationOnScreen();
-
-        Dimension cs = c.getSize();
-        int x = (cs.width - window.getWidth() >> 1) + p.x;
-        int y = (cs.height - window.getHeight() >> 1) + p.y;
-
-        if (x + window.getWidth() > screenSize.width) {
-            x = screenSize.width - window.getWidth();
-        }
-
-        if (y + window.getHeight() > screenSize.height) {
-            y = screenSize.height - window.getHeight();
-        }
-
-        if (x < 0) {
-            x = 0;
-        }
-
-        if (y < 0) {
-            y = 0;
-        }
-
-        window.setLocation(x, y);
+        SwingUtility.centerOnScreen(f);
     }
 
     /**
