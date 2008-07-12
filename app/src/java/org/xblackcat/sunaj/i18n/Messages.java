@@ -26,6 +26,12 @@ public enum Messages {
 
     BUTTON_REPLY_TOOLTIP,
 
+    // Main window views texts
+    VIEW_FORUMS_TITLE,
+    VIEW_FORUMS_TAB_TEXT,
+    VIEW_FAVORITES_TITLE,
+    VIEW_FAVORITES_TAB_TEXT,
+
     // Dialog texts
     /**
      * Parameters are: 1. Mark description

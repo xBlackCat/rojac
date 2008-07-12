@@ -37,6 +37,9 @@ public final class SunajLauncher {
         IOptionsService os = sf.getOptionsService();
         LookAndFeel laf = os.getProperty(Property.SUNAJ_GUI_LOOK_AND_FEEL);
         try {
+            if (log.isDebugEnabled()) {
+                log.debug("Using LAF: " + laf.getName());
+            }
             SunajUtils.setLookAndFeel(laf);
         } catch (UnsupportedLookAndFeelException e) {
             throw new SunajException("Can not initialize " + laf.getName() + " L&F.", e);

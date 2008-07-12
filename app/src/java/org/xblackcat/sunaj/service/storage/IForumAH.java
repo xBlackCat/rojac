@@ -17,7 +17,7 @@ public interface IForumAH extends AH {
 
     int[] getForumIdsInGroup(int forumGroupId) throws StorageException;
 
-    int[] getAllForumIds() throws StorageException;
+    Forum[] getAllForums() throws StorageException;
 
     int[] getSubscribedForumIds() throws StorageException;
 
@@ -31,4 +31,6 @@ public interface IForumAH extends AH {
     void updateForum(Forum f) throws StorageException;
 
     void setSubscribeForum(int forumId, boolean subscribe) throws StorageException;
+
+    int getMessagesInForum(int forumId) throws StorageException;
 }

@@ -5,6 +5,8 @@ import org.xblackcat.sunaj.service.storage.IForumAH;
 import org.xblackcat.sunaj.service.storage.StorageException;
 import org.xblackcat.sunaj.service.storage.database.convert.Converters;
 
+import java.util.Collection;
+
 /**
  * Date: 8 трав 2007
  *
@@ -62,7 +64,14 @@ final class DBForumAH implements IForumAH {
                 forumId);
     }
 
-    public int[] getAllForumIds() throws StorageException {
-        return helper.getIds( DataQuery.GET_IDS_FORUM);
+    public int getMessagesInForum(int forumId) throws StorageException {
+        return helper.executeSingle(Converters.TO_INTEGER_CONVERTER,
+                DataQuery.GET_MESSAGES_NUMBER_IN_FORUM,
+                forumId);
+    }
+
+    public Forum[] getAllForums() throws StorageException {
+        Collection<Forum> fc = helper.execute(Converters.TO_FORUM_CONVERTER, DataQuery.GET_OBJECTS_FORUM);
+        return fc.toArray(new Forum[fc.size()]);
     }
 }
