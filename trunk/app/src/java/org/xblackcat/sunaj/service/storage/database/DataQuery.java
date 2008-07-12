@@ -218,7 +218,6 @@ public enum DataQuery implements IPropertiable {
     REMOVE_ALL_OBJECTS_NEW_RATING,
 
     // Queries for getting all the ids of the objects
-    GET_IDS_FORUM,
     GET_IDS_FORUM_GROUP,
     GET_IDS_NEW_RATING,
     GET_IDS_NEW_MESSAGE,
@@ -301,7 +300,11 @@ public enum DataQuery implements IPropertiable {
     GET_IDS_FORUM_SUBSCRIBED,
     GET_IDS_MESSAGE_BY_PARENT_ID,
     GET_IDS_MESSAGE_BY_TOPIC_ID,
-    IS_MESSAGES_EXIST_IN_FORUM,
+    /**
+     * Returns messages count in forum. Parfmeter is forumId.
+     */
+    GET_MESSAGES_NUMBER_IN_FORUM,
+    IS_FORUM_HAS_MESSAGES,
     /**
      * Checks is the message id exist
      */

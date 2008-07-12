@@ -47,8 +47,8 @@ final class CachedForumAH implements IForumAH, IPurgable {
         return forumAH.getForumIdsInGroup(forumGroupId);
     }
 
-    public int[] getAllForumIds() throws StorageException {
-        return forumAH.getAllForumIds();
+    public Forum[] getAllForums() throws StorageException {
+        return forumAH.getAllForums();
     }
 
     public int[] getSubscribedForumIds() throws StorageException {
@@ -68,6 +68,10 @@ final class CachedForumAH implements IForumAH, IPurgable {
 
     public void setSubscribeForum(int forumId, boolean subscribe) throws StorageException {
         forumAH.setSubscribeForum(forumId, subscribe);
+    }
+
+    public int getMessagesInForum(int forumId) throws StorageException {
+        return forumAH.getMessagesInForum(forumId);
     }
 
     public void purge() {
