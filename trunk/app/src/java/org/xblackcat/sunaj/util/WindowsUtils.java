@@ -3,6 +3,7 @@ package org.xblackcat.sunaj.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.flexdock.util.SwingUtility;
+import org.xblackcat.sunaj.i18n.Messages;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -121,7 +122,7 @@ public class WindowsUtils {
         return toggleButton;
     }
 
-    public static JButton setupButton(String buttonName, ActionListener action) {
+    public static JButton setupButton(String buttonName, ActionListener action, Messages mes) {
         String imageSet = BUTTON_IMAGES_PREFIX + buttonName + '/';
         JButton button = new JButton();
         button.setIcon(ResourceUtils.loadImageIcon(imageSet + "enabled.png"));
@@ -138,6 +139,7 @@ public class WindowsUtils {
         button.setDisabledIcon(ResourceUtils.loadImageIcon(imageSet + "disabled.png"));
         button.addActionListener(action);
         button.setOpaque(false);
+        button.setToolTipText(mes.getMessage());
         return button;
     }
 }

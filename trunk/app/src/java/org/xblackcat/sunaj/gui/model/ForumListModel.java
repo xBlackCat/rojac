@@ -24,7 +24,7 @@ public class ForumListModel extends AbstractListModel {
     private Forum[] subcribedForums;
     private Forum[] filledForums;
 
-    private ForumListMode mode = ForumListMode.SHOW_ALL;
+    private ForumViewMode mode = ForumViewMode.SHOW_ALL;
 
     public int getSize() {
         switch (mode) {
@@ -52,12 +52,12 @@ public class ForumListModel extends AbstractListModel {
         throw new RuntimeException("Somehow we got invalid mode.");
     }
 
-    public ForumListMode getMode() {
+    public ForumViewMode getMode() {
         return mode;
     }
 
-    public void setMode(ForumListMode mode) {
-        if (mode == ForumListMode.SHOW_NOT_EMPTY && filledForums == null) {
+    public void setMode(ForumViewMode mode) {
+        if (mode == ForumViewMode.SHOW_NOT_EMPTY && filledForums == null) {
             // Load forums information from database
             List<Forum> ff = new ArrayList<Forum>();
 
