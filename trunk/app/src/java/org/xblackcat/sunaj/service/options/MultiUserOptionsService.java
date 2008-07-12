@@ -1,12 +1,16 @@
 package org.xblackcat.sunaj.service.options;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.utils.ResourceUtils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -23,7 +27,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
 
     private static final String DEFAULT_CONFIG_BUNDLE_NAME = "/default_config.properties";
 
-    private String userConfigFileName;
+    private final String userConfigFileName;
 
     public MultiUserOptionsService() {
         String userHome = SystemUtils.USER_HOME;
@@ -41,7 +45,9 @@ public final class MultiUserOptionsService extends AnOptionsService {
             }
             try {
                 Properties p = new Properties();
-                p.load(new FileInputStream(userConfigFile));
+                BufferedInputStream is = new BufferedInputStream(new FileInputStream(userConfigFile));
+                p.load(is);
+                is.close();
                 loadFromResource(p, allProperties);
             } catch (IOException e) {
                 log.error("Can not load content of user config file.", e);
@@ -107,6 +113,29 @@ public final class MultiUserOptionsService extends AnOptionsService {
             return System.clearProperty(key);
         } else {
             return System.setProperty(key, value);
+        }
+    }
+
+    public boolean storeSettings() {
+        Properties userSetting = new Properties();
+
+        File userConfigFile = new File(userConfigFileName);
+
+        for (Property<?> prop : Property.getAllProperties()) {
+            String value = getProperty(prop.getName());
+            if (StringUtils.isNotBlank(value)) {
+                userSetting.setProperty(prop.getName(), value);
+            }
+        }
+
+        try {
+            BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(userConfigFile));
+            userSetting.store(os, "Sunaj user settings file.");
+            os.close();
+            return true;
+        } catch (IOException e) {
+            log.error("Can not store user settings.", e);
+            return false;
         }
     }
 }

@@ -33,6 +33,13 @@ public enum Messages {
     DIALOG_SET_MARK_MESSAGE,
     DIALOG_SET_MARK_TITLE,
 
+    // Login dialog related messages
+    DIALOG_LOGIN_TITLE,
+    DIALOG_LOGIN_TEXT,
+    DIALOG_LOGIN_USERNAME,
+    DIALOG_LOGIN_PASSWORD,
+    DIALOG_LOGIN_SAVE_PASSWORD,
+
     /**
      * Parameters are: 1. Mark description
      */

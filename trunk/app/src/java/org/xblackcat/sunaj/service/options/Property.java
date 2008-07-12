@@ -25,6 +25,12 @@ public final class Property<T> {
     // GUI properties
     public static final Property<LookAndFeel> SUNAJ_GUI_LOOK_AND_FEEL = create("sunaj.gui.laf", LookAndFeel.class);
 
+    // User properties
+    public static final Property<String> RSDN_USER_NAME = create("rsdn.user.name", String.class);
+    public static final Property<Password> RSDN_USER_PASSWORD = create("rsdn.user.password", Password.class);
+    public static final Property<String> RSDN_USER_ID = create("rsdn.user.id", String.class);
+    public static final Property<Boolean> RSDN_USER_PASSWORD_SAVE = create("rsdn.user.password.store", Boolean.class);
+
     // Janus synchronizator properties
 
     /**
@@ -48,7 +54,9 @@ public final class Property<T> {
      * @return newly generated property object.
      */
     static <E> Property<E> create(String name, Class<E> type) {
-        return new Property<E>(name, type);
+        Property<E> prop = new Property<E>(name, type);
+        ALL_PROPERTIES.put(name, prop);
+        return prop;
     }
 
     public static Property<?> getPropertyForName(String name) {
@@ -74,8 +82,6 @@ public final class Property<T> {
 
         this.name = name;
         this.type = type;
-
-        ALL_PROPERTIES.put(name, this);
     }
 
     public String getName() {
