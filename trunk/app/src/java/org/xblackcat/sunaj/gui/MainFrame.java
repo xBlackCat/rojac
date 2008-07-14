@@ -118,28 +118,37 @@ public class MainFrame extends JFrame {
         viewport.dock(viewThreads);
 
         // Setup forums view
-        viewForums = new View(
+        viewForums = createView(
                 "forums_view",
-                Messages.VIEW_FORUMS_TITLE.getMessage(),
-                Messages.VIEW_FORUMS_TAB_TEXT.getMessage()
+                Messages.VIEW_FORUMS_TITLE,
+                Messages.VIEW_FORUMS_TAB_TEXT,
+                createForumsView()
         );
-        viewForums.addAction(DockingConstants.CLOSE_ACTION);
-        viewForums.addAction(DockingConstants.PIN_ACTION);
-        viewForums.setContentPane(createForumsView());
 
         viewThreads.dock(viewForums, DockingConstants.WEST_REGION, 0.3f);
 
         // Setup favorites view
-        viewFavorites = new View(
+        viewFavorites = createView(
                 "favorites_view",
-                Messages.VIEW_FAVORITES_TITLE.getMessage(),
-                Messages.VIEW_FAVORITES_TAB_TEXT.getMessage()
+                Messages.VIEW_FAVORITES_TITLE,
+                Messages.VIEW_FAVORITES_TAB_TEXT,
+                new JScrollPane(new JTable())
         );
-        viewFavorites.addAction(DockingConstants.CLOSE_ACTION);
-        viewFavorites.addAction(DockingConstants.PIN_ACTION);
-        viewFavorites.setContentPane(new JScrollPane(new JTable()));
 
         viewThreads.dock(viewFavorites, DockingConstants.EAST_REGION, 0.3f);
+    }
+
+    private View createView(String id, Messages title, Messages tabText, JComponent comp) {
+        final View view = new View(
+                id,
+                title.getMessage(),
+                tabText.getMessage()
+        );
+        view.addAction(DockingConstants.CLOSE_ACTION);
+        view.addAction(DockingConstants.PIN_ACTION);
+        view.setContentPane(comp);
+
+        return view;
     }
 
     private JComponent createForumsView() {
