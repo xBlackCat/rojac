@@ -8,15 +8,11 @@ import org.xblackcat.sunaj.gui.MainFrame;
 import org.xblackcat.sunaj.service.ServiceFactory;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
-import org.xblackcat.sunaj.service.storage.IStorage;
-import org.xblackcat.sunaj.service.storage.StorageException;
-import org.xblackcat.sunaj.service.storage.cached.CachedStorage;
-import org.xblackcat.sunaj.service.synchronizer.ISynchronizer;
-import org.xblackcat.sunaj.service.synchronizer.SimpleSynchronizer;
-import org.xblackcat.sunaj.service.synchronizer.SynchronizationException;
 import org.xblackcat.sunaj.util.SunajUtils;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Date: 26 бер 2007
@@ -31,7 +27,7 @@ public final class SunajLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        // Initialize service
+        // Initialize core services
         ServiceFactory sf = ServiceFactory.getInstance();
 
         IOptionsService os = sf.getOptionsService();
@@ -45,8 +41,19 @@ public final class SunajLauncher {
             throw new SunajException("Can not initialize " + laf.getName() + " L&F.", e);
         }
 
-        MainFrame mainFrame = new MainFrame();
-//        testStorage();
+        final MainFrame mainFrame = new MainFrame();
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mainFrame.updateSettings();
+
+                storeSettings();
+
+                System.exit(0);
+            }
+        });
+
         while (os.getProperty(Property.RSDN_USER_NAME) == null ||
                 os.getProperty(Property.RSDN_USER_PASSWORD) == null) {
             LoginDialog ld = new LoginDialog(mainFrame);
@@ -56,21 +63,28 @@ public final class SunajLauncher {
             }
         }
 
+        setupUserSettings();
+
+        mainFrame.applySettings();
+
+        mainFrame.loadData();
+
         mainFrame.setVisible(true);
         SwingUtility.centerOnScreen(mainFrame);
     }
 
-    private static void testStorage() throws StorageException, SynchronizationException {
-        IStorage storage = ServiceFactory.getInstance().getStorage();
+    private static void storeSettings() {
+        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
 
-        ISynchronizer s = new SimpleSynchronizer("xBlackCat", "tryt0guess", new CachedStorage(storage));
+        if (!os.getProperty(Property.RSDN_USER_PASSWORD_SAVE)) {
+            os.setProperty(Property.RSDN_USER_PASSWORD, null);
+        }
 
-        //s.updateForumList();
-
-        storage.getForumAH().setSubscribeForum(33, true);
-
-        s.synchronize();
-
-        System.exit(0);
+        os.storeSettings();
     }
+
+    private static void setupUserSettings() {
+        // TODO: Load user settings from options
+    }
+
 }
