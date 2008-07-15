@@ -68,7 +68,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
     }
 
     /**
-     * Loads from resource the options. If an option have already initialized it not overwriting.
+     * Loads from resource the options. If an option have already initialized it will not be overwrited.
      *
      * @param config        config resource bundle.
      * @param allProperties
@@ -81,6 +81,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
                 if (log.isWarnEnabled()) {
                     log.warn("Can not obtain value for the " + p + " from config file.");
                 }
+                continue;
             }
 
             if (getProperty(p) == null) {

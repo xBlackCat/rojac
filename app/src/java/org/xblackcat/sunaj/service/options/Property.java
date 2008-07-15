@@ -1,6 +1,7 @@
 package org.xblackcat.sunaj.service.options;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +20,17 @@ public final class Property<T> {
      */
     private static final Map<String, Property<?>> ALL_PROPERTIES = new HashMap<String, Property<?>>();
 
-    // Global properties
+    // Global development properties
     public static final Property<Boolean> SUNAJ_DEBUG_MODE = create("sunaj.global.debug.mode", Boolean.class);
+
+    // Application component properties
+    public static final Property<Dimension> SUNAJ_MAIN_FRAME_SIZE = create("sunaj.main_frame.size", Dimension.class);
+    public static final Property<Point> SUNAJ_MAIN_FRAME_POSITION = create("sunaj.main_frame.position", Point.class);
 
     // GUI properties
     public static final Property<LookAndFeel> SUNAJ_GUI_LOOK_AND_FEEL = create("sunaj.gui.laf", LookAndFeel.class);
 
-    // User properties
+    // User properties (login dialog)
     public static final Property<String> RSDN_USER_NAME = create("rsdn.user.name", String.class);
     public static final Property<Password> RSDN_USER_PASSWORD = create("rsdn.user.password", Password.class);
     public static final Property<String> RSDN_USER_ID = create("rsdn.user.id", String.class);

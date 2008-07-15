@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.sunaj.util.SunajUtils;
 
+import java.awt.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,8 @@ abstract class AnOptionsService implements IOptionsService {
         map.put(String.class, new StringConverter());
         map.put(Class.class, new ClassConverter());
         map.put(Password.class, new PasswordConverter());
+        map.put(Point.class, new PointConverter());
+        map.put(Dimension.class, new DimensionConverter());
 
         // Global converter
         map.put(Object.class, new ObjectConverter());
