@@ -4,12 +4,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.flexdock.docking.DockingConstants;
 import org.flexdock.docking.DockingManager;
+import org.flexdock.util.SwingUtility;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.xblackcat.sunaj.gui.view.FavoritesView;
 import org.xblackcat.sunaj.gui.view.ForumsListView;
 import org.xblackcat.sunaj.gui.view.IView;
 import org.xblackcat.sunaj.i18n.Messages;
+import org.xblackcat.sunaj.service.ServiceFactory;
+import org.xblackcat.sunaj.service.options.IOptionsService;
+import org.xblackcat.sunaj.service.options.Property;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,6 +42,11 @@ public class MainFrame extends JFrame implements IConfigurable {
         initialize();
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        // Default position/size
+        setSize(640, 480);
+
+        SwingUtility.centerOnScreen(this);
     }
 
     public void loadData() {
@@ -103,12 +112,29 @@ public class MainFrame extends JFrame implements IConfigurable {
         forumsListView.applySettings();
         favoritesView.applySettings();
 
+        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
+
+        Point pos = os.getProperty(Property.SUNAJ_MAIN_FRAME_POSITION);
+        if (pos != null) {
+            setLocation(pos);
+        }
+
+        Dimension size = os.getProperty(Property.SUNAJ_MAIN_FRAME_SIZE);
+        if (size != null) {
+            setSize(size);
+        }
+
         // TODO: implement
     }
 
     public void updateSettings() {
         forumsListView.updateSettings();
         favoritesView.updateSettings();
+
+        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
+
+        os.setProperty(Property.SUNAJ_MAIN_FRAME_POSITION, getLocation());
+        os.setProperty(Property.SUNAJ_MAIN_FRAME_SIZE, getSize());
 
         // TODO: implement
     }

@@ -70,7 +70,6 @@ public final class SunajLauncher {
         mainFrame.loadData();
 
         mainFrame.setVisible(true);
-        SwingUtility.centerOnScreen(mainFrame);
     }
 
     private static void storeSettings() {
