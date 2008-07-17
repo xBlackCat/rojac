@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.flexdock.util.SwingUtility;
 import org.xblackcat.sunaj.gui.LoginDialog;
 import org.xblackcat.sunaj.gui.MainFrame;
+import org.xblackcat.sunaj.i18n.Messages;
 import org.xblackcat.sunaj.service.ServiceFactory;
 import org.xblackcat.sunaj.service.options.IOptionsService;
 import org.xblackcat.sunaj.service.options.Property;
@@ -40,6 +41,8 @@ public final class SunajLauncher {
         } catch (UnsupportedLookAndFeelException e) {
             throw new SunajException("Can not initialize " + laf.getName() + " L&F.", e);
         }
+
+        Messages.setLocale(os.getProperty(Property.SUNAJ_GUI_LOCALE));
 
         final MainFrame mainFrame = new MainFrame();
 

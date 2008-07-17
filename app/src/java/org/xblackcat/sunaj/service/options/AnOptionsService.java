@@ -7,6 +7,7 @@ import org.xblackcat.sunaj.util.SunajUtils;
 import java.awt.*;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -36,6 +37,7 @@ abstract class AnOptionsService implements IOptionsService {
         map.put(Password.class, new PasswordConverter());
         map.put(Point.class, new PointConverter());
         map.put(Dimension.class, new DimensionConverter());
+        map.put(Locale.class, new LocaleConverter());
 
         // Global converter
         map.put(Object.class, new ObjectConverter());
@@ -49,6 +51,7 @@ abstract class AnOptionsService implements IOptionsService {
 
         String val = getProperty(name);
 
+        // Handle enums in special way
         if (Enum.class.isAssignableFrom(type)) {
             return (T) SunajUtils.convertToEnum((Class<Enum>) type, val);
         }
@@ -75,6 +78,7 @@ abstract class AnOptionsService implements IOptionsService {
         String name = key.getName();
         Class<?> type = key.getType();
 
+        // Handle enums in special way
         if (Enum.class.isAssignableFrom(type)) {
             String v = newValue == null ?  null : ((Enum) newValue).name();
             String val = setProperty(name, v);
