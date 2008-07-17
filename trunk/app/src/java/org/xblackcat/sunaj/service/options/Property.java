@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -29,6 +30,7 @@ public final class Property<T> {
 
     // GUI properties
     public static final Property<LookAndFeel> SUNAJ_GUI_LOOK_AND_FEEL = create("sunaj.gui.laf", LookAndFeel.class);
+    public static final Property<Locale> SUNAJ_GUI_LOCALE = create("sunaj.gui.locale", Locale.class);
 
     // User properties (login dialog)
     public static final Property<String> RSDN_USER_NAME = create("rsdn.user.name", String.class);
