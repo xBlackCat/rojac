@@ -1,6 +1,12 @@
 package org.xblackcat.sunaj.gui.frame.thread;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.xblackcat.sunaj.data.Message;
+import org.xblackcat.sunaj.service.ServiceFactory;
+import org.xblackcat.sunaj.service.storage.IStorage;
+import org.xblackcat.sunaj.service.storage.StorageException;
 
 /**
  * Date: 23 бер 2008
@@ -9,10 +15,17 @@ import org.apache.commons.lang.ArrayUtils;
  */
 
 public class MessageItem {
+    private static final Log log = LogFactory.getLog(MessageItem.class);
+
+    private static final MessageItem[] NO_ITEMS = new MessageItem[0];
+
     private final int messageId;
     private final MessageItem parent;
-    private MessageItem[] children = NO_ITEMS;
-    private static final MessageItem[] NO_ITEMS = new MessageItem[0];
+    private MessageItem[] children = null;
+
+    // Real data.
+    private Message message;
+    private String parsedText;
 
     public MessageItem(MessageItem parent, int messageId) {
         this.parent = parent;
@@ -28,14 +41,71 @@ public class MessageItem {
     }
 
     public MessageItem[] getChildren() {
+        if (children == null) {
+            // Load children
+            loadChildren();
+        }
         return children;
-    }
-
-    public void setChildren(MessageItem[] children) {
-        this.children = children;
     }
 
     public int getIndex(MessageItem node) {
         return ArrayUtils.indexOf(children, node);
+    }
+
+    public Message getMessage() {
+        loadData();
+        return message;
+    }
+
+    private void loadData() {
+        Message m;
+        synchronized (this) {
+            m = message;
+        }
+        if (m != null) {
+            // Nothing to do
+            return;
+        }
+        IStorage s = ServiceFactory.getInstance().getStorage();
+
+        try {
+            m = s.getMessageAH().getMessageById(messageId);
+        } catch (StorageException e) {
+            log.error("Can not load message with id = " + messageId, e);
+            return;
+        }
+
+        synchronized (this) {
+            if (message == null) {
+                message = m;
+            }
+        }
+    }
+    
+    private void loadChildren() {
+        synchronized (this) {
+            if (this.children != null) {
+                return;
+            }
+        }
+        int [] c;
+        IStorage s = ServiceFactory.getInstance().getStorage();
+
+        try {
+            c = s.getMessageAH().getMessageIdsByParentId(messageId);
+        } catch (StorageException e) {
+            log.error("Can not load message children for id = " + messageId, e);
+            return;
+        }
+
+        MessageItem[] cI = new MessageItem[c.length];
+        for (int i = 0; i < c.length; i++) {
+            cI[i] = new MessageItem(this, c[i]);
+        }
+        synchronized (this) {
+            if (children == null) {
+                children = cI;
+            }
+        }
     }
 }

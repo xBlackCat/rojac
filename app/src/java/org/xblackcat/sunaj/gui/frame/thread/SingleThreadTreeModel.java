@@ -9,8 +9,13 @@ import javax.swing.tree.TreePath;
  *
  * @author xBlackCat
  */
-class SimpleThreadTreeModel extends AThreadTreeModel {
+class SingleThreadTreeModel extends AThreadTreeModel {
     private MessageItem root;
+
+    public void showItem(int itemId) {
+        root = new MessageItem(null, itemId);
+        fireTreeStructureChanged(this, getPathToRoot(root), null, null);
+    }
 
     public MessageItem getRoot() {
         return root;

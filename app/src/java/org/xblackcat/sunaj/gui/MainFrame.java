@@ -53,14 +53,12 @@ public class MainFrame extends JFrame implements IConfigurable {
     }
 
     public void loadData() {
-        forumsListView.applySettings();
-        favoritesView.applySettings();
-
         // For testing
-        ThreadDoubleView $ = new ThreadDoubleView(new TreeThreadView(), new MessagePane(), false);
+        ThreadDoubleView $ = new ThreadDoubleView(new TreeThreadView(), new MessagePane(), true);
         threads.addTab("Test", $);
-//        $.viewItem(2483908);// Biggest message
-        $.viewItem(2484167);
+        $.viewItem(2483908);// Biggest message
+//        $.viewItem(2484167);
+//        $.viewItem(2483915);
     }
 
     private void initialize() {
