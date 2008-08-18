@@ -1,10 +1,10 @@
 package org.xblackcat.sunaj.gui.frame.thread;
 
 import javax.swing.event.EventListenerList;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
-import javax.swing.tree.TreePath;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  * Date: 22 бер 2008
@@ -13,6 +13,8 @@ import javax.swing.tree.TreeModel;
  */
 
 public abstract class AThreadTreeModel implements TreeModel {
+    public abstract void showItem(int itemId);
+
     /**
      * Listeners.
      */
