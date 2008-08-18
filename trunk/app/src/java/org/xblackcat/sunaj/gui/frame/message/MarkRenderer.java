@@ -12,21 +12,26 @@ import java.awt.*;
  */
 
 class MarkRenderer extends DefaultListCellRenderer {
+    private final Icon defaultIcon;
+
+    public MarkRenderer(Icon icon) {
+        defaultIcon = icon;
+    }
+
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
         Mark mark = (Mark) value;
 
-        if (mark == null) {
-            throw new NullPointerException("Item became null");
-        }
-
         setText(null);
-        setIcon(mark.getIcon());
-        if (index > -1) {
-            list.setToolTipText(mark.toString());
+        if (mark == null) {
+            setIcon(defaultIcon);
+        } else {
+            setIcon(mark.getIcon());
+            if (index > -1) {
+                list.setToolTipText(mark.toString());
+            }
         }
-
         return this;
     }
 }

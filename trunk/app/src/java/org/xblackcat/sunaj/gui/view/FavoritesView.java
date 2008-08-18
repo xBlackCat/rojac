@@ -1,5 +1,7 @@
 package org.xblackcat.sunaj.gui.view;
 
+import org.xblackcat.sunaj.gui.IView;
+
 import javax.swing.*;
 import java.awt.*;
 
