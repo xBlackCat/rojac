@@ -3,6 +3,7 @@ package org.xblackcat.sunaj.gui.view;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.sunaj.data.Forum;
+import org.xblackcat.sunaj.gui.IView;
 import org.xblackcat.sunaj.gui.model.ForumListModel;
 import org.xblackcat.sunaj.gui.model.ForumViewMode;
 import org.xblackcat.sunaj.gui.model.ForumViewModeModel;

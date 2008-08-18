@@ -13,7 +13,6 @@ import javax.swing.*;
 
 class IconsModel extends AbstractListModel implements ComboBoxModel {
     private final Mark[] items;
-    private final Mark defaultItem;
     private Mark selectedItem;
 
     public IconsModel(Mark... items) {
@@ -21,8 +20,7 @@ class IconsModel extends AbstractListModel implements ComboBoxModel {
             throw new IllegalArgumentException("Array is empty");
         }
         this.items = items;
-        defaultItem = items[0];
-        selectedItem = defaultItem;
+        selectedItem = null;
     }
 
     public int getSize() {
@@ -43,10 +41,6 @@ class IconsModel extends AbstractListModel implements ComboBoxModel {
     }
 
     public void reset() {
-        setSelectedItem(defaultItem);
-    }
-
-    public Mark getDefaultItem() {
-        return defaultItem;
+        setSelectedItem(null);
     }
 }

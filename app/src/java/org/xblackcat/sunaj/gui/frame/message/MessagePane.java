@@ -4,20 +4,15 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.flexdock.util.SwingUtility;
-import org.xblackcat.sunaj.SunajException;
 import org.xblackcat.sunaj.data.Mark;
 import org.xblackcat.sunaj.data.Message;
-import org.xblackcat.sunaj.gui.frame.IInternationazable;
-import org.xblackcat.sunaj.gui.frame.IMessageViewer;
+import org.xblackcat.sunaj.gui.IInternationazable;
 import org.xblackcat.sunaj.i18n.JLOptionPane;
 import org.xblackcat.sunaj.i18n.Messages;
 import org.xblackcat.sunaj.service.ServiceFactory;
 import org.xblackcat.sunaj.service.converter.IMessageParser;
-import org.xblackcat.sunaj.service.options.Property;
 import org.xblackcat.sunaj.service.storage.IStorage;
 import org.xblackcat.sunaj.service.storage.StorageException;
-import org.xblackcat.sunaj.util.SunajUtils;
-import org.xblackcat.sunaj.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -27,12 +22,9 @@ import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Date: 31 груд 2007
@@ -40,7 +32,7 @@ import java.util.Locale;
  * @author xBlackCat
  */
 
-public class MessagePane extends JPanel implements IMessageViewer, IInternationazable {
+public class MessagePane extends AMessageView implements IInternationazable {
     private static final Log log = LogFactory.getLog(MessagePane.class);
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();
 
@@ -106,24 +98,17 @@ public class MessagePane extends JPanel implements IMessageViewer, IInternationa
                 Mark.x3
         );
 
-        final MarkRenderer renderer = new MarkRenderer();
+        final MarkRenderer renderer = new MarkRenderer(ResourceUtils.loadImageIcon("/images/marks/select.gif"));
 
         final JComboBox marks = new JComboBox(marksModel);
         marks.setFocusable(false);
+        marks.setToolTipText(Messages.DESCRIPTION_MARK_SELECT.getMessage());
         marks.setRenderer(renderer);
         marks.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 marks.setPopupVisible(false);
                 chooseMark(marksModel.getSelectedItem());
                 marksModel.reset();
-            }
-        });
-        marks.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    marks.setPopupVisible(false);
-                    chooseMark(marksModel.getDefaultItem());
-                }
             }
         });
 
@@ -209,7 +194,7 @@ public class MessagePane extends JPanel implements IMessageViewer, IInternationa
         return p;
     }
 
-    public void viewMessage(int messageId) {
+    public void viewItem(int messageId) {
         this.messageId = messageId;
 
         Message mes;
@@ -227,6 +212,12 @@ public class MessagePane extends JPanel implements IMessageViewer, IInternationa
             updateMarksPane(messageId);
         } catch (StorageException e) {
             throw new RuntimeException("Can't load message id = " + messageId, e);
+        }
+    }
+
+    public void updateItem(int messageId) {
+        if (messageId == this.messageId) {
+            viewItem(messageId);
         }
     }
 
@@ -311,24 +302,6 @@ public class MessagePane extends JPanel implements IMessageViewer, IInternationa
             }
         }
         return "";
-    }
-
-    public static void main(String[] args) {
-        ServiceFactory sf = ServiceFactory.getInstance();
-
-        LookAndFeel laf = sf.getOptionsService().getProperty(Property.SUNAJ_GUI_LOOK_AND_FEEL);
-        try {
-            SunajUtils.setLookAndFeel(laf);
-        } catch (UnsupportedLookAndFeelException e) {
-            throw new SunajException("Can not initialize " + laf.getName() + " L&F.", e);
-        }
-
-        Messages.setLocale(new Locale("ru", "RU"));
-
-        MessagePane cp = new MessagePane();
-        WindowsUtils.showTestFrame(cp);
-//        cp.viewMessage(2483908);// Biggest message
-        cp.viewMessage(2484167);
     }
 
     public void loadLabels() {

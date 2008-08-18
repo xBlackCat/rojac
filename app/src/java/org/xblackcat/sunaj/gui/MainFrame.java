@@ -7,9 +7,12 @@ import org.flexdock.docking.DockingManager;
 import org.flexdock.util.SwingUtility;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
+import org.xblackcat.sunaj.data.Forum;
+import org.xblackcat.sunaj.gui.frame.message.MessagePane;
+import org.xblackcat.sunaj.gui.frame.thread.ThreadDoubleView;
+import org.xblackcat.sunaj.gui.frame.thread.TreeThreadView;
 import org.xblackcat.sunaj.gui.view.FavoritesView;
 import org.xblackcat.sunaj.gui.view.ForumsListView;
-import org.xblackcat.sunaj.gui.view.IView;
 import org.xblackcat.sunaj.i18n.Messages;
 import org.xblackcat.sunaj.service.ServiceFactory;
 import org.xblackcat.sunaj.service.options.IOptionsService;
@@ -52,6 +55,12 @@ public class MainFrame extends JFrame implements IConfigurable {
     public void loadData() {
         forumsListView.applySettings();
         favoritesView.applySettings();
+
+        // For testing
+        ThreadDoubleView $ = new ThreadDoubleView(new TreeThreadView(), new MessagePane(), false);
+        threads.addTab("Test", $);
+//        $.viewItem(2483908);// Biggest message
+        $.viewItem(2484167);
     }
 
     private void initialize() {
@@ -82,7 +91,7 @@ public class MainFrame extends JFrame implements IConfigurable {
                 forumsListView.getComponent()
         );
 
-        viewThreads.dock(viewForums, DockingConstants.WEST_REGION, 0.3f);
+        viewThreads.dock(viewForums, DockingConstants.WEST_REGION, 0.2f);
 
         // Setup favorites view
         viewFavorites = createView(
@@ -92,7 +101,7 @@ public class MainFrame extends JFrame implements IConfigurable {
                 favoritesView.getComponent()
         );
 
-        viewThreads.dock(viewFavorites, DockingConstants.EAST_REGION, 0.3f);
+        viewThreads.dock(viewFavorites, DockingConstants.EAST_REGION, 0.2f);
     }
 
     private View createView(String id, Messages title, Messages tabText, JComponent comp) {
@@ -137,5 +146,11 @@ public class MainFrame extends JFrame implements IConfigurable {
         os.setProperty(Property.SUNAJ_MAIN_FRAME_SIZE, getSize());
 
         // TODO: implement
+    }
+
+    private void openForumTab(Forum f) {
+        ThreadDoubleView $ = new ThreadDoubleView(new TreeThreadView(), new MessagePane(), false);
+        threads.addTab(f.getForumName(), $);
+        $.viewItem(f.getForumId());
     }
 }

@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.gui.frame;
+package org.xblackcat.sunaj.gui;
 
 /**
  * Provides ability to update labels accoring to new locale.

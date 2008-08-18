@@ -1,6 +1,4 @@
-package org.xblackcat.sunaj.gui.view;
-
-import org.xblackcat.sunaj.gui.IConfigurable;
+package org.xblackcat.sunaj.gui;
 
 import javax.swing.*;
 
