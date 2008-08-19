@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.options;
+package org.xblackcat.sunaj.service.options.converter;
 
 /**
  * Date: 28 лют 2008
@@ -6,7 +6,7 @@ package org.xblackcat.sunaj.service.options;
  * @author xBlackCat
  */
 
-class StringConverter implements IConverter<String > {
+public class StringConverter implements IConverter<String > {
     public String convert(String s) {
         return s;
     }

@@ -29,6 +29,8 @@ public final class SunajLauncher {
 
     public static void main(String[] args) throws Exception {
         // Initialize core services
+        ServiceFactory.initialize();
+
         ServiceFactory sf = ServiceFactory.getInstance();
 
         IOptionsService os = sf.getOptionsService();

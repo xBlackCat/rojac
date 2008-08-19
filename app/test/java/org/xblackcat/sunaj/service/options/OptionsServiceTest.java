@@ -156,6 +156,9 @@ public class OptionsServiceTest extends TestCase {
     private static final class TestOptionsService extends AnOptionsService {
         private static final Log log = LogFactory.getLog(TestOptionsService.class);
 
+        private TestOptionsService() throws OptionsServiceException {
+        }
+
         private Map<String, String> cache = new HashMap<String, String>();
 
         protected String getProperty(String key) {

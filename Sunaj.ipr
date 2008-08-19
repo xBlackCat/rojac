@@ -61,6 +61,7 @@
       <entry name="?*.txt" />
       <entry name="?*.css" />
       <entry name="?*.wsdd" />
+      <entry name="?*.config" />
     </wildcardResourcePatterns>
   </component>
   <component name="CppTools.Loader" reportImplicitCastToBool="false" version="1" />

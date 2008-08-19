@@ -1,6 +1,7 @@
-package org.xblackcat.sunaj.service.options;
+package org.xblackcat.sunaj.service.options.converter;
 
 import org.apache.commons.lang.StringUtils;
+import org.xblackcat.sunaj.service.options.PropertyLoadException;
 
 /**
  * Date: 8 лип 2008

@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.options;
+package org.xblackcat.sunaj.service.options.converter;
 
 /**
  * Date: 28 лют 2008
@@ -6,7 +6,7 @@ package org.xblackcat.sunaj.service.options;
  * @author xBlackCat
  */
 
-interface IConverter<T> {
+public interface IConverter<T> {
     /**
      * Converts a string to Object.
      *

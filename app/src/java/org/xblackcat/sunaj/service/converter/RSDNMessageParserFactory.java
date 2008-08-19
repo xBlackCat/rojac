@@ -141,7 +141,7 @@ public final class RSDNMessageParserFactory {
         String aMethod = parts[1];
 
         try {
-            Object o = ResourceUtils.loadClassOrEnum(aClassName);
+            Object o = ResourceUtils.loadObjectOrEnum(aClassName);
             final Method method = o.getClass().getMethod(aMethod);
 
             if (ITag.class.isAssignableFrom(method.getReturnType())) {
@@ -177,7 +177,7 @@ public final class RSDNMessageParserFactory {
         ITag tag = null;
 
         try {
-            Object o = ResourceUtils.loadClassOrEnum(pClassName);
+            Object o = ResourceUtils.loadObjectOrEnum(pClassName);
             if (o instanceof ITag) {
                 tag = (ITag) o;
             }

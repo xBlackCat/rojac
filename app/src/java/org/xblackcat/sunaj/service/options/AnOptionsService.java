@@ -1,14 +1,17 @@
 package org.xblackcat.sunaj.service.options;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.sunaj.service.options.converter.IConverter;
 import org.xblackcat.sunaj.util.SunajUtils;
+import org.xblackcat.utils.ResourceUtils;
 
-import java.awt.*;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Date: 13 квіт 2007
@@ -21,26 +24,45 @@ abstract class AnOptionsService implements IOptionsService {
 
     private final Map<Class<?>, IConverter<?>> converters;
 
-    public AnOptionsService() {
+    protected AnOptionsService() throws OptionsServiceException {
+        // Load all available converters
         HashMap<Class<?>, IConverter<?>> map = new HashMap<Class<?>, IConverter<?>>();
 
-        map.put(Boolean.class, new BooleanConverter());
-        map.put(Byte.class, new ByteConverter());
-        map.put(Character.class, new CharacterConverter());
-        map.put(Double.class, new DoubleConverter());
-        map.put(Float.class, new FloatConverter());
-        map.put(Integer.class, new IntegerConverter());
-        map.put(Long.class, new LongConverter());
-        map.put(Short.class, new ShortConverter());
-        map.put(String.class, new StringConverter());
-        map.put(Class.class, new ClassConverter());
-        map.put(Password.class, new PasswordConverter());
-        map.put(Point.class, new PointConverter());
-        map.put(Dimension.class, new DimensionConverter());
-        map.put(Locale.class, new LocaleConverter());
+        Properties parsers = new Properties();
 
-        // Global converter
-        map.put(Object.class, new ObjectConverter());
+        try {
+            parsers.load(ResourceUtils.getResourceAsStream("/config/value-parsers.config"));
+        } catch (IOException e) {
+            throw new OptionsServiceException("Can not load parsers for property values", e);
+        }
+
+        for (String className : parsers.stringPropertyNames()) {
+            String parserName = parsers.getProperty(className);
+
+            if (StringUtils.isBlank(parserName)) {
+                throw new OptionsServiceException("There is no parser for " + className + " class instances");
+            }
+
+            Class<?> aClass;
+            try {
+                aClass = AnOptionsService.class.getClassLoader().loadClass(className);
+            } catch (ClassNotFoundException e) {
+                throw new OptionsServiceException("Can not load object class " + className, e);
+            }
+
+            IConverter<?> parser = null;
+            try {
+                parser = (IConverter<?>) ResourceUtils.loadObjectOrEnum(parserName);
+            } catch (ClassNotFoundException e) {
+                throw new OptionsServiceException("Can not load parser for " + className + " class instances", e);
+            } catch (IllegalAccessException e) {
+                throw new OptionsServiceException("Can not load parser for " + className + " class instances", e);
+            } catch (InstantiationException e) {
+                throw new OptionsServiceException("Can not load parser for " + className + " class instances", e);
+            }
+
+            map.put(aClass, parser);
+        }
 
         converters = Collections.unmodifiableMap(map);
     }
@@ -80,7 +102,7 @@ abstract class AnOptionsService implements IOptionsService {
 
         // Handle enums in special way
         if (Enum.class.isAssignableFrom(type)) {
-            String v = newValue == null ?  null : ((Enum) newValue).name();
+            String v = newValue == null ? null : ((Enum) newValue).name();
             String val = setProperty(name, v);
             return (T) SunajUtils.convertToEnum((Class<Enum>) type, val);
         }

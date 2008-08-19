@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.options;
+package org.xblackcat.sunaj.service.options.converter;
 
 /**
  * Date: 28 лют 2008
@@ -6,11 +6,11 @@ package org.xblackcat.sunaj.service.options;
  * @author xBlackCat
  */
 
-class DoubleConverter extends AScalarConverter<Double> {
-    public Double convert(String s) {
+public class IntegerConverter extends AScalarConverter<Integer> {
+    public Integer convert(String s) {
         try {
             if (s != null) {
-                return Double.parseDouble(s);
+                return Integer.decode(s);
             } else {
                 return null;
             }
