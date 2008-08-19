@@ -1,6 +1,7 @@
-package org.xblackcat.sunaj.service.options;
+package org.xblackcat.sunaj.service.options.converter;
 
 import org.apache.commons.lang.StringUtils;
+import org.xblackcat.sunaj.service.options.PropertyLoadException;
 import org.xblackcat.utils.ResourceUtils;
 
 /**
@@ -15,7 +16,7 @@ public class ObjectConverter implements IConverter<Object> {
             return null;
         }
         try {
-            return ResourceUtils.loadClassOrEnum(s);
+            return ResourceUtils.loadObjectOrEnum(s);
         } catch (Exception e) {
             throw new PropertyLoadException("Can not initialize object.", e);
         }

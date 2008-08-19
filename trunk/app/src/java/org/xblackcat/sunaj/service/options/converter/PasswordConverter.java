@@ -1,7 +1,8 @@
-package org.xblackcat.sunaj.service.options;
+package org.xblackcat.sunaj.service.options.converter;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.xblackcat.sunaj.service.options.Password;
 
 /**
  * Date: 12 лип 2008

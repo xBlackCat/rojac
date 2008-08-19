@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.options;
+package org.xblackcat.sunaj.service.options.converter;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -10,8 +10,8 @@ import java.awt.*;
  * @author xBlackCat
  */
 
-public class DimensionConverter implements IConverter<Dimension> {
-    public Dimension convert(String s) {
+public class PointConverter implements IConverter<Point> {
+    public Point convert(String s) {
         if (StringUtils.isBlank(s)) {
             return null;
         }
@@ -19,7 +19,7 @@ public class DimensionConverter implements IConverter<Dimension> {
         try {
             String[] axises = s.split("\\s*,\\s*");
             if (axises.length == 2) {
-                return new Dimension(Integer.parseInt(axises[0]), Integer.parseInt(axises[1]));
+                return new Point(Integer.parseInt(axises[0]), Integer.parseInt(axises[1]));
             }
         } catch (NumberFormatException e) {
             // Can not parse. Return null
@@ -27,11 +27,11 @@ public class DimensionConverter implements IConverter<Dimension> {
         return null;
     }
 
-    public String toString(Dimension o) {
+    public String toString(Point o) {
         if (o == null) {
             return null;
         }
 
-        return String.format("%d,%d", o.width, o.height);
+        return String.format("%d,%d", o.x, o.y);
     }
 }

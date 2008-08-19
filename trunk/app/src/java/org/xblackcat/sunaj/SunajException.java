@@ -6,7 +6,7 @@ package org.xblackcat.sunaj;
  * @author xBlackCat
  */
 
-public class SunajException extends RuntimeException {
+public class SunajException extends Exception {
     public SunajException() {
     }
 

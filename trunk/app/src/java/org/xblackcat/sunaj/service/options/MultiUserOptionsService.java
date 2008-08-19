@@ -25,11 +25,11 @@ import java.util.Properties;
 public final class MultiUserOptionsService extends AnOptionsService {
     private static final Log log = LogFactory.getLog(MultiUserOptionsService.class);
 
-    private static final String DEFAULT_CONFIG_BUNDLE_NAME = "/default_config.properties";
+    private static final String DEFAULT_CONFIG_BUNDLE_NAME = "/config/default.config";
 
     private final String userConfigFileName;
 
-    public MultiUserOptionsService() {
+    public MultiUserOptionsService() throws OptionsServiceException {
         String userHome = SystemUtils.USER_HOME;
         
         if (log.isDebugEnabled()) {
@@ -50,7 +50,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
                 is.close();
                 loadFromResource(p, allProperties);
             } catch (IOException e) {
-                log.error("Can not load content of user config file.", e);
+                throw new OptionsServiceException("Can not load content of user config file.", e);
             }
         }
 
@@ -63,7 +63,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
             p.load(ResourceUtils.getResourceAsStream(DEFAULT_CONFIG_BUNDLE_NAME));
             loadFromResource(p, allProperties);
         } catch (IOException e) {
-            log.error("Can not load the defaults.", e);
+            throw new OptionsServiceException("Can not load the default values.", e);
         }
     }
 

@@ -1,4 +1,4 @@
-package org.xblackcat.sunaj.service.options;
+package org.xblackcat.sunaj.service.options.converter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
