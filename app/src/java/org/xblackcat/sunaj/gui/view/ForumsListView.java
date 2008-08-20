@@ -3,6 +3,7 @@ package org.xblackcat.sunaj.gui.view;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.sunaj.data.Forum;
+import org.xblackcat.sunaj.gui.IRootPane;
 import org.xblackcat.sunaj.gui.IView;
 import org.xblackcat.sunaj.gui.model.ForumListModel;
 import org.xblackcat.sunaj.gui.model.ForumViewMode;
@@ -34,10 +35,12 @@ public class ForumsListView extends JPanel implements IView {
     private static final Log log = LogFactory.getLog(ForumsListView.class);
     // Data and models
     private ForumListModel forumsModel = new ForumListModel();
+    private final IRootPane mainFrame;
 
-    public ForumsListView() {
+    public ForumsListView(IRootPane rootPane) {
         super(new BorderLayout(2, 2));
-        JList forums = new JList(forumsModel);
+        this.mainFrame = rootPane;
+        final JList forums = new JList(forumsModel);
         add(new JScrollPane(forums));
 
         forums.setCellRenderer(new ForumCellRenderer());
@@ -61,7 +64,8 @@ public class ForumsListView extends JPanel implements IView {
                 if (e.isPopupTrigger()) {
                     // TODO: show forum popup menu.
                 } else if (e.getClickCount() > 1) {
-                    // TODO: make double-click action
+                    Forum forum = (Forum) forums.getSelectedValue();
+                    mainFrame.openForumTab(forum);
                 }
             }
         });

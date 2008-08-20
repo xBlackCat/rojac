@@ -10,7 +10,6 @@ import org.flexdock.view.Viewport;
 import org.xblackcat.sunaj.data.Forum;
 import org.xblackcat.sunaj.gui.frame.message.MessagePane;
 import org.xblackcat.sunaj.gui.frame.thread.ForumThreadsView;
-import org.xblackcat.sunaj.gui.frame.thread.SingleThreadView;
 import org.xblackcat.sunaj.gui.frame.thread.ThreadDoubleView;
 import org.xblackcat.sunaj.gui.view.FavoritesView;
 import org.xblackcat.sunaj.gui.view.ForumsListView;
@@ -21,6 +20,8 @@ import org.xblackcat.sunaj.service.options.Property;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Date: 23 груд 2007
@@ -28,11 +29,11 @@ import java.awt.*;
  * @author xBlackCat
  */
 
-public class MainFrame extends JFrame implements IConfigurable {
+public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private static final Log log = LogFactory.getLog(MainFrame.class);
 
-    private IView forumsListView = new ForumsListView();
-    private IView favoritesView = new FavoritesView();
+    private IView forumsListView;
+    private IView favoritesView;
 
     // Components
     private JTabbedPane threads;
@@ -40,8 +41,14 @@ public class MainFrame extends JFrame implements IConfigurable {
     private View viewThreads;
     private View viewFavorites;
 
+    // Data tracking
+    private Map<Integer, Component> openedForums = new HashMap<Integer, Component>();
+
     public MainFrame() {
         super(Messages.MAIN_WINDOW_TITLE.getMessage());
+
+        forumsListView = new ForumsListView(this);
+        favoritesView = new FavoritesView();
 
         initialize();
 
@@ -150,9 +157,17 @@ public class MainFrame extends JFrame implements IConfigurable {
         // TODO: implement
     }
 
-    private void openForumTab(Forum f) {
-        ThreadDoubleView $ = new ThreadDoubleView(new SingleThreadView(), new MessagePane(), false);
+    public void openForumTab(Forum f) {
+        Component c = openedForums.get(f.getForumId());
+        if (c != null) {
+            threads.setSelectedComponent(c);
+            return;
+        }
+
+        ThreadDoubleView $ = new ThreadDoubleView(new ForumThreadsView(), new MessagePane(), false);
         threads.addTab(f.getForumName(), $);
+
+        openedForums.put(f.getForumId(), $);
         $.viewItem(f.getForumId());
     }
 }
