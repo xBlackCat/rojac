@@ -19,9 +19,9 @@ public class MessageItem {
 
     private static final MessageItem[] NO_ITEMS = new MessageItem[0];
 
-    private final int messageId;
-    private final MessageItem parent;
-    private MessageItem[] children = null;
+    protected final int messageId;
+    protected final MessageItem parent;
+    protected MessageItem[] children = null;
 
     // Real data.
     private Message message;
@@ -57,7 +57,7 @@ public class MessageItem {
         return message;
     }
 
-    private void loadData() {
+    protected void loadData() {
         Message m;
         synchronized (this) {
             m = message;
@@ -82,7 +82,7 @@ public class MessageItem {
         }
     }
     
-    private void loadChildren() {
+    protected void loadChildren() {
         synchronized (this) {
             if (this.children != null) {
                 return;

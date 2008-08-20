@@ -9,8 +9,9 @@ import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.xblackcat.sunaj.data.Forum;
 import org.xblackcat.sunaj.gui.frame.message.MessagePane;
+import org.xblackcat.sunaj.gui.frame.thread.ForumThreadsView;
+import org.xblackcat.sunaj.gui.frame.thread.SingleThreadView;
 import org.xblackcat.sunaj.gui.frame.thread.ThreadDoubleView;
-import org.xblackcat.sunaj.gui.frame.thread.TreeThreadView;
 import org.xblackcat.sunaj.gui.view.FavoritesView;
 import org.xblackcat.sunaj.gui.view.ForumsListView;
 import org.xblackcat.sunaj.i18n.Messages;
@@ -54,11 +55,12 @@ public class MainFrame extends JFrame implements IConfigurable {
 
     public void loadData() {
         // For testing
-        ThreadDoubleView $ = new ThreadDoubleView(new TreeThreadView(), new MessagePane(), true);
+        ThreadDoubleView $ = new ThreadDoubleView(new ForumThreadsView(), new MessagePane(), true);
         threads.addTab("Test", $);
-        $.viewItem(2483908);// Biggest message
+//        $.viewItem(2483908);// Biggest message
 //        $.viewItem(2484167);
 //        $.viewItem(2483915);
+        $.viewItem(33); // The humour forum
     }
 
     private void initialize() {
@@ -100,6 +102,8 @@ public class MainFrame extends JFrame implements IConfigurable {
         );
 
         viewThreads.dock(viewFavorites, DockingConstants.EAST_REGION, 0.2f);
+
+        DockingManager.setMinimized(viewFavorites, true);
     }
 
     private View createView(String id, Messages title, Messages tabText, JComponent comp) {
@@ -147,7 +151,7 @@ public class MainFrame extends JFrame implements IConfigurable {
     }
 
     private void openForumTab(Forum f) {
-        ThreadDoubleView $ = new ThreadDoubleView(new TreeThreadView(), new MessagePane(), false);
+        ThreadDoubleView $ = new ThreadDoubleView(new SingleThreadView(), new MessagePane(), false);
         threads.addTab(f.getForumName(), $);
         $.viewItem(f.getForumId());
     }

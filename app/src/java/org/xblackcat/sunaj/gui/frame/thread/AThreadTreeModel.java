@@ -13,7 +13,7 @@ import javax.swing.tree.TreePath;
  */
 
 public abstract class AThreadTreeModel implements TreeModel {
-    public abstract void showItem(int itemId);
+    public abstract void loadRoot(int itemId);
 
     /**
      * Listeners.
