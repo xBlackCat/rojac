@@ -9,11 +9,11 @@ import javax.swing.tree.TreePath;
  *
  * @author xBlackCat
  */
-class SingleThreadTreeModel extends AThreadTreeModel {
+class ForumThreadsTreeModel extends AThreadTreeModel {
     private MessageItem root;
 
     public void loadRoot(int itemId) {
-        root = new MessageItem(null, itemId);
+        root = new ForumRootItem(itemId);
         fireTreeStructureChanged(this, getPathToRoot(root), null, null);
     }
 

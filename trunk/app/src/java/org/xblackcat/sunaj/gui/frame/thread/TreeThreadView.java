@@ -14,33 +14,36 @@ import javax.swing.event.TreeSelectionListener;
 import java.awt.*;
 
 /**
- * Date: 22 בונ 2008
+ * Date: 20 סונן 2008
  *
  * @author xBlackCat
  */
 
-public class TreeThreadView extends AMessageView {
+public abstract class TreeThreadView extends AMessageView {
     private static final Log log = LogFactory.getLog(TreeThreadView.class);
-
-    private final JTree messages = new JTree();
+    
+    protected final JTree messages = new JTree();
     private final JLabel forumName = new JLabel();
-
-    private final AThreadTreeModel model;
+    protected final AThreadTreeModel model;
 
     public TreeThreadView() {
         super(new BorderLayout());
 
-        model = new SingleThreadTreeModel();
+        model = createModel();
         initializeLayout();
     }
 
-    private void initializeLayout() {
+    protected abstract AThreadTreeModel createModel();
+
+    protected void initializeLayout() {
         add(forumName, BorderLayout.NORTH);
 
         // Initialize tree
         messages.setEditable(false);
         messages.setModel(model);
         messages.setCellRenderer(new MessageTreeCellRenderer());
+        messages.setShowsRootHandles(true);
+        messages.setRootVisible(true);
 
         messages.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
@@ -53,18 +56,7 @@ public class TreeThreadView extends AMessageView {
         add(sp, BorderLayout.CENTER);
     }
 
-    public void viewItem(int rootMessageId) {
-        model.showItem(rootMessageId);
-        MessageItem mi = (MessageItem) model.getRoot();
-        loadForumInfo(mi.getMessage().getForumId());
-
-        messages.setSelectionRow(0);
-    }
-
-    public void updateItem(int messageId) {
-    }
-
-    private void loadForumInfo(int forumId) {
+    protected void loadForumInfo(int forumId) {
         IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
 
         Forum f;

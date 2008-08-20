@@ -8,9 +8,9 @@ import java.awt.*;
 
 /**
  * Date: 18 ρεπο 2008
-*
-* @author xBlackCat
-*/
+ *
+ * @author xBlackCat
+ */
 class MessageTreeCellRenderer extends DefaultTreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -19,7 +19,11 @@ class MessageTreeCellRenderer extends DefaultTreeCellRenderer {
         if (value != null) {
             Message mi = ((MessageItem) value).getMessage();
 
-            setText(mi.getSubject() + "(" + mi.getUserNick() + ")");
+            if (mi != null) {
+                setText(mi.getSubject() + "(" + mi.getUserNick() + ")");
+            } else {
+                setText("Forum root");
+            }
         }
 
         setIcon(null);
