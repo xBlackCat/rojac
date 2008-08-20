@@ -9,6 +9,8 @@ import org.xblackcat.sunaj.service.storage.StorageException;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -25,6 +27,11 @@ public class ForumListModel extends AbstractListModel {
     private Forum[] filledForums;
 
     private ForumViewMode mode = ForumViewMode.SHOW_ALL;
+    private static final Comparator<Forum> FORUM_COMPARATOR = new Comparator<Forum>() {
+        public int compare(Forum o1, Forum o2) {
+            return o1.getForumName().compareToIgnoreCase(o2.getForumName());
+        }
+    };
 
     public int getSize() {
         switch (mode) {
@@ -104,6 +111,7 @@ public class ForumListModel extends AbstractListModel {
         }
         subcribedForums = sf.toArray(new Forum[sf.size()]);
 
+        Arrays.sort(filledForums, FORUM_COMPARATOR);
         setMode(getMode());
     }
 }
