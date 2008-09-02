@@ -59,6 +59,9 @@
 
     <path id="sunaj-wsdl.module.classpath">
         <path refid="jdk.classpath"/>
+        <fileset dir="../app/libs">
+            <include name="**/*.jar"/>
+        </fileset>
         <fileset dir="libs">
             <include name="**/*.jar"/>
         </fileset>
