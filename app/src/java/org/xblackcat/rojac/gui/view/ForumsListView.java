@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.IView;
+import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.gui.model.ForumListModel;
 import org.xblackcat.rojac.gui.model.ForumViewMode;
 import org.xblackcat.rojac.gui.model.ForumViewModeModel;
@@ -14,6 +15,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.synchronizer.GetForumListCommand;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -97,7 +99,7 @@ public class ForumsListView extends JPanel implements IView {
         buttonsPane.add(viewMode);
         buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(ForumsListView.this, "Test");
+                mainFrame.showProgressDialog(new GetForumListTask());
             }
         }, Messages.VIEW_FORUMS_BUTTON_UPDATE));
 
@@ -106,14 +108,23 @@ public class ForumsListView extends JPanel implements IView {
 
     public void applySettings() {
         // TODO: implement
-        IStorage storage = ServiceFactory.getInstance().getStorage();
 
         try {
-            Forum[] allForums = storage.getForumAH().getAllForums();
-            forumsModel.setForums(allForums);
+            reloadList();
         } catch (StorageException e) {
-            log.error("Can not initialize forum list", e);
+            log.error("Can not load forum list", e);
         }
+    }
+
+    private void reloadList() throws StorageException {
+        IStorage storage = ServiceFactory.getInstance().getStorage();
+
+        final Forum[] allForums = storage.getForumAH().getAllForums();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                forumsModel.setForums(allForums);
+            }
+        });
     }
 
     public void updateSettings() {
@@ -123,4 +134,14 @@ public class ForumsListView extends JPanel implements IView {
     public ForumsListView getComponent() {
         return this;
     }
+
+    private class GetForumListTask extends GetForumListCommand {
+        @Override
+        public void doTask(IProgressTracker trac) throws Exception {
+            super.doTask(trac);
+
+            reloadList();
+        }
+    }
+
 }

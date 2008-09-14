@@ -96,4 +96,6 @@ public interface IJanusService {
      * @throws JanusServiceException throws if any errors occurs.
      */
     NewData getNewData(int[] subscribedForums, boolean firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
+
+    void init() throws JanusServiceException;
 }

@@ -36,7 +36,7 @@ public final class ForumsList {
         return forums;
     }
 
-    public ForumGroup[] getFourumGroups() {
+    public ForumGroup[] getForumGroups() {
         return fourumGroups;
     }
 
