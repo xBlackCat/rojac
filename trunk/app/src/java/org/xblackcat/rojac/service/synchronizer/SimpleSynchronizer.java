@@ -34,7 +34,10 @@ public class SimpleSynchronizer implements ISynchronizer {
     public SimpleSynchronizer(String login, String password, IStorage storage) throws SynchronizationException {
         this.storage = storage;
         try {
-            janusService = JanusService.getInstance(login, password);
+            JanusService c = new JanusService(login, password);
+            c.init();
+            c.testConnection();
+            janusService = c;
         } catch (JanusServiceException e) {
             throw new SynchronizationException("Can not initialize the synchronizator.", e);
         }
@@ -70,7 +73,7 @@ public class SimpleSynchronizer implements ISynchronizer {
         IForumGroupAH gAH = storage.getForumGroupAH();
 
         try {
-            for (ForumGroup fg : forumsList.getFourumGroups()) {
+            for (ForumGroup fg : forumsList.getForumGroups()) {
                 if (gAH.getForumGroupById(fg.getForumGroupId()) == null) {
                     gAH.storeForumGroup(fg);
                 } else {

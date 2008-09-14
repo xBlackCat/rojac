@@ -6,8 +6,14 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.converter.RSDNMessageParserFactory;
+import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.executor.TaskExecutor;
+import org.xblackcat.rojac.service.janus.IJanusService;
+import org.xblackcat.rojac.service.janus.JanusService;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
+import org.xblackcat.rojac.service.options.Password;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.utils.ResourceUtils;
@@ -35,6 +41,7 @@ public final class ServiceFactory {
         INSTANCE = new ServiceFactory();
     }
 
+    private final IExecutor executor;
     private final IStorage storage;
     private final IOptionsService optionsService;
     private final IMessageParser messageParser;
@@ -81,6 +88,8 @@ public final class ServiceFactory {
         } catch (IOException e) {
             throw new RuntimeException("Can't initialize message formatter.", e);
         }
+
+        executor = new TaskExecutor();
     }
 
     public IStorage getStorage() {
@@ -93,5 +102,21 @@ public final class ServiceFactory {
 
     public IMessageParser getMessageConverter() {
         return messageParser;
+    }
+
+    public IExecutor getExecutor() {
+        return executor;
+    }
+
+    /**
+     * Returns uninitialized Rsdn service.
+     *
+     * @return rsdn service
+     */
+    public IJanusService getRsdnService() {
+        String user = optionsService.getProperty(Property.RSDN_USER_NAME);
+        Password password = optionsService.getProperty(Property.RSDN_USER_PASSWORD);
+
+        return new JanusService(user, password.toString());
     }
 }

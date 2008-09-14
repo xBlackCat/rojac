@@ -41,17 +41,13 @@ public class JanusService implements IJanusService {
     private JanusATSoap soap;
 
     public static IJanusService getInstance(String userName, String password) throws JanusServiceException {
-        try {
-            JanusService c = new JanusService(userName, password);
-            c.init();
-            c.testConnection();
-            return c;
-        } catch (ServiceException e) {
-            throw new JanusServiceException(e);
-        }
+        JanusService c = new JanusService(userName, password);
+        c.init();
+        c.testConnection();
+        return c;
     }
 
-    private JanusService(String userName, String password) {
+    public JanusService(String userName, String password) {
         this.userName = userName;
         this.password = password;
     }
@@ -209,32 +205,36 @@ public class JanusService implements IJanusService {
         return new NewData(ownId, forumRowVersion, ratingRowVersion, moderateRowVerion, newMessages, newModerate, newRating);
     }
 
-    private void init() throws ServiceException {
-        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
+    public void init() throws JanusServiceException {
+        try {
+            IOptionsService os = ServiceFactory.getInstance().getOptionsService();
 
-        log.info("Janus SAOP service initialization has been started.");
+            log.info("Janus SAOP service initialization has been started.");
 
-        JanusATLocator jl;
-        if (os.getProperty(Property.ROJAC_DEBUG_MODE)) {
-            jl = new JanusATLocator(new BasicClientConfig());
-        } else {
-            try {
-                jl = new JanusATLocator(new FileProvider(ResourceUtils.getResourceAsStream("/client-config.wsdd")));
-            } catch (IOException e) {
-                throw new ServiceException("Can not load service configuration.", e);
+            JanusATLocator jl;
+            if (os.getProperty(Property.ROJAC_DEBUG_MODE)) {
+                jl = new JanusATLocator(new BasicClientConfig());
+            } else {
+                try {
+                    jl = new JanusATLocator(new FileProvider(ResourceUtils.getResourceAsStream("/client-config.wsdd")));
+                } catch (IOException e) {
+                    throw new ServiceException("Can not load service configuration.", e);
+                }
+
+                JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
+
+                // Compress the request
+                if (os.getProperty(Property.SERVICE_JANUS_USE_GZIP)) {
+                    log.info("Data compression is enabled.");
+                    // Tell the server it can compress the response
+                    soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+                }
             }
 
-            JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
-
-            // Compress the request
-            if (os.getProperty(Property.SERVICE_JANUS_USE_GZIP)) {
-                log.info("Data compression is enabled.");
-                // Tell the server it can compress the response
-                soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
-            }
+            this.soap = jl.getJanusATSoap();
+            log.info("Initialization has done.");
+        } catch (ServiceException e) {
+            throw new JanusServiceException(e);
         }
-
-        this.soap = jl.getJanusATSoap();
-        log.info("Initialization has done.");
     }
 }

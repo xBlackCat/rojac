@@ -7,6 +7,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Date: 14 груд 2007
@@ -14,17 +15,11 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author xBlackCat
  */
 
-public final class TaskExecutor {
-    private static final TaskExecutor INSTANCE = new TaskExecutor();
-
-    public static TaskExecutor getInstance() {
-        return INSTANCE;
-    }
-
+public final class TaskExecutor implements IExecutor {
     private final Map<TaskType, Executor> pools;
 
-    private TaskExecutor() {
-        EnumMap<TaskType, Executor> pools = new EnumMap<TaskType, Executor>(TaskType.class);
+    public TaskExecutor() {
+        Map<TaskType, Executor> pools = new EnumMap<TaskType, Executor>(TaskType.class);
         pools.put(TaskType.Common, setupCommonExecutor());
         pools.put(TaskType.MessageLoading, setupMessageLoadingExecutor());
         pools.put(TaskType.ServerSynchronization, setupServerSynchronizationExecutor());
@@ -41,7 +36,7 @@ public final class TaskExecutor {
     }
 
     private Executor setupCommonExecutor() {
-        return new ThreadPoolExecutor(10, 30, 1, null, new LinkedBlockingQueue<Runnable>());
+        return new ThreadPoolExecutor(10, 30, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
     }
 
     public void execute(Runnable target, TaskType type) {

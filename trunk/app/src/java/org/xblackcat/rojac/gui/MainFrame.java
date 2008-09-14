@@ -9,6 +9,8 @@ import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.frame.message.MessagePane;
+import org.xblackcat.rojac.gui.frame.progress.ITask;
+import org.xblackcat.rojac.gui.frame.progress.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.frame.thread.ForumThreadsView;
 import org.xblackcat.rojac.gui.frame.thread.ThreadDoubleView;
 import org.xblackcat.rojac.gui.view.FavoritesView;
@@ -98,7 +100,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                 forumsListView.getComponent()
         );
 
-        viewThreads.dock(viewForums, DockingConstants.WEST_REGION, 0.2f);
+        viewThreads.dock(viewForums, DockingConstants.WEST_REGION, 0.25f);
 
         // Setup favorites view
         viewFavorites = createView(
@@ -169,5 +171,13 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
         openedForums.put(f.getForumId(), $);
         $.viewItem(f.getForumId());
+    }
+
+    public void showProgressDialog(ITask task) {
+        ProgressTrackerDialog tr = new ProgressTrackerDialog(this, task);
+
+        SwingUtility.center(tr, this);
+        tr.setVisible(true);
+        tr.startTask();
     }
 }
