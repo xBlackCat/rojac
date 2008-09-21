@@ -301,9 +301,13 @@ public enum DataQuery implements IPropertiable {
     GET_IDS_MESSAGE_BY_PARENT_ID,
     GET_IDS_MESSAGE_BY_TOPIC_ID,
     /**
-     * Returns messages count in forum. Parfmeter is forumId.
+     * Returns messages number in forum. Parfmeter is forumId.
      */
     GET_MESSAGES_NUMBER_IN_FORUM,
+    /**
+     * Returns unread messages number in forum. Parfmeter is forumId.
+     */
+    GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
     IS_FORUM_HAS_MESSAGES,
     /**
      * Checks is the message id exist
