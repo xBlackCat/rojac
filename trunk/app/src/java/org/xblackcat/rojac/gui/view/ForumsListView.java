@@ -45,6 +45,7 @@ public class ForumsListView extends JPanel implements IView {
         final JList forums = new JList(forumsModel);
         add(new JScrollPane(forums));
 
+        forums.setFont(forums.getFont().deriveFont(Font.PLAIN));
         forums.setCellRenderer(new ForumCellRenderer());
         forums.addMouseListener(new MouseAdapter() {
             @Override

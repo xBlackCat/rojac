@@ -33,4 +33,6 @@ public interface IForumAH extends AH {
     void setSubscribeForum(int forumId, boolean subscribe) throws StorageException;
 
     int getMessagesInForum(int forumId) throws StorageException;
+
+    int getUnreadMessagesInForum(int forumId) throws StorageException;
 }

@@ -70,6 +70,12 @@ final class DBForumAH implements IForumAH {
                 forumId);
     }
 
+    public int getUnreadMessagesInForum(int forumId) throws StorageException {
+        return helper.executeSingle(Converters.TO_INTEGER_CONVERTER,
+                DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
+                forumId);
+    }
+
     public Forum[] getAllForums() throws StorageException {
         Collection<Forum> fc = helper.execute(Converters.TO_FORUM_CONVERTER, DataQuery.GET_OBJECTS_FORUM);
         return fc.toArray(new Forum[fc.size()]);

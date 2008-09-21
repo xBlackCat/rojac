@@ -100,7 +100,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                 forumsListView.getComponent()
         );
 
-        viewThreads.dock(viewForums, DockingConstants.WEST_REGION, 0.25f);
+        viewThreads.dock(viewForums, DockingConstants.WEST_REGION, 0.4f);
 
         // Setup favorites view
         viewFavorites = createView(

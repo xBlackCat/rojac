@@ -65,4 +65,8 @@ public class RojacUtils {
         UIManager.setLookAndFeel(laf);
         SwingUtility.setPlaf(laf.getClass());
     }
+
+//    public static <T, E> T[] extract(E[] arr, IExtractor<T, E> e) {
+//
+//    }
 }
