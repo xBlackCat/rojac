@@ -27,22 +27,26 @@ public class ForumCellRenderer extends DefaultListCellRenderer {
         boolean hasUnread = fs != null && fs.getUnreadMessages() > 0;
 
         StringBuilder text = new StringBuilder("<html><body>");
-        boolean isNotSubcribed = !f.isSubscribed();
+        if (f != null) {
+            boolean isNotSubcribed = !f.isSubscribed();
 
-        if (isNotSubcribed) text.append("<i>");
-        if (hasUnread) text.append("<b>");
-        text.append(f.getForumName());
-        if (hasUnread) text.append("</b>");
-        if (isNotSubcribed) text.append("</i>");
+            if (isNotSubcribed) text.append("<i>");
+            if (hasUnread) text.append("<b>");
+            text.append(f.getForumName());
+            if (hasUnread) text.append("</b>");
+            if (isNotSubcribed) text.append("</i>");
 
-        if (fs != null) {
-            text.append(" (");
-            text.append(fs.getUnreadMessages());
-            text.append("/");
-            text.append(fs.getTotalMessages());
-            text.append(")");
+            if (fs != null) {
+                text.append(" (");
+                text.append(fs.getUnreadMessages());
+                text.append("/");
+                text.append(fs.getTotalMessages());
+                text.append(")");
+            }
+        } else {
+            text.append("<i>Loading info for forum: ");
+            text.append(fd.getForumId());
         }
-
         setText(text.toString());
         setIcon(null);
 
