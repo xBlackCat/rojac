@@ -37,6 +37,8 @@ public enum Messages {
     VIEW_FORUMS_MODE_NOTEMPTY_TEXT,
     VIEW_FORUMS_MODE_SUBSCRIBED_TOOLTIP,
     VIEW_FORUMS_MODE_SUBSCRIBED_TEXT,
+    // Menu of forum view
+    VIEW_FORUMS_MENU_SUBSCRIBE,
 
     VIEW_FAVORITES_TITLE,
     VIEW_FAVORITES_TAB_TEXT,
@@ -94,7 +96,7 @@ public enum Messages {
     DESCRIPTION_SMILE_DONOTKNOW;
 
     // Constants
-    private static final String LOCALIZATION_BUNDLE_NAME = "localization/messages";
+    private static final String LOCALIZATION_BUNDLE_NAME = "i18n/messages";
 
     private static ResourceBundle messages;
 

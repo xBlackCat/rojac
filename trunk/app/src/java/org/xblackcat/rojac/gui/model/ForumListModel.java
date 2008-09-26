@@ -36,7 +36,11 @@ public class ForumListModel extends AbstractListModel {
             Forum f1 = o1.getForum();
             Forum f2 = o2.getForum();
 
-            return f1.getForumName().compareToIgnoreCase(f2.getForumName());
+            if (f1 == null) {
+                return f2 == null ? 0 : 1;
+            } else {
+                return f2 == null ? -1 : f1.getForumName().compareToIgnoreCase(f2.getForumName());
+            }
         }
     };
 
@@ -67,7 +71,7 @@ public class ForumListModel extends AbstractListModel {
 
     private ForumData getForumData(int id) {
         for (ForumData fd : forums) {
-            if (fd.getForum().getForumId() == id) {
+            if (fd.getForumId() == id) {
                 return fd;
             }
         }
@@ -105,6 +109,10 @@ public class ForumListModel extends AbstractListModel {
         processor.processForums(ids.toNativeArray());
     }
 
+    public void reloadInfo(int forumId) {
+        processor.processForums(forumId);
+    }
+
     private class ForumInfoProcessor {
         private final Queue<Integer> forumIds = new LinkedList<Integer>();
 
@@ -122,6 +130,14 @@ public class ForumListModel extends AbstractListModel {
 
                     int total = 0;
                     int unread = 0;
+                    Forum f;
+                    try {
+                        f = fah.getForumById(id);
+                    } catch (StorageException e) {
+                        log.error("Can not load forum information for forum [id:" + id + "].", e);
+                        f = null;
+                    }
+
                     try {
                         total = fah.getMessagesInForum(id);
                         unread = fah.getUnreadMessagesInForum(id);
@@ -130,15 +146,46 @@ public class ForumListModel extends AbstractListModel {
                     }
 
                     final ForumStatistic stat = new ForumStatistic(total, unread);
+                    final Forum forum = f;
 
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             ForumData data = getForumData(id);
+
+                            boolean wasSubscribed = data.getForum() != null && data.getForum().isSubscribed();
+
+                            if (forum != null) {
+                                data.setForum(forum);
+                            }
+
                             data.setStat(stat);
                             if (stat.getTotalMessages() > 0) {
                                 filledForums.add(data);
                                 Collections.sort(filledForums, FORUM_COMPARATOR);
                             }
+
+                            if (wasSubscribed != forum.isSubscribed()) {
+                                if (wasSubscribed) {
+                                    int ind = subcribedForums.indexOf(data);
+                                    subcribedForums.remove(ind);
+
+                                    if (mode == ForumViewMode.SHOW_SUBCRIBED) {
+                                        fireIntervalRemoved(ForumListModel.this, ind, ind);
+                                    }
+                                } else {
+                                    subcribedForums.add(data);
+                                    Collections.sort(filledForums, FORUM_COMPARATOR);
+
+                                    // The next lines were added for future purposes. I hope.
+                                    // Really, the condition in the `if` statment will be always `false` 
+                                    int ind = subcribedForums.indexOf(data);
+
+                                    if (mode == ForumViewMode.SHOW_SUBCRIBED) {
+                                        fireIntervalAdded(ForumListModel.this, ind, ind);
+                                    }
+                                }
+                            }
+
                             int ind = getList().indexOf(data);
                             if (mode == ForumViewMode.SHOW_NOT_EMPTY) {
                                 fireIntervalAdded(ForumListModel.this, ind, ind);
@@ -155,7 +202,7 @@ public class ForumListModel extends AbstractListModel {
             }
         };
 
-        public void processForums(int ...id) {
+        public void processForums(int... id) {
             boolean startTask;
             synchronized (forumIds) {
                 startTask = forumIds.isEmpty();

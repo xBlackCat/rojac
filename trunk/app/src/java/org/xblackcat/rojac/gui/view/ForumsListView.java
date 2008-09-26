@@ -6,6 +6,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.IView;
 import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
+import org.xblackcat.rojac.gui.model.ForumData;
 import org.xblackcat.rojac.gui.model.ForumListModel;
 import org.xblackcat.rojac.gui.model.ForumViewMode;
 import org.xblackcat.rojac.gui.model.ForumViewModeModel;
@@ -13,6 +14,8 @@ import org.xblackcat.rojac.gui.render.ForumCellRenderer;
 import org.xblackcat.rojac.gui.render.ForumListModeRenderer;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.synchronizer.GetForumListCommand;
@@ -65,9 +68,16 @@ public class ForumsListView extends JPanel implements IView {
 
             private void checkMenu(MouseEvent e) {
                 if (e.isPopupTrigger()) {
-                    // TODO: show forum popup menu.
-                } else if (e.getClickCount() > 1) {
-                    Forum forum = (Forum) forums.getSelectedValue();
+                    final Point p = e.getPoint();
+
+                    int ind = forums.locationToIndex(p);
+
+                    Forum forum = ((ForumData) forumsModel.getElementAt(ind)).getForum();
+                    JPopupMenu menu = createMenu(forum);
+
+                    menu.show(forums, p.x, p.y);
+                } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
+                    Forum forum = ((ForumData) forums.getSelectedValue()).getForum();
                     mainFrame.openForumTab(forum);
                 }
             }
@@ -136,6 +146,20 @@ public class ForumsListView extends JPanel implements IView {
         return this;
     }
 
+    private JPopupMenu createMenu(Forum f) {
+        JPopupMenu m = new JPopupMenu(f.getForumName());
+
+        final boolean subscribed = f.isSubscribed();
+        final int forumId = f.getForumId();
+
+        JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.VIEW_FORUMS_MENU_SUBSCRIBE.getMessage(), subscribed);
+        mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
+
+        m.add(mi);
+
+        return m;
+    }
+
     private class GetForumListTask extends GetForumListCommand {
         @Override
         public void doTask(IProgressTracker trac) throws Exception {
@@ -145,4 +169,33 @@ public class ForumsListView extends JPanel implements IView {
         }
     }
 
+    private class SubscribeChangeListener implements ActionListener {
+        private final int forumId;
+        private final boolean subscribed;
+
+        public SubscribeChangeListener(int forumId, boolean subscribed) {
+            this.forumId = forumId;
+            this.subscribed = subscribed;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            IExecutor executor = ServiceFactory.getInstance().getExecutor();
+            executor.execute(new Runnable() {
+                public void run() {
+                    IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
+                    try {
+                        fah.setSubscribeForum(forumId, !subscribed);
+                        
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                forumsModel.reloadInfo(forumId);
+                            }
+                        });
+                    } catch (StorageException e1) {
+                        log.error("Can not update forum info. [id:" + forumId + "].", e1);
+                    }
+                }
+            });
+        }
+    }
 }
