@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
@@ -86,12 +85,10 @@ public class LoginDialog extends JDialog {
         return cp;
     }
 
-    public boolean showLoginDialog() {
-        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
-
-        String login = os.getProperty(Property.RSDN_USER_NAME);
-        Password password = os.getProperty(Property.RSDN_USER_PASSWORD);
-        boolean save = os.getProperty(Property.RSDN_USER_PASSWORD_SAVE);
+    public boolean showLoginDialog(IOptionsService optionsService) {
+        String login = optionsService.getProperty(Property.RSDN_USER_NAME);
+        Password password = optionsService.getProperty(Property.RSDN_USER_PASSWORD);
+        boolean save = optionsService.getProperty(Property.RSDN_USER_PASSWORD_SAVE);
 
         fieldLogin.setText(login);
         fieldPassword.setText(password == null ? null : new String(password.getPassword()));
@@ -102,16 +99,16 @@ public class LoginDialog extends JDialog {
         if (!canceled) {
             login = fieldLogin.getText();
             if (StringUtils.isNotBlank(login)) {
-                os.setProperty(Property.RSDN_USER_NAME, login);
+                optionsService.setProperty(Property.RSDN_USER_NAME, login);
             }
 
             char[] p = fieldPassword.getPassword();
             if (!ArrayUtils.isEmpty(p)) {
                 password = new Password(p);
-                os.setProperty(Property.RSDN_USER_PASSWORD, password);
+                optionsService.setProperty(Property.RSDN_USER_PASSWORD, password);
             }
 
-            os.setProperty(Property.RSDN_USER_PASSWORD_SAVE, fieldSavePassword.isSelected());
+            optionsService.setProperty(Property.RSDN_USER_PASSWORD_SAVE, fieldSavePassword.isSelected());
         }
 
         return canceled;

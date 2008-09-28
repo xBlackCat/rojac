@@ -29,4 +29,7 @@ public class FavoritesView extends JPanel implements IView {
     public JComponent getComponent() {
         return this;
     }
+
+    public void updateData() {
+    }
 }

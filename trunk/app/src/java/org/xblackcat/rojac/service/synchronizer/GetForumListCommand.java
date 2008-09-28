@@ -2,17 +2,12 @@ package org.xblackcat.rojac.service.synchronizer;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
-import org.xblackcat.rojac.data.Version;
-import org.xblackcat.rojac.data.VersionInfo;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.ForumsList;
-import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IForumGroupAH;
-import org.xblackcat.rojac.service.storage.IVersionAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
@@ -27,27 +22,12 @@ public class GetForumListCommand extends ARsdnCommand {
 
         trac.setProgress(0, 3);
 
-        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
-
-        IVersionAH vAH = storage.getVersionAH();
-
-        VersionInfo vi;
-        try {
-            vi = vAH.getVersionInfo(VersionType.FORUM_ROW_VERSION);
-
-            if (vi == null) {
-                vi = new VersionInfo(new Version(), VersionType.FORUM_ROW_VERSION);
-            }
-        } catch (StorageException e) {
-            throw new SynchronizationException("Can not obtain last forum version", e);
-        }
-
         trac.addLodMessage("Load forum list.");
         trac.setProgress(1, 3);
 
         ForumsList forumsList;
         try {
-            forumsList = janusService.getForumsList(vi.getVersion());
+            forumsList = janusService.getForumsList(getVersion(VersionType.FORUM_ROW_VERSION));
         } catch (JanusServiceException e) {
             throw new SynchronizationException("Can not obtain forums list", e);
         }
@@ -79,7 +59,8 @@ public class GetForumListCommand extends ARsdnCommand {
                 trac.setProgress(i++, forumsList.getForums().length);
             }
 
-            storage.getVersionAH().updateVersionInfo(new VersionInfo(forumsList.getVersion(), VersionType.FORUM_ROW_VERSION));
+            setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
+            
             trac.addLodMessage("Done");
         } catch (StorageException e) {
             throw new SynchronizationException("Can not update forum list", e);

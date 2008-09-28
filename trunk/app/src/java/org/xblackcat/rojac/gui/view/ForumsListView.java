@@ -146,6 +146,10 @@ public class ForumsListView extends JPanel implements IView {
         return this;
     }
 
+    public void updateData() {
+        forumsModel.updateForums();
+    }
+
     private JPopupMenu createMenu(Forum f) {
         JPopupMenu m = new JPopupMenu(f.getForumName());
 

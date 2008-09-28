@@ -158,9 +158,8 @@ public class MessagePane extends AMessageView implements IInternationazable {
                         Messages.DIALOG_SET_MARK_TITLE.getMessage(),
                         JOptionPane.YES_NO_OPTION
                 )) {
-            IStorage s = ServiceFactory.getInstance().getStorage();
             try {
-                s.getNewRatingAH().storeNewRating(messageId, mark);
+                storage.getNewRatingAH().storeNewRating(messageId, mark);
                 updateMarksPane(messageId);
             } catch (StorageException e) {
                 JLOptionPane.showMessageDialog(

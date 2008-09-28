@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.service.janus;
 
-import org.apache.axis.configuration.BasicClientConfig;
 import org.apache.axis.configuration.FileProvider;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.lang.ArrayUtils;
@@ -10,14 +9,11 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.data.Version;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.data.ForumsList;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.janus.data.UsersList;
-import org.xblackcat.rojac.service.options.IOptionsService;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.utils.ResourceUtils;
 import ru.rsdn.Janus.*;
@@ -39,13 +35,6 @@ public class JanusService implements IJanusService {
     private final String password;
 
     private JanusATSoap soap;
-
-    public static IJanusService getInstance(String userName, String password) throws JanusServiceException {
-        JanusService c = new JanusService(userName, password);
-        c.init();
-        c.testConnection();
-        return c;
-    }
 
     public JanusService(String userName, String password) {
         this.userName = userName;
@@ -205,30 +194,24 @@ public class JanusService implements IJanusService {
         return new NewData(ownId, forumRowVersion, ratingRowVersion, moderateRowVerion, newMessages, newModerate, newRating);
     }
 
-    public void init() throws JanusServiceException {
+    public void init(boolean useCompression) throws JanusServiceException {
         try {
-            IOptionsService os = ServiceFactory.getInstance().getOptionsService();
-
             log.info("Janus SAOP service initialization has been started.");
 
             JanusATLocator jl;
-            if (os.getProperty(Property.ROJAC_DEBUG_MODE)) {
-                jl = new JanusATLocator(new BasicClientConfig());
-            } else {
-                try {
-                    jl = new JanusATLocator(new FileProvider(ResourceUtils.getResourceAsStream("/client-config.wsdd")));
-                } catch (IOException e) {
-                    throw new ServiceException("Can not load service configuration.", e);
-                }
+            try {
+                jl = new JanusATLocator(new FileProvider(ResourceUtils.getResourceAsStream("/client-config.wsdd")));
+            } catch (IOException e) {
+                throw new ServiceException("Can not load service configuration.", e);
+            }
 
-                JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
+            JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
 
-                // Compress the request
-                if (os.getProperty(Property.SERVICE_JANUS_USE_GZIP)) {
-                    log.info("Data compression is enabled.");
-                    // Tell the server it can compress the response
-                    soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
-                }
+            // Compress the request
+            if (useCompression) {
+                log.info("Data compression is enabled.");
+                // Tell the server it can compress the response
+                soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
             }
 
             this.soap = jl.getJanusATSoap();

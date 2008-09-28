@@ -97,5 +97,5 @@ public interface IJanusService {
      */
     NewData getNewData(int[] subscribedForums, boolean firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
 
-    void init() throws JanusServiceException;
+    void init(boolean useCompression) throws JanusServiceException;
 }

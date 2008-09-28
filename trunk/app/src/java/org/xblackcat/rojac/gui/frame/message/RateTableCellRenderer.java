@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
@@ -19,7 +18,7 @@ import java.awt.*;
  */
 class RateTableCellRenderer extends DefaultTableCellRenderer {
     private static final Log log = LogFactory.getLog(RateTableCellRenderer.class);
-    private final IOptionsService optionsService = ServiceFactory.getInstance().getOptionsService();
+
     private final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {

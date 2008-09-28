@@ -9,6 +9,7 @@ import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.frame.message.MessagePane;
+import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.gui.frame.progress.ITask;
 import org.xblackcat.rojac.gui.frame.progress.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.frame.thread.ForumThreadsView;
@@ -16,12 +17,15 @@ import org.xblackcat.rojac.gui.frame.thread.ThreadDoubleView;
 import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.synchronizer.GetNewPostsCommand;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,8 +49,9 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
     // Data tracking
     private Map<Integer, Component> openedForums = new HashMap<Integer, Component>();
+    private final IOptionsService os;
 
-    public MainFrame() {
+    public MainFrame(IOptionsService optionsService) {
         super(Messages.MAIN_WINDOW_TITLE.getMessage());
 
         forumsListView = new ForumsListView(this);
@@ -60,6 +65,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         setSize(640, 480);
 
         SwingUtility.centerOnScreen(this);
+        os = optionsService;
     }
 
     public void loadData() {
@@ -88,7 +94,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         viewThreads = new View("threads_view", null, null);
         viewThreads.setTerritoryBlocked(DockingConstants.CENTER_REGION, true);
         viewThreads.setTitlebar(null);
-        viewThreads.setContentPane(threads);
+        viewThreads.setContentPane(createCenterPane());
 
         viewport.dock(viewThreads);
 
@@ -115,6 +121,30 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         DockingManager.setMinimized(viewFavorites, true);
     }
 
+    private JComponent createCenterPane() {
+        final JPanel p = new JPanel(new BorderLayout());
+        p.add(threads);
+
+        JPanel topPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPane.add(WindowsUtils.setupButton("update", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showProgressDialog(new GetNewPostsCommand() {
+                    @Override
+                    public void doTask(IProgressTracker trac) throws Exception {
+                        super.doTask(trac);
+
+                        forumsListView.updateData();
+                        favoritesView.updateData();
+                    }
+                });
+            }
+        }, Messages.VIEW_FORUMS_BUTTON_UPDATE));
+
+        p.add(topPane, BorderLayout.NORTH);
+
+        return p;
+    }
+
     private View createView(String id, Messages title, Messages tabText, JComponent comp) {
         final View view = new View(
                 id,
@@ -132,8 +162,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         forumsListView.applySettings();
         favoritesView.applySettings();
 
-        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
-
         Point pos = os.getProperty(Property.ROJAC_MAIN_FRAME_POSITION);
         if (pos != null) {
             setLocation(pos);
@@ -150,8 +178,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     public void updateSettings() {
         forumsListView.updateSettings();
         favoritesView.updateSettings();
-
-        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
 
         os.setProperty(Property.ROJAC_MAIN_FRAME_POSITION, getLocation());
         os.setProperty(Property.ROJAC_MAIN_FRAME_SIZE, getSize());
