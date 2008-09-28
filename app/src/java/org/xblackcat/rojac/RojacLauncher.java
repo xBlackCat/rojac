@@ -33,8 +33,8 @@ public final class RojacLauncher {
 
         ServiceFactory sf = ServiceFactory.getInstance();
 
-        IOptionsService os = sf.getOptionsService();
-        LookAndFeel laf = os.getProperty(Property.ROJAC_GUI_LOOK_AND_FEEL);
+        final IOptionsService optionsService = sf.getOptionsService();
+        LookAndFeel laf = optionsService.getProperty(Property.ROJAC_GUI_LOOK_AND_FEEL);
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Using LAF: " + laf.getName());
@@ -44,26 +44,26 @@ public final class RojacLauncher {
             throw new RojacException("Can not initialize " + laf.getName() + " L&F.", e);
         }
 
-        Messages.setLocale(os.getProperty(Property.ROJAC_GUI_LOCALE));
+        Messages.setLocale(optionsService.getProperty(Property.ROJAC_GUI_LOCALE));
 
-        final MainFrame mainFrame = new MainFrame();
+        final MainFrame mainFrame = new MainFrame(optionsService);
 
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 mainFrame.updateSettings();
 
-                storeSettings();
+                storeSettings(optionsService);
 
                 System.exit(0);
             }
         });
 
-        while (os.getProperty(Property.RSDN_USER_NAME) == null ||
-                os.getProperty(Property.RSDN_USER_PASSWORD) == null) {
+        while (optionsService.getProperty(Property.RSDN_USER_NAME) == null ||
+                optionsService.getProperty(Property.RSDN_USER_PASSWORD) == null) {
             LoginDialog ld = new LoginDialog(mainFrame);
             SwingUtility.centerOnScreen(ld);
-            if (ld.showLoginDialog()) {
+            if (ld.showLoginDialog(optionsService)) {
                 System.exit(0);
             }
         }
@@ -77,14 +77,12 @@ public final class RojacLauncher {
         mainFrame.setVisible(true);
     }
 
-    private static void storeSettings() {
-        IOptionsService os = ServiceFactory.getInstance().getOptionsService();
-
-        if (!os.getProperty(Property.RSDN_USER_PASSWORD_SAVE)) {
-            os.setProperty(Property.RSDN_USER_PASSWORD, null);
+    private static void storeSettings(IOptionsService optionsService) {
+        if (!optionsService.getProperty(Property.RSDN_USER_PASSWORD_SAVE)) {
+            optionsService.setProperty(Property.RSDN_USER_PASSWORD, null);
         }
 
-        os.storeSettings();
+        optionsService.storeSettings();
     }
 
     private static void setupUserSettings() {

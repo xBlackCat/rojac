@@ -10,4 +10,6 @@ import javax.swing.*;
 
 public interface IView extends IConfigurable {
     JComponent getComponent();
+
+    void updateData();
 }

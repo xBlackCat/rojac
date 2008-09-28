@@ -41,6 +41,10 @@ public abstract class AMessageView extends JPanel implements IMessageView {
         return this;
     }
 
+    public void updateData() {
+        // TODO: revise!!
+    }
+
     public void addActionListener(IActionListener l) {
         listenerList.add(IActionListener.class, l);
     }

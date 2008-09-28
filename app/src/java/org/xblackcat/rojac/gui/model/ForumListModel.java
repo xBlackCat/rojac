@@ -113,6 +113,16 @@ public class ForumListModel extends AbstractListModel {
         processor.processForums(forumId);
     }
 
+    public void updateForums() {
+        TIntArrayList ids = new TIntArrayList();
+
+        for (ForumData fd : forums) {
+            ids.add(fd.getForumId());
+        }
+
+        processor.processForums(ids.toNativeArray());
+    }
+
     private class ForumInfoProcessor {
         private final Queue<Integer> forumIds = new LinkedList<Integer>();
 
@@ -159,7 +169,7 @@ public class ForumListModel extends AbstractListModel {
                             }
 
                             data.setStat(stat);
-                            if (stat.getTotalMessages() > 0) {
+                            if (stat.getTotalMessages() > 0 && !filledForums.contains(data)) {
                                 filledForums.add(data);
                                 Collections.sort(filledForums, FORUM_COMPARATOR);
                             }
