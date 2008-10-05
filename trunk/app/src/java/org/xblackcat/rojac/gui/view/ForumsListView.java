@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.IView;
-import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.gui.model.ForumData;
 import org.xblackcat.rojac.gui.model.ForumListModel;
 import org.xblackcat.rojac.gui.model.ForumViewMode;
@@ -19,6 +18,7 @@ import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.synchronizer.GetForumListCommand;
+import org.xblackcat.rojac.service.synchronizer.IResultHandler;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -110,7 +110,11 @@ public class ForumsListView extends JPanel implements IView {
         buttonsPane.add(viewMode);
         buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                mainFrame.showProgressDialog(new GetForumListTask());
+                mainFrame.showProgressDialog(new GetForumListCommand(new IResultHandler<int[]>() {
+                    public void process(int[] results) throws StorageException {
+                        reloadList();
+                    }
+                }));
             }
         }, Messages.VIEW_FORUMS_BUTTON_UPDATE));
 
@@ -146,7 +150,7 @@ public class ForumsListView extends JPanel implements IView {
         return this;
     }
 
-    public void updateData() {
+    public void updateData(int[] ids) {
         forumsModel.updateForums();
     }
 
@@ -162,15 +166,6 @@ public class ForumsListView extends JPanel implements IView {
         m.add(mi);
 
         return m;
-    }
-
-    private class GetForumListTask extends GetForumListCommand {
-        @Override
-        public void doTask(IProgressTracker trac) throws Exception {
-            super.doTask(trac);
-
-            reloadList();
-        }
     }
 
     private class SubscribeChangeListener implements ActionListener {

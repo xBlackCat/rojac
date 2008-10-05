@@ -11,6 +11,7 @@ import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.RojacException;
 
 /**
  * Date: 27 вер 2008
@@ -18,10 +19,14 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class LoadUsersCommand extends ARsdnCommand {
+public class LoadUsersCommand extends ARsdnCommand<Boolean> {
     private static final Log log = LogFactory.getLog(LoadUsersCommand.class);
 
-    public void doTask(IProgressTracker trac) throws Exception {
+    public LoadUsersCommand(IResultHandler<Boolean> booleanIResultHandler) {
+        super(booleanIResultHandler);
+    }
+
+    public Boolean process(IProgressTracker trac) throws RojacException {
         IUserAH uAH = storage.getUserAH();
 
         if (log.isInfoEnabled()) {
@@ -34,7 +39,7 @@ public class LoadUsersCommand extends ARsdnCommand {
             int totalUsersNumber = 0;
 
             UsersList users;
-            do {
+            do {                                                               
                 if (log.isDebugEnabled()) {
                     log.debug("Load next portion of the new users. Portion limit = " + limit + " (" + totalUsersNumber + " already loaded).");
                 }
@@ -58,5 +63,6 @@ public class LoadUsersCommand extends ARsdnCommand {
         } catch (JanusServiceException e) {
             throw new SynchronizationException("Can not get the users list from the RSDN server.", e);
         }
+        return true;
     }
 }

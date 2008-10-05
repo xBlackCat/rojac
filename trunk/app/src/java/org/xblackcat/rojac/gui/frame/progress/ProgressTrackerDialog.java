@@ -55,8 +55,6 @@ public class ProgressTrackerDialog extends JDialog {
             IProgressTracker tracker = new ProgressTracker();
 
             try {
-                task.prepareTask();
-
                 task.doTask(tracker);
             } catch (Exception e) {
                 log.error("Error in task", e);

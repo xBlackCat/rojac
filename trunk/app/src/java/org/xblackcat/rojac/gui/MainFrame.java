@@ -20,6 +20,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.synchronizer.GetNewPostsCommand;
+import org.xblackcat.rojac.service.synchronizer.IResultHandler;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -28,6 +29,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+
+import gnu.trove.TIntHashSet;
 
 /**
  * Date: 23 груд 2007
@@ -128,15 +131,12 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         JPanel topPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPane.add(WindowsUtils.setupButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showProgressDialog(new GetNewPostsCommand() {
-                    @Override
-                    public void doTask(IProgressTracker trac) throws Exception {
-                        super.doTask(trac);
-
-                        forumsListView.updateData();
-                        favoritesView.updateData();
+                showProgressDialog(new GetNewPostsCommand(new IResultHandler<int[]>() {
+                    public void process(int[] results) throws Exception {
+                        forumsListView.updateData(null);
+                        favoritesView.updateData(results);
                     }
-                });
+                }));
             }
         }, Messages.VIEW_FORUMS_BUTTON_UPDATE));
 

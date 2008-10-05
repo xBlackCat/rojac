@@ -9,6 +9,8 @@ import org.xblackcat.rojac.service.janus.data.ForumsList;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IForumGroupAH;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.RojacException;
+import gnu.trove.TIntHashSet;
 
 /**
  * Date: 14 вер 2008
@@ -16,8 +18,12 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class GetForumListCommand extends ARsdnCommand {
-    public void doTask(IProgressTracker trac) throws Exception {
+public class GetForumListCommand extends ARsdnCommand<int[]> {
+    public GetForumListCommand(IResultHandler<int[]> iResultHandler) {
+        super(iResultHandler);
+    }
+
+    public int[] process(IProgressTracker trac) throws RojacException {
         trac.addLodMessage("Forum list synchronization started.");
 
         trac.setProgress(0, 3);
@@ -35,6 +41,7 @@ public class GetForumListCommand extends ARsdnCommand {
         IForumAH fAH = storage.getForumAH();
         IForumGroupAH gAH = storage.getForumGroupAH();
 
+        TIntHashSet updatedForums = new TIntHashSet();
         try {
             trac.addLodMessage("Store forum groups");
             int i = 0;
@@ -57,6 +64,7 @@ public class GetForumListCommand extends ARsdnCommand {
                     fAH.updateForum(f);
                 }
                 trac.setProgress(i++, forumsList.getForums().length);
+                updatedForums.add(f.getForumId());
             }
 
             setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
@@ -65,5 +73,7 @@ public class GetForumListCommand extends ARsdnCommand {
         } catch (StorageException e) {
             throw new SynchronizationException("Can not update forum list", e);
         }
+
+        return updatedForums.toArray();
     }
 }
