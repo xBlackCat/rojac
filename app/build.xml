@@ -20,7 +20,6 @@
 
     <!-- Compiler options -->
 
-    <property name="compiler.debug" value="off"/>
     <property name="compiler.generate.no.warnings" value="off"/>
     <!--<property name="compiler.args" value="-target jsr14"/>-->
     <patternset id="compiler.resources">

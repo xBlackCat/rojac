@@ -202,7 +202,6 @@ public enum DataQuery implements IPropertiable {
      * The query for removing the extra message from the table
      */
     REMOVE_OBJECT_EXTRA_MESSAGE,
-
     /**
      * The query for removing the rating objects by message id.
      */
@@ -289,7 +288,7 @@ public enum DataQuery implements IPropertiable {
      * <p/>
      * subscribed(boolean), id(int)
      */
-     UPDATE_OBJECT_FORUM_SUBSCRIBE,
+    UPDATE_OBJECT_FORUM_SUBSCRIBE,
 
     /**
      * The query for retrieving ids for the specified forum group. SQL parameters:

@@ -12,6 +12,8 @@ import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.database.DBStorage;
+import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
+import org.xblackcat.rojac.service.storage.database.connection.PooledConnectionFactoryl;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.File;
@@ -43,9 +45,9 @@ public final class ServiceFactory {
     private final IMessageParser messageParser;
 
     private ServiceFactory() throws RojacException {
-        Properties mainProperties = new Properties();
+        Properties mainProperties;
         try {
-            mainProperties.load(ResourceUtils.getResourceAsStream("/config/rojac.config"));
+            mainProperties = ResourceUtils.loadProperties("/config/rojac.config");
         } catch (IOException e) {
             throw new RojacException("rojac.config was not found in class path", e);
         }
@@ -70,11 +72,15 @@ public final class ServiceFactory {
                 log.trace("Create home folder at " + home);
             }
             homeFolder.mkdirs();
-        } else if (!homeFolder.isDirectory()) {
-            throw new RojacException("It is impossible to use non-folder resource '" + homeFolder.getAbsolutePath() + "' for storing Rojac configuration.");
+        }
+        if (!homeFolder.isDirectory()) {
+            throw new RojacException("Can not create a '" + homeFolder.getAbsolutePath() + "' folder for storing Rojac configuration.");
         }
 
-        storage = new DBStorage(mainProperties.getProperty("rojac.service.database.engine.config"));
+        String configurationName = mainProperties.getProperty("rojac.service.database.engine.config");
+        
+        IConnectionFactory connectionFactory = new PooledConnectionFactoryl(configurationName);
+        storage = new DBStorage(configurationName, connectionFactory);
         storage.initialize();
 
         optionsService = new MultiUserOptionsService();
