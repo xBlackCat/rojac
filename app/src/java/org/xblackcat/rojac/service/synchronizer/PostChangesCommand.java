@@ -21,10 +21,14 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class PostChangesCommand extends ARsdnCommand {
+public class PostChangesCommand extends ARsdnCommand<Boolean> {
     private static final Log log = LogFactory.getLog(PostChangesCommand.class);
 
-    public void doTask(IProgressTracker trac) throws Exception {
+    public PostChangesCommand(IResultHandler<Boolean> voidIResultHandler) {
+        super(voidIResultHandler);
+    }
+
+    public Boolean process(IProgressTracker trac) {
         trac.addLodMessage("Synchronization started.");
 
         try {
@@ -50,7 +54,7 @@ public class PostChangesCommand extends ARsdnCommand {
                 if (log.isDebugEnabled()) {
                     log.debug("Nothing to post.");
                 }
-                return;
+                return false;
             }
 
             PostInfo postInfo;
@@ -82,6 +86,8 @@ public class PostChangesCommand extends ARsdnCommand {
         } catch (SynchronizationException e) {
             // Log the exception to console.
             trac.postException(e);
+            return false;
         }
+        return true;
     }
 }

@@ -16,6 +16,7 @@ import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.IModerateAH;
 import org.xblackcat.rojac.service.storage.IRatingAH;
+import org.xblackcat.rojac.RojacException;
 
 /**
  * Date: 26 вер 2008
@@ -26,109 +27,112 @@ import org.xblackcat.rojac.service.storage.IRatingAH;
 public class GetNewPostsCommand extends LoadExtraMessagesCommand {
     private static final Log log = LogFactory.getLog(GetNewPostsCommand.class);
 
-    public GetNewPostsCommand() {
-        super(new int[0]);
+    public GetNewPostsCommand(IResultHandler<int[]> iResultHandler) {
+        super(iResultHandler, null);
     }
 
-    public void doTask(IProgressTracker trac) throws Exception {
+    public int[] process(IProgressTracker trac) throws RojacException {
         trac.addLodMessage("Synchronization started.");
 
-        try {
-            int[] forumIds = storage.getForumAH().getSubscribedForumIds();
-            if (ArrayUtils.isEmpty(forumIds)) {
-                if (log.isWarnEnabled()) {
-                    log.warn("You should select at least one forum to start synchronization.");
-                }
-                return;
+        int[] forumIds = storage.getForumAH().getSubscribedForumIds();
+        if (ArrayUtils.isEmpty(forumIds)) {
+            if (log.isWarnEnabled()) {
+                log.warn("You should select at least one forum to start synchronization.");
             }
-
-            if (log.isDebugEnabled()) {
-                log.debug("Load new messages for forums [id=" + ArrayUtils.toString(forumIds) + "]");
-            }
-
-            Integer limit = optionsService.getProperty(Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION);
-
-            Version messagesVersion = getVersion(VersionType.MESSAGE_ROW_VERSION);
-            Version moderatesVersion = getVersion(VersionType.MODERATE_ROW_VERSION);
-            Version ratingsVersion = getVersion(VersionType.RATING_ROW_VERSION);
-
-            IRatingAH rAH = storage.getRatingAH();
-            IMessageAH mAH = storage.getMessageAH();
-            IModerateAH modAH = storage.getModerateAH();
-
-            // Broken topic ids
-            TIntHashSet topics = new TIntHashSet();
-
-            NewData data;
-            do {
-                if (ratingsVersion.isEmpty()) {
-                    ratingsVersion = moderatesVersion;
-                }
-
-                data = janusService.getNewData(
-                        forumIds,
-                        messagesVersion.getBytes().length == 0,
-                        ratingsVersion,
-                        messagesVersion,
-                        moderatesVersion,
-                        ArrayUtils.EMPTY_INT_ARRAY,
-                        ArrayUtils.EMPTY_INT_ARRAY,
-                        limit
-                );
-
-
-                for (Message mes : data.getMessages()) {
-                    if (mAH.isExist(mes.getMessageId())) {
-                        mAH.updateMessage(mes);
-                    } else {
-                        mAH.storeMessage(mes);
-                    }
-
-                    int topicId = mes.getTopicId();
-                    if (topicId != 0) {
-                        topics.add(topicId);
-                    }
-
-                }
-                for (Moderate mod : data.getModerates()) {
-                    modAH.storeModerateInfo(mod);
-                }
-                for (Rating r : data.getRatings()) {
-                    rAH.storeRating(r);
-                }
-
-                ratingsVersion = data.getRatingRowVersion();
-                messagesVersion = data.getForumRowVersion();
-                moderatesVersion = data.getModerateRowVersion();
-
-                setVersion(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
-                setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
-                setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
-
-            } while (data.getMessages().length > 0);
-
-            // remove existing ids from downloaded topic ids.
-            int[] messageIds = topics.toArray();
-            for (int mId : messageIds) {
-                if (mAH.isExist(mId)) {
-                    topics.remove(mId);
-                }
-            }
-
-            if (log.isInfoEnabled()) {
-                log.info("Found broken topics: " + ArrayUtils.toString(topics.toArray()));
-            }
-
-            IMiscAH eAH = storage.getMiscAH();
-
-            topics.addAll(eAH.getExtraMessages());
-
-            loadExtraMessage(topics.toArray());
-
-            eAH.clearExtraMessages();
-        } catch (SynchronizationException e) {
-            // Log the exception to console.
-            trac.postException(e);
+            return ArrayUtils.EMPTY_INT_ARRAY;
         }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Load new messages for forums [id=" + ArrayUtils.toString(forumIds) + "]");
+        }
+
+        Integer limit = optionsService.getProperty(Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION);
+
+        Version messagesVersion = getVersion(VersionType.MESSAGE_ROW_VERSION);
+        Version moderatesVersion = getVersion(VersionType.MODERATE_ROW_VERSION);
+        Version ratingsVersion = getVersion(VersionType.RATING_ROW_VERSION);
+
+        IRatingAH rAH = storage.getRatingAH();
+        IMessageAH mAH = storage.getMessageAH();
+        IModerateAH modAH = storage.getModerateAH();
+
+        TIntHashSet processedMessages = new TIntHashSet();
+
+        // Broken topic ids
+        TIntHashSet topics = new TIntHashSet();
+
+        NewData data;
+        do {
+            if (ratingsVersion.isEmpty()) {
+                ratingsVersion = moderatesVersion;
+            }
+
+            data = janusService.getNewData(
+                    forumIds,
+                    messagesVersion.getBytes().length == 0,
+                    ratingsVersion,
+                    messagesVersion,
+                    moderatesVersion,
+                    ArrayUtils.EMPTY_INT_ARRAY,
+                    ArrayUtils.EMPTY_INT_ARRAY,
+                    limit
+            );
+
+
+            for (Message mes : data.getMessages()) {
+                if (mAH.isExist(mes.getMessageId())) {
+                    mAH.updateMessage(mes);
+                } else {
+                    mAH.storeMessage(mes);
+                }
+
+                int topicId = mes.getTopicId();
+                if (topicId != 0) {
+                    topics.add(topicId);
+                }
+
+                processedMessages.add(mes.getMessageId());
+            }
+            for (Moderate mod : data.getModerates()) {
+                modAH.storeModerateInfo(mod);
+                processedMessages.add(mod.getMessageId());
+            }
+            for (Rating r : data.getRatings()) {
+                rAH.storeRating(r);
+                processedMessages.add(r.getMessageId());
+            }
+
+            ratingsVersion = data.getRatingRowVersion();
+            messagesVersion = data.getForumRowVersion();
+            moderatesVersion = data.getModerateRowVersion();
+
+            setVersion(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
+            setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
+            setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
+
+        } while (data.getMessages().length > 0);
+
+        // remove existing ids from downloaded topic ids.
+        int[] messageIds = topics.toArray();
+        for (int mId : messageIds) {
+            if (mAH.isExist(mId)) {
+                topics.remove(mId);
+            }
+        }
+
+        if (log.isInfoEnabled()) {
+            log.info("Found broken topics: " + ArrayUtils.toString(topics.toArray()));
+        }
+
+        IMiscAH eAH = storage.getMiscAH();
+
+        topics.addAll(eAH.getExtraMessages());
+
+        final int[] extra = loadExtraMessage(topics.toArray());
+        processedMessages.addAll(extra);
+
+        eAH.clearExtraMessages();
+
+        return processedMessages.toArray();
     }
 }

@@ -41,7 +41,7 @@ public abstract class AMessageView extends JPanel implements IMessageView {
         return this;
     }
 
-    public void updateData() {
+    public void updateData(int[] ids) {
         // TODO: revise!!
     }
 

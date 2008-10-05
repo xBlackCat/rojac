@@ -6,6 +6,7 @@ import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionInfo;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.frame.progress.ITask;
+import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusService;
@@ -16,6 +17,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.IVersionAH;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.RojacException;
 
 /**
  * Date: 14 вер 2008
@@ -23,20 +25,23 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public abstract class ARsdnCommand implements ITask, ICommand {
+public abstract class ARsdnCommand<T> implements ITask, ICommand {
     private static final Log log = LogFactory.getLog(ARsdnCommand.class);
 
     protected IJanusService janusService;
     protected final IStorage storage;
     protected final IOptionsService optionsService;
+    private final IResultHandler<T> resultHandler;
 
-    protected ARsdnCommand() {
+    protected ARsdnCommand(IResultHandler<T> resultHandler) {
+        this.resultHandler = resultHandler;
+        
         ServiceFactory sf = ServiceFactory.getInstance();
         storage = sf.getStorage();
         optionsService = sf.getOptionsService();
     }
 
-    public void prepareTask() throws JanusServiceException {
+    public void doTask(IProgressTracker trac) throws Exception {
         String username = optionsService.getProperty(Property.RSDN_USER_NAME);
         Password password = optionsService.getProperty(Property.RSDN_USER_PASSWORD);
 
@@ -44,6 +49,12 @@ public abstract class ARsdnCommand implements ITask, ICommand {
         c.init(optionsService.getProperty(Property.SERVICE_JANUS_USE_GZIP));
         c.testConnection();
         janusService = c;
+
+        T result = process(trac);
+
+        if (resultHandler != null) {
+            resultHandler.process(result);
+        }
     }
 
     protected Version getVersion(VersionType type) throws StorageException {
@@ -56,4 +67,6 @@ public abstract class ARsdnCommand implements ITask, ICommand {
         IVersionAH vAH = storage.getVersionAH();
         vAH.updateVersionInfo(new VersionInfo(v, type));
     }
+
+    protected abstract T process(IProgressTracker trac) throws RojacException;
 }

@@ -8,6 +8,4 @@ package org.xblackcat.rojac.gui.frame.progress;
 
 public interface ITask {
     void doTask(IProgressTracker trac) throws Exception;
-
-    void prepareTask() throws Exception;
 }

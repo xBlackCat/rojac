@@ -30,6 +30,6 @@ public class FavoritesView extends JPanel implements IView {
         return this;
     }
 
-    public void updateData() {
+    public void updateData(int[] ids) {
     }
 }

@@ -12,6 +12,8 @@ import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IModerateAH;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.RojacException;
+import gnu.trove.TIntHashSet;
 
 /**
  * Date: 26 вер 2008
@@ -19,29 +21,25 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class LoadExtraMessagesCommand extends ARsdnCommand {
+public class LoadExtraMessagesCommand extends ARsdnCommand<int[]> {
     private static final Log log = LogFactory.getLog(LoadExtraMessagesCommand.class);
 
     private final int[] messageIds;
 
-    public LoadExtraMessagesCommand(int[] messageIds) {
+    public LoadExtraMessagesCommand(IResultHandler<int[]> iResultHandler, int[] messageIds) {
+        super(iResultHandler);
         this.messageIds = messageIds;
     }
 
-    public void doTask(IProgressTracker trac) throws Exception {
+    public int[] process(IProgressTracker trac) throws RojacException {
         trac.addLodMessage("Synchronization started.");
-        
-        try {
-            loadExtraMessage(messageIds);
-        } catch (SynchronizationException e) {
-            // Log the exception to console.
-            trac.postException(e);
-        }
+
+        return loadExtraMessage(messageIds);
     }
 
-    protected void loadExtraMessage(int[] ids) throws SynchronizationException {
+    protected int[] loadExtraMessage(int[] ids) throws SynchronizationException {
         if (ArrayUtils.isEmpty(ids)) {
-            return;
+            return ArrayUtils.EMPTY_INT_ARRAY;
         }
 
         TopicMessages extra;
@@ -54,6 +52,7 @@ public class LoadExtraMessagesCommand extends ARsdnCommand {
         Moderate[] moderates = extra.getModerates();
         Rating[] ratings = extra.getRatings();
 
+        TIntHashSet processedMessages = new TIntHashSet();
         IMessageAH ah = storage.getMessageAH();
         try {
             for (Message m : messages) {
@@ -62,6 +61,7 @@ public class LoadExtraMessagesCommand extends ARsdnCommand {
                 } else {
                     ah.storeMessage(m);
                 }
+                processedMessages.add(m.getMessageId());
             }
         } catch (StorageException e) {
             throw new SynchronizationException("Can not store extra messages into storage", e);
@@ -69,5 +69,6 @@ public class LoadExtraMessagesCommand extends ARsdnCommand {
 
         IModerateAH moderateAH = storage.getModerateAH();
 
+        return processedMessages.toArray();
     }
 }
