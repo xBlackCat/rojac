@@ -6,7 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
-import org.xblackcat.rojac.service.storage.database.connection.SimpleConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
@@ -25,11 +24,6 @@ import java.util.*;
 public class DBStorage implements IStorage, IQueryExecutor {
     private static final Log log = LogFactory.getLog(DBStorage.class);
 
-    private static final String DSSTORAGE_JDBC_CLASS = "db.jdbc.driver.class";
-    private static final String DSSTORAGE_URL = "db.connection.url.pattern";
-    private static final String DSSTORAGE_USER = "db.access.user";
-    private static final String DSSTORAGE_PASSWORD = "db.access.password";
-
     private final Map<DataQuery, String> queries;
     private final Map<SQL, List<SQL>> initializeQueries;
 
@@ -47,14 +41,16 @@ public class DBStorage implements IStorage, IQueryExecutor {
     private final DBMessageAH messageAH;
     private final DBMiscAH miscAH;
 
-    public DBStorage(String propRoot) throws StorageException {
+    public DBStorage(String propRoot, IConnectionFactory connectionFactory) throws StorageException {
         try {
-            IConnectionFactory cf = initializeConnectionFactory('/' + propRoot + "/database.properties");
-
             this.queries = loadSQLs('/' + propRoot + "/sql.data.properties", DataQuery.class);
-            this.initializeQueries = loadInitializeSQLs('/' + propRoot + "/sql.check.properties", '/' + propRoot + "/sql.initialize.properties", '/' + propRoot + "/sql.depends.properties");
+            this.initializeQueries = loadInitializeSQLs(
+                    '/' + propRoot + "/sql.check.properties",
+                    '/' + propRoot + "/sql.initialize.properties",
+                    '/' + propRoot + "/sql.depends.properties"
+            );
 
-            helper = new QueryHelper(cf);
+            helper = new QueryHelper(connectionFactory);
         } catch (StorageInitializationException e) {
             throw e;
         } catch (IOException e) {
@@ -77,48 +73,12 @@ public class DBStorage implements IStorage, IQueryExecutor {
         newModerateAH = new DBNewModerateAH(this);
     }
 
-    private Map<SQL, List<SQL>> loadInitializeSQLs(String checkProp, String initProps, String config) throws IOException {
-        Properties check = new Properties();
-        Properties init = new Properties();
-        Properties clue = new Properties();
-        check.load(ResourceUtils.getResourceAsStream(checkProp));
-        init.load(ResourceUtils.getResourceAsStream(initProps));
-        clue.load(ResourceUtils.getResourceAsStream(config));
-
-        Map<SQL, List<SQL>> map = new HashMap<SQL, List<SQL>>();
-
-        for (Map.Entry<Object, Object> ce : check.entrySet()) {
-            String name = (String) ce.getKey();
-            String sql = (String) ce.getValue();
-
-            String inits = clue.getProperty(name, "");
-            List<SQL> sqls = new ArrayList<SQL>();
-            String[] initNames = inits.trim().split("\\s+,\\s+");
-            if (!ArrayUtils.isEmpty(initNames)) {
-                for (String initName : initNames) {
-                    String initSql = init.getProperty(initName);
-                    if (StringUtils.isBlank(initSql)) {
-                        if (log.isWarnEnabled()) {
-                            log.warn(initName + " SQL not defined (Used in " + name + "). Initialization routine can be work improperly.");
-                        }
-                    } else {
-                        sqls.add(new SQL(initName, initSql));
-                    }
-                }
-            }
-
-            map.put(new SQL(name, sql), sqls);
-        }
-
-        return Collections.unmodifiableMap(map);
-    }
-
     /* Initialization routines */
     public void initialize() throws StorageException {
         if (log.isInfoEnabled()) {
             log.info("Check database storage structure started.");
         }
-        for (Map.Entry<SQL,List<SQL>> entry : initializeQueries.entrySet()) {
+        for (Map.Entry<SQL, List<SQL>> entry : initializeQueries.entrySet()) {
             boolean success = false;
             SQL check = entry.getKey();
             if (log.isTraceEnabled()) {
@@ -239,63 +199,8 @@ public class DBStorage implements IStorage, IQueryExecutor {
         return queries.get(q);
     }
 
-    private IConnectionFactory initializeConnectionFactory(String name) throws StorageInitializationException {
-        if (log.isTraceEnabled()) {
-            log.trace("Loading database connection properties.");
-        }
-        // The properties file should be located in /<propRoot>/database.properties
-        Properties databaseProperties = new Properties();
-        try {
-            databaseProperties.load(getClass().getResourceAsStream(name));
-        } catch (IOException e) {
-            throw new StorageInitializationException("Can not load config from the database.properties", e);
-        }
-
-        String jdbcClass = databaseProperties.getProperty(DSSTORAGE_JDBC_CLASS);
-        if (jdbcClass == null) {
-            throw new StorageInitializationException("The " + DSSTORAGE_JDBC_CLASS + " property is not defined.");
-        }
-
-        try {
-            Class.forName(jdbcClass).newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
-        } catch (IllegalAccessException e) {
-            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
-        } catch (InstantiationException e) {
-            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
-        }
-
-        String url = databaseProperties.getProperty(DSSTORAGE_URL);
-        if (url == null) {
-            throw new StorageInitializationException("The " + DSSTORAGE_URL + " property is not defined.");
-        }
-
-        String dbUser = databaseProperties.getProperty(DSSTORAGE_USER);
-        if (dbUser == null) {
-            throw new StorageInitializationException("The " + DSSTORAGE_USER + " property is not defined.");
-        }
-
-        String dbPassword = databaseProperties.getProperty(DSSTORAGE_PASSWORD);
-        if (dbPassword == null) {
-            throw new StorageInitializationException("The " + DSSTORAGE_PASSWORD + " property is not defined.");
-        }
-
-        // Set the system properties in the url string
-        if (log.isTraceEnabled()) {
-            log.trace("Initial url: " + url);
-        }
-        url = ResourceUtils.putSystemProperties(url);
-        if (log.isTraceEnabled()) {
-            log.trace("Url after replace: " + url);
-        }
-
-        return new SimpleConnectionFactory(url, name, dbPassword);
-    }
-
     private <T extends Enum<T> & IPropertiable> Map<T, String> loadSQLs(String name, Class<T> type) throws IOException, StorageInitializationException {
-        Properties queries = new Properties();
-        queries.load(getClass().getResourceAsStream(name));
+        Properties queries = ResourceUtils.loadProperties(name);
 
         Map<T, String> qs = new EnumMap<T, String>(type);
         for (T q : type.getEnumConstants()) {
@@ -321,6 +226,39 @@ public class DBStorage implements IStorage, IQueryExecutor {
         }
 
         return Collections.unmodifiableMap(qs);
+    }
+
+    private Map<SQL, List<SQL>> loadInitializeSQLs(String checkProp, String initProps, String config) throws IOException {
+        Properties check = ResourceUtils.loadProperties(checkProp);
+        Properties init = ResourceUtils.loadProperties(initProps);
+        Properties clue = ResourceUtils.loadProperties(config);
+
+        Map<SQL, List<SQL>> map = new HashMap<SQL, List<SQL>>();
+
+        for (Map.Entry<Object, Object> ce : check.entrySet()) {
+            String name = (String) ce.getKey();
+            String sql = (String) ce.getValue();
+
+            String inits = clue.getProperty(name, "");
+            List<SQL> sqls = new ArrayList<SQL>();
+            String[] initNames = inits.trim().split("\\s+,\\s+");
+            if (!ArrayUtils.isEmpty(initNames)) {
+                for (String initName : initNames) {
+                    String initSql = init.getProperty(initName);
+                    if (StringUtils.isBlank(initSql)) {
+                        if (log.isWarnEnabled()) {
+                            log.warn(initName + " SQL not defined (Used in " + name + "). Initialization routine can be work improperly.");
+                        }
+                    } else {
+                        sqls.add(new SQL(initName, initSql));
+                    }
+                }
+            }
+
+            map.put(new SQL(name, sql), sqls);
+        }
+
+        return Collections.unmodifiableMap(map);
     }
 
     private static class SQL {
