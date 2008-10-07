@@ -21,6 +21,7 @@ import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.synchronizer.GetNewPostsCommand;
 import org.xblackcat.rojac.service.synchronizer.IResultHandler;
+import org.xblackcat.rojac.service.synchronizer.NewPostsResult;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -131,10 +132,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         JPanel topPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPane.add(WindowsUtils.setupButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showProgressDialog(new GetNewPostsCommand(new IResultHandler<int[]>() {
-                    public void process(int[] results) throws Exception {
-                        forumsListView.updateData(null);
-                        favoritesView.updateData(results);
+                showProgressDialog(new GetNewPostsCommand(new IResultHandler<NewPostsResult>() {
+                    public void process(NewPostsResult results) throws Exception {
+                        forumsListView.updateData(results.getAffectedForumIds());
+                        favoritesView.updateData(results.getAffectedMessageIds());
                     }
                 }));
             }

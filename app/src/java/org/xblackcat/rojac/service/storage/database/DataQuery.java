@@ -217,6 +217,7 @@ public enum DataQuery implements IPropertiable {
     REMOVE_ALL_OBJECTS_NEW_RATING,
 
     // Queries for getting all the ids of the objects
+    GET_IDS_FORUM,
     GET_IDS_FORUM_GROUP,
     GET_IDS_NEW_RATING,
     GET_IDS_NEW_MESSAGE,

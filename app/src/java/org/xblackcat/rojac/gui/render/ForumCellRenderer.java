@@ -5,6 +5,7 @@ import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.model.ForumData;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 /**
@@ -14,11 +15,11 @@ import java.awt.*;
  *
  * @author xBlackCat
  */
-public class ForumCellRenderer extends DefaultListCellRenderer {
+public class ForumCellRenderer extends DefaultTableCellRenderer {
     @Override
-    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        
         ForumData fd = (ForumData) value;
 
         Forum f = fd.getForum();
