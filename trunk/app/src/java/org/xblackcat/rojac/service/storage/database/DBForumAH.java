@@ -76,8 +76,7 @@ final class DBForumAH implements IForumAH {
                 forumId);
     }
 
-    public Forum[] getAllForums() throws StorageException {
-        Collection<Forum> fc = helper.execute(Converters.TO_FORUM_CONVERTER, DataQuery.GET_OBJECTS_FORUM);
-        return fc.toArray(new Forum[fc.size()]);
+    public int[] getAllForumIds() throws StorageException {
+        return helper.getIds(DataQuery.GET_IDS_FORUM);
     }
 }

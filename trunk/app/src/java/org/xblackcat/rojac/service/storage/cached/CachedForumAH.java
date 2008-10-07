@@ -47,8 +47,8 @@ final class CachedForumAH implements IForumAH, IPurgable {
         return forumAH.getForumIdsInGroup(forumGroupId);
     }
 
-    public Forum[] getAllForums() throws StorageException {
-        return forumAH.getAllForums();
+    public int[] getAllForumIds() throws StorageException {
+        return forumAH.getAllForumIds();
     }
 
     public int[] getSubscribedForumIds() throws StorageException {

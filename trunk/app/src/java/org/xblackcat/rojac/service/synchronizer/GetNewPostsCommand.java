@@ -24,14 +24,14 @@ import org.xblackcat.rojac.RojacException;
  * @author xBlackCat
  */
 
-public class GetNewPostsCommand extends LoadExtraMessagesCommand {
+public class GetNewPostsCommand extends ARsdnCommand<NewPostsResult> {
     private static final Log log = LogFactory.getLog(GetNewPostsCommand.class);
 
-    public GetNewPostsCommand(IResultHandler<int[]> iResultHandler) {
-        super(iResultHandler, null);
+    public GetNewPostsCommand(IResultHandler<NewPostsResult> iResultHandler) {
+        super(iResultHandler);
     }
 
-    public int[] process(IProgressTracker trac) throws RojacException {
+    public NewPostsResult process(IProgressTracker trac) throws RojacException {
         trac.addLodMessage("Synchronization started.");
 
         int[] forumIds = storage.getForumAH().getSubscribedForumIds();
@@ -39,7 +39,7 @@ public class GetNewPostsCommand extends LoadExtraMessagesCommand {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
             }
-            return ArrayUtils.EMPTY_INT_ARRAY;
+            return new NewPostsResult();
         }
 
         if (log.isDebugEnabled()) {
@@ -57,6 +57,7 @@ public class GetNewPostsCommand extends LoadExtraMessagesCommand {
         IModerateAH modAH = storage.getModerateAH();
 
         TIntHashSet processedMessages = new TIntHashSet();
+        TIntHashSet affectedForums = new TIntHashSet();
 
         // Broken topic ids
         TIntHashSet topics = new TIntHashSet();
@@ -92,10 +93,12 @@ public class GetNewPostsCommand extends LoadExtraMessagesCommand {
                 }
 
                 processedMessages.add(mes.getMessageId());
+                affectedForums.add(mes.getForumId());
             }
             for (Moderate mod : data.getModerates()) {
                 modAH.storeModerateInfo(mod);
                 processedMessages.add(mod.getMessageId());
+                affectedForums.add(mod.getForumId());
             }
             for (Rating r : data.getRatings()) {
                 rAH.storeRating(r);
@@ -128,11 +131,8 @@ public class GetNewPostsCommand extends LoadExtraMessagesCommand {
 
         topics.addAll(eAH.getExtraMessages());
 
-        final int[] extra = loadExtraMessage(topics.toArray());
-        processedMessages.addAll(extra);
-
         eAH.clearExtraMessages();
 
-        return processedMessages.toArray();
+        return new NewPostsResult(processedMessages.toArray(), affectedForums.toArray());
     }
 }

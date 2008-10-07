@@ -6,11 +6,8 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.IView;
 import org.xblackcat.rojac.gui.model.ForumData;
-import org.xblackcat.rojac.gui.model.ForumListModel;
-import org.xblackcat.rojac.gui.model.ForumViewMode;
-import org.xblackcat.rojac.gui.model.ForumViewModeModel;
+import org.xblackcat.rojac.gui.model.ForumTableModel;
 import org.xblackcat.rojac.gui.render.ForumCellRenderer;
-import org.xblackcat.rojac.gui.render.ForumListModeRenderer;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
@@ -22,8 +19,6 @@ import org.xblackcat.rojac.service.synchronizer.IResultHandler;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,17 +34,18 @@ import java.awt.event.MouseEvent;
 public class ForumsListView extends JPanel implements IView {
     private static final Log log = LogFactory.getLog(ForumsListView.class);
     // Data and models
-    private ForumListModel forumsModel = new ForumListModel();
+    private ForumTableModel forumsModel = new ForumTableModel();
     private final IRootPane mainFrame;
 
     public ForumsListView(IRootPane rootPane) {
         super(new BorderLayout(2, 2));
         this.mainFrame = rootPane;
-        final JList forums = new JList(forumsModel);
+        final JTable forums = new JTable(forumsModel);
+        forums.setTableHeader(null);
         add(new JScrollPane(forums));
 
         forums.setFont(forums.getFont().deriveFont(Font.PLAIN));
-        forums.setCellRenderer(new ForumCellRenderer());
+        forums.setDefaultRenderer(ForumData.class, new ForumCellRenderer());
         forums.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -67,17 +63,19 @@ public class ForumsListView extends JPanel implements IView {
             }
 
             private void checkMenu(MouseEvent e) {
+                final Point p = e.getPoint();
+
+                int ind = forums.rowAtPoint(p);
+
+                int modelInd = forums.convertRowIndexToModel(ind);
+
+                Forum forum = ((ForumData) forumsModel.getValueAt(modelInd, 0)).getForum();
+
                 if (e.isPopupTrigger()) {
-                    final Point p = e.getPoint();
-
-                    int ind = forums.locationToIndex(p);
-
-                    Forum forum = ((ForumData) forumsModel.getElementAt(ind)).getForum();
                     JPopupMenu menu = createMenu(forum);
 
                     menu.show(forums, p.x, p.y);
                 } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
-                    Forum forum = ((ForumData) forums.getSelectedValue()).getForum();
                     mainFrame.openForumTab(forum);
                 }
             }
@@ -85,34 +83,15 @@ public class ForumsListView extends JPanel implements IView {
 
         JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 2));
 
-        final ForumViewModeModel modeModel = new ForumViewModeModel();
-        final JComboBox viewMode = new JComboBox(modeModel);
-
-        viewMode.setEditable(false);
-        viewMode.setRenderer(new ForumListModeRenderer());
-
-        modeModel.addListDataListener(new ListDataListener() {
-            public void intervalAdded(ListDataEvent e) {
-            }
-
-            public void intervalRemoved(ListDataEvent e) {
-            }
-
-            public void contentsChanged(ListDataEvent e) {
-                if (e.getIndex0() == -1 && e.getIndex1() == -1) {
-                    ForumViewMode vm = modeModel.getSelectedItem();
-                    viewMode.setToolTipText(vm.getTooltip());
-                    forumsModel.setMode(vm);
-                }
-            }
-        });
-
-        buttonsPane.add(viewMode);
         buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mainFrame.showProgressDialog(new GetForumListCommand(new IResultHandler<int[]>() {
-                    public void process(int[] results) throws StorageException {
-                        reloadList();
+                    public void process(final int[] forumIds) throws StorageException {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                forumsModel.updateForums(forumIds);
+                            }
+                        });
                     }
                 }));
             }
@@ -125,21 +104,17 @@ public class ForumsListView extends JPanel implements IView {
         // TODO: implement
 
         try {
-            reloadList();
+            IStorage storage = ServiceFactory.getInstance().getStorage();
+
+            final int[] allForums = storage.getForumAH().getAllForumIds();
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    forumsModel.updateForums(allForums);
+                }
+            });
         } catch (StorageException e) {
             log.error("Can not load forum list", e);
         }
-    }
-
-    private void reloadList() throws StorageException {
-        IStorage storage = ServiceFactory.getInstance().getStorage();
-
-        final Forum[] allForums = storage.getForumAH().getAllForums();
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                forumsModel.setForums(allForums);
-            }
-        });
     }
 
     public void updateSettings() {
@@ -151,7 +126,7 @@ public class ForumsListView extends JPanel implements IView {
     }
 
     public void updateData(int[] ids) {
-        forumsModel.updateForums();
+        forumsModel.updateForums(ids);
     }
 
     private JPopupMenu createMenu(Forum f) {
