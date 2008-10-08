@@ -19,6 +19,7 @@ import org.xblackcat.rojac.service.synchronizer.IResultHandler;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -81,23 +82,40 @@ public class ForumsListView extends JPanel implements IView {
             }
         });
 
+        final ForumsRowFilter forumsRowFilter = new ForumsRowFilter();
+        final TableRowSorter<ForumTableModel> forumsRowSorter = new TableRowSorter<ForumTableModel>(forumsModel);
+        forumsRowSorter.setComparator(0, new ForumDataComparator());
+        forumsRowSorter.setStringConverter(new ForumsTableStringConverter());
+        forumsRowSorter.setSortable(0, true);
+        forumsRowSorter.setSortsOnUpdates(true);
+        forumsRowSorter.setRowFilter(forumsRowFilter);
+        forumsRowSorter.sort();
+        forums.setRowSorter(forumsRowSorter);
+
         JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 2));
 
+        buttonsPane.add(WindowsUtils.setupButton("update", new UpdateActionListener(), Messages.VIEW_FORUMS_BUTTON_UPDATE));
         buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                mainFrame.showProgressDialog(new GetForumListCommand(new IResultHandler<int[]>() {
-                    public void process(final int[] forumIds) throws StorageException {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                forumsModel.updateForums(forumIds);
-                            }
-                        });
-                    }
-                }));
+                forumsRowFilter.setNotEmpty(!forumsRowFilter.isNotEmpty());
+                forumsRowSorter.sort();
             }
-        }, Messages.VIEW_FORUMS_BUTTON_UPDATE));
+        }, Messages.VIEW_FORUMS_BUTTON_FILLED));
+        buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                forumsRowFilter.setSubscribed(!forumsRowFilter.isSubscribed());
+                forumsRowSorter.sort();
+            }
+        }, Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED));
+        buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                forumsRowFilter.setUnread(!forumsRowFilter.isUnread());
+                forumsRowSorter.sort();
+            }
+        }, Messages.VIEW_FORUMS_BUTTON_HASUNREAD));
 
         add(buttonsPane, BorderLayout.NORTH);
+
     }
 
     public void applySettings() {
@@ -159,7 +177,7 @@ public class ForumsListView extends JPanel implements IView {
                     IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
                     try {
                         fah.setSubscribeForum(forumId, !subscribed);
-                        
+
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
                                 forumsModel.reloadInfo(forumId);
@@ -170,6 +188,20 @@ public class ForumsListView extends JPanel implements IView {
                     }
                 }
             });
+        }
+    }
+
+    private class UpdateActionListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            mainFrame.showProgressDialog(new GetForumListCommand(new IResultHandler<int[]>() {
+                public void process(final int[] forumIds) throws StorageException {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            forumsModel.updateForums(forumIds);
+                        }
+                    });
+                }
+            }));
         }
     }
 }
