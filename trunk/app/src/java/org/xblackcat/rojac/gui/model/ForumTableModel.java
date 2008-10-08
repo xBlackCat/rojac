@@ -28,7 +28,7 @@ public class ForumTableModel extends AbstractTableModel {
 
     private ForumInfoProcessor processor = new ForumInfoProcessor();
 
-    public Object getValueAt(int rowIndex, int columnIndex) {
+    public ForumData getValueAt(int rowIndex, int columnIndex) {
         return forums.get(rowIndex);
     }
 
