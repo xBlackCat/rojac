@@ -19,6 +19,8 @@ import org.xblackcat.rojac.service.synchronizer.IResultHandler;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -87,10 +89,18 @@ public class ForumsListView extends JPanel implements IView {
         forumsRowSorter.setComparator(0, new ForumDataComparator());
         forumsRowSorter.setStringConverter(new ForumsTableStringConverter());
         forumsRowSorter.setSortable(0, true);
-        forumsRowSorter.setSortsOnUpdates(true);
+        forumsRowSorter.setSortsOnUpdates(false);
         forumsRowSorter.setRowFilter(forumsRowFilter);
         forumsRowSorter.sort();
         forums.setRowSorter(forumsRowSorter);
+
+        forumsModel.addTableModelListener(new TableModelListener() {
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    forumsRowSorter.sort();
+                }
+            }
+        });
 
         JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 2));
 
