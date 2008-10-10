@@ -21,6 +21,9 @@ class MessageTreeCellRenderer extends DefaultTreeCellRenderer {
 
             if (mi != null) {
                 setText(mi.getSubject() + "(" + mi.getUserNick() + ")");
+                if (sel) {
+                    tree.setToolTipText(String.valueOf(mi.getMessageId()));
+                }
             } else {
                 setText("Forum root");
             }

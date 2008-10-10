@@ -31,11 +31,12 @@ public final class Message {
     private final boolean notifyOnResponse;
     private final boolean read;
     private final Integer favoriteIndex;
+    private final long resentChildDate;
 
     public Message(int articleId, int forumId, long lastModerated, String message, long messageDate, int messageId,
                    String messageName, int parentId, String subject, int topicId, long updateDate, int userId,
                    String userNick, Role userRole, String userTitle, int userTitleColor,
-                   boolean notifyOnResponse, boolean read, Integer favoriteIndex) {
+                   boolean notifyOnResponse, boolean read, Integer favoriteIndex, long resentChildDate) {
         this.read = read;
         this.articleId = articleId;
         this.forumId = forumId;
@@ -55,6 +56,7 @@ public final class Message {
         this.userTitleColor = userTitleColor;
         this.notifyOnResponse = notifyOnResponse;
         this.favoriteIndex = favoriteIndex;
+        this.resentChildDate = resentChildDate;
     }
 
     public Message(JanusMessageInfo i) {
@@ -62,7 +64,7 @@ public final class Message {
                 i.getMessageDate().getTimeInMillis(), i.getMessageId(), i.getMessageName(),
                 i.getParentId(), i.getSubject(), i.getTopicId(), i.getUpdateDate().getTimeInMillis(),
                 i.getUserId(), i.getUserNick(), Role.getUserType(i.getUserRole()), i.getUserTitle(),
-                i.getUserTitleColor(), false, false, null);
+                i.getUserTitleColor(), false, false, null, i.getMessageDate().getTimeInMillis());
     }
 
     public int getArticleId() {
@@ -148,6 +150,10 @@ public final class Message {
 
     public Integer getFavoriteIndex() {
         return favoriteIndex;
+    }
+
+    public long getResentChildDate() {
+        return resentChildDate;
     }
 
     public String toString() {

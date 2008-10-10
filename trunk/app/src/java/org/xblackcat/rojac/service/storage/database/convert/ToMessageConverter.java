@@ -39,8 +39,9 @@ class ToMessageConverter implements IToObjectConverter<Message> {
         String userNick = rs.getString(17);
         String userTitle = rs.getString(18);
         String message = rs.getString(19);
+        long recentChildDate= rs.getLong(20);
         return new Message(articleId, forumId, moderateDate, message, messageDate, id, messageName, parentId, subject,
                 topicId, updateDate, userId, userNick, Role.values()[userRole], userTitle, userTitleColor,
-                notifyOnResponse, read, favorite);
+                notifyOnResponse, read, favorite, recentChildDate);
     }
 }
