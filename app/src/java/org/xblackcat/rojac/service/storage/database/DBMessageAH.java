@@ -38,7 +38,8 @@ final class DBMessageAH implements IMessageAH {
                 fm.getMessageName(),
                 fm.getUserNick(),
                 fm.getUserTitle(),
-                fm.getMessage());
+                fm.getMessage(),
+                fm.getResentChildDate());
     }
 
     public boolean removeForumMessage(int id) throws StorageException {
@@ -65,6 +66,10 @@ final class DBMessageAH implements IMessageAH {
         return helper.getIds(DataQuery.GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID, forumId);
     }
 
+    public int[] getBrokenTopicIds() throws StorageException {
+        return helper.getIds(DataQuery.GET_BROKEN_TOPIC_IDS);
+    }
+
     public void updateMessage(Message m) throws StorageException {
         helper.update(DataQuery.UPDATE_OBJECT_MESSAGE,
                 m.getTopicId(),
@@ -86,6 +91,18 @@ final class DBMessageAH implements IMessageAH {
                 m.getUserTitle(),
                 m.getMessage(),
                 m.getMessageId());
+    }
+
+    public void updateMessageRecentDate(int messageId, long recentDate) throws StorageException {
+        helper.update(DataQuery.UPDATE_MESSAGE_RECENT_CHILD_DATE,
+                recentDate,
+                messageId);
+    }
+
+    public void updateMessageReadFlag(int messageId, boolean read) throws StorageException {
+        helper.update(DataQuery.UPDATE_MESSAGE_READ_FLAG,
+                read,
+                messageId);
     }
 
     public boolean isExist(int messageId) throws StorageException {

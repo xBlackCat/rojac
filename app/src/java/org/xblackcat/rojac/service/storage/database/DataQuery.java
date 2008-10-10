@@ -41,7 +41,7 @@ public enum DataQuery implements IPropertiable {
      * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color
      * (int), user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update
      * date (long), moderated date (long), subject (String), message name (String), user nick (String), user title
-     * (String), message (String)
+     * (String), message (String), recent_child_date(long)
      */
     GET_OBJECTS_MESSAGE,
     /**
@@ -114,7 +114,7 @@ public enum DataQuery implements IPropertiable {
      * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color
      * (int), user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update
      * date (long), moderated date (long), subject (String), message name (String), user nick (String), user title
-     * (String), message (String)
+     * (String), message (String), recent_child_date(int)
      */
     STORE_OBJECT_MESSAGE,
     /**
@@ -290,6 +290,18 @@ public enum DataQuery implements IPropertiable {
      * subscribed(boolean), id(int)
      */
     UPDATE_OBJECT_FORUM_SUBSCRIBE,
+    /**
+     * The query for updating the last_child_date filed of message object. Set query parameters in following order:
+     * <p/>
+     * last_child_date(long), id(int)
+     */
+    UPDATE_MESSAGE_RECENT_CHILD_DATE,
+    /**
+     * The query for updating the read filed of message object. Set query parameters in following order:
+     * <p/>
+     * read(boolean), id(int)
+     */
+    UPDATE_MESSAGE_READ_FLAG,
 
     /**
      * The query for retrieving ids for the specified forum group. SQL parameters:
@@ -313,7 +325,15 @@ public enum DataQuery implements IPropertiable {
      * Checks is the message id exist
      */
     IS_MESSAGES_EXIST,
-    GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,;
+    GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,
+    /**
+     * Returns two properties for message object: parent id and last_child_date. The properties is returned in following
+     * order:
+     * <p/>
+     * parent_id(int)
+     */
+    GET_PARENT_ID_FOR_MESSAGE_ID,
+    GET_BROKEN_TOPIC_IDS,;
 
     private final String properyName = ResourceUtils.constantToProperty(this.name());
 
@@ -324,4 +344,4 @@ public enum DataQuery implements IPropertiable {
     public String toString() {
         return super.toString() + '[' + properyName + ']';
     }
-    }
+}

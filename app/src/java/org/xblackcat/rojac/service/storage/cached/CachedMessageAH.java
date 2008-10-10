@@ -70,9 +70,21 @@ final class CachedMessageAH implements IMessageAH, IPurgable {
         return messageAH.getTopicMessageIdsByForumId(forumId);
     }
 
+    public int[] getBrokenTopicIds() throws StorageException {
+        return messageAH.getBrokenTopicIds();
+    }
+
     public void updateMessage(Message mes) throws StorageException {
         messageCache.remove(mes.getMessageId());
         messageAH.updateMessage(mes);
+    }
+
+    public void updateMessageRecentDate(int messageId, long recentDate) throws StorageException {
+        messageAH.updateMessageRecentDate(messageId, recentDate);
+    }
+
+    public void updateMessageReadFlag(int messageId, boolean read) throws StorageException {
+        messageAH.updateMessageReadFlag(messageId, read);
     }
 
     public boolean isExist(int messageId) throws StorageException {
