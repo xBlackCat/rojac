@@ -13,7 +13,11 @@ import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * Date: 12 лип 2008
@@ -22,6 +26,8 @@ import java.util.*;
  */
 
 public class ForumTableModel extends AbstractTableModel {
+    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
+
     private static final Log log = LogFactory.getLog(ForumTableModel.class);
 
     private List<ForumData> forums = new ArrayList<ForumData>();
@@ -77,7 +83,6 @@ public class ForumTableModel extends AbstractTableModel {
 
         private final Runnable processor = new Runnable() {
             public void run() {
-                IStorage storage = ServiceFactory.getInstance().getStorage();
                 IForumAH fah = storage.getForumAH();
 
                 boolean process;

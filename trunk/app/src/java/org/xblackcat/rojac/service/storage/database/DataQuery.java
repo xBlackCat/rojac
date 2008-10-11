@@ -297,11 +297,17 @@ public enum DataQuery implements IPropertiable {
      */
     UPDATE_MESSAGE_RECENT_CHILD_DATE,
     /**
-     * The query for updating the read filed of message object. Set query parameters in following order:
+     * The query for updating the read field of message object. Set query parameters in following order:
      * <p/>
      * read(boolean), id(int)
      */
     UPDATE_MESSAGE_READ_FLAG,
+    /**
+     * The query for updating the read field of messages in the specified forum. Set query parameters in following order:
+     * <p/>
+     * read(boolean), id(int)
+     */
+    UPDATE_FORUM_MESSAGES_READ_FLAG,
 
     /**
      * The query for retrieving ids for the specified forum group. SQL parameters:
@@ -333,7 +339,7 @@ public enum DataQuery implements IPropertiable {
      * parent_id(int)
      */
     GET_PARENT_ID_FOR_MESSAGE_ID,
-    GET_BROKEN_TOPIC_IDS,;
+    GET_BROKEN_TOPIC_IDS;
 
     private final String properyName = ResourceUtils.constantToProperty(this.name());
 

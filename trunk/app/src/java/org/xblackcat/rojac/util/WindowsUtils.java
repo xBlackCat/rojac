@@ -39,13 +39,14 @@ public class WindowsUtils {
     /**
      * Cover component by JPanel with FlowLayout (align - CENTER)
      *
-     * @param comp  component to cover.
+     * @param comp component to cover.
      *
      * @return covered component.
      */
     public static Component coverComponent(Component comp) {
         return coverComponent(comp, FlowLayout.CENTER, comp.getBackground());
     }
+
     /**
      * Cover component by JPanel.
      *
@@ -61,10 +62,10 @@ public class WindowsUtils {
     /**
      * Cover component by JPanel.
      *
-     * @param comp  component to cover.
-     * @param align aling type. See {@linkplain java.awt.FlowLayout#FlowLayout(int)} for available values.
-     *
+     * @param comp       component to cover.
+     * @param align      aling type. See {@linkplain java.awt.FlowLayout#FlowLayout(int)} for available values.
      * @param background
+     *
      * @return covered component.
      */
     public static Component coverComponent(Component comp, int align, Color background) {
@@ -100,7 +101,12 @@ public class WindowsUtils {
         component.setSize(size);
     }
 
-    public static JToggleButton setupToggleButton(String imageSet, ActionListener action, ButtonGroup bg) {
+    public static JToggleButton setupToggleButton(String imageSet, ActionListener action, Messages mes) {
+        return setupToggleButton(imageSet, action, mes, null);
+    }
+
+    public static JToggleButton setupToggleButton(String buttonName, ActionListener action, Messages mes, ButtonGroup bg) {
+        String imageSet = BUTTON_IMAGES_PREFIX + buttonName + '/';
         JToggleButton toggleButton = new JToggleButton();
         toggleButton.setIcon(ResourceUtils.loadImageIcon(imageSet + "enabled.png"));
         toggleButton.setHorizontalAlignment(SwingConstants.CENTER);
@@ -116,6 +122,7 @@ public class WindowsUtils {
         toggleButton.setDisabledIcon(ResourceUtils.loadImageIcon(imageSet + "disabled.png"));
         toggleButton.addActionListener(action);
         toggleButton.setOpaque(false);
+        toggleButton.setToolTipText(mes.getMessage());
         if (bg != null) {
             bg.add(toggleButton);
         }

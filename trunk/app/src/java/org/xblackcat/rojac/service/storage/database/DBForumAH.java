@@ -5,8 +5,6 @@ import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
-import java.util.Collection;
-
 /**
  * Date: 8 трав 2007
  *
@@ -61,6 +59,12 @@ final class DBForumAH implements IForumAH {
     public void setSubscribeForum(int forumId, boolean subscribe) throws StorageException {
         helper.update(DataQuery.UPDATE_OBJECT_FORUM_SUBSCRIBE,
                 subscribe,
+                forumId);
+    }
+
+    public void setForumRead(int forumId, boolean read) throws StorageException {
+        helper.update(DataQuery.UPDATE_FORUM_MESSAGES_READ_FLAG,
+                read,
                 forumId);
     }
 

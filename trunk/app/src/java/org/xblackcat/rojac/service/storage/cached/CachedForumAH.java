@@ -70,6 +70,10 @@ final class CachedForumAH implements IForumAH, IPurgable {
         forumAH.setSubscribeForum(forumId, subscribe);
     }
 
+    public void setForumRead(int forumId, boolean read) throws StorageException {
+        forumAH.setForumRead(forumId, read);
+    }
+
     public int getMessagesInForum(int forumId) throws StorageException {
         return forumAH.getMessagesInForum(forumId);
     }

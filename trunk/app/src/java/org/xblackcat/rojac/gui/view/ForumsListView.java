@@ -35,6 +35,9 @@ import java.awt.event.MouseEvent;
  */
 
 public class ForumsListView extends JPanel implements IView {
+    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
+    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
+
     private static final Log log = LogFactory.getLog(ForumsListView.class);
     // Data and models
     private ForumTableModel forumsModel = new ForumTableModel();
@@ -105,19 +108,19 @@ public class ForumsListView extends JPanel implements IView {
         JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 2));
 
         buttonsPane.add(WindowsUtils.setupButton("update", new UpdateActionListener(), Messages.VIEW_FORUMS_BUTTON_UPDATE));
-        buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
+        buttonsPane.add(WindowsUtils.setupToggleButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 forumsRowFilter.setNotEmpty(!forumsRowFilter.isNotEmpty());
                 forumsRowSorter.sort();
             }
         }, Messages.VIEW_FORUMS_BUTTON_FILLED));
-        buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
+        buttonsPane.add(WindowsUtils.setupToggleButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 forumsRowFilter.setSubscribed(!forumsRowFilter.isSubscribed());
                 forumsRowSorter.sort();
             }
         }, Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED));
-        buttonsPane.add(WindowsUtils.setupButton("update", new ActionListener() {
+        buttonsPane.add(WindowsUtils.setupToggleButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 forumsRowFilter.setUnread(!forumsRowFilter.isUnread());
                 forumsRowSorter.sort();
@@ -132,8 +135,6 @@ public class ForumsListView extends JPanel implements IView {
         // TODO: implement
 
         try {
-            IStorage storage = ServiceFactory.getInstance().getStorage();
-
             final int[] allForums = storage.getForumAH().getAllForumIds();
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
@@ -157,16 +158,29 @@ public class ForumsListView extends JPanel implements IView {
         forumsModel.updateForums(ids);
     }
 
-    private JPopupMenu createMenu(Forum f) {
-        JPopupMenu m = new JPopupMenu(f.getForumName());
+    private JPopupMenu createMenu(final Forum forum) {
+        JPopupMenu m = new JPopupMenu(forum.getForumName());
 
-        final boolean subscribed = f.isSubscribed();
-        final int forumId = f.getForumId();
+        final boolean subscribed = forum.isSubscribed();
+        final int forumId = forum.getForumId();
 
-        JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.VIEW_FORUMS_MENU_SUBSCRIBE.getMessage(), subscribed);
-        mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
+        m.add(new AbstractAction(Messages.VIEW_FORUMS_MENU_OPEN.getMessage()) {
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.openForumTab(forum);
+            }
+        });
+        m.addSeparator();
 
-        m.add(mi);
+        m.add(new SetForumReadMenuItem(Messages.VIEW_FORUMS_MENU_SET_READ_ALL, forumId, true));
+        m.add(new SetForumReadMenuItem(Messages.VIEW_FORUMS_MENU_SET_UNREAD_ALL, forumId, false));
+
+        m.addSeparator();
+
+        {
+            JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.VIEW_FORUMS_MENU_SUBSCRIBE.getMessage(), subscribed);
+            mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
+            m.add(mi);
+        }
 
         return m;
     }
@@ -181,18 +195,13 @@ public class ForumsListView extends JPanel implements IView {
         }
 
         public void actionPerformed(ActionEvent e) {
-            IExecutor executor = ServiceFactory.getInstance().getExecutor();
             executor.execute(new Runnable() {
                 public void run() {
-                    IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
+                    IForumAH fah = storage.getForumAH();
                     try {
                         fah.setSubscribeForum(forumId, !subscribed);
 
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                forumsModel.reloadInfo(forumId);
-                            }
-                        });
+                        forumsModel.reloadInfo(forumId);
                     } catch (StorageException e1) {
                         log.error("Can not update forum info. [id:" + forumId + "].", e1);
                     }
@@ -214,4 +223,27 @@ public class ForumsListView extends JPanel implements IView {
             }));
         }
     }
+
+    private class SetForumReadMenuItem extends JMenuItem {
+        public SetForumReadMenuItem(Messages text, final int forumId, final boolean readFlag) {
+            super(text.getMessage());
+            addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    executor.execute(new Runnable() {
+                        public void run() {
+                            IForumAH fah = storage.getForumAH();
+                            try {
+                                fah.setForumRead(forumId, readFlag);
+
+                                forumsModel.reloadInfo(forumId);
+                            } catch (StorageException e1) {
+                                log.error("Can not update forum info. [id:" + forumId + "].", e1);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
 }

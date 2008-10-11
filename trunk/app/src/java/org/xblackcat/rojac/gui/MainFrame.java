@@ -9,7 +9,6 @@ import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.frame.message.MessagePane;
-import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.gui.frame.progress.ITask;
 import org.xblackcat.rojac.gui.frame.progress.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.frame.thread.ForumThreadsView;
@@ -30,8 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
-
-import gnu.trove.TIntHashSet;
 
 /**
  * Date: 23 груд 2007
@@ -73,13 +70,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     public void loadData() {
-        // For testing
-        ThreadDoubleView $ = new ThreadDoubleView(new ForumThreadsView(), new MessagePane(), true);
-        threads.addTab("Test", $);
-//        $.viewItem(2483908);// Biggest message
-//        $.viewItem(2484167);
-//        $.viewItem(2483915);
-//        $.viewItem(33); // The humour forum
     }
 
     private void initialize() {

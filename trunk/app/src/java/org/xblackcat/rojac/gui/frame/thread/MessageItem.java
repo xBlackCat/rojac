@@ -26,6 +26,7 @@ public class MessageItem {
     // Real data.
     private Message message;
     private String parsedText;
+    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     public MessageItem(MessageItem parent, int messageId) {
         this.parent = parent;
@@ -66,10 +67,9 @@ public class MessageItem {
             // Nothing to do
             return;
         }
-        IStorage s = ServiceFactory.getInstance().getStorage();
 
         try {
-            m = s.getMessageAH().getMessageById(messageId);
+            m = storage.getMessageAH().getMessageById(messageId);
         } catch (StorageException e) {
             log.error("Can not load message with id = " + messageId, e);
             return;
@@ -89,10 +89,9 @@ public class MessageItem {
             }
         }
         int [] c;
-        IStorage s = ServiceFactory.getInstance().getStorage();
 
         try {
-            c = s.getMessageAH().getMessageIdsByParentId(messageId);
+            c = storage.getMessageAH().getMessageIdsByParentId(messageId);
         } catch (StorageException e) {
             log.error("Can not load message children for id = " + messageId, e);
             return;

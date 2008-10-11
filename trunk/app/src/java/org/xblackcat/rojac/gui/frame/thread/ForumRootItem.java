@@ -3,8 +3,6 @@ package org.xblackcat.rojac.gui.frame.thread;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
@@ -31,10 +29,9 @@ public class ForumRootItem extends MessageItem {
             // Nothing to do
             return;
         }
-        IStorage s = ServiceFactory.getInstance().getStorage();
 
         try {
-            f = s.getForumAH().getForumById(messageId);
+            f = storage.getForumAH().getForumById(messageId);
         } catch (StorageException e) {
             log.error("Can not load forum info with id = " + messageId, e);
             return;
@@ -55,10 +52,9 @@ public class ForumRootItem extends MessageItem {
             }
         }
         int [] c;
-        IStorage s = ServiceFactory.getInstance().getStorage();
 
         try {
-            c = s.getMessageAH().getTopicMessageIdsByForumId(messageId);
+            c = storage.getMessageAH().getTopicMessageIdsByForumId(messageId);
         } catch (StorageException e) {
             log.error("Can not load topics for forum with id = " + messageId, e);
             return;
