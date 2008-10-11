@@ -11,5 +11,5 @@ import javax.swing.*;
 public interface IView extends IConfigurable {
     JComponent getComponent();
 
-    void updateData(int[] ids);
+    void updateData(int... ids);
 }

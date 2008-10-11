@@ -154,7 +154,7 @@ public class ForumsListView extends JPanel implements IView {
         return this;
     }
 
-    public void updateData(int[] ids) {
+    public void updateData(int... ids) {
         forumsModel.updateForums(ids);
     }
 
