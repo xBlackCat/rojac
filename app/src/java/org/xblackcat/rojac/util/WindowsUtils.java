@@ -129,7 +129,11 @@ public class WindowsUtils {
         return toggleButton;
     }
 
-    public static JButton setupButton(String buttonName, ActionListener action, Messages mes) {
+    public static JButton setupButton(String buttonName, ActionListener action, Messages tooltip) {
+        return setupButton(buttonName, action, tooltip.getMessage());
+    }
+
+    public static JButton setupButton(String buttonName, ActionListener action, String tooltip) {
         String imageSet = BUTTON_IMAGES_PREFIX + buttonName + '/';
         JButton button = new JButton();
         button.setIcon(ResourceUtils.loadImageIcon(imageSet + "enabled.png"));
@@ -146,7 +150,7 @@ public class WindowsUtils {
         button.setDisabledIcon(ResourceUtils.loadImageIcon(imageSet + "disabled.png"));
         button.addActionListener(action);
         button.setOpaque(false);
-        button.setToolTipText(mes.getMessage());
+        button.setToolTipText(tooltip);
         return button;
     }
 }

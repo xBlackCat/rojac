@@ -27,6 +27,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -184,9 +186,12 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         }
 
         ThreadDoubleView $ = new ThreadDoubleView(new ForumThreadsView(), new MessagePane(), false);
-        threads.addTab(f.getForumName(), $);
-
         openedForums.put(f.getForumId(), $);
+        
+        threads.addTab(f.getForumName(), $);
+        int idx = threads.indexOfComponent($);
+        threads.setTabComponentAt(idx, new TabHeader(f));
+
         $.viewItem(f.getForumId());
     }
 
@@ -196,5 +201,56 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         SwingUtility.center(tr, this);
         tr.setVisible(true);
         tr.startTask();
+    }
+
+    private class TabHeader extends JPanel {
+        private TabHeader(Forum f) {
+            super();
+            setLayout(new FlowLayout(FlowLayout.LEFT));
+            setOpaque(false);
+            final int fId = f.getForumId();
+
+            JLabel l = new JLabel() {
+                public String getText() {
+                    int i = threads.indexOfTabComponent(TabHeader.this);
+                    if (i != -1) {
+                        return threads.getTitleAt(i);
+                    }
+                    return null;
+                }
+            };
+
+            l.setToolTipText(f.getForumName());
+            l.setMaximumSize(new Dimension(100, 100));
+            l.setBorder(null);
+
+            setBorder(null);
+
+            add(l);
+
+            ActionListener al = new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int idx = threads.indexOfTabComponent(TabHeader.this);
+                    if (idx != -1) {
+                        openedForums.remove(fId);
+
+                        threads.remove(idx);
+                    }
+                }
+            };
+            JButton b = WindowsUtils.setupButton("tabclose", al, f.getForumName());
+
+            add(b);
+
+            l.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int idx = threads.indexOfTabComponent(TabHeader.this);
+                    if (idx != -1) {
+                        threads.setSelectedIndex(idx);
+                    }
+                }
+            });
+        }
     }
 }

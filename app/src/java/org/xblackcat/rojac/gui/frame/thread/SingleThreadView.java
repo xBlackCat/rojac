@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
  * @author xBlackCat
  */
 
-public class SingleThreadView extends TreeThreadView {
+public class SingleThreadView extends ATreeThreadView {
     private static final Log log = LogFactory.getLog(SingleThreadView.class);
 
     protected AThreadTreeModel createModel() {

@@ -19,7 +19,7 @@ public class ForumCellRenderer extends DefaultTableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        
+
         ForumData fd = (ForumData) value;
 
         Forum f = fd.getForum();
@@ -44,6 +44,14 @@ public class ForumCellRenderer extends DefaultTableCellRenderer {
                 text.append(fs.getTotalMessages());
                 text.append(")");
             }
+
+            Color bgc;
+            if (isNotSubcribed) {
+                bgc = new Color(0xFFFF7F);
+            } else {
+                bgc = new Color(0x7FFF7F);
+            }
+            setBackground(bgc);
         } else {
             text.append("<i>Loading info for forum: ");
             text.append(fd.getForumId());
