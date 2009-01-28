@@ -32,6 +32,8 @@ class MarkRenderer extends DefaultListCellRenderer {
                 list.setToolTipText(mark.toString());
             }
         }
+
+        setHorizontalAlignment(SwingConstants.CENTER);
         return this;
     }
 }
