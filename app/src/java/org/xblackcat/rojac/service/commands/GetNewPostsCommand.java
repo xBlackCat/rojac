@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.synchronizer;
+package org.xblackcat.rojac.service.commands;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;

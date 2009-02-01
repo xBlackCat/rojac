@@ -7,6 +7,7 @@ import org.flexdock.docking.DockingManager;
 import org.flexdock.util.SwingUtility;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.frame.message.MessagePane;
@@ -18,14 +19,14 @@ import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.commands.AffectedPosts;
+import org.xblackcat.rojac.service.commands.GetNewPostsCommand;
+import org.xblackcat.rojac.service.commands.IResultHandler;
+import org.xblackcat.rojac.service.commands.LoadExtraMessagesCommand;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.service.synchronizer.AffectedPosts;
-import org.xblackcat.rojac.service.synchronizer.GetNewPostsCommand;
-import org.xblackcat.rojac.service.synchronizer.IResultHandler;
-import org.xblackcat.rojac.service.synchronizer.LoadExtraMessagesCommand;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -59,7 +60,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private Map<Integer, Component> openedForums = new HashMap<Integer, Component>();
     private final IOptionsService os;
     protected IResultHandler<AffectedPosts> changeHandler = new IResultHandler<AffectedPosts>() {
-        public void process(AffectedPosts results) throws Exception {
+        public void process(AffectedPosts results) throws RojacException {
             forumsListView.updateData(results.getAffectedForumIds());
             favoritesView.updateData(results.getAffectedMessageIds());
         }

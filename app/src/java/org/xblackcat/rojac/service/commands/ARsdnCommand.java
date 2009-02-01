@@ -1,23 +1,22 @@
-package org.xblackcat.rojac.service.synchronizer;
+package org.xblackcat.rojac.service.commands;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionInfo;
 import org.xblackcat.rojac.data.VersionType;
-import org.xblackcat.rojac.gui.frame.progress.ITask;
 import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
+import org.xblackcat.rojac.gui.frame.progress.ITask;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusService;
-import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.IVersionAH;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.RojacException;
 
 /**
  * Date: 14 вер 2008
@@ -27,6 +26,7 @@ import org.xblackcat.rojac.RojacException;
 
 public abstract class ARsdnCommand<T> implements ITask, ICommand {
     private static final Log log = LogFactory.getLog(ARsdnCommand.class);
+    private boolean executed = false;
 
     protected IJanusService janusService;
     protected final IStorage storage;
@@ -41,7 +41,15 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
         optionsService = sf.getOptionsService();
     }
 
-    public void doTask(IProgressTracker trac) throws Exception {
+    public void doTask(IProgressTracker trac) throws RojacException {
+        synchronized (this) {
+            if (!executed) {
+                executed = true;
+            } else {
+                throw new RsdnProcessorException("Can not execute command twice: " + this.getClass().getSimpleName());
+            }
+        }
+        
         String username = optionsService.getProperty(Property.RSDN_USER_NAME);
         Password password = optionsService.getProperty(Property.RSDN_USER_PASSWORD);
 

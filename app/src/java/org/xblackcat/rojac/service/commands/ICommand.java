@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.synchronizer;
+package org.xblackcat.rojac.service.commands;
 
 /**
  * Date: 14 вер 2008

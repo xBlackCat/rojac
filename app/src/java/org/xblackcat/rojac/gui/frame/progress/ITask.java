@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.frame.progress;
 
+import org.xblackcat.rojac.RojacException;
+
 /**
  * Date: 31 ρεπο 2008
  *
@@ -7,5 +9,5 @@ package org.xblackcat.rojac.gui.frame.progress;
  */
 
 public interface ITask {
-    void doTask(IProgressTracker trac) throws Exception;
+    void doTask(IProgressTracker trac) throws RojacException;
 }
