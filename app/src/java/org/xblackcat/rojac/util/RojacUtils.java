@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
  * @author xBlackCat
  */
 
-public class RojacUtils {
+public final class RojacUtils {
     private RojacUtils() {
     }
 

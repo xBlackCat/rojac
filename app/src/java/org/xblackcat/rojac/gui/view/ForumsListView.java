@@ -107,7 +107,7 @@ public class ForumsListView extends JPanel implements IView {
 
         JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 2));
 
-        buttonsPane.add(WindowsUtils.setupButton("update", new UpdateActionListener(), Messages.VIEW_FORUMS_BUTTON_UPDATE));
+        buttonsPane.add(WindowsUtils.setupImageButton("update", new UpdateActionListener(), Messages.VIEW_FORUMS_BUTTON_UPDATE));
         buttonsPane.add(WindowsUtils.setupToggleButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 forumsRowFilter.setNotEmpty(!forumsRowFilter.isNotEmpty());

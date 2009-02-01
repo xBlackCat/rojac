@@ -8,16 +8,16 @@ import org.apache.commons.lang.ArrayUtils;
  * @author xBlackCat
  */
 
-public class NewPostsResult {
+public class AffectedPosts {
     private final int[] affectedMessageIds;
     private final int[] affectedForumIds;
 
-    public NewPostsResult(int[] affectedMessageIds, int[] affectedForumIds) {
+    public AffectedPosts(int[] affectedMessageIds, int[] affectedForumIds) {
         this.affectedMessageIds = affectedMessageIds;
         this.affectedForumIds = affectedForumIds;
     }
 
-    public NewPostsResult() {
+    public AffectedPosts() {
         this(ArrayUtils.EMPTY_INT_ARRAY, ArrayUtils.EMPTY_INT_ARRAY);
     }
 

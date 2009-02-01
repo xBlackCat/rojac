@@ -3,17 +3,13 @@ package org.xblackcat.rojac.service.synchronizer;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
-import org.xblackcat.rojac.service.storage.IMessageAH;
-import org.xblackcat.rojac.service.storage.IModerateAH;
-import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.RojacException;
-import gnu.trove.TIntHashSet;
 
 /**
  * Date: 26 вер 2008
@@ -21,30 +17,25 @@ import gnu.trove.TIntHashSet;
  * @author xBlackCat
  */
 
-public class LoadExtraMessagesCommand extends ARsdnCommand<int[]> {
+public class LoadExtraMessagesCommand extends LoadPostsCommand<AffectedPosts> {
     private static final Log log = LogFactory.getLog(LoadExtraMessagesCommand.class);
 
-    private final int[] messageIds;
-
-    public LoadExtraMessagesCommand(IResultHandler<int[]> iResultHandler, int[] messageIds) {
+    public LoadExtraMessagesCommand(IResultHandler<AffectedPosts> iResultHandler) {
         super(iResultHandler);
-        this.messageIds = messageIds;
     }
 
-    public int[] process(IProgressTracker trac) throws RojacException {
+    public AffectedPosts process(IProgressTracker trac) throws RojacException {
         trac.addLodMessage("Synchronization started.");
 
-        return loadExtraMessage(messageIds);
-    }
-
-    protected int[] loadExtraMessage(int[] ids) throws SynchronizationException {
-        if (ArrayUtils.isEmpty(ids)) {
-            return ArrayUtils.EMPTY_INT_ARRAY;
+        int[] messageIds = storage.getMiscAH().getExtraMessages();
+        
+        if (ArrayUtils.isEmpty(messageIds)) {
+            return new AffectedPosts();
         }
 
         TopicMessages extra;
         try {
-            extra = janusService.getTopicByMessage(ids);
+            extra = janusService.getTopicByMessage(messageIds);
         } catch (JanusServiceException e) {
             throw new SynchronizationException("Can not load extra messages.", e);
         }
@@ -52,23 +43,11 @@ public class LoadExtraMessagesCommand extends ARsdnCommand<int[]> {
         Moderate[] moderates = extra.getModerates();
         Rating[] ratings = extra.getRatings();
 
-        TIntHashSet processedMessages = new TIntHashSet();
-        IMessageAH ah = storage.getMessageAH();
-        try {
-            for (Message m : messages) {
-                if (ah.isExist(m.getMessageId())) {
-                    ah.updateMessage(m);
-                } else {
-                    ah.storeMessage(m);
-                }
-                processedMessages.add(m.getMessageId());
-            }
-        } catch (StorageException e) {
-            throw new SynchronizationException("Can not store extra messages into storage", e);
-        }
+        processedMessages.clear();
+        affectedForums.clear();
 
-        IModerateAH moderateAH = storage.getModerateAH();
+        storeNewPosts(messages, moderates, ratings);
 
-        return processedMessages.toArray();
+        return new AffectedPosts(processedMessages.toArray(), affectedForums.toArray());
     }
 }

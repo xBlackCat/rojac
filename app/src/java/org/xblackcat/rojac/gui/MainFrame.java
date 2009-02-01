@@ -8,6 +8,7 @@ import org.flexdock.util.SwingUtility;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.frame.message.MessagePane;
 import org.xblackcat.rojac.gui.frame.progress.ITask;
 import org.xblackcat.rojac.gui.frame.progress.ProgressTrackerDialog;
@@ -16,11 +17,15 @@ import org.xblackcat.rojac.gui.frame.thread.ThreadDoubleView;
 import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.IMiscAH;
+import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.synchronizer.AffectedPosts;
 import org.xblackcat.rojac.service.synchronizer.GetNewPostsCommand;
 import org.xblackcat.rojac.service.synchronizer.IResultHandler;
-import org.xblackcat.rojac.service.synchronizer.NewPostsResult;
+import org.xblackcat.rojac.service.synchronizer.LoadExtraMessagesCommand;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -53,6 +58,12 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     // Data tracking
     private Map<Integer, Component> openedForums = new HashMap<Integer, Component>();
     private final IOptionsService os;
+    protected IResultHandler<AffectedPosts> changeHandler = new IResultHandler<AffectedPosts>() {
+        public void process(AffectedPosts results) throws Exception {
+            forumsListView.updateData(results.getAffectedForumIds());
+            favoritesView.updateData(results.getAffectedMessageIds());
+        }
+    };
 
     public MainFrame(IOptionsService optionsService) {
         super(Messages.MAIN_WINDOW_TITLE.getMessage());
@@ -122,16 +133,29 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         p.add(threads);
 
         JPanel topPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPane.add(WindowsUtils.setupButton("update", new ActionListener() {
+        topPane.add(WindowsUtils.setupImageButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showProgressDialog(new GetNewPostsCommand(new IResultHandler<NewPostsResult>() {
-                    public void process(NewPostsResult results) throws Exception {
-                        forumsListView.updateData(results.getAffectedForumIds());
-                        favoritesView.updateData(results.getAffectedMessageIds());
-                    }
-                }));
+                showProgressDialog(new GetNewPostsCommand(changeHandler));
             }
-        }, Messages.VIEW_FORUMS_BUTTON_UPDATE));
+        }, Messages.MAINFRAME_BUTTON_UPDATE));
+        topPane.add(WindowsUtils.setupImageButton("update", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                LoadMessageDialog lmd = new LoadMessageDialog(MainFrame.this);
+                Integer messageId = lmd.readMessageId();
+                if (messageId != null) {
+                    IMiscAH s = ServiceFactory.getInstance().getStorage().getMiscAH();
+
+                    try {
+                        s.storeExtraMessage(messageId);
+                        if (lmd.isLoadAtOnce()) {
+                            showProgressDialog(new LoadExtraMessagesCommand(changeHandler));
+                        }
+                    } catch (StorageException e1) {
+                        log.error("Can not store extra message id", e1);
+                    }
+                }
+            }
+        }, Messages.MAINFRAME_BUTTON_LOADMESSAGE));
 
         p.add(topPane, BorderLayout.NORTH);
 
@@ -187,7 +211,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
         ThreadDoubleView $ = new ThreadDoubleView(new ForumThreadsView(), new MessagePane(), false);
         openedForums.put(f.getForumId(), $);
-        
+
         threads.addTab(f.getForumName(), $);
         int idx = threads.indexOfComponent($);
         threads.setTabComponentAt(idx, new TabHeader(f));
@@ -205,7 +229,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
     public void editMessage(Integer forumId, Integer messageId) {
     }
-    
+
     private class TabHeader extends JPanel {
         private TabHeader(Forum f) {
             super();
@@ -241,7 +265,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                     }
                 }
             };
-            JButton b = WindowsUtils.setupButton("tabclose", al, f.getForumName());
+            JButton b = WindowsUtils.setupImageButton("tabclose", al, f.getForumName());
 
             add(b);
 
