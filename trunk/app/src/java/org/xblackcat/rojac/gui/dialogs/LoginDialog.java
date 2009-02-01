@@ -1,7 +1,8 @@
-package org.xblackcat.rojac.gui;
+package org.xblackcat.rojac.gui.dialogs;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Password;
@@ -12,6 +13,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Date: 12 лип 2008
@@ -41,19 +43,19 @@ public class LoginDialog extends JDialog {
 
         JPanel buttons = new JPanel(new GridLayout(1, 0, 10, 5));
 
-        JButton okButton = new JButton(new AbstractAction(Messages.BUTTON_OK.getMessage()) {
+        JButton okButton = WindowsUtils.setupButton(Messages.BUTTON_OK, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 canceled = false;
                 setVisible(false);
             }
-        });
+        }, Messages.BUTTON_OK);
         buttons.add(okButton);
-        buttons.add(new JButton(new AbstractAction(Messages.BUTTON_CANCEL.getMessage()) {
+        buttons.add(WindowsUtils.setupButton(Messages.BUTTON_CANCEL, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 canceled = true;
                 setVisible(false);
             }
-        }));
+        }, Messages.BUTTON_CANCEL));
 
         cp.add(WindowsUtils.coverComponent(buttons, FlowLayout.CENTER), BorderLayout.SOUTH);
 

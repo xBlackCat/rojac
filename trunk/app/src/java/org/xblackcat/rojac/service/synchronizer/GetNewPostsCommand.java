@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.service.synchronizer;
 
-import gnu.trove.TIntHashSet;
-import gnu.trove.TIntLongHashMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,11 +12,7 @@ import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IMiscAH;
-import org.xblackcat.rojac.service.storage.IModerateAH;
-import org.xblackcat.rojac.service.storage.IRatingAH;
-import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
  * Date: 26 вер 2008
@@ -26,14 +20,14 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class GetNewPostsCommand extends ARsdnCommand<NewPostsResult> {
+public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
     private static final Log log = LogFactory.getLog(GetNewPostsCommand.class);
 
-    public GetNewPostsCommand(IResultHandler<NewPostsResult> iResultHandler) {
+    public GetNewPostsCommand(IResultHandler<AffectedPosts> iResultHandler) {
         super(iResultHandler);
     }
 
-    public NewPostsResult process(IProgressTracker trac) throws RojacException {
+    public AffectedPosts process(IProgressTracker trac) throws RojacException {
         trac.addLodMessage("Synchronization started.");
 
         int[] forumIds = storage.getForumAH().getSubscribedForumIds();
@@ -41,7 +35,7 @@ public class GetNewPostsCommand extends ARsdnCommand<NewPostsResult> {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
             }
-            return new NewPostsResult();
+            return new AffectedPosts();
         }
 
         if (log.isDebugEnabled()) {
@@ -54,12 +48,8 @@ public class GetNewPostsCommand extends ARsdnCommand<NewPostsResult> {
         Version moderatesVersion = getVersion(VersionType.MODERATE_ROW_VERSION);
         Version ratingsVersion = getVersion(VersionType.RATING_ROW_VERSION);
 
-        IRatingAH rAH = storage.getRatingAH();
-        IMessageAH mAH = storage.getMessageAH();
-        IModerateAH modAH = storage.getModerateAH();
-
-        TIntHashSet processedMessages = new TIntHashSet();
-        TIntHashSet affectedForums = new TIntHashSet();
+        processedMessages.clear();
+        affectedForums.clear();
 
         NewData data;
         int[] brokenTopics = mAH.getBrokenTopicIds();
@@ -71,8 +61,10 @@ public class GetNewPostsCommand extends ARsdnCommand<NewPostsResult> {
             }
 
             // Broken topic ids
-            TIntHashSet topics = new TIntHashSet(brokenTopics);
+            topics.clear();
+            topics.addAll(brokenTopics);
 
+            Message[] messages;
             do {
                 if (ratingsVersion.isEmpty()) {
                     ratingsVersion = moderatesVersion;
@@ -91,33 +83,11 @@ public class GetNewPostsCommand extends ARsdnCommand<NewPostsResult> {
 
                 brokenTopics = ArrayUtils.EMPTY_INT_ARRAY;
 
-                for (Message mes : data.getMessages()) {
-                    if (mAH.isExist(mes.getMessageId())) {
-                        mAH.updateMessage(mes);
-                    } else {
-                        mAH.storeMessage(mes);
-                    }
+                messages = data.getMessages();
+                Moderate[] moderates = data.getModerates();
+                Rating[] ratings = data.getRatings();
 
-                    int topicId = mes.getTopicId();
-                    if (topicId != 0) {
-                        topics.add(topicId);
-                    }
-
-                    processedMessages.add(mes.getMessageId());
-                    affectedForums.add(mes.getForumId());
-                }
-
-                processedMessages.addAll(updateParentsDate(processedMessages.toArray()));
-
-                for (Moderate mod : data.getModerates()) {
-                    modAH.storeModerateInfo(mod);
-                    processedMessages.add(mod.getMessageId());
-                    affectedForums.add(mod.getForumId());
-                }
-                for (Rating r : data.getRatings()) {
-                    rAH.storeRating(r);
-                    processedMessages.add(r.getMessageId());
-                }
+                storeNewPosts(messages, moderates, ratings);
 
                 ratingsVersion = data.getRatingRowVersion();
                 messagesVersion = data.getForumRowVersion();
@@ -127,7 +97,7 @@ public class GetNewPostsCommand extends ARsdnCommand<NewPostsResult> {
                 setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
                 setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
 
-            } while (data.getMessages().length > 0);
+            } while (messages.length > 0);
 
             // remove existing ids from downloaded topic ids.
             int[] messageIds = topics.toArray();
@@ -150,52 +120,7 @@ public class GetNewPostsCommand extends ARsdnCommand<NewPostsResult> {
             log.info("Synchronization complete.");
         }
 
-        return new NewPostsResult(processedMessages.toArray(), affectedForums.toArray());
+        return new AffectedPosts(processedMessages.toArray(), affectedForums.toArray());
     }
 
-    /**
-     * Updates lastChildDate for parents of current messages.
-     *
-     * @param parentsUpdates trove hash map with pairs of &lt;messageId, date&gt;
-     *
-     * @return an array of affected messages.
-     */
-    private int[] updateParentsDate(int[] messageIds) throws StorageException{
-        if (ArrayUtils.isEmpty(messageIds)) {
-            return ArrayUtils.EMPTY_INT_ARRAY;
-        }
-
-        TIntHashSet updatedParents = new TIntHashSet();
-        TIntLongHashMap parentDates = new TIntLongHashMap();
-
-        IMessageAH mah = storage.getMessageAH();
-        for (int messageId : messageIds) {
-            Message m = mah.getMessageById(messageId);
-
-            if (m == null) {
-                // Got broken topic - skip
-                continue;
-            }
-
-            int parentId = m.getParentId();
-            if (parentId > 0) {
-                long recentDate = m.getResentChildDate();
-
-                updatedParents.add(parentId);
-
-                if (!parentDates.containsKey(parentId) ||
-                        parentDates.get(parentId) < recentDate) {
-                    parentDates.put(parentId, recentDate);
-                }
-            }
-        }
-
-        for (int messageId : parentDates.keys()) {
-            mah.updateMessageRecentDate(messageId, parentDates.get(messageId));
-        }
-
-        updatedParents.addAll(updateParentsDate(updatedParents.toArray()));
-
-        return updatedParents.toArray();
-    }
 }

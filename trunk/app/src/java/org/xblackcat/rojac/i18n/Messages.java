@@ -26,7 +26,12 @@ public enum Messages {
 
     BUTTON_REPLY_TOOLTIP,
 
-    // Main window views texts
+
+    // Main window view
+    MAINFRAME_BUTTON_UPDATE,
+    MAINFRAME_BUTTON_LOADMESSAGE,
+
+    // Forum list view
     VIEW_FORUMS_TITLE,
     VIEW_FORUMS_TAB_TEXT,
     VIEW_FORUMS_BUTTON_UPDATE,
@@ -39,10 +44,15 @@ public enum Messages {
     VIEW_FORUMS_MENU_SET_READ_ALL,
     VIEW_FORUMS_MENU_SET_UNREAD_ALL,
 
+    //
     VIEW_FAVORITES_TITLE,
     VIEW_FAVORITES_TAB_TEXT,
 
+    //
     // Dialog texts
+    //
+
+    // Set mark related dialog texts
     /**
      * Parameters are: 1. Mark description
      */
@@ -55,6 +65,11 @@ public enum Messages {
     DIALOG_LOGIN_USERNAME,
     DIALOG_LOGIN_PASSWORD,
     DIALOG_LOGIN_SAVE_PASSWORD,
+
+    // Load xtra messages dialog texts
+    DIALOG_LOADMESSAGE_TITLE,
+    DIALOG_LOADMESSAGE_LABEL,
+    DIALOG_LOADMESSAGE_LOADATONCE,
 
     /**
      * Parameters are: 1. Mark description

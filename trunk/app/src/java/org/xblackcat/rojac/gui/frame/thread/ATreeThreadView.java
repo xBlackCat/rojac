@@ -8,6 +8,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.ClipboardUtils;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -16,8 +17,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -175,10 +174,7 @@ public abstract class ATreeThreadView extends AMessageView {
             }
 
             public void actionPerformed(ActionEvent e) {
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-
-                final StringSelection contents = new StringSelection(url);
-                clipboard.setContents(contents, contents);
+                ClipboardUtils.copyToClipboard(url);
             }
         }
     }

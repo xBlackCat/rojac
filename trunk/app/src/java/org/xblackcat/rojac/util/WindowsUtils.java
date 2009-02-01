@@ -16,7 +16,7 @@ import java.awt.event.ActionListener;
  * @author xBlackCat
  */
 
-public class WindowsUtils {
+public final class WindowsUtils {
     private static final Log log = LogFactory.getLog(WindowsUtils.class);
 
     private static final String BUTTON_IMAGES_PREFIX = "/images/button/";
@@ -129,11 +129,28 @@ public class WindowsUtils {
         return toggleButton;
     }
 
-    public static JButton setupButton(String buttonName, ActionListener action, Messages tooltip) {
-        return setupButton(buttonName, action, tooltip.getMessage());
+    public static JButton setupButton(Messages text, ActionListener action, Messages tooltip) {
+        JButton button = new JButton();
+        button.setIcon(null);
+        button.setHorizontalAlignment(SwingConstants.CENTER);
+        button.setBackground(Color.white);
+        button.setFocusPainted(false);
+        button.setRolloverEnabled(true);
+        button.setSelectedIcon(null);
+        button.setRolloverIcon(null);
+        button.setRolloverSelectedIcon(null);
+        button.setDisabledIcon(null);
+        button.addActionListener(action);
+        button.setToolTipText(tooltip.getMessage());
+        button.setText(text.getMessage());
+        return button;
     }
 
-    public static JButton setupButton(String buttonName, ActionListener action, String tooltip) {
+    public static JButton setupImageButton(String buttonName, ActionListener action, Messages tooltip) {
+        return setupImageButton(buttonName, action, tooltip.getMessage());
+    }
+
+    public static JButton setupImageButton(String buttonName, ActionListener action, String tooltip) {
         String imageSet = BUTTON_IMAGES_PREFIX + buttonName + '/';
         JButton button = new JButton();
         button.setIcon(ResourceUtils.loadImageIcon(imageSet + "enabled.png"));
