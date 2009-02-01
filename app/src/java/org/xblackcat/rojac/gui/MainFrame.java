@@ -203,6 +203,9 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         tr.startTask();
     }
 
+    public void editMessage(Integer forumId, Integer messageId) {
+    }
+    
     private class TabHeader extends JPanel {
         private TabHeader(Forum f) {
             super();
