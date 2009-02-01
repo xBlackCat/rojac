@@ -1,7 +1,8 @@
-package org.xblackcat.rojac.service.synchronizer;
+package org.xblackcat.rojac.service.commands;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
@@ -11,7 +12,6 @@ import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.RojacException;
 
 /**
  * Date: 27 вер 2008
@@ -59,9 +59,9 @@ public class LoadUsersCommand extends ARsdnCommand<Boolean> {
                 log.info(totalUsersNumber + " user(s) was loaded.");
             }
         } catch (StorageException e) {
-            throw new SynchronizationException("Can not get the local users version", e);
+            throw new RsdnProcessorException("Can not get the local users version", e);
         } catch (JanusServiceException e) {
-            throw new SynchronizationException("Can not get the users list from the RSDN server.", e);
+            throw new RsdnProcessorException("Can not get the users list from the RSDN server.", e);
         }
         return true;
     }

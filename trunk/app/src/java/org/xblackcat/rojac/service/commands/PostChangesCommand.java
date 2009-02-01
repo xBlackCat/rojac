@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.synchronizer;
+package org.xblackcat.rojac.service.commands;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
@@ -44,7 +44,7 @@ public class PostChangesCommand extends ARsdnCommand<Boolean> {
                 newMessages = nmeAH.getAllNewMessages();
                 newModerates = nmoAH.getAllNewModerates();
             } catch (StorageException e) {
-                throw new SynchronizationException("Can not load your changes.", e);
+                throw new RsdnProcessorException("Can not load your changes.", e);
             }
 
             if (ArrayUtils.isEmpty(newRatings) &&
@@ -62,7 +62,7 @@ public class PostChangesCommand extends ARsdnCommand<Boolean> {
                 janusService.postChanges(newMessages, newRatings, newModerates);
                 postInfo = janusService.commitChanges();
             } catch (JanusServiceException e) {
-                throw new SynchronizationException("Can not post your changes to the RSDN.", e);
+                throw new RsdnProcessorException("Can not post your changes to the RSDN.", e);
             }
 
             try {
@@ -81,9 +81,9 @@ public class PostChangesCommand extends ARsdnCommand<Boolean> {
                     }
                 }
             } catch (StorageException e) {
-                throw new SynchronizationException("Unable to process the commit response.", e);
+                throw new RsdnProcessorException("Unable to process the commit response.", e);
             }
-        } catch (SynchronizationException e) {
+        } catch (RsdnProcessorException e) {
             // Log the exception to console.
             trac.postException(e);
             return false;

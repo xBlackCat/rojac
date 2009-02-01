@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.frame.progress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
 
@@ -56,8 +57,11 @@ public class ProgressTrackerDialog extends JDialog {
 
             try {
                 task.doTask(tracker);
-            } catch (Exception e) {
+            } catch (RojacException e) {
                 log.error("Error in task", e);
+                tracker.postException(e);
+            } catch (RuntimeException e) {
+                log.error("Unexpected exception in task", e);
                 tracker.postException(e);
             }
 

@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.synchronizer;
+package org.xblackcat.rojac.service.commands;
 
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntLongHashMap;

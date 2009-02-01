@@ -1,5 +1,7 @@
-package org.xblackcat.rojac.service.synchronizer;
+package org.xblackcat.rojac.service.commands;
 
+import gnu.trove.TIntHashSet;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
@@ -9,8 +11,6 @@ import org.xblackcat.rojac.service.janus.data.ForumsList;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IForumGroupAH;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.RojacException;
-import gnu.trove.TIntHashSet;
 
 /**
  * Date: 14 вер 2008
@@ -35,7 +35,7 @@ public class GetForumListCommand extends ARsdnCommand<int[]> {
         try {
             forumsList = janusService.getForumsList(getVersion(VersionType.FORUM_ROW_VERSION));
         } catch (JanusServiceException e) {
-            throw new SynchronizationException("Can not obtain forums list", e);
+            throw new RsdnProcessorException("Can not obtain forums list", e);
         }
 
         IForumAH fAH = storage.getForumAH();
@@ -71,7 +71,7 @@ public class GetForumListCommand extends ARsdnCommand<int[]> {
             
             trac.addLodMessage("Done");
         } catch (StorageException e) {
-            throw new SynchronizationException("Can not update forum list", e);
+            throw new RsdnProcessorException("Can not update forum list", e);
         }
 
         return updatedForums.toArray();

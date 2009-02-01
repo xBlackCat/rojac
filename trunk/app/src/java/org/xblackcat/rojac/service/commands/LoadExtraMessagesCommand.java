@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.synchronizer;
+package org.xblackcat.rojac.service.commands;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
@@ -37,7 +37,7 @@ public class LoadExtraMessagesCommand extends LoadPostsCommand<AffectedPosts> {
         try {
             extra = janusService.getTopicByMessage(messageIds);
         } catch (JanusServiceException e) {
-            throw new SynchronizationException("Can not load extra messages.", e);
+            throw new RsdnProcessorException("Can not load extra messages.", e);
         }
         Message[] messages = extra.getMessages();
         Moderate[] moderates = extra.getModerates();

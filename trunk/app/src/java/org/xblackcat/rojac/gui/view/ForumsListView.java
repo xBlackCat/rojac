@@ -10,12 +10,12 @@ import org.xblackcat.rojac.gui.model.ForumTableModel;
 import org.xblackcat.rojac.gui.render.ForumCellRenderer;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.commands.GetForumListCommand;
+import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.service.synchronizer.GetForumListCommand;
-import org.xblackcat.rojac.service.synchronizer.IResultHandler;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
