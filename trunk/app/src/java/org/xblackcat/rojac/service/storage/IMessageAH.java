@@ -34,4 +34,6 @@ public interface IMessageAH extends AH {
     void updateMessageReadFlag(int messageId, boolean read) throws StorageException;
 
     boolean isExist(int messageId) throws StorageException;
+
+    int getParentIdByMessageId(int messageId) throws StorageException;
 }

@@ -111,6 +111,10 @@ final class DBMessageAH implements IMessageAH {
                 messageId);
     }
 
+    public int getParentIdByMessageId(int messageId) throws StorageException {
+        return helper.executeSingle(Converters.TO_INTEGER_CONVERTER, DataQuery.GET_PARENT_ID_FOR_MESSAGE_ID, messageId);
+    }
+
     public int[] getAllMessageIds() throws StorageException {
         return helper.getIds(DataQuery.GET_IDS_MESSAGE);
     }

@@ -91,6 +91,11 @@ final class CachedMessageAH implements IMessageAH, IPurgable {
         return messageAH.isExist(messageId);
     }
 
+    @Override
+    public int getParentIdByMessageId(int messageId) throws StorageException {
+        return messageAH.getParentIdByMessageId(messageId);
+    }
+
     public int[] getAllMessageIds() throws StorageException {
         return messageAH.getAllMessageIds();
     }

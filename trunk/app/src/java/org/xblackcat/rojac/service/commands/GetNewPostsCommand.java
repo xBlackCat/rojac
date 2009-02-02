@@ -12,7 +12,6 @@ import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IMiscAH;
 
 /**
  * Date: 26 вер 2008
@@ -107,14 +106,14 @@ public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
                 }
             }
 
-            IMiscAH eAH = storage.getMiscAH();
+            topics.addAll(miscAH.getExtraMessages());
 
-            topics.addAll(eAH.getExtraMessages());
-
-            eAH.clearExtraMessages();
+            miscAH.clearExtraMessages();
 
             brokenTopics = topics.toArray();
         } while (!ArrayUtils.isEmpty(brokenTopics));
+
+        postprocessingMessages();
 
         if (log.isInfoEnabled()) {
             log.info("Synchronization complete.");

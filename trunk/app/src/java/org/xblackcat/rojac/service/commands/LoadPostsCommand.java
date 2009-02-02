@@ -1,12 +1,13 @@
 package org.xblackcat.rojac.service.commands;
 
 import gnu.trove.TIntHashSet;
-import gnu.trove.TIntLongHashMap;
-import org.apache.commons.lang.ArrayUtils;
+import gnu.trove.TIntObjectHashMap;
+import gnu.trove.TIntObjectProcedure;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.IModerateAH;
 import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -25,34 +26,68 @@ public abstract class LoadPostsCommand<T extends AffectedPosts> extends ARsdnCom
     protected final IMessageAH mAH;
     protected final IModerateAH modAH;
 
+    private final TIntHashSet loadedMessages = new TIntHashSet();
+
+    protected final TIntObjectHashMap<Long> messageDates = new TIntObjectHashMap<Long>();
+    protected final TIntObjectProcedure<Long> updater = new TIntObjectProcedure<Long>() {
+        @Override
+        public boolean execute(int a, Long b) {
+            try {
+                mAH.updateMessageRecentDate(a, b);
+            } catch (StorageException e) {
+                log.warn("Can not update recent date for message [id=" + a + "]", e);
+            }
+            return true;
+        }
+    };
+    protected final IMiscAH miscAH;
+
     public LoadPostsCommand(IResultHandler<T> resultHandler) {
         super(resultHandler);
         modAH = storage.getModerateAH();
         mAH = storage.getMessageAH();
         rAH = storage.getRatingAH();
+        miscAH = storage.getMiscAH();
     }
 
     protected void storeNewPosts(Message[] messages, Moderate[] moderates, Rating[] ratings) throws StorageException {
         for (Message mes : messages) {
-            if (mAH.isExist(mes.getMessageId())) {
+            int mId = mes.getMessageId();
+            if (mAH.isExist(mId)) {
                 mAH.updateMessage(mes);
             } else {
                 mAH.storeMessage(mes);
             }
 
+            loadedMessages.add(mId);
+
+            long mesDate = mes.getMessageDate();
+            messageDates.put(mId, mesDate);
+
             int topicId = mes.getTopicId();
             if (topicId != 0) {
                 topics.add(topicId);
+
+
+                Long date;
+
+                // Update topic dates
+                addMessageDate(topicId, mesDate);
+
+                // Update parent dates
+                int parentId = mes.getParentId();
+                addMessageDate(parentId, mesDate);
+
+                processedMessages.add(parentId);
+                processedMessages.add(topicId);
             }
 
-            processedMessages.add(mes.getMessageId());
+            processedMessages.add(mId);
             int forumId = mes.getForumId();
             if (forumId > 0) {
                 affectedForums.add(forumId);
             }
         }
-
-//                processedMessages.addAll(updateParentsDate(processedMessages.toArray()));
 
         for (Moderate mod : moderates) {
             modAH.storeModerateInfo(mod);
@@ -68,49 +103,62 @@ public abstract class LoadPostsCommand<T extends AffectedPosts> extends ARsdnCom
         }
     }
 
+    protected final void postprocessingMessages() throws StorageException {
+        updateParentsDate(loadedMessages.toArray());
+
+        if (log.isDebugEnabled()) {
+            log.debug("There are " + messageDates.size() + " messages to process");
+        }
+
+        // Store new dates
+        messageDates.forEachEntry(updater);
+    }
+
+    private void addMessageDate(int parentId, long mesDate) {
+        Long date;
+        date = messageDates.get(parentId);
+        if (date == null) {
+            messageDates.put(parentId, mesDate);
+        } else {
+            if (mesDate > date) {
+                messageDates.put(parentId, mesDate);
+            }
+        }
+    }
+
     /**
-     * Updates lastChildDate for parents of current messages.
+     * Updates resentChildDate field for parents of a new messages.
      *
      * @param parentsUpdates trove hash map with pairs of &lt;messageId, date&gt;
      *
      * @return an array of affected messages.
      */
-    private int[] updateParentsDate(int[] messageIds) throws StorageException {
-        if (ArrayUtils.isEmpty(messageIds)) {
-            return ArrayUtils.EMPTY_INT_ARRAY;
-        }
+    private void updateParentsDate(int[] messageIds) throws StorageException {
+        TIntHashSet parents = new TIntHashSet();
 
-        TIntHashSet updatedParents = new TIntHashSet();
-        TIntLongHashMap parentDates = new TIntLongHashMap();
-
-        IMessageAH mah = storage.getMessageAH();
-        for (int messageId : messageIds) {
-            Message m = mah.getMessageById(messageId);
-
-            if (m == null) {
-                // Got broken topic - skip
+        for (int mId : messageIds) {
+            if (!messageDates.containsKey(mId)) {
+                // Message id is absent
                 continue;
             }
 
-            int parentId = m.getParentId();
-            if (parentId > 0) {
-                long recentDate = m.getResentChildDate();
+            int pmId = mAH.getParentIdByMessageId(mId);
 
-                updatedParents.add(parentId);
-
-                if (!parentDates.containsKey(parentId) ||
-                        parentDates.get(parentId) < recentDate) {
-                    parentDates.put(parentId, recentDate);
-                }
+            if (pmId == 0) {
+                // Top level
+                continue;
             }
+
+            Long date = messageDates.get(mId);
+
+            addMessageDate(pmId, date);
+
+            parents.add(pmId);
+            processedMessages.add(pmId);
         }
 
-        for (int messageId : parentDates.keys()) {
-            mah.updateMessageRecentDate(messageId, parentDates.get(messageId));
+        if (!parents.isEmpty()) {
+            updateParentsDate(parents.toArray());
         }
-
-        updatedParents.addAll(updateParentsDate(updatedParents.toArray()));
-
-        return updatedParents.toArray();
     }
 }
