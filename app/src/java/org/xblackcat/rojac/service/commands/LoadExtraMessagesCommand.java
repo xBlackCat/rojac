@@ -27,7 +27,7 @@ public class LoadExtraMessagesCommand extends LoadPostsCommand<AffectedPosts> {
     public AffectedPosts process(IProgressTracker trac) throws RojacException {
         trac.addLodMessage("Synchronization started.");
 
-        int[] messageIds = storage.getMiscAH().getExtraMessages();
+        int[] messageIds = miscAH.getExtraMessages();
         
         if (ArrayUtils.isEmpty(messageIds)) {
             return new AffectedPosts();
@@ -48,6 +48,12 @@ public class LoadExtraMessagesCommand extends LoadPostsCommand<AffectedPosts> {
 
         storeNewPosts(messages, moderates, ratings);
 
+        postprocessingMessages();
+
+        miscAH.clearExtraMessages();
+        if (log.isInfoEnabled()) {
+            log.info("Synchronization complete.");
+        }
         return new AffectedPosts(processedMessages.toArray(), affectedForums.toArray());
     }
 }

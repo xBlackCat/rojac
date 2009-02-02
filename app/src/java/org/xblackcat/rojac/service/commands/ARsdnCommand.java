@@ -25,7 +25,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
  */
 
 public abstract class ARsdnCommand<T> implements ITask, ICommand {
-    private static final Log log = LogFactory.getLog(ARsdnCommand.class);
+    protected final Log log = LogFactory.getLog(getClass());
     private boolean executed = false;
 
     protected IJanusService janusService;
