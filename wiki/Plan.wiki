@@ -1,0 +1,24 @@
+#summary Developing plan of rojac
+#labels Featured,Phase-Design
+
+= Main plan =
+== Alpha 1 ==
+  * Implement client for [http://projects.rsdn.ru/Janus/wiki/JanusAT JanusAT WS] (Axis 1) _(done)_
+  * Implement core services: Message formatter service _(done)_
+  * Implement core services: options service _(done)_
+  * Implement core services: database service _(done)_
+  * Implement core services: i18n service _(done)_
+  * Implement GUI: main window _(done)_
+  * Implement GUI: add dock bars ([https://flexdock.dev.java.net/ FlexDock]) _(done)_
+  * Implement GUI: implement forums view _(done)_
+  * Implement GUI: message editor dialog *(postponed)*
+  * Implement GUI: preference editor dialog *(in progress)*
+  * Implement GUI: create icons for the 
+== Alpha 2 ==
+  * Implement GUI: TreeTable forum view 
+  * Implement GUI: List based forum view.
+  * Add favorites (messages, topics)
+  * Add icon to tray
+  * Add filter to forum view (by users, by date, by marks)
+  * Migrate JanusAT client to Axis 2
+  * Allow to DnD links to create a new tab with thread/message.
