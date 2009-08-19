@@ -7,12 +7,14 @@ import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.gui.IInternationazable;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -22,7 +24,6 @@ import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -175,24 +176,6 @@ public class MessagePane extends AMessageView implements IInternationazable {
         }
     }
 
-    private JPopupMenu getLinkMenu(URL url, String description) {
-        JPopupMenu p = new JPopupMenu(description);
-        JMenuItem item = new JMenuItem(description);
-        item.setEnabled(false);
-        item.setToolTipText(url == null ? null : url.toString());
-        p.add(item);
-        p.addSeparator();
-        p.add(new AbstractAction("Open here.") {
-            public void actionPerformed(ActionEvent e) {
-            }
-        });
-        p.add(new AbstractAction("Open in new tab.") {
-            public void actionPerformed(ActionEvent e) {
-            }
-        });
-        return p;
-    }
-
     public void viewItem(int messageId) {
         this.messageId = messageId;
 
@@ -312,10 +295,17 @@ public class MessagePane extends AMessageView implements IInternationazable {
     private class HyperlinkHandler implements HyperlinkListener {
         public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                JPopupMenu menu = getLinkMenu(e.getURL(), e.getDescription());
+                JPopupMenu menu = PopupMenuBuilder.getLinkMenu(
+                        e.getURL(),
+                        e.getDescription(),
+                        LinkUtils.getUrlText(e.getSourceElement())
+                );
+
                 Point l = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(l, messageTextPane);
                 menu.show(messageTextPane, l.x, l.y);
+            } else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED) {
+                
             }
         }
     }
