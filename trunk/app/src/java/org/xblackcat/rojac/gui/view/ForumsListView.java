@@ -7,13 +7,12 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.IView;
 import org.xblackcat.rojac.gui.model.ForumData;
 import org.xblackcat.rojac.gui.model.ForumTableModel;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.render.ForumCellRenderer;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.commands.GetForumListCommand;
 import org.xblackcat.rojac.service.commands.IResultHandler;
-import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -36,7 +35,6 @@ import java.awt.event.MouseEvent;
 
 public class ForumsListView extends JPanel implements IView {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
     private static final Log log = LogFactory.getLog(ForumsListView.class);
     // Data and models
@@ -75,10 +73,10 @@ public class ForumsListView extends JPanel implements IView {
 
                 int modelInd = forums.convertRowIndexToModel(ind);
 
-                Forum forum = ((ForumData) forumsModel.getValueAt(modelInd, 0)).getForum();
+                Forum forum = forumsModel.getValueAt(modelInd, 0).getForum();
 
                 if (e.isPopupTrigger()) {
-                    JPopupMenu menu = createMenu(forum);
+                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, forumsModel, mainFrame);
 
                     menu.show(forums, p.x, p.y);
                 } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
@@ -158,58 +156,6 @@ public class ForumsListView extends JPanel implements IView {
         forumsModel.updateForums(ids);
     }
 
-    private JPopupMenu createMenu(final Forum forum) {
-        JPopupMenu m = new JPopupMenu(forum.getForumName());
-
-        final boolean subscribed = forum.isSubscribed();
-        final int forumId = forum.getForumId();
-
-        m.add(new AbstractAction(Messages.VIEW_FORUMS_MENU_OPEN.getMessage()) {
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.openForumTab(forum);
-            }
-        });
-        m.addSeparator();
-
-        m.add(new SetForumReadMenuItem(Messages.VIEW_FORUMS_MENU_SET_READ_ALL, forumId, true));
-        m.add(new SetForumReadMenuItem(Messages.VIEW_FORUMS_MENU_SET_UNREAD_ALL, forumId, false));
-
-        m.addSeparator();
-
-        {
-            JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.VIEW_FORUMS_MENU_SUBSCRIBE.getMessage(), subscribed);
-            mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
-            m.add(mi);
-        }
-
-        return m;
-    }
-
-    private class SubscribeChangeListener implements ActionListener {
-        private final int forumId;
-        private final boolean subscribed;
-
-        public SubscribeChangeListener(int forumId, boolean subscribed) {
-            this.forumId = forumId;
-            this.subscribed = subscribed;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            executor.execute(new Runnable() {
-                public void run() {
-                    IForumAH fah = storage.getForumAH();
-                    try {
-                        fah.setSubscribeForum(forumId, !subscribed);
-
-                        forumsModel.reloadInfo(forumId);
-                    } catch (StorageException e1) {
-                        log.error("Can not update forum info. [id:" + forumId + "].", e1);
-                    }
-                }
-            });
-        }
-    }
-
     private class UpdateActionListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             mainFrame.showProgressDialog(new GetForumListCommand(new IResultHandler<int[]>() {
@@ -223,27 +169,4 @@ public class ForumsListView extends JPanel implements IView {
             }));
         }
     }
-
-    private class SetForumReadMenuItem extends JMenuItem {
-        public SetForumReadMenuItem(Messages text, final int forumId, final boolean readFlag) {
-            super(text.getMessage());
-            addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    executor.execute(new Runnable() {
-                        public void run() {
-                            IForumAH fah = storage.getForumAH();
-                            try {
-                                fah.setForumRead(forumId, readFlag);
-
-                                forumsModel.reloadInfo(forumId);
-                            } catch (StorageException e1) {
-                                log.error("Can not update forum info. [id:" + forumId + "].", e1);
-                            }
-                        }
-                    });
-                }
-            });
-        }
-    }
-
 }

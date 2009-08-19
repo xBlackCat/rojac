@@ -9,10 +9,6 @@ import javax.swing.*;
  */
 
 public class LinkMessagePopupBuilder implements IPopupBuilder {
-    @Override
-    public PopupTypeEnum getType() {
-        return PopupTypeEnum.LinkMessagePopup;
-    }
 
     /**
      * Builds popup menu for RSDN message link. Available actions in the menu are: <ul>
