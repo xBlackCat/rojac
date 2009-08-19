@@ -1,5 +1,8 @@
 package org.xblackcat.rojac.gui.popup;
 
+import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.model.ForumTableModel;
 import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;
@@ -55,12 +58,20 @@ public class PopupMenuBuilder {
         return getBuilder(type, description, messageId, text);
     }
 
-    private static JPopupMenu getBuilder(PopupTypeEnum type, Object... params) {
+    public static JPopupMenu getForumViewMenu(Forum forum, ForumTableModel forumsModel, IRootPane rootPane) {
+        return getBuilder(PopupTypeEnum.ForumListCommonPopup, forum, forumsModel, rootPane);
+    }
+
+    public static JPopupMenu getTreeViewPopup(int messageId) {
+        return getBuilder(PopupTypeEnum.TreeThreadViewPopup, Integer.valueOf(messageId));
+    }
+
+    private static JPopupMenu getBuilder(PopupTypeEnum type, Object... parameters) {
         IPopupBuilder builder = BUILDERS.get(type);
         if (builder == null) {
             throw new IllegalStateException("Undefined popup menu builder: " + type);
         }
-        return builder.buildMenu(params);
+        return builder.buildMenu(parameters);
     }
 
     static {
@@ -69,8 +80,9 @@ public class PopupMenuBuilder {
         builderMap.put(PopupTypeEnum.LinkMessagePopup, new LinkMessagePopupBuilder());
         builderMap.put(PopupTypeEnum.LinkDownloadablePopup, new LinkDownloadablePopupBuilder());
         builderMap.put(PopupTypeEnum.LinkCommonPopup, new LinkPopupBuilder());
+        builderMap.put(PopupTypeEnum.ForumListCommonPopup, new ForumListPopupBuilder());
+        builderMap.put(PopupTypeEnum.TreeThreadViewPopup, new TreeThreadViewPopupBuilder());
 
         BUILDERS = Collections.unmodifiableMap(builderMap);
     }
-
 }

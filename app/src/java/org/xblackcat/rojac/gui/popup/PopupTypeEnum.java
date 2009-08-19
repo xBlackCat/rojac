@@ -11,5 +11,6 @@ public enum PopupTypeEnum {
     LinkDownloadablePopup,
     LinkCommonPopup,
     TrayCommonPopup,
-    ForumListCommonPopup
+    ForumListCommonPopup,
+    TreeThreadViewPopup
 }

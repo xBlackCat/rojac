@@ -9,7 +9,6 @@ import javax.swing.*;
  */
 
 interface IPopupBuilder {
-    PopupTypeEnum getType();
 
     JPopupMenu buildMenu(Object ...parameters);
 }

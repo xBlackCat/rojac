@@ -22,11 +22,6 @@ import java.net.URISyntaxException;
 public class LinkPopupBuilder implements IPopupBuilder {
     private static final Log log = LogFactory.getLog(LinkPopupBuilder.class);
 
-    @Override
-    public PopupTypeEnum getType() {
-        return PopupTypeEnum.LinkDownloadablePopup;
-    }
-
     /**
      * Builds popup menu for downloadable link (link that points on a file like archive or document). Available actions
      * in the menu are: <ul> <li>"Open in browser" - open the link in browser </li> <li>"Copy to clipboard" - copy the

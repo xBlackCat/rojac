@@ -9,10 +9,6 @@ import javax.swing.*;
  */
 
 public class LinkDownloadablePopupBuilder implements IPopupBuilder {
-    @Override
-    public PopupTypeEnum getType() {
-        return PopupTypeEnum.LinkDownloadablePopup;
-    }
 
     /**
      * Builds popup menu for downloadable link (link that points on a file like archive or document). Available actions in the menu are: <ul>
