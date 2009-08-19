@@ -56,6 +56,6 @@ public enum Mark {
     }
 
     public String toString() {
-        return description.getMessage();
+        return description.get();
     }
 }

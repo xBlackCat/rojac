@@ -30,7 +30,7 @@ public class LoginDialog extends JDialog {
 
     public LoginDialog(MainFrame mainFrame) {
         super(mainFrame, true);
-        setTitle(Messages.DIALOG_LOGIN_TITLE.getMessage());
+        setTitle(Messages.DIALOG_LOGIN_TITLE.get());
 
         setContentPane(setupContentPane());
 
@@ -62,11 +62,11 @@ public class LoginDialog extends JDialog {
         JPanel pane = new JPanel(new BorderLayout(5, 5));
         cp.add(pane, BorderLayout.CENTER);
 
-        pane.add(new JLabel(Messages.DIALOG_LOGIN_TEXT.getMessage(), JLabel.CENTER), BorderLayout.NORTH);
+        pane.add(new JLabel(Messages.DIALOG_LOGIN_TEXT.get(), JLabel.CENTER), BorderLayout.NORTH);
 
         fieldLogin = new JTextField(20);
         fieldPassword = new JPasswordField(20);
-        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.getMessage());
+        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get());
 
         JPanel fields = new JPanel(new GridLayout(0, 1));
         fields.add(fieldLogin);
@@ -75,8 +75,8 @@ public class LoginDialog extends JDialog {
         pane.add(fields, BorderLayout.CENTER);
 
         JPanel labels = new JPanel(new GridLayout(0, 1));
-        labels.add(new JLabel(Messages.DIALOG_LOGIN_USERNAME.getMessage()));
-        labels.add(new JLabel(Messages.DIALOG_LOGIN_PASSWORD.getMessage()));
+        labels.add(new JLabel(Messages.DIALOG_LOGIN_USERNAME.get()));
+        labels.add(new JLabel(Messages.DIALOG_LOGIN_PASSWORD.get()));
 
         pane.add(labels, BorderLayout.WEST);
 

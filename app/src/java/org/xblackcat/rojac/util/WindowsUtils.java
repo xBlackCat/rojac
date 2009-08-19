@@ -122,7 +122,7 @@ public final class WindowsUtils {
         toggleButton.setDisabledIcon(ResourceUtils.loadImageIcon(imageSet + "disabled.png"));
         toggleButton.addActionListener(action);
         toggleButton.setOpaque(false);
-        toggleButton.setToolTipText(mes.getMessage());
+        toggleButton.setToolTipText(mes.get());
         if (bg != null) {
             bg.add(toggleButton);
         }
@@ -141,13 +141,13 @@ public final class WindowsUtils {
         button.setRolloverSelectedIcon(null);
         button.setDisabledIcon(null);
         button.addActionListener(action);
-        button.setToolTipText(tooltip.getMessage());
-        button.setText(text.getMessage());
+        button.setToolTipText(tooltip.get());
+        button.setText(text.get());
         return button;
     }
 
     public static JButton setupImageButton(String buttonName, ActionListener action, Messages tooltip) {
-        return setupImageButton(buttonName, action, tooltip.getMessage());
+        return setupImageButton(buttonName, action, tooltip.get());
     }
 
     public static JButton setupImageButton(String buttonName, ActionListener action, String tooltip) {

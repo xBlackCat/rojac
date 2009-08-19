@@ -36,20 +36,20 @@ public class TreeThreadViewPopupBuilder implements IPopupBuilder {
         ActionListener copyFlatThreadUrlAction = new CopyUrlAction("http://rsdn.ru/forum/message/" + messageId + ".flat.aspx");
 
         JMenu copy = new JMenu();
-        copy.setText(Messages.VIEW_THREADS_TREE_MENU_COPYURL.getMessage());
+        copy.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL.get());
 
         JMenuItem copyUrl = new JMenuItem();
-        copyUrl.setText(Messages.VIEW_THREADS_TREE_MENU_COPYURL_MESSAGE.getMessage());
+        copyUrl.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL_MESSAGE.get());
         copyUrl.addActionListener(copyMessageUrlAction);
         copy.add(copyUrl);
 
         JMenuItem copyFlatUrl = new JMenuItem();
-        copyFlatUrl.setText(Messages.VIEW_THREADS_TREE_MENU_COPYURL_FLAT.getMessage());
+        copyFlatUrl.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL_FLAT.get());
         copyFlatUrl.addActionListener(copyFlatThreadUrlAction);
         copy.add(copyFlatUrl);
 
         JMenuItem copyThreadUrl = new JMenuItem();
-        copyThreadUrl.setText(Messages.VIEW_THREADS_TREE_MENU_COPYURL_THREAD.getMessage());
+        copyThreadUrl.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL_THREAD.get());
         copyThreadUrl.addActionListener(copyThreadUrlAction);
         copy.add(copyThreadUrl);
 

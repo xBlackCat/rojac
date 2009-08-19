@@ -103,7 +103,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
 
         final JComboBox marks = new JComboBox(marksModel);
         marks.setFocusable(false);
-        marks.setToolTipText(Messages.DESCRIPTION_MARK_SELECT.getMessage());
+        marks.setToolTipText(Messages.DESCRIPTION_MARK_SELECT.get());
         marks.setRenderer(renderer);
         marks.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -155,8 +155,8 @@ public class MessagePane extends AMessageView implements IInternationazable {
         if (JOptionPane.YES_OPTION ==
                 JLOptionPane.showConfirmDialog(
                         this,
-                        Messages.DIALOG_SET_MARK_MESSAGE.getMessage(mark),
-                        Messages.DIALOG_SET_MARK_TITLE.getMessage(),
+                        Messages.DIALOG_SET_MARK_MESSAGE.get(mark),
+                        Messages.DIALOG_SET_MARK_TITLE.get(),
                         JOptionPane.YES_NO_OPTION
                 )) {
             try {
@@ -165,8 +165,8 @@ public class MessagePane extends AMessageView implements IInternationazable {
             } catch (StorageException e) {
                 JLOptionPane.showMessageDialog(
                         this,
-                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.getMessage(mark),
-                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.getMessage(),
+                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.get(mark),
+                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.get(),
                         JOptionPane.DEFAULT_OPTION
                 );
                 if (log.isWarnEnabled()) {
@@ -186,6 +186,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
             String message = mes.getMessage();
             String converted = rsdnToHtml.convert(message);
             messageTextPane.setText(converted);
+            messageTextPane.setCaretPosition(0);
             labelTopic.setText(mes.getSubject());
             userInfoLabel.setText(mes.getUserNick());
             DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
@@ -287,9 +288,9 @@ public class MessagePane extends AMessageView implements IInternationazable {
     }
 
     public void loadLabels() {
-        answer.setToolTipText(Messages.BUTTON_REPLY_TOOLTIP.getMessage());
-        userLabel.setText(Messages.MESSAGE_PANE_USER_LABEL.getMessage());
-        dateLabel.setText(Messages.MESSAGE_PANE_DATE_LABEL.getMessage());
+        answer.setToolTipText(Messages.BUTTON_REPLY_TOOLTIP.get());
+        userLabel.setText(Messages.MESSAGE_PANE_USER_LABEL.get());
+        dateLabel.setText(Messages.MESSAGE_PANE_DATE_LABEL.get());
     }
 
     private class HyperlinkHandler implements HyperlinkListener {

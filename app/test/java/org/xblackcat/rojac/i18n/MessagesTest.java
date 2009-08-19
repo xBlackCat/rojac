@@ -33,7 +33,7 @@ public class MessagesTest extends TestCase {
                 if (log.isDebugEnabled()) {
                     log.debug("Check resource " + m);
                 }
-                assertNotNull(m.getMessage(EMPTY));
+                assertNotNull(m.get(EMPTY));
             }
         }
     }

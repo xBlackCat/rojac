@@ -317,18 +317,18 @@ public final class JLOptionPane {
     }
 
     public static String[] getYesNoVariants() {
-        return new String[]{Messages.BUTTON_YES.getMessage(), Messages.BUTTON_NO.getMessage()};
+        return new String[]{Messages.BUTTON_YES.get(), Messages.BUTTON_NO.get()};
     }
 
     public static String[] getYesNoCancelVariants() {
-        return new String[]{Messages.BUTTON_YES.getMessage(), Messages.BUTTON_NO.getMessage(), Messages.BUTTON_CANCEL.getMessage()};
+        return new String[]{Messages.BUTTON_YES.get(), Messages.BUTTON_NO.get(), Messages.BUTTON_CANCEL.get()};
     }
 
     public static String[] getOkCancelVariants() {
-        return new String[]{Messages.BUTTON_OK.getMessage(), Messages.BUTTON_CANCEL.getMessage()};
+        return new String[]{Messages.BUTTON_OK.get(), Messages.BUTTON_CANCEL.get()};
     }
 
     public static String[] getOkVariants() {
-        return new String[]{Messages.BUTTON_OK.getMessage()};
+        return new String[]{Messages.BUTTON_OK.get()};
     }
 }

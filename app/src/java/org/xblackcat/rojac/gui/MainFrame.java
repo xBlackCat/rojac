@@ -67,7 +67,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     };
 
     public MainFrame(IOptionsService optionsService) {
-        super(Messages.MAIN_WINDOW_TITLE.getMessage());
+        super(Messages.MAIN_WINDOW_TITLE.get());
 
         forumsListView = new ForumsListView(this);
         favoritesView = new FavoritesView();
@@ -166,8 +166,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private View createView(String id, Messages title, Messages tabText, JComponent comp) {
         final View view = new View(
                 id,
-                title.getMessage(),
-                tabText.getMessage()
+                title.get(),
+                tabText.get()
         );
         view.addAction(DockingConstants.CLOSE_ACTION);
         view.addAction(DockingConstants.PIN_ACTION);

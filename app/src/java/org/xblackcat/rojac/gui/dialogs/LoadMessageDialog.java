@@ -35,7 +35,7 @@ public class LoadMessageDialog extends JDialog {
         super(mainFrame, true);
         this.mainFrame = mainFrame;
 
-        setTitle(Messages.DIALOG_LOADMESSAGE_TITLE.getMessage());
+        setTitle(Messages.DIALOG_LOADMESSAGE_TITLE.get());
 
         initializeLayout();
 
@@ -68,12 +68,12 @@ public class LoadMessageDialog extends JDialog {
         cp.add(messageIdText, BorderLayout.NORTH);
 
         loadAtOnce = new JCheckBox();
-        loadAtOnce.setText(Messages.DIALOG_LOADMESSAGE_LOADATONCE.getMessage());
+        loadAtOnce.setText(Messages.DIALOG_LOADMESSAGE_LOADATONCE.get());
         cp.add(loadAtOnce, BorderLayout.SOUTH);
 
         add(cp, BorderLayout.CENTER);
 
-        JLabel l = new JLabel(Messages.DIALOG_LOADMESSAGE_LABEL.getMessage());
+        JLabel l = new JLabel(Messages.DIALOG_LOADMESSAGE_LABEL.get());
 //        Dimension size = new Dimension(200, 10);
 //        l.setMinimumSize(size);
 //        l.setPreferredSize(size);
