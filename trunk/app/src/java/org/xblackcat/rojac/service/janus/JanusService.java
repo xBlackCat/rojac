@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.janus;
 
+import org.apache.axis.MessageContext;
 import org.apache.axis.configuration.FileProvider;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.lang.ArrayUtils;
@@ -212,7 +213,9 @@ public class JanusService implements IJanusService {
                 log.info("Data compression is enabled.");
                 // Tell the server it can compress the response
                 soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+                soap._setProperty(HTTPConstants.COMPRESSION_GZIP, Boolean.TRUE);
             }
+            jl.getEngine().setOption(MessageContext.HTTP_TRANSPORT_VERSION, HTTPConstants.HEADER_PROTOCOL_V10);
 
             this.soap = jl.getJanusATSoap();
             log.info("Initialization has done.");
