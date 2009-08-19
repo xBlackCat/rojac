@@ -23,7 +23,7 @@ public final class LinkUtils {
      * Set of rsdn link to message patterns.
      */
     private static Pattern[] rsdnMessageLinkPatterns = new Pattern[]{
-            Pattern.compile(URL_PREFIX + "forum/message/(\\d+)\\.1\\.aspx", Pattern.CASE_INSENSITIVE),
+            Pattern.compile(URL_PREFIX + "forum/message/(\\d+)\\.(1\\.)?aspx", Pattern.CASE_INSENSITIVE),
             Pattern.compile(URL_PREFIX + "forum/message.aspx\\?mid=(\\d+)&only=1", Pattern.CASE_INSENSITIVE)
     };
 

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class RSDNMessageParser implements IMessageParser {
     private static final Pattern QUOTATION_PATTERN = Pattern.compile("^([[^\\s\\p{Punct}]_]+?)>(.*?)$", Pattern.MULTILINE);
-    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=])(http://.+)([^\\[])");
+    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+)[\\.,\\!\\:]?$", Pattern.MULTILINE);
     private static final ITagInfo[] EMPTY_TAG_INFO = new ITagInfo[0];
 
     private final Map<ITag, ITag[]> availableSubTags;
@@ -62,7 +62,7 @@ public class RSDNMessageParser implements IMessageParser {
      * @return a new string with highlihgted quotation lines.
      */
     protected String preProcessText(String rsdn) {
-        rsdn = HYPERLINKS_PATTERN.matcher(rsdn).replaceAll("$1<a href='$2' alt='$2'>$2</a>$3");
+        rsdn = HYPERLINKS_PATTERN.matcher(rsdn).replaceAll("$1[url=$2]$2[/url]");
         return QUOTATION_PATTERN.matcher(rsdn).replaceAll("<span class='lineQuote'>$1&gt;$2</span>");
     }
 
