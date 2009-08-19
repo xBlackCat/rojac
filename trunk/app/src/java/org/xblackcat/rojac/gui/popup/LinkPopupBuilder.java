@@ -46,7 +46,7 @@ public class LinkPopupBuilder implements IPopupBuilder {
         final Desktop desktop = Desktop.getDesktop();
 
         if (p.getUrl() != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            JMenuItem openInBrowserItem = new JMenuItem(Messages.POPUP_LINK_OPEN_IN_BROWSER.getMessage());
+            JMenuItem openInBrowserItem = new JMenuItem(Messages.POPUP_LINK_OPEN_IN_BROWSER.get());
             openInBrowserItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -63,7 +63,7 @@ public class LinkPopupBuilder implements IPopupBuilder {
             menu.add(openInBrowserItem);
         }
 
-        JMenuItem copyToClipboard = new JMenuItem(Messages.POPUP_LINK_COPY_TO_CLIPBOARD.getMessage());
+        JMenuItem copyToClipboard = new JMenuItem(Messages.POPUP_LINK_COPY_TO_CLIPBOARD.get());
         copyToClipboard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

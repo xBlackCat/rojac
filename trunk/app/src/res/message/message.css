@@ -3,7 +3,7 @@ body
 	background-color: White;
 	color: black;
 	font-family: 'courier new', 'courier', 'courier new cyr', 'courier cyr';
-	margin: 0px;
+	margin: 0;
 }
 
 a:link    { text-decoration: none; color: #505000; }
@@ -24,7 +24,7 @@ td.s
 	background-color:#E0F0E0;
 	font-family:verdana;
 	font-weight:bold;
-	padding: 0px 5px;
+	padding: 0 5px;
 }
 
 td.m
@@ -53,21 +53,21 @@ td.l
 {
 	font-family: verdana, tahoma, helvetica, arial;
 	background-color: #F4FFF4;
-	padding: 0px 5px;
+	padding: 0 5px;
 	vertical-align: super;
 }
 
 td.lm
 {
 	background-color: #F4FFF4;
-	padding: 0px 0px;
+	padding: 0 0;
 	width: 32px;
 }
 
 td.lp
 {
 	background-color: #F4FFF4;
-	padding: 0px 0px;
+	padding: 0 0;
 	width: 32px;
 	cursor: pointer; cursor: hand;
 }
@@ -75,14 +75,14 @@ td.lp
 td.li
 {
 	background-color: #F4FFF4;
-	padding: 0px 0px;
+	padding: 0 0;
 }
 
 td.i
 {
 	font-family: verdana, tahoma, helvetica, arial;
 	background-color: #FFFFF4;
-	padding: 0px 5px;
+	padding: 0 5px;
 }
 
 .tx
@@ -93,28 +93,28 @@ td.i
 
 img.i
 {
-	border-width: 0px;
+	border-width: 0;
 	width: 18px;
 	height: 14px;
 }
 
 img.t
 {
-	border-width: 0px;
+	border-width: 0;
 	width: 32px;
 	height: 16px;
 }
 
 img.s
 {
-	border-width: 0px;
+	border-width: 0;
 }
 
 pre
 {
 	font-family: 'courier new', 'courier', 'courier new cyr', 'courier cyr';
-	font-size: 12px;
-	margin: 0px;
+	font-size: small;
+	margin: 0;
 	padding: 10px;
 }
 
@@ -123,8 +123,8 @@ td.c
 	font-family: 'courier new', 'courier', 'courier new cyr', 'courier cyr';
 	background-color: #EEEEEE;
 	color: black;
-	margin: 0px;
-	padding: 0px 0px;
+	margin: 0;
+	padding: 0 0;
 }
 
 p1
@@ -138,7 +138,7 @@ td.th
 	background-color:#E0F0E0;
 	font-family:verdana;
 	font-weight:bold;
-	padding: 0px 5px;
+	padding: 0 5px;
 }
 
 td.the
@@ -156,7 +156,7 @@ td.t
 	color: #000000;
 	background-color: #E8F8E8;
 	font-family: verdana, tahoma, helvetica, arial;
-	padding: 0px 5px;
+	padding: 0 5px;
 	font-size: 12px;
 }
 
@@ -164,7 +164,7 @@ td.t
 {
 	color:#444444;
 	background-color:#E8F8E8;
-	padding: 0px 5px 0px 5px;
+	padding: 0 5px 0 5px;
 	font-family: verdana, tahoma, helvetica, arial;
 	font-size: 12px;
 }
@@ -173,7 +173,7 @@ td.t
 {
 	color:#444444;
 	background-color:#E8F8E8;
-	padding: 0px 5px 0px 5px;
+	padding: 0 5px 0 5px;
 	font-size: 14px;
 }
 
@@ -219,7 +219,7 @@ div.q, blockquote.q
 {
 	background-color: #FFFFE7;
 	font-family: verdana, tahoma, helvetica, arial;
-	margin: 0px;
+	margin: 0;
 	padding: 5px 10px 5px 10px;
 }
 

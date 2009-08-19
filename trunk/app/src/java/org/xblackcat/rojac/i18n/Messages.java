@@ -38,11 +38,6 @@ public enum Messages {
     VIEW_FORUMS_BUTTON_SUBSCRIBED,
     VIEW_FORUMS_BUTTON_FILLED,
     VIEW_FORUMS_BUTTON_HASUNREAD,
-    // Menu of forum view
-    VIEW_FORUMS_MENU_SUBSCRIBE,
-    VIEW_FORUMS_MENU_OPEN,
-    VIEW_FORUMS_MENU_SET_READ_ALL,
-    VIEW_FORUMS_MENU_SET_UNREAD_ALL,
 
     //
     VIEW_FAVORITES_TITLE,
@@ -109,18 +104,22 @@ public enum Messages {
     DESCRIPTION_SMILE_MANIAC,
     DESCRIPTION_SMILE_DONOTKNOW,
 
-    // Messages threads view related messages
-    VIEW_THREADS_TREE_MENU_COPYURL,
-    VIEW_THREADS_TREE_MENU_COPYURL_MESSAGE,
-    VIEW_THREADS_TREE_MENU_COPYURL_FLAT,
-    VIEW_THREADS_TREE_MENU_COPYURL_THREAD,
-
     // Popup menu texts
     POPUP_LINK_OPEN_IN_BROWSER,
     POPUP_LINK_COPY_TO_CLIPBOARD,
     POPUP_LINK_OPEN_MESSAGE,
     POPUP_LINK_OPEN_MESSAGE_IN_NEW_TAB,
-    POPUP_LINK_OPEN_THREAD_IN_NEW_TAB,;
+    POPUP_LINK_OPEN_THREAD_IN_NEW_TAB,
+    // Menu of forum view
+    POPUP_VIEW_FORUMS_SUBSCRIBE,
+    POPUP_VIEW_FORUMS_OPEN,
+    POPUP_VIEW_FORUMS_SET_READ_ALL,
+    POPUP_VIEW_FORUMS_SET_UNREAD_ALL,
+    // Messages threads view related messages
+    POPUP_VIEW_THREADS_TREE_COPYURL,
+    POPUP_VIEW_THREADS_TREE_COPYURL_MESSAGE,
+    POPUP_VIEW_THREADS_TREE_COPYURL_FLAT,
+    POPUP_VIEW_THREADS_TREE_COPYURL_THREAD;
 
     // Constants
     private static final String LOCALIZATION_BUNDLE_NAME = "i18n/messages";
@@ -164,7 +163,16 @@ public enum Messages {
         }
     }
 
-    public String getMessage(Object... params) throws MissingResourceException {
+    /**
+     * Returns a localized text of the constant. Optionally accepts parameters to substitute into text.
+     *
+     * @param params optionally parameters for formatting message.
+     *
+     * @return formatted localized message.
+     *
+     * @throws MissingResourceException if no localized message is exists for the constant.
+     */
+    public String get(Object... params) throws MissingResourceException {
         String key = ResourceUtils.constantToProperty(name());
 
         String mes;
@@ -174,10 +182,12 @@ public enum Messages {
         try {
             mes = messages.getString(key);
             l = messages.getLocale();
+/*
         } catch (MissingResourceException e) {
             // For testing purposes
             mes = key;
             l = locale;
+*/
         } finally {
             readLock.unlock();
         }

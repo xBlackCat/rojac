@@ -54,20 +54,20 @@ public class ForumListPopupBuilder implements IPopupBuilder {
         final boolean subscribed = forum.isSubscribed();
         final int forumId = forum.getForumId();
 
-        menu.add(new AbstractAction(Messages.VIEW_FORUMS_MENU_OPEN.getMessage()) {
+        menu.add(new AbstractAction(Messages.POPUP_VIEW_FORUMS_OPEN.get()) {
             public void actionPerformed(ActionEvent e) {
                 mainFrame.openForumTab(forum);
             }
         });
         menu.addSeparator();
 
-        menu.add(new SetForumReadMenuItem(Messages.VIEW_FORUMS_MENU_SET_READ_ALL, forumId, model, true));
-        menu.add(new SetForumReadMenuItem(Messages.VIEW_FORUMS_MENU_SET_UNREAD_ALL, forumId, model, false));
+        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_READ_ALL, forumId, model, true));
+        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_UNREAD_ALL, forumId, model, false));
 
         menu.addSeparator();
 
         {
-            JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.VIEW_FORUMS_MENU_SUBSCRIBE.getMessage(), subscribed);
+            JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.POPUP_VIEW_FORUMS_SUBSCRIBE.get(), subscribed);
             mi.addActionListener(new SubscribeChangeListener(forumId, model, subscribed));
             menu.add(mi);
         }
@@ -105,7 +105,7 @@ public class ForumListPopupBuilder implements IPopupBuilder {
 
     private class SetForumReadMenuItem extends JMenuItem {
         public SetForumReadMenuItem(Messages text, final int forumId, final ForumTableModel forumsModel, final boolean readFlag) {
-            super(text.getMessage());
+            super(text.get());
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     executor.execute(new Runnable() {
