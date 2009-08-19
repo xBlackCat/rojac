@@ -114,7 +114,13 @@ public enum Messages {
     VIEW_THREADS_TREE_MENU_COPYURL_MESSAGE,
     VIEW_THREADS_TREE_MENU_COPYURL_FLAT,
     VIEW_THREADS_TREE_MENU_COPYURL_THREAD,
-    ;
+
+    // Popup menu texts
+    POPUP_LINK_OPEN_IN_BROWSER,
+    POPUP_LINK_COPY_TO_CLIPBOARD,
+    POPUP_LINK_OPEN_MESSAGE,
+    POPUP_LINK_OPEN_MESSAGE_IN_NEW_TAB,
+    POPUP_LINK_OPEN_THREAD_IN_NEW_TAB,;
 
     // Constants
     private static final String LOCALIZATION_BUNDLE_NAME = "i18n/messages";
@@ -168,6 +174,10 @@ public enum Messages {
         try {
             mes = messages.getString(key);
             l = messages.getLocale();
+        } catch (MissingResourceException e) {
+            // For testing purposes
+            mes = key;
+            l = locale;
         } finally {
             readLock.unlock();
         }

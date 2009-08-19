@@ -7,7 +7,7 @@ import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.ClipboardUtils;
-import org.xblackcat.rojac.util.LinkHandler;
+import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -102,7 +102,7 @@ public class LoadMessageDialog extends JDialog {
 
         if (!wasSet) {
             // Check if the clipboard contains URL to message or topic
-            Integer mId = LinkHandler.getMessageId(cl);
+            Integer mId = LinkUtils.getMessageId(cl);
             if (mId != null && mId >= 0) {
                 messageIdText.setText(String.valueOf(mId));
                 wasSet = true;
