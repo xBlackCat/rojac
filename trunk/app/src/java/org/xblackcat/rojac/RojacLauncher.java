@@ -7,6 +7,7 @@ import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -59,8 +60,7 @@ public final class RojacLauncher {
             }
         });
 
-        while (optionsService.getProperty(Property.RSDN_USER_NAME) == null ||
-                optionsService.getProperty(Property.RSDN_USER_PASSWORD) == null) {
+        while (!UserHelper.isUserRegistered()) {
             LoginDialog ld = new LoginDialog(mainFrame);
             SwingUtility.centerOnScreen(ld);
             if (ld.showLoginDialog(optionsService)) {
@@ -78,7 +78,7 @@ public final class RojacLauncher {
     }
 
     private static void storeSettings(IOptionsService optionsService) {
-        if (!optionsService.getProperty(Property.RSDN_USER_PASSWORD_SAVE)) {
+        if (!UserHelper.shouldStorePassword()) {
             optionsService.setProperty(Property.RSDN_USER_PASSWORD, null);
         }
 

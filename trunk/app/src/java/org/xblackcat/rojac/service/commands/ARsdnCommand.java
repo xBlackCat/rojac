@@ -9,10 +9,10 @@ import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.gui.frame.progress.ITask;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusService;
 import org.xblackcat.rojac.service.options.IOptionsService;
-import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.IVersionAH;
@@ -49,11 +49,8 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
                 throw new RsdnProcessorException("Can not execute command twice: " + this.getClass().getSimpleName());
             }
         }
-        
-        String username = optionsService.getProperty(Property.RSDN_USER_NAME);
-        Password password = optionsService.getProperty(Property.RSDN_USER_PASSWORD);
 
-        JanusService c = new JanusService(username, password.toString());
+        JanusService c = new JanusService(UserHelper.getUserName(), UserHelper.getUserPassword());
         c.init(optionsService.getProperty(Property.SERVICE_JANUS_USE_GZIP));
         c.testConnection();
         janusService = c;

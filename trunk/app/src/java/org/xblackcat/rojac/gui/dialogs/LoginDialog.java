@@ -3,10 +3,10 @@ package org.xblackcat.rojac.gui.dialogs;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.gui.MainFrame;
+import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.options.IOptionsService;
-import org.xblackcat.rojac.service.options.Password;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -45,6 +45,16 @@ public class LoginDialog extends JDialog {
 
         JButton okButton = WindowsUtils.setupButton(Messages.BUTTON_OK, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (StringUtils.isEmpty(fieldLogin.getText())) {
+                    JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_USERNAME.get());
+                    return;
+                }
+
+                if (ArrayUtils.isEmpty(fieldPassword.getPassword())) {
+                    JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_PASSWORD.get());
+                    return;
+                }
+
                 canceled = false;
                 setVisible(false);
             }
@@ -88,12 +98,12 @@ public class LoginDialog extends JDialog {
     }
 
     public boolean showLoginDialog(IOptionsService optionsService) {
-        String login = optionsService.getProperty(Property.RSDN_USER_NAME);
-        Password password = optionsService.getProperty(Property.RSDN_USER_PASSWORD);
-        boolean save = optionsService.getProperty(Property.RSDN_USER_PASSWORD_SAVE);
+        String login = UserHelper.getUserName();
+        String password = UserHelper.getUserPassword();
+        boolean save = UserHelper.shouldStorePassword();
 
         fieldLogin.setText(login);
-        fieldPassword.setText(password == null ? null : new String(password.getPassword()));
+        fieldPassword.setText(password);
         fieldSavePassword.setSelected(save);
 
         setVisible(true);
@@ -101,16 +111,15 @@ public class LoginDialog extends JDialog {
         if (!canceled) {
             login = fieldLogin.getText();
             if (StringUtils.isNotBlank(login)) {
-                optionsService.setProperty(Property.RSDN_USER_NAME, login);
+                UserHelper.setUserName(login);
             }
 
             char[] p = fieldPassword.getPassword();
             if (!ArrayUtils.isEmpty(p)) {
-                password = new Password(p);
-                optionsService.setProperty(Property.RSDN_USER_PASSWORD, password);
+                UserHelper.setUserPassword(p);
             }
 
-            optionsService.setProperty(Property.RSDN_USER_PASSWORD_SAVE, fieldSavePassword.isSelected());
+            UserHelper.shouldStorePassword(fieldSavePassword.isSelected());
         }
 
         return canceled;

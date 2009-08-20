@@ -27,16 +27,19 @@ public final class Property<T> {
     // Application component properties
     public static final Property<Dimension> ROJAC_MAIN_FRAME_SIZE = create("rojac.main_frame.size", Dimension.class);
     public static final Property<Point> ROJAC_MAIN_FRAME_POSITION = create("rojac.main_frame.position", Point.class);
+    public static final Property<Integer> ROJAC_MAIN_FRAME_STATE = create("rojac.main_frame.state", Integer.class);
 
-    // GUI properties
+    // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class);
     public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", Locale.class);
 
     // User properties (login dialog)
     public static final Property<String> RSDN_USER_NAME = create("rsdn.user.name", String.class);
     public static final Property<Password> RSDN_USER_PASSWORD = create("rsdn.user.password", Password.class);
-    public static final Property<String> RSDN_USER_ID = create("rsdn.user.id", String.class);
+    public static final Property<Integer> RSDN_USER_ID = create("rsdn.user.id", Integer.class);
     public static final Property<Boolean> RSDN_USER_PASSWORD_SAVE = create("rsdn.user.password.store", Boolean.class);
+
+    //
 
     // Janus synchronizator properties
 
