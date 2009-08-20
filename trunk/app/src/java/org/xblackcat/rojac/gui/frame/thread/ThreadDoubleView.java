@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.frame.thread;
 
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IMessageView;
+import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.frame.message.AMessageView;
 
 import javax.swing.*;
@@ -20,9 +21,10 @@ public class ThreadDoubleView extends AMessageView {
     /**
      * Create combined forum thread view. Contains from master (upper component) and slave (lover component).
      * @param verticalSplit
+     * @param mainFrame
      */
-    public ThreadDoubleView(IMessageView mv, IMessageView sv, boolean verticalSplit) {
-        super(new BorderLayout());
+    public ThreadDoubleView(IMessageView mv, IMessageView sv, boolean verticalSplit, IRootPane mainFrame) {
+        super(new BorderLayout(), mainFrame);
         this.masterView = mv;
         this.slaveView = sv;
 

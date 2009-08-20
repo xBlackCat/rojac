@@ -210,7 +210,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             return;
         }
 
-        ThreadDoubleView $ = new ThreadDoubleView(new ForumThreadsView(), new MessagePane(), false);
+        ThreadDoubleView $ = new ThreadDoubleView(new ForumThreadsView(this), new MessagePane(this), false, this);
         openedForums.put(f.getForumId(), $);
 
         threads.addTab(f.getForumName(), $);

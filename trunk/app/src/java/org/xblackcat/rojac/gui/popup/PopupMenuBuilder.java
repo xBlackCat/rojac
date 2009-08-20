@@ -32,7 +32,7 @@ public class PopupMenuBuilder {
      *
      * @return new popup menu for the specified url.
      */
-    public static JPopupMenu getLinkMenu(URL url, String description, String text) {
+    public static JPopupMenu getLinkMenu(URL url, String description, String text, IRootPane mainFrame) {
         if (url == null) {
             // Invalid url. Try to parse it from text.
 
@@ -55,15 +55,15 @@ public class PopupMenuBuilder {
             type = PopupTypeEnum.LinkMessagePopup;
         }
 
-        return getBuilder(type, description, messageId, text);
+        return getBuilder(type, description, messageId, text, mainFrame);
     }
 
     public static JPopupMenu getForumViewMenu(Forum forum, ForumTableModel forumsModel, IRootPane rootPane) {
         return getBuilder(PopupTypeEnum.ForumListCommonPopup, forum, forumsModel, rootPane);
     }
 
-    public static JPopupMenu getTreeViewPopup(int messageId) {
-        return getBuilder(PopupTypeEnum.TreeThreadViewPopup, Integer.valueOf(messageId));
+    public static JPopupMenu getTreeViewPopup(int messageId, IRootPane mainFrame) {
+        return getBuilder(PopupTypeEnum.TreeThreadViewPopup, Integer.valueOf(messageId), mainFrame);
     }
 
     private static JPopupMenu getBuilder(PopupTypeEnum type, Object... parameters) {

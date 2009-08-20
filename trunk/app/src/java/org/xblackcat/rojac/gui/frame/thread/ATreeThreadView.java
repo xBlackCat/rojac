@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.frame.thread;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.frame.message.AMessageView;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -32,8 +33,8 @@ public abstract class ATreeThreadView extends AMessageView {
     private final JLabel forumName = new JLabel();
     protected final AThreadTreeModel model;
 
-    public ATreeThreadView() {
-        super(new BorderLayout());
+    public ATreeThreadView(IRootPane mainFrame) {
+        super(new BorderLayout(), mainFrame);
 
         model = createModel();
         initializeLayout();
@@ -126,7 +127,7 @@ public abstract class ATreeThreadView extends AMessageView {
         }
 
         private JPopupMenu createMenu(MessageItem mi) {
-            return PopupMenuBuilder.getTreeViewPopup(mi.getMessageId());
+            return PopupMenuBuilder.getTreeViewPopup(mi.getMessageId(), mainFrame);
         }
 
     }

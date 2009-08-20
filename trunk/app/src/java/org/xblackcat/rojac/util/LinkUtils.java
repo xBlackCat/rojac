@@ -89,4 +89,16 @@ public final class LinkUtils {
         }
         return null;
     }
+
+    public static String buildFlatThreadLink(int messageId) {
+        return "http://rsdn.ru/forum/message/" + messageId + ".flat.aspx";
+    }
+
+    public static String buildThreadLink(int messageId) {
+        return "http://rsdn.ru/forum/message/" + messageId + ".aspx";
+    }
+
+    public static String buildMessageLink(int messageId) {
+        return "http://rsdn.ru/forum/message/" + messageId + ".1.aspx";
+    }
 }
