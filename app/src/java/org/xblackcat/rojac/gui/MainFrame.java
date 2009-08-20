@@ -31,10 +31,7 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,6 +66,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     public MainFrame(IOptionsService optionsService) {
         super(Messages.MAIN_WINDOW_TITLE.get());
 
+        os = optionsService;
+
         forumsListView = new ForumsListView(this);
         favoritesView = new FavoritesView();
 
@@ -80,7 +79,25 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         setSize(640, 480);
 
         SwingUtility.centerOnScreen(this);
-        os = optionsService;
+
+        addWindowStateListener(new WindowStateListener() {
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                storeWindowState();
+            }
+        });
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                storeWindowState();
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                storeWindowState();
+            }
+        });
     }
 
     public void loadData() {
@@ -190,6 +207,11 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             setSize(size);
         }
 
+        Integer state = os.getProperty(Property.ROJAC_MAIN_FRAME_STATE);
+        if (state != null) {
+            setExtendedState(state);
+        }
+
         // TODO: implement
     }
 
@@ -197,10 +219,19 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         forumsListView.updateSettings();
         favoritesView.updateSettings();
 
-        os.setProperty(Property.ROJAC_MAIN_FRAME_POSITION, getLocation());
-        os.setProperty(Property.ROJAC_MAIN_FRAME_SIZE, getSize());
+        storeWindowState();
 
         // TODO: implement
+    }
+
+    public void storeWindowState() {
+        int state = getExtendedState();
+
+        os.setProperty(Property.ROJAC_MAIN_FRAME_STATE, state);
+        if (state == NORMAL) {
+            os.setProperty(Property.ROJAC_MAIN_FRAME_POSITION, getLocation());
+            os.setProperty(Property.ROJAC_MAIN_FRAME_SIZE, getSize());
+        }
     }
 
     public void openForumTab(Forum f) {

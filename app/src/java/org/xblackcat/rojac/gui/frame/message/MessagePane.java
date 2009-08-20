@@ -47,10 +47,11 @@ public class MessagePane extends AMessageView implements IInternationazable {
     private final JLabel messageDateLabel = new JLabel();
 
     private int messageId;
-    private JButton answer;
     private static final Insets BUTTON_MARGIN = new Insets(2, 2, 2, 2);
     private JLabel userLabel;
     private JLabel dateLabel;
+    protected JButton answer;
+    protected JComboBox marks;
 
     public MessagePane(IRootPane mainFrame) {
         super(new BorderLayout(), mainFrame);
@@ -89,6 +90,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
             }
         });
         marksButton.setRolloverEnabled(true);
+        marksButton.setVisible(false);
 
         final IconsModel marksModel = new IconsModel(
                 Mark.PlusOne,
@@ -102,7 +104,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
 
         final MarkRenderer renderer = new MarkRenderer(ResourceUtils.loadImageIcon("/images/marks/select.gif"));
 
-        final JComboBox marks = new JComboBox(marksModel);
+        marks = new JComboBox(marksModel);
         marks.setFocusable(false);
         marks.setToolTipText(Messages.DESCRIPTION_MARK_SELECT.get());
         marks.setRenderer(renderer);
@@ -184,19 +186,23 @@ public class MessagePane extends AMessageView implements IInternationazable {
         try {
             mes = storage.getMessageAH().getMessageById(messageId);
 
-            String message = mes.getMessage();
-            String converted = rsdnToHtml.convert(message);
-            messageTextPane.setText(converted);
-            messageTextPane.setCaretPosition(0);
-            labelTopic.setText(mes.getSubject());
-            userInfoLabel.setText(mes.getUserNick());
-            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
-            messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
+            fillFrame(mes);
 
             updateMarksPane(messageId);
         } catch (StorageException e) {
             throw new RuntimeException("Can't load message id = " + messageId, e);
         }
+    }
+
+    protected void fillFrame(Message mes) {
+        String message = mes.getMessage();
+        String converted = rsdnToHtml.convert(message);
+        messageTextPane.setText(converted);
+        messageTextPane.setCaretPosition(0);
+        labelTopic.setText(mes.getSubject());
+        userInfoLabel.setText(mes.getUserNick());
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
+        messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
     }
 
     public void updateItem(int messageId) {
