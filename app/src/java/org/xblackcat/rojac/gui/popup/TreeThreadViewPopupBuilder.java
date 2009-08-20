@@ -1,12 +1,9 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.util.ClipboardUtils;
+import org.xblackcat.rojac.gui.IRootPane;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Date: 19 ρεπο 2009
@@ -14,61 +11,17 @@ import java.awt.event.ActionListener;
  * @author xBlackCat
  */
 
-public class TreeThreadViewPopupBuilder implements IPopupBuilder {
-
+public class TreeThreadViewPopupBuilder extends AMessagePopupBulder {
     @Override
     public JPopupMenu buildMenu(Object... parameters) {
-        if (ArrayUtils.isEmpty(parameters) || parameters.length != 1) {
+        if (ArrayUtils.isEmpty(parameters) || parameters.length != 2) {
             throw new IllegalArgumentException("Invalid parameters amount.");
         }
 
         final int messageId = ((Integer)parameters[0]).intValue();
-        final JPopupMenu menu = new JPopupMenu("#" + messageId);
+        final IRootPane mainFrame = (IRootPane) parameters[1];
 
-        JMenuItem item = new JMenuItem("#" + messageId);
-        item.setEnabled(false);
-
-        menu.add(item);
-        menu.addSeparator();
-
-        ActionListener copyMessageUrlAction = new CopyUrlAction("http://rsdn.ru/forum/message/" + messageId + ".1.aspx");
-        ActionListener copyThreadUrlAction = new CopyUrlAction("http://rsdn.ru/forum/message/" + messageId + ".aspx");
-        ActionListener copyFlatThreadUrlAction = new CopyUrlAction("http://rsdn.ru/forum/message/" + messageId + ".flat.aspx");
-
-        JMenu copy = new JMenu();
-        copy.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL.get());
-
-        JMenuItem copyUrl = new JMenuItem();
-        copyUrl.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL_MESSAGE.get());
-        copyUrl.addActionListener(copyMessageUrlAction);
-        copy.add(copyUrl);
-
-        JMenuItem copyFlatUrl = new JMenuItem();
-        copyFlatUrl.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL_FLAT.get());
-        copyFlatUrl.addActionListener(copyFlatThreadUrlAction);
-        copy.add(copyFlatUrl);
-
-        JMenuItem copyThreadUrl = new JMenuItem();
-        copyThreadUrl.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL_THREAD.get());
-        copyThreadUrl.addActionListener(copyThreadUrlAction);
-        copy.add(copyThreadUrl);
-
-
-        menu.add(copy);
-
-
-        return menu;
+        return buildMenu(messageId, mainFrame);
     }
 
-    private class CopyUrlAction implements ActionListener {
-        protected String url;
-
-        public CopyUrlAction(String url) {
-            this.url = url;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            ClipboardUtils.copyToClipboard(url);
-        }
-    }
 }

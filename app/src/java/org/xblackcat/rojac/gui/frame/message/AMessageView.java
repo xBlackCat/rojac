@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.frame.message;
 
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IMessageView;
+import org.xblackcat.rojac.gui.IRootPane;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -15,20 +16,25 @@ import java.awt.*;
 
 public abstract class AMessageView extends JPanel implements IMessageView {
     private EventListenerList listenerList = new EventListenerList();
+    protected final IRootPane mainFrame;
 
-    protected AMessageView(LayoutManager layout, boolean isDoubleBuffered) {
+    protected AMessageView(LayoutManager layout, boolean isDoubleBuffered, IRootPane mainFrame) {
         super(layout, isDoubleBuffered);
+        this.mainFrame = mainFrame;
     }
 
-    protected AMessageView(LayoutManager layout) {
+    protected AMessageView(LayoutManager layout, IRootPane mainFrame) {
         super(layout);
+        this.mainFrame = mainFrame;
     }
 
-    protected AMessageView(boolean isDoubleBuffered) {
+    protected AMessageView(boolean isDoubleBuffered, IRootPane mainFrame) {
         super(isDoubleBuffered);
+        this.mainFrame = mainFrame;
     }
 
-    protected AMessageView() {
+    protected AMessageView(IRootPane mainFrame) {
+        this.mainFrame = mainFrame;
     }
 
     public void applySettings() {

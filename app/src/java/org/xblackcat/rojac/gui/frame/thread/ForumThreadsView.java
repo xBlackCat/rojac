@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.frame.thread;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.gui.IRootPane;
 
 /**
  * Date: 22 бер 2008
@@ -11,6 +12,10 @@ import org.apache.commons.logging.LogFactory;
 
 public class ForumThreadsView extends ATreeThreadView {
     private static final Log log = LogFactory.getLog(ForumThreadsView.class);
+
+    public ForumThreadsView(IRootPane mainFrame) {
+        super(mainFrame);
+    }
 
     protected AThreadTreeModel createModel() {
         return new ForumThreadsTreeModel();

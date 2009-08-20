@@ -7,6 +7,7 @@ import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.gui.IInternationazable;
+import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
@@ -51,8 +52,8 @@ public class MessagePane extends AMessageView implements IInternationazable {
     private JLabel userLabel;
     private JLabel dateLabel;
 
-    public MessagePane() {
-        super(new BorderLayout());
+    public MessagePane(IRootPane mainFrame) {
+        super(new BorderLayout(), mainFrame);
 
         initialize();
 
@@ -299,7 +300,8 @@ public class MessagePane extends AMessageView implements IInternationazable {
                 JPopupMenu menu = PopupMenuBuilder.getLinkMenu(
                         e.getURL(),
                         e.getDescription(),
-                        LinkUtils.getUrlText(e.getSourceElement())
+                        LinkUtils.getUrlText(e.getSourceElement()),
+                        mainFrame
                 );
 
                 Point l = MouseInfo.getPointerInfo().getLocation();
