@@ -11,6 +11,8 @@ import org.xblackcat.rojac.data.NewMessage;
 public interface INewMessageAH extends AH {
     void storeNewMessage(NewMessage nm) throws StorageException;
 
+    void updateNewMessage(NewMessage nm) throws StorageException;
+
     boolean removeNewMessage(int id) throws StorageException;
 
     NewMessage getNewMessageById(int id) throws StorageException;

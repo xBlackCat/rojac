@@ -6,12 +6,14 @@ import org.apache.commons.logging.LogFactory;
 import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.Message;
+import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IInternationazable;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -47,6 +49,9 @@ public class MessagePane extends AMessageView implements IInternationazable {
     private final JLabel messageDateLabel = new JLabel();
 
     private int messageId;
+    private boolean isNewMessage;
+    private int forumId;
+
     private static final Insets BUTTON_MARGIN = new Insets(2, 2, 2, 2);
     private JLabel userLabel;
     private JLabel dateLabel;
@@ -102,12 +107,12 @@ public class MessagePane extends AMessageView implements IInternationazable {
                 Mark.x3
         );
 
-        final MarkRenderer renderer = new MarkRenderer(ResourceUtils.loadImageIcon("/images/marks/select.gif"));
+        final MarkRender markRender = new MarkRender(ResourceUtils.loadImageIcon("/images/marks/select.gif"));
 
         marks = new JComboBox(marksModel);
         marks.setFocusable(false);
         marks.setToolTipText(Messages.DESCRIPTION_MARK_SELECT.get());
-        marks.setRenderer(renderer);
+        marks.setRenderer(markRender);
         marks.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 marks.setPopupVisible(false);
@@ -119,8 +124,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
         answer = new JButton();
         answer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: replace with proper action
-                JLOptionPane.showMessageDialog(MessagePane.this, "Answer on message [id=" + messageId + "]");
+                mainFrame.editMessage(isNewMessage ? null : forumId, messageId);
             }
         });
         answer.setIcon(ResourceUtils.loadImageIcon("/images/actions/reply.gif"));
@@ -179,22 +183,51 @@ public class MessagePane extends AMessageView implements IInternationazable {
         }
     }
 
-    public void viewItem(int messageId) {
+    public void viewItem(int messageId, boolean isNewMessage) {
         this.messageId = messageId;
+        this.isNewMessage = isNewMessage;
 
-        Message mes;
-        try {
-            mes = storage.getMessageAH().getMessageById(messageId);
+        if (isNewMessage) {
+            NewMessage mes;
+            try {
+                mes = storage.getNewMessageAH().getNewMessageById(messageId);
 
-            fillFrame(mes);
+                fillFrame(mes);
+            } catch (StorageException e) {
+                throw new RuntimeException("Can't load own message id = " + messageId, e);
+            }
+        } else {
+            Message mes;
+            try {
+                mes = storage.getMessageAH().getMessageById(messageId);
 
-            updateMarksPane(messageId);
-        } catch (StorageException e) {
-            throw new RuntimeException("Can't load message id = " + messageId, e);
+                fillFrame(mes);
+
+                updateMarksPane(messageId);
+            } catch (StorageException e) {
+                throw new RuntimeException("Can't load message id = " + messageId, e);
+            }
         }
     }
 
+    protected void fillFrame(NewMessage mes) {
+        forumId = mes.getForumId();
+
+        String message = mes.getMessage();
+        String converted = rsdnToHtml.convert(message);
+        messageTextPane.setText(converted);
+        messageTextPane.setCaretPosition(0);
+        labelTopic.setText(mes.getSubject());
+        userInfoLabel.setText(UserHelper.getUserName());
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
+        messageDateLabel.setText(df.format(new Date()));
+        answer.setEnabled(false);
+        marks.setEnabled(false);
+    }
+
     protected void fillFrame(Message mes) {
+        forumId = mes.getForumId();
+
         String message = mes.getMessage();
         String converted = rsdnToHtml.convert(message);
         messageTextPane.setText(converted);
@@ -203,11 +236,13 @@ public class MessagePane extends AMessageView implements IInternationazable {
         userInfoLabel.setText(mes.getUserNick());
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
         messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
+        answer.setEnabled(true);
+        marks.setEnabled(true);
     }
 
     public void updateItem(int messageId) {
         if (messageId == this.messageId) {
-            viewItem(messageId);
+            viewItem(messageId, false);
         }
     }
 
