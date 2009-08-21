@@ -7,7 +7,7 @@ package org.xblackcat.rojac.gui;
  */
 
 public interface IMessageView extends IView {
-    void viewItem(int messageId);
+    void viewItem(int messageId, boolean isNewMessage);
 
     void updateItem(int messageId);
 

@@ -148,7 +148,7 @@ td.the
 	font-family:verdana;
 	font-weight:bold;
 	padding: 2px 5px;
-	font-size: 13px;
+	font-size: small;
 }
 
 td.t
@@ -166,7 +166,7 @@ td.t
 	background-color:#E8F8E8;
 	padding: 0 5px 0 5px;
 	font-family: verdana, tahoma, helvetica, arial;
-	font-size: 12px;
+	font-size: small;
 }
 
 .nm
@@ -174,7 +174,7 @@ td.t
 	color:#444444;
 	background-color:#E8F8E8;
 	padding: 0 5px 0 5px;
-	font-size: 14px;
+	font-size: small;
 }
 
 input.nm

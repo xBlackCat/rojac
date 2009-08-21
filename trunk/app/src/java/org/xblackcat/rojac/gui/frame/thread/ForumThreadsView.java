@@ -27,7 +27,7 @@ public class ForumThreadsView extends ATreeThreadView {
         messages.setRootVisible(false);
     }
 
-    public void viewItem(int forumId) {
+    public void viewItem(int forumId, boolean isNewMessage) {
         model.loadRoot(forumId);
         loadForumInfo(forumId);
 

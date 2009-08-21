@@ -11,10 +11,10 @@ import java.awt.*;
  * @author xBlackCat
  */
 
-class MarkRenderer extends DefaultListCellRenderer {
+class MarkRender extends DefaultListCellRenderer {
     private final Icon defaultIcon;
 
-    public MarkRenderer(Icon icon) {
+    public MarkRender(Icon icon) {
         defaultIcon = icon;
     }
 

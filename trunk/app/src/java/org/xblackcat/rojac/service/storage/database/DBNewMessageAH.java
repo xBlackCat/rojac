@@ -21,12 +21,23 @@ final class DBNewMessageAH implements INewMessageAH {
     }
 
     public void storeNewMessage(NewMessage nm) throws StorageException {
-        helper.update(DataQuery.STORE_OBJECT_NEW_MESSAGE,
-                nm.getLocalMessageId(),
+        helper.update(
+                DataQuery.STORE_OBJECT_NEW_MESSAGE,
                 nm.getParentId(),
                 nm.getForumId(),
                 nm.getSubject(),
-                nm.getMessage());
+                nm.getMessage()
+        );
+    }
+
+    @Override
+    public void updateNewMessage(NewMessage nm) throws StorageException {
+        helper.update(
+                DataQuery.UPDATE_OBJECT_NEW_MESSAGE,
+                nm.getSubject(),
+                nm.getMessage(),
+                nm.getLocalMessageId()
+        );
     }
 
     public boolean removeNewMessage(int id) throws StorageException {

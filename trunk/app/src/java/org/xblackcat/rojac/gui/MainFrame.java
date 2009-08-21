@@ -20,9 +20,9 @@ import org.xblackcat.rojac.gui.view.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.commands.AffectedPosts;
-import org.xblackcat.rojac.service.commands.GetNewPostsCommand;
 import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.commands.LoadExtraMessagesCommand;
+import org.xblackcat.rojac.service.commands.SynchronizeCommand;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMiscAH;
@@ -153,7 +153,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         JPanel topPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPane.add(WindowsUtils.setupImageButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showProgressDialog(new GetNewPostsCommand(changeHandler));
+                showProgressDialog(new SynchronizeCommand(changeHandler));
             }
         }, Messages.MAINFRAME_BUTTON_UPDATE));
         topPane.add(WindowsUtils.setupImageButton("update", new ActionListener() {
@@ -248,7 +248,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         int idx = threads.indexOfComponent($);
         threads.setTabComponentAt(idx, new TabHeader(f));
 
-        $.viewItem(f.getForumId());
+        $.viewItem(f.getForumId(), false);
     }
 
     public void showProgressDialog(ITask task) {
@@ -260,6 +260,13 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     public void editMessage(Integer forumId, Integer messageId) {
+        EditMessageDialog editDlg = new EditMessageDialog(this);
+
+        if (forumId == null) {
+            editDlg.editMessage(messageId);
+        } else {
+            editDlg.answerOn(messageId);
+        }
     }
 
     private class TabHeader extends JPanel {

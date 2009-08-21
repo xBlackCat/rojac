@@ -126,7 +126,7 @@ public enum DataQuery implements IPropertiable {
     /**
      * The query for storing the new message object. Set the object parameters in following order:
      * <p/>
-     * id (int), parent id(int), forum id(int), subject(String), message(String)
+     * parent id(int), forum id(int), subject(String), message(String)
      */
     STORE_OBJECT_NEW_MESSAGE,
     /**
@@ -308,6 +308,12 @@ public enum DataQuery implements IPropertiable {
      * read(boolean), id(int)
      */
     UPDATE_FORUM_MESSAGES_READ_FLAG,
+    /**
+     * The query for updating a new message object. Set the object parameters in following order:
+     * <p/>
+     * parent id(int), forum id(int), subject(String), message(String), id (int)
+     */
+    UPDATE_OBJECT_NEW_MESSAGE,
 
     /**
      * The query for retrieving ids for the specified forum group. SQL parameters:

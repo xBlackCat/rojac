@@ -97,7 +97,7 @@ public class ProgressTrackerDialog extends JDialog {
 
         public void postException(final Throwable t) {
             gotException = true;
-            
+            log.error("Got exception", t);
         }
 
         public boolean isSuccess() {

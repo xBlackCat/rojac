@@ -30,7 +30,7 @@ public class ThreadDoubleView extends AMessageView {
 
         masterView.addActionListener(new IActionListener() {
             public void itemGotFocus(int messageId) {
-                slaveView.viewItem(messageId);
+                slaveView.viewItem(messageId, false);
             }
 
             public void itemLostFocus(int messageId) {
@@ -60,8 +60,8 @@ public class ThreadDoubleView extends AMessageView {
         add(splitPane);
     }
 
-    public void viewItem(int messageId) {
-        masterView.viewItem(messageId);
+    public void viewItem(int messageId, boolean isNewMessage) {
+        masterView.viewItem(messageId, false);
     }
 
     public void updateItem(int messageId) {
