@@ -19,14 +19,14 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class LoadUsersCommand extends ARsdnCommand<Boolean> {
+public class LoadUsersCommand extends ARsdnCommand<AffectedPosts> {
     private static final Log log = LogFactory.getLog(LoadUsersCommand.class);
 
-    public LoadUsersCommand(IResultHandler<Boolean> booleanIResultHandler) {
+    public LoadUsersCommand(IResultHandler<AffectedPosts> booleanIResultHandler) {
         super(booleanIResultHandler);
     }
 
-    public Boolean process(IProgressTracker trac) throws RojacException {
+    public AffectedPosts process(IProgressTracker trac) throws RojacException {
         IUserAH uAH = storage.getUserAH();
 
         if (log.isInfoEnabled()) {
@@ -63,6 +63,6 @@ public class LoadUsersCommand extends ARsdnCommand<Boolean> {
         } catch (JanusServiceException e) {
             throw new RsdnProcessorException("Can not get the users list from the RSDN server.", e);
         }
-        return true;
+        return new AffectedPosts();
     }
 }
