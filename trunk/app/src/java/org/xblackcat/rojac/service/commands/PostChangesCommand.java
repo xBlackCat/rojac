@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.service.commands;
 
+import gnu.trove.TIntHashSet;
+import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,14 +23,14 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class PostChangesCommand extends ARsdnCommand<Boolean> {
+public class PostChangesCommand extends ARsdnCommand<AffectedPosts> {
     private static final Log log = LogFactory.getLog(PostChangesCommand.class);
 
-    public PostChangesCommand(IResultHandler<Boolean> voidIResultHandler) {
+    public PostChangesCommand(IResultHandler<AffectedPosts> voidIResultHandler) {
         super(voidIResultHandler);
     }
 
-    public Boolean process(IProgressTracker trac) {
+    public AffectedPosts process(IProgressTracker trac) {
         trac.addLodMessage("Synchronization started.");
 
         try {
@@ -54,7 +56,20 @@ public class PostChangesCommand extends ARsdnCommand<Boolean> {
                 if (log.isDebugEnabled()) {
                     log.debug("Nothing to post.");
                 }
-                return false;
+                return new AffectedPosts();
+            }
+
+            // Store forum ids of new messages and message ids of new ratings to return update event
+            TIntObjectHashMap<NewMessage> messageForumIds = new TIntObjectHashMap<NewMessage>();
+
+            TIntHashSet messagesToUpdate = new TIntHashSet();
+
+            for (NewRating nr : newRatings) {
+                messagesToUpdate.add(nr.getMessageId());
+            }
+
+            for (NewMessage nm : newMessages) {
+                messageForumIds.put(nm.getLocalMessageId(), nm);
             }
 
             PostInfo postInfo;
@@ -65,6 +80,8 @@ public class PostChangesCommand extends ARsdnCommand<Boolean> {
                 throw new RsdnProcessorException("Can not post your changes to the RSDN.", e);
             }
 
+            TIntHashSet forumsToUpdate = new TIntHashSet();
+
             try {
                 // Assume that all the ratings are commited.
                 nrAH.clearRatings();
@@ -72,6 +89,8 @@ public class PostChangesCommand extends ARsdnCommand<Boolean> {
                 // Remove the commited messages from the storage.
                 for (int lmID : postInfo.getCommited()) {
                     nmeAH.removeNewMessage(lmID);
+                    forumsToUpdate.add(messageForumIds.get(lmID).getForumId());
+                    messagesToUpdate.add(messageForumIds.get(lmID).getParentId());
                 }
 
                 // Show all the PostExceptions if any
@@ -83,11 +102,12 @@ public class PostChangesCommand extends ARsdnCommand<Boolean> {
             } catch (StorageException e) {
                 throw new RsdnProcessorException("Unable to process the commit response.", e);
             }
+
+            return new AffectedPosts(messagesToUpdate.toArray(), forumsToUpdate.toArray());
         } catch (RsdnProcessorException e) {
             // Log the exception to console.
             trac.postException(e);
-            return false;
+            return new AffectedPosts();
         }
-        return true;
     }
 }

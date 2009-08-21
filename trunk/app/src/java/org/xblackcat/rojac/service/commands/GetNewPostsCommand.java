@@ -10,6 +10,7 @@ import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
+import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.options.Property;
 
@@ -81,6 +82,8 @@ public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
                 );
 
                 brokenTopics = ArrayUtils.EMPTY_INT_ARRAY;
+
+                UserHelper.setUserId(data.getOwnUserId());
 
                 messages = data.getMessages();
                 Moderate[] moderates = data.getModerates();
