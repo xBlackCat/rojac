@@ -27,6 +27,7 @@ import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -64,7 +65,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     };
 
     public MainFrame(IOptionsService optionsService) {
-        super(Messages.MAIN_WINDOW_TITLE.get());
+        super(RojacUtils.VERSION_STRING);
 
         os = optionsService;
 
