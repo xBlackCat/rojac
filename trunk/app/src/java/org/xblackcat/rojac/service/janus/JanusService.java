@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.janus;
 
-import org.apache.axis.MessageContext;
+import org.apache.axis.client.Call;
 import org.apache.axis.configuration.FileProvider;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.lang.ArrayUtils;
@@ -22,6 +22,7 @@ import ru.rsdn.Janus.*;
 import javax.xml.rpc.ServiceException;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.Hashtable;
 
 /**
  * Date: 10 квіт 2007
@@ -209,14 +210,18 @@ public class JanusService implements IJanusService {
             JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
 
             // Compress the request
-            if (useCompression) {
+            if (false && useCompression) {
                 log.info("Data compression is enabled.");
                 // Tell the server it can compress the response
                 soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
                 soap._setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
             }
-            jl.getEngine().setOption(MessageContext.HTTP_TRANSPORT_VERSION, HTTPConstants.HEADER_PROTOCOL_V10);
-            soap._setProperty(org.apache.axis.client.Call.SESSION_MAINTAIN_PROPERTY, Boolean.TRUE);
+            soap._setProperty(Call.SESSION_MAINTAIN_PROPERTY, Boolean.TRUE);
+            Hashtable rh = new Hashtable();
+            rh.put(HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED, Boolean.FALSE);
+            rh.put(HTTPConstants.HEADER_CONNECTION, HTTPConstants.HEADER_CONNECTION_CLOSE);
+            rh.put(HTTPConstants.HEADER_USER_AGENT, "Rojac v0.1ppa");
+            soap._setProperty(HTTPConstants.REQUEST_HEADERS, rh);
 
             this.soap = soap;
             log.info("Initialization has done.");

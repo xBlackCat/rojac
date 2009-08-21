@@ -20,7 +20,7 @@
     <!--</globalConfiguration>-->
 
     <!-- use CommonsHTTPSender instead of the default HTTPSender -->
-    <transport name="http" pivot="java:org.apache.axis.transport.http.CommonsHTTPSender"/>
+    <transport name="http" pivot="java:org.xblackcat.rojac.service.janus.JanusCommonsHTTPSender"/>
 
     <transport name="local" pivot="java:org.apache.axis.transport.local.LocalSender"/>
     <transport name="java" pivot="java:org.apache.axis.transport.java.JavaSender"/>
