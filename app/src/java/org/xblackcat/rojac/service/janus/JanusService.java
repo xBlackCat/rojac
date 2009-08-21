@@ -213,11 +213,12 @@ public class JanusService implements IJanusService {
                 log.info("Data compression is enabled.");
                 // Tell the server it can compress the response
                 soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
-                soap._setProperty(HTTPConstants.COMPRESSION_GZIP, Boolean.TRUE);
+                soap._setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
             }
             jl.getEngine().setOption(MessageContext.HTTP_TRANSPORT_VERSION, HTTPConstants.HEADER_PROTOCOL_V10);
+            soap._setProperty(org.apache.axis.client.Call.SESSION_MAINTAIN_PROPERTY, Boolean.TRUE);
 
-            this.soap = jl.getJanusATSoap();
+            this.soap = soap;
             log.info("Initialization has done.");
         } catch (ServiceException e) {
             throw new JanusServiceException(e);
