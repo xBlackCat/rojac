@@ -220,7 +220,7 @@ public class JanusService implements IJanusService {
             Hashtable rh = new Hashtable();
             rh.put(HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED, Boolean.FALSE);
             rh.put(HTTPConstants.HEADER_CONNECTION, HTTPConstants.HEADER_CONNECTION_CLOSE);
-            rh.put(HTTPConstants.HEADER_USER_AGENT, "Rojac v0.1ppa");
+            rh.put(HTTPConstants.HEADER_USER_AGENT, RojacUtils.VERSION_STRING);
             soap._setProperty(HTTPConstants.REQUEST_HEADERS, rh);
 
             this.soap = soap;

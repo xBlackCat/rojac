@@ -121,6 +121,18 @@
           </fileset>
         </copy>
 
+        <!-- First get real revision of a build.xml file -->
+        <exec executable="svn" failonerror="false" output="nul">
+            <arg value="up"/>
+            <arg value="${rojac-application.basedir}/build.xml"/>
+        </exec>
+        <!-- Paste resource file with revision information -->
+        <exec executable="svn" output="${rojac-application.output.dir}/config/rojac.revision">
+            <arg value="info"/>
+            <!-- any filename can be here, because we need only Revision property, which is general for all filenames -->
+            <arg value="${rojac-application.basedir}/build.xml"/>
+        </exec>
+
         <!--Compile test classes-->
         <javac destdir="${rojac-application.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
           <compilerarg line="${compiler.args.rojac}"/>
@@ -168,6 +180,25 @@
                 <attribute name="Class-Path" value=". ${dist.classpath}"/>
             </manifest>
         </jar>
+
+        <echo file="${rojac-application.dist.dir}/bin/rojac.cmd">
+            @javaw -jar ../lib/rojac.jar
+        </echo>
+
+        <echo file="${rojac-application.dist.dir}/bin/rojac.sh">
+            #!/bin/sh
+            #
+
+            java -jar ../lib/rojac.jar
+        </echo>
+
+        <echo file="${rojac-application.dist.dir}/bin/rojac.bat">
+            @java -jar ../lib/rojac.jar
+        </echo>
+
+        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.cmd" eol="dos"/>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.bat" eol="dos"/>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.sh"  eol="unix"/> 
     </target>
 
     <target name="rebuild" description="Rebuild application" depends="clean, build"/>

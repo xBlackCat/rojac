@@ -16,9 +16,9 @@ public class LinkUtilsTest extends TestCase {
         assertEquals(1083065, LinkUtils.getMessageId("http://rsdn.ru/forum/Message.aspx?mid=1083065&only=1").intValue());
         assertEquals(1083065, LinkUtils.getMessageId("http://www.rsdn.ru/forum/Message.aspx?mid=1083065&only=1").intValue());
         assertEquals(1083065, LinkUtils.getMessageId("http://gzip.rsdn.ru/forum/Message.aspx?mid=1083065&only=1").intValue());
+        assertEquals(1044129, LinkUtils.getMessageId("http://gzip.rsdn.ru/Forum/message/1044129.aspx").intValue());
 
         // Tests broken and non-RSDN links
-        assertNull(LinkUtils.getMessageId("http://gzip.rsdn.ru/Forum/message/1044129.aspx"));
         assertNull(LinkUtils.getMessageId("http://rsdn.ru/message/1863587.1.aspx"));
         assertNull(LinkUtils.getMessageId("http://dot.net.ru/message/1863587.1.aspx"));
         assertNull(LinkUtils.getMessageId("http://www.google.com/"));

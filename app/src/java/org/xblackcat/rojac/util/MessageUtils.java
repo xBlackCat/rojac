@@ -86,7 +86,7 @@ public final class MessageUtils {
     public static String addOwnTagLine(String body) {
         body = TAGLINE_PATTERN.matcher(body).replaceAll("");
 
-        body += "[tagline] Rojac pre-pre-alpha 0.0001 [/tagline]";
+        body += "[tagline] " + RojacUtils.VERSION_STRING + " [/tagline]";
 
         return body;
     }
