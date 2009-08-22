@@ -3,6 +3,10 @@ package org.xblackcat.rojac.service;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.utils.ResourceUtils;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Helper class to access application user information.
@@ -10,10 +14,10 @@ import org.xblackcat.rojac.service.options.Property;
  * @author xBlackCat
  */
 
-public final class UserHelper {
+public final class RojacHelper {
     private static IOptionsService optionsService = ServiceFactory.getInstance().getOptionsService();
 
-    private UserHelper() {
+    private RojacHelper() {
     }
 
     public static String getUserName() {
@@ -56,5 +60,17 @@ public final class UserHelper {
 
     public static void setUserId(int id) {
         optionsService.setProperty(Property.RSDN_USER_ID, id);
+    }
+
+    public static String getThemePath(String path) {
+        return "/images/" + path;
+    }
+
+    public static Icon loadIcon(String path) {
+        return ResourceUtils.loadIcon(getThemePath(path));
+    }
+
+    public static Image loadImage(String path) {
+        return ResourceUtils.loadImage(getThemePath(path));
     }
 }

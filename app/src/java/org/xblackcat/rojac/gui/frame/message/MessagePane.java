@@ -12,13 +12,12 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
-import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -107,7 +106,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
                 Mark.x3
         );
 
-        final MarkRender markRender = new MarkRender(ResourceUtils.loadImageIcon("/images/marks/select.gif"));
+        final MarkRender markRender = new MarkRender(RojacHelper.loadIcon("marks/select.gif"));
 
         marks = new JComboBox(marksModel);
         marks.setFocusable(false);
@@ -127,7 +126,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
                 mainFrame.editMessage(isNewMessage ? null : forumId, messageId);
             }
         });
-        answer.setIcon(ResourceUtils.loadImageIcon("/images/actions/reply.gif"));
+        answer.setIcon(RojacHelper.loadIcon("actions/reply.gif"));
         answer.setFocusable(false);
         answer.setMargin(BUTTON_MARGIN);
 
@@ -218,7 +217,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
         messageTextPane.setText(converted);
         messageTextPane.setCaretPosition(0);
         labelTopic.setText(mes.getSubject());
-        userInfoLabel.setText(UserHelper.getUserName());
+        userInfoLabel.setText(RojacHelper.getUserName());
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
         messageDateLabel.setText(df.format(new Date()));
         answer.setEnabled(false);

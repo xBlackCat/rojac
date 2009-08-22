@@ -8,8 +8,8 @@ import org.xblackcat.rojac.data.VersionInfo;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
 import org.xblackcat.rojac.gui.frame.progress.ITask;
+import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusService;
 import org.xblackcat.rojac.service.options.IOptionsService;
@@ -50,7 +50,7 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
             }
         }
 
-        JanusService c = new JanusService(UserHelper.getUserName(), UserHelper.getUserPassword());
+        JanusService c = new JanusService(RojacHelper.getUserName(), RojacHelper.getUserPassword());
         c.init(optionsService.getProperty(Property.SERVICE_JANUS_USE_GZIP));
         c.testConnection();
         janusService = c;
