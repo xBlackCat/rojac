@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.frame.message;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.NewMessage;
@@ -18,6 +17,7 @@ import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -89,7 +89,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
         marksButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 RatingDialog rd = new RatingDialog(SwingUtilities.windowForComponent(MessagePane.this), messageId);
-                SwingUtility.center(rd, marksButton);
+                WindowsUtils.center(rd, marksButton);
                 rd.setVisible(true);
             }
         });

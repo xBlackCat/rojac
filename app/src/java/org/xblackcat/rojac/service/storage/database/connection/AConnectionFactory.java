@@ -1,12 +1,12 @@
 package org.xblackcat.rojac.service.storage.database.connection;
 
-import org.xblackcat.rojac.service.storage.StorageInitializationException;
-import org.xblackcat.utils.ResourceUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.storage.StorageInitializationException;
+import org.xblackcat.utils.ResourceUtils;
 
-import java.util.Properties;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Date: 5 זמגע 2008

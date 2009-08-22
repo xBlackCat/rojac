@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.util;
 
-import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -135,7 +134,6 @@ public final class RojacUtils {
 
     public static void setLookAndFeel(LookAndFeel laf) throws UnsupportedLookAndFeelException {
         UIManager.setLookAndFeel(laf);
-        SwingUtility.setPlaf(laf.getClass());
     }
 
 //    public static <T, E> T[] extract(E[] arr, IExtractor<T, E> e) {

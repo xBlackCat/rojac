@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.util;
 
-import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 
@@ -29,7 +28,7 @@ public final class WindowsUtils {
         f.setVisible(true);
         f.setSize(300, 300);
 
-        SwingUtility.centerOnScreen(f);
+        WindowsUtils.centerOnScreen(f);
     }
 
     /**
@@ -147,4 +146,53 @@ public final class WindowsUtils {
         button.setToolTipText(tooltip);
         return button;
     }
+
+    public static final void centerOnScreen(Window window) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension windowSize = window.getSize();
+
+        if (windowSize.height > screenSize.height) {
+            windowSize.height = screenSize.height;
+        }
+
+        if (windowSize.width > screenSize.width) {
+            windowSize.width = screenSize.width;
+        }
+
+        window.setLocation((screenSize.width - windowSize.width) / 2,
+                (screenSize.height - windowSize.height) / 2);
+    }
+
+    public static void center(Window window, Component parent) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        Rectangle bounds = new Rectangle(parent.getLocationOnScreen(), parent.getSize());
+
+        int w = window.getWidth();
+        int h = window.getHeight();
+
+        // center according to parent
+
+        int x = ((int) bounds.getCenterX()) - w / 2;
+        int y = ((int) bounds.getCenterY()) - h / 2;
+
+        // does it fit on screen?
+
+        if (x < 0) {
+            x = 0;
+        } else if (x + w > screenSize.getWidth()) {
+            x = ((int) screenSize.getWidth()) - w;
+        }
+
+        if (y < 0) {
+            y = 0;
+        } else if (y + h > screenSize.getHeight()) {
+            y = ((int) screenSize.getHeight()) - h;
+        }
+
+        // done
+
+        window.setBounds(x, y, w, h);
+    }
+
 }

@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.dialogs;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.ClipboardUtils;
@@ -115,7 +114,7 @@ public class LoadMessageDialog extends JDialog {
 
         messageIdText.selectAll();
 
-        SwingUtility.center(this, mainFrame);
+        WindowsUtils.center(this, mainFrame);
 
         setVisible(true);
 

@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.flexdock.docking.DockingConstants;
 import org.flexdock.docking.DockingManager;
-import org.flexdock.util.SwingUtility;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.xblackcat.rojac.RojacException;
@@ -79,7 +78,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         // Default position/size
         setSize(640, 480);
 
-        SwingUtility.centerOnScreen(this);
+        WindowsUtils.centerOnScreen(this);
 
         addWindowStateListener(new WindowStateListener() {
             @Override
@@ -255,7 +254,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     public void showProgressDialog(ITask task) {
         ProgressTrackerDialog tr = new ProgressTrackerDialog(this, task);
 
-        SwingUtility.center(tr, this);
+        WindowsUtils.center(tr, this);
         tr.setVisible(true);
         tr.startTask();
     }
