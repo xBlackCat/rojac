@@ -2,7 +2,6 @@ package org.xblackcat.rojac;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.i18n.Messages;
@@ -11,6 +10,7 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -62,7 +62,7 @@ public final class RojacLauncher {
 
         while (!RojacHelper.isUserRegistered()) {
             LoginDialog ld = new LoginDialog(mainFrame);
-            SwingUtility.centerOnScreen(ld);
+            WindowsUtils.centerOnScreen(ld);
             if (ld.showLoginDialog(optionsService)) {
                 System.exit(0);
             }
