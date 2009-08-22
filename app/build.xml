@@ -169,36 +169,50 @@
             <fileset refid="rojac.runtime.libs"/>
         </copy>
 
-        <pathconvert pathsep=" " property="dist.classpath" refid="rojac.runtime.libs">
-            <map from="${rojac-application.basedir}\libs\" to=""/>
-        </pathconvert>
-
         <jar jarfile="${rojac-application.dist.dir}/lib/${rojac.jar.filename}">
             <fileset dir="${rojac-application.output.dir}"/>
             <manifest>
-                <attribute name="Main-Class" value="org.xblackcat.rojac.RojacLauncher"/>
-                <attribute name="Class-Path" value=". ${dist.classpath}"/>
             </manifest>
         </jar>
 
-        <echo file="${rojac-application.dist.dir}/bin/rojac.cmd">
-            @javaw -jar ../lib/rojac.jar
+        <fileset id="rojac.full.libs" dir="${rojac-application.dist.dir}/lib">
+            <include name="**/*.jar"/>
+        </fileset>
+
+        <pathconvert targetos="windows" property="dist.win32.classpath" refid="rojac.full.libs">
+            <map from="${rojac-application.dist.dir}" to=".."/>
+        </pathconvert>
+
+        <pathconvert targetos="unix" property="dist.unix.classpath" refid="rojac.full.libs">
+            <map from="${rojac-application.dist.dir}" to=".."/>
+        </pathconvert>
+
+        <echo file="${rojac-application.dist.dir}/bin/rojac.cmd">@echo off
+
+SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
+
+javaw.exe -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
         </echo>
 
-        <echo file="${rojac-application.dist.dir}/bin/rojac.sh">
-            #!/bin/sh
-            #
+        <echo file="${rojac-application.dist.dir}/bin/rojac.sh">#!/bin/sh
 
-            java -jar ../lib/rojac.jar
+SET CLASSPATH=$CLASSPATH:${dist.unix.classpath}
+
+java -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
         </echo>
 
-        <echo file="${rojac-application.dist.dir}/bin/rojac.bat">
-            @java -jar ../lib/rojac.jar
+        <echo file="${rojac-application.dist.dir}/bin/rojac.bat">@echo off
+
+SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
+
+java.exe -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
         </echo>
 
         <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.cmd" eol="dos"/>
         <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.bat" eol="dos"/>
-        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.sh"  eol="unix"/> 
+        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.sh"  eol="unix"/>
+
+        <chmod file="${rojac-application.dist.dir}/bin/rojac.sh" perm="755" failonerror="false"/>
     </target>
 
     <target name="rebuild" description="Rebuild application" depends="clean, build"/>
