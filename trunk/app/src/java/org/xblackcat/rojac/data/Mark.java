@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.data;
 
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -22,7 +23,7 @@ public enum Mark {
     Smile(-2, Messages.DESCRIPTION_MARK_SMILE, "smile.gif"),
     Remove(-1, Messages.DESCRIPTION_MARK_REMOVE, "smile.gif");
 
-    private static final String IMAGES_MARKS_PATH = "/images/marks/";
+    private static final String IMAGES_MARKS_PATH = "marks/";
 
     public static Mark getMark(int code) {
         for (Mark m : values()) {
@@ -48,7 +49,7 @@ public enum Mark {
     }
 
     public Icon getIcon() {
-        return ResourceUtils.loadImageIcon(path);
+        return RojacHelper.loadIcon(path);
     }
 
     public URL getUrl() {

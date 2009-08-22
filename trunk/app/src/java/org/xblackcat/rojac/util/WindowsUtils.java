@@ -1,10 +1,8 @@
 package org.xblackcat.rojac.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.flexdock.util.SwingUtility;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.utils.ResourceUtils;
+import org.xblackcat.rojac.service.RojacHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,9 +15,7 @@ import java.awt.event.ActionListener;
  */
 
 public final class WindowsUtils {
-    private static final Log log = LogFactory.getLog(WindowsUtils.class);
-
-    private static final String BUTTON_IMAGES_PREFIX = "/images/button/";
+    private static final String BUTTON_IMAGES_PREFIX = "button/";
     public static final Insets EMPTY_MARGIN = new Insets(0, 2, 0, 2);
 
     private WindowsUtils() {
@@ -75,25 +71,6 @@ public final class WindowsUtils {
         return cover;
     }
 
-    public static JMenuItem setupMenuItem(String name, String command, Icon icon, ActionListener listener, boolean enabled) {
-        JMenuItem mi;
-        mi = new JMenuItem(name, icon);
-        mi.setActionCommand(command);
-        mi.addActionListener(listener);
-        mi.setEnabled(enabled);
-        return mi;
-    }
-
-    public static JMenuItem setupCheckMenuItem(String name, String command, ActionListener listener, boolean selected, ButtonGroup bg) {
-        JMenuItem mi;
-        mi = new JRadioButtonMenuItem(name);
-        mi.setActionCommand(command);
-        mi.addActionListener(listener);
-        mi.setSelected(selected);
-        bg.add(mi);
-        return mi;
-    }
-
     public static void setComponentFixedSize(JComponent component, Dimension size) {
         component.setMinimumSize(size);
         component.setMaximumSize(size);
@@ -108,7 +85,7 @@ public final class WindowsUtils {
     public static JToggleButton setupToggleButton(String buttonName, ActionListener action, Messages mes, ButtonGroup bg) {
         String imageSet = BUTTON_IMAGES_PREFIX + buttonName + '/';
         JToggleButton toggleButton = new JToggleButton();
-        toggleButton.setIcon(ResourceUtils.loadImageIcon(imageSet + "enabled.png"));
+        toggleButton.setIcon(RojacHelper.loadIcon(imageSet + "enabled.png"));
         toggleButton.setHorizontalAlignment(SwingConstants.CENTER);
         toggleButton.setBorder(null);
         toggleButton.setBackground(Color.white);
@@ -116,10 +93,10 @@ public final class WindowsUtils {
         toggleButton.setBorderPainted(false);
         toggleButton.setMargin(EMPTY_MARGIN);
         toggleButton.setRolloverEnabled(true);
-        toggleButton.setSelectedIcon(ResourceUtils.loadImageIcon(imageSet + "pressed.png"));
-        toggleButton.setRolloverIcon(ResourceUtils.loadImageIcon(imageSet + "over.png"));
-        toggleButton.setRolloverSelectedIcon(ResourceUtils.loadImageIcon(imageSet + "pressed.png"));
-        toggleButton.setDisabledIcon(ResourceUtils.loadImageIcon(imageSet + "disabled.png"));
+        toggleButton.setSelectedIcon(RojacHelper.loadIcon(imageSet + "pressed.png"));
+        toggleButton.setRolloverIcon(RojacHelper.loadIcon(imageSet + "over.png"));
+        toggleButton.setRolloverSelectedIcon(RojacHelper.loadIcon(imageSet + "pressed.png"));
+        toggleButton.setDisabledIcon(RojacHelper.loadIcon(imageSet + "disabled.png"));
         toggleButton.addActionListener(action);
         toggleButton.setOpaque(false);
         toggleButton.setToolTipText(mes.get());
@@ -153,7 +130,7 @@ public final class WindowsUtils {
     public static JButton setupImageButton(String buttonName, ActionListener action, String tooltip) {
         String imageSet = BUTTON_IMAGES_PREFIX + buttonName + '/';
         JButton button = new JButton();
-        button.setIcon(ResourceUtils.loadImageIcon(imageSet + "enabled.png"));
+        button.setIcon(RojacHelper.loadIcon(imageSet + "enabled.png"));
         button.setHorizontalAlignment(SwingConstants.CENTER);
         button.setBorder(null);
         button.setBackground(Color.white);
@@ -161,10 +138,10 @@ public final class WindowsUtils {
         button.setBorderPainted(false);
         button.setMargin(EMPTY_MARGIN);
         button.setRolloverEnabled(true);
-        button.setSelectedIcon(ResourceUtils.loadImageIcon(imageSet + "pressed.png"));
-        button.setRolloverIcon(ResourceUtils.loadImageIcon(imageSet + "over.png"));
-        button.setRolloverSelectedIcon(ResourceUtils.loadImageIcon(imageSet + "pressed.png"));
-        button.setDisabledIcon(ResourceUtils.loadImageIcon(imageSet + "disabled.png"));
+        button.setSelectedIcon(RojacHelper.loadIcon(imageSet + "pressed.png"));
+        button.setRolloverIcon(RojacHelper.loadIcon(imageSet + "over.png"));
+        button.setRolloverSelectedIcon(RojacHelper.loadIcon(imageSet + "pressed.png"));
+        button.setDisabledIcon(RojacHelper.loadIcon(imageSet + "disabled.png"));
         button.addActionListener(action);
         button.setOpaque(false);
         button.setToolTipText(tooltip);

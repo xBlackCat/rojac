@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.frame.mtree;
 
 import org.xblackcat.rojac.data.Message;
-import org.xblackcat.utils.ResourceUtils;
+import org.xblackcat.rojac.service.RojacHelper;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,8 +12,8 @@ import javax.swing.border.EmptyBorder;
  * @author xBlackCat
  */
 final class TopicCellRenderer extends MessageCellRenderer {
-    private final Icon BRANCH_OPEN = ResourceUtils.loadImageIcon("/images/tree/treeExpanded.png");
-    private final Icon BRANCH_CLOSED = ResourceUtils.loadImageIcon("/images/tree/treeCollapsed.png");
+    private final Icon BRANCH_OPEN = RojacHelper.loadIcon("tree/treeExpanded.png");
+    private final Icon BRANCH_CLOSED = RojacHelper.loadIcon("tree/treeCollapsed.png");
 
     protected boolean setupComponent(MessageItem item, boolean selected) {
         setIcon(item.isExpanded() ? BRANCH_OPEN : BRANCH_CLOSED);

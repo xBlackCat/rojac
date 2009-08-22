@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.UserHelper;
+import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -98,9 +98,9 @@ public class LoginDialog extends JDialog {
     }
 
     public boolean showLoginDialog(IOptionsService optionsService) {
-        String login = UserHelper.getUserName();
-        String password = UserHelper.getUserPassword();
-        boolean save = UserHelper.shouldStorePassword();
+        String login = RojacHelper.getUserName();
+        String password = RojacHelper.getUserPassword();
+        boolean save = RojacHelper.shouldStorePassword();
 
         fieldLogin.setText(login);
         fieldPassword.setText(password);
@@ -111,15 +111,15 @@ public class LoginDialog extends JDialog {
         if (!canceled) {
             login = fieldLogin.getText();
             if (StringUtils.isNotBlank(login)) {
-                UserHelper.setUserName(login);
+                RojacHelper.setUserName(login);
             }
 
             char[] p = fieldPassword.getPassword();
             if (!ArrayUtils.isEmpty(p)) {
-                UserHelper.setUserPassword(p);
+                RojacHelper.setUserPassword(p);
             }
 
-            UserHelper.shouldStorePassword(fieldSavePassword.isSelected());
+            RojacHelper.shouldStorePassword(fieldSavePassword.isSelected());
         }
 
         return canceled;

@@ -14,6 +14,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,7 +62,7 @@ public final class RojacUtils {
 
             versionString.append(" (rev. ");
             versionString.append(revNum);
-            
+
             if (file.startsWith(path)) {
                 int pos = path.length() + 1;
                 int nextPos = file.indexOf('/', pos);
@@ -81,7 +82,8 @@ public final class RojacUtils {
             }
             versionString.append(')');
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("It finally happened!", e);
+        } catch (MissingResourceException e) {
             // No resource is available - do not append revision number
         }
         VERSION_STRING = versionString.toString();
