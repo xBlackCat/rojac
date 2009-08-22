@@ -3,7 +3,7 @@
   ~ Copyright (c) 2008, xBlackCat.
   -->
 
-<project name="rojac-application" default="build">
+<project name="rojac-application" default="rebuild">
     <property environment="env"/>
     <property file="build.properties"/>
 
@@ -215,5 +215,5 @@ java.exe -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
         <chmod file="${rojac-application.dist.dir}/bin/rojac.sh" perm="755" failonerror="false"/>
     </target>
 
-    <target name="rebuild" description="Rebuild application" depends="clean, build"/>
+    <target name="rebuild" description="Rebuild application" depends="clean, compile, build"/>
 </project>

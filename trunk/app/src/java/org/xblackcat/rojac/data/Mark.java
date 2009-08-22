@@ -53,7 +53,7 @@ public enum Mark {
     }
 
     public URL getUrl() {
-        return ResourceUtils.getResource(path);
+        return ResourceUtils.getResource(RojacHelper.getThemePath(path));
     }
 
     public String toString() {
