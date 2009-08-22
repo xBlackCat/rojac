@@ -1,14 +1,24 @@
 package org.xblackcat.rojac.gui;
 
+import net.infonode.docking.DockingWindow;
+import net.infonode.docking.DockingWindowAdapter;
+import net.infonode.docking.RootWindow;
+import net.infonode.docking.TabWindow;
+import net.infonode.docking.View;
+import net.infonode.docking.ViewSerializer;
+import net.infonode.docking.drop.DropFilter;
+import net.infonode.docking.drop.DropInfo;
+import net.infonode.docking.properties.DockingWindowProperties;
+import net.infonode.docking.title.LengthLimitedDockingWindowTitleProvider;
+import net.infonode.docking.util.StringViewMap;
+import net.infonode.docking.util.WindowMenuUtil;
+import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.flexdock.docking.DockingConstants;
-import org.flexdock.docking.DockingManager;
-import org.flexdock.view.View;
-import org.flexdock.view.Viewport;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
+import org.xblackcat.rojac.gui.frame.message.AMessageView;
 import org.xblackcat.rojac.gui.frame.message.MessagePane;
 import org.xblackcat.rojac.gui.frame.progress.ITask;
 import org.xblackcat.rojac.gui.frame.progress.ProgressTrackerDialog;
@@ -31,7 +41,15 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,13 +66,11 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private IView favoritesView;
 
     // Components
-    private JTabbedPane threads;
     private View viewForums;
-    private View viewThreads;
     private View viewFavorites;
 
     // Data tracking
-    private Map<Integer, Component> openedForums = new HashMap<Integer, Component>();
+    private Map<Integer, View> openedForums = new HashMap<Integer, View>();
     private final IOptionsService os;
     protected IResultHandler<AffectedPosts> changeHandler = new IResultHandler<AffectedPosts>() {
         public void process(AffectedPosts results) throws RojacException {
@@ -62,6 +78,9 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             favoritesView.updateData(results.getAffectedMessageIds());
         }
     };
+    protected RootWindow threadsRootWindow;
+    private static final String FORUMS_VIEW_ID = "forums_view";
+    private static final String FAVORITES_VIEW_ID = "favorites_view";
 
     public MainFrame(IOptionsService optionsService) {
         super(RojacUtils.VERSION_STRING);
@@ -107,56 +126,68 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         JPanel cp = new JPanel(new BorderLayout());
         setContentPane(cp);
 
-        threads = new JTabbedPane();
-
-        Viewport viewport = new Viewport();
-        cp.add(viewport, BorderLayout.CENTER);
-
-        // FlexDock initialization
-        DockingManager.setFloatingEnabled(true);
-
-        // Center of the window is used with tabbed pane.
-        viewThreads = new View("threads_view", null, null);
-        viewThreads.setTerritoryBlocked(DockingConstants.CENTER_REGION, true);
-        viewThreads.setTitlebar(null);
-        viewThreads.setContentPane(createCenterPane());
-
-        viewport.dock(viewThreads);
-
         // Setup forums view
         viewForums = createView(
-                "forums_view",
                 Messages.VIEW_FORUMS_TITLE,
-                Messages.VIEW_FORUMS_TAB_TEXT,
-                forumsListView.getComponent()
+                forumsListView
         );
-
-        viewThreads.dock(viewForums, DockingConstants.WEST_REGION, 0.4f);
 
         // Setup favorites view
         viewFavorites = createView(
-                "favorites_view",
                 Messages.VIEW_FAVORITES_TITLE,
-                Messages.VIEW_FAVORITES_TAB_TEXT,
-                favoritesView.getComponent()
+                favoritesView
         );
 
-        viewThreads.dock(viewFavorites, DockingConstants.EAST_REGION, 0.2f);
 
-        DockingManager.setMinimized(viewFavorites, true);
-    }
+        View[] mainViews = new View[]{
+                viewForums,
+                viewFavorites
+        };
+        StringViewMap viewMap = new StringViewMap();
+        viewMap.addView(FORUMS_VIEW_ID, viewForums);
+        viewMap.addView(FAVORITES_VIEW_ID, viewFavorites);
 
-    private JComponent createCenterPane() {
-        final JPanel p = new JPanel(new BorderLayout());
-        p.add(threads);
+        // Set up main tabbed window for forum views
+        TabWindow threads = new TabWindow();
+        threads.getWindowProperties().setUndockEnabled(false);
+        threads.getWindowProperties().setMinimizeEnabled(false);
 
-        JPanel topPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPane.add(WindowsUtils.setupImageButton("update", new ActionListener() {
+        threadsRootWindow = new RootWindow(false, new ThreadViewSerializer(), threads);
+        threadsRootWindow.getRootWindowProperties().setDragRectangleBorderWidth(2);
+        threadsRootWindow.getRootWindowProperties().setRecursiveTabsEnabled(false);
+
+        DropFilter noAuxViews = new DropFilter() {
+            @Override
+            public boolean acceptDrop(DropInfo dropInfo) {
+                DockingWindow dw = dropInfo.getWindow();
+
+                if (dw instanceof View) {
+                    View v = (View) dw;
+                    if (v.getComponent() instanceof IView) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        };
+
+        threadsRootWindow
+                .getRootWindowProperties()
+                .getDockingWindowProperties()
+                .getDropFilterProperties()
+                .setInsertTabDropFilter(noAuxViews)
+                .setInteriorDropFilter(noAuxViews)
+                .setChildDropFilter(noAuxViews)
+                .setSplitDropFilter(noAuxViews);
+
+        // Setup toolbar
+        JButton updateButton = WindowsUtils.setupImageButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 showProgressDialog(new SynchronizeCommand(changeHandler));
             }
-        }, Messages.MAINFRAME_BUTTON_UPDATE));
-        topPane.add(WindowsUtils.setupImageButton("update", new ActionListener() {
+        }, Messages.MAINFRAME_BUTTON_UPDATE);
+        JButton loadMessageButton = WindowsUtils.setupImageButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 LoadMessageDialog lmd = new LoadMessageDialog(MainFrame.this);
                 Integer messageId = lmd.readMessageId();
@@ -173,24 +204,98 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                     }
                 }
             }
-        }, Messages.MAINFRAME_BUTTON_LOADMESSAGE));
+        }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
 
-        p.add(topPane, BorderLayout.NORTH);
 
-        return p;
+//        threadsRootWindow.add(createToolBar(updateButton, loadMessageButton));
+
+        RootWindow rootWindow = new RootWindow(false, viewMap, threadsRootWindow);
+        rootWindow.getWindowBar(Direction.LEFT).setEnabled(true);
+        rootWindow.getWindowBar(Direction.LEFT).addTab(viewForums, 0);
+        rootWindow.getWindowBar(Direction.LEFT).addTab(viewFavorites, 1);
+        rootWindow.getWindowBar(Direction.LEFT).getWindowBarProperties().setMinimumWidth(5);
+        rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
+        rootWindow.getWindowBar(Direction.RIGHT).getWindowBarProperties().setMinimumWidth(5);
+        rootWindow.getWindowBar(Direction.DOWN).setEnabled(true);
+        rootWindow.getWindowBar(Direction.DOWN).getWindowBarProperties().setMinimumWidth(5);
+
+        rootWindow.getRootWindowProperties().setDragRectangleBorderWidth(2);
+        rootWindow.getRootWindowProperties().setRecursiveTabsEnabled(false);
+
+        viewForums.restore();
+
+        rootWindow.setPopupMenuFactory(WindowMenuUtil.createWindowMenuFactory(viewMap, true));
+
+        cp.add(rootWindow);
     }
 
-    private View createView(String id, Messages title, Messages tabText, JComponent comp) {
+    private View createView(Messages title, IView comp) {
         final View view = new View(
-                id,
                 title.get(),
-                tabText.get()
+                null,
+                comp.getComponent()
         );
-        view.addAction(DockingConstants.CLOSE_ACTION);
-        view.addAction(DockingConstants.PIN_ACTION);
-        view.setContentPane(comp);
+
+        DockingWindowProperties props = view.getWindowProperties();
+        props.setCloseEnabled(false);
+        props.setMaximizeEnabled(false);
+        props.setUndockEnabled(false);
 
         return view;
+    }
+
+    private View createForumView(Forum f) {
+        AMessageView $ = createForumView();
+
+        final View view = new View(
+                f.getForumName(),
+                null,
+                $
+        );
+
+
+        DockingWindowProperties props = view.getWindowProperties();
+        props.setMinimizeEnabled(false);
+        props.setTitleProvider(new LengthLimitedDockingWindowTitleProvider(50));
+        props.setUndockEnabled(false);
+
+        view.addListener(new CloseThreadListener(f.getForumId()));
+
+        $.viewItem(f.getForumId(), false);
+
+        return view;
+    }
+
+    /**
+     * Create a forum view layout depending on user settings.
+     *
+     * @return a new forum view layout.
+     */
+    private ThreadDoubleView createForumView() {
+        return new ThreadDoubleView(new ForumThreadsView(this), new MessagePane(this), false, this);
+    }
+
+    private JToolBar createToolBar(JComponent... components) {
+        JToolBar toolBar = new JToolBar();
+
+        for (JComponent c : components) {
+            toolBar.add(c);
+        }
+
+//        View view = new View(
+//                title == null ? null : title.get(),
+//                null,
+//                toolBar
+//        );
+//
+//        DockingWindowProperties props = view.getWindowProperties();
+//        props.setCloseEnabled(false);
+//        props.setMaximizeEnabled(false);
+//        props.setUndockEnabled(false);
+//        props.setMaximizeEnabled(false);
+//        props.setRestoreEnabled(false);
+
+        return toolBar;
     }
 
     public void applySettings() {
@@ -235,21 +340,52 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     public void openForumTab(Forum f) {
-        Component c = openedForums.get(f.getForumId());
+        View c = openedForums.get(f.getForumId());
         if (c != null) {
-            threads.setSelectedComponent(c);
+            c.makeVisible();
             return;
         }
 
-        ThreadDoubleView $ = new ThreadDoubleView(new ForumThreadsView(this), new MessagePane(this), false, this);
-        openedForums.put(f.getForumId(), $);
+        View fv = createForumView(f);
 
-        threads.addTab(f.getForumName(), $);
-        int idx = threads.indexOfComponent($);
-        threads.setTabComponentAt(idx, new TabHeader(f));
+        openedForums.put(f.getForumId(), fv);
 
-        $.viewItem(f.getForumId(), false);
+        DockingWindow rootWindow = threadsRootWindow.getWindow();
+        if (rootWindow != null) {
+            if (rootWindow instanceof TabWindow) {
+                ((TabWindow) rootWindow).addTab(fv);
+            } else {
+                TabWindow tw = searchForTabWindow(rootWindow);
+                if (tw != null) {
+                    tw.addTab(fv);
+                } else {
+                    rootWindow.split(fv, Direction.RIGHT, 0.5f);
+                }
+            }
+        } else {
+            threadsRootWindow.setWindow(new TabWindow(fv));
+        }
     }
+
+    private TabWindow searchForTabWindow(DockingWindow rootWindow) {
+        TabWindow w = null;
+
+        for (int i = 0; i < rootWindow.getChildWindowCount(); i++) {
+            DockingWindow dw = rootWindow.getChildWindow(i);
+            if (dw instanceof TabWindow) {
+                w = (TabWindow) dw;
+                break;
+            }
+
+            w = searchForTabWindow(dw);
+            if (w != null) {
+                break;
+            }
+        }
+
+        return w;
+    }
+
 
     public void showProgressDialog(ITask task) {
         ProgressTrackerDialog tr = new ProgressTrackerDialog(this, task);
@@ -269,54 +405,27 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         }
     }
 
-    private class TabHeader extends JPanel {
-        private TabHeader(Forum f) {
-            super();
-            setLayout(new FlowLayout(FlowLayout.LEFT));
-            setOpaque(false);
-            final int fId = f.getForumId();
+    private static class ThreadViewSerializer implements ViewSerializer {
+        @Override
+        public void writeView(View view, ObjectOutputStream out) throws IOException {
+        }
 
-            JLabel l = new JLabel() {
-                public String getText() {
-                    int i = threads.indexOfTabComponent(TabHeader.this);
-                    if (i != -1) {
-                        return threads.getTitleAt(i);
-                    }
-                    return null;
-                }
-            };
+        @Override
+        public View readView(ObjectInputStream in) throws IOException {
+            return null;
+        }
+    }
 
-            l.setToolTipText(f.getForumName());
-            l.setMaximumSize(new Dimension(100, 100));
-            l.setBorder(null);
+    private class CloseThreadListener extends DockingWindowAdapter {
+        private final int forumId;
 
-            setBorder(null);
+        public CloseThreadListener(int forumId) {
+            this.forumId = forumId;
+        }
 
-            add(l);
-
-            ActionListener al = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    int idx = threads.indexOfTabComponent(TabHeader.this);
-                    if (idx != -1) {
-                        openedForums.remove(fId);
-
-                        threads.remove(idx);
-                    }
-                }
-            };
-            JButton b = WindowsUtils.setupImageButton("tabclose", al, f.getForumName());
-
-            add(b);
-
-            l.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    int idx = threads.indexOfTabComponent(TabHeader.this);
-                    if (idx != -1) {
-                        threads.setSelectedIndex(idx);
-                    }
-                }
-            });
+        @Override
+        public void windowClosed(DockingWindow window) {
+            openedForums.remove(forumId);
         }
     }
 }
