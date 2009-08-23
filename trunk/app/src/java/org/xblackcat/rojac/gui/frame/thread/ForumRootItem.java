@@ -5,6 +5,8 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.service.storage.StorageException;
 
+import javax.swing.*;
+
 /**
  * Date: 20 ρεπο 2008
  *
@@ -20,54 +22,73 @@ public class ForumRootItem extends MessageItem {
     }
 
     @Override
-    protected void loadData() {
-        Forum f;
+    protected void loadData(final AThreadTreeModel model) {
         synchronized (this) {
-            f = forum;
-        }
-        if (f != null) {
-            // Nothing to do
-            return;
-        }
-
-        try {
-            f = storage.getForumAH().getForumById(messageId);
-        } catch (StorageException e) {
-            log.error("Can not load forum info with id = " + messageId, e);
-            return;
-        }
-
-        synchronized (this) {
-            if (forum == null) {
-                f = forum;
+            if (forum != null) {
+                // Nothing to do
+                return;
             }
         }
+
+        executor.execute(new Runnable() {
+            public void run() {
+                final Forum f;
+                try {
+                    f = storage.getForumAH().getForumById(messageId);
+                } catch (StorageException e) {
+                    log.error("Can not load forum info with id = " + messageId, e);
+                    return;
+                }
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        synchronized (this) {
+                            if (forum == null) {
+                                forum = f;
+                            }
+                        }
+                        model.nodeChanged(ForumRootItem.this);
+                    }
+                });
+            }
+        });
     }
 
     @Override
-    protected void loadChildren() {
+    protected void loadChildren(final AThreadTreeModel model) {
         synchronized (this) {
             if (this.children != null) {
                 return;
             }
         }
-        int [] c;
 
-        try {
-            c = storage.getMessageAH().getTopicMessageIdsByForumId(messageId);
-        } catch (StorageException e) {
-            log.error("Can not load topics for forum with id = " + messageId, e);
-            return;
-        }
+        executor.execute(new Runnable() {
+            public void run() {
+                int[] c;
+                try {
+                    c = storage.getMessageAH().getTopicMessageIdsByForumId(messageId);
+                } catch (StorageException e) {
+                    log.error("Can not load topics for forum with id = " + messageId, e);
+                    return;
+                }
 
-        MessageItem[] cI = new MessageItem[c.length];
-        for (int i = 0; i < c.length; i++) {
-            cI[i] = new MessageItem(this, c[i]);
-        }
-        synchronized (this) {
-            if (children == null) {
-                children = cI;
+                final MessageItem[] cI = new MessageItem[c.length];
+                for (int i = 0; i < c.length; i++) {
+                    cI[i] = new MessageItem(ForumRootItem.this, c[i]);
+                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        synchronized (this) {
+                            if (children == null) {
+                                children = cI;
+                            }
+                        }
+
+                        model.nodeStructureChanged(ForumRootItem.this);
+                    }
+                });
             }
-        }
+        });
+
     }
 }

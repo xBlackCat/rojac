@@ -8,11 +8,11 @@ import org.xblackcat.rojac.gui.IView;
 import org.xblackcat.rojac.gui.model.ForumData;
 import org.xblackcat.rojac.gui.model.ForumTableModel;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.render.ForumCellRenderer;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.commands.GetForumListCommand;
 import org.xblackcat.rojac.service.commands.IResultHandler;
+import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -34,8 +34,9 @@ import java.awt.event.MouseEvent;
  */
 
 public class ForumsListView extends JPanel implements IView {
+    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-
+    
     private static final Log log = LogFactory.getLog(ForumsListView.class);
     // Data and models
     private ForumTableModel forumsModel = new ForumTableModel();
@@ -131,17 +132,21 @@ public class ForumsListView extends JPanel implements IView {
     public void applySettings() {
         // TODO: implement
 
-        try {
-            final int[] allForums = storage.getForumAH().getAllForumIds();
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    forumsModel.updateForums(allForums);
+        executor.execute(new Runnable() {
+            public void run() {
+                try {
+                    final int[] allForums = storage.getForumAH().getAllForumIds();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            forumsModel.updateForums(allForums);
+                        }
+                    });
+                } catch (StorageException e) {
+                    log.error("Can not load forum list", e);
                 }
-            });
-        } catch (StorageException e) {
-            log.error("Can not load forum list", e);
-        }
-    }
+            }
+        });
+            }
 
     public void updateSettings() {
         // TODO: implement

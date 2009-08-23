@@ -27,6 +27,7 @@ import java.util.Queue;
 
 public class ForumTableModel extends AbstractTableModel {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
+    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
     private static final Log log = LogFactory.getLog(ForumTableModel.class);
 
@@ -145,7 +146,6 @@ public class ForumTableModel extends AbstractTableModel {
                 forumIds.addAll(Arrays.asList(ArrayUtils.toObject(id)));
             }
             if (startTask) {
-                IExecutor executor = ServiceFactory.getInstance().getExecutor();
                 executor.execute(processor);
             }
         }

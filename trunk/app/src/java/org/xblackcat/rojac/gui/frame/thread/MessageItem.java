@@ -5,8 +5,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
+
+import javax.swing.*;
 
 /**
  * Date: 23 бер 2008
@@ -27,6 +30,7 @@ public class MessageItem {
     private Message message;
     private String parsedText;
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
+    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
     public MessageItem(MessageItem parent, int messageId) {
         this.parent = parent;
@@ -41,10 +45,11 @@ public class MessageItem {
         return parent;
     }
 
-    public MessageItem[] getChildren() {
+    public MessageItem[] getChildren(AThreadTreeModel model) {
         if (children == null) {
             // Load children
-            loadChildren();
+            loadChildren(model);
+            return NO_ITEMS;
         }
         return children;
     }
@@ -53,58 +58,75 @@ public class MessageItem {
         return ArrayUtils.indexOf(children, node);
     }
 
-    public Message getMessage() {
-        loadData();
+    public Message getMessage(AThreadTreeModel model) {
+        loadData(model);
         return message;
     }
 
-    protected void loadData() {
-        Message m;
+    protected void loadData(final AThreadTreeModel model) {
         synchronized (this) {
-            m = message;
-        }
-        if (m != null) {
-            // Nothing to do
-            return;
-        }
-
-        try {
-            m = storage.getMessageAH().getMessageById(messageId);
-        } catch (StorageException e) {
-            log.error("Can not load message with id = " + messageId, e);
-            return;
-        }
-
-        synchronized (this) {
-            if (message == null) {
-                message = m;
+            if (message != null) {
+                // Nothing to do
+                return;
             }
         }
-    }
-    
-    protected void loadChildren() {
+
+        executor.execute(new Runnable() {
+            public void run() {
+                final Message m;
+                try {
+                    m = storage.getMessageAH().getMessageById(messageId);
+                } catch (StorageException e) {
+                    log.error("Can not load message with id = " + messageId, e);
+                    return;
+                }
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        synchronized (this) {
+                            if (message == null) {
+                                message = m;
+                            }
+                        }
+                        model.nodeChanged(MessageItem.this);
+                    }
+                });
+            }
+        });
+            }
+
+    protected void loadChildren(final AThreadTreeModel model) {
         synchronized (this) {
             if (this.children != null) {
                 return;
             }
         }
-        int [] c;
 
-        try {
-            c = storage.getMessageAH().getMessageIdsByParentId(messageId);
-        } catch (StorageException e) {
-            log.error("Can not load message children for id = " + messageId, e);
-            return;
-        }
+        executor.execute(new Runnable() {
+            public void run() {
+                int[] c;
+                try {
+                    c = storage.getMessageAH().getMessageIdsByParentId(messageId);
+                } catch (StorageException e) {
+                    log.error("Can not load message children for id = " + messageId, e);
+                    return;
+                }
 
-        MessageItem[] cI = new MessageItem[c.length];
-        for (int i = 0; i < c.length; i++) {
-            cI[i] = new MessageItem(this, c[i]);
-        }
-        synchronized (this) {
-            if (children == null) {
-                children = cI;
+                final MessageItem[] cI = new MessageItem[c.length];
+                for (int i = 0; i < c.length; i++) {
+                    cI[i] = new MessageItem(MessageItem.this, c[i]);
+                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        synchronized (this) {
+                            if (children == null) {
+                                children = cI;
+                            }
+                        }
+                        model.nodeStructureChanged(MessageItem.this);
+                    }
+                });
             }
-        }
+        });
     }
 }

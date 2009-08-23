@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.render;
+package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
@@ -15,7 +15,7 @@ import java.awt.*;
  *
  * @author xBlackCat
  */
-public class ForumCellRenderer extends DefaultTableCellRenderer {
+class ForumCellRenderer extends DefaultTableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -28,8 +28,9 @@ public class ForumCellRenderer extends DefaultTableCellRenderer {
         boolean hasUnread = fs != null && fs.getUnreadMessages() > 0;
 
         StringBuilder text = new StringBuilder("<html><body>");
+        boolean isNotSubcribed = true;
         if (f != null) {
-            boolean isNotSubcribed = !f.isSubscribed();
+            isNotSubcribed = !f.isSubscribed();
 
             if (isNotSubcribed) text.append("<i>");
             if (hasUnread) text.append("<b>");
@@ -45,19 +46,19 @@ public class ForumCellRenderer extends DefaultTableCellRenderer {
                 text.append(")");
             }
 
-            Color bgc;
-            if (isNotSubcribed) {
-                bgc = new Color(0xFFFF7F);
-            } else {
-                bgc = new Color(0x7FFF7F);
-            }
-            setBackground(bgc);
         } else {
             text.append("<i>Loading info for forum: ");
             text.append(fd.getForumId());
         }
         setText(text.toString());
         setIcon(null);
+        Color bgc;
+        if (isNotSubcribed) {
+            bgc = new Color(0xFFFF7F);
+        } else {
+            bgc = new Color(0x7FFF7F);
+        }
+        setBackground(bgc);
 
         return this;
     }

@@ -17,7 +17,7 @@ class MessageTreeCellRenderer extends DefaultTreeCellRenderer {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
         if (value != null) {
-            Message mi = ((MessageItem) value).getMessage();
+            Message mi = ((MessageItem) value).getMessage((AThreadTreeModel) tree.getModel());
 
             if (mi != null) {
                 setText(mi.getSubject() + "(" + mi.getUserNick() + ")");
@@ -25,7 +25,7 @@ class MessageTreeCellRenderer extends DefaultTreeCellRenderer {
                     tree.setToolTipText(String.valueOf(mi.getMessageId()));
                 }
             } else {
-                setText("Forum root");
+                setText("<html><body><i>Loading...</i></body></html>");
             }
         }
 
