@@ -103,29 +103,28 @@ public class ForumsListView extends JPanel implements IView {
             }
         });
 
-        JPanel buttonsPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 2));
+        JToolBar toolBar = WindowsUtils.createToolBar(
+                WindowsUtils.setupImageButton("update", new UpdateActionListener(), Messages.VIEW_FORUMS_BUTTON_UPDATE),
+                WindowsUtils.setupToggleButton("update", new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        forumsRowFilter.setNotEmpty(!forumsRowFilter.isNotEmpty());
+                        forumsRowSorter.sort();
+                    }
+                }, Messages.VIEW_FORUMS_BUTTON_FILLED),
+                WindowsUtils.setupToggleButton("update", new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        forumsRowFilter.setSubscribed(!forumsRowFilter.isSubscribed());
+                        forumsRowSorter.sort();
+                    }
+                }, Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED),
+                WindowsUtils.setupToggleButton("update", new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        forumsRowFilter.setUnread(!forumsRowFilter.isUnread());
+                        forumsRowSorter.sort();
+                    }
+                }, Messages.VIEW_FORUMS_BUTTON_HASUNREAD));
 
-        buttonsPane.add(WindowsUtils.setupImageButton("update", new UpdateActionListener(), Messages.VIEW_FORUMS_BUTTON_UPDATE));
-        buttonsPane.add(WindowsUtils.setupToggleButton("update", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                forumsRowFilter.setNotEmpty(!forumsRowFilter.isNotEmpty());
-                forumsRowSorter.sort();
-            }
-        }, Messages.VIEW_FORUMS_BUTTON_FILLED));
-        buttonsPane.add(WindowsUtils.setupToggleButton("update", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                forumsRowFilter.setSubscribed(!forumsRowFilter.isSubscribed());
-                forumsRowSorter.sort();
-            }
-        }, Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED));
-        buttonsPane.add(WindowsUtils.setupToggleButton("update", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                forumsRowFilter.setUnread(!forumsRowFilter.isUnread());
-                forumsRowSorter.sort();
-            }
-        }, Messages.VIEW_FORUMS_BUTTON_HASUNREAD));
-
-        add(buttonsPane, BorderLayout.NORTH);
+        add(toolBar, BorderLayout.NORTH);
 
     }
 

@@ -195,4 +195,13 @@ public final class WindowsUtils {
         window.setBounds(x, y, w, h);
     }
 
+    public static JToolBar createToolBar(JComponent... components) {
+        JToolBar toolBar = new JToolBar();
+
+        for (JComponent c : components) {
+            toolBar.add(c);
+        }
+
+        return toolBar;
+    }
 }

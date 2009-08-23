@@ -1,11 +1,6 @@
 package org.xblackcat.rojac.gui;
 
-import net.infonode.docking.DockingWindow;
-import net.infonode.docking.DockingWindowAdapter;
-import net.infonode.docking.RootWindow;
-import net.infonode.docking.TabWindow;
-import net.infonode.docking.View;
-import net.infonode.docking.ViewSerializer;
+import net.infonode.docking.*;
 import net.infonode.docking.drop.DropFilter;
 import net.infonode.docking.drop.DropInfo;
 import net.infonode.docking.properties.DockingWindowProperties;
@@ -65,10 +60,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private IView forumsListView;
     private IView favoritesView;
 
-    // Components
-    private View viewForums;
-    private View viewFavorites;
-
     // Data tracking
     private Map<Integer, View> openedForums = new HashMap<Integer, View>();
     private final IOptionsService os;
@@ -79,8 +70,26 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         }
     };
     protected RootWindow threadsRootWindow;
+
     private static final String FORUMS_VIEW_ID = "forums_view";
     private static final String FAVORITES_VIEW_ID = "favorites_view";
+    private static final String THREADS_VIEW_ID = "threads_view_id";
+
+    protected final DropFilter noAuxViewsFilter = new DropFilter() {
+        @Override
+        public boolean acceptDrop(DropInfo dropInfo) {
+            DockingWindow dw = dropInfo.getWindow();
+
+            if (dw instanceof View) {
+                View v = (View) dw;
+                if (v.getComponent() instanceof IView) {
+                    return dropInfo.getDropWindow().getRootWindow() == threadsRootWindow;
+                }
+            }
+
+            return true;
+        }
+    };
 
     public MainFrame(IOptionsService optionsService) {
         super(RojacUtils.VERSION_STRING);
@@ -127,25 +136,17 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         setContentPane(cp);
 
         // Setup forums view
-        viewForums = createView(
+        View viewForums = createView(
                 Messages.VIEW_FORUMS_TITLE,
                 forumsListView
         );
 
         // Setup favorites view
-        viewFavorites = createView(
+        View viewFavorites = createView(
                 Messages.VIEW_FAVORITES_TITLE,
                 favoritesView
         );
 
-
-        View[] mainViews = new View[]{
-                viewForums,
-                viewFavorites
-        };
-        StringViewMap viewMap = new StringViewMap();
-        viewMap.addView(FORUMS_VIEW_ID, viewForums);
-        viewMap.addView(FAVORITES_VIEW_ID, viewFavorites);
 
         // Set up main tabbed window for forum views
         TabWindow threads = new TabWindow();
@@ -156,30 +157,47 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         threadsRootWindow.getRootWindowProperties().setDragRectangleBorderWidth(2);
         threadsRootWindow.getRootWindowProperties().setRecursiveTabsEnabled(false);
 
-        DropFilter noAuxViews = new DropFilter() {
-            @Override
-            public boolean acceptDrop(DropInfo dropInfo) {
-                DockingWindow dw = dropInfo.getWindow();
-
-                if (dw instanceof View) {
-                    View v = (View) dw;
-                    if (v.getComponent() instanceof IView) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        };
-
         threadsRootWindow
                 .getRootWindowProperties()
                 .getDockingWindowProperties()
                 .getDropFilterProperties()
-                .setInsertTabDropFilter(noAuxViews)
-                .setInteriorDropFilter(noAuxViews)
-                .setChildDropFilter(noAuxViews)
-                .setSplitDropFilter(noAuxViews);
+                .setInsertTabDropFilter(noAuxViewsFilter)
+                .setInteriorDropFilter(noAuxViewsFilter)
+                .setChildDropFilter(noAuxViewsFilter)
+                .setSplitDropFilter(noAuxViewsFilter);
+
+        View threadsView = createThreadsView(threadsRootWindow);
+        View[] mainViews = new View[]{
+                viewForums,
+                viewFavorites
+        };
+        StringViewMap viewMap = new StringViewMap();
+        viewMap.addView(FORUMS_VIEW_ID, viewForums);
+        viewMap.addView(FAVORITES_VIEW_ID, viewFavorites);
+        viewMap.addView(THREADS_VIEW_ID, threadsView);
+
+        RootWindow rootWindow = new RootWindow(false, viewMap, new SplitWindow(true, 0.25f, new TabWindow(mainViews), threadsView));
+        rootWindow.getWindowBar(Direction.LEFT).setEnabled(true);
+        rootWindow.getWindowBar(Direction.LEFT).addTab(viewForums, 0);
+        rootWindow.getWindowBar(Direction.LEFT).addTab(viewFavorites, 1);
+        rootWindow.getWindowBar(Direction.LEFT).getWindowBarProperties().setMinimumWidth(5);
+        rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
+        rootWindow.getWindowBar(Direction.RIGHT).getWindowBarProperties().setMinimumWidth(5);
+        rootWindow.getWindowBar(Direction.DOWN).setEnabled(true);
+        rootWindow.getWindowBar(Direction.DOWN).getWindowBarProperties().setMinimumWidth(5);
+
+        rootWindow.getRootWindowProperties().setDragRectangleBorderWidth(2);
+        rootWindow.getRootWindowProperties().setRecursiveTabsEnabled(false);
+
+        viewForums.restore();
+
+        rootWindow.setPopupMenuFactory(WindowMenuUtil.createWindowMenuFactory(viewMap, true));
+
+        cp.add(rootWindow);
+    }
+
+    private View createThreadsView(DockingWindow threads) {
+        JPanel threadsPane = new JPanel(new BorderLayout(0, 0));
 
         // Setup toolbar
         JButton updateButton = WindowsUtils.setupImageButton("update", new ActionListener() {
@@ -206,30 +224,25 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             }
         }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
 
+        threadsPane.add(WindowsUtils.createToolBar(updateButton, loadMessageButton), BorderLayout.NORTH);
+        threadsPane.add(threads, BorderLayout.CENTER);
 
-//        threadsRootWindow.add(createToolBar(updateButton, loadMessageButton));
+        View view = new View(null, null, threadsPane);
 
-        RootWindow rootWindow = new RootWindow(false, viewMap, threadsRootWindow);
-        rootWindow.getWindowBar(Direction.LEFT).setEnabled(true);
-        rootWindow.getWindowBar(Direction.LEFT).addTab(viewForums, 0);
-        rootWindow.getWindowBar(Direction.LEFT).addTab(viewFavorites, 1);
-        rootWindow.getWindowBar(Direction.LEFT).getWindowBarProperties().setMinimumWidth(5);
-        rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
-        rootWindow.getWindowBar(Direction.RIGHT).getWindowBarProperties().setMinimumWidth(5);
-        rootWindow.getWindowBar(Direction.DOWN).setEnabled(true);
-        rootWindow.getWindowBar(Direction.DOWN).getWindowBarProperties().setMinimumWidth(5);
+        DockingWindowProperties props = view.getWindowProperties();
+        props.setCloseEnabled(false);
+        props.setMaximizeEnabled(false);
+        props.setMinimizeEnabled(false);
+        props.setUndockEnabled(false);
+        props.setDragEnabled(false);
+        props.setDockEnabled(false);
 
-        rootWindow.getRootWindowProperties().setDragRectangleBorderWidth(2);
-        rootWindow.getRootWindowProperties().setRecursiveTabsEnabled(false);
+        view.getViewProperties().setAlwaysShowTitle(false);
 
-        viewForums.restore();
-
-        rootWindow.setPopupMenuFactory(WindowMenuUtil.createWindowMenuFactory(viewMap, true));
-
-        cp.add(rootWindow);
+        return view;
     }
 
-    private View createView(Messages title, IView comp) {
+    private static View createView(Messages title, IView comp) {
         final View view = new View(
                 title.get(),
                 null,
@@ -245,7 +258,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     private View createForumView(Forum f) {
-        AMessageView $ = createForumView();
+        AMessageView $ = createForumViewWindow();
 
         final View view = new View(
                 f.getForumName(),
@@ -271,31 +284,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
      *
      * @return a new forum view layout.
      */
-    private ThreadDoubleView createForumView() {
+    private ThreadDoubleView createForumViewWindow() {
         return new ThreadDoubleView(new ForumThreadsView(this), new MessagePane(this), false, this);
-    }
-
-    private JToolBar createToolBar(JComponent... components) {
-        JToolBar toolBar = new JToolBar();
-
-        for (JComponent c : components) {
-            toolBar.add(c);
-        }
-
-//        View view = new View(
-//                title == null ? null : title.get(),
-//                null,
-//                toolBar
-//        );
-//
-//        DockingWindowProperties props = view.getWindowProperties();
-//        props.setCloseEnabled(false);
-//        props.setMaximizeEnabled(false);
-//        props.setUndockEnabled(false);
-//        props.setMaximizeEnabled(false);
-//        props.setRestoreEnabled(false);
-
-        return toolBar;
     }
 
     public void applySettings() {
@@ -385,7 +375,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
         return w;
     }
-
 
     public void showProgressDialog(ITask task) {
         ProgressTrackerDialog tr = new ProgressTrackerDialog(this, task);
