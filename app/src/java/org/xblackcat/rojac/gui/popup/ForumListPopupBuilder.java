@@ -94,8 +94,12 @@ public class ForumListPopupBuilder implements IPopupBuilder {
                     try {
                         fah.setSubscribeForum(forumId, !subscribed);
 
-                        forumsModel.reloadInfo(forumId);
-                    } catch (StorageException e1) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                forumsModel.reloadInfo(forumId);
+                            }
+                        });
+                                            } catch (StorageException e1) {
                         log.error("Can not update forum info. [id:" + forumId + "].", e1);
                     }
                 }
@@ -114,8 +118,12 @@ public class ForumListPopupBuilder implements IPopupBuilder {
                             try {
                                 fah.setForumRead(forumId, readFlag);
 
-                                forumsModel.reloadInfo(forumId);
-                            } catch (StorageException e1) {
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    public void run() {
+                                        forumsModel.reloadInfo(forumId);
+                                    }
+                                });
+                                                            } catch (StorageException e1) {
                                 log.error("Can not update forum info. [id:" + forumId + "].", e1);
                             }
                         }

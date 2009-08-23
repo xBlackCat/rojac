@@ -63,8 +63,9 @@ public abstract class ATreeThreadView extends AMessageView {
                 TreePath path = event.getPath();
                 MessageItem item = (MessageItem) path.getLastPathComponent();
 
-                if (item.getChildren().length == 1) {
-                    MessageItem child = item.getChildren()[0];
+                MessageItem[] children = item.getChildren(model);
+                if (children.length == 1) {
+                    MessageItem child = children[0];
 
                     messages.expandPath(path.pathByAddingChild(child));
                 }
