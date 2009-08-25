@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
  */
 
 public class RSDNMessageParser implements IMessageParser {
-    private static final Pattern QUOTATION_PATTERN = Pattern.compile("^([[^\\s\\p{Punct}]_]+?)&gt;(.*?)$", Pattern.MULTILINE);
+    private static final Pattern PRE_QUOTATION_PATTERN = Pattern.compile("^([[^\\s\\p{Punct}]_]+?)>(.*?)$", Pattern.MULTILINE);
+    private static final Pattern QUOTATION_PATTERN = Pattern.compile("^\\[span\\](.*)\\[/span\\]$", Pattern.MULTILINE);
     private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+)[\\.,\\!\\:]?$", Pattern.MULTILINE);
     private static final ITagInfo[] EMPTY_TAG_INFO = new ITagInfo[0];
 
@@ -63,9 +64,12 @@ public class RSDNMessageParser implements IMessageParser {
      * @return a new string with highlihgted quotation lines.
      */
     protected String preProcessText(String rsdn) {
-        rsdn = escapeHtml(rsdn);
         rsdn = HYPERLINKS_PATTERN.matcher(rsdn).replaceAll("$1[url=$2]$2[/url]");
-        return QUOTATION_PATTERN.matcher(rsdn).replaceAll("<span class='lineQuote'>$1&gt;$2</span>");
+        rsdn = PRE_QUOTATION_PATTERN.matcher(rsdn).replaceAll("[span]$1>$2[/span]");
+        rsdn = escapeHtml(rsdn);
+        rsdn = QUOTATION_PATTERN.matcher(rsdn).replaceAll("<span class='lineQuote'>$1</span>");
+        
+        return rsdn;
     }
 
     private ITag[] mergeAvailableTags(ITag[] parentTags, ITag currentTag) {

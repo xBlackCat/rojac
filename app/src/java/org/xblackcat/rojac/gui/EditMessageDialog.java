@@ -14,6 +14,7 @@ import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.MessageUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,6 +47,8 @@ class EditMessageDialog extends JDialog {
 
         initializeLayout();
 
+        setSize(640, 480);
+
         panelEdit.forcePreview();
     }
 
@@ -66,12 +69,14 @@ class EditMessageDialog extends JDialog {
 
         panelEdit.setMessage(mes, subj);
 
+        WindowsUtils.centerOnScreen(this);
         setVisible(true);
     }
 
     public void createTopic(int forumId) {
         this.forumId = forumId;
 
+        WindowsUtils.centerOnScreen(this);
         setVisible(true);
     }
 
@@ -90,6 +95,7 @@ class EditMessageDialog extends JDialog {
 
         panelEdit.setMessage(mes.getMessage(), mes.getSubject());
 
+        WindowsUtils.centerOnScreen(this);
         setVisible(true);
     }
 
@@ -155,7 +161,7 @@ class EditMessageDialog extends JDialog {
                 panelEdit.forcePreview();
             }
         }));
-        buttonsPane.add(new JButton(new AbstractAction("Cancel"){
+        buttonsPane.add(new JButton(new AbstractAction("Cancel") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();

@@ -71,7 +71,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
         messageTextPane.addHyperlinkListener(new HyperlinkHandler());
 
         add(createTitleBar(), BorderLayout.NORTH);
-        add(new JScrollPane(messageTextPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+        add(new JScrollPane(messageTextPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
     }
 
     private Component createTitleBar() {
