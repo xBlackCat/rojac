@@ -9,8 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Date: 19 ρεπο 2009
- *
  * @author xBlackCat
  */
 
@@ -28,7 +26,7 @@ public class LinkPopupBuilder implements IPopupBuilder {
      */
     @Override
     public JPopupMenu buildMenu(Object... parameters) {
-        if (ArrayUtils.isEmpty(parameters) || parameters.length <1) {
+        if (ArrayUtils.isEmpty(parameters) || parameters.length < 1) {
             throw new IllegalArgumentException("Invalid amount of parameters for building LinkPopUp menu");
         }
 

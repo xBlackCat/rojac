@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.data;
 
 /**
- * Date: 26 квіт 2007
- *
  * @author ASUS
  */
 
@@ -11,8 +9,7 @@ public enum VersionType {
     MODERATE_ROW_VERSION(1),
     RATING_ROW_VERSION(2),
     USERS_ROW_VERSION(3),
-    FORUM_ROW_VERSION(4),
-    ;
+    FORUM_ROW_VERSION(4),;
 
     private final int id;
 

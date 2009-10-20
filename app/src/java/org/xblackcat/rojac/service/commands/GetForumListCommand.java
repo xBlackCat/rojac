@@ -13,8 +13,6 @@ import org.xblackcat.rojac.service.storage.IForumGroupAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 14 вер 2008
- *
  * @author xBlackCat
  */
 
@@ -68,7 +66,7 @@ public class GetForumListCommand extends ARsdnCommand<int[]> {
             }
 
             setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
-            
+
             trac.addLodMessage("Done");
         } catch (StorageException e) {
             throw new RsdnProcessorException("Can not update forum list", e);

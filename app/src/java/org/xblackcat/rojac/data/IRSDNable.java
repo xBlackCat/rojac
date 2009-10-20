@@ -3,8 +3,6 @@ package org.xblackcat.rojac.data;
 import java.io.Serializable;
 
 /**
- * Date: 27 черв 2008
- *
  * @author xBlackCat
  */
 

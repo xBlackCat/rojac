@@ -8,10 +8,8 @@ import org.xblackcat.rojac.gui.model.ForumTableModel;
 import javax.swing.*;
 
 /**
- * Date: 8 זמגע 2008
-*
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ForumsRowFilter extends RowFilter<ForumTableModel, Integer> {
     private boolean subscribed;
     private boolean notEmpty;

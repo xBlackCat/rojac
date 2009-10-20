@@ -7,8 +7,6 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
 /**
- * Date: 10 трав 2007
- *
  * @author ASUS
  */
 

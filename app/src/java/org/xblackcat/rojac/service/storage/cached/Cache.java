@@ -7,8 +7,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Date: 15.04.2007
- *
  * @author ASUS
  */
 

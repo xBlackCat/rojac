@@ -10,7 +10,6 @@ import java.util.Map;
 /**
  * Class for holding application properties names.
  * <p/>
- * Date: 13 квіт 2007
  *
  * @author Alexey
  */
@@ -32,7 +31,7 @@ public final class Property<T> {
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class);
     public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", Locale.class);
-    public static final Property<String > ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", String.class);
+    public static final Property<String> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", String.class);
 
     // User properties (login dialog)
     public static final Property<String> RSDN_USER_NAME = create("rsdn.user.name", String.class);

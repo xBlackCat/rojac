@@ -30,8 +30,6 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * Date: 31 груд 2007
- *
  * @author xBlackCat
  */
 
@@ -348,7 +346,7 @@ public class MessagePane extends AMessageView implements IInternationazable {
                 SwingUtilities.convertPointFromScreen(l, messageTextPane);
                 menu.show(messageTextPane, l.x, l.y);
             } else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED) {
-                
+
             }
         }
     }

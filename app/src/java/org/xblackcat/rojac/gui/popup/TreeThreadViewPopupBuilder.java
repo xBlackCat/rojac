@@ -6,8 +6,6 @@ import org.xblackcat.rojac.gui.IRootPane;
 import javax.swing.*;
 
 /**
- * Date: 19 ρεπο 2009
- *
  * @author xBlackCat
  */
 
@@ -18,7 +16,7 @@ public class TreeThreadViewPopupBuilder extends AMessagePopupBulder {
             throw new IllegalArgumentException("Invalid parameters amount.");
         }
 
-        final int messageId = ((Integer)parameters[0]).intValue();
+        final int messageId = ((Integer) parameters[0]).intValue();
         final IRootPane mainFrame = (IRootPane) parameters[1];
 
         return buildMenu(messageId, mainFrame);

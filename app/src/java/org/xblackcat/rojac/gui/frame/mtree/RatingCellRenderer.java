@@ -7,8 +7,6 @@ import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 15 груд 2007
- *
  * @author xBlackCat
  */
 final class RatingCellRenderer extends MessageCellRenderer {

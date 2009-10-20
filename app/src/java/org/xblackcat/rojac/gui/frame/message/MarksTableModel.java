@@ -6,8 +6,6 @@ import org.xblackcat.rojac.data.Rating;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * Date: 29 лют 2008
- *
  * @author xBlackCat
  */
 

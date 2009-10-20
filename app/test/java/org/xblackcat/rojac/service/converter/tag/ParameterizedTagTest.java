@@ -3,8 +3,6 @@ package org.xblackcat.rojac.service.converter.tag;
 import junit.framework.TestCase;
 
 /**
- * Date: 20 лют 2008
- *
  * @author xBlackCat
  */
 

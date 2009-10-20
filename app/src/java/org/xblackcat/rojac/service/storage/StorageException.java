@@ -3,8 +3,6 @@ package org.xblackcat.rojac.service.storage;
 import org.xblackcat.rojac.RojacException;
 
 /**
- * Date: 15.04.2007
- *
  * @author ASUS
  */
 

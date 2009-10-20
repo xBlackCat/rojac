@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.gui.frame.progress;
 
 /**
- * Date: 31 ρεπο 2008
- *
  * @author xBlackCat
  */
 

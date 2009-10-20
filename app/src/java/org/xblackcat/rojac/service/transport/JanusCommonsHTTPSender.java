@@ -60,19 +60,18 @@ import java.util.zip.GZIPOutputStream;
 /**
  * This class uses Jakarta Commons's HttpClient to call a SOAP server.
  *
- * @author Davanum Srinivas (dims@yahoo.com)
- * History: By Chandra Talluri
- * Modifications done for maintaining sessions. Cookies needed to be set on
- * HttpState not on MessageContext, since ttpMethodBase overwrites the cookies
- * from HttpState. Also we need to setCookiePolicy on HttpState to
- * CookiePolicy.COMPATIBILITY else it is defaulting to RFC2109Spec and adding
- * Version information to it and tomcat server not recognizing it
+ * @author Davanum Srinivas (dims@yahoo.com) History: By Chandra Talluri Modifications done for maintaining sessions.
+ *         Cookies needed to be set on HttpState not on MessageContext, since ttpMethodBase overwrites the cookies from
+ *         HttpState. Also we need to setCookiePolicy on HttpState to CookiePolicy.COMPATIBILITY else it is defaulting
+ *         to RFC2109Spec and adding Version information to it and tomcat server not recognizing it
  */
 public class JanusCommonsHTTPSender extends BasicHandler {
 
-    /** Field log           */
+    /**
+     * Field log
+     */
     protected static Log log =
-        LogFactory.getLog(JanusCommonsHTTPSender.class.getName());
+            LogFactory.getLog(JanusCommonsHTTPSender.class.getName());
 
     protected HttpConnectionManager connectionManager;
     protected CommonsHTTPClientProperties clientProperties;
@@ -89,18 +88,18 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         cm.getParams().setMaxTotalConnections(clientProperties.getMaximumTotalConnections());
         // If defined, set the default timeouts
         // Can be overridden by the MessageContext
-        if(this.clientProperties.getDefaultConnectionTimeout()>0) {
-           cm.getParams().setConnectionTimeout(this.clientProperties.getDefaultConnectionTimeout());
+        if (this.clientProperties.getDefaultConnectionTimeout() > 0) {
+            cm.getParams().setConnectionTimeout(this.clientProperties.getDefaultConnectionTimeout());
         }
-        if(this.clientProperties.getDefaultSoTimeout()>0) {
-           cm.getParams().setSoTimeout(this.clientProperties.getDefaultSoTimeout());
+        if (this.clientProperties.getDefaultSoTimeout() > 0) {
+            cm.getParams().setSoTimeout(this.clientProperties.getDefaultSoTimeout());
         }
         this.connectionManager = cm;
     }
 
     /**
-     * invoke creates a socket connection, sends the request SOAP message and then
-     * reads the response SOAP message back from the SOAP server
+     * invoke creates a socket connection, sends the request SOAP message and then reads the response SOAP message back
+     * from the SOAP server
      *
      * @param msgContext the messsage context
      *
@@ -110,11 +109,11 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         HttpMethodBase method = null;
         if (log.isDebugEnabled()) {
             log.debug(Messages.getMessage("enter00",
-                                          "CommonsHTTPSender::invoke"));
+                    "CommonsHTTPSender::invoke"));
         }
         try {
             URL targetURL =
-                new URL(msgContext.getStrProp(MessageContext.TRANS_URL));
+                    new URL(msgContext.getStrProp(MessageContext.TRANS_URL));
 
             // no need to retain these, as the cookies/credentials are
             // stored in the message context across multiple requests.
@@ -125,7 +124,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
             httpClient.getParams().setConnectionManagerTimeout(this.clientProperties.getConnectionPoolTimeout());
 
             HostConfiguration hostConfiguration =
-                getHostConfiguration(httpClient, msgContext, targetURL);
+                    getHostConfiguration(httpClient, msgContext, targetURL);
 
             boolean posting = true;
 
@@ -144,24 +143,24 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
                 // set false as default, addContetInfo can overwrite
                 method.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE,
-                                                       false);
+                        false);
 
                 addContextInfo(method, httpClient, msgContext, targetURL);
 
                 MessageRequestEntity requestEntity = null;
                 if (msgContext.isPropertyTrue(HTTPConstants.MC_GZIP_REQUEST)) {
-                	requestEntity = new GzipMessageRequestEntity(method, reqMessage, httpChunkStream);
+                    requestEntity = new GzipMessageRequestEntity(method, reqMessage, httpChunkStream);
                 } else {
-                	requestEntity = new MessageRequestEntity(method, reqMessage, httpChunkStream);
+                    requestEntity = new MessageRequestEntity(method, reqMessage, httpChunkStream);
                 }
-                ((PostMethod)method).setRequestEntity(requestEntity);
+                ((PostMethod) method).setRequestEntity(requestEntity);
             } else {
                 method = new GetMethod(targetURL.toString());
                 addContextInfo(method, httpClient, msgContext, targetURL);
             }
 
             String httpVersion =
-                msgContext.getStrProp(MessageContext.HTTP_TRANSPORT_VERSION);
+                    msgContext.getStrProp(MessageContext.HTTP_TRANSPORT_VERSION);
             if (httpVersion != null) {
                 if (httpVersion.equals(HTTPConstants.HEADER_PROTOCOL_V10)) {
                     method.getParams().setVersion(HttpVersion.HTTP_1_0);
@@ -187,37 +186,37 @@ public class JanusCommonsHTTPSender extends BasicHandler {
             int returnCode = httpClient.executeMethod(hostConfiguration, method, null);
 
             String contentType =
-                getHeader(method, HTTPConstants.HEADER_CONTENT_TYPE);
+                    getHeader(method, HTTPConstants.HEADER_CONTENT_TYPE);
             String contentLocation =
-                getHeader(method, HTTPConstants.HEADER_CONTENT_LOCATION);
+                    getHeader(method, HTTPConstants.HEADER_CONTENT_LOCATION);
             String contentLength =
-                getHeader(method, HTTPConstants.HEADER_CONTENT_LENGTH);
+                    getHeader(method, HTTPConstants.HEADER_CONTENT_LENGTH);
 
             if ((returnCode > 199) && (returnCode < 300)) {
 
                 // SOAP return is OK - so fall through
             } else if (msgContext.getSOAPConstants() ==
-                       SOAPConstants.SOAP12_CONSTANTS) {
+                    SOAPConstants.SOAP12_CONSTANTS) {
                 // For now, if we're SOAP 1.2, fall through, since the range of
                 // valid result codes is much greater
             } else if ((contentType != null) && !contentType.equals("text/html")
-                       && ((returnCode > 499) && (returnCode < 600))) {
+                    && ((returnCode > 499) && (returnCode < 600))) {
 
                 // SOAP Fault should be in here - so fall through
             } else {
                 String statusMessage = method.getStatusText();
                 AxisFault fault = new AxisFault("HTTP",
-                                                "(" + returnCode + ")"
-                                                + statusMessage, null,
-                                                null);
+                        "(" + returnCode + ")"
+                                + statusMessage, null,
+                        null);
 
                 try {
                     fault.setFaultDetailString(
-                         Messages.getMessage("return01",
-                                             "" + returnCode,
-                                             method.getResponseBodyAsString()));
+                            Messages.getMessage("return01",
+                                    "" + returnCode,
+                                    method.getResponseBodyAsString()));
                     fault.addFaultDetail(Constants.QNAME_FAULTDETAIL_HTTPERRORCODE,
-                                         Integer.toString(returnCode));
+                            Integer.toString(returnCode));
                     throw fault;
                 } finally {
                     method.releaseConnection(); // release connection back to pool.
@@ -227,40 +226,40 @@ public class JanusCommonsHTTPSender extends BasicHandler {
             // wrap the response body stream so that close() also releases
             // the connection back to the pool.
             InputStream releaseConnectionOnCloseStream =
-                createConnectionReleasingInputStream(method);
+                    createConnectionReleasingInputStream(method);
 
             Header contentEncoding =
-            	method.getResponseHeader(HTTPConstants.HEADER_CONTENT_ENCODING);
+                    method.getResponseHeader(HTTPConstants.HEADER_CONTENT_ENCODING);
             if (contentEncoding != null) {
-            	if (contentEncoding.getValue().
-            			equalsIgnoreCase(HTTPConstants.COMPRESSION_GZIP)) {
-            		releaseConnectionOnCloseStream =
-            			new GZIPInputStream(releaseConnectionOnCloseStream);
-            	} else {
+                if (contentEncoding.getValue().
+                        equalsIgnoreCase(HTTPConstants.COMPRESSION_GZIP)) {
+                    releaseConnectionOnCloseStream =
+                            new GZIPInputStream(releaseConnectionOnCloseStream);
+                } else {
                     AxisFault fault = new AxisFault("HTTP",
                             "unsupported content-encoding of '"
-                    		+ contentEncoding.getValue()
-                            + "' found", null, null);
+                                    + contentEncoding.getValue()
+                                    + "' found", null, null);
                     throw fault;
-            	}
+                }
 
             }
             Message outMsg = new Message(releaseConnectionOnCloseStream,
-                                         false, contentType, contentLocation);
+                    false, contentType, contentLocation);
             // Transfer HTTP headers of HTTP message to MIME headers of SOAP message
             Header[] responseHeaders = method.getResponseHeaders();
             MimeHeaders responseMimeHeaders = outMsg.getMimeHeaders();
             for (int i = 0; i < responseHeaders.length; i++) {
                 Header responseHeader = responseHeaders[i];
                 responseMimeHeaders.addHeader(responseHeader.getName(),
-                                              responseHeader.getValue());
+                        responseHeader.getValue());
             }
             outMsg.setMessageType(Message.RESPONSE);
             msgContext.setResponseMessage(outMsg);
             if (log.isDebugEnabled()) {
                 if (null == contentLength) {
                     log.debug("\n"
-                    + Messages.getMessage("no00", "Content-Length"));
+                            + Messages.getMessage("no00", "Content-Length"));
                 }
                 log.debug("\n" + Messages.getMessage("xmlRecd00"));
                 log.debug("-----------------------------------------------");
@@ -294,20 +293,20 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
         if (log.isDebugEnabled()) {
             log.debug(Messages.getMessage("exit00",
-                                          "CommonsHTTPSender::invoke"));
+                    "CommonsHTTPSender::invoke"));
         }
     }
 
     /**
-     * little helper function for cookies. fills up the message context with
-     * a string or an array of strings (if there are more than one Set-Cookie)
+     * little helper function for cookies. fills up the message context with a string or an array of strings (if there
+     * are more than one Set-Cookie)
      *
      * @param cookieName
      * @param cookie
      * @param msgContext
      */
     public void handleCookie(String cookieName, String cookie,
-            MessageContext msgContext) {
+                             MessageContext msgContext) {
 
         cookie = cleanupCookie(cookie);
         int keyIndex = cookie.indexOf("=");
@@ -316,10 +315,10 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         ArrayList cookies = new ArrayList();
         Object oldCookies = msgContext.getProperty(cookieName);
         boolean alreadyExist = false;
-        if(oldCookies != null) {
-            if(oldCookies instanceof String[]) {
-                String[] oldCookiesArray = (String[])oldCookies;
-                for(int i = 0; i < oldCookiesArray.length; i++) {
+        if (oldCookies != null) {
+            if (oldCookies instanceof String[]) {
+                String[] oldCookiesArray = (String[]) oldCookies;
+                for (int i = 0; i < oldCookiesArray.length; i++) {
                     String anOldCookie = oldCookiesArray[i];
                     if (key != null && anOldCookie.indexOf(key) == 0) { // same cookie key
                         anOldCookie = cookie;             // update to new one
@@ -328,9 +327,9 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                     cookies.add(anOldCookie);
                 }
             } else {
-				String oldCookie = (String)oldCookies;
+                String oldCookie = (String) oldCookies;
                 if (key != null && oldCookie.indexOf(key) == 0) { // same cookie key
-					oldCookie = cookie;             // update to new one
+                    oldCookie = cookie;             // update to new one
                     alreadyExist = true;
                 }
                 cookies.add(oldCookie);
@@ -341,7 +340,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
             cookies.add(cookie);
         }
 
-        if(cookies.size()==1) {
+        if (cookies.size() == 1) {
             msgContext.setProperty(cookieName, cookies.get(0));
         } else if (cookies.size() > 1) {
             msgContext.setProperty(cookieName, cookies.toArray(new String[cookies.size()]));
@@ -362,7 +361,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         Object ck1 = msgContext.getProperty(header);
         if (ck1 != null) {
             if (ck1 instanceof String[]) {
-                String [] cookies = (String[]) ck1;
+                String[] cookies = (String[]) ck1;
                 for (int i = 0; i < cookies.length; i++) {
                     addCookie(state, cookies[i], host, path, secure);
                 }
@@ -374,10 +373,11 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
     /**
      * add cookie to state
+     *
      * @param state
      * @param cookie
      */
-    private void addCookie(HttpState state, String cookie,String host, String path, boolean secure) {
+    private void addCookie(HttpState state, String cookie, String host, String path, boolean secure) {
         int index = cookie.indexOf('=');
         state.addCookie(new Cookie(host, cookie.substring(0, index),
                 cookie.substring(index + 1), path,
@@ -405,32 +405,32 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                                                      MessageContext context,
                                                      URL targetURL) {
         TransportClientProperties tcp =
-            TransportClientPropertiesFactory.create(targetURL.getProtocol()); // http or https
+                TransportClientPropertiesFactory.create(targetURL.getProtocol()); // http or https
         int port = targetURL.getPort();
         boolean hostInNonProxyList =
-            isHostInNonProxyList(targetURL.getHost(), tcp.getNonProxyHosts());
+                isHostInNonProxyList(targetURL.getHost(), tcp.getNonProxyHosts());
 
         HostConfiguration config = new HostConfiguration();
 
         if (port == -1) {
-        	if(targetURL.getProtocol().equalsIgnoreCase("https")) {
-        		port = 443;		// default port for https being 443
-        	} else { // it must be http
-        		port = 80;		// default port for http being 80
-        	}
+            if (targetURL.getProtocol().equalsIgnoreCase("https")) {
+                port = 443;        // default port for https being 443
+            } else { // it must be http
+                port = 80;        // default port for http being 80
+            }
         }
 
-        if(hostInNonProxyList){
+        if (hostInNonProxyList) {
             config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
         } else {
             if (tcp.getProxyHost().length() == 0 ||
-                tcp.getProxyPort().length() == 0) {
+                    tcp.getProxyPort().length() == 0) {
                 config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
             } else {
                 if (tcp.getProxyUser().length() != 0) {
                     Credentials proxyCred =
-                        new UsernamePasswordCredentials(tcp.getProxyUser(),
-                                                        tcp.getProxyPassword());
+                            new UsernamePasswordCredentials(tcp.getProxyUser(),
+                                    tcp.getProxyPassword());
                     // if the username is in the form "user\domain"
                     // then use NTCredentials instead.
                     int domainIndex = tcp.getProxyUser().indexOf("\\");
@@ -439,8 +439,8 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                         if (tcp.getProxyUser().length() > domainIndex + 1) {
                             String user = tcp.getProxyUser().substring(domainIndex + 1);
                             proxyCred = new NTCredentials(user,
-                                            tcp.getProxyPassword(),
-                                            tcp.getProxyHost(), domain);
+                                    tcp.getProxyPassword(),
+                                    tcp.getProxyHost(), domain);
                         }
                     }
                     client.getState().setProxyCredentials(AuthScope.ANY, proxyCred);
@@ -455,10 +455,10 @@ public class JanusCommonsHTTPSender extends BasicHandler {
     /**
      * Extracts info from message context.
      *
-     * @param method Post method
+     * @param method     Post method
      * @param httpClient The client used for posting
      * @param msgContext the message context
-     * @param tmpURL the url to post to.
+     * @param tmpURL     the url to post to.
      *
      * @throws Exception
      */
@@ -466,7 +466,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                                 HttpClient httpClient,
                                 MessageContext msgContext,
                                 URL tmpURL)
-        throws Exception {
+            throws Exception {
 
         // optionally set a timeout for the request
         if (msgContext.getTimeout() != 0) {
@@ -480,20 +480,20 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
         // Get SOAPAction, default to ""
         String action = msgContext.useSOAPAction()
-            ? msgContext.getSOAPActionURI()
-            : "";
+                ? msgContext.getSOAPActionURI()
+                : "";
 
         if (action == null) {
             action = "";
         }
 
         Message msg = msgContext.getRequestMessage();
-        if (msg != null){
+        if (msg != null) {
             method.setRequestHeader(new Header(HTTPConstants.HEADER_CONTENT_TYPE,
-                                               msg.getContentType(msgContext.getSOAPConstants())));
+                    msg.getContentType(msgContext.getSOAPConstants())));
         }
         method.setRequestHeader(new Header(HTTPConstants.HEADER_SOAP_ACTION,
-                                           "\"" + action + "\""));
+                "\"" + action + "\""));
         String userID = msgContext.getUsername();
         String passwd = msgContext.getPassword();
 
@@ -512,8 +512,8 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         }
         if (userID != null) {
             Credentials proxyCred =
-                new UsernamePasswordCredentials(userID,
-                                                passwd);
+                    new UsernamePasswordCredentials(userID,
+                            passwd);
             // if the username is in the form "user\domain"
             // then use NTCredentials instead.
             int domainIndex = userID.indexOf("\\");
@@ -522,8 +522,8 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                 if (userID.length() > domainIndex + 1) {
                     String user = userID.substring(domainIndex + 1);
                     proxyCred = new NTCredentials(user,
-                                    passwd,
-                                    NetworkUtils.getLocalHostname(), domain);
+                            passwd,
+                            NetworkUtils.getLocalHostname(), domain);
                 }
             }
             httpClient.getState().setCredentials(AuthScope.ANY, proxyCred);
@@ -531,34 +531,34 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
         // add compression headers if needed
         if (msgContext.isPropertyTrue(HTTPConstants.MC_ACCEPT_GZIP)) {
-        	method.addRequestHeader(HTTPConstants.HEADER_ACCEPT_ENCODING,
-        			HTTPConstants.COMPRESSION_GZIP);
+            method.addRequestHeader(HTTPConstants.HEADER_ACCEPT_ENCODING,
+                    HTTPConstants.COMPRESSION_GZIP);
         }
         if (msgContext.isPropertyTrue(HTTPConstants.MC_GZIP_REQUEST)) {
-        	method.addRequestHeader(HTTPConstants.HEADER_CONTENT_ENCODING,
-        			HTTPConstants.COMPRESSION_GZIP);
+            method.addRequestHeader(HTTPConstants.HEADER_CONTENT_ENCODING,
+                    HTTPConstants.COMPRESSION_GZIP);
         }
 
         // Transfer MIME headers of SOAPMessage to HTTP headers.
         MimeHeaders mimeHeaders = msg.getMimeHeaders();
         if (mimeHeaders != null) {
-            for (Iterator i = mimeHeaders.getAllHeaders(); i.hasNext(); ) {
+            for (Iterator i = mimeHeaders.getAllHeaders(); i.hasNext();) {
                 MimeHeader mimeHeader = (MimeHeader) i.next();
                 //HEADER_CONTENT_TYPE and HEADER_SOAP_ACTION are already set.
                 //Let's not duplicate them.
                 String headerName = mimeHeader.getName();
                 if (headerName.equals(HTTPConstants.HEADER_CONTENT_TYPE)
                         || headerName.equals(HTTPConstants.HEADER_SOAP_ACTION)) {
-                        continue;
+                    continue;
                 }
                 method.addRequestHeader(mimeHeader.getName(),
-                                        mimeHeader.getValue());
+                        mimeHeader.getValue());
             }
         }
 
         // process user defined headers for information.
         Hashtable userHeaderTable =
-            (Hashtable) msgContext.getProperty(HTTPConstants.REQUEST_HEADERS);
+                (Hashtable) msgContext.getProperty(HTTPConstants.REQUEST_HEADERS);
 
         if (userHeaderTable != null) {
             for (Iterator e = userHeaderTable.entrySet().iterator();
@@ -573,12 +573,12 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                 String value = me.getValue().toString().trim();
 
                 if (key.equalsIgnoreCase(HTTPConstants.HEADER_EXPECT) &&
-                    value.equalsIgnoreCase(HTTPConstants.HEADER_EXPECT_100_Continue)) {
+                        value.equalsIgnoreCase(HTTPConstants.HEADER_EXPECT_100_Continue)) {
                     method.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE,
-                                                           true);
+                            true);
                 } else if (key.equalsIgnoreCase(HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED)) {
                     String val = me.getValue().toString();
-                    if (null != val)  {
+                    if (null != val) {
                         httpChunkStream = JavaUtils.isTrue(val);
                     }
                 } else {
@@ -591,7 +591,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
     /**
      * Check if the specified host is in the list of non proxy hosts.
      *
-     * @param host host name
+     * @param host          host name
      * @param nonProxyHosts string containing the list of non proxy hosts
      *
      * @return true/false
@@ -613,9 +613,9 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
             if (log.isDebugEnabled()) {
                 log.debug(Messages.getMessage("match00",
-                new String[]{"HTTPSender",
-                host,
-                pattern}));
+                        new String[]{"HTTPSender",
+                                host,
+                                pattern}));
             }
             if (match(pattern, host, false)) {
                 return true;
@@ -625,17 +625,14 @@ public class JanusCommonsHTTPSender extends BasicHandler {
     }
 
     /**
-     * Matches a string against a pattern. The pattern contains two special
-     * characters:
-     * '*' which means zero or more characters,
+     * Matches a string against a pattern. The pattern contains two special characters: '*' which means zero or more
+     * characters,
      *
-     * @param pattern the (non-null) pattern to match against
-     * @param str     the (non-null) string that must be matched against the
-     *                pattern
+     * @param pattern         the (non-null) pattern to match against
+     * @param str             the (non-null) string that must be matched against the pattern
      * @param isCaseSensitive
      *
-     * @return <code>true</code> when the string matches against the pattern,
-     *         <code>false</code> otherwise.
+     * @return <code>true</code> when the string matches against the pattern, <code>false</code> otherwise.
      */
     protected static boolean match(String pattern, String str,
                                    boolean isCaseSensitive) {
@@ -667,8 +664,8 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                     return false;    // Character mismatch
                 }
                 if (!isCaseSensitive
-                && (Character.toUpperCase(ch)
-                != Character.toUpperCase(strArr[i]))) {
+                        && (Character.toUpperCase(ch)
+                        != Character.toUpperCase(strArr[i]))) {
                     return false;    // Character mismatch
                 }
             }
@@ -680,13 +677,13 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
         // Process characters before first star
         while ((ch = patArr[patIdxStart]) != '*'
-        && (strIdxStart <= strIdxEnd)) {
+                && (strIdxStart <= strIdxEnd)) {
             if (isCaseSensitive && (ch != strArr[strIdxStart])) {
                 return false;    // Character mismatch
             }
             if (!isCaseSensitive
-            && (Character.toUpperCase(ch)
-            != Character.toUpperCase(strArr[strIdxStart]))) {
+                    && (Character.toUpperCase(ch)
+                    != Character.toUpperCase(strArr[strIdxStart]))) {
                 return false;    // Character mismatch
             }
             patIdxStart++;
@@ -710,8 +707,8 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                 return false;    // Character mismatch
             }
             if (!isCaseSensitive
-            && (Character.toUpperCase(ch)
-            != Character.toUpperCase(strArr[strIdxEnd]))) {
+                    && (Character.toUpperCase(ch)
+                    != Character.toUpperCase(strArr[strIdxEnd]))) {
                 return false;    // Character mismatch
             }
             patIdxEnd--;
@@ -754,27 +751,27 @@ public class JanusCommonsHTTPSender extends BasicHandler {
             int foundIdx = -1;
 
             strLoop:
-                for (int i = 0; i <= strLength - patLength; i++) {
-                    for (int j = 0; j < patLength; j++) {
-                        ch = patArr[patIdxStart + j + 1];
-                        if (isCaseSensitive
-                        && (ch != strArr[strIdxStart + i + j])) {
-                            continue strLoop;
-                        }
-                        if (!isCaseSensitive && (Character
-                        .toUpperCase(ch) != Character
-                        .toUpperCase(strArr[strIdxStart + i + j]))) {
-                            continue strLoop;
-                        }
+            for (int i = 0; i <= strLength - patLength; i++) {
+                for (int j = 0; j < patLength; j++) {
+                    ch = patArr[patIdxStart + j + 1];
+                    if (isCaseSensitive
+                            && (ch != strArr[strIdxStart + i + j])) {
+                        continue strLoop;
                     }
-                    foundIdx = strIdxStart + i;
-                    break;
+                    if (!isCaseSensitive && (Character
+                            .toUpperCase(ch) != Character
+                            .toUpperCase(strArr[strIdxStart + i + j]))) {
+                        continue strLoop;
+                    }
                 }
-                if (foundIdx == -1) {
-                    return false;
-                }
-                patIdxStart = patIdxTmp;
-                strIdxStart = foundIdx + patLength;
+                foundIdx = strIdxStart + i;
+                break;
+            }
+            if (foundIdx == -1) {
+                return false;
+            }
+            patIdxStart = patIdxTmp;
+            strIdxStart = foundIdx + patLength;
         }
 
         // All characters in the string are used. Check if only '*'s are left
@@ -794,14 +791,14 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
     private InputStream createConnectionReleasingInputStream(final HttpMethodBase method) throws IOException {
         return new FilterInputStream(method.getResponseBodyAsStream()) {
-                public void close() throws IOException {
-                    try {
-                        super.close();
-                    } finally {
-                        method.releaseConnection();
-                    }
+            public void close() throws IOException {
+                try {
+                    super.close();
+                } finally {
+                    method.releaseConnection();
                 }
-            };
+            }
+        };
     }
 
     private static class MessageRequestEntity implements RequestEntity {
@@ -834,7 +831,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         }
 
         protected boolean isContentLengthNeeded() {
-        	return this.method.getParams().getVersion() == HttpVersion.HTTP_1_0 || !httpChunkStream;
+            return this.method.getParams().getVersion() == HttpVersion.HTTP_1_0 || !httpChunkStream;
         }
 
         public long getContentLength() {
@@ -855,36 +852,36 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
     private static class GzipMessageRequestEntity extends MessageRequestEntity {
 
-    	public GzipMessageRequestEntity(HttpMethodBase method, Message message) {
-    		super(method, message);
+        public GzipMessageRequestEntity(HttpMethodBase method, Message message) {
+            super(method, message);
         }
 
         public GzipMessageRequestEntity(HttpMethodBase method, Message message, boolean httpChunkStream) {
-        	super(method, message, httpChunkStream);
+            super(method, message, httpChunkStream);
         }
 
         public void writeRequest(OutputStream out) throws IOException {
-        	if (cachedStream != null) {
-        		cachedStream.writeTo(out);
-        	} else {
-        		GZIPOutputStream gzStream = new GZIPOutputStream(out);
-        		super.writeRequest(gzStream);
-        		gzStream.finish();
-        	}
+            if (cachedStream != null) {
+                cachedStream.writeTo(out);
+            } else {
+                GZIPOutputStream gzStream = new GZIPOutputStream(out);
+                super.writeRequest(gzStream);
+                gzStream.finish();
+            }
         }
 
         public long getContentLength() {
-        	if(isContentLengthNeeded()) {
-        		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        		try {
-        			writeRequest(baos);
-        			cachedStream = baos;
-        			return baos.size();
-        		} catch (IOException e) {
-        			// fall through to doing chunked.
-        		}
-        	}
-        	return -1; // do chunked
+            if (isContentLengthNeeded()) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                try {
+                    writeRequest(baos);
+                    cachedStream = baos;
+                    return baos.size();
+                } catch (IOException e) {
+                    // fall through to doing chunked.
+                }
+            }
+            return -1; // do chunked
         }
 
         private ByteArrayOutputStream cachedStream;

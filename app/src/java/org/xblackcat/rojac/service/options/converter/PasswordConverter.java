@@ -5,8 +5,6 @@ import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.service.options.Password;
 
 /**
- * Date: 12 лип 2008
- *
  * @author xBlackCat
  */
 

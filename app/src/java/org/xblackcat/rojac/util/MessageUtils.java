@@ -6,8 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Date: 20 серп 2009
- *
  * @author xBlackCat
  */
 
@@ -41,9 +39,9 @@ public final class MessageUtils {
 
         StringBuilder res = new StringBuilder();
 
-        res.append("Здравствуйте, ");
+        res.append("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, ");
         res.append(userName);
-        res.append(".\nВы писали:\n\n");
+        res.append(".\nпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ:\n\n");
 
         String abbr = abbreviateUserName(userName);
 

@@ -8,8 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 /**
- * Date: 16/10/2006
- *
  * @author xBlackCat
  */
 

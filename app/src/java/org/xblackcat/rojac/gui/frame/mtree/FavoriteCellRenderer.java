@@ -4,8 +4,6 @@ import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.service.RojacHelper;
 
 /**
- * Date: 15 груд 2007
- *
  * @author xBlackCat
  */
 final class FavoriteCellRenderer extends MessageCellRenderer {

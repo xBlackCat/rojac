@@ -16,8 +16,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Date: 3 бер 2008
- *
  * @author xBlackCat
  */
 

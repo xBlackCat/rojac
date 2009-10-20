@@ -3,8 +3,6 @@ package org.xblackcat.rojac.data;
 import ru.rsdn.Janus.UserRole;
 
 /**
- * Date: 14.04.2007
- *
  * @author ASUS
  */
 

@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Date: 17.04.2007
- *
  * @author ASUS
  */
 

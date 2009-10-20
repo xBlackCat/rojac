@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.service.janus.data;
 
 /**
- * Date: 14.04.2007
- *
  * @author ASUS
  */
 

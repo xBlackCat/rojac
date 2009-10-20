@@ -28,15 +28,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Date: 15 лип 2008
- *
  * @author xBlackCat
  */
 
 public class ForumsListView extends JPanel implements IView {
     protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-    
+
     private static final Log log = LogFactory.getLog(ForumsListView.class);
     // Data and models
     private ForumTableModel forumsModel = new ForumTableModel();
@@ -146,7 +144,7 @@ public class ForumsListView extends JPanel implements IView {
                 }
             }
         });
-            }
+    }
 
     public void updateSettings() {
         // TODO: implement

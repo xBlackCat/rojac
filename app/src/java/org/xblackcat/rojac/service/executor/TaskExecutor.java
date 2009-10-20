@@ -10,8 +10,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Date: 14 груд 2007
- *
  * @author xBlackCat
  */
 

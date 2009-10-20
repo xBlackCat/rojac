@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Date: 28 ñ³÷ 2008
- *
  * @author xBlackCat
  */
 

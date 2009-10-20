@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.service.converter;
 
 /**
- * Date: 20 лют 2008
- *
  * @author xBlackCat
  */
 

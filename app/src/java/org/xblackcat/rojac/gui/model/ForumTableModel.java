@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * Date: 12 лип 2008
- *
  * @author xBlackCat
  */
 
@@ -66,7 +64,7 @@ public class ForumTableModel extends AbstractTableModel {
             ForumData fd = new ForumData(f);
             if (!forums.contains(fd)) {
                 forums.add(fd);
-                
+
                 int ind = forums.indexOf(fd);
                 fireTableRowsInserted(ind, ind);
             }

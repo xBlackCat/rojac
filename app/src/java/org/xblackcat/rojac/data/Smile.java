@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.data;
 
 /**
- * Date: 5 ñ³÷ 2008
- *
  * @author xBlackCat
  */
 

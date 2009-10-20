@@ -3,8 +3,6 @@ package org.xblackcat.rojac.data;
 import ru.rsdn.Janus.ModerateActionType;
 
 /**
- * Date: 27 черв 2008
- *
  * @author xBlackCat
  */
 
@@ -15,8 +13,7 @@ public enum ModerateAction {
     DeleteErrorMessage(3),
     SplitThread(4),
     CloseTopic(5),
-    OpenTopic(6),
-    ;
+    OpenTopic(6),;
     private final int code;
     private final ModerateActionType type;
 

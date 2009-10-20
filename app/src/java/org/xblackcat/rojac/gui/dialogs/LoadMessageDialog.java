@@ -17,8 +17,6 @@ import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 
 /**
- * Date: 1 лют 2009
- *
  * @author xBlackCat
  */
 
@@ -127,7 +125,7 @@ public class LoadMessageDialog extends JDialog {
 
     private class OkListener implements ActionListener {
         @Override
-            public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             String id = messageIdText.getText();
 
             if (StringUtils.isBlank(id)) {
@@ -154,7 +152,7 @@ public class LoadMessageDialog extends JDialog {
 
     private class CancelListener implements ActionListener {
         @Override
-            public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             messageId = null;
             setVisible(false);
         }

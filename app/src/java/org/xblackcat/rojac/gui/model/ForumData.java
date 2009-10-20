@@ -4,8 +4,6 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 
 /**
- * Date: 21 вер 2008
- *
  * @author xBlackCat
  */
 

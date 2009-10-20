@@ -5,8 +5,6 @@ import org.xblackcat.rojac.service.options.PropertyLoadException;
 import org.xblackcat.utils.ResourceUtils;
 
 /**
- * Date: 8 лип 2008
- *
  * @author xBlackCat
  */
 

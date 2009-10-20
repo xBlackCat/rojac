@@ -18,8 +18,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Date: 19 ρεπο 2009
- *
  * @author xBlackCat
  */
 
@@ -30,13 +28,13 @@ public class ForumListPopupBuilder implements IPopupBuilder {
     protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
     /**
-     * Builds popup menu for RSDN message link. Available actions in the menu are: <ul>
-     * <li>"Goto" - open the message in the view window</li>
-     * <li>"Open in new tab" - open the message in new tab of the main frame</li>
-     * <li>"Open thread in new tab" - open whole thread in browser</li>
-     * <li>"Open in browser" - open only the message in browser </li>
+     * Builds popup menu for RSDN message link. Available actions in the menu are: <ul> <li>"Goto" - open the message in
+     * the view window</li> <li>"Open in new tab" - open the message in new tab of the main frame</li> <li>"Open thread
+     * in new tab" - open whole thread in browser</li> <li>"Open in browser" - open only the message in browser </li>
      * </ul>
+     *
      * @param parameters
+     *
      * @return
      */
     @Override
@@ -99,7 +97,7 @@ public class ForumListPopupBuilder implements IPopupBuilder {
                                 forumsModel.reloadInfo(forumId);
                             }
                         });
-                                            } catch (StorageException e1) {
+                    } catch (StorageException e1) {
                         log.error("Can not update forum info. [id:" + forumId + "].", e1);
                     }
                 }
@@ -123,7 +121,7 @@ public class ForumListPopupBuilder implements IPopupBuilder {
                                         forumsModel.reloadInfo(forumId);
                                     }
                                 });
-                                                            } catch (StorageException e1) {
+                            } catch (StorageException e1) {
                                 log.error("Can not update forum info. [id:" + forumId + "].", e1);
                             }
                         }

@@ -13,8 +13,6 @@ import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 1 лют 2009
- *
  * @author xBlackCat
  */
 

@@ -19,8 +19,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Date: 27 черв 2008
- *
  * @author xBlackCat
  */
 

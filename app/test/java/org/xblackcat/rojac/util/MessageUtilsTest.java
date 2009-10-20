@@ -3,8 +3,6 @@ package org.xblackcat.rojac.util;
 import junit.framework.TestCase;
 
 /**
- * Date: 20 ρεπο 2009
- *
  * @author xBlackCat
  */
 

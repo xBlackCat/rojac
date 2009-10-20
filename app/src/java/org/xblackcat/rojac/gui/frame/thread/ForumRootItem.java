@@ -8,8 +8,6 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import javax.swing.*;
 
 /**
- * Date: 20 ρεπο 2008
- *
  * @author xBlackCat
  */
 

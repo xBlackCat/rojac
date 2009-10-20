@@ -11,8 +11,6 @@ import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.janus.data.UsersList;
 
 /**
- * Date: 10 квіт 2007
- *
  * @author Alexey
  */
 

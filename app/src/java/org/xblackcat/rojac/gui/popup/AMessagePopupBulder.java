@@ -8,8 +8,6 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 
 /**
- * Date: 20 ρεπο 2009
- *
  * @author xBlackCat
  */
 

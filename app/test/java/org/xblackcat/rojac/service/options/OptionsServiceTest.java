@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Date: 13 квіт 2007
- *
  * @author Alexey
  */
 

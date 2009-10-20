@@ -4,8 +4,6 @@ import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.Rating;
 
 /**
- * Date: 14 груд 2007
- *
  * @author xBlackCat
  */
 

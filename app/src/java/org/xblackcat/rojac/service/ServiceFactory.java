@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Date: 29 ñ³÷ 2008
- *
  * @author xBlackCat
  */
 
@@ -78,7 +76,7 @@ public final class ServiceFactory {
         }
 
         String configurationName = mainProperties.getProperty("rojac.service.database.engine.config");
-        
+
         IConnectionFactory connectionFactory = new PooledConnectionFactoryl(configurationName);
         storage = new DBStorage(configurationName, connectionFactory);
         storage.initialize();

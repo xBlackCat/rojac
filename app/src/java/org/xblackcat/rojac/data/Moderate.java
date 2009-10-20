@@ -5,8 +5,6 @@ import ru.rsdn.Janus.JanusModerateInfo;
 import java.util.Date;
 
 /**
- * Date: 14.04.2007
- *
  * @author ASUS
  */
 
@@ -42,7 +40,7 @@ public final class Moderate {
     public long getCreationTime() {
         return creationTime;
     }
-        
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

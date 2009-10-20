@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Date: 22 ρεπο 2009
- *
  * @author xBlackCat
  */
 

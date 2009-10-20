@@ -12,8 +12,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 /**
- * Date: 1 лют 2009
- *
  * @author xBlackCat
  */
 

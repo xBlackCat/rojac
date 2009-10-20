@@ -7,8 +7,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
 /**
- * Date: 18 ρεπο 2008
- *
  * @author xBlackCat
  */
 class MessageTreeCellRenderer extends DefaultTreeCellRenderer {

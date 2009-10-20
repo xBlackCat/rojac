@@ -5,8 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.IRootPane;
 
 /**
- * Date: 22 бер 2008
- *
  * @author xBlackCat
  */
 

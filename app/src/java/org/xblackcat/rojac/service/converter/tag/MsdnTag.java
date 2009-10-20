@@ -9,8 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
- * Date: 20 лют 2008
- *
  * @author xBlackCat
  */
 

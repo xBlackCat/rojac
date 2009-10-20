@@ -12,8 +12,6 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import javax.swing.*;
 
 /**
- * Date: 23 бер 2008
- *
  * @author xBlackCat
  */
 
@@ -93,7 +91,7 @@ public class MessageItem {
                 });
             }
         });
-            }
+    }
 
     protected void loadChildren(final AThreadTreeModel model) {
         synchronized (this) {

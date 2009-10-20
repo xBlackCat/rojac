@@ -11,8 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Date: 20 лют 2008
- *
  * @author xBlackCat
  */
 

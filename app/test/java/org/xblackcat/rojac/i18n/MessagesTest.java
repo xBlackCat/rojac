@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.i18n;
 /**
- * Date: 23 груд 2007
+ *
  * @author xBlackCat
  */
 

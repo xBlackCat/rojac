@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.gui;
 
 /**
- * Date: 15 лип 2008
- *
  * @author xBlackCat
  */
 

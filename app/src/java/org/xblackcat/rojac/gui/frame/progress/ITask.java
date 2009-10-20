@@ -3,8 +3,6 @@ package org.xblackcat.rojac.gui.frame.progress;
 import org.xblackcat.rojac.RojacException;
 
 /**
- * Date: 31 ρεπο 2008
- *
  * @author xBlackCat
  */
 

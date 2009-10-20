@@ -3,8 +3,6 @@ package org.xblackcat.rojac.data;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
- * Date: 15.04.2007
- *
  * @author ASUS
  */
 

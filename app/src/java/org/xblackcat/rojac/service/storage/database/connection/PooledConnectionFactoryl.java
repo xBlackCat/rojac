@@ -13,8 +13,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Date: 5 זמגע 2008
- *
  * @author xBlackCat
  */
 
@@ -26,8 +24,8 @@ public class PooledConnectionFactoryl extends AConnectionFactory {
 
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(url, userName, password);
 
-        
-         new PoolableConnectionFactory(
+
+        new PoolableConnectionFactory(
                 connectionFactory,
                 connectionPool,
                 null,

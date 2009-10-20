@@ -7,8 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import java.util.Locale;
 
 /**
- * Date: 15 лип 2008
- *
  * @author xBlackCat
  */
 

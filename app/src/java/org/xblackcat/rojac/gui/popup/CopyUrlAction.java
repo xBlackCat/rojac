@@ -6,10 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
-* Date: 20 ρεπο 2009
-*
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class CopyUrlAction implements ActionListener {
     protected String url;
 

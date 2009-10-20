@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.gui.frame.mtree;
 
 /**
- * Date: 15 груд 2007
- *
  * @author xBlackCat
  */
 final class IdCellRenderer extends MessageCellRenderer {

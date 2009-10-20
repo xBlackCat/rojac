@@ -3,8 +3,6 @@ package org.xblackcat.rojac.data;
 import ru.rsdn.Janus.PostMessageInfo;
 
 /**
- * Date: 14.04.2007
- *
  * @author ASUS
  */
 

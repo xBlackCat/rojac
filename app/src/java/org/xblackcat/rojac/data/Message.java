@@ -5,8 +5,6 @@ import ru.rsdn.Janus.JanusMessageInfo;
 import java.util.Date;
 
 /**
- * Date: 14.04.2007
- *
  * @author ASUS
  */
 
@@ -142,6 +140,7 @@ public final class Message {
 
     /**
      * Returns the readness status of the message.
+     *
      * @return
      */
     public boolean isRead() {

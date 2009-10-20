@@ -5,8 +5,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 /**
- * Date: 15 груд 2007
- *
  * @author xBlackCat
  */
 
@@ -26,7 +24,7 @@ abstract class MessageCellRenderer extends DefaultTableCellRenderer {
      * Sets up the renderer component with right datas.
      *
      * @param item
-     *@param selected @return <code>true</code> if the line should be resized.
+     * @param selected @return <code>true</code> if the line should be resized.
      */
     protected abstract boolean setupComponent(MessageItem item, boolean selected);
 }
