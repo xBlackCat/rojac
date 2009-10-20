@@ -89,18 +89,22 @@
         <mkdir dir="src/java"/>
     </target>
 
-    <target name="generate">
+    <target name="generate" depends="clean">
         <taskdef resource="axis-tasks.properties">
             <classpath>
                 <path refid="rojac-wsdl.module.classpath"/>
             </classpath>
         </taskdef>
-        <axis-wsdl2java output="src/java" testcase="false" url="http://rsdn.ru/ws/JanusAT.asmx?WSDL" verbose="true">
+        <axis-wsdl2java
+                output="src/java"
+                url="http://rsdn.ru/ws/JanusAT.asmx?WSDL"
+                verbose="true"
+                typemappingversion="1.3">
             <mapping namespace="http://tempuri.org/" package="net.sf.forview.rsdn.wssync.imported"/>
         </axis-wsdl2java>
     </target>
 
-    <target name="compile" description="compile module(s) Main production classes" depends="generate">
+    <target name="compile" description="compile module(s) Main production classes">
         <mkdir dir="${rojac-wsdl.output.dir}"/>
         <javac destdir="${rojac-wsdl.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
                memoryMaximumSize="${compiler.max.memory}" fork="true" executable="${jdk.home}/bin/javac">
