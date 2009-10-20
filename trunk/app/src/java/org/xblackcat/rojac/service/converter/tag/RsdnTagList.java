@@ -5,8 +5,6 @@ import org.xblackcat.rojac.service.converter.ITag;
 import org.xblackcat.rojac.service.converter.ITagInfo;
 
 /**
- * Date: 23 лют 2008
- *
  * @author xBlackCat
  */
 
@@ -51,7 +49,8 @@ public enum RsdnTagList implements ITag<RsdnTagList> {
     // Language tags
     CSharp(new LanguageTag("c#", "//", "/*", "*/", "'\"", '\\')),
     /**
-     * The keywords was taken from <a href="http://download.microsoft.com/download/D/C/1/DC1B219F-3B11-4A05-9DA3-2D0F98B20917/Partition%20III%20CIL.doc">FrameworkSDK\Tool Developers Guide\docs\Partition III CIL.doc</a
+     * The keywords was taken from <a href="http://download.microsoft.com/download/D/C/1/DC1B219F-3B11-4A05-9DA3-2D0F98B20917/Partition%20III%20CIL.doc">FrameworkSDK\Tool
+     * Developers Guide\docs\Partition III CIL.doc</a
      */
     MSIL(new LanguageTag("msil", "//", "/*", "*/", "'\"", '\\')),
     /**
@@ -63,7 +62,8 @@ public enum RsdnTagList implements ITag<RsdnTagList> {
     Code(new LanguageTag("code", "//", "/*", "*/", "'\"", '\\')),
     Pascal(new LanguageTag("pascal", "//", "/*", "*/", "'", '\\')),
     /**
-     * The keywords was taken from <a href="http://msdn2.microsoft.com/en-us/library/ksh7h19t(VS.71).aspx">MSDN article</a
+     * The keywords was taken from <a href="http://msdn2.microsoft.com/en-us/library/ksh7h19t(VS.71).aspx">MSDN
+     * article</a
      */
     VisualBasic(new LanguageTag("vb", "'", "/*", "*/", "'\"", '\\')),
     /**
@@ -71,15 +71,18 @@ public enum RsdnTagList implements ITag<RsdnTagList> {
      */
     SQL(new LanguageTag("sql", "--", null, null, "'\"", '\\')),
     /**
-     * List of reserved words was taken from <a href="http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html">Sun tuturial</a>
+     * List of reserved words was taken from <a href="http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html">Sun
+     * tuturial</a>
      */
     Java(new LanguageTag("java", "//", "/*", "*/", "'\"", '\\')),
     /**
-     * List of reserved words was taken from the <a href="http://www.perl.org.ru:8000/documentation/docs/perlspec/perlspec.htm">Perl.org.ru site</a>
+     * List of reserved words was taken from the <a href="http://www.perl.org.ru:8000/documentation/docs/perlspec/perlspec.htm">Perl.org.ru
+     * site</a>
      */
     Perl(new LanguageTag("perl", "#", null, null, "'\"", '\\')),
     /**
-     * List of reserved words was taken from <a href="http://php.mirror.camelnetwork.com/manual/ru/reserved.php">PHP site</a>
+     * List of reserved words was taken from <a href="http://php.mirror.camelnetwork.com/manual/ru/reserved.php">PHP
+     * site</a>
      */
     PHP(new LanguageTag("php", "//", "/*", "*/", "'\"", '\\'));
 

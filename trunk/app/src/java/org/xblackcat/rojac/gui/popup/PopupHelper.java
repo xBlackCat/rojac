@@ -3,8 +3,6 @@ package org.xblackcat.rojac.gui.popup;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
- * Date: 19 ρεπο 2009
- *
  * @author xBlackCat
  */
 

@@ -15,8 +15,6 @@ import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.options.Property;
 
 /**
- * Date: 26 вер 2008
- *
  * @author xBlackCat
  */
 

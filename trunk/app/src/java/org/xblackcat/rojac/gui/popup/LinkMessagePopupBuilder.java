@@ -8,8 +8,6 @@ import org.xblackcat.rojac.gui.IRootPane;
 import javax.swing.*;
 
 /**
- * Date: 19 ρεπο 2009
- *
  * @author xBlackCat
  */
 

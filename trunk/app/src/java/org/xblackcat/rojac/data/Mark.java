@@ -8,8 +8,6 @@ import javax.swing.*;
 import java.net.URL;
 
 /**
- * Date: 28 ñ³÷ 2008
- *
  * @author xBlackCat
  */
 

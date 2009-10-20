@@ -5,8 +5,6 @@ import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 16.04.2007
- *
  * @author ASUS
  */
 final class CachedForumAH implements IForumAH, IPurgable {

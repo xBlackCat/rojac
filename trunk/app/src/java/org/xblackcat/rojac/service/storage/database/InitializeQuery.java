@@ -3,8 +3,6 @@ package org.xblackcat.rojac.service.storage.database;
 import org.xblackcat.utils.ResourceUtils;
 
 /**
- * Date: 17.04.2007
- *
  * @author ASUS
  */
 

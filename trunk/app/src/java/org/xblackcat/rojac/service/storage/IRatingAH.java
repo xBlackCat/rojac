@@ -4,8 +4,6 @@ import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.Rating;
 
 /**
- * Date: 16.04.2007
- *
  * @author ASUS
  */
 

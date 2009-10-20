@@ -18,8 +18,6 @@ import org.xblackcat.rojac.service.storage.INewRatingAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 26 вер 2008
- *
  * @author xBlackCat
  */
 

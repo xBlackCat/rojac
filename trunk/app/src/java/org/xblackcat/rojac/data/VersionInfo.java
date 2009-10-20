@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.data;
 
 /**
- * Date: 26 квіт 2007
- *
  * @author ASUS
  */
 

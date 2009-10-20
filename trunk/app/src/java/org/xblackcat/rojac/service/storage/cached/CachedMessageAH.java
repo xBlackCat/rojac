@@ -6,8 +6,6 @@ import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 16.04.2007
- *
  * @author ASUS
  */
 final class CachedMessageAH implements IMessageAH, IPurgable {

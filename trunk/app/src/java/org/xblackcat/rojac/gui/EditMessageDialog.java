@@ -21,8 +21,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
- * Date: 11 זמגע 2008
- *
  * @author xBlackCat
  */
 

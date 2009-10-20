@@ -5,11 +5,9 @@ import org.xblackcat.rojac.service.storage.IForumGroupAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 16.04.2007
-*
-* @author ASUS
-*/
-final class CachedForumGroupAH implements IForumGroupAH,IPurgable {
+ * @author ASUS
+ */
+final class CachedForumGroupAH implements IForumGroupAH, IPurgable {
     private final Cache<ForumGroup> forumGroupCache = new Cache<ForumGroup>();
 
     private final IForumGroupAH forumGroupAH;

@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Date: 15 лип 2008
- *
  * @author xBlackCat
  */
 

@@ -11,10 +11,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
-* Date: 20 ρεπο 2009
-*
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class OpenUrlAction implements ActionListener {
     private static final Log log = LogFactory.getLog(OpenUrlAction.class);
 

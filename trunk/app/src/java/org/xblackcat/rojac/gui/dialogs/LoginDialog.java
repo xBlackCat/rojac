@@ -16,8 +16,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Date: 12 лип 2008
- *
  * @author xBlackCat
  */
 

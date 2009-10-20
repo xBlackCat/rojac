@@ -12,8 +12,6 @@ import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 
 /**
- * Date: 26 вер 2008
- *
  * @author xBlackCat
  */
 
@@ -28,7 +26,7 @@ public class LoadExtraMessagesCommand extends LoadPostsCommand<AffectedPosts> {
         trac.addLodMessage("Synchronization started.");
 
         int[] messageIds = miscAH.getExtraMessages();
-        
+
         if (ArrayUtils.isEmpty(messageIds)) {
             return new AffectedPosts();
         }

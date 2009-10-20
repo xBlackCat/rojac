@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Date: 13 квіт 2007
- *
  * @author Alexey
  */
 

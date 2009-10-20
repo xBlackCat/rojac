@@ -3,8 +3,6 @@ package org.xblackcat.rojac.data;
 import ru.rsdn.Janus.JanusForumGroupInfo;
 
 /**
- * Date: 12 квіт 2007
- *
  * @author Alexey
  */
 

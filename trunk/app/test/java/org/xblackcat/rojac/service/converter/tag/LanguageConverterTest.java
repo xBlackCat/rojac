@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.converter.tag;
 /**
- * Date: 26 січ 2008
+ *
  * @author xBlackCat
  */
 
@@ -13,16 +13,16 @@ public class LanguageConverterTest extends TestCase {
         ITag lc = new LanguageTag("test", null, null, null, null, null, null);
 
         {
-            String input = "Test:[test]UNICODE_STRING interfaceName, dosName;\n\n// Регистрация интерфейса\nstatus = IoRegisterDeviceInterface(\n  pdo,\n  &GUID_MY_USB_DEVICE,\n  0,\n  &interfaceName\n  );\n\n// Создаем символьную ссылку\nRtlInitUnicodeString(&dosName, L\"\\\\DosDevices\\\\MyUsbDevice\");\nIoCreateSymbolicLink(&dosName, &interfaceName);\n[/test]\nok";
-            String output = "Test:<table width='96%'><tr><td nowrap='nowrap' class='c'><pre>UNICODE_STRING interfaceName, dosName;\n\n// Регистрация интерфейса\nstatus = IoRegisterDeviceInterface(\n  pdo,\n  &GUID_MY_USB_DEVICE,\n  0,\n  &interfaceName\n  );\n\n// Создаем символьную ссылку\nRtlInitUnicodeString(&dosName, L\"\\\\DosDevices\\\\MyUsbDevice\");\nIoCreateSymbolicLink(&dosName, &interfaceName);\n</pre></td></tr></table>\nok";
+            String input = "Test:[test]UNICODE_STRING interfaceName, dosName;\n\n// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\nstatus = IoRegisterDeviceInterface(\n  pdo,\n  &GUID_MY_USB_DEVICE,\n  0,\n  &interfaceName\n  );\n\n// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\nRtlInitUnicodeString(&dosName, L\"\\\\DosDevices\\\\MyUsbDevice\");\nIoCreateSymbolicLink(&dosName, &interfaceName);\n[/test]\nok";
+            String output = "Test:<table width='96%'><tr><td nowrap='nowrap' class='c'><pre>UNICODE_STRING interfaceName, dosName;\n\n// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\nstatus = IoRegisterDeviceInterface(\n  pdo,\n  &GUID_MY_USB_DEVICE,\n  0,\n  &interfaceName\n  );\n\n// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\nRtlInitUnicodeString(&dosName, L\"\\\\DosDevices\\\\MyUsbDevice\");\nIoCreateSymbolicLink(&dosName, &interfaceName);\n</pre></td></tr></table>\nok";
 
             assertEquals(output, TestUtils.applyTag(TestUtils.applyTag(input, lc), lc));
         }
 
         // Multiple zones
         {
-            String input = "[test]UNICODE_STRING interfaceName, dosName;[/test]\n\n// Регистрация интерфейса\n[test]status = IoRegisterDeviceInterface(\n  pdo,\n  &GUID_MY_USB_DEVICE,\n  0,\n  &interfaceName\n  );[/test]\n\n// Создаем символьную ссылку\n[test]RtlInitUnicodeString(&dosName, L\"\\\\DosDevices\\\\MyUsbDevice\");\nIoCreateSymbolicLink(&dosName, &interfaceName);\n[/test]";
-            String output = "<table width='96%'><tr><td nowrap='nowrap' class='c'><pre>UNICODE_STRING interfaceName, dosName;</pre></td></tr></table>\n\n// Регистрация интерфейса\n<table width='96%'><tr><td nowrap='nowrap' class='c'><pre>status = IoRegisterDeviceInterface(\n  pdo,\n  &GUID_MY_USB_DEVICE,\n  0,\n  &interfaceName\n  );</pre></td></tr></table>\n\n// Создаем символьную ссылку\n<table width='96%'><tr><td nowrap='nowrap' class='c'><pre>RtlInitUnicodeString(&dosName, L\"\\\\DosDevices\\\\MyUsbDevice\");\nIoCreateSymbolicLink(&dosName, &interfaceName);\n</pre></td></tr></table>";
+            String input = "[test]UNICODE_STRING interfaceName, dosName;[/test]\n\n// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n[test]status = IoRegisterDeviceInterface(\n  pdo,\n  &GUID_MY_USB_DEVICE,\n  0,\n  &interfaceName\n  );[/test]\n\n// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\n[test]RtlInitUnicodeString(&dosName, L\"\\\\DosDevices\\\\MyUsbDevice\");\nIoCreateSymbolicLink(&dosName, &interfaceName);\n[/test]";
+            String output = "<table width='96%'><tr><td nowrap='nowrap' class='c'><pre>UNICODE_STRING interfaceName, dosName;</pre></td></tr></table>\n\n// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n<table width='96%'><tr><td nowrap='nowrap' class='c'><pre>status = IoRegisterDeviceInterface(\n  pdo,\n  &GUID_MY_USB_DEVICE,\n  0,\n  &interfaceName\n  );</pre></td></tr></table>\n\n// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ\n<table width='96%'><tr><td nowrap='nowrap' class='c'><pre>RtlInitUnicodeString(&dosName, L\"\\\\DosDevices\\\\MyUsbDevice\");\nIoCreateSymbolicLink(&dosName, &interfaceName);\n</pre></td></tr></table>";
 
             assertEquals(output, TestUtils.applyTag(TestUtils.applyTag(TestUtils.applyTag(input, lc), lc), lc));
         }

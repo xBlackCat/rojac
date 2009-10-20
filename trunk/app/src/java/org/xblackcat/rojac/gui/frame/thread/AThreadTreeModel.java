@@ -9,8 +9,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 /**
- * Date: 22 бер 2008
- *
  * @author xBlackCat
  */
 
@@ -189,13 +187,12 @@ public abstract class AThreadTreeModel implements TreeModel {
     }
 
     /**
-     * Notifies all listeners that have registered interest for
-     * notification on this event type.  The event instance
-     * is lazily created using the parameters passed into
-     * the fire method.
+     * Notifies all listeners that have registered interest for notification on this event type.  The event instance is
+     * lazily created using the parameters passed into the fire method.
      *
      * @param source the node where the tree model has changed
-     * @param path the path to the root node
+     * @param path   the path to the root node
+     *
      * @see EventListenerList
      */
     private void fireTreeStructureChanged(Object source, TreePath path) {

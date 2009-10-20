@@ -5,8 +5,6 @@ import ru.rsdn.Janus.JanusRatingInfo;
 import java.util.Date;
 
 /**
- * Date: 14.04.2007
- *
  * @author ASUS
  */
 

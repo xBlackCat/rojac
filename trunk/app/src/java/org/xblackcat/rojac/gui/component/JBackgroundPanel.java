@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Date: 6 черв 2007
- *
  * @author ASUS
  */
 

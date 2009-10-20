@@ -9,8 +9,6 @@ import javax.swing.event.EventListenerList;
 import java.awt.*;
 
 /**
- * Date: 17 лип 2008
- *
  * @author xBlackCat
  */
 

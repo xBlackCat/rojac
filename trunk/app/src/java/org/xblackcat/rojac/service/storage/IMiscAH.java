@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.service.storage;
 
 /**
- * Date: 15 трав 2007
- *
  * @author ASUS
  */
 

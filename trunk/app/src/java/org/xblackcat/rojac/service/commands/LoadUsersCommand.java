@@ -14,8 +14,6 @@ import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 27 вер 2008
- *
  * @author xBlackCat
  */
 
@@ -39,7 +37,7 @@ public class LoadUsersCommand extends ARsdnCommand<AffectedPosts> {
             int totalUsersNumber = 0;
 
             UsersList users;
-            do {                                                               
+            do {
                 if (log.isDebugEnabled()) {
                     log.debug("Load next portion of the new users. Portion limit = " + limit + " (" + totalUsersNumber + " already loaded).");
                 }

@@ -5,10 +5,8 @@ import org.xblackcat.rojac.gui.model.ForumData;
 import java.util.Comparator;
 
 /**
- * Date: 8 זמגע 2008
-*
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ForumDataComparator implements Comparator<ForumData> {
     public int compare(ForumData o1, ForumData o2) {
         if (o1 == null || o1.getForum() == null) {

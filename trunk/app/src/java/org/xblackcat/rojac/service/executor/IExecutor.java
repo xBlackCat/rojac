@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.service.executor;
 
 /**
- * Date: 31 ρεπο 2008
- *
  * @author xBlackCat
  */
 

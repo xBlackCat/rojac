@@ -5,11 +5,9 @@ import org.xblackcat.rojac.service.storage.IModerateAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 16.04.2007
- *
  * @author ASUS
  */
-final class CachedModerateAH implements IModerateAH,IPurgable {
+final class CachedModerateAH implements IModerateAH, IPurgable {
     private final Cache<Moderate[]> messageModaratesCache = new Cache<Moderate[]>();
 
     private final IModerateAH moderateAH;

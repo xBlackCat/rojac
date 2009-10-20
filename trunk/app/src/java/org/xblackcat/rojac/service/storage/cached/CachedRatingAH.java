@@ -6,10 +6,8 @@ import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 16.04.2007
-*
-* @author ASUS
-*/
+ * @author ASUS
+ */
 final class CachedRatingAH implements IRatingAH, IPurgable {
     private final Cache<Rating[]> ratingsForMessageCache = new Cache<Rating[]>();
 

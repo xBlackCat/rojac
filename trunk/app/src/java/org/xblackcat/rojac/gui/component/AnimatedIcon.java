@@ -13,11 +13,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Ensures animated icons are properly handled within objects that use
- * renderers within a {@link CellRendererPane} to render the icon.  Keeps
- * a list of repaint rectangles to be used to queue repaint requests when
- * the animated icon indicates an update.  The set of repaint rectangles
- * is cleared after the repaint requests are queued.
+ * Ensures animated icons are properly handled within objects that use renderers within a {@link CellRendererPane} to
+ * render the icon.  Keeps a list of repaint rectangles to be used to queue repaint requests when the animated icon
+ * indicates an update.  The set of repaint rectangles is cleared after the repaint requests are queued.
  *
  * @author twall
  */
@@ -45,8 +43,7 @@ public class AnimatedIcon implements Icon {
     }
 
     /**
-     * Create an icon that takes care of animating itself on components
-     * which use a CellRendererPane.
+     * Create an icon that takes care of animating itself on components which use a CellRendererPane.
      */
     public AnimatedIcon(ImageIcon original) {
         this.original = original;
@@ -54,8 +51,7 @@ public class AnimatedIcon implements Icon {
     }
 
     /**
-     * Trigger a repaint on all components on which we've previously been
-     * painted.
+     * Trigger a repaint on all components on which we've previously been painted.
      */
     protected synchronized void repaint() {
         for (Iterator i = repaints.iterator(); i.hasNext();) {
@@ -93,8 +89,7 @@ public class AnimatedIcon implements Icon {
     }
 
     /**
-     * Register repaint areas, which get get cleared once the repaint request
-     * has been queued.
+     * Register repaint areas, which get get cleared once the repaint request has been queued.
      */
     protected void registerRepaintArea(Component c, int x, int y, int w, int h) {
         RepaintArea area = new RepaintArea(c, x, y, w, h);
@@ -127,8 +122,7 @@ public class AnimatedIcon implements Icon {
         }
 
         /**
-         * Find the first ancestor <em>not</em> descending from a
-         * {@link CellRendererPane}.
+         * Find the first ancestor <em>not</em> descending from a {@link CellRendererPane}.
          */
         private Component findNonRendererAncestor(Component c) {
             Component ancestor = SwingUtilities.getAncestorOfClass(CellRendererPane.class, c);
@@ -168,8 +162,7 @@ public class AnimatedIcon implements Icon {
     }
 
     /**
-     * Detect changes in the original animated image, and remove self
-     * if the target icon is GC'd.
+     * Detect changes in the original animated image, and remove self if the target icon is GC'd.
      *
      * @author twall
      */

@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
 /**
- * Date: 13 квіт 2007
- *
  * @author Alexey
  */
 
@@ -32,6 +30,7 @@ public interface IOptionsService {
 
     /**
      * Somehow store settings.
+     *
      * @return <code>true</code> if settings are stored successfuly.
      */
     boolean storeSettings();

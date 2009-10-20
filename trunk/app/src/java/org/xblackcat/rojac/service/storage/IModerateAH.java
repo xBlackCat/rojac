@@ -3,8 +3,6 @@ package org.xblackcat.rojac.service.storage;
 import org.xblackcat.rojac.data.Moderate;
 
 /**
- * Date: 16.04.2007
- *
  * @author ASUS
  */
 

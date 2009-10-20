@@ -7,8 +7,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 /**
- * Date: 15 груд 2007
- *
  * @author xBlackCat
  */
 final class TopicCellRenderer extends MessageCellRenderer {

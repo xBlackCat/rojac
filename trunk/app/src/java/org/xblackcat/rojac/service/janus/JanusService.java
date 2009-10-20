@@ -25,8 +25,6 @@ import java.rmi.RemoteException;
 import java.util.Hashtable;
 
 /**
- * Date: 10 квіт 2007
- *
  * @author Alexey
  */
 

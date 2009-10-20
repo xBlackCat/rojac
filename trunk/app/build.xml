@@ -103,22 +103,23 @@
 
     <target name="compile" description="Compile application" depends="prepare">
         <!--Compile application classes-->
-        <javac destdir="${rojac-application.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-          <compilerarg line="${compiler.args.rojac}"/>
-          <bootclasspath refid="rojac-application.module.bootclasspath"/>
-          <classpath refid="rojac-application.module.classpath"/>
-          <src refid="rojac-application.module.sourcepath"/>
+        <javac destdir="${rojac-application.output.dir}" debug="${compiler.debug}"
+               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+            <compilerarg line="${compiler.args.rojac}"/>
+            <bootclasspath refid="rojac-application.module.bootclasspath"/>
+            <classpath refid="rojac-application.module.classpath"/>
+            <src refid="rojac-application.module.sourcepath"/>
         </javac>
 
         <copy todir="${rojac-application.output.dir}">
-          <fileset dir="${rojac-application.basedir}/src/java">
-            <patternset refid="compiler.resources"/>
-            <type type="file"/>
-          </fileset>
-          <fileset dir="${rojac-application.basedir}/src/res">
-            <patternset refid="compiler.resources"/>
-            <type type="file"/>
-          </fileset>
+            <fileset dir="${rojac-application.basedir}/src/java">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${rojac-application.basedir}/src/res">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
         </copy>
 
         <!-- First get real revision of a build.xml file -->
@@ -134,22 +135,23 @@
         </exec>
 
         <!--Compile test classes-->
-        <javac destdir="${rojac-application.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-          <compilerarg line="${compiler.args.rojac}"/>
-          <classpath refid="rojac-application.module.classpath.compile"/>
-          <classpath location="${rojac-application.output.dir}"/>
-          <src refid="rojac-application.module.test.sourcepath"/>
+        <javac destdir="${rojac-application.testoutput.dir}" debug="${compiler.debug}"
+               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+            <compilerarg line="${compiler.args.rojac}"/>
+            <classpath refid="rojac-application.module.classpath.compile"/>
+            <classpath location="${rojac-application.output.dir}"/>
+            <src refid="rojac-application.module.test.sourcepath"/>
         </javac>
 
         <copy todir="${rojac-application.testoutput.dir}">
-          <fileset dir="${rojac-application.basedir}/test/java">
-            <patternset refid="compiler.resources"/>
-            <type type="file"/>
-          </fileset>
-          <fileset dir="${rojac-application.basedir}/test/res">
-            <patternset refid="compiler.resources"/>
-            <type type="file"/>
-          </fileset>
+            <fileset dir="${rojac-application.basedir}/test/java">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${rojac-application.basedir}/test/res">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
         </copy>
     </target>
 
@@ -189,28 +191,28 @@
 
         <echo file="${rojac-application.dist.dir}/bin/rojac.cmd">@echo off
 
-SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
+            SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
 
-javaw.exe -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
+            javaw.exe -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
         </echo>
 
         <echo file="${rojac-application.dist.dir}/bin/rojac.sh">#!/bin/sh
 
-SET CLASSPATH=$CLASSPATH:${dist.unix.classpath}
+            SET CLASSPATH=$CLASSPATH:${dist.unix.classpath}
 
-java -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
+            java -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
         </echo>
 
         <echo file="${rojac-application.dist.dir}/bin/rojac.bat">@echo off
 
-SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
+            SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
 
-java.exe -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
+            java.exe -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
         </echo>
 
         <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.cmd" eol="dos"/>
         <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.bat" eol="dos"/>
-        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.sh"  eol="unix"/>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.sh" eol="unix"/>
 
         <chmod file="${rojac-application.dist.dir}/bin/rojac.sh" perm="755" failonerror="false"/>
     </target>

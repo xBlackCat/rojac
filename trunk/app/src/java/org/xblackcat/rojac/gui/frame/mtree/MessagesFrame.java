@@ -9,8 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Date: 14 груд 2007
- *
  * @author xBlackCat
  */
 

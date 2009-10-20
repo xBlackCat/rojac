@@ -17,8 +17,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * Date: 26 бер 2007
- *
  * @author Alexey
  */
 

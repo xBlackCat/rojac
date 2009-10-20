@@ -3,8 +3,6 @@ package org.xblackcat.rojac.service.commands;
 import org.xblackcat.rojac.RojacException;
 
 /**
- * Date: 12 трав 2007
- *
  * @author ASUS
  */
 

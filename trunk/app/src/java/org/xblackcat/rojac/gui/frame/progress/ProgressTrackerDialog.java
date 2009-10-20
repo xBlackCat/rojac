@@ -10,8 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Date: 31 ρεπο 2008
- *
  * @author xBlackCat
  */
 

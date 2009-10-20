@@ -3,7 +3,6 @@ package org.xblackcat.rojac.service.converter;
 /**
  * Simple tag ':smile:'
  * <p/>
- * Date: 20 лют 2008
  *
  * @author xBlackCat
  */

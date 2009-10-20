@@ -9,8 +9,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Date: 19 лют 2008
- *
  * @author xBlackCat
  */
 
@@ -30,7 +28,7 @@ public class RSDNMessageParser implements IMessageParser {
         public int compare(ITagInfo o1, ITagInfo o2) {
             int m = o1.start() - o2.start();
             if (m == 0) {
-                return o1.getTag().compareTo(o2.getTag()) ;
+                return o1.getTag().compareTo(o2.getTag());
             } else {
                 return m;
             }
@@ -51,7 +49,7 @@ public class RSDNMessageParser implements IMessageParser {
                 "' rel='stylesheet' type='text/css'/>" +
                 "</head>" +
                 "<body>" +
-                htmlBody+
+                htmlBody +
                 "</body>" +
                 "</html>";
     }
@@ -68,7 +66,7 @@ public class RSDNMessageParser implements IMessageParser {
         rsdn = PRE_QUOTATION_PATTERN.matcher(rsdn).replaceAll("[span]$1>$2[/span]");
         rsdn = escapeHtml(rsdn);
         rsdn = QUOTATION_PATTERN.matcher(rsdn).replaceAll("<span class='lineQuote'>$1</span>");
-        
+
         return rsdn;
     }
 

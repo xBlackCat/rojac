@@ -4,8 +4,6 @@ import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 15 трав 2007
- *
  * @author ASUS
  */
 

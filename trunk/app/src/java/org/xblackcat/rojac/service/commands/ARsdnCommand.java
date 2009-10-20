@@ -19,8 +19,6 @@ import org.xblackcat.rojac.service.storage.IVersionAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
- * Date: 14 вер 2008
- *
  * @author xBlackCat
  */
 
@@ -35,7 +33,7 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
 
     protected ARsdnCommand(IResultHandler<T> resultHandler) {
         this.resultHandler = resultHandler;
-        
+
         ServiceFactory sf = ServiceFactory.getInstance();
         storage = sf.getStorage();
         optionsService = sf.getOptionsService();

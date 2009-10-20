@@ -16,8 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Date: 17.04.2007
- *
  * @author ASUS
  */
 

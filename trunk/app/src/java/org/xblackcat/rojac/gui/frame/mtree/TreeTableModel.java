@@ -3,8 +3,6 @@ package org.xblackcat.rojac.gui.frame.mtree;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * Date: 14 груд 2007
- *
  * @author xBlackCat
  */
 

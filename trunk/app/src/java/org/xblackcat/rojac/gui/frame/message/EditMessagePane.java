@@ -9,8 +9,6 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 
 /**
- * Date: 16 זמגע 2008
- *
  * @author xBlackCat
  */
 

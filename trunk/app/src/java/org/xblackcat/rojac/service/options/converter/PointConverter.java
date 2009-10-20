@@ -5,8 +5,6 @@ import org.apache.commons.lang.StringUtils;
 import java.awt.*;
 
 /**
- * Date: 15 лип 2008
- *
  * @author xBlackCat
  */
 

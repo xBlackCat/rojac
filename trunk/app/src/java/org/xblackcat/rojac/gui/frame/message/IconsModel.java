@@ -6,8 +6,6 @@ import org.xblackcat.rojac.data.Mark;
 import javax.swing.*;
 
 /**
- * Date: 28 ñ³÷ 2008
- *
  * @author xBlackCat
  */
 

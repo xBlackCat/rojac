@@ -6,8 +6,6 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
 /**
- * Date: 8 трав 2007
- *
  * @author ASUS
  */
 final class DBForumAH implements IForumAH {

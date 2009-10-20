@@ -5,8 +5,6 @@ import junit.framework.TestCase;
 import org.xblackcat.rojac.service.converter.ITag;
 
 /**
- * Date: 20 лют 2008
- *
  * @author xBlackCat
  */
 public class SimpleTagTest extends TestCase {

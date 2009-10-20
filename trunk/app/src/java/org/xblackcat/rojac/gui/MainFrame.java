@@ -49,8 +49,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Date: 23 груд 2007
- *
  * @author xBlackCat
  */
 

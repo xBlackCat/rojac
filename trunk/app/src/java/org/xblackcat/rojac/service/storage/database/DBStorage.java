@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Date: 17.04.2007
- *
  * @author ASUS
  */
 

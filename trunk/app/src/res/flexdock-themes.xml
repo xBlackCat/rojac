@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flexview-themes>
 
-	<!-- Map the PLAFs to specific themes -->
-	<plaf name="com.birosoft.liquid.LiquidLookAndFeel" ref="liquid" />
+    <!-- Map the PLAFs to specific themes -->
+    <plaf name="com.birosoft.liquid.LiquidLookAndFeel" ref="liquid"/>
 
     <!-- Begin Liquid Classic -->
     <theme name="liquid" description="Liquid" view-ui="liquid">
@@ -12,8 +12,8 @@
 
         <!-- List the various titlebars that are available -->
         <titlebar-ui name="liquid" extends="default">
-            <property name="default.height" value="20" />
-            <property name="icon-map" value="liquid" />
+            <property name="default.height" value="20"/>
+            <property name="icon-map" value="liquid"/>
             <property name="icon.insets" value="0,0,0,4" handler="insets"/>
             <property name="button.margin" value="1"/>
             <property name="font" value="Tahoma, 0, 11" handler="font"/>
@@ -30,32 +30,34 @@
 
         <!-- List the available icon maps -->
         <icon-map name="liquid">
-            <property name="close" value="liquid.close" />
-            <property name="pin" value="liquid.pin" />
+            <property name="close" value="liquid.close"/>
+            <property name="pin" value="liquid.pin"/>
         </icon-map>
 
         <!-- List available icons -->
         <icon-resource name="liquid.close" extends="default.close">
-            <property name="default" value="org/flexdock/plaf/titlebar/win32/close_default.png" />
-            <property name="active" value="org/flexdock/plaf/titlebar/win32/close_active.png" />
-            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_default.png" />
-            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_active.png" />
+            <property name="default" value="org/flexdock/plaf/titlebar/win32/close_default.png"/>
+            <property name="active" value="org/flexdock/plaf/titlebar/win32/close_active.png"/>
+            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_default.png"/>
+            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_active.png"/>
         </icon-resource>
         <icon-resource name="liquid.pin" extends="default.pin">
-            <property name="default" value="org/flexdock/plaf/titlebar/win32/pin_default.png" />
-            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default.png" />
-            <property name="default.selected" value="org/flexdock/plaf/titlebar/win32/pin_default_selected.png" />
-            <property name="active" value="org/flexdock/plaf/titlebar/win32/pin_active.png" />
-            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active.png" />
-            <property name="active.selected" value="org/flexdock/plaf/titlebar/win32/pin_active_selected.png" />
-            <property name="disabled.selected" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default_selected.png" />
-            <property name="active.disabled.selected" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active_selected.png" />
+            <property name="default" value="org/flexdock/plaf/titlebar/win32/pin_default.png"/>
+            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default.png"/>
+            <property name="default.selected" value="org/flexdock/plaf/titlebar/win32/pin_default_selected.png"/>
+            <property name="active" value="org/flexdock/plaf/titlebar/win32/pin_active.png"/>
+            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active.png"/>
+            <property name="active.selected" value="org/flexdock/plaf/titlebar/win32/pin_active_selected.png"/>
+            <property name="disabled.selected"
+                      value="org/flexdock/plaf/titlebar/win32/pin_disabled_default_selected.png"/>
+            <property name="active.disabled.selected"
+                      value="org/flexdock/plaf/titlebar/win32/pin_disabled_active_selected.png"/>
         </icon-resource>
     </theme>
     <!-- End Liquid Classic -->
 
-	<!-- Map the PLAFs to specific themes -->
-	<plaf name="com.shfarr.ui.plaf.fh.FhLookAndFeel" ref="Fn" />
+    <!-- Map the PLAFs to specific themes -->
+    <plaf name="com.shfarr.ui.plaf.fh.FhLookAndFeel" ref="Fn"/>
 
     <!-- Begin Fn Classic -->
     <theme name="Fn" description="Fn" view-ui="Fn">
@@ -65,8 +67,8 @@
 
         <!-- List the various titlebars that are available -->
         <titlebar-ui name="Fn" extends="default">
-            <property name="default.height" value="20" />
-            <property name="icon-map" value="Fn" />
+            <property name="default.height" value="20"/>
+            <property name="icon-map" value="Fn"/>
             <property name="icon.insets" value="0,0,0,4" handler="insets"/>
             <property name="button.margin" value="1"/>
             <property name="font" value="Tahoma, 0, 11" handler="font"/>
@@ -83,32 +85,34 @@
 
         <!-- List the available icon maps -->
         <icon-map name="Fn">
-            <property name="close" value="Fn.close" />
-            <property name="pin" value="Fn.pin" />
+            <property name="close" value="Fn.close"/>
+            <property name="pin" value="Fn.pin"/>
         </icon-map>
 
         <!-- List available icons -->
         <icon-resource name="Fn.close" extends="default.close">
-            <property name="default" value="org/flexdock/plaf/titlebar/win32/close_default.png" />
-            <property name="active" value="org/flexdock/plaf/titlebar/win32/close_active.png" />
-            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_default.png" />
-            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_active.png" />
+            <property name="default" value="org/flexdock/plaf/titlebar/win32/close_default.png"/>
+            <property name="active" value="org/flexdock/plaf/titlebar/win32/close_active.png"/>
+            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_default.png"/>
+            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_active.png"/>
         </icon-resource>
         <icon-resource name="Fn.pin" extends="default.pin">
-            <property name="default" value="org/flexdock/plaf/titlebar/win32/pin_default.png" />
-            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default.png" />
-            <property name="default.selected" value="org/flexdock/plaf/titlebar/win32/pin_default_selected.png" />
-            <property name="active" value="org/flexdock/plaf/titlebar/win32/pin_active.png" />
-            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active.png" />
-            <property name="active.selected" value="org/flexdock/plaf/titlebar/win32/pin_active_selected.png" />
-            <property name="disabled.selected" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default_selected.png" />
-            <property name="active.disabled.selected" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active_selected.png" />
+            <property name="default" value="org/flexdock/plaf/titlebar/win32/pin_default.png"/>
+            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default.png"/>
+            <property name="default.selected" value="org/flexdock/plaf/titlebar/win32/pin_default_selected.png"/>
+            <property name="active" value="org/flexdock/plaf/titlebar/win32/pin_active.png"/>
+            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active.png"/>
+            <property name="active.selected" value="org/flexdock/plaf/titlebar/win32/pin_active_selected.png"/>
+            <property name="disabled.selected"
+                      value="org/flexdock/plaf/titlebar/win32/pin_disabled_default_selected.png"/>
+            <property name="active.disabled.selected"
+                      value="org/flexdock/plaf/titlebar/win32/pin_disabled_active_selected.png"/>
         </icon-resource>
     </theme>
     <!-- End Fn Classic -->
 
-	<!-- Map the PLAFs to specific themes -->
-	<plaf name="net.infonode.gui.laf.InfoNodeLookAndFeel" ref="InfoNode" />
+    <!-- Map the PLAFs to specific themes -->
+    <plaf name="net.infonode.gui.laf.InfoNodeLookAndFeel" ref="InfoNode"/>
 
     <!-- Begin InfoNode Classic -->
     <theme name="InfoNode" description="InfoNode" view-ui="InfoNode">
@@ -118,8 +122,8 @@
 
         <!-- List the various titlebars that are available -->
         <titlebar-ui name="InfoNode" extends="default">
-            <property name="default.height" value="20" />
-            <property name="icon-map" value="InfoNode" />
+            <property name="default.height" value="20"/>
+            <property name="icon-map" value="InfoNode"/>
             <property name="icon.insets" value="0,0,0,4" handler="insets"/>
             <property name="button.margin" value="1"/>
             <property name="font" value="Tahoma, 0, 11" handler="font"/>
@@ -136,26 +140,28 @@
 
         <!-- List the available icon maps -->
         <icon-map name="InfoNode">
-            <property name="close" value="InfoNode.close" />
-            <property name="pin" value="InfoNode.pin" />
+            <property name="close" value="InfoNode.close"/>
+            <property name="pin" value="InfoNode.pin"/>
         </icon-map>
 
         <!-- List available icons -->
         <icon-resource name="InfoNode.close" extends="default.close">
-            <property name="default" value="org/flexdock/plaf/titlebar/win32/close_default.png" />
-            <property name="active" value="org/flexdock/plaf/titlebar/win32/close_active.png" />
-            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_default.png" />
-            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_active.png" />
+            <property name="default" value="org/flexdock/plaf/titlebar/win32/close_default.png"/>
+            <property name="active" value="org/flexdock/plaf/titlebar/win32/close_active.png"/>
+            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_default.png"/>
+            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/close_disabled_active.png"/>
         </icon-resource>
         <icon-resource name="InfoNode.pin" extends="default.pin">
-            <property name="default" value="org/flexdock/plaf/titlebar/win32/pin_default.png" />
-            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default.png" />
-            <property name="default.selected" value="org/flexdock/plaf/titlebar/win32/pin_default_selected.png" />
-            <property name="active" value="org/flexdock/plaf/titlebar/win32/pin_active.png" />
-            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active.png" />
-            <property name="active.selected" value="org/flexdock/plaf/titlebar/win32/pin_active_selected.png" />
-            <property name="disabled.selected" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default_selected.png" />
-            <property name="active.disabled.selected" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active_selected.png" />
+            <property name="default" value="org/flexdock/plaf/titlebar/win32/pin_default.png"/>
+            <property name="disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_default.png"/>
+            <property name="default.selected" value="org/flexdock/plaf/titlebar/win32/pin_default_selected.png"/>
+            <property name="active" value="org/flexdock/plaf/titlebar/win32/pin_active.png"/>
+            <property name="active.disabled" value="org/flexdock/plaf/titlebar/win32/pin_disabled_active.png"/>
+            <property name="active.selected" value="org/flexdock/plaf/titlebar/win32/pin_active_selected.png"/>
+            <property name="disabled.selected"
+                      value="org/flexdock/plaf/titlebar/win32/pin_disabled_default_selected.png"/>
+            <property name="active.disabled.selected"
+                      value="org/flexdock/plaf/titlebar/win32/pin_disabled_active_selected.png"/>
         </icon-resource>
     </theme>
     <!-- End InfoNode -->

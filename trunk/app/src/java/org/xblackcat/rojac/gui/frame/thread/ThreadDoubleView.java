@@ -9,8 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Date: 17 лип 2008
- *
  * @author xBlackCat
  */
 
@@ -20,6 +18,7 @@ public class ThreadDoubleView extends AMessageView {
 
     /**
      * Create combined forum thread view. Contains from master (upper component) and slave (lover component).
+     *
      * @param verticalSplit
      * @param mainFrame
      */

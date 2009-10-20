@@ -4,8 +4,6 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IRootPane;
 
 /**
- * Date: 31 груд 2007
- *
  * @author xBlackCat
  */
 

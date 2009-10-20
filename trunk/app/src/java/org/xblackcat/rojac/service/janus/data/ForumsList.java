@@ -9,7 +9,6 @@ import ru.rsdn.Janus.JanusForumInfo;
 /**
  * Class for holding forums list.
  * <p/>
- * Date: 12 квіт 2007
  *
  * @author Alexey
  */

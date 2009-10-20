@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Date: 7 бер 2008
- *
  * @author xBlackCat
  */
 

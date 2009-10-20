@@ -3,8 +3,6 @@ package org.xblackcat.rojac.service.storage.database.convert;
 import org.xblackcat.rojac.data.*;
 
 /**
- * Date: 28 лют 2008
- *
  * @author xBlackCat
  */
 

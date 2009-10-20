@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
 /**
- * Date: 12 лип 2008
- *
  * @author xBlackCat
  */
 

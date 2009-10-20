@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Date: 5 זמגע 2008
- *
  * @author xBlackCat
  */
 

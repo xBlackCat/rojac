@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.gui.theme;
 
 /**
- * Date: 22 ρεπο 2009
- *
  * @author xBlackCat
  */
 

@@ -9,8 +9,6 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import java.util.Collection;
 
 /**
- * Date: 10 трав 2007
- *
  * @author ASUS
  */
 

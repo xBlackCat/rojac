@@ -4,8 +4,6 @@ import gnu.trove.TIntHashSet;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
- * Date: 7 זמגע 2008
- *
  * @author xBlackCat
  */
 
@@ -30,7 +28,7 @@ public class AffectedPosts {
         return affectedForumIds;
     }
 
-    public AffectedPosts merge(AffectedPosts ...pp) {
+    public AffectedPosts merge(AffectedPosts... pp) {
         TIntHashSet mids = new TIntHashSet(affectedMessageIds);
         TIntHashSet fids = new TIntHashSet(affectedForumIds);
 

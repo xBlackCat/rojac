@@ -9,8 +9,6 @@ import ru.rsdn.Janus.JanusModerateInfo;
 import ru.rsdn.Janus.JanusRatingInfo;
 
 /**
- * Date: 15.04.2007
- *
  * @author ASUS
  */
 

@@ -7,8 +7,6 @@ import org.xblackcat.rojac.service.converter.ITagInfo;
 import org.xblackcat.utils.ResourceUtils;
 
 /**
- * Date: 20 лют 2008
- *
  * @author xBlackCat
  */
 
@@ -57,7 +55,7 @@ public final class TestUtils {
         return res.toString();
     }
 
-    public static String applyTags(String text, ITag ... tags) {
+    public static String applyTags(String text, ITag... tags) {
         for (ITag t : tags) {
             while (t.find(text, text.toLowerCase()) != null) {
                 text = applyTag(text, t);

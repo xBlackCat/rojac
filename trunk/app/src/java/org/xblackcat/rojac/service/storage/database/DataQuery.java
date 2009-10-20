@@ -3,8 +3,6 @@ package org.xblackcat.rojac.service.storage.database;
 import org.xblackcat.utils.ResourceUtils;
 
 /**
- * Date: 17.04.2007
- *
  * @author ASUS
  */
 
@@ -303,7 +301,8 @@ public enum DataQuery implements IPropertiable {
      */
     UPDATE_MESSAGE_READ_FLAG,
     /**
-     * The query for updating the read field of messages in the specified forum. Set query parameters in following order:
+     * The query for updating the read field of messages in the specified forum. Set query parameters in following
+     * order:
      * <p/>
      * read(boolean), id(int)
      */

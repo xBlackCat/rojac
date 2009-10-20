@@ -8,8 +8,6 @@ import org.xblackcat.rojac.util.RojacUtils;
 import java.awt.*;
 
 /**
- * Date: 22 ρεπο 2009
- *
  * @author xBlackCat
  */
 

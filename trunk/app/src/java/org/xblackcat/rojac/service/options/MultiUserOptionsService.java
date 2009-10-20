@@ -17,7 +17,6 @@ import java.util.Properties;
 /**
  * Service for retrieving or storing options of the application.
  * <p/>
- * Date: 13 квіт 2007
  *
  * @author Alexey
  */
@@ -31,7 +30,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
 
     public MultiUserOptionsService() throws OptionsServiceException {
         String userHome = SystemUtils.USER_HOME;
-        
+
         if (log.isDebugEnabled()) {
             log.debug("User home dir is " + userHome);
         }

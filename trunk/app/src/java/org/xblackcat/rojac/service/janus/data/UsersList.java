@@ -6,8 +6,6 @@ import ru.rsdn.Janus.JanusUserInfo;
 import ru.rsdn.Janus.UserResponse;
 
 /**
- * Date: 13 квіт 2007
- *
  * @author Alexey
  */
 

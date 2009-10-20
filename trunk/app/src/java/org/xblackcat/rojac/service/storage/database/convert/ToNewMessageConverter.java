@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Date: 26 квіт 2007
- *
  * @author ASUS
  */
 

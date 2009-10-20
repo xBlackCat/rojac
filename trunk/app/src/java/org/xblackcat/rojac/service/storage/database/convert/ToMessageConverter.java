@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Date: 26 квіт 2007
- *
  * @author ASUS
  */
 
@@ -39,7 +37,7 @@ class ToMessageConverter implements IToObjectConverter<Message> {
         String userNick = rs.getString(17);
         String userTitle = rs.getString(18);
         String message = rs.getString(19);
-        long recentChildDate= rs.getLong(20);
+        long recentChildDate = rs.getLong(20);
         return new Message(articleId, forumId, moderateDate, message, messageDate, id, messageName, parentId, subject,
                 topicId, updateDate, userId, userNick, Role.values()[userRole], userTitle, userTitleColor,
                 notifyOnResponse, read, favorite, recentChildDate);

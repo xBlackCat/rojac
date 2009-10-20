@@ -7,7 +7,6 @@ import org.xblackcat.utils.ResourceUtils;
 
 /**
  * <p/>
- * Date: 20 лют 2008
  *
  * @author xBlackCat
  */

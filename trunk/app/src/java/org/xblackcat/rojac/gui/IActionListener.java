@@ -3,8 +3,6 @@ package org.xblackcat.rojac.gui;
 import java.util.EventListener;
 
 /**
- * Date: 17 лип 2008
- *
  * @author xBlackCat
  */
 

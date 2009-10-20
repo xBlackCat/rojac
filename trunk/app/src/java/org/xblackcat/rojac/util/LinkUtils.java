@@ -9,8 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Date: 7 ñ³÷ 2008
- *
  * @author xBlackCat
  */
 

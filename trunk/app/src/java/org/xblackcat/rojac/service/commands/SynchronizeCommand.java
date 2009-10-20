@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 /**
- * Date: 20 ρεπο 2009
- *
  * @author xBlackCat
  */
 
@@ -33,7 +31,7 @@ public class SynchronizeCommand extends ARsdnCommand<AffectedPosts> {
 
         for (ARsdnCommand<AffectedPosts> c : commands) {
             c.janusService = janusService;
-            
+
             results.add(c.process(trac));
         }
 

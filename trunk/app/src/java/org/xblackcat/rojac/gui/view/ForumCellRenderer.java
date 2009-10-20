@@ -11,7 +11,6 @@ import java.awt.*;
 /**
  * Renterer for a forum view list cell.
  * <p/>
- * Date: 12 лип 2008
  *
  * @author xBlackCat
  */

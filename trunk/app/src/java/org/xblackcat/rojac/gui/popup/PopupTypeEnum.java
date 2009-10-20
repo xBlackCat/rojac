@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.gui.popup;
 
 /**
- * Date: 19 ρεπο 2009
- *
  * @author xBlackCat
  */
 
