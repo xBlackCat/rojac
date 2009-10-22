@@ -29,16 +29,13 @@ public abstract class ATreeThreadView extends AMessageView {
 
     protected final JTree messages = new JTree();
     private final JLabel forumName = new JLabel();
-    protected final AThreadTreeModel model;
+    protected final ThreadsModel model = new ThreadsModel();
 
     public ATreeThreadView(IRootPane mainFrame) {
         super(new BorderLayout(), mainFrame);
 
-        model = createModel();
         initializeLayout();
     }
-
-    protected abstract AThreadTreeModel createModel();
 
     protected void initializeLayout() {
         // Initialize tree

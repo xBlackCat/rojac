@@ -43,7 +43,7 @@ public class MessageItem {
         return parent;
     }
 
-    public MessageItem[] getChildren(AThreadTreeModel model) {
+    public MessageItem[] getChildren(ThreadsModel model) {
         if (children == null) {
             // Load children
             loadChildren(model);
@@ -56,12 +56,12 @@ public class MessageItem {
         return ArrayUtils.indexOf(children, node);
     }
 
-    public Message getMessage(AThreadTreeModel model) {
+    public Message getMessage(ThreadsModel model) {
         loadData(model);
         return message;
     }
 
-    protected void loadData(final AThreadTreeModel model) {
+    protected void loadData(final ThreadsModel model) {
         synchronized (this) {
             if (message != null) {
                 // Nothing to do
@@ -93,7 +93,7 @@ public class MessageItem {
         });
     }
 
-    protected void loadChildren(final AThreadTreeModel model) {
+    protected void loadChildren(final ThreadsModel model) {
         synchronized (this) {
             if (this.children != null) {
                 return;

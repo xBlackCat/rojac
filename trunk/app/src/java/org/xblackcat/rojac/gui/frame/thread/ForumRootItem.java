@@ -20,7 +20,7 @@ public class ForumRootItem extends MessageItem {
     }
 
     @Override
-    protected void loadData(final AThreadTreeModel model) {
+    protected void loadData(final ThreadsModel model) {
         synchronized (this) {
             if (forum != null) {
                 // Nothing to do
@@ -53,7 +53,7 @@ public class ForumRootItem extends MessageItem {
     }
 
     @Override
-    protected void loadChildren(final AThreadTreeModel model) {
+    protected void loadChildren(final ThreadsModel model) {
         synchronized (this) {
             if (this.children != null) {
                 return;
