@@ -15,18 +15,14 @@ public class ForumThreadsView extends ATreeThreadView {
         super(mainFrame);
     }
 
-    protected AThreadTreeModel createModel() {
-        return new ForumThreadsTreeModel();
-    }
-
     @Override
     protected void initializeLayout() {
         super.initializeLayout();
         messages.setRootVisible(false);
     }
 
-    public void viewItem(int forumId, boolean isNewMessage) {
-        model.loadRoot(forumId);
+    public void viewItem(int forumId, boolean isNewMessage) {        
+        model.setRoot(new ForumRootItem(forumId));
         loadForumInfo(forumId);
 
         messages.setSelectionRow(0);

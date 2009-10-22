@@ -15,13 +15,9 @@ public class SingleThreadView extends ATreeThreadView {
         super(mainFrame);
     }
 
-    protected AThreadTreeModel createModel() {
-        return new SingleThreadTreeModel();
-    }
-
     public void viewItem(int rootMessageId, boolean isNewMessage) {
-        model.loadRoot(rootMessageId);
-        MessageItem mi = model.getRoot();
+        MessageItem mi = new MessageItem(null, rootMessageId);
+        model.setRoot(mi);
         loadForumInfo(mi.getMessage(model).getForumId());
 
         messages.setSelectionRow(0);

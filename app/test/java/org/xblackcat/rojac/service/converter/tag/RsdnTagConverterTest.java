@@ -144,15 +144,15 @@ public class RsdnTagConverterTest extends TestCase {
         ITag msdnConverter = RsdnTagList.Msdn;
 
         {
-            String rsdnMessage = "This is a msdn search link [msdn]����� � MSDN[/MSDN]";
-            String htmlMessage = "This is a msdn search link <a target='_blank' class='m' href='http://search.microsoft.com/search/results.aspx?View=msdn&amp;c=4&amp;qu=%D0%9F%D0%BE%D0%B8%D1%81%D0%BA+%D0%B2+MSDN'>����� � MSDN</a>";
+            String rsdnMessage = "This is a msdn search link [msdn]Поиск в MSDN[/MSDN]";
+            String htmlMessage = "This is a msdn search link <a target='_blank' class='m' href='http://search.microsoft.com/search/results.aspx?View=msdn&amp;c=4&amp;qu=%D0%9F%D0%BE%D0%B8%D1%81%D0%BA+%D0%B2+MSDN'>Поиск в MSDN</a>";
 
             assertEquals(htmlMessage, TestUtils.applyTags(rsdnMessage, msdnConverter));
         }
 
         {
-            String rsdnMessage = "This is a msdn double search link [msdn]����� � MSDN[/MSDN] [msdn]search[/msdn]";
-            String htmlMessage = "This is a msdn double search link <a target='_blank' class='m' href='http://search.microsoft.com/search/results.aspx?View=msdn&amp;c=4&amp;qu=%D0%9F%D0%BE%D0%B8%D1%81%D0%BA+%D0%B2+MSDN'>����� � MSDN</a> <a target='_blank' class='m' href='http://search.microsoft.com/search/results.aspx?View=msdn&amp;c=4&amp;qu=search'>search</a>";
+            String rsdnMessage = "This is a msdn double search link [msdn]Поиск в MSDN[/MSDN] [msdn]search[/msdn]";
+            String htmlMessage = "This is a msdn double search link <a target='_blank' class='m' href='http://search.microsoft.com/search/results.aspx?View=msdn&amp;c=4&amp;qu=%D0%9F%D0%BE%D0%B8%D1%81%D0%BA+%D0%B2+MSDN'>Поиск в MSDN</a> <a target='_blank' class='m' href='http://search.microsoft.com/search/results.aspx?View=msdn&amp;c=4&amp;qu=search'>search</a>";
 
             assertEquals(htmlMessage, TestUtils.applyTags(rsdnMessage, msdnConverter));
         }
