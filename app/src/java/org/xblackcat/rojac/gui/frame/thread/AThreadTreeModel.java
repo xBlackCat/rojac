@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.gui.frame.thread;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
@@ -12,7 +14,7 @@ import javax.swing.tree.TreePath;
  * @author xBlackCat
  */
 
-public abstract class AThreadTreeModel implements TreeModel {
+public abstract class AThreadTreeModel extends AbstractTreeTableModel implements TreeModel, TreeTableModel {
     protected MessageItem root;
 
     public abstract void loadRoot(int itemId);
