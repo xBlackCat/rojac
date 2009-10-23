@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.frame.message.AMessageView;
 import org.xblackcat.rojac.gui.frame.message.MessagePane;
