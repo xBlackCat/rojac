@@ -1,10 +1,11 @@
-package org.xblackcat.rojac.gui;
+package org.xblackcat.rojac.gui.dialogs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.NewMessage;
+import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.frame.message.EditMessagePane;
 import org.xblackcat.rojac.gui.frame.message.PreviewMessagePane;
 import org.xblackcat.rojac.gui.frame.progress.ITask;
@@ -24,7 +25,7 @@ import java.awt.event.ActionEvent;
  * @author xBlackCat
  */
 
-class EditMessageDialog extends JDialog {
+public class EditMessageDialog extends JDialog {
     private static final Log log = LogFactory.getLog(EditMessageDialog.class);
 
     protected final IStorage storage;

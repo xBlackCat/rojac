@@ -81,6 +81,8 @@ public enum Messages {
     MESSAGE_PANE_DATE_LABEL,
     MESSAGE_PANE_TOOLBAR_TITLE_RATING,
 
+    MESSAGE_RESPONSE_HEADER,
+
     // Mark descriptions
     DESCRIPTION_MARK_SELECT,
     DESCRIPTION_MARK_PLUSONE,
@@ -133,7 +135,7 @@ public enum Messages {
 
     private static final Lock readLock;
     private static final Lock writeLock;
-    private static Locale locale;
+    private static Locale currentLocale;
 
     static {
         ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
@@ -146,14 +148,16 @@ public enum Messages {
     /**
      * Set the specified locale for messages
      *
-     * @param loc
+     * @param locale locale to set.
+     *
+     * @throws IllegalArgumentException is thrown if invalid locale is specified.
      */
-    public static void setLocale(Locale loc) throws IllegalArgumentException {
+    public static void setLocale(Locale locale) throws IllegalArgumentException {
         ResourceBundle m;
-        if (loc != null) {
-            m = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME, loc);
-            if (!m.getLocale().equals(loc)) {
-                throw new IllegalArgumentException("Can not load resources for " + loc + " locale.");
+        if (locale != null) {
+            m = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME, locale);
+            if (!m.getLocale().equals(locale)) {
+                throw new IllegalArgumentException("Can not load resources for " + locale + " locale.");
             }
         } else {
             m = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME);
@@ -162,7 +166,7 @@ public enum Messages {
         writeLock.lock();
         try {
             messages = m;
-            locale = m.getLocale();
+            currentLocale = m.getLocale();
         } finally {
             writeLock.unlock();
         }
@@ -202,7 +206,7 @@ public enum Messages {
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException("Invalid encoding for string of key " + key, e);
             }
-            return String.format(l, mes, params).trim();
+            return String.format(l, mes, params);
         } else {
             return key;
         }
@@ -215,7 +219,7 @@ public enum Messages {
     public static Locale getLocale() {
         readLock.lock();
         try {
-            return locale;
+            return currentLocale;
         } finally {
             readLock.unlock();
         }

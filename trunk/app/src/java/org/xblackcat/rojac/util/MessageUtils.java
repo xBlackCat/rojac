@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.xblackcat.rojac.i18n.Messages;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,9 +40,7 @@ public final class MessageUtils {
 
         StringBuilder res = new StringBuilder();
 
-        res.append("������������, ");
-        res.append(userName);
-        res.append(".\n�� ������:\n\n");
+        res.append(Messages.MESSAGE_RESPONSE_HEADER.get(userName));
 
         String abbr = abbreviateUserName(userName);
 
