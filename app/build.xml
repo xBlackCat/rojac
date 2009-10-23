@@ -5,11 +5,13 @@
 
 <project name="rojac-application" default="rebuild">
     <property environment="env"/>
-    <property file="build.properties"/>
 
-    <property name="rojac.jar.filename" value="rojac.jar"/>
+    <property name="rojac.filename" value="rojac"/>
+    <property name="rojac.launcher.class" value="org.xblackcat.rojac.RojacLauncher"/>
 
     <dirname property="rojac-application.basedir" file="${ant.file.rojac-application}"/>
+
+    <property file="build.properties"/>
 
     <property name="rojac-application.lib.dir" value="${rojac-application.basedir}/libs"/>
     <property name="rojac-application.res.dir" value="${rojac-application.basedir}/res"/>
@@ -171,7 +173,7 @@
             <fileset refid="rojac.runtime.libs"/>
         </copy>
 
-        <jar jarfile="${rojac-application.dist.dir}/lib/${rojac.jar.filename}">
+        <jar jarfile="${rojac-application.dist.dir}/lib/${rojac.filename}.jar">
             <fileset dir="${rojac-application.output.dir}"/>
             <manifest>
             </manifest>
@@ -189,33 +191,70 @@
             <map from="${rojac-application.dist.dir}" to=".."/>
         </pathconvert>
 
-        <echo file="${rojac-application.dist.dir}/bin/rojac.cmd">@echo off
+        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.cmd">@echo off
 
-            SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
+SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
 
-            javaw.exe -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
+javaw.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         </echo>
 
-        <echo file="${rojac-application.dist.dir}/bin/rojac.sh">#!/bin/sh
+        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh">#!/bin/sh
 
-            SET CLASSPATH=$CLASSPATH:${dist.unix.classpath}
+SET CLASSPATH=$CLASSPATH:${dist.unix.classpath}
 
-            java -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
+java -cp "%CLASSPATH%" ${rojac.launcher.class}
         </echo>
 
-        <echo file="${rojac-application.dist.dir}/bin/rojac.bat">@echo off
+        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.bat">@echo off
 
-            SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
+SET CLASSPATH=%CLASSPATH%;${dist.win32.classpath}
 
-            java.exe -cp "%CLASSPATH%" org.xblackcat.rojac.RojacLauncher
+java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         </echo>
 
-        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.cmd" eol="dos"/>
-        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.bat" eol="dos"/>
-        <fixcrlf file="${rojac-application.dist.dir}/bin/rojac.sh" eol="unix"/>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.cmd" eol="dos"/>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.bat" eol="dos"/>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh"  eol="unix"/>
 
-        <chmod file="${rojac-application.dist.dir}/bin/rojac.sh" perm="755" failonerror="false"/>
+        <chmod file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh" perm="755" failonerror="false"/>
     </target>
 
-    <target name="rebuild" description="Rebuild application" depends="clean, compile, build"/>
+    <target name="build.exe" if="launch4j.dir">
+        <!-- Generate launch4j config file -->
+        <echo file="${rojac-application.basedir}/classes/sender.launch4j.xml">
+&lt;launch4jConfig&gt;
+    &lt;headerType&gt;gui&lt;/headerType&gt;
+    &lt;outfile&gt;${rojac-application.dist.dir}/bin/${rojac.filename}.exe&lt;/outfile&gt;
+    &lt;errTitle&gt;Rojac&lt;/errTitle&gt;
+    &lt;dontWrapJar&gt;true&lt;/dontWrapJar&gt;
+    &lt;customProcName&gt;true&lt;/customProcName&gt;
+    &lt;icon&gt;${rojac-application.basedir}/extras/design/rojac.ico&lt;/icon&gt;
+    &lt;classPath&gt;
+        &lt;mainClass&gt;${rojac.launcher.class}&lt;/mainClass&gt;
+        &lt;cp&gt;../lib/*.jar&lt;/cp&gt;
+        &lt;cp&gt;../lib/lnf/*.jar&lt;/cp&gt;
+    &lt;/classPath&gt;
+    &lt;jre&gt;
+        &lt;minVersion&gt;1.6.0&lt;/minVersion&gt;
+    &lt;/jre&gt;
+    &lt;splash&gt;
+        &lt;file&gt;${rojac-application.basedir}/extras/design/rojac.bmp&lt;/file&gt;
+        &lt;waitForWindow&gt;true&lt;/waitForWindow&gt;
+        &lt;timeout&gt;60&lt;/timeout&gt;
+        &lt;timeoutErr&gt;true&lt;/timeoutErr&gt;
+    &lt;/splash&gt;
+&lt;/launch4jConfig&gt;
+        </echo>
+
+        <!-- Perform  -->
+        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask">
+            <classpath>
+                <fileset file="${launch4j.dir}/launch4j.jar"/>
+                <fileset file="${launch4j.dir}/lib/xstream.jar"/>
+            </classpath>
+        </taskdef>
+        <launch4j configFile="${rojac-application.basedir}/classes/sender.launch4j.xml"/>
+    </target>
+
+    <target name="rebuild" description="Rebuild application" depends="clean, compile, build, build.exe"/>
 </project>
