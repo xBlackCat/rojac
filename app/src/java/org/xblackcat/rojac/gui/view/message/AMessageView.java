@@ -3,41 +3,17 @@ package org.xblackcat.rojac.gui.view.message;
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IMessageView;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.view.AView;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author xBlackCat
  */
 
-public abstract class AMessageView extends JPanel implements IMessageView {
-    protected final IRootPane mainFrame;
-
-    protected AMessageView(LayoutManager layout, boolean isDoubleBuffered, IRootPane mainFrame) {
-        super(new BorderLayout(), isDoubleBuffered);
-        this.mainFrame = mainFrame;
-    }
-
-    protected AMessageView(LayoutManager layout, IRootPane mainFrame) {
-        super(new BorderLayout());
-        this.mainFrame = mainFrame;
-    }
-
-    protected AMessageView(boolean isDoubleBuffered, IRootPane mainFrame) {
-        super(new BorderLayout(),isDoubleBuffered);
-        this.mainFrame = mainFrame;
-    }
-
+public abstract class AMessageView extends AView implements IMessageView {
     protected AMessageView(IRootPane mainFrame) {
-        super(new BorderLayout());
-        this.mainFrame = mainFrame;
-    }
-
-    public void applySettings() {
-    }
-
-    public void updateSettings() {
+        super(mainFrame);
     }
 
     public JComponent getComponent() {
