@@ -29,7 +29,7 @@ public final class Property<T> {
     public static final Property<Integer> ROJAC_MAIN_FRAME_STATE = create("rojac.main_frame.state", Integer.class);
 
     // Main GUI properties
-    public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class);
+    public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, new LAFValueChecker());
     public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", Locale.class);
     public static final Property<String> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", String.class);
 
