@@ -54,6 +54,12 @@ public final class Property<T> {
     public static final Property<Integer> SYNCHRONIZER_LOAD_MESSAGES_PORTION = create("rojac.synchronizer.load.messages.portion", Integer.class);
     public static final Property<Boolean> MESSAGE_PANE_SHOW_MARKS = create("rojac.viewer.show.marks.pane", Boolean.class);
 
+    static <V> Property<V> create(String name, Class<V> type, IValueChecker<V> checker) {
+        Property<V> prop = new Property<V>(name, type, checker);
+        ALL_PROPERTIES.put(name, prop);
+        return prop;
+    }
+
     /**
      * Util method for create property object.
      *
@@ -64,9 +70,7 @@ public final class Property<T> {
      * @return newly generated property object.
      */
     static <E> Property<E> create(String name, Class<E> type) {
-        Property<E> prop = new Property<E>(name, type);
-        ALL_PROPERTIES.put(name, prop);
-        return prop;
+        return create(name, type, null);
     }
 
     public static Property<?> getPropertyForName(String name) {
@@ -85,21 +89,42 @@ public final class Property<T> {
 
     private final String name;
     private final Class<T> type;
+    private final IValueChecker<T> checker;
 
-    private Property(String name, Class<T> type) {
+    private Property(String name, Class<T> type, IValueChecker<T> checker) {
         if (name == null) throw new NullPointerException("Property name can not be null.");
         if (type == null) throw new NullPointerException("Class type can not be null.");
 
         this.name = name;
         this.type = type;
+        this.checker = checker;
     }
 
+    /**
+     * Returns internal property name.
+     *
+     * @return internal name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns a class of the property values.
+     *
+     * @return class of the property value.
+     */
     public Class<T> getType() {
         return type;
+    }
+
+    /**
+     * Returns the property checker if any.
+     *
+     * @return value checker if the one exists and <code>null</code> elsevise.
+     */
+    public IValueChecker<T> getChecker() {
+        return checker;
     }
 
     public boolean equals(Object o) {
