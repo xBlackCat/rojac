@@ -2,8 +2,6 @@ package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
-import org.xblackcat.rojac.gui.model.ForumData;
-import org.xblackcat.rojac.gui.model.ForumTableModel;
 
 import javax.swing.*;
 

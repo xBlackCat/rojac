@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.xblackcat.rojac.gui.model.ForumData;
-
 import java.util.Comparator;
 
 /**

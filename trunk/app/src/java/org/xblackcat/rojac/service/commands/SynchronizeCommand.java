@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.commands;
 
 import org.xblackcat.rojac.RojacException;
-import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
+import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
 
 import java.util.Collection;
 import java.util.LinkedList;

@@ -14,14 +14,12 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
-import org.xblackcat.rojac.gui.frame.message.AMessageView;
-import org.xblackcat.rojac.gui.frame.message.MessagePane;
-import org.xblackcat.rojac.gui.frame.progress.ITask;
-import org.xblackcat.rojac.gui.frame.progress.ProgressTrackerDialog;
-import org.xblackcat.rojac.gui.frame.thread.ForumThreadsView;
-import org.xblackcat.rojac.gui.frame.thread.ThreadDoubleView;
+import org.xblackcat.rojac.gui.dialogs.progress.ITask;
+import org.xblackcat.rojac.gui.dialogs.progress.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ForumsListView;
+import org.xblackcat.rojac.gui.view.ViewHelper;
+import org.xblackcat.rojac.gui.view.thread.ThreadDoubleView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.commands.AffectedPosts;
@@ -257,12 +255,12 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     private View createForumView(Forum f) {
-        AMessageView $ = createForumViewWindow();
+        IMessageView forumView = createForumViewWindow();
 
         final View view = new View(
                 f.getForumName(),
                 null,
-                $
+                forumView.getComponent()
         );
 
 
@@ -273,7 +271,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
         view.addListener(new CloseThreadListener(f.getForumId()));
 
-        $.viewItem(f.getForumId(), false);
+        forumView.loadItem(f.getForumId());
 
         return view;
     }
@@ -283,8 +281,11 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
      *
      * @return a new forum view layout.
      */
-    private ThreadDoubleView createForumViewWindow() {
-        return new ThreadDoubleView(new ForumThreadsView(this), new MessagePane(this), false, this);
+    private IMessageView createForumViewWindow() {
+        IMessageView threadView = ViewHelper.makeForumThreadsView(this);
+        IMessageView messageView = ViewHelper.makeMessageView(this);
+        
+        return new ThreadDoubleView(threadView, messageView, false, this);
     }
 
     public void applySettings() {
