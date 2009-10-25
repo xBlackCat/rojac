@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.model.ForumTableModel;
+import org.xblackcat.rojac.gui.view.ForumTableModel;
 import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;

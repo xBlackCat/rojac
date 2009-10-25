@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui;
 
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.gui.frame.progress.ITask;
+import org.xblackcat.rojac.gui.dialogs.progress.ITask;
 
 /**
  * @author xBlackCat

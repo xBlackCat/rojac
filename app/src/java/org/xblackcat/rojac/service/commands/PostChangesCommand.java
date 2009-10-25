@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
-import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
+import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.PostException;
 import org.xblackcat.rojac.service.janus.data.PostInfo;

@@ -6,9 +6,9 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.frame.message.EditMessagePane;
-import org.xblackcat.rojac.gui.frame.message.PreviewMessagePane;
-import org.xblackcat.rojac.gui.frame.progress.ITask;
+import org.xblackcat.rojac.gui.dialogs.progress.ITask;
+import org.xblackcat.rojac.gui.view.message.EditMessagePane;
+import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
@@ -29,7 +29,7 @@ public class EditMessageDialog extends JDialog {
     private static final Log log = LogFactory.getLog(EditMessageDialog.class);
 
     protected final IStorage storage;
-    private final PreviewMessagePane panelPreview;
+    private final PreviewMessageView panelPreview;
     private final EditMessagePane panelEdit;
 
     // new message credentials
@@ -40,7 +40,7 @@ public class EditMessageDialog extends JDialog {
     public EditMessageDialog(Frame owner) {
         super(owner, false);
 
-        panelPreview = new PreviewMessagePane(new DumbRootPane());
+        panelPreview = new PreviewMessageView(new DumbRootPane());
         panelEdit = new EditMessagePane(panelPreview);
         storage = ServiceFactory.getInstance().getStorage();
 

@@ -5,7 +5,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
-import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
+import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.ForumsList;
 import org.xblackcat.rojac.service.storage.IForumAH;

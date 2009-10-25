@@ -7,7 +7,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.data.Rating;
-import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
+import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 

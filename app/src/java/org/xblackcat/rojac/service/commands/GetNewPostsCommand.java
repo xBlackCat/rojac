@@ -9,7 +9,7 @@ import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
-import org.xblackcat.rojac.gui.frame.progress.IProgressTracker;
+import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.options.Property;
