@@ -4,7 +4,6 @@ import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.gui.IMessageView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.MessageView;
-import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.gui.view.thread.ForumThreadsControl;
 import org.xblackcat.rojac.gui.view.thread.SingleThreadControl;
 import org.xblackcat.rojac.gui.view.thread.ThreadDoubleView;
@@ -48,17 +47,6 @@ public final class ViewHelper {
      */
     public static IMessageView makeMessageView(IRootPane mainFrame) {
         return new MessageView(mainFrame);
-    }
-
-    /**
-     * Creates a preview message view. Used to see a message before sending.
-     *
-     * @param mainFrame root component.
-     *
-     * @return a new instance of view
-     */
-    public static IMessageView makePreviewMessageView(IRootPane mainFrame) {
-        return new PreviewMessageView(mainFrame);
     }
 
     /**

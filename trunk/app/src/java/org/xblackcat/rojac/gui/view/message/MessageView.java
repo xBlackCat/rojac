@@ -14,7 +14,6 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
-import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -37,7 +36,6 @@ public class MessageView extends AMessageView implements IInternationazable {
     private static final Log log = LogFactory.getLog(MessageView.class);
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();
 
-    private final IStorage storage = ServiceFactory.getInstance().getStorage();
     private final JTextPane messageTextPane = new JTextPane();
 
     private final JLabel labelTopic = new JLabel();
@@ -48,14 +46,13 @@ public class MessageView extends AMessageView implements IInternationazable {
     private int messageId;
     private int forumId;
 
-    private static final Insets BUTTON_MARGIN = new Insets(2, 2, 2, 2);
     private JLabel userLabel;
     private JLabel dateLabel;
     protected JButton answer;
     protected JComboBox marks;
 
     public MessageView(IRootPane mainFrame) {
-        super(new BorderLayout(), mainFrame);
+        super(mainFrame);
 
         initialize();
 
@@ -82,7 +79,7 @@ public class MessageView extends AMessageView implements IInternationazable {
         marksButton.setDefaultCapable(false);
         marksButton.setFocusable(false);
         marksButton.setFocusPainted(false);
-        marksButton.setMargin(BUTTON_MARGIN);
+        marksButton.setMargin(WindowsUtils.EMPTY_MARGIN);
         marksButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 RatingDialog rd = new RatingDialog(SwingUtilities.windowForComponent(MessageView.this), messageId);
@@ -125,7 +122,7 @@ public class MessageView extends AMessageView implements IInternationazable {
         });
         answer.setIcon(RojacHelper.loadIcon("actions/reply.gif"));
         answer.setFocusable(false);
-        answer.setMargin(BUTTON_MARGIN);
+        answer.setMargin(WindowsUtils.EMPTY_MARGIN);
 
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         controls.add(answer);

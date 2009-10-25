@@ -18,7 +18,6 @@ import java.awt.event.MouseEvent;
  */
 
 public class TreeThreadView extends AThreadView {
-
     protected final JTree threads = new JTree();
 
     public TreeThreadView(IRootPane mainFrame, IThreadControl threadControl) {
@@ -32,7 +31,7 @@ public class TreeThreadView extends AThreadView {
         threads.setEditable(false);
         threads.setModel(model);
         threads.setCellRenderer(new MessageTreeCellRenderer());
-        threads.setShowsRootHandles(threadControl.isRootVisible());
+        threads.setShowsRootHandles(true);
         threads.setRootVisible(threadControl.isRootVisible());
 
         threads.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {

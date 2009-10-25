@@ -6,7 +6,6 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AMessageView;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author xBlackCat
@@ -23,7 +22,7 @@ public class ThreadDoubleView extends AMessageView {
      * @param mainFrame
      */
     public ThreadDoubleView(IMessageView mv, IMessageView sv, boolean verticalSplit, IRootPane mainFrame) {
-        super(new BorderLayout(), mainFrame);
+        super(mainFrame);
         this.masterView = mv;
         this.slaveView = sv;
 

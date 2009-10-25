@@ -19,7 +19,6 @@ import org.xblackcat.rojac.gui.dialogs.progress.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ForumsListView;
 import org.xblackcat.rojac.gui.view.ViewHelper;
-import org.xblackcat.rojac.gui.view.thread.ThreadDoubleView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.commands.AffectedPosts;
@@ -94,7 +93,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         os = optionsService;
 
         forumsListView = new ForumsListView(this);
-        favoritesView = new FavoritesView();
+        favoritesView = new FavoritesView(this);
 
         initialize();
 
@@ -282,10 +281,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
      * @return a new forum view layout.
      */
     private IMessageView createForumViewWindow() {
-        IMessageView threadView = ViewHelper.makeForumThreadsView(this);
-        IMessageView messageView = ViewHelper.makeMessageView(this);
-        
-        return new ThreadDoubleView(threadView, messageView, false, this);
+        return ViewHelper.makeTreeMessageView(this);
     }
 
     public void applySettings() {

@@ -4,14 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.IView;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.commands.GetForumListCommand;
 import org.xblackcat.rojac.service.commands.IResultHandler;
-import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -29,18 +25,14 @@ import java.awt.event.MouseEvent;
  * @author xBlackCat
  */
 
-public class ForumsListView extends JPanel implements IView {
-    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
+public class ForumsListView extends AView {
 
     private static final Log log = LogFactory.getLog(ForumsListView.class);
     // Data and models
     private ForumTableModel forumsModel = new ForumTableModel();
-    private final IRootPane mainFrame;
 
     public ForumsListView(IRootPane rootPane) {
-        super(new BorderLayout(2, 2));
-        this.mainFrame = rootPane;
+        super(rootPane);
         final JTable forums = new JTable(forumsModel);
         forums.setTableHeader(null);
         add(new JScrollPane(forums));
@@ -126,7 +118,7 @@ public class ForumsListView extends JPanel implements IView {
     }
 
     public void applySettings() {
-        // TODO: implement
+        super.applySettings();
 
         executor.execute(new Runnable() {
             public void run() {
@@ -142,10 +134,6 @@ public class ForumsListView extends JPanel implements IView {
                 }
             }
         });
-    }
-
-    public void updateSettings() {
-        // TODO: implement
     }
 
     public ForumsListView getComponent() {

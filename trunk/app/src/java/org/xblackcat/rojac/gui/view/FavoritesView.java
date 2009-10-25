@@ -1,27 +1,18 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.xblackcat.rojac.gui.IView;
+import org.xblackcat.rojac.gui.IRootPane;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author xBlackCat
  */
 
-public class FavoritesView extends JPanel implements IView {
-    public FavoritesView() {
-        super(new BorderLayout(2, 2));
+public class FavoritesView extends AView {
+    public FavoritesView(IRootPane rootPane) {
+        super(rootPane);
 
         add(new JScrollPane(new JTable(10, 2)));
-    }
-
-    public void applySettings() {
-        // TODO: implement
-    }
-
-    public void updateSettings() {
-        // TODO: implement
     }
 
     public JComponent getComponent() {
