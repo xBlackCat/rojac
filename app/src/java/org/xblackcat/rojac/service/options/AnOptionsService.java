@@ -95,6 +95,10 @@ abstract class AnOptionsService implements IOptionsService {
     }
 
     public <T> T setProperty(Property<T> key, T newValue) {
+        if (key.getChecker() != null && !key.getChecker().isValueCorrect(newValue)) {
+            throw new IllegalArgumentException(newValue + " is not valid value for property " + key.getName());
+        }
+
         String name = key.getName();
         Class<?> type = key.getType();
 
