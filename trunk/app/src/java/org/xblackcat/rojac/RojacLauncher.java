@@ -53,34 +53,38 @@ public final class RojacLauncher {
 
         Messages.setLocale(optionsService.getProperty(Property.ROJAC_GUI_LOCALE));
 
-        final MainFrame mainFrame = new MainFrame(optionsService);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                final MainFrame mainFrame = new MainFrame(optionsService);
 
-        mainFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                mainFrame.updateSettings();
+                mainFrame.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        mainFrame.updateSettings();
 
-                storeSettings(optionsService);
+                        storeSettings(optionsService);
 
-                System.exit(0);
+                        System.exit(0);
+                    }
+                });
+
+                while (!RojacHelper.isUserRegistered()) {
+                    LoginDialog ld = new LoginDialog(mainFrame);
+                    WindowsUtils.centerOnScreen(ld);
+                    if (ld.showLoginDialog()) {
+                        System.exit(0);
+                    }
+                }
+
+                setupUserSettings();
+
+                mainFrame.applySettings();
+
+                mainFrame.loadData();
+
+                mainFrame.setVisible(true);
             }
         });
-
-        while (!RojacHelper.isUserRegistered()) {
-            LoginDialog ld = new LoginDialog(mainFrame);
-            WindowsUtils.centerOnScreen(ld);
-            if (ld.showLoginDialog(optionsService)) {
-                System.exit(0);
-            }
-        }
-
-        setupUserSettings();
-
-        mainFrame.applySettings();
-
-        mainFrame.loadData();
-
-        mainFrame.setVisible(true);
     }
 
     private static void storeSettings(IOptionsService optionsService) {

@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.util;
 
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 
@@ -145,7 +146,7 @@ public final class WindowsUtils {
         return button;
     }
 
-    public static final void centerOnScreen(Window window) {
+    public static void centerOnScreen(Window window) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension windowSize = window.getSize();
 
@@ -201,5 +202,23 @@ public final class WindowsUtils {
         }
 
         return toolBar;
+    }
+
+    public static Component createButtonsBar(AButtonAction... buttons) {
+        return createButtonsBar((JDialog) null, null, buttons);
+    }
+
+    public static Component createButtonsBar(JDialog dlg, Messages defAction, AButtonAction... buttons) {
+        JPanel buttonPane = new JPanel(new GridLayout(1, 0, 10, 5));
+
+        for (AButtonAction ba : buttons) {
+            JButton b = WindowsUtils.setupButton(ba.getMessage(), ba, ba.getMessage());
+            if (ba.getMessage() == defAction) {
+                dlg.getRootPane().setDefaultButton(b);
+            }
+            buttonPane.add(b);
+        }
+
+        return WindowsUtils.coverComponent(buttonPane, FlowLayout.CENTER);
     }
 }

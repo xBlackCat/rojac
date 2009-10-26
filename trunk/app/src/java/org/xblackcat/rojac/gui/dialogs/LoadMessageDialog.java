@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.dialogs;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.gui.MainFrame;
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.ClipboardUtils;
 import org.xblackcat.rojac.util.LinkUtils;
@@ -13,7 +13,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 
 /**
@@ -25,12 +24,11 @@ public class LoadMessageDialog extends JDialog {
 
     private Integer messageId;
     private JTextField messageIdText;
-    private MainFrame mainFrame;
+    private Window mainFrame;
     protected JCheckBox loadAtOnce;
 
-    public LoadMessageDialog(MainFrame mainFrame) {
-        super(mainFrame, true);
-        this.mainFrame = mainFrame;
+    public LoadMessageDialog(Window mainFrame) {
+        super(mainFrame, DEFAULT_MODALITY_TYPE);
 
         setTitle(Messages.DIALOG_LOADMESSAGE_TITLE.get());
 
@@ -46,11 +44,43 @@ public class LoadMessageDialog extends JDialog {
 
         add(WindowsUtils.coverComponent(bp, FlowLayout.CENTER), BorderLayout.SOUTH);
 
-        JButton okButton = WindowsUtils.setupButton(Messages.BUTTON_OK, new OkListener(), Messages.BUTTON_OK);
-        bp.add(okButton);
-        bp.add(WindowsUtils.setupButton(Messages.BUTTON_CANCEL, new CancelListener(), Messages.BUTTON_CANCEL));
+        add(WindowsUtils.createButtonsBar(
+                this,
+                Messages.BUTTON_OK,
+                new AButtonAction(Messages.BUTTON_OK) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String id = messageIdText.getText();
 
-        getRootPane().setDefaultButton(okButton);
+                        if (StringUtils.isBlank(id)) {
+                            messageId = null;
+                        } else {
+                            try {
+                                int iId = Integer.parseInt(id);
+                                if (iId >= 0) {
+                                    messageId = Integer.valueOf(iId);
+                                } else {
+                                    messageId = null;
+                                }
+                            } catch (NumberFormatException e1) {
+                                if (log.isWarnEnabled()) {
+                                    log.warn("Can not parse user input", e1);
+                                }
+                                messageId = null;
+                            }
+                        }
+
+                        setVisible(false);
+                    }
+                },
+                new AButtonAction(Messages.BUTTON_CANCEL) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        messageId = null;
+                        setVisible(false);
+                    }
+                }
+        ), BorderLayout.SOUTH);
 
         JPanel cp = new JPanel(new BorderLayout());
 
@@ -119,40 +149,5 @@ public class LoadMessageDialog extends JDialog {
 
     public boolean isLoadAtOnce() {
         return loadAtOnce.isSelected();
-    }
-
-    private class OkListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String id = messageIdText.getText();
-
-            if (StringUtils.isBlank(id)) {
-                messageId = null;
-            } else {
-                try {
-                    int iId = Integer.parseInt(id);
-                    if (iId >= 0) {
-                        messageId = Integer.valueOf(iId);
-                    } else {
-                        messageId = null;
-                    }
-                } catch (NumberFormatException e1) {
-                    if (log.isWarnEnabled()) {
-                        log.warn("Can not parse user input", e1);
-                    }
-                    messageId = null;
-                }
-            }
-
-            setVisible(false);
-        }
-    }
-
-    private class CancelListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            messageId = null;
-            setVisible(false);
-        }
     }
 }
