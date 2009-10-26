@@ -168,11 +168,18 @@
     <target name="build" description="Build application" depends="compile, test">
         <mkdir dir="${rojac-application.dist.dir}/lib"/>
         <mkdir dir="${rojac-application.dist.dir}/bin"/>
+        <mkdir dir="${rojac-application.dist.dir}/conf"/>
 
         <fileset id="rojac.runtime.libs" dir="${rojac-application.lib.dir}">
             <include name="**/*.jar"/>
             <exclude name="**/junit*.jar"/>
         </fileset>
+
+        <copy todir="${rojac-application.dist.dir}/conf">
+            <fileset dir="${rojac-application.basedir}/src/res.ext">
+                <patternset refid="compiler.resources"/>
+            </fileset>
+        </copy>
 
         <copy todir="${rojac-application.dist.dir}/lib">
             <fileset refid="rojac.runtime.libs"/>
@@ -184,9 +191,14 @@
             </manifest>
         </jar>
 
-        <fileset id="rojac.full.libs" dir="${rojac-application.dist.dir}/lib">
-            <include name="**/*.jar"/>
-        </fileset>
+        <path id="rojac.full.libs">
+            <fileset dir="${rojac-application.dist.dir}">
+                <include name="lib/**/*.jar"/>
+            </fileset>
+            <dirset dir="${rojac-application.dist.dir}">
+                <include name="conf"/>
+            </dirset>
+        </path>
 
         <pathconvert targetos="windows" property="dist.win32.classpath" refid="rojac.full.libs">
             <map from="${rojac-application.dist.dir}" to=".."/>
@@ -238,6 +250,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         &lt;mainClass&gt;${rojac.launcher.class}&lt;/mainClass&gt;
         &lt;cp&gt;../lib/*.jar&lt;/cp&gt;
         &lt;cp&gt;../lib/lnf/*.jar&lt;/cp&gt;
+        &lt;cp&gt;../conf&lt;/cp&gt;
     &lt;/classPath&gt;
     &lt;jre&gt;
         &lt;minVersion&gt;1.6.0&lt;/minVersion&gt;
@@ -266,6 +279,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
             <fileset dir="${rojac-application.dist.dir}">
                 <include name="bin/${rojac.filename}*"/>
                 <include name="lib/**/*.jar"/>
+                <include name="conf/**/*"/>
             </fileset>
         </zip>
     </target>
