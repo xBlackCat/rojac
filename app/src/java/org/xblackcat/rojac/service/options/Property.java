@@ -34,10 +34,10 @@ public final class Property<T> {
     public static final Property<String> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", String.class);
 
     // User properties (login dialog)
-    public static final Property<String> RSDN_USER_NAME = create("rsdn.user.name", String.class);
-    public static final Property<Password> RSDN_USER_PASSWORD = create("rsdn.user.password", Password.class);
-    public static final Property<Integer> RSDN_USER_ID = create("rsdn.user.id", Integer.class);
-    public static final Property<Boolean> RSDN_USER_PASSWORD_SAVE = create("rsdn.user.password.store", Boolean.class);
+    public static final Property<String> RSDN_USER_NAME = create("rojac.rsdn.user.name", String.class);
+    public static final Property<Password> RSDN_USER_PASSWORD = create("rojac.rsdn.user.password", Password.class);
+    public static final Property<Integer> RSDN_USER_ID = create("rojac.rsdn.user.id", Integer.class);
+    public static final Property<Boolean> RSDN_USER_PASSWORD_SAVE = create("rojac.rsdn.user.password.save", Boolean.class);
 
     //
 
@@ -46,13 +46,13 @@ public final class Property<T> {
     /**
      * This boolean property indicated is should be used GZip compression while retrieving information from Janus WS.
      */
-    public static final Property<Boolean> SERVICE_JANUS_USE_GZIP = create("rojac.service.janusws.use_gzip", Boolean.class);
+    public static final Property<Boolean> SYNCHRONIZER_USE_GZIP = create("rojac.synchronizer.use_compression", Boolean.class);
 
     public static final Property<Boolean> SYNCHRONIZER_LOAD_BROKEN_TOPICS_AT_ONCE = create("rojac.synchronizer.load_boken_topics_at_once", Boolean.class);
     public static final Property<Boolean> SYNCHRONIZER_LOAD_USERS = create("rojac.synchronizer.load.users", Boolean.class);
     public static final Property<Integer> SYNCHRONIZER_LOAD_USERS_PORTION = create("rojac.synchronizer.load.users.portion", Integer.class);
     public static final Property<Integer> SYNCHRONIZER_LOAD_MESSAGES_PORTION = create("rojac.synchronizer.load.messages.portion", Integer.class);
-    public static final Property<Boolean> MESSAGE_PANE_SHOW_MARKS = create("rojac.viewer.show.marks.pane", Boolean.class);
+    public static final Property<Boolean> MESSAGE_PANE_SHOW_MARKS = create("rojac.viewer.show_marks_pane", Boolean.class);
 
     static <V> Property<V> create(String name, Class<V> type, IValueChecker<V> checker) {
         Property<V> prop = new Property<V>(name, type, checker);

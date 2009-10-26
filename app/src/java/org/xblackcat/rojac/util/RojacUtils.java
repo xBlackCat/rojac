@@ -1,6 +1,9 @@
 package org.xblackcat.rojac.util;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.data.IRSDNable;
+import org.xblackcat.rojac.gui.dialogs.PropertyNode;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -134,7 +137,73 @@ public final class RojacUtils {
         UIManager.setLookAndFeel(laf);
     }
 
-//    public static <T, E> T[] extract(E[] arr, IExtractor<T, E> e) {
-//
-//    }
+    /**
+     * Generates a tree path of the specified property by its name.
+     *
+     * @param p
+     *
+     * @return root of the path.
+     */
+    public static PropertyNode propertyPath(Property p) {
+        String propertyName = p.getName();
+
+        String[] names = propertyName.split("\\.+");
+
+        if (ArrayUtils.isEmpty(names)) {
+            return null;
+        }
+
+        if (names.length == 1) {
+            return new PropertyNode(names[0], null, p);
+        }
+
+        PropertyNode[] nodes = new PropertyNode[names.length];
+
+        nodes[0] = new PropertyNode(names[0]);
+
+        int i = 1, lastNode = names.length - 1;
+        while (i < lastNode) {
+            String name = names[i];
+
+            nodes[i] = new PropertyNode(name, nodes[i - 1]);
+            nodes[i - 1].addChild(nodes[i]);
+
+            i++;
+        }
+
+        PropertyNode lastParent = nodes[names.length - 2];
+        lastParent.addChild(new PropertyNode(names[lastNode], lastParent, p));
+
+        return nodes[0];
+    }
+
+    public static boolean addProperty(PropertyNode root, Property p) {
+        if (root == null) {
+            throw new NullPointerException("Node root is null");
+        }
+
+        PropertyNode path = propertyPath(p);
+
+        if (!path.equals(root)) {
+            return false;
+        }
+
+        if (path.isEmpty()) {
+            return false;
+        }
+
+        do {
+            // Assumes that path have only one child or no one.
+            path = path.getChild(0);
+
+            if (!root.has(path)) {
+                root.addChild(path);
+                return true;
+            }
+
+            root = root.getChild(root.indexOf(path));
+        } while (!path.isEmpty());
+
+        return false;
+    }
 }

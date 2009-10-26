@@ -18,6 +18,7 @@ public enum Messages {
     // Button texts
     BUTTON_OK,
     BUTTON_CANCEL,
+    BUTTON_APPLY,
     BUTTON_IGNORE,
     BUTTON_YES,
     BUTTON_NO,

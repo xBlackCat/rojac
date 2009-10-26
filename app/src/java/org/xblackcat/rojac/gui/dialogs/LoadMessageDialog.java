@@ -71,9 +71,7 @@ public class LoadMessageDialog extends JDialog {
         add(cp, BorderLayout.CENTER);
 
         JLabel l = new JLabel(Messages.DIALOG_LOADMESSAGE_LABEL.get());
-//        Dimension size = new Dimension(200, 10);
-//        l.setMinimumSize(size);
-//        l.setPreferredSize(size);
+
         l.setBorder(border);
         add(l, BorderLayout.NORTH);
 

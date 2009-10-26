@@ -49,7 +49,7 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
         }
 
         JanusService c = new JanusService(RojacHelper.getUserName(), RojacHelper.getUserPassword());
-        c.init(optionsService.getProperty(Property.SERVICE_JANUS_USE_GZIP));
+        c.init(optionsService.getProperty(Property.SYNCHRONIZER_USE_GZIP));
         c.testConnection();
         janusService = c;
 

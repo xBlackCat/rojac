@@ -14,6 +14,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
+import org.xblackcat.rojac.gui.dialogs.OptionsDialog;
 import org.xblackcat.rojac.gui.dialogs.progress.ITask;
 import org.xblackcat.rojac.gui.dialogs.progress.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.view.FavoritesView;
@@ -219,8 +220,16 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                 }
             }
         }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
+        JButton settingsButton = WindowsUtils.setupImageButton("update", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                OptionsDialog od = new OptionsDialog(MainFrame.this);
 
-        threadsPane.add(WindowsUtils.createToolBar(updateButton, loadMessageButton), BorderLayout.NORTH);
+                WindowsUtils.center(od, MainFrame.this);
+                od.setVisible(true);
+            }
+        }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
+
+        threadsPane.add(WindowsUtils.createToolBar(updateButton, loadMessageButton, settingsButton), BorderLayout.NORTH);
         threadsPane.add(threads, BorderLayout.CENTER);
 
         View view = new View(null, null, threadsPane);
