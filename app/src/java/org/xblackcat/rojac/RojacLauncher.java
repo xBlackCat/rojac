@@ -26,7 +26,15 @@ public final class RojacLauncher {
     private RojacLauncher() {
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+        try {
+            launch();
+        } catch (Exception e) {
+            log.fatal("Can not initialize Rojac", e);
+        }
+    }
+
+    private static void launch() throws Exception {
         // Initialize core services
         ServiceFactory.initialize();
 
