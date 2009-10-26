@@ -2,16 +2,16 @@ package org.xblackcat.rojac.gui.dialogs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.gui.MainFrame;
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,15 +31,16 @@ public class OptionsDialog extends JDialog {
             Property.ROJAC_MAIN_FRAME_POSITION,
             Property.ROJAC_MAIN_FRAME_STATE,
             Property.RSDN_USER_ID,
+            Property.RSDN_USER_NAME,
+            Property.RSDN_USER_PASSWORD,
+            Property.RSDN_USER_PASSWORD_SAVE
     }));
 
-    private final MainFrame mainFrame;
     protected PropertiesModel model;
 
 
-    public OptionsDialog(MainFrame mainFrame) {
-        super(mainFrame, true);
-        this.mainFrame = mainFrame;
+    public OptionsDialog(Window mainFrame) {
+        super(mainFrame, DEFAULT_MODALITY_TYPE);
         try {
             model = loadModel();
         } catch (NullPointerException e) {
@@ -51,12 +52,13 @@ public class OptionsDialog extends JDialog {
 
         initializeLayout();
 
+        setMinimumSize(new Dimension(400, 300));
         pack();
-        setSize(400, 300);
     }
 
     private void initializeLayout() {
-        JPanel cp = new JPanel(new BorderLayout());
+        JPanel cp = new JPanel(new BorderLayout(5, 10));
+        cp.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         cp.add(new JLabel("Options dialog"), BorderLayout.NORTH);
 
@@ -70,28 +72,39 @@ public class OptionsDialog extends JDialog {
         }
         cp.add(centerComp, BorderLayout.CENTER);
 
-        JPanel buttons = new JPanel(new GridLayout(1, 0, 10, 5));
+        cp.add(WindowsUtils.createButtonsBar(
+                this,
+                Messages.BUTTON_OK,
+                new AButtonAction(Messages.BUTTON_CHANGEPASSWORD) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        LoginDialog ld = new LoginDialog(OptionsDialog.this);
+                        ld.showLoginDialog();
+                    }
+                },
+                new AButtonAction(Messages.BUTTON_OK) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        applySettings();
+                        setVisible(false);
+                        dispose();
+                    }
+                },
+                new AButtonAction(Messages.BUTTON_APPLY) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        applySettings();
+                    }
+                },
+                new AButtonAction(Messages.BUTTON_CANCEL) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        setVisible(false);
+                        dispose();
+                    }
+                }
 
-        buttons.add(WindowsUtils.setupButton(Messages.BUTTON_CANCEL, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                applySettings();
-            }
-        }, Messages.BUTTON_APPLY));
-        JButton okButton = WindowsUtils.setupButton(Messages.BUTTON_OK, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                applySettings();
-                setVisible(false);
-            }
-        }, Messages.BUTTON_OK);
-        buttons.add(okButton);
-        buttons.add(WindowsUtils.setupButton(Messages.BUTTON_CANCEL, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-            }
-        }, Messages.BUTTON_CANCEL));
-        getRootPane().setDefaultButton(okButton);
-
-        cp.add(WindowsUtils.coverComponent(buttons, FlowLayout.CENTER), BorderLayout.SOUTH);
+        ), BorderLayout.SOUTH);
 
         setContentPane(cp);
 

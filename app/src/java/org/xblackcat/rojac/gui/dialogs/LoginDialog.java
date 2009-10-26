@@ -2,18 +2,16 @@ package org.xblackcat.rojac.gui.dialogs;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.xblackcat.rojac.gui.MainFrame;
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
-import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author xBlackCat
@@ -26,8 +24,8 @@ public class LoginDialog extends JDialog {
     private JPasswordField fieldPassword;
     private JCheckBox fieldSavePassword;
 
-    public LoginDialog(MainFrame mainFrame) {
-        super(mainFrame, true);
+    public LoginDialog(Window mainFrame) {
+        super(mainFrame, DEFAULT_MODALITY_TYPE);
         setTitle(Messages.DIALOG_LOGIN_TITLE.get());
 
         setContentPane(setupContentPane());
@@ -39,33 +37,35 @@ public class LoginDialog extends JDialog {
         JPanel cp = new JPanel(new BorderLayout(10, 10));
         cp.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JPanel buttons = new JPanel(new GridLayout(1, 0, 10, 5));
+        cp.add(WindowsUtils.createButtonsBar(
+                this,
+                Messages.BUTTON_OK,
+                new AButtonAction(Messages.BUTTON_OK) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (StringUtils.isEmpty(fieldLogin.getText())) {
+                            JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_USERNAME.get());
+                            return;
+                        }
 
-        JButton okButton = WindowsUtils.setupButton(Messages.BUTTON_OK, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (StringUtils.isEmpty(fieldLogin.getText())) {
-                    JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_USERNAME.get());
-                    return;
+                        if (ArrayUtils.isEmpty(fieldPassword.getPassword())) {
+                            JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_PASSWORD.get());
+                            return;
+                        }
+
+                        canceled = false;
+                        setVisible(false);
+                    }
+                },
+                new AButtonAction(Messages.BUTTON_CANCEL) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        canceled = true;
+                        setVisible(false);
+                    }
                 }
+        ), BorderLayout.SOUTH);
 
-                if (ArrayUtils.isEmpty(fieldPassword.getPassword())) {
-                    JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_PASSWORD.get());
-                    return;
-                }
-
-                canceled = false;
-                setVisible(false);
-            }
-        }, Messages.BUTTON_OK);
-        buttons.add(okButton);
-        buttons.add(WindowsUtils.setupButton(Messages.BUTTON_CANCEL, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                canceled = true;
-                setVisible(false);
-            }
-        }, Messages.BUTTON_CANCEL));
-
-        cp.add(WindowsUtils.coverComponent(buttons, FlowLayout.CENTER), BorderLayout.SOUTH);
 
         JPanel pane = new JPanel(new BorderLayout(5, 5));
         cp.add(pane, BorderLayout.CENTER);
@@ -74,7 +74,7 @@ public class LoginDialog extends JDialog {
 
         fieldLogin = new JTextField(20);
         fieldPassword = new JPasswordField(20);
-        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get());
+        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get(), RojacHelper.shouldStorePassword());
 
         JPanel fields = new JPanel(new GridLayout(0, 1));
         fields.add(fieldLogin);
@@ -90,12 +90,10 @@ public class LoginDialog extends JDialog {
 
         pane.add(fieldSavePassword, BorderLayout.SOUTH);
 
-        getRootPane().setDefaultButton(okButton);
-
         return cp;
     }
 
-    public boolean showLoginDialog(IOptionsService optionsService) {
+    public boolean showLoginDialog() {
         String login = RojacHelper.getUserName();
         String password = RojacHelper.getUserPassword();
         boolean save = RojacHelper.shouldStorePassword();

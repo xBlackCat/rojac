@@ -6,10 +6,12 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.dialogs.progress.ITask;
 import org.xblackcat.rojac.gui.view.message.EditMessagePane;
 import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
@@ -37,8 +39,8 @@ public class EditMessageDialog extends JDialog {
     private int newMessageId = 0;
     private int forumId = 0;
 
-    public EditMessageDialog(Frame owner) {
-        super(owner, false);
+    public EditMessageDialog(Window owner) {
+        super(owner, DEFAULT_MODALITY_TYPE);
 
         panelPreview = new PreviewMessageView(new DumbRootPane());
         panelEdit = new EditMessagePane(panelPreview);
@@ -131,7 +133,7 @@ public class EditMessageDialog extends JDialog {
     }
 
     private void initializeLayout() {
-        JPanel cp = new JPanel(new BorderLayout());
+        JPanel cp = new JPanel(new BorderLayout(5, 10));
 
         JSplitPane center = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, panelEdit, panelPreview);
         center.setOneTouchExpandable(true);
@@ -140,34 +142,34 @@ public class EditMessageDialog extends JDialog {
 
         cp.add(center, BorderLayout.CENTER);
 
-        JPanel buttonsPane = new JPanel(new FlowLayout());
+        cp.add(WindowsUtils.createButtonsBar(
+                this,
+                Messages.BUTTON_SAVE,
+                new AButtonAction(Messages.BUTTON_SAVE) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        boolean res = saveMessage();
 
-        buttonsPane.add(new JButton(new AbstractAction("Save") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean res = saveMessage();
-
-                if (res) {
-                    dispose();
-                } else {
-                    JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");
+                        if (res) {
+                            dispose();
+                        } else {
+                            JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");
+                        }
+                    }
+                },
+                new AButtonAction(Messages.BUTTON_PREVIEW) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        panelEdit.forcePreview();
+                    }
+                },
+                new AButtonAction(Messages.BUTTON_CANCEL) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        dispose();
+                    }
                 }
-            }
-        }));
-        buttonsPane.add(new JButton(new AbstractAction("Preview") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                panelEdit.forcePreview();
-            }
-        }));
-        buttonsPane.add(new JButton(new AbstractAction("Cancel") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        }));
-
-        cp.add(buttonsPane, BorderLayout.SOUTH);
+        ), BorderLayout.SOUTH);
 
         setContentPane(cp);
     }
