@@ -12,9 +12,10 @@
   * Implement GUI: add dock bars ([https://flexdock.dev.java.net/ FlexDock]) _(done)_
   * Implement GUI: implement forums view _(done)_
   * Implement GUI: change docking framework (use [http://www.infonode.net/index.html?idw InfoNode docking framework]) _(done)_
-  * Implement GUI: message editor dialog *(in progress)*
-  * Implement GUI: preference editor dialog *(postponed)*
+  * Implement GUI: message editor dialog _(done)_
+  * Implement GUI: preference editor dialog _(done)_
   * Implement GUI: create icons for the application.
+  * Core: optimize database
 == Alpha 2 ==
   * Implement GUI: TreeTable forum view 
   * Implement GUI: List based forum view.
