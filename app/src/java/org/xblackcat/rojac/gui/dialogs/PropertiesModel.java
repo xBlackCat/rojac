@@ -1,16 +1,24 @@
 package org.xblackcat.rojac.gui.dialogs;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingx.tree.TreeModelSupport;
+import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.IValueChecker;
+import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.util.RojacUtils;
 
+import javax.swing.*;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 public class PropertiesModel implements TreeModel {
+    private static final Log log = LogFactory.getLog(PropertiesModel.class);
+
     private final PropertyNode root;
     private final TreeModelSupport modelSupport = new TreeModelSupport(this);
 
@@ -67,5 +75,47 @@ public class PropertiesModel implements TreeModel {
     @Override
     public void removeTreeModelListener(TreeModelListener l) {
         modelSupport.removeTreeModelListener(l);
+    }
+
+    /**
+     * Store all new values in system properties.
+     */
+    public void applySettings() {
+        affect(root, false);
+        LookAndFeel laf = ServiceFactory.getInstance().getOptionsService().getProperty(Property.ROJAC_GUI_LOOK_AND_FEEL);
+        try {
+            RojacUtils.setLookAndFeel(laf);
+        } catch (UnsupportedLookAndFeelException e) {
+            log.warn("Can not initialize " + laf.getName() + " L&F.", e);
+        }
+    }
+
+    public void revertSettings() {
+        affect(root, true);
+    }
+
+    /**
+     * Apply or revert properties recoursivly.
+     *
+     * @param n node to recoursivly affect.
+     * @param revert <code>true</code> - revert value; <code>false</code> - apply value
+     */
+    private void affect(PropertyNode n, boolean revert) {
+        if (n == null) {
+            return;
+        }
+
+        if (revert) {
+            n.revert();
+            modelSupport.firePathChanged(n.getPath());
+        } else {
+            n.apply();
+        }
+
+        int count = n.childrenCount();
+
+        for (int i = 0; i < count; i++) {
+            affect(n.getChild(i), revert);
+        }
     }
 }
