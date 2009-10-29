@@ -46,7 +46,7 @@ public class PropertiesModel implements TreeModel {
         PropertyNode n = (PropertyNode) path.getLastPathComponent();
 
         IValueChecker checker = n.getProperty().getChecker();
-        if (checker.isValueCorrect(newValue)) {
+        if (checker == null || checker.isValueCorrect(newValue)) {
             n.setValue(newValue);
 
             modelSupport.firePathChanged(path);
