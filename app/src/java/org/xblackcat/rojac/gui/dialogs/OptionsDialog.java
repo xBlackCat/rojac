@@ -64,8 +64,8 @@ public class OptionsDialog extends JDialog {
 
         JComponent centerComp;
         if (model != null) {
-            JTree tree = new JTree(model);
-            
+            JComponent tree = setupTree();
+
             centerComp = new JScrollPane(tree);
         } else {
             centerComp = new JLabel("Can not initialize model");
@@ -148,5 +148,17 @@ public class OptionsDialog extends JDialog {
 
         return new PropertiesModel(root);
     }
+
+    private JComponent setupTree() {
+        JTree tree = new JTree(model);
+
+        tree.setEditable(true);
+
+        tree.setCellRenderer(new OptionTreeCellRenderer());
+        tree.setCellEditor(new OptionCellEditor());
+        
+        return tree;
+    }
+
 
 }

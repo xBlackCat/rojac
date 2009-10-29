@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.dialogs;
 
+import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
 
 import java.util.ArrayList;
@@ -29,6 +30,10 @@ public class PropertyNode {
         this.property = property;
         this.name = name;
         this.parent = parent;
+
+        if (property != null) {
+            value = ServiceFactory.getInstance().getOptionsService().getProperty(property);
+        }
     }
 
     public Property getProperty() {

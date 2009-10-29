@@ -26,7 +26,7 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
 
     private static final Pattern KEY_PATTERN = Pattern.compile("rojac\\.laf\\.(\\w+)\\.(class|description)");
 
-    private final Map<LookAndFeel, String> availableLAFs;
+    private final Map<LNFContainer, String> availableLAFs;
 
     public LAFValueChecker() {
         Properties lafList;
@@ -60,7 +60,7 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
             }
         }
 
-        Map<LookAndFeel, String> lafs = new HashMap<LookAndFeel, String>();
+        Map<LNFContainer, String> lafs = new HashMap<LNFContainer, String>();
         for (Map.Entry<String, String> e : classes.entrySet()) {
             LookAndFeel lafClass;
             try {
@@ -82,7 +82,7 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
 
             String description = MapUtils.getString(descriptions, e.getKey(), lafClass.getName() + ": " + lafClass.getDescription());
 
-            lafs.put(lafClass, description);
+            lafs.put(new LNFContainer(lafClass), description);
         }
 
         this.availableLAFs = Collections.unmodifiableMap(lafs);
@@ -90,9 +90,16 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
 
     @Override
     public LookAndFeel[] getPossibleValues() {
-        Collection<LookAndFeel> lafClasses = availableLAFs.keySet();
+        Collection<LNFContainer> lafs = availableLAFs.keySet();
 
-        return lafClasses.toArray(new LookAndFeel[lafClasses.size()]);
+        LookAndFeel[] lafClasses = new LookAndFeel[lafs.size()];
+
+        int i = 0;
+        for (LNFContainer c : lafs) {
+            lafClasses[i++] = c.getLnf();
+        }
+
+        return lafClasses;
     }
 
     @Override
@@ -100,11 +107,38 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
         if (!isValueCorrect(v)) {
             throw new IllegalArgumentException("L&F " + v.getName() + " is not supported.");
         }
-        return availableLAFs.get(v);
+        return availableLAFs.get(new LNFContainer(v));
     }
 
     @Override
     public boolean isValueCorrect(LookAndFeel v) {
-        return availableLAFs.containsKey(v);
+        return availableLAFs.containsKey(new LNFContainer(v));
+    }
+
+    private final class LNFContainer {
+        private final LookAndFeel lnf;
+
+        LNFContainer(LookAndFeel lnf) {
+            this.lnf = lnf;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            LNFContainer that = (LNFContainer) o;
+
+            return lnf.getName().equals(that.lnf.getName());
+        }
+
+        @Override
+        public int hashCode() {
+            return lnf.getName().hashCode();
+        }
+
+        public LookAndFeel getLnf() {
+            return lnf;
+        }
     }
 }
