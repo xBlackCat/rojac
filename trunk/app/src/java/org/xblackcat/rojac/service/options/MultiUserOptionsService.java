@@ -74,6 +74,11 @@ public final class MultiUserOptionsService extends AnOptionsService {
      */
     private void loadFromResource(Properties config, Property<?>[] allProperties) {
         for (Property<?> p : allProperties) {
+            if (getProperty(p) != null) {
+                // Property is already set so ignore it.
+                continue;
+            }
+
             String key = p.getName();
             String val = config.getProperty(key);
             if (val == null) {
@@ -83,13 +88,11 @@ public final class MultiUserOptionsService extends AnOptionsService {
                 continue;
             }
 
-            if (getProperty(p) == null) {
-                // Set property as string.
-                if (log.isTraceEnabled()) {
-                    log.trace("Set to the " + p + " value " + val);
-                }
-                setProperty(key, val);
+            // Set property as string.
+            if (log.isTraceEnabled()) {
+                log.trace("Set to the " + p + " value " + val);
             }
+            setProperty(key, val);
 
             // Checks the property
             try {

@@ -111,7 +111,7 @@ public class OptionsDialog extends JDialog {
     }
 
     private void applySettings() {
-
+        model.applySettings();
     }
 
     private PropertiesModel loadModel() {

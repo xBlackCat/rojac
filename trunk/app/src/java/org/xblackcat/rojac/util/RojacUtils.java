@@ -7,6 +7,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -135,6 +136,10 @@ public final class RojacUtils {
 
     public static void setLookAndFeel(LookAndFeel laf) throws UnsupportedLookAndFeelException {
         UIManager.setLookAndFeel(laf);
+
+        for (Frame f : Frame.getFrames()) {
+            SwingUtilities.updateComponentTreeUI(f);
+        }
     }
 
     /**

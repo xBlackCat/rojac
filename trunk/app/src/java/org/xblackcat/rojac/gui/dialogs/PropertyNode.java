@@ -1,8 +1,10 @@
 package org.xblackcat.rojac.gui.dialogs;
 
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 
+import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class PropertyNode {
     private Object value;
 
     private final List<PropertyNode> children = new ArrayList<PropertyNode>();
+    private static final IOptionsService OPTIONS_SERVICE = ServiceFactory.getInstance().getOptionsService();
 
     public PropertyNode(String name) {
         this(name, null);
@@ -32,7 +35,7 @@ public class PropertyNode {
         this.parent = parent;
 
         if (property != null) {
-            value = ServiceFactory.getInstance().getOptionsService().getProperty(property);
+            value = OPTIONS_SERVICE.getProperty(property);
         }
     }
 
@@ -81,6 +84,18 @@ public class PropertyNode {
         this.value = value;
     }
 
+    public void apply() {
+        if (property != null) {
+            OPTIONS_SERVICE.setProperty(property, value);
+        }
+    }
+
+    public void revert() {
+        if (property != null) {
+            value = OPTIONS_SERVICE.getProperty(property);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,4 +119,21 @@ public class PropertyNode {
         sb.append('}');
         return sb.toString();
     }
+
+    public TreePath getPath() {
+        return new TreePath(makePath(0));
+    }
+
+    private PropertyNode[] makePath(int depth) {
+        if (parent == null) {
+            PropertyNode[] path = new PropertyNode[depth + 1];
+            path[0] = this;
+            return path;
+        }
+
+        PropertyNode[] path = parent.makePath(depth + 1);
+        path[path.length - depth - 1] = this;
+        return path;
+    }
+
 }
