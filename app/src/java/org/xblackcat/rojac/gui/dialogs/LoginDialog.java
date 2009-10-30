@@ -30,6 +30,7 @@ public class LoginDialog extends JDialog {
 
         setContentPane(setupContentPane());
 
+        setResizable(false);
         pack();
     }
 
