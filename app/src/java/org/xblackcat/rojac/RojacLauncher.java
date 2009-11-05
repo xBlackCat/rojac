@@ -88,7 +88,7 @@ public final class RojacLauncher {
     }
 
     private static void storeSettings(IOptionsService optionsService) {
-        if (!RojacHelper.shouldStorePassword()) {
+        if (RojacHelper.shouldForgetPassword()) {
             optionsService.setProperty(Property.RSDN_USER_PASSWORD, null);
         }
 

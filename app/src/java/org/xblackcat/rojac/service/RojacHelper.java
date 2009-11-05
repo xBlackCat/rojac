@@ -30,16 +30,12 @@ public final class RojacHelper {
     }
 
     public static boolean isUserRegistered() {
-        if (getUserName() == null ||
-                getUserPassword() == null) {
-            return false;
-        }
+        return getUserName() != null && getUserPassword() != null;
 
-        return true;
     }
 
-    public static boolean shouldStorePassword() {
-        return optionsService.getProperty(Property.RSDN_USER_PASSWORD_SAVE);
+    public static boolean shouldForgetPassword() {
+        return optionsService.getProperty(Property.RSDN_USER_PASSWORD_SAVE) != Boolean.TRUE;
     }
 
     public static void shouldStorePassword(boolean newState) {

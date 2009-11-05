@@ -54,7 +54,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Load default settings if it necessary.");
+            log.debug("Load default values for missing settings.");
         }
 
         try {

@@ -45,6 +45,7 @@ import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPException;
 import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -106,7 +107,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
      * @throws org.apache.axis.AxisFault
      */
     public void invoke(MessageContext msgContext) throws AxisFault {
-        HttpMethodBase method = null;
+        HttpMethodBase method;
         if (log.isDebugEnabled()) {
             log.debug(Messages.getMessage("enter00",
                     "CommonsHTTPSender::invoke"));
@@ -142,12 +143,11 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                 method = new PostMethod(targetURL.toString());
 
                 // set false as default, addContetInfo can overwrite
-                method.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE,
-                        false);
+                method.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, false);
 
                 addContextInfo(method, httpClient, msgContext, targetURL);
 
-                MessageRequestEntity requestEntity = null;
+                MessageRequestEntity requestEntity;
                 if (msgContext.isPropertyTrue(HTTPConstants.MC_GZIP_REQUEST)) {
                     requestEntity = new GzipMessageRequestEntity(method, reqMessage, httpChunkStream);
                 } else {
@@ -249,8 +249,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
             // Transfer HTTP headers of HTTP message to MIME headers of SOAP message
             Header[] responseHeaders = method.getResponseHeaders();
             MimeHeaders responseMimeHeaders = outMsg.getMimeHeaders();
-            for (int i = 0; i < responseHeaders.length; i++) {
-                Header responseHeader = responseHeaders[i];
+            for (Header responseHeader : responseHeaders) {
                 responseMimeHeaders.addHeader(responseHeader.getName(),
                         responseHeader.getValue());
             }
@@ -561,9 +560,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                 (Hashtable) msgContext.getProperty(HTTPConstants.REQUEST_HEADERS);
 
         if (userHeaderTable != null) {
-            for (Iterator e = userHeaderTable.entrySet().iterator();
-                 e.hasNext();) {
-                Map.Entry me = (Map.Entry) e.next();
+            for (Map.Entry me : (Iterable<Map.Entry>) userHeaderTable.entrySet()) {
                 Object keyObj = me.getKey();
 
                 if (null == keyObj) {
@@ -574,8 +571,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
                 if (key.equalsIgnoreCase(HTTPConstants.HEADER_EXPECT) &&
                         value.equalsIgnoreCase(HTTPConstants.HEADER_EXPECT_100_Continue)) {
-                    method.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE,
-                            true);
+                    method.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
                 } else if (key.equalsIgnoreCase(HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED)) {
                     String val = me.getValue().toString();
                     if (null != val) {
@@ -790,15 +786,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
     }
 
     private InputStream createConnectionReleasingInputStream(final HttpMethodBase method) throws IOException {
-        return new FilterInputStream(method.getResponseBodyAsStream()) {
-            public void close() throws IOException {
-                try {
-                    super.close();
-                } finally {
-                    method.releaseConnection();
-                }
-            }
-        };
+        return new AutoCloseInputStream(method);
     }
 
     private static class MessageRequestEntity implements RequestEntity {
@@ -824,7 +812,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
         public void writeRequest(OutputStream out) throws IOException {
             try {
-                this.message.writeTo(out);
+                this.message.writeTo(new LogOutputStream(out, message.getContentLength()));
             } catch (SOAPException e) {
                 throw new IOException(e.getMessage());
             }
@@ -885,5 +873,100 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         }
 
         private ByteArrayOutputStream cachedStream;
+    }
+
+    private static class LogOutputStream extends FilterOutputStream {
+        private static final Log log = org.apache.commons.logging.LogFactory.getLog(JanusCommonsHTTPSender.LogOutputStream.class);
+        private long amount = 0;
+        private final long length;
+
+        public LogOutputStream(OutputStream out, long contentLength) {
+            super(out);
+            length = contentLength;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            super.write(b);
+            logAmount(1);
+        }
+
+        @Override
+        public void write(byte[] b) throws IOException {
+            super.write(b);
+        }
+
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+            super.write(b, off, len);
+        }
+
+        @Override
+        public void flush() throws IOException {
+            super.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            super.close();
+        }
+
+        private void logAmount(long l) {
+            amount += l;
+            log.debug(amount + " of " + length + " was written");
+        }
+    }
+
+    private static class AutoCloseInputStream extends FilterInputStream {
+        private static final Log log = org.apache.commons.logging.LogFactory.getLog(JanusCommonsHTTPSender.AutoCloseInputStream.class);
+        private final HttpMethodBase method;
+        private long amount = 0;
+
+        public AutoCloseInputStream(HttpMethodBase method) throws IOException {
+            super(method.getResponseBodyAsStream());
+            this.method = method;
+        }
+
+        public void close() throws IOException {
+            try {
+                super.close();
+            } finally {
+                method.releaseConnection();
+            }
+        }
+
+        @Override
+        public int read() throws IOException {
+            logRead(1);
+            return super.read();
+        }
+
+        private void logRead(long a) throws IOException {
+            if (a > 0) {
+                amount += a;
+                log.debug("Read " + amount + " of " + method.getResponseContentLength());
+            }
+        }
+
+        @Override
+        public int read(byte[] b) throws IOException {
+            int i = super.read(b);
+            logRead(i);
+            return i;
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            int i = super.read(b, off, len);
+            logRead(i);
+            return i;
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            long l = super.skip(n);
+            logRead(l);
+            return l;
+        }
     }
 }
