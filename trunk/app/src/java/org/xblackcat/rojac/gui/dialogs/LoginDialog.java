@@ -75,7 +75,7 @@ public class LoginDialog extends JDialog {
 
         fieldLogin = new JTextField(20);
         fieldPassword = new JPasswordField(20);
-        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get(), RojacHelper.shouldStorePassword());
+        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get(), RojacHelper.shouldForgetPassword());
 
         JPanel fields = new JPanel(new GridLayout(0, 1));
         fields.add(fieldLogin);
@@ -95,20 +95,20 @@ public class LoginDialog extends JDialog {
     }
 
     public boolean showLoginDialog() {
-        String login = RojacHelper.getUserName();
+        String userName = RojacHelper.getUserName();
         String password = RojacHelper.getUserPassword();
-        boolean save = RojacHelper.shouldStorePassword();
+        boolean save = RojacHelper.shouldForgetPassword();
 
-        fieldLogin.setText(login);
+        fieldLogin.setText(userName);
         fieldPassword.setText(password);
         fieldSavePassword.setSelected(save);
 
         setVisible(true);
 
         if (!canceled) {
-            login = fieldLogin.getText();
-            if (StringUtils.isNotBlank(login)) {
-                RojacHelper.setUserName(login);
+            userName = fieldLogin.getText();
+            if (StringUtils.isNotBlank(userName)) {
+                RojacHelper.setUserName(userName);
             }
 
             char[] p = fieldPassword.getPassword();

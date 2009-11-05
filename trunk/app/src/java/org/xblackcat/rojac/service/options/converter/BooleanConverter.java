@@ -8,6 +8,6 @@ import org.apache.commons.lang.BooleanUtils;
 
 public class BooleanConverter extends AScalarConverter<Boolean> {
     public Boolean convert(String s) {
-        return BooleanUtils.toBoolean(s);
+        return BooleanUtils.toBooleanObject(s);
     }
 }

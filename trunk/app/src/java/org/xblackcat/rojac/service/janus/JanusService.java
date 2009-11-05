@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.janus;
 
 import org.apache.axis.client.Call;
-import org.apache.axis.configuration.FileProvider;
+import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
@@ -15,12 +15,11 @@ import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.janus.data.UsersList;
+import org.xblackcat.rojac.service.transport.JanusCommonsHTTPSender;
 import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.utils.ResourceUtils;
 import ru.rsdn.Janus.*;
 
 import javax.xml.rpc.ServiceException;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Hashtable;
 
@@ -198,17 +197,14 @@ public class JanusService implements IJanusService {
         try {
             log.info("Janus SAOP service initialization has been started.");
 
-            JanusATLocator jl;
-            try {
-                jl = new JanusATLocator(new FileProvider(ResourceUtils.getResourceAsStream("/client-config.wsdd")));
-            } catch (IOException e) {
-                throw new ServiceException("Can not load service configuration.", e);
-            }
+            SimpleProvider provider = new SimpleProvider();
+            provider.deployTransport("http", new JanusCommonsHTTPSender());
+            JanusATLocator jl = new JanusATLocator(provider);
 
             JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
 
             // Compress the request
-            if (false && useCompression) {
+            if (useCompression) {
                 log.info("Data compression is enabled.");
                 // Tell the server it can compress the response
                 soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
