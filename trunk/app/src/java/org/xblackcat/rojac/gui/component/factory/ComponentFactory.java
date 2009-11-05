@@ -56,7 +56,7 @@ public final class ComponentFactory {
         // Formatted cell editor
         if (p.getType() == Boolean.class) {
             JCheckBox checkBox = new JCheckBox();
-            checkBox.setSelected(((Boolean) currentValue).booleanValue());
+            checkBox.setSelected(currentValue == Boolean.TRUE);
             return new PropertyCellEditor(checkBox);
         }
 
