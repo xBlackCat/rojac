@@ -50,14 +50,14 @@ public final class QueryHelper implements IQueryHelper {
                 con.close();
             }
         } catch (SQLException e) {
-            throw new StorageException("Can not execute query " + RojacUtils.construstDebugSQL(sql, parameters), e);
+            throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
         }
     }
 
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         Collection<T> col = execute(c, sql, parameters);
         if (col.size() > 1) {
-            throw new StorageDataException("Expected one or zero results on query " + RojacUtils.construstDebugSQL(sql, parameters));
+            throw new StorageDataException("Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters));
         }
         if (col.isEmpty()) {
             return null;
@@ -80,7 +80,7 @@ public final class QueryHelper implements IQueryHelper {
                 con.close();
             }
         } catch (SQLException e) {
-            throw new StorageException("Can not execute query " + RojacUtils.construstDebugSQL(sql, parameters), e);
+            throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
         }
     }
 

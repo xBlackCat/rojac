@@ -112,15 +112,15 @@ public final class RojacUtils {
         return res.toArray(a);
     }
 
-    public static String construstDebugSQL(String sql, Object... params) {
+    public static String constructDebugSQL(String sql, Object... parameters) {
         String query = sql;
 
-        for (Object o : params) {
+        for (Object value : parameters) {
             String str;
-            if (o instanceof String) {
-                str = "'" + Matcher.quoteReplacement(o.toString()) + "'";
+            if (value instanceof String) {
+                str = "'" + Matcher.quoteReplacement(value.toString()) + "'";
             } else {
-                str = Matcher.quoteReplacement(o.toString());
+                str = Matcher.quoteReplacement(value.toString());
             }
             query = query.replaceFirst("\\?", str);
         }

@@ -5,9 +5,8 @@ import org.xblackcat.rojac.util.RojacUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Class for holding application properties names.
@@ -22,7 +21,7 @@ public final class Property<T> {
     /**
      * Complete map of properties names to its objects.
      */
-    private static final Map<String, Property<?>> ALL_PROPERTIES = new HashMap<String, Property<?>>();
+    private static final Collection<Property<?>> ALL_PROPERTIES = new LinkedList<Property<?>>();
 
     // Global development properties
     public static final Property<Boolean> ROJAC_DEBUG_MODE = create("rojac.global.debug.mode", Boolean.FALSE);
@@ -72,7 +71,7 @@ public final class Property<T> {
 
     static <V> Property<V> create(String name, Class<V> type, V defaultValue, IValueChecker<V> checker) {
         Property<V> prop = new Property<V>(name, type, defaultValue, checker);
-        ALL_PROPERTIES.put(name, prop);
+        ALL_PROPERTIES.add(prop);
         return prop;
     }
 
@@ -89,18 +88,13 @@ public final class Property<T> {
         return create(name, type, null, null);
     }
 
-    public static Property<?> getPropertyForName(String name) {
-        return ALL_PROPERTIES.get(name);
-    }
-
     /**
      * Returns all properties as an array.
      *
      * @return all option properties.
      */
     public static Property<?>[] getAllProperties() {
-        Collection<Property<?>> properties = ALL_PROPERTIES.values();
-        return properties.toArray(new Property[properties.size()]);
+        return ALL_PROPERTIES.toArray(new Property[ALL_PROPERTIES.size()]);
     }
 
     private final String name;
@@ -157,7 +151,7 @@ public final class Property<T> {
     /**
      * Returns a current value of property or default if it not set.
      *
-     * @return
+     * @return current value of property or default one.
      */
     public T get() {
         return get(getDefault());
