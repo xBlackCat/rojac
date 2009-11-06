@@ -25,7 +25,7 @@ import java.util.HashSet;
 public class OptionsDialog extends JDialog {
     private static final Log log = LogFactory.getLog(OptionsDialog.class);
     // Hidden properties.
-    private static final Collection<Property> PROPERTIES_TO_SKIP = new HashSet<Property>(Arrays.asList(new Property[]{
+    private static final Collection<Property> PROPERTIES_TO_SKIP = new HashSet<Property>(Arrays.asList(
             Property.ROJAC_DEBUG_MODE,
             Property.ROJAC_MAIN_FRAME_SIZE,
             Property.ROJAC_MAIN_FRAME_POSITION,
@@ -34,7 +34,7 @@ public class OptionsDialog extends JDialog {
             Property.RSDN_USER_NAME,
             Property.RSDN_USER_PASSWORD,
             Property.RSDN_USER_PASSWORD_SAVE
-    }));
+    ));
 
     protected PropertiesModel model;
 

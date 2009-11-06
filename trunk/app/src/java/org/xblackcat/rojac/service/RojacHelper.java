@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.service;
 
-import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
@@ -15,8 +14,6 @@ import java.awt.*;
  */
 
 public final class RojacHelper {
-    private static IOptionsService optionsService = ServiceFactory.getInstance().getOptionsService();
-
     private RojacHelper() {
     }
 

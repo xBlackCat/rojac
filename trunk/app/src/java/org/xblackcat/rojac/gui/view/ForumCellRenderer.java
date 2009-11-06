@@ -49,6 +49,7 @@ class ForumCellRenderer extends DefaultTableCellRenderer {
             text.append(fd.getForumId());
         }
         setText(text.toString());
+        table.setToolTipText(text.toString());
         setIcon(null);
         Color bgc;
         if (isNotSubcribed) {

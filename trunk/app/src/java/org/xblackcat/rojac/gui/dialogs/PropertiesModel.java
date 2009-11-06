@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.xblackcat.rojac.service.options.IValueChecker;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelListener;
@@ -83,7 +83,7 @@ public class PropertiesModel implements TreeModel {
         affect(root, false);
         LookAndFeel laf = Property.ROJAC_GUI_LOOK_AND_FEEL.get();
         try {
-            RojacUtils.setLookAndFeel(laf);
+            UIUtils.setLookAndFeel(laf);
         } catch (UnsupportedLookAndFeelException e) {
             log.warn("Can not initialize " + laf.getName() + " L&F.", e);
         }

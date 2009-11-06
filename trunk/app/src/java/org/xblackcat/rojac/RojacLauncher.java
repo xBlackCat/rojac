@@ -8,7 +8,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -44,7 +44,7 @@ public final class RojacLauncher {
             if (log.isDebugEnabled()) {
                 log.debug("Using LAF: " + laf.getName());
             }
-            RojacUtils.setLookAndFeel(laf);
+            UIUtils.setLookAndFeel(laf);
         } catch (UnsupportedLookAndFeelException e) {
             throw new RojacException("Can not initialize " + laf.getName() + " L&F.", e);
         }
