@@ -1,17 +1,12 @@
 package org.xblackcat.rojac.service.options;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,8 +31,6 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
             throw new RuntimeException("Can not load list of available L&Fs", e);
         }
 
-        Map<String, String> classes = new HashMap<String, String>();
-        Map<String, String> descriptions = new HashMap<String, String>();
         for (String key : lafList.stringPropertyNames()) {
             Matcher m = KEY_PATTERN.matcher(key);
             if (m.matches()) {
@@ -46,14 +39,10 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
 
                 if ("class".equals(m.group(2))) {
                     if (log.isTraceEnabled()) {
-                        log.trace("Found L&F class " + name + " [" + value + "]");
+                        log.trace("Install L&F class " + name + " [" + value + "]");
                     }
-                    classes.put(name, value);
-                } else if ("description".equals(m.group(2))) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Found L&F description " + name + " [" + value + "]");
-                    }
-                    descriptions.put(name, value);
+
+                    UIManager.installLookAndFeel(name, value);
                 } else {
                     log.warn("Invalid key: " + key);
                 }
@@ -61,10 +50,14 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
         }
 
         Map<LNFContainer, String> lafs = new HashMap<LNFContainer, String>();
-        for (Map.Entry<String, String> e : classes.entrySet()) {
+        for (UIManager.LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+            if (log.isTraceEnabled()) {
+                log.trace("Load " + laf.toString());
+            }
+
             LookAndFeel lafClass;
             try {
-                lafClass = (LookAndFeel) ResourceUtils.loadObjectOrEnum(e.getValue());
+                lafClass = (LookAndFeel) ResourceUtils.loadObjectOrEnum(laf.getClassName());
             } catch (ClassNotFoundException e1) {
                 log.warn("Can not find class of LAF", e1);
                 continue;
@@ -77,21 +70,14 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
             }
 
             if (!lafClass.isSupportedLookAndFeel()) {
-                log.warn("L&F " + e.getKey() + " (" + e.getValue() + ") is not supported.");
+                log.warn("L&F " + laf.getName() + " (" + laf.getClassName() + ") is not supported.");
             }
 
-            String description = MapUtils.getString(descriptions, e.getKey(), lafClass.getName() + ": " + lafClass.getDescription());
-
-            lafs.put(new LNFContainer(lafClass), description);
+            lafs.put(new LNFContainer(lafClass), lafClass.getDescription());
         }
 
         this.availableLAFs = Collections.unmodifiableMap(lafs);
 
-        for (UIManager.LookAndFeelInfo i : UIManager.getInstalledLookAndFeels()) {
-            if (log.isTraceEnabled()) {
-                log.trace(i.toString());
-            }
-        }
     }
 
     @Override
@@ -104,6 +90,13 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
         for (LNFContainer c : lafs) {
             lafClasses[i++] = c.getLnf();
         }
+
+        Arrays.sort(lafClasses, new Comparator<LookAndFeel>() {
+            @Override
+            public int compare(LookAndFeel o1, LookAndFeel o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
         return lafClasses;
     }
