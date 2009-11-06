@@ -30,7 +30,7 @@ public class LoadUsersCommand extends ARsdnCommand<AffectedPosts> {
         if (log.isInfoEnabled()) {
             log.info("Loading new users information.");
         }
-        Integer limit = optionsService.getProperty(Property.SYNCHRONIZER_LOAD_USERS_PORTION);
+        Integer limit = Property.SYNCHRONIZER_LOAD_USERS_PORTION.get();
         try {
             Version localUsersVersion = getVersion(VersionType.USERS_ROW_VERSION);
 

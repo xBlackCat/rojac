@@ -6,6 +6,7 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -75,7 +76,7 @@ public class LoginDialog extends JDialog {
 
         fieldLogin = new JTextField(20);
         fieldPassword = new JPasswordField(20);
-        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get(), RojacHelper.shouldForgetPassword());
+        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get(), Property.RSDN_USER_PASSWORD_SAVE.get());
 
         JPanel fields = new JPanel(new GridLayout(0, 1));
         fields.add(fieldLogin);
@@ -95,9 +96,9 @@ public class LoginDialog extends JDialog {
     }
 
     public boolean showLoginDialog() {
-        String userName = RojacHelper.getUserName();
+        String userName = Property.RSDN_USER_NAME.get();
         String password = RojacHelper.getUserPassword();
-        boolean save = RojacHelper.shouldForgetPassword();
+        boolean save = Property.RSDN_USER_PASSWORD_SAVE.get();
 
         fieldLogin.setText(userName);
         fieldPassword.setText(password);
@@ -108,7 +109,7 @@ public class LoginDialog extends JDialog {
         if (!canceled) {
             userName = fieldLogin.getText();
             if (StringUtils.isNotBlank(userName)) {
-                RojacHelper.setUserName(userName);
+                Property.RSDN_USER_NAME.set(userName);
             }
 
             char[] p = fieldPassword.getPassword();
@@ -116,7 +117,7 @@ public class LoginDialog extends JDialog {
                 RojacHelper.setUserPassword(p);
             }
 
-            RojacHelper.shouldStorePassword(fieldSavePassword.isSelected());
+            Property.RSDN_USER_PASSWORD_SAVE.set(Boolean.valueOf(fieldSavePassword.isSelected()));
         }
 
         return canceled;

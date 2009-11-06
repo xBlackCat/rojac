@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.utils.ResourceUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -23,8 +22,6 @@ import java.util.Properties;
 
 public final class MultiUserOptionsService extends AnOptionsService {
     private static final Log log = LogFactory.getLog(MultiUserOptionsService.class);
-
-    private static final String DEFAULT_CONFIG_BUNDLE_NAME = "/config/default.config";
 
     private final String userConfigFileName;
 
@@ -51,18 +48,6 @@ public final class MultiUserOptionsService extends AnOptionsService {
             } catch (IOException e) {
                 throw new OptionsServiceException("Can not load content of user config file.", e);
             }
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Load default values for missing settings.");
-        }
-
-        try {
-            Properties p = new Properties();
-            p.load(ResourceUtils.getResourceAsStream(DEFAULT_CONFIG_BUNDLE_NAME));
-            loadFromResource(p, allProperties);
-        } catch (IOException e) {
-            throw new OptionsServiceException("Can not load the default values.", e);
         }
     }
 

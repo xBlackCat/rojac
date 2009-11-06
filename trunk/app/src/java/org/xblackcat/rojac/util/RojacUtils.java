@@ -1,12 +1,15 @@
 package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +30,9 @@ import java.util.regex.Pattern;
  */
 
 public final class RojacUtils {
-    public static final String VERSION = "0.1a";
+    private static final Log log = LogFactory.getLog(RojacUtils.class);
+
+    public static final String VERSION = "0.1alpha";
     public static final String VERSION_STRING;
 
     static {
@@ -210,5 +215,26 @@ public final class RojacUtils {
         } while (!path.isEmpty());
 
         return false;
+    }
+
+    public static LookAndFeel getDefaultLAFClass() {
+        String lafClassName = UIManager.getSystemLookAndFeelClassName();
+
+        LookAndFeel laf = null;
+        try {
+            laf = (LookAndFeel) ResourceUtils.loadObjectOrEnum(lafClassName);
+        } catch (ClassNotFoundException e) {
+            log.debug("System L&F class " + lafClassName + " not found.", e);
+        } catch (IllegalAccessException e) {
+            log.debug("System L&F class " + lafClassName + " can not be accessed.", e);
+        } catch (InstantiationException e) {
+            log.debug("System L&F class " + lafClassName + " can not be initialized.", e);
+        }
+
+        if (laf == null) {
+            laf = new MetalLookAndFeel();
+        }
+
+        return laf;
     }
 }

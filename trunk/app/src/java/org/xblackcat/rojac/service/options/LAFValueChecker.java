@@ -86,6 +86,12 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
         }
 
         this.availableLAFs = Collections.unmodifiableMap(lafs);
+
+        for (UIManager.LookAndFeelInfo i : UIManager.getInstalledLookAndFeels()) {
+            if (log.isTraceEnabled()) {
+                log.trace(i.toString());
+            }
+        }
     }
 
     @Override

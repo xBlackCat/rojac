@@ -26,7 +26,6 @@ import org.xblackcat.rojac.service.commands.AffectedPosts;
 import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.commands.LoadExtraMessagesCommand;
 import org.xblackcat.rojac.service.commands.SynchronizeCommand;
-import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -59,7 +58,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
     // Data tracking
     private Map<Integer, View> openedForums = new HashMap<Integer, View>();
-    private final IOptionsService os;
     protected IResultHandler<AffectedPosts> changeHandler = new IResultHandler<AffectedPosts>() {
         public void process(AffectedPosts results) throws RojacException {
             forumsListView.updateData(results.getAffectedForumIds());
@@ -88,10 +86,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         }
     };
 
-    public MainFrame(IOptionsService optionsService) {
+    public MainFrame() {
         super(RojacUtils.VERSION_STRING);
-
-        os = optionsService;
 
         forumsListView = new ForumsListView(this);
         favoritesView = new FavoritesView(this);
@@ -297,19 +293,16 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         forumsListView.applySettings();
         favoritesView.applySettings();
 
-        Point pos = os.getProperty(Property.ROJAC_MAIN_FRAME_POSITION);
-        if (pos != null) {
-            setLocation(pos);
+        if (Property.ROJAC_MAIN_FRAME_POSITION.isSet()) {
+            setLocation(Property.ROJAC_MAIN_FRAME_POSITION.get());
         }
 
-        Dimension size = os.getProperty(Property.ROJAC_MAIN_FRAME_SIZE);
-        if (size != null) {
-            setSize(size);
+        if (Property.ROJAC_MAIN_FRAME_SIZE.isSet()) {
+            setSize(Property.ROJAC_MAIN_FRAME_SIZE.get());
         }
 
-        Integer state = os.getProperty(Property.ROJAC_MAIN_FRAME_STATE);
-        if (state != null) {
-            setExtendedState(state);
+        if (Property.ROJAC_MAIN_FRAME_STATE.isSet()) {
+            setExtendedState(Property.ROJAC_MAIN_FRAME_STATE.get());
         }
 
         // TODO: implement
@@ -327,10 +320,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     public void storeWindowState() {
         int state = getExtendedState();
 
-        os.setProperty(Property.ROJAC_MAIN_FRAME_STATE, state);
+        Property.ROJAC_MAIN_FRAME_STATE.set(state);
         if (state == NORMAL) {
-            os.setProperty(Property.ROJAC_MAIN_FRAME_POSITION, getLocation());
-            os.setProperty(Property.ROJAC_MAIN_FRAME_SIZE, getSize());
+            Property.ROJAC_MAIN_FRAME_POSITION.set(getLocation());
+            Property.ROJAC_MAIN_FRAME_SIZE.set(getSize());
         }
     }
 
