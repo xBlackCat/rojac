@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
-import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +32,7 @@ public final class Property<T> {
     public static final Property<Integer> ROJAC_MAIN_FRAME_STATE = create("rojac.main_frame.state", Integer.class);
 
     // Main GUI properties
-    public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, RojacUtils.getDefaultLAFClass(), new LAFValueChecker());
+    public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());
     public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", Locale.getDefault());
     public static final Property<String> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", String.class);
 
@@ -215,4 +215,5 @@ public final class Property<T> {
     public String toString() {
         return "Property[" + name + '(' + type.getName() + ")]";
     }
+
 }

@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Properties;
 
 /**
@@ -22,6 +25,9 @@ import java.util.Properties;
 
 public final class MultiUserOptionsService extends AnOptionsService {
     private static final Log log = LogFactory.getLog(MultiUserOptionsService.class);
+    private static final Collection<Property> DO_NOT_STORE = new HashSet<Property>(Arrays.asList(
+            Property.ROJAC_DEBUG_MODE
+    ));
 
     private final String userConfigFileName;
 
@@ -34,7 +40,6 @@ public final class MultiUserOptionsService extends AnOptionsService {
         userConfigFileName = userHome + File.separatorChar + ".rojac" + File.separatorChar + "config.properties";
         File userConfigFile = new File(userConfigFileName);
 
-        Property<?>[] allProperties = Property.getAllProperties();
         if (userConfigFile.exists()) {
             if (log.isDebugEnabled()) {
                 log.debug("Use user config file " + userConfigFileName);
@@ -44,7 +49,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
                 BufferedInputStream is = new BufferedInputStream(new FileInputStream(userConfigFile));
                 p.load(is);
                 is.close();
-                loadFromResource(p, allProperties);
+                loadFromResource(p);
             } catch (IOException e) {
                 throw new OptionsServiceException("Can not load content of user config file.", e);
             }
@@ -55,10 +60,9 @@ public final class MultiUserOptionsService extends AnOptionsService {
      * Loads from resource the options. If an option have already initialized it will not be overwrited.
      *
      * @param config        config resource bundle.
-     * @param allProperties
      */
-    private void loadFromResource(Properties config, Property<?>[] allProperties) {
-        for (Property<?> p : allProperties) {
+    private void loadFromResource(Properties config) {
+        for (Property<?> p : Property.getAllProperties()) {
             if (getProperty(p) != null) {
                 // Property is already set so ignore it.
                 continue;
@@ -111,7 +115,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
 
         for (Property<?> prop : Property.getAllProperties()) {
             String value = getProperty(prop.getName());
-            if (StringUtils.isNotBlank(value)) {
+            if (!DO_NOT_STORE.contains(prop) && StringUtils.isNotBlank(value)) {
                 userSetting.setProperty(prop.getName(), value);
             }
         }

@@ -1,21 +1,13 @@
 package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
-import javax.swing.*;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -23,15 +15,12 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author xBlackCat
  */
 
 public final class RojacUtils {
-    private static final Log log = LogFactory.getLog(RojacUtils.class);
-
     public static final String VERSION = "0.1alpha";
     public static final String VERSION_STRING;
 
@@ -40,51 +29,35 @@ public final class RojacUtils {
         versionString.append(VERSION);
 
         try {
-            Pattern propNamePattern = Pattern.compile("([\\w\\s]+): (.+)");
-
-            BufferedReader revData = new BufferedReader(new InputStreamReader(ResourceUtils.getResourceAsStream("config/rojac.revision")));
-            //Prepare content to be read.
-            StringBuilder newContent = new StringBuilder();
-            String s;
-            while ((s = revData.readLine()) != null) {
-                Matcher m = propNamePattern.matcher(s);
-                if (m.matches()) {
-                    newContent.append(m.group(1).replace(' ', '-'));
-                    newContent.append('=');
-                    newContent.append(m.group(2));
-                    newContent.append('\n');
-                }
-            }
-
             Properties revInfo = new Properties();
-            revInfo.load(new StringReader(newContent.toString()));
+            revInfo.load(ResourceUtils.getResourceAsStream("config/rojac.revision"));
 
             // Remember - we are working only with build.xml revision!
-            String revNum = revInfo.getProperty("Revision");
-            String path = revInfo.getProperty("Repository-Root");
-            String file = revInfo.getProperty("URL");
+            String revNum = revInfo.getProperty("revision");
+            String file = revInfo.getProperty("relative.path");
 
             // Now fill additional info
 
             versionString.append(" (rev. ");
             versionString.append(revNum);
 
-            if (file.startsWith(path)) {
-                int pos = path.length() + 1;
-                int nextPos = file.indexOf('/', pos);
+            int pos = 1;
+            int nextPos = file.indexOf('/', pos);
 
-                String branch = file.substring(pos, nextPos);
-                if ("trunk".equals(branch)) {
-                    // No additional info will be added
-                } else if ("branches".equals(branch)) {
-                    // Read branch name
-                    pos = nextPos + 1;
-                    nextPos = file.indexOf('/', pos);
-
-                    versionString.append(" [");
-                    versionString.append(file.substring(pos, nextPos));
-                    versionString.append(']');
+            String branch = file.substring(pos, nextPos);
+            if ("trunk".equals(branch)) {
+                // No additional info will be added
+                if (Property.ROJAC_DEBUG_MODE.get()) {
+                    versionString.append(" <TRUNK>");
                 }
+            } else if ("branches".equals(branch) || "tags".equals(branch)) {
+                // Read branch name
+                pos = nextPos + 1;
+                nextPos = file.indexOf('/', pos);
+
+                versionString.append(" [");
+                versionString.append(file.substring(pos, nextPos));
+                versionString.append(']');
             }
             versionString.append(')');
         } catch (IOException e) {
@@ -136,14 +109,6 @@ public final class RojacUtils {
             return Enum.valueOf(enumClass, val);
         } else {
             return null;
-        }
-    }
-
-    public static void setLookAndFeel(LookAndFeel laf) throws UnsupportedLookAndFeelException {
-        UIManager.setLookAndFeel(laf);
-
-        for (Frame f : Frame.getFrames()) {
-            SwingUtilities.updateComponentTreeUI(f);
         }
     }
 
@@ -215,26 +180,5 @@ public final class RojacUtils {
         } while (!path.isEmpty());
 
         return false;
-    }
-
-    public static LookAndFeel getDefaultLAFClass() {
-        String lafClassName = UIManager.getSystemLookAndFeelClassName();
-
-        LookAndFeel laf = null;
-        try {
-            laf = (LookAndFeel) ResourceUtils.loadObjectOrEnum(lafClassName);
-        } catch (ClassNotFoundException e) {
-            log.debug("System L&F class " + lafClassName + " not found.", e);
-        } catch (IllegalAccessException e) {
-            log.debug("System L&F class " + lafClassName + " can not be accessed.", e);
-        } catch (InstantiationException e) {
-            log.debug("System L&F class " + lafClassName + " can not be initialized.", e);
-        }
-
-        if (laf == null) {
-            laf = new MetalLookAndFeel();
-        }
-
-        return laf;
     }
 }
