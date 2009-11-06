@@ -7,7 +7,6 @@ import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -40,8 +39,7 @@ public final class RojacLauncher {
 
         ServiceFactory sf = ServiceFactory.getInstance();
 
-        final IOptionsService optionsService = sf.getOptionsService();
-        LookAndFeel laf = optionsService.getProperty(Property.ROJAC_GUI_LOOK_AND_FEEL);
+        LookAndFeel laf = Property.ROJAC_GUI_LOOK_AND_FEEL.get();
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Using LAF: " + laf.getName());
@@ -51,18 +49,18 @@ public final class RojacLauncher {
             throw new RojacException("Can not initialize " + laf.getName() + " L&F.", e);
         }
 
-        Messages.setLocale(optionsService.getProperty(Property.ROJAC_GUI_LOCALE));
+        Messages.setLocale(Property.ROJAC_GUI_LOCALE.get());
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                final MainFrame mainFrame = new MainFrame(optionsService);
+                final MainFrame mainFrame = new MainFrame();
 
                 mainFrame.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
                         mainFrame.updateSettings();
 
-                        storeSettings(optionsService);
+                        storeSettings();
 
                         System.exit(0);
                     }
@@ -87,12 +85,12 @@ public final class RojacLauncher {
         });
     }
 
-    private static void storeSettings(IOptionsService optionsService) {
-        if (RojacHelper.shouldForgetPassword()) {
-            optionsService.setProperty(Property.RSDN_USER_PASSWORD, null);
+    private static void storeSettings() {
+        if (!Property.RSDN_USER_PASSWORD_SAVE.get()) {
+            Property.RSDN_USER_PASSWORD.clear();
         }
 
-        optionsService.storeSettings();
+        ServiceFactory.getInstance().getOptionsService().storeSettings();
     }
 
     private static void setupUserSettings() {

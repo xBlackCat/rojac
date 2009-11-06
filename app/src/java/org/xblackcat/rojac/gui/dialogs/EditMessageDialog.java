@@ -54,11 +54,25 @@ public class EditMessageDialog extends JDialog {
     }
 
     public void answerOn(int messageId) {
+        if (messageId == 0) {
+            return;
+        }
+
         Message message;
         try {
             message = storage.getMessageAH().getMessageById(messageId);
         } catch (StorageException e) {
             log.error("Can not load a message.", e);
+            return;
+        }
+
+        if (message == null) {
+            JLOptionPane.showMessageDialog(
+                    this,
+                    Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE.get(messageId),
+                    Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE.get(messageId),
+                    JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 

@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.i18n;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -70,11 +72,16 @@ public enum Messages {
     DIALOG_LOGIN_EMPTY_USERNAME,
     DIALOG_LOGIN_EMPTY_PASSWORD,
 
-    // Load xtra messages dialog texts
+    // Load extra messages dialog texts
     DIALOG_LOADMESSAGE_TITLE,
     DIALOG_LOADMESSAGE_LABEL,
     DIALOG_LOADMESSAGE_LOADATONCE,
 
+    // Edit message dialog related texts
+    ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE,
+    ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE,
+    MESSAGE_RESPONSE_HEADER,
+    
     /**
      * Parameters are: 1. Mark description
      */
@@ -84,8 +91,6 @@ public enum Messages {
     MESSAGE_PANE_USER_LABEL,
     MESSAGE_PANE_DATE_LABEL,
     MESSAGE_PANE_TOOLBAR_TITLE_RATING,
-
-    MESSAGE_RESPONSE_HEADER,
 
     // Mark descriptions
     DESCRIPTION_MARK_SELECT,
@@ -132,6 +137,7 @@ public enum Messages {
     POPUP_VIEW_THREADS_TREE_COPYURL_FLAT,
     POPUP_VIEW_THREADS_TREE_COPYURL_THREAD;
 
+    private static final Log log = LogFactory.getLog(Messages.class);
     // Constants
     private static final String LOCALIZATION_BUNDLE_NAME = "i18n/messages";
 
@@ -161,7 +167,10 @@ public enum Messages {
         if (locale != null) {
             m = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME, locale);
             if (!m.getLocale().equals(locale)) {
-                throw new IllegalArgumentException("Can not load resources for " + locale + " locale.");
+//                throw new IllegalArgumentException("Can not load resources for " + locale + " locale.");
+                if (log.isDebugEnabled()) {
+                    log.debug("Can not initialize locale " + locale + ". The " + m.getLocale() + " will be used.");
+                }
             }
         } else {
             m = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME);

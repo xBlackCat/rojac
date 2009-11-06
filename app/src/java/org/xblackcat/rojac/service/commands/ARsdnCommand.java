@@ -12,7 +12,6 @@ import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusService;
-import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.IVersionAH;
@@ -28,7 +27,6 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
 
     protected IJanusService janusService;
     protected final IStorage storage;
-    protected final IOptionsService optionsService;
     private final IResultHandler<T> resultHandler;
 
     protected ARsdnCommand(IResultHandler<T> resultHandler) {
@@ -36,7 +34,6 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
 
         ServiceFactory sf = ServiceFactory.getInstance();
         storage = sf.getStorage();
-        optionsService = sf.getOptionsService();
     }
 
     public void doTask(IProgressTracker trac) throws RojacException {
@@ -48,8 +45,8 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
             }
         }
 
-        JanusService c = new JanusService(RojacHelper.getUserName(), RojacHelper.getUserPassword());
-        c.init(optionsService.getProperty(Property.SYNCHRONIZER_USE_GZIP) == Boolean.TRUE);
+        JanusService c = new JanusService(Property.RSDN_USER_NAME.get(), RojacHelper.getUserPassword());
+        c.init(Property.SYNCHRONIZER_USE_GZIP.get());
         c.testConnection();
         janusService = c;
 

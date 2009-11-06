@@ -14,6 +14,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -199,7 +200,7 @@ public class MessageView extends AMessageView implements IInternationazable {
         messageTextPane.setText(converted);
         messageTextPane.setCaretPosition(0);
         labelTopic.setText(mes.getSubject());
-        userInfoLabel.setText(RojacHelper.getUserName());
+        userInfoLabel.setText(Property.RSDN_USER_NAME.get());
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
         messageDateLabel.setText(df.format(new Date()));
         answer.setEnabled(false);

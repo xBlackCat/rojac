@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui.dialogs;
 
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.tree.TreePath;
@@ -19,7 +17,6 @@ public class PropertyNode {
     private Object value;
 
     private final List<PropertyNode> children = new ArrayList<PropertyNode>();
-    private static final IOptionsService OPTIONS_SERVICE = ServiceFactory.getInstance().getOptionsService();
 
     public PropertyNode(String name) {
         this(name, null);
@@ -35,7 +32,7 @@ public class PropertyNode {
         this.parent = parent;
 
         if (property != null) {
-            value = OPTIONS_SERVICE.getProperty(property);
+            value = property.get();
         }
     }
 
@@ -86,13 +83,13 @@ public class PropertyNode {
 
     public void apply() {
         if (property != null) {
-            OPTIONS_SERVICE.setProperty(property, value);
+            property.set(value);
         }
     }
 
     public void revert() {
         if (property != null) {
-            value = OPTIONS_SERVICE.getProperty(property);
+            value = property.get();
         }
     }
 

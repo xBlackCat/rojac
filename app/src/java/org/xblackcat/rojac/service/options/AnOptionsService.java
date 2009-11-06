@@ -63,6 +63,8 @@ abstract class AnOptionsService implements IOptionsService {
         }
 
         converters = Collections.unmodifiableMap(map);
+
+        Property.OPTIONS_SERVICE = this;
     }
 
     public <T> T getProperty(Property<T> key) {

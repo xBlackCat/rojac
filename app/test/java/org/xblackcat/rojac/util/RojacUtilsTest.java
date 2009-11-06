@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
+import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
 import ru.rsdn.Janus.PostRatingInfo;
 
@@ -12,6 +13,12 @@ import ru.rsdn.Janus.PostRatingInfo;
  */
 
 public class RojacUtilsTest extends TestCase {
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        ServiceFactory.initialize();
+    }
+
     public void testArrayConvertor() {
         NewRating[] r = new NewRating[]{
                 new NewRating(0, 0, Mark.Agree.getValue()),
@@ -43,17 +50,7 @@ public class RojacUtilsTest extends TestCase {
         assertNotNull(node.getParent());
 
         node = next(node);
-        assertEquals("show", node.getName());
-        assertNull(node.getProperty());
-        assertNotNull(node.getParent());
-
-        node = next(node);
-        assertEquals("marks", node.getName());
-        assertNull(node.getProperty());
-        assertNotNull(node.getParent());
-
-        node = next(node);
-        assertEquals("pane", node.getName());
+        assertEquals("show_marks_pane", node.getName());
         assertNotNull(node.getProperty());
         assertNotNull(node.getParent());
 
@@ -87,7 +84,7 @@ public class RojacUtilsTest extends TestCase {
 
         // Child should not be changed
         assertTrue(rootNode.getChild(0) == childLevel1);
-        assertTrue(childLevel1.has(new PropertyNode("show")));
+        assertTrue(childLevel1.has(new PropertyNode("show_marks_pane")));
     }
 
     private static PropertyNode next(PropertyNode n) {

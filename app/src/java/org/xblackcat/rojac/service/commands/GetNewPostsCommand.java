@@ -10,7 +10,6 @@ import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.options.Property;
 
@@ -40,7 +39,7 @@ public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
             log.debug("Load new messages for forums [id=" + ArrayUtils.toString(forumIds) + "]");
         }
 
-        Integer limit = optionsService.getProperty(Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION);
+        Integer limit = Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
 
         Version messagesVersion = getVersion(VersionType.MESSAGE_ROW_VERSION);
         Version moderatesVersion = getVersion(VersionType.MODERATE_ROW_VERSION);
@@ -81,7 +80,7 @@ public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
 
                 brokenTopics = ArrayUtils.EMPTY_INT_ARRAY;
 
-                RojacHelper.setUserId(data.getOwnUserId());
+                Property.RSDN_USER_ID.get(data.getOwnUserId());
 
                 messages = data.getMessages();
                 Moderate[] moderates = data.getModerates();

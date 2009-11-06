@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.dialogs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingx.tree.TreeModelSupport;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.IValueChecker;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -82,7 +81,7 @@ public class PropertiesModel implements TreeModel {
      */
     public void applySettings() {
         affect(root, false);
-        LookAndFeel laf = ServiceFactory.getInstance().getOptionsService().getProperty(Property.ROJAC_GUI_LOOK_AND_FEEL);
+        LookAndFeel laf = Property.ROJAC_GUI_LOOK_AND_FEEL.get();
         try {
             RojacUtils.setLookAndFeel(laf);
         } catch (UnsupportedLookAndFeelException e) {
