@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * @author xBlackCat
  */
 
-public class LAFValueChecker implements IValueChecker<LookAndFeel> {
+final class LAFValueChecker implements IValueChecker<LookAndFeel> {
     private static final Log log = LogFactory.getLog(LAFValueChecker.class);
 
     private static final String LAF_LIST = "/laf.config";
@@ -23,7 +23,7 @@ public class LAFValueChecker implements IValueChecker<LookAndFeel> {
 
     private final Map<LNFContainer, String> availableLAFs;
 
-    public LAFValueChecker() {
+    LAFValueChecker() {
         Properties lafList;
         try {
             lafList = ResourceUtils.loadProperties(LAF_LIST);

@@ -38,19 +38,13 @@ public final class RojacUtils {
 
             // Now fill additional info
 
-            versionString.append(" (rev. ");
-            versionString.append(revNum);
-
             int pos = 1;
             int nextPos = file.indexOf('/', pos);
 
             String branch = file.substring(pos, nextPos);
             if ("trunk".equals(branch)) {
                 // No additional info will be added
-                if (Property.ROJAC_DEBUG_MODE.get()) {
-                    versionString.append(" <TRUNK>");
-                }
-            } else if ("branches".equals(branch) || "tags".equals(branch)) {
+            } else if ("branches".equals(branch)) {
                 // Read branch name
                 pos = nextPos + 1;
                 nextPos = file.indexOf('/', pos);
@@ -58,8 +52,18 @@ public final class RojacUtils {
                 versionString.append(" [");
                 versionString.append(file.substring(pos, nextPos));
                 versionString.append(']');
+            } else if ("tags".equals(branch)) {
+                // Read branch name
+                pos = nextPos + 1;
+                nextPos = file.indexOf('/', pos);
+
+                versionString.append(" <");
+                versionString.append(file.substring(pos, nextPos));
+                versionString.append('>');
             }
-            versionString.append(')');
+
+            versionString.append(" / rev. ");
+            versionString.append(revNum);
         } catch (IOException e) {
             throw new RuntimeException("It finally happened!", e);
         } catch (MissingResourceException e) {
@@ -104,7 +108,7 @@ public final class RojacUtils {
     /*
     * Util methods for converting values.
     */
-    public static <T extends Enum<T>> T convertToEnum(Class<T> enumClass, String val) {
+    public static <T extends Enum<T>> T toEnum(Class<T> enumClass, String val) {
         if (val != null) {
             return Enum.valueOf(enumClass, val);
         } else {
