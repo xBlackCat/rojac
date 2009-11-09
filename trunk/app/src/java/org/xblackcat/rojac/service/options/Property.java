@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
+import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
@@ -16,8 +17,6 @@ import java.util.Locale;
  */
 
 public final class Property<T> {
-    static IOptionsService OPTIONS_SERVICE;
-
     /**
      * Complete map of properties names to its objects.
      */
@@ -33,7 +32,7 @@ public final class Property<T> {
 
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());
-    public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", Locale.getDefault());
+    public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", Locale.getDefault(), new LocaleValueChecker());
     public static final Property<String> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", String.class);
 
     // User properties (login dialog)
@@ -145,7 +144,7 @@ public final class Property<T> {
      * @return <code>true</code> if property is initiated and <code>false</code> if default value will be used.
      */
     public boolean isSet() {
-        return OPTIONS_SERVICE.getProperty(this) != null;
+        return ServiceFactory.getInstance().getOptionsService().getProperty(this) != null;
     }
 
     /**
@@ -165,7 +164,7 @@ public final class Property<T> {
      * @return value of the property.
      */
     public T get(T defValue) {
-        T val = OPTIONS_SERVICE.getProperty(this);
+        T val = ServiceFactory.getInstance().getOptionsService().getProperty(this);
 
         return val == null ? defValue : val;
     }
@@ -187,7 +186,7 @@ public final class Property<T> {
      * @return previous value of the property or <code>null</code> if property was empty.
      */
     public T set(T val) {
-        return OPTIONS_SERVICE.setProperty(this, val);
+        return ServiceFactory.getInstance().getOptionsService().setProperty(this, val);
     }
 
     /**
@@ -196,7 +195,7 @@ public final class Property<T> {
      * @return previous value of the property before clearing.
      */
     public T clear() {
-        return OPTIONS_SERVICE.setProperty(this, null);
+        return ServiceFactory.getInstance().getOptionsService().setProperty(this, null);
     }
 
     public boolean equals(Object o) {

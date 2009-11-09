@@ -48,7 +48,7 @@ abstract class AnOptionsService implements IOptionsService {
                 throw new OptionsServiceException("Can not load object class " + className, e);
             }
 
-            IConverter<?> parser = null;
+            IConverter<?> parser;
             try {
                 parser = (IConverter<?>) ResourceUtils.loadObjectOrEnum(parserName);
             } catch (ClassNotFoundException e) {
@@ -63,10 +63,15 @@ abstract class AnOptionsService implements IOptionsService {
         }
 
         converters = Collections.unmodifiableMap(map);
-
-        Property.OPTIONS_SERVICE = this;
     }
 
+    /**
+     * Returns current value of a specified property or <code>null</code> if property is not set.
+     *
+     * @param key property object to identify a property.
+     *
+     * @return a value of the specified property or <code>null</code> if property is not set.
+     */
     public <T> T getProperty(Property<T> key) {
         String name = key.getName();
         Class<?> type = key.getType();
@@ -75,15 +80,15 @@ abstract class AnOptionsService implements IOptionsService {
 
         // Handle enums in special way
         if (Enum.class.isAssignableFrom(type)) {
-            return (T) RojacUtils.convertToEnum((Class<Enum>) type, val);
+            return (T) RojacUtils.toEnum((Class<Enum>) type, val);
         }
-        IConverter<?> conv;
+        IConverter<T> conv;
 
         do {
-            conv = converters.get(type);
+            conv = (IConverter<T>) converters.get(type);
             if (conv != null) {
                 try {
-                    return (T) conv.convert(val);
+                    return conv.convert(val);
                 } catch (RuntimeException e) {
                     log.error("Can not load property " + name, e);
                     throw e;
@@ -96,6 +101,14 @@ abstract class AnOptionsService implements IOptionsService {
         throw new UnknownPropertyTypeException("Can not identify the property " + key);
     }
 
+    /**
+     * Sets a property to a new value.
+     *
+     * @param key      property object to identify a property.
+     * @param newValue new value to set.
+     *
+     * @return a previous value of the property.
+     */
     public <T> T setProperty(Property<T> key, T newValue) {
         if (key.getChecker() != null && !key.getChecker().isValueCorrect(newValue)) {
             throw new IllegalArgumentException(newValue + " is not valid value for property " + key.getName());
@@ -108,7 +121,7 @@ abstract class AnOptionsService implements IOptionsService {
         if (Enum.class.isAssignableFrom(type)) {
             String v = newValue == null ? null : ((Enum) newValue).name();
             String val = setProperty(name, v);
-            return (T) RojacUtils.convertToEnum((Class<Enum>) type, val);
+            return (T) RojacUtils.toEnum((Class<Enum>) type, val);
         }
         IConverter conv;
 
@@ -130,7 +143,22 @@ abstract class AnOptionsService implements IOptionsService {
         throw new UnknownPropertyTypeException("Can not identify the property " + key);
     }
 
+    /**
+     * Implement method for getting property value from a storage.
+     *
+     * @param key property id.
+     *
+     * @return property value as string or <code>null</code> if specified property is not set.
+     */
     protected abstract String getProperty(String key);
 
+    /**
+     * Implement method for storing property value in a storage.
+     *
+     * @param key   property id.
+     * @param value a new value of property.
+     *
+     * @return previous value of the property.
+     */
     protected abstract String setProperty(String key, String value);
 }

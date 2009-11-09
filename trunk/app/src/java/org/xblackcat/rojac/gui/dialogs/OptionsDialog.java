@@ -6,6 +6,7 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -112,6 +113,17 @@ public class OptionsDialog extends JDialog {
 
     private void applySettings() {
         model.applySettings();
+
+        // Load properties.
+
+        LookAndFeel laf = Property.ROJAC_GUI_LOOK_AND_FEEL.get();
+        try {
+            UIUtils.setLookAndFeel(laf);
+        } catch (UnsupportedLookAndFeelException e) {
+            log.warn("Can not initialize " + laf.getName() + " L&F.", e);
+        }
+
+        Messages.setLocale(Property.ROJAC_GUI_LOCALE.get());
     }
 
     private PropertiesModel loadModel() {

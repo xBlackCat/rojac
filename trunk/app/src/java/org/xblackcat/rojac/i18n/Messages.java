@@ -39,6 +39,7 @@ public enum Messages {
     // Main window view
     MAINFRAME_BUTTON_UPDATE,
     MAINFRAME_BUTTON_LOADMESSAGE,
+    MAINFRAME_BUTTON_SETTINGS,
 
     // Forum list view
     VIEW_FORUMS_TITLE,

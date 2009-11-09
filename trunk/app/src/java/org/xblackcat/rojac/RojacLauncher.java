@@ -3,13 +3,10 @@ package org.xblackcat.rojac;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
-import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.UIUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -37,8 +34,6 @@ public final class RojacLauncher {
         // Initialize core services
         ServiceFactory.initialize();
 
-        ServiceFactory sf = ServiceFactory.getInstance();
-
         LookAndFeel laf = Property.ROJAC_GUI_LOOK_AND_FEEL.get();
         try {
             if (log.isDebugEnabled()) {
@@ -53,6 +48,8 @@ public final class RojacLauncher {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                // TODO: setup progress listeners and tray
+
                 final MainFrame mainFrame = new MainFrame();
 
                 mainFrame.addWindowListener(new WindowAdapter() {
@@ -65,14 +62,6 @@ public final class RojacLauncher {
                         System.exit(0);
                     }
                 });
-
-                while (!RojacHelper.isUserRegistered()) {
-                    LoginDialog ld = new LoginDialog(mainFrame);
-                    WindowsUtils.centerOnScreen(ld);
-                    if (ld.showLoginDialog()) {
-                        System.exit(0);
-                    }
-                }
 
                 setupUserSettings();
 
