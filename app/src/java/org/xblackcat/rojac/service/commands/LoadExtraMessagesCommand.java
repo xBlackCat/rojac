@@ -10,8 +10,11 @@ import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
+import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
+ * Command for loading extra and broken messages.
+ *
  * @author xBlackCat
  */
 
@@ -23,14 +26,28 @@ public class LoadExtraMessagesCommand extends LoadPostsCommand<AffectedPosts> {
     }
 
     public AffectedPosts process(IProgressTracker trac) throws RojacException {
-        trac.addLodMessage("Synchronization started.");
+        trac.addLodMessage("Loading extra messages started.");
 
         int[] messageIds = miscAH.getExtraMessages();
 
-        if (ArrayUtils.isEmpty(messageIds)) {
-            return new AffectedPosts();
+        if (!ArrayUtils.isEmpty(messageIds)) {
+            trac.addLodMessage("Loading additional messages: " + ArrayUtils.toString(messageIds));
+            loadTopics(messageIds);
+
+            miscAH.clearExtraMessages();
         }
 
+        int[] brokenTopicIds = mAH.getBrokenTopicIds();
+        if (!ArrayUtils.isEmpty(brokenTopicIds)) {
+            trac.addLodMessage("Loading broken topics by ids: " + ArrayUtils.toString(brokenTopicIds));
+            loadTopics(brokenTopicIds);
+        }
+
+        trac.addLodMessage("Loading extra messages finished.");        
+        return new AffectedPosts(processedMessages.toArray(), affectedForums.toArray());
+    }
+
+    private void loadTopics(int[] messageIds) throws RsdnProcessorException, StorageException {
         TopicMessages extra;
         try {
             extra = janusService.getTopicByMessage(messageIds);
@@ -47,11 +64,5 @@ public class LoadExtraMessagesCommand extends LoadPostsCommand<AffectedPosts> {
         storeNewPosts(messages, moderates, ratings);
 
         postprocessingMessages();
-
-        miscAH.clearExtraMessages();
-        if (log.isInfoEnabled()) {
-            log.info("Synchronization complete.");
-        }
-        return new AffectedPosts(processedMessages.toArray(), affectedForums.toArray());
     }
 }
