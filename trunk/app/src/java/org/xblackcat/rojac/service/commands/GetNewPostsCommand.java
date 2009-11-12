@@ -25,7 +25,7 @@ public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
     }
 
     public AffectedPosts process(IProgressTracker trac) throws RojacException {
-        trac.addLodMessage("Synchronization started.");
+        trac.addLodMessage("Getting new posts started.");
 
         int[] forumIds = storage.getForumAH().getSubscribedForumIds();
         if (ArrayUtils.isEmpty(forumIds)) {
@@ -48,76 +48,45 @@ public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
         processedMessages.clear();
         affectedForums.clear();
 
-        NewData data;
-        int[] brokenTopics = mAH.getBrokenTopicIds();
+        Message[] messages;
         do {
-            if (!ArrayUtils.isEmpty(brokenTopics)) {
-                if (log.isInfoEnabled()) {
-                    log.info("Found broken topics: " + ArrayUtils.toString(brokenTopics));
-                }
+            if (ratingsVersion.isEmpty()) {
+                ratingsVersion = moderatesVersion;
             }
 
-            // Broken topic ids
-            topics.clear();
-            topics.addAll(brokenTopics);
+            NewData data = janusService.getNewData(
+                    forumIds,
+                    messagesVersion.getBytes().length == 0,
+                    ratingsVersion,
+                    messagesVersion,
+                    moderatesVersion,
+                    ArrayUtils.EMPTY_INT_ARRAY,
+                    ArrayUtils.EMPTY_INT_ARRAY,
+                    limit
+            );
 
-            Message[] messages;
-            do {
-                if (ratingsVersion.isEmpty()) {
-                    ratingsVersion = moderatesVersion;
-                }
+            Property.RSDN_USER_ID.get(data.getOwnUserId());
 
-                data = janusService.getNewData(
-                        forumIds,
-                        messagesVersion.getBytes().length == 0,
-                        ratingsVersion,
-                        messagesVersion,
-                        moderatesVersion,
-                        ArrayUtils.EMPTY_INT_ARRAY,
-                        brokenTopics,
-                        limit
-                );
+            messages = data.getMessages();
+            Moderate[] moderates = data.getModerates();
+            Rating[] ratings = data.getRatings();
 
-                brokenTopics = ArrayUtils.EMPTY_INT_ARRAY;
+            storeNewPosts(messages, moderates, ratings);
 
-                Property.RSDN_USER_ID.get(data.getOwnUserId());
+            ratingsVersion = data.getRatingRowVersion();
+            messagesVersion = data.getForumRowVersion();
+            moderatesVersion = data.getModerateRowVersion();
 
-                messages = data.getMessages();
-                Moderate[] moderates = data.getModerates();
-                Rating[] ratings = data.getRatings();
+            setVersion(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
+            setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
+            setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
 
-                storeNewPosts(messages, moderates, ratings);
+        } while (messages.length > 0);
 
-                ratingsVersion = data.getRatingRowVersion();
-                messagesVersion = data.getForumRowVersion();
-                moderatesVersion = data.getModerateRowVersion();
-
-                setVersion(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
-                setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
-                setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
-
-            } while (messages.length > 0);
-
-            // remove existing ids from downloaded topic ids.
-            int[] messageIds = topics.toArray();
-            for (int mId : messageIds) {
-                if (mAH.isExist(mId)) {
-                    topics.remove(mId);
-                }
-            }
-
-            topics.addAll(miscAH.getExtraMessages());
-
-            miscAH.clearExtraMessages();
-
-            brokenTopics = topics.toArray();
-        } while (!ArrayUtils.isEmpty(brokenTopics));
 
         postprocessingMessages();
 
-        if (log.isInfoEnabled()) {
-            log.info("Synchronization complete.");
-        }
+        trac.addLodMessage("Getting new posts finished.");
 
         return new AffectedPosts(processedMessages.toArray(), affectedForums.toArray());
     }

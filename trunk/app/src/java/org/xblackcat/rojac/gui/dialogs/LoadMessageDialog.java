@@ -24,7 +24,6 @@ public class LoadMessageDialog extends JDialog {
 
     private Integer messageId;
     private JTextField messageIdText;
-    private Window mainFrame;
     protected JCheckBox loadAtOnce;
 
     public LoadMessageDialog(Window mainFrame) {
@@ -140,7 +139,7 @@ public class LoadMessageDialog extends JDialog {
 
         messageIdText.selectAll();
 
-        WindowsUtils.center(this, mainFrame);
+        WindowsUtils.center(this, getOwner());
 
         setVisible(true);
 

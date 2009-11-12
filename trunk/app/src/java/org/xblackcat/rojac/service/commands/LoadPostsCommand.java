@@ -17,15 +17,20 @@ import org.xblackcat.rojac.service.storage.StorageException;
  */
 
 public abstract class LoadPostsCommand<T extends AffectedPosts> extends ARsdnCommand<T> {
+    /**
+     * Placeholder of updated message ids set.
+     */
     protected final TIntHashSet processedMessages = new TIntHashSet();
+    /**
+     * Placeholder of updated forum ids set.
+     */
     protected final TIntHashSet affectedForums = new TIntHashSet();
-    protected final TIntHashSet topics = new TIntHashSet();
     protected final IRatingAH rAH;
     protected final IMessageAH mAH;
     protected final IModerateAH modAH;
+    protected final IMiscAH miscAH;
 
     private final TIntHashSet loadedMessages = new TIntHashSet();
-
     protected final TIntObjectHashMap<Long> messageDates = new TIntObjectHashMap<Long>();
     protected final TIntObjectProcedure<Long> updater = new TIntObjectProcedure<Long>() {
         @Override
@@ -38,7 +43,6 @@ public abstract class LoadPostsCommand<T extends AffectedPosts> extends ARsdnCom
             return true;
         }
     };
-    protected final IMiscAH miscAH;
 
     public LoadPostsCommand(IResultHandler<T> resultHandler) {
         super(resultHandler);
@@ -64,9 +68,6 @@ public abstract class LoadPostsCommand<T extends AffectedPosts> extends ARsdnCom
 
             int topicId = mes.getTopicId();
             if (topicId != 0) {
-                topics.add(topicId);
-
-
                 Long date;
 
                 // Update topic dates
