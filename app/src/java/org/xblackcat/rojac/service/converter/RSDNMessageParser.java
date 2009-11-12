@@ -1,12 +1,14 @@
 package org.xblackcat.rojac.service.converter;
 
 import org.apache.commons.lang.ArrayUtils;
-import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import org.apache.commons.lang.StringUtils;
+import org.xblackcat.rojac.service.converter.tag.RsdnTagList;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 
 /**
  * @author xBlackCat
@@ -14,8 +16,12 @@ import java.util.regex.Pattern;
 
 public class RSDNMessageParser implements IMessageParser {
     private static final Pattern PRE_QUOTATION_PATTERN = Pattern.compile("^([[^\\s\\p{Punct}]_]+?)>(.*?)$", Pattern.MULTILINE);
+    private static final String PRE_QUOTATION_REPLACEMENT = "[span]$1>$2[/span]";
+
     private static final Pattern QUOTATION_PATTERN = Pattern.compile("^\\[span\\](.*)\\[/span\\]$", Pattern.MULTILINE);
     private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+)[\\.,\\!\\:]?$", Pattern.MULTILINE);
+
+    private static final String HYPERLINKS_REPLACEMENT = "$1[url=$2]$2[/url]";
     private static final ITagInfo[] EMPTY_TAG_INFO = new ITagInfo[0];
 
     private final Map<ITag, ITag[]> availableSubTags;
@@ -41,7 +47,8 @@ public class RSDNMessageParser implements IMessageParser {
 
     public String convert(String rsdn) {
         String preHtml = preProcessText(rsdn);
-        String htmlBody = processText(mergeAvailableTags(null, null), preHtml);
+        String htmlBody = processText(preHtml, mergeAvailableTags(null));
+        htmlBody = processText(htmlBody, RsdnTagList.Original);
         return "<html>" +
                 "<head>" +
                 "<link href='" +
@@ -55,23 +62,23 @@ public class RSDNMessageParser implements IMessageParser {
     }
 
     /**
-     * Searchs and highlight all the quotation lines in message. Does not converts line breaks or tags.
+     * Searches and highlight all the quotation lines in message. Does not converts line breaks or tags.
      *
      * @param rsdn
      *
-     * @return a new string with highlihgted quotation lines.
+     * @return a new string with highlighted quotation lines.
      */
     protected String preProcessText(String rsdn) {
-        rsdn = HYPERLINKS_PATTERN.matcher(rsdn).replaceAll("$1[url=$2]$2[/url]");
-        rsdn = PRE_QUOTATION_PATTERN.matcher(rsdn).replaceAll("[span]$1>$2[/span]");
+        rsdn = HYPERLINKS_PATTERN.matcher(rsdn).replaceAll(HYPERLINKS_REPLACEMENT);
+        rsdn = PRE_QUOTATION_PATTERN.matcher(rsdn).replaceAll(PRE_QUOTATION_REPLACEMENT);
         rsdn = escapeHtml(rsdn);
-        rsdn = QUOTATION_PATTERN.matcher(rsdn).replaceAll("<span class='lineQuote'>$1</span>");
+//        rsdn = QUOTATION_PATTERN.matcher(rsdn).replaceAll("<span class='lineQuote'>$1</span>");
 
         return rsdn;
     }
 
-    private ITag[] mergeAvailableTags(ITag[] parentTags, ITag currentTag) {
-        if (parentTags == null) {
+    private ITag[] mergeAvailableTags(ITag currentTag, ITag... parentTags) {
+        if (ArrayUtils.isEmpty(parentTags)) {
             parentTags = availableSubTags.get(null);
         }
 
@@ -88,8 +95,8 @@ public class RSDNMessageParser implements IMessageParser {
         return tags.toArray(new ITag[tags.size()]);
     }
 
-    private String processText(ITag[] availableTags, String text) {
-        final ITagInfo[] tags = getFoundTags(availableTags, text);
+    private String processText(String text, ITag... availableTags) {
+        final ITagInfo[] tags = getFoundTags(text, availableTags);
 
         Arrays.sort(tags, TAG_INFO_COMPARATOR);
 
@@ -98,7 +105,7 @@ public class RSDNMessageParser implements IMessageParser {
         for (ITagInfo ti : tags) {
             tagData = ti.process();
             if (tagData != null) {
-                t = mergeAvailableTags(availableTags, ti.getTag());
+                t = mergeAvailableTags(ti.getTag(), availableTags);
                 break;
             }
         }
@@ -113,13 +120,13 @@ public class RSDNMessageParser implements IMessageParser {
             res.append(tagData.getHead());
             // Add processed body tags
             if (StringUtils.isNotEmpty(tagData.getBody())) {
-                res.append(processText(t, tagData.getBody()));
+                res.append(processText(tagData.getBody(), t));
             }
             // Add tail of the tag (close tag)
             res.append(tagData.getTail());
             // Process remaining text with parent tag
             if (tagData.end() < text.length()) {
-                res.append(processText(availableTags, text.substring(tagData.end())));
+                res.append(processText(text.substring(tagData.end()), availableTags));
             }
             return res.toString();
         } else {
@@ -127,7 +134,7 @@ public class RSDNMessageParser implements IMessageParser {
         }
     }
 
-    private ITagInfo[] getFoundTags(ITag[] availableTags, String text) {
+    private ITagInfo[] getFoundTags(String text, ITag... availableTags) {
         if (!ArrayUtils.isEmpty(availableTags)) {
             Collection<ITagInfo> tags = new LinkedList<ITagInfo>();
 

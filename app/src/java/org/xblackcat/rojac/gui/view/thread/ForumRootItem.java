@@ -6,6 +6,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Node for holding root messages of the selected forum.
@@ -30,26 +31,32 @@ public class ForumRootItem extends MessageItem {
             }
         }
 
-        executor.execute(new Runnable() {
-            public void run() {
-                final Forum f;
+        executor.execute(new SwingWorker<Forum, Void>() {
+            @Override
+            protected Forum doInBackground() throws Exception {
+                Forum f;
                 try {
-                    f = storage.getForumAH().getForumById(messageId);
+                    return storage.getForumAH().getForumById(messageId);
                 } catch (StorageException e) {
                     log.error("Can not load forum info with id = " + messageId, e);
-                    return;
+                    throw e;
                 }
+            }
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        synchronized (this) {
-                            if (forum == null) {
-                                forum = f;
-                            }
+            @Override
+            protected void done() {
+                synchronized (this) {
+                    if (forum == null && isDone()) {
+                        try {
+                            forum = get();
+                        } catch (InterruptedException e) {
+                            log.fatal("It finally happens!", e);
+                        } catch (ExecutionException e) {
+                            log.fatal("It finally happens!", e);
                         }
-                        model.nodeChanged(ForumRootItem.this);
                     }
-                });
+                }
+                model.nodeChanged(ForumRootItem.this);
             }
         });
     }
@@ -62,33 +69,44 @@ public class ForumRootItem extends MessageItem {
             }
         }
 
-        executor.execute(new Runnable() {
-            public void run() {
+        SwingWorker sw = new SwingWorker<MessageItem[], Void>() {
+            @Override
+            protected MessageItem[] doInBackground() throws Exception {
                 int[] c;
                 try {
                     c = storage.getMessageAH().getTopicMessageIdsByForumId(messageId);
                 } catch (StorageException e) {
                     log.error("Can not load topics for forum with id = " + messageId, e);
-                    return;
+                    throw e;
                 }
 
                 final MessageItem[] cI = new MessageItem[c.length];
                 for (int i = 0; i < c.length; i++) {
                     cI[i] = new MessageItem(ForumRootItem.this, c[i]);
                 }
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        synchronized (this) {
-                            if (children == null) {
-                                children = cI;
-                            }
-                        }
 
-                        model.nodeStructureChanged(ForumRootItem.this);
-                    }
-                });
+                return cI;
             }
-        });
+
+            @Override
+            protected void done() {
+                synchronized (this) {
+                    if (children == null) {
+                        try {
+                            children = get();
+                        } catch (InterruptedException e) {
+                            log.fatal("It finally happens!", e);
+                        } catch (ExecutionException e) {
+                            log.fatal("It finally happens!", e);
+                        }
+                    }
+                }
+
+                model.nodeStructureChanged(ForumRootItem.this);
+            }
+        };
+
+        executor.execute(sw);
 
     }
 }

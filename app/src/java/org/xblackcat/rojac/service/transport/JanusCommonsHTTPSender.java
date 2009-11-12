@@ -53,6 +53,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
@@ -236,11 +237,10 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                     releaseConnectionOnCloseStream =
                             new GZIPInputStream(releaseConnectionOnCloseStream);
                 } else {
-                    AxisFault fault = new AxisFault("HTTP",
+                    throw new AxisFault("HTTP",
                             "unsupported content-encoding of '"
                                     + contentEncoding.getValue()
                                     + "' found", null, null);
-                    throw fault;
                 }
 
             }
@@ -255,26 +255,26 @@ public class JanusCommonsHTTPSender extends BasicHandler {
             }
             outMsg.setMessageType(Message.RESPONSE);
             msgContext.setResponseMessage(outMsg);
-            if (log.isDebugEnabled()) {
-                if (null == contentLength) {
-                    log.debug("\n"
-                            + Messages.getMessage("no00", "Content-Length"));
-                }
-                log.debug("\n" + Messages.getMessage("xmlRecd00"));
-                log.debug("-----------------------------------------------");
-                log.debug(outMsg.getSOAPPartAsString());
-            }
+//            if (log.isDebugEnabled()) {
+//                if (null == contentLength) {
+//                    log.debug("\n"
+//                            + Messages.getMessage("no00", "Content-Length"));
+//                }
+//                log.debug("\n" + Messages.getMessage("xmlRecd00"));
+//                log.debug("-----------------------------------------------");
+//                log.debug(outMsg.getSOAPPartAsString());
+//            }
 
             // if we are maintaining session state,
             // handle cookies (if any)
             if (msgContext.getMaintainSession()) {
                 Header[] headers = method.getResponseHeaders();
 
-                for (int i = 0; i < headers.length; i++) {
-                    if (headers[i].getName().equalsIgnoreCase(HTTPConstants.HEADER_SET_COOKIE)) {
-                        handleCookie(HTTPConstants.HEADER_COOKIE, headers[i].getValue(), msgContext);
-                    } else if (headers[i].getName().equalsIgnoreCase(HTTPConstants.HEADER_SET_COOKIE2)) {
-                        handleCookie(HTTPConstants.HEADER_COOKIE2, headers[i].getValue(), msgContext);
+                for (Header header : headers) {
+                    if (header.getName().equalsIgnoreCase(HTTPConstants.HEADER_SET_COOKIE)) {
+                        handleCookie(HTTPConstants.HEADER_COOKIE, header.getValue(), msgContext);
+                    } else if (header.getName().equalsIgnoreCase(HTTPConstants.HEADER_SET_COOKIE2)) {
+                        handleCookie(HTTPConstants.HEADER_COOKIE2, header.getValue(), msgContext);
                     }
                 }
             }
@@ -311,14 +311,13 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         int keyIndex = cookie.indexOf("=");
         String key = (keyIndex != -1) ? cookie.substring(0, keyIndex) : cookie;
 
-        ArrayList cookies = new ArrayList();
+        List<String> cookies = new ArrayList<String>();
         Object oldCookies = msgContext.getProperty(cookieName);
         boolean alreadyExist = false;
         if (oldCookies != null) {
             if (oldCookies instanceof String[]) {
                 String[] oldCookiesArray = (String[]) oldCookies;
-                for (int i = 0; i < oldCookiesArray.length; i++) {
-                    String anOldCookie = oldCookiesArray[i];
+                for (String anOldCookie : oldCookiesArray) {
                     if (key != null && anOldCookie.indexOf(key) == 0) { // same cookie key
                         anOldCookie = cookie;             // update to new one
                         alreadyExist = true;
@@ -361,8 +360,8 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         if (ck1 != null) {
             if (ck1 instanceof String[]) {
                 String[] cookies = (String[]) ck1;
-                for (int i = 0; i < cookies.length; i++) {
-                    addCookie(state, cookies[i], host, path, secure);
+                for (String cooky : cookies) {
+                    addCookie(state, cooky, host, path, secure);
                 }
             } else {
                 addCookie(state, (String) ck1, host, path, secure);
@@ -444,7 +443,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                     }
                     client.getState().setProxyCredentials(AuthScope.ANY, proxyCred);
                 }
-                int proxyPort = new Integer(tcp.getProxyPort()).intValue();
+                int proxyPort = Integer.parseInt(tcp.getProxyPort());
                 config.setProxy(tcp.getProxyHost(), proxyPort);
             }
         }
@@ -642,8 +641,8 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         char ch;
         boolean containsStar = false;
 
-        for (int i = 0; i < patArr.length; i++) {
-            if (patArr[i] == '*') {
+        for (char aPatArr : patArr) {
+            if (aPatArr == '*') {
                 containsStar = true;
                 break;
             }
@@ -827,6 +826,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                 try {
                     return message.getContentLength();
                 } catch (Exception e) {
+                    // Ignore
                 }
             }
             return -1; /* -1 for chunked */

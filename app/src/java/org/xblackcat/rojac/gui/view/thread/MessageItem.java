@@ -10,6 +10,7 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author xBlackCat
@@ -69,26 +70,31 @@ public class MessageItem {
             }
         }
 
-        executor.execute(new Runnable() {
-            public void run() {
-                final Message m;
+        executor.execute(new SwingWorker<Message, Void>() {
+            @Override
+            protected Message doInBackground() throws Exception {
                 try {
-                    m = storage.getMessageAH().getMessageById(messageId);
+                    return storage.getMessageAH().getMessageById(messageId);
                 } catch (StorageException e) {
                     log.error("Can not load message with id = " + messageId, e);
-                    return;
+                    throw e;
                 }
+            }
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        synchronized (this) {
-                            if (message == null) {
-                                message = m;
-                            }
+            @Override
+            protected void done() {
+                synchronized (this) {
+                    if (message == null && isDone()) {
+                        try {
+                            message = get();
+                        } catch (InterruptedException e) {
+                            log.fatal("It finally happens!", e);
+                        } catch (ExecutionException e) {
+                            log.fatal("It finally happens!", e);
                         }
-                        model.nodeChanged(MessageItem.this);
                     }
-                });
+                }
+                model.nodeChanged(MessageItem.this);
             }
         });
     }
@@ -100,30 +106,38 @@ public class MessageItem {
             }
         }
 
-        executor.execute(new Runnable() {
-            public void run() {
+        executor.execute(new SwingWorker<MessageItem[], Void>() {
+            @Override
+            protected MessageItem[] doInBackground() throws Exception {
                 int[] c;
                 try {
                     c = storage.getMessageAH().getMessageIdsByParentId(messageId);
                 } catch (StorageException e) {
                     log.error("Can not load message children for id = " + messageId, e);
-                    return;
+                    throw e;
                 }
 
                 final MessageItem[] cI = new MessageItem[c.length];
                 for (int i = 0; i < c.length; i++) {
                     cI[i] = new MessageItem(MessageItem.this, c[i]);
                 }
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        synchronized (this) {
-                            if (children == null) {
-                                children = cI;
-                            }
+                return cI;
+            }
+
+            @Override
+            protected void done() {
+                synchronized (this) {
+                    if (children == null && isDone()) {
+                        try {
+                            children = get();
+                        } catch (InterruptedException e) {
+                            log.fatal("It finally happens!", e);
+                        } catch (ExecutionException e) {
+                            log.fatal("It finally happens!", e);
                         }
-                        model.nodeStructureChanged(MessageItem.this);
                     }
-                });
+                }
+                model.nodeStructureChanged(MessageItem.this);
             }
         });
     }
