@@ -84,7 +84,7 @@ public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
         } while (messages.length > 0);
 
 
-        postprocessingMessages();
+//        postprocessingMessages();
 
         trac.addLodMessage("Getting new posts finished.");
 
