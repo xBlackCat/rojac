@@ -39,7 +39,7 @@ public final class RSDNMessageParserFactory {
         if (StringUtils.isNotEmpty(tagGroupsResource)) {
             tagGroups = loadTagGroups(allTagsMap, tagGroupsResource);
         } else {
-            tagGroups = Collections.EMPTY_MAP;
+            tagGroups = Collections.emptyMap();
         }
 
         // Load subtags rules

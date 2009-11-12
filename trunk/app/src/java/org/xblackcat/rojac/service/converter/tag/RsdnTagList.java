@@ -84,7 +84,8 @@ public enum RsdnTagList implements ITag<RsdnTagList> {
      * List of reserved words was taken from <a href="http://php.mirror.camelnetwork.com/manual/ru/reserved.php">PHP
      * site</a>
      */
-    PHP(new LanguageTag("php", "//", "/*", "*/", "'\"", '\\'));
+    PHP(new LanguageTag("php", "//", "/*", "*/", "'\"", '\\')),
+    Original(new SimpleTag("span", "<span class='lineQuote'>", "</span>"));
 
     private final ITag tag;
 

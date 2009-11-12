@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.service.progress;
 
-import org.xblackcat.rojac.service.options.Property;
-
 import javax.swing.event.EventListenerList;
 
 /**
@@ -11,11 +9,11 @@ import javax.swing.event.EventListenerList;
 public class ProgressControl implements IProgressControl {
     private final EventListenerList listenerList = new EventListenerList();
 
-    public ProgressControl() {
-        if (Property.ROJAC_DEBUG_MODE.get()) {
-            addProgressListener(new LoggingProgressListener());
-        }
-    }
+//    public ProgressControl() {
+//        if (Property.ROJAC_DEBUG_MODE.get()) {
+//            addProgressListener(new LoggingProgressListener());
+//        }
+//    }
 
     @Override
     public void fireJobStart() {

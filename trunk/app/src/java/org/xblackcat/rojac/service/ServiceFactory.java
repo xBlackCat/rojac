@@ -10,6 +10,8 @@ import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskExecutor;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
+import org.xblackcat.rojac.service.progress.IProgressControl;
+import org.xblackcat.rojac.service.progress.ProgressControl;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
@@ -41,8 +43,45 @@ public final class ServiceFactory {
     private final IStorage storage;
     private final IOptionsService optionsService;
     private final IMessageParser messageParser;
+    private final IProgressControl progressControl;
 
     private ServiceFactory() throws RojacException {
+        storage = initializeStorage();
+
+        optionsService = new MultiUserOptionsService();
+
+        try {
+            messageParser = new RSDNMessageParserFactory().getParser();
+        } catch (IOException e) {
+            throw new RuntimeException("Can't initialize message formatter.", e);
+        }
+
+        progressControl = new ProgressControl();
+
+        executor = new TaskExecutor(progressControl);
+    }
+
+    public IStorage getStorage() {
+        return storage;
+    }
+
+    public IOptionsService getOptionsService() {
+        return optionsService;
+    }
+
+    public IMessageParser getMessageConverter() {
+        return messageParser;
+    }
+
+    public IExecutor getExecutor() {
+        return executor;
+    }
+
+    public IProgressControl getProgressControl() {
+        return progressControl;
+    }
+
+    private static DBStorage initializeStorage() throws RojacException {
         Properties mainProperties;
         try {
             mainProperties = ResourceUtils.loadProperties("/config/rojac.config");
@@ -78,34 +117,8 @@ public final class ServiceFactory {
         String configurationName = mainProperties.getProperty("rojac.service.database.engine.config");
 
         IConnectionFactory connectionFactory = new PooledConnectionFactoryl(configurationName);
-        storage = new DBStorage(configurationName, connectionFactory);
+        DBStorage storage = new DBStorage(configurationName, connectionFactory);
         storage.initialize();
-
-        optionsService = new MultiUserOptionsService();
-
-        try {
-            messageParser = new RSDNMessageParserFactory().getParser();
-        } catch (IOException e) {
-            throw new RuntimeException("Can't initialize message formatter.", e);
-        }
-
-        executor = new TaskExecutor();
-    }
-
-    public IStorage getStorage() {
         return storage;
     }
-
-    public IOptionsService getOptionsService() {
-        return optionsService;
-    }
-
-    public IMessageParser getMessageConverter() {
-        return messageParser;
-    }
-
-    public IExecutor getExecutor() {
-        return executor;
-    }
-
 }

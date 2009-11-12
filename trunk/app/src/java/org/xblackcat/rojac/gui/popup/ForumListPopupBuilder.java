@@ -11,7 +11,6 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -86,20 +85,17 @@ public class ForumListPopupBuilder implements IPopupBuilder {
         }
 
         public void actionPerformed(ActionEvent e) {
-            executor.execute(new Runnable() {
-                public void run() {
+            executor.execute(new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
                     IForumAH fah = storage.getForumAH();
-                    try {
-                        fah.setSubscribeForum(forumId, !subscribed);
+                    fah.setSubscribeForum(forumId, !subscribed);
+                    return null;
+                }
 
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                forumsModel.reloadInfo(forumId);
-                            }
-                        });
-                    } catch (StorageException e1) {
-                        log.error("Can not update forum info. [id:" + forumId + "].", e1);
-                    }
+                @Override
+                protected void done() {
+                    forumsModel.reloadInfo(forumId);
                 }
             });
         }
@@ -110,20 +106,17 @@ public class ForumListPopupBuilder implements IPopupBuilder {
             super(text.get());
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    executor.execute(new Runnable() {
-                        public void run() {
+                    executor.execute(new SwingWorker<Void, Void>() {
+                        @Override
+                        protected Void doInBackground() throws Exception {
                             IForumAH fah = storage.getForumAH();
-                            try {
-                                fah.setForumRead(forumId, readFlag);
+                            fah.setForumRead(forumId, readFlag);
+                            return null;
+                        }
 
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    public void run() {
-                                        forumsModel.reloadInfo(forumId);
-                                    }
-                                });
-                            } catch (StorageException e1) {
-                                log.error("Can not update forum info. [id:" + forumId + "].", e1);
-                            }
+                        @Override
+                        protected void done() {
+                            forumsModel.reloadInfo(forumId);
                         }
                     });
                 }

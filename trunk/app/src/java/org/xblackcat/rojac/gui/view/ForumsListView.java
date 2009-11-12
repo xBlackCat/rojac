@@ -20,6 +20,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author xBlackCat
@@ -80,6 +82,7 @@ public class ForumsListView extends AView {
         forumsRowSorter.setStringConverter(new ForumsTableStringConverter());
         forumsRowSorter.setSortable(0, true);
         forumsRowSorter.setSortsOnUpdates(false);
+        forumsRowSorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
         forumsRowSorter.setRowFilter(forumsRowFilter);
         forumsRowSorter.sort();
         forums.setRowSorter(forumsRowSorter);
@@ -120,17 +123,24 @@ public class ForumsListView extends AView {
     public void applySettings() {
         super.applySettings();
 
-        executor.execute(new Runnable() {
-            public void run() {
+        executor.execute(new SwingWorker<int[], Void>() {
+            @Override
+            protected int[] doInBackground() throws Exception {
                 try {
-                    final int[] allForums = storage.getForumAH().getAllForumIds();
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            forumsModel.updateForums(allForums);
-                        }
-                    });
+                    return storage.getForumAH().getAllForumIds();
                 } catch (StorageException e) {
                     log.error("Can not load forum list", e);
+                    throw e;
+                }
+            }
+
+            protected void done() {
+                try {
+                    updateData(get());
+                } catch (InterruptedException e) {
+                    log.fatal("It finally happens!", e);
+                } catch (ExecutionException e) {
+                    log.fatal("It finally happens!", e);
                 }
             }
         });
@@ -150,7 +160,7 @@ public class ForumsListView extends AView {
                 public void process(final int[] forumIds) throws StorageException {
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            forumsModel.updateForums(forumIds);
+                            updateData(forumIds);
                         }
                     });
                 }
