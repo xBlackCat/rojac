@@ -49,9 +49,12 @@ public enum Messages {
     VIEW_FORUMS_BUTTON_FILLED,
     VIEW_FORUMS_BUTTON_HASUNREAD,
 
-    //
+    // Favorites view
     VIEW_FAVORITES_TITLE,
     VIEW_FAVORITES_TAB_TEXT,
+
+    // Threads view
+    VIEW_THREAD_BUTTON_NEW_THREAD,
 
     //
     // Dialog texts
