@@ -107,6 +107,18 @@
         <mkdir dir="${rojac-application.output.dir}"/>
         <mkdir dir="${rojac-application.testoutput.dir}"/>
         <mkdir dir="${rojac-application.dist.dir}"/>
+
+        <!-- Paste resource file with revision information -->
+        <exec executable="svn" output="${rojac-application.output.dir}/svninfo.xml">
+            <arg line="info"/>
+            <arg line="-r HEAD"/>
+            <arg line="--xml"/>
+            <!-- any filename can be here, because we need only Revision property, which is general for all filenames -->
+            <arg value="${rojac-application.basedir}"/>
+        </exec>
+
+        <xmlproperty file="${rojac-application.output.dir}/svninfo.xml" prefix="svn" keepRoot="no"/>
+        <delete file="${rojac-application.output.dir}/svninfo.xml"/>
     </target>
 
     <target name="compile" description="Compile application" depends="prepare">
@@ -130,24 +142,12 @@
             </fileset>
         </copy>
 
-        <!-- Paste resource file with revision information -->
-        <exec executable="svn" output="${revision.number.file}.xml">
-            <arg value="info"/>
-            <arg value="--xml"/>
-            <!-- any filename can be here, because we need only Revision property, which is general for all filenames -->
-            <arg value="${rojac-application.basedir}"/>
-        </exec>
-
-        <xmlproperty file="${revision.number.file}.xml" prefix="svn" keepRoot="no"/>
-        <delete file="${revision.number.file}.xml"/>
-
         <echo file="${revision.number.file}"># Application revision information
             relative.path=${svn.entry.url}
             revision=${svn.entry(revision)}
         </echo>
 
         <replace file="${revision.number.file}" token="${svn.entry.repository.root}" value=""/>
-        <replace file="${revision.number.file}" token="build.xml" value=""/>
 
         <!--Compile test classes-->
         <javac destdir="${rojac-application.testoutput.dir}" debug="${compiler.debug}"
