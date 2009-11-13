@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) 2008, xBlackCat.
   -->
@@ -18,7 +18,6 @@
     <property file="build.properties"/>
 
     <property name="rojac-application.lib.dir" value="${rojac-application.basedir}/libs"/>
-    <property name="rojac-application.res.dir" value="${rojac-application.basedir}/res"/>
 
     <property name="rojac-application.output.dir" value="${rojac-application.basedir}/classes/bin"/>
     <property name="rojac-application.testoutput.dir" value="${rojac-application.basedir}/classes/test"/>
@@ -101,6 +100,7 @@
     <target name="clean" description="cleanup all">
         <delete dir="${rojac-application.dist.dir}"/>
         <delete dir="${rojac-application.basedir}/classes"/>
+        <delete dir="${rojac-application.basedir}/report"/>
     </target>
 
     <target name="prepare">
@@ -130,27 +130,20 @@
             </fileset>
         </copy>
 
-        <!-- First get real revision of a build.xml file -->
-        <exec executable="svn" failonerror="false" output="nul">
-            <arg value="up"/>
-            <arg value="--force"/>
-            <arg value="${rojac-application.basedir}/build.xml"/>
-        </exec>
         <!-- Paste resource file with revision information -->
-        
         <exec executable="svn" output="${revision.number.file}.xml">
             <arg value="info"/>
             <arg value="--xml"/>
             <!-- any filename can be here, because we need only Revision property, which is general for all filenames -->
-            <arg value="${rojac-application.basedir}/build.xml"/>
+            <arg value="${rojac-application.basedir}"/>
         </exec>
 
         <xmlproperty file="${revision.number.file}.xml" prefix="svn" keepRoot="no"/>
         <delete file="${revision.number.file}.xml"/>
 
         <echo file="${revision.number.file}"># Application revision information
-relative.path=${svn.entry.url}
-revision=${svn.entry(revision)}
+            relative.path=${svn.entry.url}
+            revision=${svn.entry(revision)}
         </echo>
 
         <replace file="${revision.number.file}" token="${svn.entry.repository.root}" value=""/>
@@ -177,7 +170,25 @@ revision=${svn.entry(revision)}
         </copy>
     </target>
 
-    <target name="test" description="Make tests before packaging application" depends="compile">
+    <target name="test" description="Make tests before packaging application" depends="compile" if="perform.tests">
+        <mkdir dir="${rojac-application.basedir}/report"/>
+        <junit haltonerror="yes" haltonfailure="yes">
+            <classpath>
+                <path refid="rojac-application.module.classpath.compile"/>
+                <pathelement location="${rojac-application.output.dir}"/>
+                <pathelement location="${rojac-application.testoutput.dir}"/>
+                <pathelement location="${rojac-application.basedir}/test/res"/>
+                <!-- External resources are not included into compile output folder -->
+                <pathelement location="${rojac-application.basedir}/src/res.ext"/>
+            </classpath>
+
+            <batchtest todir="${rojac-application.basedir}/report">
+                <formatter type="xml"/>
+                <fileset dir="${rojac-application.testoutput.dir}">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
     </target>
 
     <target name="build" description="Build application" depends="compile, test">
@@ -202,8 +213,10 @@ revision=${svn.entry(revision)}
 
         <jar jarfile="${rojac-application.dist.dir}/lib/${rojac.filename}.jar">
             <fileset dir="${rojac-application.output.dir}"/>
-            <manifest>
-            </manifest>
+        </jar>
+
+        <jar jarfile="${rojac-application.dist.dir}/lib/${rojac.filename}-tests.jar">
+            <fileset dir="${rojac-application.testoutput.dir}"/>
         </jar>
 
         <path id="rojac.full.libs">
@@ -290,14 +303,36 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
     </target>
 
     <target name="pack" description="Make archive of the project" depends="rebuild">
-        <zip destfile="${rojac-application.archive.dir}/${rojac.filename}-r${svn.entry(revision)}.zip" level="9" compress="yes">
+        <zip destfile="${rojac-application.archive.dir}/${rojac.filename}-r${svn.entry(revision)}.zip" level="9"
+             compress="yes">
             <fileset dir="${rojac-application.dist.dir}">
                 <include name="bin/${rojac.filename}*"/>
                 <include name="lib/**/*.jar"/>
+                <exclude name="lib/${rojac.filename}-tests.jar"/>
                 <include name="conf/**/*"/>
+            </fileset>
+        </zip>
+
+        <zip destfile="${rojac-application.archive.dir}/${rojac.filename}-r${svn.entry(revision)}-src.zip" level="9"
+             compress="yes">
+            <fileset dir="${rojac-application.basedir}">
+                <include name="docs/**/*"/>
+                <include name="extras/**/*"/>
+                <include name="libs/**/*"/>
+                <include name="src/**/*"/>
+                <include name="test/**/*"/>
+                <include name="build.*"/>
+                <exclude name="**/.svn"/>
             </fileset>
         </zip>
     </target>
 
     <target name="rebuild" description="Rebuild application" depends="clean, compile, build, build.exe"/>
+
+    <target name="pack-tests"
+            description="Force run tests before making code distributive not depending on if the skip.tests property is set or not.">
+        <property name="perform.tests" value="on"/>
+
+        <antcall target="pack" inheritall="on"/>
+    </target>
 </project>
