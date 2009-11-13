@@ -21,8 +21,31 @@ public final class UIUtils {
     public static void setLookAndFeel(LookAndFeel laf) throws UnsupportedLookAndFeelException {
         UIManager.setLookAndFeel(laf);
 
-        for (Frame f : Frame.getFrames()) {
+        setLookAndFeel(laf, Frame.getFrames());
+    }
+
+    private static void setLookAndFeel(LookAndFeel laf, Window... targets) {
+        for (Window f : targets) {
             SwingUtilities.updateComponentTreeUI(f);
+            setLookAndFeel(laf, f.getOwnedWindows());
+
+            deepInvalidate(f);
+
+            Dimension preferredSize = f.getPreferredSize();
+            if (preferredSize.height > f.getHeight() || preferredSize.width > f.getWidth()) {
+                f.pack();
+            }
+        }
+    }
+
+    public static void deepInvalidate(Container comp) {
+        for (Component c : comp.getComponents()) {
+            c.invalidate();
+            c.validate();
+            c.repaint();
+            if (c instanceof Container) {
+                deepInvalidate((Container) c);
+            }
         }
     }
 
