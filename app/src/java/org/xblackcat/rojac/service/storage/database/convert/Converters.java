@@ -19,6 +19,7 @@ public final class Converters {
     public static final IToObjectConverter<VersionInfo> TO_VERSION_INFO_CONVERTER = new ToVersionInfoConverter();
     public static final IToObjectConverter<String> TO_STRING_CONVERTER = new ToScalarConverter<String>();
     public static final IToObjectConverter<Integer> TO_INTEGER_CONVERTER = new ToScalarConverter<Integer>();
+    public static final IToObjectConverter<Long> TO_LONG_CONVERTER = new ToScalarConverter<Long>();
     public static final IToObjectConverter<Boolean> TO_BOOLEAN_CONVERTER = new ToScalarConverter<Boolean>();
     public static final IToObjectConverter<Mark> TO_MARK_CONVERTER = new ToMarkConverter();
 

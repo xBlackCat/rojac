@@ -25,7 +25,7 @@ class ForumCellRenderer extends DefaultTableCellRenderer {
 
         boolean hasUnread = fs != null && fs.getUnreadMessages() > 0;
 
-        StringBuilder text = new StringBuilder("<html><body>");
+        StringBuilder text = new StringBuilder("<html><body><div style='overflow: hidden;'>");
         boolean isNotSubcribed = true;
         if (f != null) {
             isNotSubcribed = !f.isSubscribed();

@@ -7,10 +7,12 @@ package org.xblackcat.rojac.data;
 public class ForumStatistic {
     private int totalMessages;
     private int unreadMessages;
+    private Long lastMessageDate;
 
-    public ForumStatistic(int totalMessages, int unreadMessages) {
+    public ForumStatistic(int totalMessages, int unreadMessages, Long lastMessageDate) {
         this.totalMessages = totalMessages;
         this.unreadMessages = unreadMessages;
+        this.lastMessageDate = lastMessageDate;
     }
 
     public int getTotalMessages() {
@@ -27,5 +29,13 @@ public class ForumStatistic {
 
     public void setUnreadMessages(int unreadMessages) {
         this.unreadMessages = unreadMessages;
+    }
+
+    public Long getLastMessageDate() {
+        return lastMessageDate;
+    }
+
+    public void setLastMessageDate(Long lastMessageDate) {
+        this.lastMessageDate = lastMessageDate;
     }
 }

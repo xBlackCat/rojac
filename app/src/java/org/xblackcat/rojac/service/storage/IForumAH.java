@@ -32,7 +32,36 @@ public interface IForumAH extends AH {
 
     void setForumRead(int forumId, boolean read) throws StorageException;
 
+    /**
+     * Returns total amount of messages in the specified forum.
+     *
+     * @param forumId forum id.
+     *
+     * @return total amount of messages in forum.
+     *
+     * @throws StorageException will be thrown if something wrong.
+     */
     int getMessagesInForum(int forumId) throws StorageException;
 
+    /**
+     * Returns total amount of unread messages in the specified forum.
+     *
+     * @param forumId forum id.
+     *
+     * @return total amount of unread messages in forum.
+     *
+     * @throws StorageException will be thrown if something wrong.
+     */
     int getUnreadMessagesInForum(int forumId) throws StorageException;
+
+    /**
+     * Returns last message date in the forum or <code>null</code> if forum is empty.
+     *
+     * @param forumId forum id.
+     *
+     * @return last message date in forum or <code>null</code> if forum is empty.
+     *
+     * @throws StorageException will be thrown if something wrong.
+     */
+    Long getLastMessageDateInForum(int forumId) throws StorageException;
 }
