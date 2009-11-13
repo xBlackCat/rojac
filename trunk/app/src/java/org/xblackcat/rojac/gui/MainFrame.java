@@ -398,6 +398,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
         if (forumId == null) {
             editDlg.editMessage(messageId);
+        } else if (messageId == null) {
+            editDlg.createTopic(forumId);
         } else {
             editDlg.answerOn(messageId);
         }

@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view;
 
+import ch.lambdaj.Lambda;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.options.Property;
@@ -8,11 +9,11 @@ import sun.swing.DefaultLookup;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class MultiLineForumRenderer extends JPanel
@@ -38,6 +39,8 @@ public class MultiLineForumRenderer extends JPanel
     private LineRenderer dateLine = new LineRenderer(JLabel.RIGHT);
     private LineRenderer statLine = new LineRenderer(JLabel.RIGHT);
 
+    protected final JComponent components;
+
     /**
      * Creates a default table cell renderer.
      */
@@ -50,6 +53,8 @@ public class MultiLineForumRenderer extends JPanel
         add(titleLine, BorderLayout.NORTH);
         add(statLine, BorderLayout.EAST);
         add(dateLine, BorderLayout.WEST);
+
+        components = Lambda.forEach(Arrays.asList(titleLine, statLine, dateLine));
     }
 
     private Border getNoFocusBorder() {
@@ -141,6 +146,9 @@ public class MultiLineForumRenderer extends JPanel
         if (isSelected) {
             super.setForeground(fg == null ? table.getSelectionForeground() : fg);
             super.setBackground(bg == null ? table.getSelectionBackground(): bg);
+
+            components.setForeground(fg == null ? table.getSelectionForeground() : fg);
+            components.setBackground(bg == null ? table.getSelectionBackground(): bg);
         } else {
             Color background = unselectedBackground != null ? unselectedBackground : table.getBackground();
             if (background == null || background instanceof javax.swing.plaf.UIResource) {
@@ -151,9 +159,10 @@ public class MultiLineForumRenderer extends JPanel
             }
             super.setForeground(unselectedForeground != null ? unselectedForeground : table.getForeground());
             super.setBackground(background);
-        }
 
-        setFont(table.getFont());
+            components.setForeground(unselectedForeground != null ? unselectedForeground : table.getForeground());
+            components.setBackground(background);
+        }
 
         if (hasFocus) {
             Border border = null;
@@ -170,15 +179,20 @@ public class MultiLineForumRenderer extends JPanel
                 col = DefaultLookup.getColor(this, ui, "Table.focusCellForeground");
                 if (col != null) {
                     super.setForeground(col);
+
+                    components.setForeground(col);
                 }
                 col = DefaultLookup.getColor(this, ui, "Table.focusCellBackground");
                 if (col != null) {
                     super.setBackground(col);
+
+                    components.setBackground(col);
                 }
             }
         } else {
             setBorder(getNoFocusBorder());
         }
+        components.setBorder(null);
 
         ForumData fd = (ForumData) value;
 
@@ -219,16 +233,23 @@ public class MultiLineForumRenderer extends JPanel
         }
         table.setToolTipText(titleText + " " + statText);
 
-        titleLine.getTableCellRendererComponent(table, titleText, isSelected, hasFocus, row, column);
-        statLine.getTableCellRendererComponent(table, statText, isSelected, hasFocus, row, column);
-        dateLine.getTableCellRendererComponent(table, dateText, isSelected, hasFocus, row, column);
+        int style = Font.PLAIN;
+        if (hasUnread) style |= Font.BOLD;
+        if (!isSubcribed) style |= Font.ITALIC;
 
-        titleLine.setAttributes(isSubcribed, hasUnread);
-        statLine.setAttributes(isSubcribed, hasUnread);
-        dateLine.setAttributes(isSubcribed, hasUnread);
+        setFont(table.getFont().deriveFont(style));
+        components.setFont(table.getFont().deriveFont(style));
+
+        titleLine.setText(titleText);
+        statLine.setText(statText);
+        dateLine.setText(dateText);
 
 //        super.invalidate();
-        table.setRowHeight(row, getPreferredSize().height);
+        int newHeight = getPreferredSize().height;
+        int oldHeight = table.getRowHeight(row);
+        if (oldHeight != newHeight) {
+            table.setRowHeight(row, newHeight);
+        }
 
         return this;
     }
@@ -278,7 +299,6 @@ public class MultiLineForumRenderer extends JPanel
      * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more information.
      */
     public void revalidate() {
-        super.revalidate();
     }
 
     /**
@@ -292,7 +312,6 @@ public class MultiLineForumRenderer extends JPanel
      * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more information.
      */
     public void repaint(Rectangle r) {
-        super.repaint(r);
     }
 
     /**
@@ -301,7 +320,6 @@ public class MultiLineForumRenderer extends JPanel
      * @since 1.5
      */
     public void repaint() {
-        super.repaint();
     }
 
     /**
@@ -326,20 +344,82 @@ public class MultiLineForumRenderer extends JPanel
     public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
     }
 
-    private static class LineRenderer extends DefaultTableCellRenderer {
+    private class LineRenderer extends JLabel {
         private LineRenderer(int alignment) {
             super();
             setHorizontalAlignment(alignment);
         }
 
-        private void setAttributes(boolean subscribed, boolean unread) {
-            int style = Font.PLAIN;
-            if (unread) style |= Font.BOLD;
-            if (!subscribed) style |= Font.ITALIC;
+        /**
+         * Overridden for performance reasons.
+         * See the <a href="#override">Implementation Note</a>
+         * for more information.
+         *
+         * @since 1.5
+         */
+        public void invalidate() {}
 
-            setFont(getParent().getFont().deriveFont(style));
-            setIcon(null);
-            setBorder(null);
+        /**
+         * Overridden for performance reasons.
+         * See the <a href="#override">Implementation Note</a>
+         * for more information.
+         */
+        public void validate() {}
+
+        /**
+         * Overridden for performance reasons.
+         * See the <a href="#override">Implementation Note</a>
+         * for more information.
+         */
+        public void revalidate() {}
+
+        /**
+         * Overridden for performance reasons.
+         * See the <a href="#override">Implementation Note</a>
+         * for more information.
+         */
+        public void repaint(long tm, int x, int y, int width, int height) {}
+
+        /**
+         * Overridden for performance reasons.
+         * See the <a href="#override">Implementation Note</a>
+         * for more information.
+         */
+        public void repaint(Rectangle r) { }
+
+        /**
+         * Overridden for performance reasons.
+         * See the <a href="#override">Implementation Note</a>
+         * for more information.
+         *
+         * @since 1.5
+         */
+        public void repaint() {
         }
+
+        /**
+         * Overridden for performance reasons.
+         * See the <a href="#override">Implementation Note</a>
+         * for more information.
+         */
+        protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        // Strings get interned...
+        if (propertyName=="text"
+                    || propertyName == "labelFor"
+                    || propertyName == "displayedMnemonic"
+                    || ((propertyName == "font" || propertyName == "foreground")
+                        && oldValue != newValue
+                        && getClientProperty(javax.swing.plaf.basic.BasicHTML.propertyKey) != null)) {
+
+                super.firePropertyChange(propertyName, oldValue, newValue);
+            }
+        }
+
+        /**
+         * Overridden for performance reasons.
+         * See the <a href="#override">Implementation Note</a>
+         * for more information.
+         */
+        public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) { }
     }
 }
