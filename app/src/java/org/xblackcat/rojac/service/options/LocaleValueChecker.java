@@ -1,8 +1,9 @@
 package org.xblackcat.rojac.service.options;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.utils.ResourceUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,14 +14,28 @@ import java.util.Locale;
  */
 
 final class LocaleValueChecker implements IValueChecker<Locale> {
+    private static final Log log = LogFactory.getLog(LocaleValueChecker.class);
     private final Collection<Locale> locales;
 
     LocaleValueChecker() {
+        if (log.isTraceEnabled()) {
+            log.trace("Initialize locale holder");
+        }
         Locale[] locales;
         try {
             locales = ResourceUtils.localesForBundle("/i18n/messages");
-        } catch (IOException e) {
-            throw new RuntimeException("Can not initialize locales list.", e);
+        } catch (Throwable e) {
+            if (log.isWarnEnabled()) {
+                log.warn("Can not obtain list of available locales.", e);
+            }
+            throw new RuntimeException("Can not load a locales list", e);
+        }
+        if (log.isTraceEnabled()) {
+            log.trace("Found " + locales.length + " locales");
+
+            for (Locale l : locales) {
+                log.trace("Available locale: " + l);
+            }
         }
         this.locales = new HashSet<Locale>(Arrays.asList(locales));
     }

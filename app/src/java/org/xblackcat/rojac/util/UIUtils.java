@@ -33,7 +33,7 @@ public final class UIUtils {
 
             Dimension preferredSize = f.getPreferredSize();
             if (preferredSize.height > f.getHeight() || preferredSize.width > f.getWidth()) {
-                f.pack();
+                f.setSize(preferredSize);
             }
         }
     }
