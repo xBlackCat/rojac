@@ -39,8 +39,8 @@ public class ForumsListView extends AView {
         forums.setTableHeader(null);
         add(new JScrollPane(forums));
 
-        forums.setFont(forums.getFont().deriveFont(Font.PLAIN));
-        forums.setDefaultRenderer(ForumData.class, new ForumCellRenderer());
+        forums.setDefaultRenderer(ForumData.class, new MultiLineForumRenderer());
+//        forums.setDefaultRenderer(ForumData.class, new ForumCellRenderer());
         forums.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

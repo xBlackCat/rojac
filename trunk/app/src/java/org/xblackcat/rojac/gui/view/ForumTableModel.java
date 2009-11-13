@@ -93,6 +93,7 @@ public class ForumTableModel extends AbstractTableModel {
 
                     int total = 0;
                     int unread = 0;
+                    Long lastMessageDate = null;
                     Forum f;
                     try {
                         f = fah.getForumById(id);
@@ -104,11 +105,12 @@ public class ForumTableModel extends AbstractTableModel {
                     try {
                         total = fah.getMessagesInForum(id);
                         unread = fah.getUnreadMessagesInForum(id);
+                        lastMessageDate = fah.getLastMessageDateInForum(id);
                     } catch (StorageException e) {
                         log.error("Can not load statistic for forum [id:" + id + "].", e);
                     }
 
-                    final ForumStatistic stat = new ForumStatistic(total, unread);
+                    final ForumStatistic stat = new ForumStatistic(total, unread, lastMessageDate);
                     final Forum forum = f;
 
                     SwingUtilities.invokeLater(new Runnable() {

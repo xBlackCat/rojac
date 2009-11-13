@@ -80,6 +80,11 @@ final class CachedForumAH implements IForumAH, IPurgable {
         return forumAH.getUnreadMessagesInForum(forumId);
     }
 
+    @Override
+    public Long getLastMessageDateInForum(int id) throws StorageException {
+        return forumAH.getLastMessageDateInForum(id);
+    }
+
     public void purge() {
         forumCache.purge();
         subscribedForums.purge();
