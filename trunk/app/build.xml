@@ -220,12 +220,12 @@
         </jar>
 
         <path id="rojac.full.libs">
-            <fileset dir="${rojac-application.dist.dir}">
-                <include name="lib/**/*.jar"/>
-            </fileset>
             <dirset dir="${rojac-application.dist.dir}">
                 <include name="conf"/>
             </dirset>
+            <fileset dir="${rojac-application.dist.dir}">
+                <include name="lib/**/*.jar"/>
+            </fileset>
         </path>
 
         <pathconvert targetos="windows" property="dist.win32.classpath" refid="rojac.full.libs">
@@ -276,9 +276,9 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
     <icon>${rojac-application.basedir}/extras/design/rojac.ico</icon>
     <classPath>
         <mainClass>${rojac.launcher.class}</mainClass>
+        <cp>../conf</cp>
         <cp>../lib/*.jar</cp>
         <cp>../lib/lnf/*.jar</cp>
-        <cp>../conf</cp>
     </classPath>
     <jre>
         <minVersion>1.6.0</minVersion>
