@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
+import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.util.UIUtils;
 
@@ -33,7 +34,7 @@ public final class Property<T> {
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());
     public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", Locale.getDefault(), new LocaleValueChecker());
-    public static final Property<String> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", String.class);
+    public static final Property<IconPack> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", new IconPack("Default pack", "images"), new IconPackValueChecker());
 
     // User properties (login dialog)
     public static final Property<String> RSDN_USER_NAME = create("rojac.rsdn.user.name", String.class);
