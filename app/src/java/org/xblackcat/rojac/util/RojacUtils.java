@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.options.Property;
@@ -10,11 +12,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.MissingResourceException;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author xBlackCat
@@ -185,4 +185,77 @@ public final class RojacUtils {
 
         return false;
     }
+
+    /**
+     * Returns a list of available locales for specified bundle.
+     *
+     * @param bundle base name of bundle with / as separators and without extension.
+     *
+     * @return an array of available locales for the specified bundle.
+     */
+    public static Locale[] localesForBundle(String bundle) throws IOException {
+        return localesForBundle(bundle, false);
+    }
+
+    /**
+     * Returns a list of available locales for specified bundle.
+     *
+     * @param bundle     base name of bundle with / as separators and without extension.
+     * @param addDefault flag to specify is the default resource bundle should be associated with default locale.
+     *
+     * @return an array of available locales for the specified bundle.
+     */
+    public static Locale[] localesForBundle(String bundle, boolean addDefault) throws IOException {
+        if (bundle == null) {
+            throw new NullPointerException("Empty bundle name");
+        }
+
+        // Prepare bundle string for processing.
+        while (bundle.startsWith("/")) {
+            bundle = bundle.substring(1);
+        }
+
+        while (bundle.endsWith("/")) {
+            bundle = bundle.substring(0, bundle.length() - 1);
+        }
+
+        if (bundle.length() == 0) {
+            throw new IllegalArgumentException("Empty bundle name.");
+        }
+
+        String bundleName;
+
+        int pos = bundle.lastIndexOf('/');
+        if (pos == -1) {
+            bundleName = bundle;
+        } else {
+            bundleName = bundle.substring(pos + 1);
+        }
+
+        Collection<Locale> locales = new HashSet<Locale>();
+
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+
+        Resource[] resources = resolver.getResources("/" + bundle + "*.properties");
+        Pattern localePattern = Pattern.compile(Pattern.quote(bundleName) + "(?:_(\\w{2})(?:_(\\w{2}))?)?\\.properties");
+        for (Resource resource : resources) {
+            Matcher m = localePattern.matcher(resource.getFilename());
+            if (m.matches()) {
+                if (m.group(1) == null) {
+                    if (addDefault) {
+                        locales.add(Locale.getDefault());
+                    }
+                } else if (m.group(2) == null) {
+                    locales.add(new Locale(m.group(1)));
+                } else {
+                    locales.add(new Locale(m.group(1), m.group(2)));
+                }
+            } else {
+                System.out.println("Something wrong.");
+            }
+        }
+
+        return locales.toArray(new Locale[locales.size()]);
+    }
+    
 }
