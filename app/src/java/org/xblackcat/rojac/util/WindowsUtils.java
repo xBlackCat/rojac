@@ -7,6 +7,7 @@ import org.xblackcat.rojac.service.RojacHelper;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.MissingResourceException;
 
 /**
  * @author xBlackCat
@@ -69,12 +70,6 @@ public final class WindowsUtils {
         return cover;
     }
 
-    public static void setComponentFixedSize(JComponent component, Dimension size) {
-        component.setMinimumSize(size);
-        component.setMaximumSize(size);
-        component.setPreferredSize(size);
-        component.setSize(size);
-    }
 
     public static JToggleButton setupToggleButton(String imageSet, ActionListener action, Messages mes) {
         return setupToggleButton(imageSet, action, mes, null);
@@ -82,8 +77,34 @@ public final class WindowsUtils {
 
     public static JToggleButton setupToggleButton(String buttonName, ActionListener action, Messages mes, ButtonGroup bg) {
         String imageSet = BUTTON_IMAGES_PREFIX + buttonName + '/';
+        // Load icons for the button.
+        // If default icon is not present a MissingResourceException will be thrown.
+        String extension = "png";
+        Icon defaultIcon = RojacHelper.loadIcon(imageSet + "enabled." + extension);
+        Icon selectedIcon;
+        try {
+            selectedIcon = RojacHelper.loadIcon(imageSet + "pressed." + extension);
+        } catch (MissingResourceException e) {
+            // Use default icon
+            selectedIcon = defaultIcon;
+        }
+        Icon hoverIcon;
+        try {
+            hoverIcon = RojacHelper.loadIcon(imageSet + "over." + extension);
+        } catch (MissingResourceException e) {
+            // Use default icon
+            hoverIcon = defaultIcon;
+        }
+        Icon disabledIcon;
+        try {
+            disabledIcon = RojacHelper.loadIcon(imageSet + "disabled." + extension);
+        } catch (MissingResourceException e) {
+            // Use default icon
+            disabledIcon = defaultIcon;
+        }
+
         JToggleButton toggleButton = new JToggleButton();
-        toggleButton.setIcon(RojacHelper.loadIcon(imageSet + "enabled.png"));
+        toggleButton.setIcon(defaultIcon);
         toggleButton.setHorizontalAlignment(SwingConstants.CENTER);
         toggleButton.setBorder(null);
         toggleButton.setBackground(Color.white);
@@ -91,10 +112,10 @@ public final class WindowsUtils {
         toggleButton.setBorderPainted(false);
         toggleButton.setMargin(EMPTY_MARGIN);
         toggleButton.setRolloverEnabled(true);
-        toggleButton.setSelectedIcon(RojacHelper.loadIcon(imageSet + "pressed.png"));
-        toggleButton.setRolloverIcon(RojacHelper.loadIcon(imageSet + "over.png"));
-        toggleButton.setRolloverSelectedIcon(RojacHelper.loadIcon(imageSet + "pressed.png"));
-        toggleButton.setDisabledIcon(RojacHelper.loadIcon(imageSet + "disabled.png"));
+        toggleButton.setSelectedIcon(selectedIcon);
+        toggleButton.setRolloverIcon(hoverIcon););
+        toggleButton.setRolloverSelectedIcon(selectedIcon);
+        toggleButton.setDisabledIcon(disabledIcon);
         toggleButton.addActionListener(action);
         toggleButton.setOpaque(false);
         toggleButton.setToolTipText(mes.get());
@@ -121,14 +142,46 @@ public final class WindowsUtils {
         return button;
     }
 
-    public static JButton setupImageButton(String buttonName, ActionListener action, Messages tooltip) {
-        return setupImageButton(buttonName, action, tooltip.get());
-    }
-
-    public static JButton setupImageButton(String buttonName, ActionListener action, String tooltip) {
+    /**
+     * Initializes a button with image. Button name define images set. Each button has four images for four button
+     * states: normal, disabled, hovered and pressed.
+     *
+     * @param buttonName identifier of images set for the button.
+     * @param action     action listener to fire when action is performed.
+     * @param toolTip    localized message identifier.
+     *
+     * @return initialized button.
+     */
+    public static JButton setupImageButton(String buttonName, ActionListener action, Messages toolTip) {
         String imageSet = BUTTON_IMAGES_PREFIX + buttonName + '/';
+        // Load icons for the button.
+        // If default icon is not present a MissingResourceException will be thrown.
+        String extension = "png";
+        Icon defaultIcon = RojacHelper.loadIcon(imageSet + "enabled." + extension);
+        Icon selectedIcon;
+        try {
+            selectedIcon = RojacHelper.loadIcon(imageSet + "pressed." + extension);
+        } catch (MissingResourceException e) {
+            // Use default icon
+            selectedIcon = defaultIcon;
+        }
+        Icon hoverIcon;
+        try {
+            hoverIcon = RojacHelper.loadIcon(imageSet + "over." + extension);
+        } catch (MissingResourceException e) {
+            // Use default icon
+            hoverIcon = defaultIcon;
+        }
+        Icon disabledIcon;
+        try {
+            disabledIcon = RojacHelper.loadIcon(imageSet + "disabled." + extension);
+        } catch (MissingResourceException e) {
+            // Use default icon
+            disabledIcon = defaultIcon;
+        }
+
         JButton button = new JButton();
-        button.setIcon(RojacHelper.loadIcon(imageSet + "enabled.png"));
+        button.setIcon(defaultIcon);
         button.setHorizontalAlignment(SwingConstants.CENTER);
         button.setBorder(null);
         button.setBackground(Color.white);
@@ -136,13 +189,13 @@ public final class WindowsUtils {
         button.setBorderPainted(false);
         button.setMargin(EMPTY_MARGIN);
         button.setRolloverEnabled(true);
-        button.setSelectedIcon(RojacHelper.loadIcon(imageSet + "pressed.png"));
-        button.setRolloverIcon(RojacHelper.loadIcon(imageSet + "over.png"));
-        button.setRolloverSelectedIcon(RojacHelper.loadIcon(imageSet + "pressed.png"));
-        button.setDisabledIcon(RojacHelper.loadIcon(imageSet + "disabled.png"));
+        button.setSelectedIcon(selectedIcon);
+        button.setRolloverIcon(hoverIcon);
+        button.setRolloverSelectedIcon(selectedIcon);
+        button.setDisabledIcon(disabledIcon);
         button.addActionListener(action);
         button.setOpaque(false);
-        button.setToolTipText(tooltip);
+        button.setToolTipText(toolTip.get());
         return button;
     }
 
@@ -205,7 +258,7 @@ public final class WindowsUtils {
     }
 
     public static Component createButtonsBar(AButtonAction... buttons) {
-        return createButtonsBar((JDialog) null, null, buttons);
+        return createButtonsBar(null, null, buttons);
     }
 
     public static Component createButtonsBar(JDialog dlg, Messages defAction, AButtonAction... buttons) {
