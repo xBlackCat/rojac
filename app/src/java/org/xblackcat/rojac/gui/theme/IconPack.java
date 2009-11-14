@@ -34,11 +34,12 @@ public final class IconPack {
         return new IconsGetter(buttonName);
     }
 
-    private class IconsGetter implements IButtonIcons {
-        protected Icon defaultIcon;
-        protected Icon selectedIcon;
-        protected Icon rolloverIcon;
-        protected Icon disabledIcon;
+    private final class IconsGetter implements IButtonIcons {
+        private Icon defaultIcon;
+        private Icon selectedIcon;
+        private Icon rolloverIcon;
+        private Icon disabledIcon;
+        private Icon rolloverSelectedIcon;
 
         private IconsGetter(String buttonName) {
             String imageSet = pathPrefix + "/button/" + buttonName + '/';
@@ -56,6 +57,12 @@ public final class IconPack {
             } catch (MissingResourceException e) {
                 // Use default icon
                 rolloverIcon = defaultIcon;
+            }
+            try {
+                rolloverSelectedIcon = ResourceUtils.loadIcon(imageSet + "pressed-over." + extension);
+            } catch (MissingResourceException e) {
+                // Use default icon
+                rolloverSelectedIcon = rolloverIcon;
             }
             try {
                 disabledIcon = ResourceUtils.loadIcon(imageSet + "disabled." + extension);
@@ -82,7 +89,7 @@ public final class IconPack {
 
         @Override
         public Icon getRolloverSelectedIcon() {
-            return selectedIcon;
+            return rolloverSelectedIcon;
         }
 
         @Override
