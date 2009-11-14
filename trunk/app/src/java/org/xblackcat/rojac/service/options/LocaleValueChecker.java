@@ -2,7 +2,7 @@ package org.xblackcat.rojac.service.options;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.utils.ResourceUtils;
+import org.xblackcat.rojac.util.RojacUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +23,7 @@ final class LocaleValueChecker implements IValueChecker<Locale> {
         }
         Locale[] locales;
         try {
-            locales = ResourceUtils.localesForBundle("/i18n/messages");
+            locales = RojacUtils.localesForBundle("/i18n/messages");
         } catch (Throwable e) {
             if (log.isWarnEnabled()) {
                 log.warn("Can not obtain list of available locales.", e);

@@ -164,7 +164,13 @@ public final class Property<T> {
      * @return value of the property.
      */
     public T get(T defValue) {
-        T val = ServiceFactory.getInstance().getOptionsService().getProperty(this);
+        ServiceFactory instance = ServiceFactory.getInstance();
+        // For testcase purposes.
+        if (instance == null) {
+            return null;
+        }
+
+        T val = instance.getOptionsService().getProperty(this);
 
         return val == null ? defValue : val;
     }

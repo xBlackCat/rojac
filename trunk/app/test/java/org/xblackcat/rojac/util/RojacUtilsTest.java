@@ -4,9 +4,13 @@ import junit.framework.TestCase;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
 import ru.rsdn.Janus.PostRatingInfo;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * @author xBlackCat
@@ -16,7 +20,6 @@ public class RojacUtilsTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ServiceFactory.initialize();
     }
 
     public void testArrayConvertor() {
@@ -87,6 +90,37 @@ public class RojacUtilsTest extends TestCase {
         assertTrue(childLevel1.has(new PropertyNode("show_marks_pane")));
     }
 
+    public void testBundleLocales() throws Exception {
+        {
+            Locale[] locales = RojacUtils.localesForBundle("/locales/bundle", false);
+
+            Set<Locale> l = new HashSet<Locale>(Arrays.asList(locales));
+
+            assertEquals(3, l.size());
+
+            assertFalse(l.remove(Locale.getDefault()));
+            assertTrue(l.remove(new Locale("de")));
+            assertTrue(l.remove(new Locale("en", "US")));
+            assertTrue(l.remove(new Locale("en", "CA")));
+            assertTrue(l.isEmpty());
+        }
+
+        {
+            Locale[] locales = RojacUtils.localesForBundle("/locales/bundle", true);
+
+            Set<Locale> l = new HashSet<Locale>(Arrays.asList(locales));
+
+            assertEquals(4, l.size());
+
+            assertTrue(l.remove(Locale.getDefault()));
+            assertTrue(l.remove(new Locale("de")));
+            assertTrue(l.remove(new Locale("en", "US")));
+            assertTrue(l.remove(new Locale("en", "CA")));
+            assertTrue(l.isEmpty());
+
+        }
+    }
+    
     private static PropertyNode next(PropertyNode n) {
         return (n == null || n.isEmpty()) ? null : n.getChild(0);
     }
