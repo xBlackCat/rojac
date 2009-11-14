@@ -2,6 +2,7 @@ package org.xblackcat.rojac.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -68,5 +69,9 @@ public final class UIUtils {
         }
 
         return laf;
+    }
+
+    public static IconPack getDefaultIconsPack() {
+        return new IconPack("Default pack", "images", "png");
     }
 }
