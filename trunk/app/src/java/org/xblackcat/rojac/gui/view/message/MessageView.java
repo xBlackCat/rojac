@@ -11,13 +11,13 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -101,7 +101,7 @@ public class MessageView extends AMessageView implements IInternationazable {
                 Mark.x3
         );
 
-        final MarkRender markRender = new MarkRender(RojacHelper.loadIcon("marks/select.gif"));
+        final MarkRender markRender = new MarkRender(ResourceUtils.loadIcon("images/marks/select.gif"));
 
         marks = new JComboBox(marksModel);
         marks.setFocusable(false);

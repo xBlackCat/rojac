@@ -2,8 +2,8 @@ package org.xblackcat.rojac.gui.tray;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import java.awt.*;
 
@@ -20,7 +20,7 @@ public class RojacTray {
 
     public RojacTray() {
         boolean supported = SystemTray.isSupported();
-        trayIcon = new TrayIcon(RojacHelper.loadImage(""), RojacUtils.VERSION_STRING);
+        trayIcon = new TrayIcon(ResourceUtils.loadImage(""), RojacUtils.VERSION_STRING);
 
         if (supported) {
             try {

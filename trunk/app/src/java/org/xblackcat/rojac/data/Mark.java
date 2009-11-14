@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.data;
 
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -47,11 +46,11 @@ public enum Mark {
     }
 
     public Icon getIcon() {
-        return RojacHelper.loadIcon(path);
+        return ResourceUtils.loadIcon("/images/" + path);
     }
 
     public URL getUrl() {
-        return ResourceUtils.getResource(RojacHelper.getThemePath(path));
+        return ResourceUtils.getResource("/images/" + path);
     }
 
     public String toString() {
