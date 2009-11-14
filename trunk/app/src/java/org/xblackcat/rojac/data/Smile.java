@@ -8,7 +8,7 @@ public enum Smile {
     Smile("smile", ":)", ":-)"),
     Sad("frown", ":(", ":-("),
     Wink("wink", ";)", ";-)"),
-    Biggrin("biggrin", ":))", ":-))"),
+    BigGrin("biggrin", ":))", ":-))"),
     Lol("lol", ":)))", ":-)))"),
     Smirk("smirk", ":-\\"),
     Confused("confused", ":???:"),

@@ -31,7 +31,7 @@ public enum RsdnTagList implements ITag<RsdnTagList> {
     SmileSmile(new SmileTag(Smile.Smile)),
     SmileSad(new SmileTag(Smile.Sad)),
     SmileWink(new SmileTag(Smile.Wink)),
-    SmileBiggrin(new SmileTag(Smile.Biggrin)),
+    SmileBigGrin(new SmileTag(Smile.BigGrin)),
     SmileLol(new SmileTag(Smile.Lol)),
     SmileSmirk(new SmileTag(Smile.Smirk)),
     SmileConfused(new SmileTag(Smile.Confused)),

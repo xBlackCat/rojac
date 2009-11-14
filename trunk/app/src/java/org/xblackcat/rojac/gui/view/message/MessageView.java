@@ -115,15 +115,11 @@ public class MessageView extends AMessageView implements IInternationazable {
             }
         });
 
-        answer = new JButton();
-        answer.addActionListener(new ActionListener() {
+        answer = WindowsUtils.setupImageButton("reply", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mainFrame.editMessage(forumId, messageId);
             }
-        });
-        answer.setIcon(RojacHelper.loadIcon("actions/reply.gif"));
-        answer.setFocusable(false);
-        answer.setMargin(WindowsUtils.EMPTY_MARGIN);
+        }, Messages.BUTTON_REPLY_TOOLTIP);
 
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         controls.add(answer);

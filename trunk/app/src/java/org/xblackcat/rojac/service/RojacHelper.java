@@ -6,6 +6,7 @@ import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.MissingResourceException;
 
 /**
  * Helper class to access application user information.
@@ -35,11 +36,11 @@ public final class RojacHelper {
         return "/images/" + path;
     }
 
-    public static Icon loadIcon(String path) {
+    public static Icon loadIcon(String path) throws MissingResourceException {
         return ResourceUtils.loadIcon(getThemePath(path));
     }
 
-    public static Image loadImage(String path) {
+    public static Image loadImage(String path) throws MissingResourceException {
         return ResourceUtils.loadImage(getThemePath(path));
     }
 }
