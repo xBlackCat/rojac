@@ -65,7 +65,7 @@ public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
                     limit
             );
 
-            Property.RSDN_USER_ID.get(data.getOwnUserId());
+            Property.RSDN_USER_ID.set(data.getOwnUserId());
 
             messages = data.getMessages();
             Moderate[] moderates = data.getModerates();

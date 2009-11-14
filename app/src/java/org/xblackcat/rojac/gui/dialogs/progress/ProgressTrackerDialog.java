@@ -21,8 +21,8 @@ public class ProgressTrackerDialog extends JDialog {
     private JProgressBar logProgress = new JProgressBar();
     private ProgressTrackerDialog.RunnableTask task;
 
-    public ProgressTrackerDialog(JFrame mainFrame, ITask task) {
-        super(mainFrame, false);
+    public ProgressTrackerDialog(Window mainFrame, ITask task) {
+        super(mainFrame, ModalityType.MODELESS);
         JPanel cp = new JPanel(new BorderLayout());
 
         cp.add(logArea, BorderLayout.CENTER);
