@@ -30,6 +30,7 @@ public final class ServiceFactory {
     private static final Log log = LogFactory.getLog(ServiceFactory.class);
 
     private static ServiceFactory INSTANCE = null;
+    private static final String DBCONFIG_PACKAGE = "dbconfig/";
 
     public static ServiceFactory getInstance() {
         return INSTANCE;
@@ -84,24 +85,33 @@ public final class ServiceFactory {
     private static DBStorage initializeStorage() throws RojacException {
         Properties mainProperties;
         try {
-            mainProperties = ResourceUtils.loadProperties("/config/rojac.config");
+            mainProperties = ResourceUtils.loadProperties("/rojac.config");
         } catch (IOException e) {
             throw new RojacException("rojac.config was not found in class path", e);
         }
 
         String home = System.getProperty("rojac.home");
         if (StringUtils.isBlank(home)) {
-            String userHome = mainProperties.getProperty("rojac.user.home.def");
+            String userHome = mainProperties.getProperty("rojac.home");
             if (StringUtils.isBlank(userHome)) {
-                throw new RojacException("Either {$rojac.user.home.def} property in file or {$rojac.home} system property is nod defined.");
+                throw new RojacException("{$rojac.home} is not defined either property in file or system property.");
             }
 
             home = ResourceUtils.putSystemProperties(userHome);
-            if (log.isDebugEnabled()) {
-                log.debug("{$rojac.home} is not defined. It will initialized with '" + home + "' value.");
+            if (log.isTraceEnabled()) {
+                log.trace("{$rojac.home} is not defined. It will initialized with '" + home + "' value.");
             }
             System.setProperty("rojac.home", home);
         }
+
+        String dbHome = mainProperties.getProperty("rojac.db.home");
+        if (StringUtils.isBlank(dbHome)) {
+            if (log.isWarnEnabled()) {
+                log.warn("{$rojac.db.home} is not defined. Assumed the same as {$rojac.home}");
+            }
+            dbHome = home;
+        }
+        System.setProperty("rojac.db.home", ResourceUtils.putSystemProperties(dbHome));
 
         File homeFolder = new File(home);
         if (!homeFolder.exists()) {
@@ -114,7 +124,7 @@ public final class ServiceFactory {
             throw new RojacException("Can not create a '" + homeFolder.getAbsolutePath() + "' folder for storing Rojac configuration.");
         }
 
-        String configurationName = mainProperties.getProperty("rojac.service.database.engine.config");
+        String configurationName = DBCONFIG_PACKAGE + mainProperties.getProperty("rojac.database.engine");
 
         IConnectionFactory connectionFactory = new PooledConnectionFactoryl(configurationName);
         DBStorage storage = new DBStorage(configurationName, connectionFactory);
