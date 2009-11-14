@@ -16,10 +16,10 @@ public final class IconPack {
     private final String name;
     private final String pathPrefix;
 
-    public IconPack(String name, String pathPrefix) {
+    public IconPack(String name, String pathPrefix, String extension) {
         this.name = name;
         this.pathPrefix = pathPrefix;
-        extension = "png";
+        this.extension = extension;
     }
 
     public String getName() {
@@ -98,7 +98,7 @@ public final class IconPack {
         }
     }
 
-    private static class NoIcons implements IButtonIcons {
+    private final static class NoIcons implements IButtonIcons {
         @Override
         public Icon getDefaultIcon() {
             return null;
