@@ -1,46 +1,56 @@
 package org.xblackcat.rojac.service.commands;
 
+import ch.lambdaj.function.aggregate.Aggregator;
+import gnu.trove.TIntHashSet;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
+import org.xblackcat.rojac.service.options.Property;
 
 import java.util.Collection;
 import java.util.LinkedList;
+
+import static ch.lambdaj.Lambda.*;
 
 /**
  * @author xBlackCat
  */
 
-public class SynchronizeCommand extends ARsdnCommand<AffectedPosts> {
+public class SynchronizeCommand extends ARsdnCommand {
     // Delegated commands
-    private final ARsdnCommand[] commands;
+    private final Collection<ARsdnCommand> commands;
 
-    public SynchronizeCommand(IResultHandler<AffectedPosts> tiResultHandler) {
+    public SynchronizeCommand(IResultHandler tiResultHandler) {
         super(tiResultHandler);
 
-        commands = new ARsdnCommand[]{
-                new PostChangesCommand(tiResultHandler),
-//                new LoadUsersCommand(tiResultHandler),
-                new GetNewPostsCommand(tiResultHandler),
-                new LoadExtraMessagesCommand(tiResultHandler)
-        };
+        commands = new LinkedList<ARsdnCommand>();
+        commands.add(new PostChangesCommand(tiResultHandler));
+
+        if (Property.SYNCHRONIZER_LOAD_USERS.get()) {
+                commands.add(new LoadUsersCommand(tiResultHandler));
+        }
+        commands.add(new GetNewPostsCommand(tiResultHandler));
+        commands.add(new LoadExtraMessagesCommand(tiResultHandler));
     }
 
     @Override
-    protected AffectedPosts process(IProgressTracker trac) throws RojacException {
-        Collection<AffectedPosts> results = new LinkedList<AffectedPosts>();
+    public AffectedPosts process(IProgressTracker trac) throws RojacException {
+        forEach(commands).setJanusService(janusService);
 
-        for (ARsdnCommand<AffectedPosts> c : commands) {
-            c.janusService = janusService;
-
-            results.add(c.process(trac));
-        }
-
-        return new AffectedPosts().merge(results.toArray(new AffectedPosts[results.size()]));
+        return aggregate(commands, new AffectedPostsAggregator(), on(ARsdnCommand.class).process(trac));
     }
 
-    private static class DumbHandler implements IResultHandler<Boolean> {
+    private static class AffectedPostsAggregator implements Aggregator<AffectedPosts> {
         @Override
-        public void process(Boolean results) throws RojacException {
+        public AffectedPosts aggregate(Iterable<? extends AffectedPosts> iterable) {
+            TIntHashSet mIds = new TIntHashSet();
+            TIntHashSet fIds = new TIntHashSet();
+
+            for (AffectedPosts p : iterable) {
+                mIds.addAll(p.getAffectedMessageIds());
+                fIds.addAll(p.getAffectedForumIds());
+        }
+
+            return new AffectedPosts(mIds, fIds);
         }
     }
 }

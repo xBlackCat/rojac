@@ -8,10 +8,15 @@ import org.apache.commons.lang.ArrayUtils;
  */
 
 public class AffectedPosts {
-    private final int[] affectedMessageIds;
-    private final int[] affectedForumIds;
+    private final TIntHashSet affectedMessageIds;
+    private final TIntHashSet affectedForumIds;
 
     public AffectedPosts(int[] affectedMessageIds, int[] affectedForumIds) {
+        this.affectedMessageIds = new TIntHashSet(affectedMessageIds);
+        this.affectedForumIds = new TIntHashSet(affectedForumIds);
+    }
+
+    public AffectedPosts(TIntHashSet affectedMessageIds, TIntHashSet affectedForumIds) {
         this.affectedMessageIds = affectedMessageIds;
         this.affectedForumIds = affectedForumIds;
     }
@@ -21,22 +26,33 @@ public class AffectedPosts {
     }
 
     public int[] getAffectedMessageIds() {
-        return affectedMessageIds;
+        return affectedMessageIds.toArray();
     }
 
     public int[] getAffectedForumIds() {
-        return affectedForumIds;
+        return affectedForumIds.toArray();
+    }
+
+    public boolean isContainsMessage(int messageId) {
+        return affectedMessageIds.contains(messageId);
+    }
+
+    public boolean isContainsForum(int forumId) {
+        return affectedForumIds.contains(forumId);
     }
 
     public AffectedPosts merge(AffectedPosts... pp) {
-        TIntHashSet mids = new TIntHashSet(affectedMessageIds);
-        TIntHashSet fids = new TIntHashSet(affectedForumIds);
+        TIntHashSet mids = new TIntHashSet();
+        TIntHashSet fids = new TIntHashSet();
+
+        mids.addAll(affectedMessageIds.toArray());
+        fids.addAll(affectedForumIds.toArray());
 
         for (AffectedPosts p : pp) {
-            mids.addAll(p.affectedMessageIds);
-            fids.addAll(p.affectedForumIds);
+            mids.addAll(p.affectedMessageIds.toArray());
+            fids.addAll(p.affectedForumIds.toArray());
         }
 
-        return new AffectedPosts(mids.toArray(), fids.toArray());
+        return new AffectedPosts(mids, fids);
     }
 }

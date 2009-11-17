@@ -6,6 +6,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.commands.AffectedPosts;
 import org.xblackcat.rojac.service.commands.GetForumListCommand;
 import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -136,7 +137,7 @@ public class ForumsListView extends AView {
 
             protected void done() {
                 try {
-                    updateData(get());
+                    forumsModel.updateForums(get());
                 } catch (InterruptedException e) {
                     log.fatal("It finally happens!", e);
                 } catch (ExecutionException e) {
@@ -150,17 +151,18 @@ public class ForumsListView extends AView {
         return this;
     }
 
-    public void updateData(int... ids) {
-        forumsModel.updateForums(ids);
+    public void updateData(AffectedPosts changedData) {
+        forumsModel.updateForums(changedData.getAffectedForumIds());
     }
 
     private class UpdateActionListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            mainFrame.showProgressDialog(new GetForumListCommand(new IResultHandler<int[]>() {
-                public void process(final int[] forumIds) throws StorageException {
+            mainFrame.showProgressDialog(new GetForumListCommand(new IResultHandler() {
+                public void process(AffectedPosts ids) throws StorageException {
+                    final int[] forumIds = ids.getAffectedForumIds();
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            updateData(forumIds);
+                            forumsModel.updateForums(forumIds);
                         }
                     });
                 }

@@ -1,9 +1,11 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IMessageView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AMessageView;
+import org.xblackcat.rojac.service.commands.AffectedPosts;
 
 import javax.swing.*;
 
@@ -46,7 +48,7 @@ public class ThreadDoubleView extends AMessageView {
             }
 
             public void itemUpdated(int messageId) {
-                masterView.updateData(messageId);
+                masterView.updateData(new AffectedPosts(new int[] {messageId}, ArrayUtils.EMPTY_INT_ARRAY));
             }
         });
 
@@ -54,7 +56,8 @@ public class ThreadDoubleView extends AMessageView {
         splitPane.setBottomComponent(slaveView.getComponent());
         splitPane.setTopComponent(masterView.getComponent());
         splitPane.setOrientation(verticalSplit ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setDividerLocation(.5);
+        splitPane.setDividerLocation(.4);
+        splitPane.setResizeWeight(.4);
         add(splitPane);
     }
 
@@ -62,7 +65,7 @@ public class ThreadDoubleView extends AMessageView {
         masterView.loadItem(messageId);
     }
 
-    public void updateData(int... messageId) {
+    public void updateData(AffectedPosts messageId) {
         masterView.updateData(messageId);
         slaveView.updateData(messageId);
     }

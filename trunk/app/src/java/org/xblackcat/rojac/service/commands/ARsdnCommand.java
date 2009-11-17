@@ -21,15 +21,15 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public abstract class ARsdnCommand<T> implements ITask, ICommand {
+public abstract class ARsdnCommand implements ITask, ICommand {
     protected final Log log = LogFactory.getLog(getClass());
     private boolean executed = false;
 
     protected IJanusService janusService;
     protected final IStorage storage;
-    private final IResultHandler<T> resultHandler;
+    private final IResultHandler resultHandler;
 
-    protected ARsdnCommand(IResultHandler<T> resultHandler) {
+    protected ARsdnCommand(IResultHandler resultHandler) {
         this.resultHandler = resultHandler;
 
         ServiceFactory sf = ServiceFactory.getInstance();
@@ -50,7 +50,7 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
         c.testConnection();
         janusService = c;
 
-        T result = process(trac);
+        AffectedPosts result = process(trac);
 
         if (resultHandler != null) {
             resultHandler.process(result);
@@ -68,5 +68,9 @@ public abstract class ARsdnCommand<T> implements ITask, ICommand {
         vAH.updateVersionInfo(new VersionInfo(v, type));
     }
 
-    protected abstract T process(IProgressTracker trac) throws RojacException;
+    public abstract AffectedPosts process(IProgressTracker trac) throws RojacException;
+
+    public void setJanusService(IJanusService janusService) {
+        this.janusService = janusService;
+    }
 }

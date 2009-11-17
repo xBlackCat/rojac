@@ -16,7 +16,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public abstract class LoadPostsCommand<T extends AffectedPosts> extends ARsdnCommand<T> {
+abstract class LoadPostsCommand extends ARsdnCommand {
     /**
      * Placeholder of updated message ids set.
      */
@@ -44,7 +44,7 @@ public abstract class LoadPostsCommand<T extends AffectedPosts> extends ARsdnCom
         }
     };
 
-    public LoadPostsCommand(IResultHandler<T> resultHandler) {
+    public LoadPostsCommand(IResultHandler resultHandler) {
         super(resultHandler);
         modAH = storage.getModerateAH();
         mAH = storage.getMessageAH();

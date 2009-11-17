@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.service.commands.AffectedPosts;
 
 import javax.swing.*;
 
@@ -19,6 +20,6 @@ public class FavoritesView extends AView {
         return this;
     }
 
-    public void updateData(int... ids) {
+    public void updateData(AffectedPosts changedData) {
     }
 }

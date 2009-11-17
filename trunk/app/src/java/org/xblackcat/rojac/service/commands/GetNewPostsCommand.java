@@ -17,10 +17,10 @@ import org.xblackcat.rojac.service.options.Property;
  * @author xBlackCat
  */
 
-public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
+class GetNewPostsCommand extends LoadPostsCommand {
     private static final Log log = LogFactory.getLog(GetNewPostsCommand.class);
 
-    public GetNewPostsCommand(IResultHandler<AffectedPosts> iResultHandler) {
+    public GetNewPostsCommand(IResultHandler iResultHandler) {
         super(iResultHandler);
     }
 
@@ -88,7 +88,7 @@ public class GetNewPostsCommand extends LoadPostsCommand<AffectedPosts> {
 
         trac.addLodMessage("Getting new posts finished.");
 
-        return new AffectedPosts(processedMessages.toArray(), affectedForums.toArray());
+        return new AffectedPosts(processedMessages, affectedForums);
     }
 
 }

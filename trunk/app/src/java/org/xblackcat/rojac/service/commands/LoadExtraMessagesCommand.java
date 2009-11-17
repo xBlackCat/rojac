@@ -18,10 +18,10 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class LoadExtraMessagesCommand extends LoadPostsCommand<AffectedPosts> {
+public class LoadExtraMessagesCommand extends LoadPostsCommand {
     private static final Log log = LogFactory.getLog(LoadExtraMessagesCommand.class);
 
-    public LoadExtraMessagesCommand(IResultHandler<AffectedPosts> iResultHandler) {
+    public LoadExtraMessagesCommand(IResultHandler iResultHandler) {
         super(iResultHandler);
     }
 
@@ -44,7 +44,7 @@ public class LoadExtraMessagesCommand extends LoadPostsCommand<AffectedPosts> {
         }
 
         trac.addLodMessage("Loading extra messages finished.");        
-        return new AffectedPosts(processedMessages.toArray(), affectedForums.toArray());
+        return new AffectedPosts(processedMessages, affectedForums);
     }
 
     private void loadTopics(int[] messageIds) throws RsdnProcessorException, StorageException {
