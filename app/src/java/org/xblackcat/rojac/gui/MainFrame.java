@@ -387,8 +387,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             }
         }
 
-        SwingWorker sw = new RequestProcessor(resultHandler, requests);
-        ServiceFactory.getInstance().getExecutor().execute(sw);
+        RojacUtils.processRequests(resultHandler, requests);
     }
 
     public void editMessage(Integer forumId, Integer messageId) {

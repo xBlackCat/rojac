@@ -75,6 +75,8 @@ public enum Messages {
     DIALOG_LOGIN_SAVE_PASSWORD,
     DIALOG_LOGIN_EMPTY_USERNAME,
     DIALOG_LOGIN_EMPTY_PASSWORD,
+    DIALOG_LOGIN_INVALID_USERNAME,
+    DIALOG_LOGIN_INVALID_USERNAME_TITLE,
 
     // Load extra messages dialog texts
     DIALOG_LOADMESSAGE_TITLE,
@@ -85,7 +87,7 @@ public enum Messages {
     ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE,
     ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE,
     MESSAGE_RESPONSE_HEADER,
-    
+
     /**
      * Parameters are: 1. Mark description
      */
@@ -143,7 +145,7 @@ public enum Messages {
 
     private static final Log log = LogFactory.getLog(Messages.class);
     // Constants
-    private static final String LOCALIZATION_BUNDLE_NAME = "i18n/messages";
+    static final String LOCALIZATION_BUNDLE_NAME = "i18n/messages";
 
     private static ResourceBundle messages;
 
@@ -167,13 +169,28 @@ public enum Messages {
      * @throws IllegalArgumentException is thrown if invalid locale is specified.
      */
     public static void setLocale(Locale locale) throws IllegalArgumentException {
+        setLocale(locale, false);
+    }
+
+    /**
+     * Set the specified locale for messages
+     *
+     * @param locale locale to set.
+     * @param strict
+     *
+     * @throws IllegalArgumentException is thrown if invalid locale is specified.
+     */
+    public static void setLocale(Locale locale, boolean strict) throws IllegalArgumentException {
         ResourceBundle m;
         if (locale != null) {
             m = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME, locale);
             if (!m.getLocale().equals(locale)) {
-//                throw new IllegalArgumentException("Can not load resources for " + locale + " locale.");
-                if (log.isDebugEnabled()) {
-                    log.debug("Can not initialize locale " + locale + ". The " + m.getLocale() + " will be used.");
+                if (strict) {
+                    throw new IllegalArgumentException("Can not load resources for " + locale + " locale.");
+                } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Can not initialize locale " + locale + ". The " + m.getLocale() + " will be used.");
+                    }
                 }
             }
         } else {
@@ -207,7 +224,7 @@ public enum Messages {
         readLock.lock();
         try {
             mes = messages.getString(key);
-            l = messages.getLocale();
+            l = currentLocale;
 /*
         } catch (MissingResourceException e) {
             // For testing purposes

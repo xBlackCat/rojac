@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui;
+package org.xblackcat.rojac.util;
 
 import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
 

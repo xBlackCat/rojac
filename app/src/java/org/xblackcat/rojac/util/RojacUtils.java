@@ -5,9 +5,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.commands.IRequest;
+import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -257,5 +261,10 @@ public final class RojacUtils {
 
         return locales.toArray(new Locale[locales.size()]);
     }
-    
+
+    public static void processRequests(IResultHandler resultHandler, IRequest... requests) {
+        SwingWorker sw = new RequestProcessor(resultHandler, requests);
+        
+        ServiceFactory.getInstance().getExecutor().execute(sw);
+    }
 }

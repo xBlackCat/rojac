@@ -6,7 +6,12 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
+import org.xblackcat.rojac.service.commands.AffectedIds;
+import org.xblackcat.rojac.service.commands.IResultHandler;
+import org.xblackcat.rojac.service.commands.TestRequest;
+import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -42,23 +47,7 @@ public class LoginDialog extends JDialog {
         cp.add(WindowsUtils.createButtonsBar(
                 this,
                 Messages.BUTTON_OK,
-                new AButtonAction(Messages.BUTTON_OK) {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (StringUtils.isEmpty(fieldLogin.getText())) {
-                            JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_USERNAME.get());
-                            return;
-                        }
-
-                        if (ArrayUtils.isEmpty(fieldPassword.getPassword())) {
-                            JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_PASSWORD.get());
-                            return;
-                        }
-
-                        canceled = false;
-                        setVisible(false);
-                    }
-                },
+                new CheckCredentialsAction(),
                 new AButtonAction(Messages.BUTTON_CANCEL) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -97,17 +86,42 @@ public class LoginDialog extends JDialog {
 
     public boolean showLoginDialog() {
         String userName = Property.RSDN_USER_NAME.get();
-        String password = RojacHelper.getUserPassword();
+        Password password = Property.RSDN_USER_PASSWORD.get();
         boolean save = Property.RSDN_USER_PASSWORD_SAVE.get();
 
         fieldLogin.setText(userName);
-        fieldPassword.setText(password);
+        fieldPassword.setText(password == null ? null : password.toString());
         fieldSavePassword.setSelected(save);
 
         setVisible(true);
 
-        if (!canceled) {
-            userName = fieldLogin.getText();
+        if (canceled) {
+            Property.RSDN_USER_NAME.set(userName);
+            Property.RSDN_USER_PASSWORD.set(password);
+            Property.RSDN_USER_PASSWORD_SAVE.set(save);
+        }
+
+        return canceled;
+    }
+
+    private class CheckCredentialsAction extends AButtonAction {
+        public CheckCredentialsAction() {
+            super(Messages.BUTTON_OK);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (StringUtils.isEmpty(fieldLogin.getText())) {
+                JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_USERNAME.get());
+                return;
+            }
+
+            if (ArrayUtils.isEmpty(fieldPassword.getPassword())) {
+                JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_PASSWORD.get());
+                return;
+            }
+
+            String userName = fieldLogin.getText();
             if (StringUtils.isNotBlank(userName)) {
                 Property.RSDN_USER_NAME.set(userName);
             }
@@ -118,8 +132,32 @@ public class LoginDialog extends JDialog {
             }
 
             Property.RSDN_USER_PASSWORD_SAVE.set(Boolean.valueOf(fieldSavePassword.isSelected()));
-        }
 
-        return canceled;
+            RojacUtils.processRequests(new IResultHandler() {
+                @Override
+                public void process(AffectedIds results) {
+                    // This is always should be like this.
+                    int userId = results.getMessageIds()[0];
+
+                    if (userId != 0) {
+                        Property.RSDN_USER_ID.set(userId);
+                    } else {
+                        int res = JLOptionPane.showConfirmDialog(
+                                LoginDialog.this,
+                                Messages.DIALOG_LOGIN_INVALID_USERNAME.get(),
+                                Messages.DIALOG_LOGIN_INVALID_USERNAME_TITLE.get(),
+                                JOptionPane.YES_NO_OPTION
+                                );
+                        if (res == JOptionPane.NO_OPTION) {
+                            // Let user to enter another login/password.
+                            return;
+                        }
+                    }
+
+                    canceled = false;
+                    setVisible(false);
+                }
+            }, new TestRequest());
+        }
     }
 }
