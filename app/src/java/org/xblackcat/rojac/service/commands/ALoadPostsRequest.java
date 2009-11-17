@@ -3,20 +3,20 @@ package org.xblackcat.rojac.service.commands;
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
 import gnu.trove.TIntObjectProcedure;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.data.Rating;
-import org.xblackcat.rojac.service.storage.IMessageAH;
-import org.xblackcat.rojac.service.storage.IMiscAH;
-import org.xblackcat.rojac.service.storage.IModerateAH;
-import org.xblackcat.rojac.service.storage.IRatingAH;
-import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.storage.*;
 
 /**
  * @author xBlackCat
  */
 
-abstract class LoadPostsCommand extends ARsdnCommand {
+abstract class ALoadPostsRequest implements IRequest {
+    private static final Log log = LogFactory.getLog(ALoadPostsRequest.class);
     /**
      * Placeholder of updated message ids set.
      */
@@ -29,6 +29,7 @@ abstract class LoadPostsCommand extends ARsdnCommand {
     protected final IMessageAH mAH;
     protected final IModerateAH modAH;
     protected final IMiscAH miscAH;
+    protected final IForumAH forumAH;
 
     private final TIntHashSet loadedMessages = new TIntHashSet();
     protected final TIntObjectHashMap<Long> messageDates = new TIntObjectHashMap<Long>();
@@ -44,12 +45,13 @@ abstract class LoadPostsCommand extends ARsdnCommand {
         }
     };
 
-    public LoadPostsCommand(IResultHandler resultHandler) {
-        super(resultHandler);
+    public ALoadPostsRequest() {
+        IStorage storage = ServiceFactory.getInstance().getStorage();        
         modAH = storage.getModerateAH();
         mAH = storage.getMessageAH();
         rAH = storage.getRatingAH();
         miscAH = storage.getMiscAH();
+        forumAH = storage.getForumAH();
     }
 
     protected void storeNewPosts(Message[] messages, Moderate[] moderates, Rating[] ratings) throws StorageException {
