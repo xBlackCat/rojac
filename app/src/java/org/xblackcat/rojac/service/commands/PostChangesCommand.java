@@ -21,10 +21,10 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class PostChangesCommand extends ARsdnCommand<AffectedPosts> {
+class PostChangesCommand extends ARsdnCommand {
     private static final Log log = LogFactory.getLog(PostChangesCommand.class);
 
-    public PostChangesCommand(IResultHandler<AffectedPosts> voidIResultHandler) {
+    public PostChangesCommand(IResultHandler voidIResultHandler) {
         super(voidIResultHandler);
     }
 
@@ -101,7 +101,7 @@ public class PostChangesCommand extends ARsdnCommand<AffectedPosts> {
                 throw new RsdnProcessorException("Unable to process the commit response.", e);
             }
 
-            return new AffectedPosts(messagesToUpdate.toArray(), forumsToUpdate.toArray());
+            return new AffectedPosts(messagesToUpdate, forumsToUpdate);
         } catch (RsdnProcessorException e) {
             // Log the exception to console.
             trac.postException(e);

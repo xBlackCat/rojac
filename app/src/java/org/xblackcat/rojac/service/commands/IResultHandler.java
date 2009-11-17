@@ -6,6 +6,6 @@ import org.xblackcat.rojac.RojacException;
  * @author xBlackCat
  */
 
-public interface IResultHandler<T> {
-    void process(T results) throws RojacException;
+public interface IResultHandler {
+    void process(AffectedPosts results) throws RojacException;
 }

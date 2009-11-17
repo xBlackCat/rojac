@@ -16,12 +16,12 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class GetForumListCommand extends ARsdnCommand<int[]> {
-    public GetForumListCommand(IResultHandler<int[]> iResultHandler) {
+public class GetForumListCommand extends ARsdnCommand {
+    public GetForumListCommand(IResultHandler iResultHandler) {
         super(iResultHandler);
     }
 
-    public int[] process(IProgressTracker trac) throws RojacException {
+    public AffectedPosts process(IProgressTracker trac) throws RojacException {
         trac.addLodMessage("Forum list synchronization started.");
 
         trac.setProgress(0, 3);
@@ -72,6 +72,6 @@ public class GetForumListCommand extends ARsdnCommand<int[]> {
             throw new RsdnProcessorException("Can not update forum list", e);
         }
 
-        return updatedForums.toArray();
+        return new AffectedPosts(new TIntHashSet(), updatedForums);
     }
 }

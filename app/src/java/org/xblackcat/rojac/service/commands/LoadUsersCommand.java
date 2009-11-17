@@ -17,10 +17,10 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class LoadUsersCommand extends ARsdnCommand<AffectedPosts> {
+class LoadUsersCommand extends ARsdnCommand {
     private static final Log log = LogFactory.getLog(LoadUsersCommand.class);
 
-    public LoadUsersCommand(IResultHandler<AffectedPosts> booleanIResultHandler) {
+    public LoadUsersCommand(IResultHandler booleanIResultHandler) {
         super(booleanIResultHandler);
     }
 

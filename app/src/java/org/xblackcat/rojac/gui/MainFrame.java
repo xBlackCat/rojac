@@ -60,10 +60,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
     // Data tracking
     private Map<Integer, View> openedForums = new HashMap<Integer, View>();
-    protected IResultHandler<AffectedPosts> changeHandler = new IResultHandler<AffectedPosts>() {
+    protected IResultHandler changeHandler = new IResultHandler() {
         public void process(AffectedPosts results) throws RojacException {
-            forumsListView.updateData(results.getAffectedForumIds());
-            favoritesView.updateData(results.getAffectedMessageIds());
+            forumsListView.updateData(results);
+            favoritesView.updateData(results);
         }
     };
     protected RootWindow threadsRootWindow;
