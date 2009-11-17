@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui;
+package org.xblackcat.rojac.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

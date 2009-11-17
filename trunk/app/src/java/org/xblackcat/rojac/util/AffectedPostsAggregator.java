@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui;
+package org.xblackcat.rojac.util;
 
 import ch.lambdaj.function.aggregate.Aggregator;
 import gnu.trove.TIntHashSet;

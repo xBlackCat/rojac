@@ -2,18 +2,14 @@ package org.xblackcat.rojac.gui.dialogs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.NewMessage;
-import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.view.message.EditMessagePane;
 import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.commands.IRequest;
-import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -187,19 +183,5 @@ public class EditMessageDialog extends JDialog {
         ), BorderLayout.SOUTH);
 
         setContentPane(cp);
-    }
-
-    private static class DumbRootPane implements IRootPane {
-        @Override
-        public void openForumTab(Forum f) {
-        }
-
-        @Override
-        public void performRequest(IResultHandler resultHandler, IRequest... requests) {
-        }
-
-        @Override
-        public void editMessage(Integer forumId, Integer messageId) {
-        }
     }
 }
