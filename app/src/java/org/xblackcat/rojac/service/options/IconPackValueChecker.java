@@ -25,6 +25,6 @@ public class IconPackValueChecker implements IValueChecker<IconPack> {
 
     @Override
     public boolean isValueCorrect(IconPack v) {
-        return v == DEFAULT_ICON_PACK;
+        return DEFAULT_ICON_PACK.equals(v);
     }
 }
