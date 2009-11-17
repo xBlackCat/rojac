@@ -34,6 +34,26 @@ public final class IconPack {
         return pathPrefix;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IconPack)) return false;
+
+        IconPack iconPack = (IconPack) o;
+
+        return extension.equals(iconPack.extension) &&
+                name.equals(iconPack.name) &&
+                pathPrefix.equals(iconPack.pathPrefix);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = extension.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + pathPrefix.hashCode();
+        return result;
+    }
+
     public IButtonIcons getButtonIcons() {
         return NO_ICONS;
     }
