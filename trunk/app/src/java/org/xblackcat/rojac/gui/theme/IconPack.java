@@ -26,6 +26,14 @@ public final class IconPack {
         return name;
     }
 
+    public String getExtension() {
+        return extension;
+    }
+
+    public String getPathPrefix() {
+        return pathPrefix;
+    }
+
     public IButtonIcons getButtonIcons() {
         return NO_ICONS;
     }

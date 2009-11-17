@@ -7,9 +7,15 @@ import org.xblackcat.rojac.gui.theme.IconPack;
  */
 
 public class IconPackValueChecker implements IValueChecker<IconPack> {
+    public static final IconPack DEFAULT_ICON_PACK = new IconPack("Default pack", "images", "png");
+
+    private static final IconPack[] ICON_PACKS = new IconPack[]{
+            DEFAULT_ICON_PACK
+    };
+
     @Override
     public IconPack[] getPossibleValues() {
-        return new IconPack[0];
+        return ICON_PACKS;
     }
 
     @Override
@@ -19,6 +25,6 @@ public class IconPackValueChecker implements IValueChecker<IconPack> {
 
     @Override
     public boolean isValueCorrect(IconPack v) {
-        return false;
+        return v == DEFAULT_ICON_PACK;
     }
 }
