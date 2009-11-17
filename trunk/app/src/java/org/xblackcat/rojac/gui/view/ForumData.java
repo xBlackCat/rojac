@@ -7,7 +7,7 @@ import org.xblackcat.rojac.data.ForumStatistic;
  * @author xBlackCat
  */
 
-public class ForumData {
+class ForumData {
     private final int forumId;
     private Forum forum;
     private ForumStatistic stat;

@@ -4,7 +4,7 @@ package org.xblackcat.rojac.gui.view.thread;
  * Interface to avoid sub-classing Thread view class.
  */
 
-public interface IThreadControl {
+interface IThreadControl {
     /**
      * (Re-)initializes threads model according to type of thread view.
      *

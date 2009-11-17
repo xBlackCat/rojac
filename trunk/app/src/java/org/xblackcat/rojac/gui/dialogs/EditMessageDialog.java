@@ -7,12 +7,13 @@ import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.component.AButtonAction;
-import org.xblackcat.rojac.gui.dialogs.progress.ITask;
 import org.xblackcat.rojac.gui.view.message.EditMessagePane;
 import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.commands.IRequest;
+import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -42,7 +43,7 @@ public class EditMessageDialog extends JDialog {
     public EditMessageDialog(Window owner) {
         super(owner, DEFAULT_MODALITY_TYPE);
 
-        panelPreview = new PreviewMessageView(new DumbRootPane());
+        panelPreview = new PreviewMessageView(null);
         panelEdit = new EditMessagePane(panelPreview);
         storage = ServiceFactory.getInstance().getStorage();
 
@@ -194,7 +195,7 @@ public class EditMessageDialog extends JDialog {
         }
 
         @Override
-        public void showProgressDialog(ITask task) {
+        public void performRequest(IResultHandler resultHandler, IRequest... requests) {
         }
 
         @Override

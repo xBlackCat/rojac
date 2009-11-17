@@ -16,7 +16,7 @@ import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-public class MultiLineForumRenderer extends JPanel
+class MultiLineForumRenderer extends JPanel
         implements TableCellRenderer, Serializable {
 
     /**
@@ -145,10 +145,10 @@ public class MultiLineForumRenderer extends JPanel
 
         if (isSelected) {
             super.setForeground(fg == null ? table.getSelectionForeground() : fg);
-            super.setBackground(bg == null ? table.getSelectionBackground(): bg);
+            super.setBackground(bg == null ? table.getSelectionBackground() : bg);
 
             components.setForeground(fg == null ? table.getSelectionForeground() : fg);
-            components.setBackground(bg == null ? table.getSelectionBackground(): bg);
+            components.setBackground(bg == null ? table.getSelectionBackground() : bg);
         } else {
             Color background = unselectedBackground != null ? unselectedBackground : table.getBackground();
             if (background == null || background instanceof javax.swing.plaf.UIResource) {
@@ -351,46 +351,45 @@ public class MultiLineForumRenderer extends JPanel
         }
 
         /**
-         * Overridden for performance reasons.
-         * See the <a href="#override">Implementation Note</a>
-         * for more information.
+         * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more
+         * information.
          *
          * @since 1.5
          */
-        public void invalidate() {}
+        public void invalidate() {
+        }
 
         /**
-         * Overridden for performance reasons.
-         * See the <a href="#override">Implementation Note</a>
-         * for more information.
+         * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more
+         * information.
          */
-        public void validate() {}
+        public void validate() {
+        }
 
         /**
-         * Overridden for performance reasons.
-         * See the <a href="#override">Implementation Note</a>
-         * for more information.
+         * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more
+         * information.
          */
-        public void revalidate() {}
+        public void revalidate() {
+        }
 
         /**
-         * Overridden for performance reasons.
-         * See the <a href="#override">Implementation Note</a>
-         * for more information.
+         * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more
+         * information.
          */
-        public void repaint(long tm, int x, int y, int width, int height) {}
+        public void repaint(long tm, int x, int y, int width, int height) {
+        }
 
         /**
-         * Overridden for performance reasons.
-         * See the <a href="#override">Implementation Note</a>
-         * for more information.
+         * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more
+         * information.
          */
-        public void repaint(Rectangle r) { }
+        public void repaint(Rectangle r) {
+        }
 
         /**
-         * Overridden for performance reasons.
-         * See the <a href="#override">Implementation Note</a>
-         * for more information.
+         * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more
+         * information.
          *
          * @since 1.5
          */
@@ -398,28 +397,27 @@ public class MultiLineForumRenderer extends JPanel
         }
 
         /**
-         * Overridden for performance reasons.
-         * See the <a href="#override">Implementation Note</a>
-         * for more information.
+         * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more
+         * information.
          */
         protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-        // Strings get interned...
-        if (propertyName=="text"
+            // Strings get interned...
+            if (propertyName == "text"
                     || propertyName == "labelFor"
                     || propertyName == "displayedMnemonic"
                     || ((propertyName == "font" || propertyName == "foreground")
-                        && oldValue != newValue
-                        && getClientProperty(javax.swing.plaf.basic.BasicHTML.propertyKey) != null)) {
+                    && oldValue != newValue
+                    && getClientProperty(javax.swing.plaf.basic.BasicHTML.propertyKey) != null)) {
 
                 super.firePropertyChange(propertyName, oldValue, newValue);
             }
         }
 
         /**
-         * Overridden for performance reasons.
-         * See the <a href="#override">Implementation Note</a>
-         * for more information.
+         * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more
+         * information.
          */
-        public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) { }
+        public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+        }
     }
 }

@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.service.commands.AffectedPosts;
+import org.xblackcat.rojac.service.commands.AffectedIds;
 
 import javax.swing.*;
 
@@ -23,5 +23,5 @@ public interface IView extends IConfigurable {
      *
      * @param changedData
      */
-    void updateData(AffectedPosts changedData);
+    void updateData(AffectedIds changedData);
 }

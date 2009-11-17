@@ -9,5 +9,7 @@ import org.xblackcat.rojac.service.janus.IJanusService;
  */
 
 public interface IRequest {
-    AffectedPosts process(IProgressTracker trac, IJanusService janusService) throws RojacException;
+    AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException;
+
+    String getName();
 }

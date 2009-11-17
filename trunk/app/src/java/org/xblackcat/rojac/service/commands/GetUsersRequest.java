@@ -21,10 +21,10 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-class GetUsersRequest implements IRequest {
+class GetUsersRequest extends ARequest {
     private static final Log log = LogFactory.getLog(GetUsersRequest.class);
 
-    public AffectedPosts process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         IUserAH uAH = storage.getUserAH();
 
@@ -62,6 +62,6 @@ class GetUsersRequest implements IRequest {
         } catch (JanusServiceException e) {
             throw new RsdnProcessorException("Can not get the users list from the RSDN server.", e);
         }
-        return new AffectedPosts();
+        return new AffectedIds();
     }
 }
