@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
  * @author xBlackCat
  */
 
-public class ForumRootItem extends MessageItem {
+class ForumRootItem extends MessageItem {
     private static final Log log = LogFactory.getLog(ForumRootItem.class);
     private Forum forum;
 

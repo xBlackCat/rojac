@@ -10,25 +10,21 @@ import net.infonode.docking.util.WindowMenuUtil;
 import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.gui.dialogs.OptionsDialog;
-import org.xblackcat.rojac.gui.dialogs.progress.ITask;
-import org.xblackcat.rojac.gui.dialogs.progress.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ForumsListView;
 import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.commands.AffectedPosts;
+import org.xblackcat.rojac.service.commands.AffectedIds;
 import org.xblackcat.rojac.service.commands.IRequest;
 import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.commands.Request;
-import org.xblackcat.rojac.service.commands.RsdnCommand;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -62,7 +58,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     // Data tracking
     private Map<Integer, View> openedForums = new HashMap<Integer, View>();
     protected IResultHandler changeHandler = new IResultHandler() {
-        public void process(AffectedPosts results) throws RojacException {
+        public void process(AffectedIds results) {
             forumsListView.updateData(results);
             favoritesView.updateData(results);
         }
@@ -202,7 +198,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                         Property.SYNCHRONIZER_LOAD_USERS.get() ?
                                 Request.SYNCHRONIZE_WITH_USERS :
                                 Request.SYNCHRONIZE;
-                showProgressDialog(new RsdnCommand(changeHandler, requests));
+                performRequest(changeHandler, requests);
             }
         }, Messages.MAINFRAME_BUTTON_UPDATE);
         JButton loadMessageButton = WindowsUtils.setupImageButton("update", new ActionListener() {
@@ -215,7 +211,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                     try {
                         s.storeExtraMessage(messageId);
                         if (lmd.isLoadAtOnce()) {
-                            showProgressDialog(new RsdnCommand(changeHandler, Request.EXTRA_MESSAGES));
+                            performRequest(changeHandler, Request.EXTRA_MESSAGES);
                         }
                     } catch (StorageException e1) {
                         log.error("Can not store extra message id", e1);
@@ -381,7 +377,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         return w;
     }
 
-    public void showProgressDialog(ITask task) {
+    public void performRequest(IResultHandler resultHandler, IRequest... requests) {
+        // Check if the user credentials are set first.
         while (!RojacHelper.isUserRegistered()) {
             LoginDialog ld = new LoginDialog(this);
             WindowsUtils.center(ld, this);
@@ -390,12 +387,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             }
         }
 
-
-        ProgressTrackerDialog tr = new ProgressTrackerDialog(this, task);
-
-        WindowsUtils.center(tr, this);
-        tr.setVisible(true);
-        tr.startTask();
+        SwingWorker sw = new RequestProcessor(resultHandler, requests);
+        ServiceFactory.getInstance().getExecutor().execute(sw);
     }
 
     public void editMessage(Integer forumId, Integer messageId) {

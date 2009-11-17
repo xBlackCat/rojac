@@ -1,7 +1,8 @@
 package org.xblackcat.rojac.gui;
 
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.gui.dialogs.progress.ITask;
+import org.xblackcat.rojac.service.commands.IRequest;
+import org.xblackcat.rojac.service.commands.IResultHandler;
 
 /**
  * @author xBlackCat
@@ -10,7 +11,7 @@ import org.xblackcat.rojac.gui.dialogs.progress.ITask;
 public interface IRootPane {
     void openForumTab(Forum f);
 
-    void showProgressDialog(ITask task);
+    void performRequest(IResultHandler resultHandler, IRequest... requests);
 
     /**
      * Show edit dialog. Possible combinations are: <ul> <li>messageId is <code>null</code> and forumId specifies a

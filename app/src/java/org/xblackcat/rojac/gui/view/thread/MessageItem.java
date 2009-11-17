@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
  * @author xBlackCat
  */
 
-public class MessageItem {
+class MessageItem {
     private static final Log log = LogFactory.getLog(MessageItem.class);
 
     private static final MessageItem[] NO_ITEMS = new MessageItem[0];

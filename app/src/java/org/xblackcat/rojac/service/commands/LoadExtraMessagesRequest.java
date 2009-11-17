@@ -22,14 +22,14 @@ import org.xblackcat.rojac.service.storage.StorageException;
 class LoadExtraMessagesRequest extends ALoadPostsRequest {
     private static final Log log = LogFactory.getLog(LoadExtraMessagesRequest.class);
 
-    public AffectedPosts process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage("Loading extra messages started.");
 
         int[] messageIds = miscAH.getExtraMessages();
 
         if (!ArrayUtils.isEmpty(messageIds)) {
             trac.addLodMessage("Loading additional messages: " + ArrayUtils.toString(messageIds));
-            loadTopics(messageIds, null);
+            loadTopics(messageIds, janusService);
 
             miscAH.clearExtraMessages();
         }
@@ -37,11 +37,11 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
         if (!ArrayUtils.isEmpty(brokenTopicIds)) {
             trac.addLodMessage("Loading broken topics by ids: " + ArrayUtils.toString(brokenTopicIds));
-            loadTopics(brokenTopicIds, null);
+            loadTopics(brokenTopicIds, janusService);
         }
 
         trac.addLodMessage("Loading extra messages finished.");        
-        return new AffectedPosts(processedMessages, affectedForums);
+        return new AffectedIds(processedMessages, affectedForums);
     }
 
     private void loadTopics(int[] messageIds, IJanusService janusService) throws RsdnProcessorException, StorageException {

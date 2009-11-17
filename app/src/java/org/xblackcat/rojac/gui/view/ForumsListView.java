@@ -6,10 +6,9 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.commands.AffectedPosts;
+import org.xblackcat.rojac.service.commands.AffectedIds;
 import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.commands.Request;
-import org.xblackcat.rojac.service.commands.RsdnCommand;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -26,9 +25,10 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 /**
+ * Main class for
+ *
  * @author xBlackCat
  */
-
 public class ForumsListView extends AView {
 
     private static final Log log = LogFactory.getLog(ForumsListView.class);
@@ -152,24 +152,20 @@ public class ForumsListView extends AView {
         return this;
     }
 
-    public void updateData(AffectedPosts changedData) {
-        forumsModel.updateForums(changedData.getAffectedForumIds());
+    public void updateData(AffectedIds changedData) {
+        forumsModel.updateForums(changedData.getForumIds());
     }
 
     private class UpdateActionListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            mainFrame.showProgressDialog(new RsdnCommand(new NewForumsHandler(), Request.GET_FORUMS_LIST));
+            mainFrame.performRequest(new NewForumsHandler(), Request.GET_FORUMS_LIST);
         }
 
-        private class NewForumsHandler implements IResultHandler {
-            public void process(AffectedPosts ids) throws StorageException {
-                final int[] forumIds = ids.getAffectedForumIds();
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        forumsModel.updateForums(forumIds);
-                    }
-                });
-            }
+    }
+
+    private class NewForumsHandler implements IResultHandler {
+        public void process(AffectedIds ids) {
+            forumsModel.updateForums(ids.getForumIds());
         }
     }
 }

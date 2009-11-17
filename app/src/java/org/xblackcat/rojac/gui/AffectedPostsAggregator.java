@@ -1,7 +1,8 @@
-package org.xblackcat.rojac.service.commands;
+package org.xblackcat.rojac.gui;
 
 import ch.lambdaj.function.aggregate.Aggregator;
 import gnu.trove.TIntHashSet;
+import org.xblackcat.rojac.service.commands.AffectedIds;
 
 /**
 * @author xBlackCat
@@ -15,7 +16,7 @@ class AffectedPostsAggregator implements Aggregator<AffectedIds> {
         for (AffectedIds p : iterable) {
             mIds.addAll(p.getMessageIds());
             fIds.addAll(p.getForumIds());
-    }
+        }
 
         return new AffectedIds(mIds, fIds);
     }

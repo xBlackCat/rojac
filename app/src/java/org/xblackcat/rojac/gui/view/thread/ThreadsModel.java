@@ -13,7 +13,7 @@ import javax.swing.tree.TreePath;
  * @author xBlackCat
  */
 
-public class ThreadsModel implements TreeModel, TreeTableModel {
+class ThreadsModel implements TreeModel, TreeTableModel {
     private static final Messages[] COLUMN_NAMES = new Messages[]{
             Messages.PANEL_THREAD_HEADER_ID,
             Messages.PANEL_THREAD_HEADER_SUBJECT,

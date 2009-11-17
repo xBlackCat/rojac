@@ -24,10 +24,10 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-class PostChangesRequest implements IRequest {
+class PostChangesRequest extends ARequest {
     private static final Log log = LogFactory.getLog(PostChangesRequest.class);
 
-    public AffectedPosts process(IProgressTracker trac, IJanusService janusService) {
+    public AffectedIds process(IProgressTracker trac, IJanusService janusService) {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         trac.addLodMessage("Synchronization started.");
 
@@ -54,7 +54,7 @@ class PostChangesRequest implements IRequest {
                 if (log.isDebugEnabled()) {
                     log.debug("Nothing to post.");
                 }
-                return new AffectedPosts();
+                return new AffectedIds();
             }
 
             // Store forum ids of new messages and message ids of new ratings to return update event
@@ -101,11 +101,11 @@ class PostChangesRequest implements IRequest {
                 throw new RsdnProcessorException("Unable to process the commit response.", e);
             }
 
-            return new AffectedPosts(messagesToUpdate, forumsToUpdate);
+            return new AffectedIds(messagesToUpdate, forumsToUpdate);
         } catch (RsdnProcessorException e) {
             // Log the exception to console.
             trac.postException(e);
-            return new AffectedPosts();
+            return new AffectedIds();
         }
     }
 }

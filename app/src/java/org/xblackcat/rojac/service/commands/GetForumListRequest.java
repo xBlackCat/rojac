@@ -20,8 +20,8 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-class GetForumListRequest implements IRequest {
-    public AffectedPosts process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+class GetForumListRequest extends ARequest {
+    public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage("Forum list synchronization started.");
 
         trac.setProgress(0, 3);
@@ -73,6 +73,6 @@ class GetForumListRequest implements IRequest {
             throw new RsdnProcessorException("Can not update forum list", e);
         }
 
-        return new AffectedPosts(new TIntHashSet(), updatedForums);
+        return new AffectedIds(new TIntHashSet(), updatedForums);
     }
 }

@@ -12,7 +12,7 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.commands.AffectedPosts;
+import org.xblackcat.rojac.service.commands.AffectedIds;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -219,7 +219,7 @@ public class MessageView extends AMessageView implements IInternationazable {
         marks.setEnabled(true);
     }
 
-    public void updateData(AffectedPosts ids) {
+    public void updateData(AffectedIds ids) {
         if (ids.isContainsMessage(this.messageId)) {
             loadItem(messageId);
         }

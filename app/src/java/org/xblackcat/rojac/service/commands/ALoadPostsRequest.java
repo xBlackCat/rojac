@@ -15,7 +15,7 @@ import org.xblackcat.rojac.service.storage.*;
  * @author xBlackCat
  */
 
-abstract class ALoadPostsRequest implements IRequest {
+abstract class ALoadPostsRequest extends ARequest {
     private static final Log log = LogFactory.getLog(ALoadPostsRequest.class);
     /**
      * Placeholder of updated message ids set.

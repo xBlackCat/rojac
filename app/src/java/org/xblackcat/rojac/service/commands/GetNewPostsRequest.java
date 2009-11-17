@@ -22,7 +22,7 @@ import org.xblackcat.rojac.service.options.Property;
 class GetNewPostsRequest extends ALoadPostsRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
-    public AffectedPosts process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage("Getting new posts started.");
 
         int[] forumIds = forumAH.getSubscribedForumIds();
@@ -30,7 +30,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
             }
-            return new AffectedPosts();
+            return new AffectedIds();
         }
 
         if (log.isDebugEnabled()) {
@@ -86,7 +86,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         trac.addLodMessage("Getting new posts finished.");
 
-        return new AffectedPosts(processedMessages, affectedForums);
+        return new AffectedIds(processedMessages, affectedForums);
     }
 
 }
