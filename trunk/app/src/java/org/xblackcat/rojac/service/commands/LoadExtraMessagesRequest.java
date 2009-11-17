@@ -8,6 +8,7 @@ import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
+import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -18,21 +19,17 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 
-public class LoadExtraMessagesCommand extends LoadPostsCommand {
-    private static final Log log = LogFactory.getLog(LoadExtraMessagesCommand.class);
+class LoadExtraMessagesRequest extends ALoadPostsRequest {
+    private static final Log log = LogFactory.getLog(LoadExtraMessagesRequest.class);
 
-    public LoadExtraMessagesCommand(IResultHandler iResultHandler) {
-        super(iResultHandler);
-    }
-
-    public AffectedPosts process(IProgressTracker trac) throws RojacException {
+    public AffectedPosts process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage("Loading extra messages started.");
 
         int[] messageIds = miscAH.getExtraMessages();
 
         if (!ArrayUtils.isEmpty(messageIds)) {
             trac.addLodMessage("Loading additional messages: " + ArrayUtils.toString(messageIds));
-            loadTopics(messageIds);
+            loadTopics(messageIds, null);
 
             miscAH.clearExtraMessages();
         }
@@ -40,14 +37,14 @@ public class LoadExtraMessagesCommand extends LoadPostsCommand {
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
         if (!ArrayUtils.isEmpty(brokenTopicIds)) {
             trac.addLodMessage("Loading broken topics by ids: " + ArrayUtils.toString(brokenTopicIds));
-            loadTopics(brokenTopicIds);
+            loadTopics(brokenTopicIds, null);
         }
 
         trac.addLodMessage("Loading extra messages finished.");        
         return new AffectedPosts(processedMessages, affectedForums);
     }
 
-    private void loadTopics(int[] messageIds) throws RsdnProcessorException, StorageException {
+    private void loadTopics(int[] messageIds, IJanusService janusService) throws RsdnProcessorException, StorageException {
         TopicMessages extra;
         try {
             extra = janusService.getTopicByMessage(messageIds);

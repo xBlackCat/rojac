@@ -25,9 +25,10 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.commands.AffectedPosts;
+import org.xblackcat.rojac.service.commands.IRequest;
 import org.xblackcat.rojac.service.commands.IResultHandler;
-import org.xblackcat.rojac.service.commands.LoadExtraMessagesCommand;
-import org.xblackcat.rojac.service.commands.SynchronizeCommand;
+import org.xblackcat.rojac.service.commands.Request;
+import org.xblackcat.rojac.service.commands.RsdnCommand;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -197,7 +198,11 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         // Setup toolbar
         JButton updateButton = WindowsUtils.setupImageButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showProgressDialog(new SynchronizeCommand(changeHandler));
+                IRequest[] requests =
+                        Property.SYNCHRONIZER_LOAD_USERS.get() ?
+                                Request.SYNCHRONIZE_WITH_USERS :
+                                Request.SYNCHRONIZE;
+                showProgressDialog(new RsdnCommand(changeHandler, requests));
             }
         }, Messages.MAINFRAME_BUTTON_UPDATE);
         JButton loadMessageButton = WindowsUtils.setupImageButton("update", new ActionListener() {
@@ -210,7 +215,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                     try {
                         s.storeExtraMessage(messageId);
                         if (lmd.isLoadAtOnce()) {
-                            showProgressDialog(new LoadExtraMessagesCommand(changeHandler));
+                            showProgressDialog(new RsdnCommand(changeHandler, Request.EXTRA_MESSAGES));
                         }
                     } catch (StorageException e1) {
                         log.error("Can not store extra message id", e1);

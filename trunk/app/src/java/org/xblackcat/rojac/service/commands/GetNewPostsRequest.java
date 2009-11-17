@@ -10,6 +10,8 @@ import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
+import org.xblackcat.rojac.service.RojacHelper;
+import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.options.Property;
 
@@ -17,17 +19,13 @@ import org.xblackcat.rojac.service.options.Property;
  * @author xBlackCat
  */
 
-class GetNewPostsCommand extends LoadPostsCommand {
-    private static final Log log = LogFactory.getLog(GetNewPostsCommand.class);
+class GetNewPostsRequest extends ALoadPostsRequest {
+    private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
-    public GetNewPostsCommand(IResultHandler iResultHandler) {
-        super(iResultHandler);
-    }
-
-    public AffectedPosts process(IProgressTracker trac) throws RojacException {
+    public AffectedPosts process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage("Getting new posts started.");
 
-        int[] forumIds = storage.getForumAH().getSubscribedForumIds();
+        int[] forumIds = forumAH.getSubscribedForumIds();
         if (ArrayUtils.isEmpty(forumIds)) {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
@@ -41,9 +39,9 @@ class GetNewPostsCommand extends LoadPostsCommand {
 
         Integer limit = Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
 
-        Version messagesVersion = getVersion(VersionType.MESSAGE_ROW_VERSION);
-        Version moderatesVersion = getVersion(VersionType.MODERATE_ROW_VERSION);
-        Version ratingsVersion = getVersion(VersionType.RATING_ROW_VERSION);
+        Version messagesVersion = RojacHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
+        Version moderatesVersion = RojacHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
+        Version ratingsVersion = RojacHelper.getVersion(VersionType.RATING_ROW_VERSION);
 
         processedMessages.clear();
         affectedForums.clear();
@@ -77,9 +75,9 @@ class GetNewPostsCommand extends LoadPostsCommand {
             messagesVersion = data.getForumRowVersion();
             moderatesVersion = data.getModerateRowVersion();
 
-            setVersion(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
-            setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
-            setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
+            RojacHelper.setVersion(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
+            RojacHelper.setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
+            RojacHelper.setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
 
         } while (messages.length > 0);
 

@@ -9,26 +9,26 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.PostException;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.INewModerateAH;
 import org.xblackcat.rojac.service.storage.INewRatingAH;
+import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
  * @author xBlackCat
  */
 
-class PostChangesCommand extends ARsdnCommand {
-    private static final Log log = LogFactory.getLog(PostChangesCommand.class);
+class PostChangesRequest implements IRequest {
+    private static final Log log = LogFactory.getLog(PostChangesRequest.class);
 
-    public PostChangesCommand(IResultHandler voidIResultHandler) {
-        super(voidIResultHandler);
-    }
-
-    public AffectedPosts process(IProgressTracker trac) {
+    public AffectedPosts process(IProgressTracker trac, IJanusService janusService) {
+        IStorage storage = ServiceFactory.getInstance().getStorage();
         trac.addLodMessage("Synchronization started.");
 
         try {

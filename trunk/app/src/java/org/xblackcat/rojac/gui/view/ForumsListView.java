@@ -7,8 +7,9 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.commands.AffectedPosts;
-import org.xblackcat.rojac.service.commands.GetForumListCommand;
 import org.xblackcat.rojac.service.commands.IResultHandler;
+import org.xblackcat.rojac.service.commands.Request;
+import org.xblackcat.rojac.service.commands.RsdnCommand;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -157,16 +158,18 @@ public class ForumsListView extends AView {
 
     private class UpdateActionListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            mainFrame.showProgressDialog(new GetForumListCommand(new IResultHandler() {
-                public void process(AffectedPosts ids) throws StorageException {
-                    final int[] forumIds = ids.getAffectedForumIds();
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            forumsModel.updateForums(forumIds);
-                        }
-                    });
-                }
-            }));
+            mainFrame.showProgressDialog(new RsdnCommand(new NewForumsHandler(), Request.GET_FORUMS_LIST));
+        }
+
+        private class NewForumsHandler implements IResultHandler {
+            public void process(AffectedPosts ids) throws StorageException {
+                final int[] forumIds = ids.getAffectedForumIds();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        forumsModel.updateForums(forumIds);
+                    }
+                });
+            }
         }
     }
 }

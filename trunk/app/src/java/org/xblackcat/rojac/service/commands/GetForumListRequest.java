@@ -6,22 +6,22 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
+import org.xblackcat.rojac.service.RojacHelper;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.ForumsList;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IForumGroupAH;
+import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
  * @author xBlackCat
  */
 
-public class GetForumListCommand extends ARsdnCommand {
-    public GetForumListCommand(IResultHandler iResultHandler) {
-        super(iResultHandler);
-    }
-
-    public AffectedPosts process(IProgressTracker trac) throws RojacException {
+class GetForumListRequest implements IRequest {
+    public AffectedPosts process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage("Forum list synchronization started.");
 
         trac.setProgress(0, 3);
@@ -31,11 +31,12 @@ public class GetForumListCommand extends ARsdnCommand {
 
         ForumsList forumsList;
         try {
-            forumsList = janusService.getForumsList(getVersion(VersionType.FORUM_ROW_VERSION));
+            forumsList = janusService.getForumsList(RojacHelper.getVersion(VersionType.FORUM_ROW_VERSION));
         } catch (JanusServiceException e) {
             throw new RsdnProcessorException("Can not obtain forums list", e);
         }
 
+        IStorage storage = ServiceFactory.getInstance().getStorage();
         IForumAH fAH = storage.getForumAH();
         IForumGroupAH gAH = storage.getForumGroupAH();
 
@@ -65,7 +66,7 @@ public class GetForumListCommand extends ARsdnCommand {
                 updatedForums.add(f.getForumId());
             }
 
-            setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
+            RojacHelper.setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
 
             trac.addLodMessage("Done");
         } catch (StorageException e) {
