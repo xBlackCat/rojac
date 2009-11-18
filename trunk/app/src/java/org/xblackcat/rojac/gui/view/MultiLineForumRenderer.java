@@ -152,9 +152,11 @@ class MultiLineForumRenderer extends JPanel
         } else {
             Color background = unselectedBackground != null ? unselectedBackground : table.getBackground();
             if (background == null || background instanceof javax.swing.plaf.UIResource) {
-                Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
-                if (alternateColor != null && row % 2 == 0) {
-                    background = alternateColor;
+                if (row % 2 == 0) {
+                    Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
+                    if (alternateColor != null) {
+                        background = alternateColor;
+                    }
                 }
             }
             super.setForeground(unselectedForeground != null ? unselectedForeground : table.getForeground());
@@ -237,14 +239,14 @@ class MultiLineForumRenderer extends JPanel
         if (hasUnread) style |= Font.BOLD;
         if (!isSubcribed) style |= Font.ITALIC;
 
-        setFont(table.getFont().deriveFont(style));
-        components.setFont(table.getFont().deriveFont(style));
+        Font font = table.getFont().deriveFont(style);
+        setFont(font);
+        components.setFont(font);
 
         titleLine.setText(titleText);
         statLine.setText(statText);
         dateLine.setText(dateText);
 
-//        super.invalidate();
         int newHeight = getPreferredSize().height;
         int oldHeight = table.getRowHeight(row);
         if (oldHeight != newHeight) {
