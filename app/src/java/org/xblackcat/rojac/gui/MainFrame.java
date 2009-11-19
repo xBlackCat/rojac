@@ -201,7 +201,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                 performRequest(changeHandler, requests);
             }
         }, Messages.MAINFRAME_BUTTON_UPDATE);
-        JButton loadMessageButton = WindowsUtils.setupImageButton("update", new ActionListener() {
+        JButton loadMessageButton = WindowsUtils.setupImageButton("extramessage", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 LoadMessageDialog lmd = new LoadMessageDialog(MainFrame.this);
                 Integer messageId = lmd.readMessageId();
@@ -219,7 +219,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                 }
             }
         }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
-        JButton settingsButton = WindowsUtils.setupImageButton("update", new ActionListener() {
+        JButton settingsButton = WindowsUtils.setupImageButton("settings", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 OptionsDialog od = new OptionsDialog(MainFrame.this);
 

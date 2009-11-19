@@ -99,19 +99,19 @@ public class ForumsListView extends AView {
 
         JToolBar toolBar = WindowsUtils.createToolBar(
                 WindowsUtils.setupImageButton("update", new UpdateActionListener(), Messages.VIEW_FORUMS_BUTTON_UPDATE),
-                WindowsUtils.setupToggleButton("update", new ActionListener() {
+                WindowsUtils.setupToggleButton("filled_only", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         forumsRowFilter.setNotEmpty(!forumsRowFilter.isNotEmpty());
                         forumsRowSorter.sort();
                     }
                 }, Messages.VIEW_FORUMS_BUTTON_FILLED),
-                WindowsUtils.setupToggleButton("update", new ActionListener() {
+                WindowsUtils.setupToggleButton("subscribed_only", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         forumsRowFilter.setSubscribed(!forumsRowFilter.isSubscribed());
                         forumsRowSorter.sort();
                     }
                 }, Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED),
-                WindowsUtils.setupToggleButton("update", new ActionListener() {
+                WindowsUtils.setupToggleButton("unread_only", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         forumsRowFilter.setUnread(!forumsRowFilter.isUnread());
                         forumsRowSorter.sort();
