@@ -228,7 +228,14 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             }
         }, Messages.MAINFRAME_BUTTON_SETTINGS);
 
-        threadsPane.add(WindowsUtils.createToolBar(updateButton, loadMessageButton, settingsButton), BorderLayout.NORTH);
+        JToolBar toolBar = WindowsUtils.createToolBar(
+                updateButton,
+                loadMessageButton,
+                null,
+                settingsButton
+        );
+
+        threadsPane.add(toolBar, BorderLayout.NORTH);
         threadsPane.add(threads, BorderLayout.CENTER);
 
         View view = new View(null, null, threadsPane);

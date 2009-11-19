@@ -49,7 +49,7 @@ public class OptionsDialog extends JDialog {
             model = null;
         }
 
-        setTitle(Messages.DIALOG_LOADMESSAGE_TITLE.get());
+        setTitle(Messages.DIALOG_OPTIONS_TITLE.get());
 
         initializeLayout();
 

@@ -44,7 +44,7 @@ public abstract class AThreadView extends AMessageView {
         JScrollPane sp = new JScrollPane(threadsContainer);
         internalPane.add(sp, BorderLayout.CENTER);
 
-        JButton newThreadButton = WindowsUtils.setupImageButton("update", new ActionListener() {
+        JButton newThreadButton = WindowsUtils.setupImageButton("new_thread", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mainFrame.editMessage(forumId, null);
             }

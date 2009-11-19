@@ -83,6 +83,9 @@ public enum Messages {
     DIALOG_LOADMESSAGE_LABEL,
     DIALOG_LOADMESSAGE_LOADATONCE,
 
+    // Options dialog texts
+    DIALOG_OPTIONS_TITLE,
+
     // Edit message dialog related texts
     ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE,
     ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE,

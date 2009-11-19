@@ -88,9 +88,7 @@ public class LoadMessageDialog extends JDialog {
         f.setParseIntegerOnly(true);
         f.setGroupingUsed(false);
         messageIdText = new JFormattedTextField(f);
-        EmptyBorder border = new EmptyBorder(0, 10, 0, 10);
         messageIdText.setHorizontalAlignment(JTextField.RIGHT);
-        messageIdText.setBorder(border);
         cp.add(messageIdText, BorderLayout.NORTH);
 
         loadAtOnce = new JCheckBox();
@@ -101,7 +99,6 @@ public class LoadMessageDialog extends JDialog {
 
         JLabel l = new JLabel(Messages.DIALOG_LOADMESSAGE_LABEL.get());
 
-        l.setBorder(border);
         add(l, BorderLayout.NORTH);
 
         ((JComponent) getContentPane()).setBorder(new EmptyBorder(20, 10, 20, 10));
