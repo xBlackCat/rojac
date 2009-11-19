@@ -99,6 +99,7 @@ public class ForumsListView extends AView {
 
         JToolBar toolBar = WindowsUtils.createToolBar(
                 WindowsUtils.setupImageButton("update", new UpdateActionListener(), Messages.VIEW_FORUMS_BUTTON_UPDATE),
+                null,
                 WindowsUtils.setupToggleButton("filled_only", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         forumsRowFilter.setNotEmpty(!forumsRowFilter.isNotEmpty());

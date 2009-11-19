@@ -133,11 +133,11 @@ public final class WindowsUtils {
         // Set common parameters
         button.setHorizontalAlignment(SwingConstants.CENTER);
         button.setVerticalAlignment(SwingConstants.BOTTOM);
-        button.setBorder(null);
+//        button.setBorder(null);
         button.setBackground(Color.white);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
-        button.setMargin(EMPTY_MARGIN);
+//        button.setMargin(EMPTY_MARGIN);
         button.setRolloverEnabled(true);
         button.setOpaque(false);
 
@@ -205,7 +205,11 @@ public final class WindowsUtils {
         JToolBar toolBar = new JToolBar();
 
         for (JComponent c : components) {
-            toolBar.add(c);
+            if (c != null) {
+                toolBar.add(c);
+            } else {
+                toolBar.addSeparator();
+            }
         }
 
         return toolBar;
