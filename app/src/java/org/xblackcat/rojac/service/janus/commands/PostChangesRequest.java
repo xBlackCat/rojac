@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.commands;
+package org.xblackcat.rojac.service.janus.commands;
 
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
-import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;

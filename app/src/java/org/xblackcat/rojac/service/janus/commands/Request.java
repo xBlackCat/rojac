@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.commands;
+package org.xblackcat.rojac.service.janus.commands;
 
 /**
  * Utility class to help with constructing request to Janus service in one line.

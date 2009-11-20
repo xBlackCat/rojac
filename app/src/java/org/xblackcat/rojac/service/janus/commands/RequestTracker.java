@@ -1,6 +1,4 @@
-package org.xblackcat.rojac.util;
-
-import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
+package org.xblackcat.rojac.service.janus.commands;
 
 /**
  * Track progress changes from request commands.
@@ -13,15 +11,7 @@ class RequestTracker implements IProgressTracker {
     }
 
     @Override
-    public void setProgress(int amount, int total) {
-    }
-
-    @Override
     public void postException(Throwable t) {
     }
 
-    @Override
-    public boolean isSuccess() {
-        return false;
-    }
 }
