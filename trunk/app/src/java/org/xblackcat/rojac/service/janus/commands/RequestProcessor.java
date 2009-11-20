@@ -1,13 +1,9 @@
-package org.xblackcat.rojac.util;
+package org.xblackcat.rojac.service.janus.commands;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.gui.dialogs.progress.IProgressTracker;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.commands.AffectedIds;
-import org.xblackcat.rojac.service.commands.IRequest;
-import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.JanusService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressController;
@@ -21,7 +17,7 @@ import static ch.lambdaj.Lambda.*;
 /**
  * @author xBlackCat
  */
-class RequestProcessor extends SwingWorker<Void, Void> {
+public class RequestProcessor extends SwingWorker<Void, Void> {
     private static final Log log = LogFactory.getLog(RequestProcessor.class);
 
     private final List<IRequest> requests;

@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.commands;
+package org.xblackcat.rojac.service.janus.commands;
 
 import org.xblackcat.rojac.RojacException;
 

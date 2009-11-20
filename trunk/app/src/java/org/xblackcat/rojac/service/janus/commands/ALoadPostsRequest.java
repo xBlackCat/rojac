@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.commands;
+package org.xblackcat.rojac.service.janus.commands;
 
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
