@@ -9,7 +9,5 @@ import java.util.EventListener;
  */
 
 public interface IProgressListener extends EventListener {
-    void stateChanged(ProgressState state, String description);
-
-    void progressChanged(float percentage, String description);
+    void progressChanged(ProgressChangeEvent e);
 }
