@@ -48,9 +48,8 @@ public class ProgressChangeEvent extends EventObject {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append(super.toString());
-        sb.append("state=").append(state);
+        sb.append("ProgressChangeEvent");
+        sb.append("{state=").append(state);
         sb.append(", progress=").append(progress);
         sb.append(", text='").append(text).append('\'');
         sb.append('}');

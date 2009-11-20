@@ -6,7 +6,7 @@ package org.xblackcat.rojac.service.progress;
  * @author xBlackCat
  */
 
-public interface IProgressControl {
+public interface IProgressController {
     /**
      * Notify listeners about job has been started.
      */

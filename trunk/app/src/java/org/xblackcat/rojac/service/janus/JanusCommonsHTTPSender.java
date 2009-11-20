@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.xblackcat.rojac.service.transport;
+package org.xblackcat.rojac.service.janus;
 
 import org.apache.axis.AxisFault;
 import org.apache.axis.Constants;
@@ -39,6 +39,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
+import org.xblackcat.rojac.service.progress.IProgressController;
 
 import javax.xml.soap.MimeHeader;
 import javax.xml.soap.MimeHeaders;
@@ -61,13 +62,16 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * This class uses Jakarta Commons's HttpClient to call a SOAP server.
+ * Modification of CommonsHTTPSender to fit Janus WS requirements.
  *
+ * @author xBlackCat
  * @author Davanum Srinivas (dims@yahoo.com) History: By Chandra Talluri Modifications done for maintaining sessions.
  *         Cookies needed to be set on HttpState not on MessageContext, since ttpMethodBase overwrites the cookies from
  *         HttpState. Also we need to setCookiePolicy on HttpState to CookiePolicy.COMPATIBILITY else it is defaulting
  *         to RFC2109Spec and adding Version information to it and tomcat server not recognizing it
  */
-public class JanusCommonsHTTPSender extends BasicHandler {
+class JanusCommonsHTTPSender extends BasicHandler {
+    private final IProgressController progressController;
 
     /**
      * Field log
@@ -79,7 +83,9 @@ public class JanusCommonsHTTPSender extends BasicHandler {
     protected CommonsHTTPClientProperties clientProperties;
     boolean httpChunkStream = true; //Use HTTP chunking or not.
 
-    public JanusCommonsHTTPSender() {
+    public JanusCommonsHTTPSender(IProgressController progressController) {
+        this.progressController = progressController;
+        
         initialize();
     }
 
@@ -224,6 +230,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                 }
             }
 
+            progressController.fireJobProgressChanged(0f, "Read " + method.getResponseContentLength() + " bytes");
             // wrap the response body stream so that close() also releases
             // the connection back to the pool.
             InputStream releaseConnectionOnCloseStream =
@@ -555,11 +562,11 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         }
 
         // process user defined headers for information.
-        Hashtable userHeaderTable =
+        Hashtable<?, ?> userHeaderTable =
                 (Hashtable) msgContext.getProperty(HTTPConstants.REQUEST_HEADERS);
 
         if (userHeaderTable != null) {
-            for (Map.Entry me : (Iterable<Map.Entry>) userHeaderTable.entrySet()) {
+            for (Map.Entry me : userHeaderTable.entrySet()) {
                 Object keyObj = me.getKey();
 
                 if (null == keyObj) {
@@ -788,7 +795,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         return new AutoCloseInputStream(method);
     }
 
-    private static class MessageRequestEntity implements RequestEntity {
+    private class MessageRequestEntity implements RequestEntity {
 
         private HttpMethodBase method;
         private Message message;
@@ -810,6 +817,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         }
 
         public void writeRequest(OutputStream out) throws IOException {
+            progressController.fireJobProgressChanged(0f, "Write " + message.getContentLength() + " bytes");
             try {
                 this.message.writeTo(new LogOutputStream(out, message.getContentLength()));
             } catch (SOAPException e) {
@@ -838,7 +846,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
     }
 
-    private static class GzipMessageRequestEntity extends MessageRequestEntity {
+    private class GzipMessageRequestEntity extends MessageRequestEntity {
 
         public GzipMessageRequestEntity(HttpMethodBase method, Message message) {
             super(method, message);
@@ -875,14 +883,13 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         private ByteArrayOutputStream cachedStream;
     }
 
-    private static class LogOutputStream extends FilterOutputStream {
-        private static final Log log = org.apache.commons.logging.LogFactory.getLog(JanusCommonsHTTPSender.LogOutputStream.class);
+    private class LogOutputStream extends FilterOutputStream {
         private long amount = 0;
-        private final long length;
+        private final float total;
 
         public LogOutputStream(OutputStream out, long contentLength) {
             super(out);
-            length = contentLength;
+            total = contentLength;
         }
 
         @Override
@@ -913,18 +920,19 @@ public class JanusCommonsHTTPSender extends BasicHandler {
 
         private void logAmount(long l) {
             amount += l;
-            log.debug(amount + " of " + length + " was written");
+            progressController.fireJobProgressChanged(amount / total);
         }
     }
 
-    private static class AutoCloseInputStream extends FilterInputStream {
-        private static final Log log = org.apache.commons.logging.LogFactory.getLog(JanusCommonsHTTPSender.AutoCloseInputStream.class);
+    private class AutoCloseInputStream extends FilterInputStream {
         private final HttpMethodBase method;
         private long amount = 0;
+        protected final float total;
 
         public AutoCloseInputStream(HttpMethodBase method) throws IOException {
             super(method.getResponseBodyAsStream());
             this.method = method;
+            total = method.getResponseContentLength();
         }
 
         public void close() throws IOException {
@@ -932,6 +940,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
                 super.close();
             } finally {
                 method.releaseConnection();
+                progressController.fireJobProgressChanged(1f);
             }
         }
 
@@ -944,7 +953,7 @@ public class JanusCommonsHTTPSender extends BasicHandler {
         private void logRead(long a) throws IOException {
             if (a > 0) {
                 amount += a;
-                log.debug("Read " + amount + " of " + method.getResponseContentLength());
+                progressController.fireJobProgressChanged(a / total);
             }
         }
 
