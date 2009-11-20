@@ -10,8 +10,8 @@ import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskExecutor;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
-import org.xblackcat.rojac.service.progress.IProgressControl;
-import org.xblackcat.rojac.service.progress.ProgressControl;
+import org.xblackcat.rojac.service.progress.IProgressController;
+import org.xblackcat.rojac.service.progress.ProgressController;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
@@ -44,7 +44,7 @@ public final class ServiceFactory {
     private final IStorage storage;
     private final IOptionsService optionsService;
     private final IMessageParser messageParser;
-    private final IProgressControl progressControl;
+    private final IProgressController progressController;
 
     private ServiceFactory() throws RojacException {
         storage = initializeStorage();
@@ -57,9 +57,9 @@ public final class ServiceFactory {
             throw new RuntimeException("Can't initialize message formatter.", e);
         }
 
-        progressControl = new ProgressControl();
+        progressController = new ProgressController();
 
-        executor = new TaskExecutor(progressControl);
+        executor = new TaskExecutor(progressController);
     }
 
     public IStorage getStorage() {
@@ -78,8 +78,8 @@ public final class ServiceFactory {
         return executor;
     }
 
-    public IProgressControl getProgressControl() {
-        return progressControl;
+    public IProgressController getProgressControl() {
+        return progressController;
     }
 
     private static DBStorage initializeStorage() throws RojacException {

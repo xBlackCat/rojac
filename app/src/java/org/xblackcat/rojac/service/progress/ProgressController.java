@@ -12,8 +12,8 @@ import java.lang.reflect.InvocationTargetException;
  * @author xBlackCat
  */
 
-public class ProgressControl implements IProgressControl {
-    private static final Log log = LogFactory.getLog(ProgressControl.class);
+public class ProgressController implements IProgressController {
+    private static final Log log = LogFactory.getLog(ProgressController.class);
 
     private final EventListenerList listenerList = new EventListenerList();
 

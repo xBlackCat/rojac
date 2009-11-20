@@ -10,7 +10,7 @@ import org.xblackcat.rojac.service.commands.IRequest;
 import org.xblackcat.rojac.service.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.JanusService;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.progress.IProgressControl;
+import org.xblackcat.rojac.service.progress.IProgressController;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ class RequestProcessor extends SwingWorker<Void, Void> {
     private final IResultHandler handler;
 
     protected AffectedIds affectedIds;
-    protected final IProgressControl progressControl = ServiceFactory.getInstance().getProgressControl();
+    protected final IProgressController progressController = ServiceFactory.getInstance().getProgressControl();
 
     public RequestProcessor(IResultHandler handler, IRequest... requests) {
         this.handler = handler;
@@ -37,14 +37,18 @@ class RequestProcessor extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        final JanusService janusService = new JanusService(Property.RSDN_USER_NAME.get(), RojacHelper.getUserPassword());
+        progressController.fireJobStart();
+
+        final String userName = Property.RSDN_USER_NAME.get();
+        final JanusService janusService = new JanusService(userName, RojacHelper.getUserPassword());
+
+        progressController.fireJobProgressChanged(0f, "Synchronize [user name = " + userName + "].");
         janusService.init(Property.SYNCHRONIZER_USE_GZIP.get());
         janusService.testConnection();
 
         if (log.isDebugEnabled()) {
             log.debug("Start process request(s): " + joinFrom(requests, IRequest.class).getName());
         }
-        progressControl.fireJobStart();
 
         IProgressTracker trac = new RequestTracker();
 
@@ -69,7 +73,7 @@ class RequestProcessor extends SwingWorker<Void, Void> {
             handler.process(affectedIds);
         }
 
-        progressControl.fireJobStop();
+        progressController.fireJobStop();
         if (log.isDebugEnabled()) {
             log.debug("Requests are processed.");
         }

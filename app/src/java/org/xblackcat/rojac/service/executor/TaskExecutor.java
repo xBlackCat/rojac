@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.executor;
 
-import org.xblackcat.rojac.service.progress.IProgressControl;
+import org.xblackcat.rojac.service.progress.IProgressController;
 
 import java.util.Collections;
 import java.util.EnumMap;
@@ -19,14 +19,14 @@ import java.util.concurrent.TimeUnit;
 
 public final class TaskExecutor implements IExecutor {
     private final Map<TaskType, Executor> pools;
-    private final IProgressControl progressControl;
+    private final IProgressController progressController;
 
     public TaskExecutor() {
         this(null);
     }
 
-    public TaskExecutor(IProgressControl progressControl) {
-        this.progressControl = progressControl;
+    public TaskExecutor(IProgressController progressController) {
+        this.progressController = progressController;
 
         Map<TaskType, Executor> pools = new EnumMap<TaskType, Executor>(TaskType.class);
         pools.put(TaskType.Common, setupCommonExecutor());
