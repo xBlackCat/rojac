@@ -85,6 +85,7 @@ public enum Messages {
 
     // Options dialog texts
     DIALOG_OPTIONS_TITLE,
+    DIALOG_OPTIONS_DESCRIPTION,
 
     // Edit message dialog related texts
     ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE,
