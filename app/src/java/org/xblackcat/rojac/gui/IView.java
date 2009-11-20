@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.service.commands.AffectedIds;
+import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 
 import javax.swing.*;
 

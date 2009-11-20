@@ -3,20 +3,23 @@ package org.xblackcat.rojac;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
+import org.xblackcat.rojac.gui.dialogs.ProgressTrackerDialog;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.progress.LoggingProgressListener;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import static org.xblackcat.rojac.service.options.Property.*;
+
 /**
  * @author Alexey
  */
 
-public final class RojacLauncher {
+public abstract class RojacLauncher {
     private static final Log log = LogFactory.getLog(RojacLauncher.class);
 
     private RojacLauncher() {
@@ -34,7 +37,14 @@ public final class RojacLauncher {
         // Initialize core services
         ServiceFactory.initialize();
 
-        LookAndFeel laf = Property.ROJAC_GUI_LOOK_AND_FEEL.get();
+        // Set up debug mode if set
+        if (ROJAC_DEBUG_MODE.get()) {
+            ServiceFactory.getInstance()
+                    .getProgressControl()
+                    .addProgressListener(new LoggingProgressListener());
+        }
+
+        LookAndFeel laf = ROJAC_GUI_LOOK_AND_FEEL.get();
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Using LAF: " + laf.getName());
@@ -44,7 +54,7 @@ public final class RojacLauncher {
             throw new RojacException("Can not initialize " + laf.getName() + " L&F.", e);
         }
 
-        Messages.setLocale(Property.ROJAC_GUI_LOCALE.get());
+        Messages.setLocale(ROJAC_GUI_LOCALE.get());
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -69,14 +79,20 @@ public final class RojacLauncher {
 
                 mainFrame.loadData();
 
+                // Setup progress dialog.
+                ProgressTrackerDialog ptd = new ProgressTrackerDialog(mainFrame);
+                ServiceFactory.getInstance()
+                        .getProgressControl()
+                        .addProgressListener(ptd);
+
                 mainFrame.setVisible(true);
             }
         });
     }
 
     private static void storeSettings() {
-        if (!Property.RSDN_USER_PASSWORD_SAVE.get()) {
-            Property.RSDN_USER_PASSWORD.clear();
+        if (!RSDN_USER_PASSWORD_SAVE.get()) {
+            RSDN_USER_PASSWORD.clear();
         }
 
         ServiceFactory.getInstance().getOptionsService().storeSettings();

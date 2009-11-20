@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.service.commands.AffectedIds;
+import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 
 import javax.swing.*;
 
