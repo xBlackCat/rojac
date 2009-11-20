@@ -7,7 +7,7 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AMessageView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.commands.AffectedIds;
+import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.WindowsUtils;

@@ -42,7 +42,9 @@ public final class Property<T> {
     public static final Property<Integer> RSDN_USER_ID = create("rojac.rsdn.user.id", Integer.class);
     public static final Property<Boolean> RSDN_USER_PASSWORD_SAVE = create("rojac.rsdn.user.password.save", Boolean.FALSE);
 
-    //
+    // Progress dialog properties
+    public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.dialog.progress.autoshow", Boolean.TRUE);
+    public static final Property<Boolean> DIALOGS_PROGRESS_AUTOHIDE = create("rojac.dialog.progress.autohide", Boolean.FALSE);
 
     // Janus synchronizator properties
 
@@ -55,6 +57,7 @@ public final class Property<T> {
     public static final Property<Boolean> SYNCHRONIZER_LOAD_USERS = create("rojac.synchronizer.load.users", Boolean.FALSE);
     public static final Property<Integer> SYNCHRONIZER_LOAD_USERS_PORTION = create("rojac.synchronizer.load.users.portion", Integer.valueOf(1000));
     public static final Property<Integer> SYNCHRONIZER_LOAD_MESSAGES_PORTION = create("rojac.synchronizer.load.messages.portion", Integer.valueOf(100));
+
     public static final Property<Boolean> MESSAGE_PANE_SHOW_MARKS = create("rojac.viewer.show_marks_pane", Boolean.FALSE);
 
     static <V> Property<V> create(String name, Class<V> type, IValueChecker<V> checker) {

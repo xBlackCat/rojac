@@ -5,7 +5,7 @@ import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IMessageView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AMessageView;
-import org.xblackcat.rojac.service.commands.AffectedIds;
+import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 
 import javax.swing.*;
 

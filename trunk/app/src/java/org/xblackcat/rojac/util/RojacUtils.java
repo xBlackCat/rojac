@@ -6,8 +6,9 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.commands.IRequest;
-import org.xblackcat.rojac.service.commands.IResultHandler;
+import org.xblackcat.rojac.service.janus.commands.IRequest;
+import org.xblackcat.rojac.service.janus.commands.IResultHandler;
+import org.xblackcat.rojac.service.janus.commands.RequestProcessor;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 

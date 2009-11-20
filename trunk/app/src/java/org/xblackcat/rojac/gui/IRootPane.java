@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.gui;
 
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.service.commands.IRequest;
-import org.xblackcat.rojac.service.commands.IResultHandler;
+import org.xblackcat.rojac.service.janus.commands.IRequest;
+import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 
 /**
  * @author xBlackCat
