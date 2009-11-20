@@ -10,6 +10,7 @@ import net.infonode.docking.util.WindowMenuUtil;
 import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
@@ -221,10 +222,14 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
         JButton settingsButton = WindowsUtils.setupImageButton("settings", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                OptionsDialog od = new OptionsDialog(MainFrame.this);
+                try {
+                    OptionsDialog od = new OptionsDialog(MainFrame.this);
 
-                WindowsUtils.center(od, MainFrame.this);
-                od.setVisible(true);
+                    WindowsUtils.center(od, MainFrame.this);
+                    od.setVisible(true);
+                } catch (RojacException ex) {
+                    log.error("A model for options dialog.", ex);
+                }
             }
         }, Messages.MAINFRAME_BUTTON_SETTINGS);
 

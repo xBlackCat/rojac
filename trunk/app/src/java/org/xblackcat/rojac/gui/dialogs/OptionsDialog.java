@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.dialogs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
@@ -40,14 +41,9 @@ public class OptionsDialog extends JDialog {
     protected PropertiesModel model;
 
 
-    public OptionsDialog(Window mainFrame) {
+    public OptionsDialog(Window mainFrame) throws RojacException {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
-        try {
-            model = loadModel();
-        } catch (NullPointerException e) {
-            log.error("Can not initialize model", e);
-            model = null;
-        }
+        model = createModel();
 
         setTitle(Messages.DIALOG_OPTIONS_TITLE.get());
 
@@ -61,7 +57,7 @@ public class OptionsDialog extends JDialog {
         JPanel cp = new JPanel(new BorderLayout(5, 10));
         cp.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        cp.add(new JLabel("Options dialog"), BorderLayout.NORTH);
+        cp.add(new JLabel(Messages.DIALOG_OPTIONS_DESCRIPTION.get()), BorderLayout.NORTH);
 
         JComponent centerComp;
         if (model != null) {
@@ -126,7 +122,14 @@ public class OptionsDialog extends JDialog {
         Messages.setLocale(Property.ROJAC_GUI_LOCALE.get());
     }
 
-    private PropertiesModel loadModel() {
+    /**
+     * Builds options dialog model from the list of properties.
+     *
+     * @return constructed and filled model of properties for property tree.
+     *
+     * @throws RojacException is thrown if tree can not be constructed.
+     */
+    private PropertiesModel createModel() throws RojacException {
         PropertyNode root = null;
 
         for (Property<?> p : Property.getAllProperties()) {
@@ -155,7 +158,7 @@ public class OptionsDialog extends JDialog {
         }
 
         if (root == null) {
-            throw new NullPointerException("Can not initialize properties model. See TRACE-level logs for detail");
+            throw new RojacException("Can not initialize properties model. See TRACE-level logs for detail");
         }
 
         return new PropertiesModel(root);
@@ -168,7 +171,7 @@ public class OptionsDialog extends JDialog {
 
         tree.setCellRenderer(new OptionTreeCellRenderer());
         tree.setCellEditor(new OptionCellEditor());
-        
+
         return tree;
     }
 
