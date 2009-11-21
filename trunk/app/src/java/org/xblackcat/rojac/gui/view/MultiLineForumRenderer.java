@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.view;
 import ch.lambdaj.Lambda;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
-import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.i18n.Messages;
 import sun.swing.DefaultLookup;
 
 import javax.swing.*;
@@ -225,7 +225,7 @@ class MultiLineForumRenderer extends JPanel
                     DateFormat dateFormat = DateFormat.getDateTimeInstance(
                             DateFormat.MEDIUM,
                             DateFormat.SHORT,
-                            Property.ROJAC_GUI_LOCALE.get());
+                            Messages.getLocale());
                     dateText = dateFormat.format(new Date(forumDate));
                 }
             }

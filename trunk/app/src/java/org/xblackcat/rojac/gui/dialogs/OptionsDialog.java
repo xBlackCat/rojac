@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
+import static org.xblackcat.rojac.service.options.Property.*;
+
 /**
  * Shows a dialog to configure the application.
  *
@@ -28,14 +30,14 @@ public class OptionsDialog extends JDialog {
     private static final Log log = LogFactory.getLog(OptionsDialog.class);
     // Hidden properties.
     private static final Collection<Property> PROPERTIES_TO_SKIP = new HashSet<Property>(Arrays.asList(
-            Property.ROJAC_DEBUG_MODE,
-            Property.ROJAC_MAIN_FRAME_SIZE,
-            Property.ROJAC_MAIN_FRAME_POSITION,
-            Property.ROJAC_MAIN_FRAME_STATE,
-            Property.RSDN_USER_ID,
-            Property.RSDN_USER_NAME,
-            Property.RSDN_USER_PASSWORD,
-            Property.RSDN_USER_PASSWORD_SAVE
+            ROJAC_DEBUG_MODE,
+            ROJAC_MAIN_FRAME_SIZE,
+            ROJAC_MAIN_FRAME_POSITION,
+            ROJAC_MAIN_FRAME_STATE,
+            RSDN_USER_ID,
+            RSDN_USER_NAME,
+            RSDN_USER_PASSWORD,
+            RSDN_USER_PASSWORD_SAVE
     ));
 
     protected PropertiesModel model;
@@ -112,14 +114,14 @@ public class OptionsDialog extends JDialog {
 
         // Load properties.
 
-        LookAndFeel laf = Property.ROJAC_GUI_LOOK_AND_FEEL.get();
+        LookAndFeel laf = ROJAC_GUI_LOOK_AND_FEEL.get();
         try {
             UIUtils.setLookAndFeel(laf);
         } catch (UnsupportedLookAndFeelException e) {
             log.warn("Can not initialize " + laf.getName() + " L&F.", e);
         }
 
-        Messages.setLocale(Property.ROJAC_GUI_LOCALE.get());
+        Messages.setLocale(ROJAC_GUI_LOCALE.get());
     }
 
     /**

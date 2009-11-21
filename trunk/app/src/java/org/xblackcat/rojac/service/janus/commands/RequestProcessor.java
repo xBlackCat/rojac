@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.JanusService;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressController;
 
 import javax.swing.*;
@@ -13,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.*;
+import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
+import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_USE_GZIP;
 
 /**
  * @author xBlackCat
@@ -35,11 +36,11 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         progressController.fireJobStart();
 
-        final String userName = Property.RSDN_USER_NAME.get();
+        final String userName = RSDN_USER_NAME.get();
         final JanusService janusService = new JanusService(userName, RojacHelper.getUserPassword());
 
         progressController.fireJobProgressChanged(0f, "Synchronize [user name = " + userName + "].");
-        janusService.init(Property.SYNCHRONIZER_USE_GZIP.get());
+        janusService.init(SYNCHRONIZER_USE_GZIP.get());
         janusService.testConnection();
 
         if (log.isDebugEnabled()) {
