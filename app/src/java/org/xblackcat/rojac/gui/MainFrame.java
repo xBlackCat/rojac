@@ -26,7 +26,6 @@ import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -45,6 +44,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.xblackcat.rojac.service.options.Property.*;
 
 /**
  * @author xBlackCat
@@ -196,7 +197,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         JButton updateButton = WindowsUtils.setupImageButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 IRequest[] requests =
-                        Property.SYNCHRONIZER_LOAD_USERS.get() ?
+                        SYNCHRONIZER_LOAD_USERS.get() ?
                                 Request.SYNCHRONIZE_WITH_USERS :
                                 Request.SYNCHRONIZE;
                 performRequest(changeHandler, requests);
@@ -308,16 +309,16 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         forumsListView.applySettings();
         favoritesView.applySettings();
 
-        if (Property.ROJAC_MAIN_FRAME_POSITION.isSet()) {
-            setLocation(Property.ROJAC_MAIN_FRAME_POSITION.get());
+        if (ROJAC_MAIN_FRAME_POSITION.isSet()) {
+            setLocation(ROJAC_MAIN_FRAME_POSITION.get());
         }
 
-        if (Property.ROJAC_MAIN_FRAME_SIZE.isSet()) {
-            setSize(Property.ROJAC_MAIN_FRAME_SIZE.get());
+        if (ROJAC_MAIN_FRAME_SIZE.isSet()) {
+            setSize(ROJAC_MAIN_FRAME_SIZE.get());
         }
 
-        if (Property.ROJAC_MAIN_FRAME_STATE.isSet()) {
-            setExtendedState(Property.ROJAC_MAIN_FRAME_STATE.get());
+        if (ROJAC_MAIN_FRAME_STATE.isSet()) {
+            setExtendedState(ROJAC_MAIN_FRAME_STATE.get());
         }
 
         // TODO: implement
@@ -335,10 +336,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     public void storeWindowState() {
         int state = getExtendedState();
 
-        Property.ROJAC_MAIN_FRAME_STATE.set(state);
+        ROJAC_MAIN_FRAME_STATE.set(state);
         if (state == NORMAL) {
-            Property.ROJAC_MAIN_FRAME_POSITION.set(getLocation());
-            Property.ROJAC_MAIN_FRAME_SIZE.set(getSize());
+            ROJAC_MAIN_FRAME_POSITION.set(getLocation());
+            ROJAC_MAIN_FRAME_SIZE.set(getSize());
         }
     }
 

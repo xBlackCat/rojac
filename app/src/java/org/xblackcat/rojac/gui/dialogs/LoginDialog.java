@@ -10,7 +10,6 @@ import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.TestRequest;
 import org.xblackcat.rojac.service.options.Password;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -18,6 +17,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+
+import static org.xblackcat.rojac.service.options.Property.*;
 
 /**
  * @author xBlackCat
@@ -65,7 +66,7 @@ public class LoginDialog extends JDialog {
 
         fieldLogin = new JTextField(20);
         fieldPassword = new JPasswordField(20);
-        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get(), Property.RSDN_USER_PASSWORD_SAVE.get());
+        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get(), RSDN_USER_PASSWORD_SAVE.get());
 
         JPanel fields = new JPanel(new GridLayout(0, 1));
         fields.add(fieldLogin);
@@ -85,9 +86,9 @@ public class LoginDialog extends JDialog {
     }
 
     public boolean showLoginDialog() {
-        String userName = Property.RSDN_USER_NAME.get();
-        Password password = Property.RSDN_USER_PASSWORD.get();
-        boolean save = Property.RSDN_USER_PASSWORD_SAVE.get();
+        String userName = RSDN_USER_NAME.get();
+        Password password = RSDN_USER_PASSWORD.get();
+        boolean save = RSDN_USER_PASSWORD_SAVE.get();
 
         fieldLogin.setText(userName);
         fieldPassword.setText(password == null ? null : password.toString());
@@ -96,9 +97,9 @@ public class LoginDialog extends JDialog {
         setVisible(true);
 
         if (canceled) {
-            Property.RSDN_USER_NAME.set(userName);
-            Property.RSDN_USER_PASSWORD.set(password);
-            Property.RSDN_USER_PASSWORD_SAVE.set(save);
+            RSDN_USER_NAME.set(userName);
+            RSDN_USER_PASSWORD.set(password);
+            RSDN_USER_PASSWORD_SAVE.set(save);
         }
 
         return canceled;
@@ -123,7 +124,7 @@ public class LoginDialog extends JDialog {
 
             String userName = fieldLogin.getText();
             if (StringUtils.isNotBlank(userName)) {
-                Property.RSDN_USER_NAME.set(userName);
+                RSDN_USER_NAME.set(userName);
             }
 
             char[] p = fieldPassword.getPassword();
@@ -131,7 +132,7 @@ public class LoginDialog extends JDialog {
                 RojacHelper.setUserPassword(p);
             }
 
-            Property.RSDN_USER_PASSWORD_SAVE.set(Boolean.valueOf(fieldSavePassword.isSelected()));
+            RSDN_USER_PASSWORD_SAVE.set(fieldSavePassword.isSelected());
 
             RojacUtils.processRequests(new IResultHandler() {
                 @Override
@@ -140,7 +141,7 @@ public class LoginDialog extends JDialog {
                     int userId = results.getMessageIds()[0];
 
                     if (userId != 0) {
-                        Property.RSDN_USER_ID.set(userId);
+                        RSDN_USER_ID.set(userId);
                     } else {
                         int res = JLOptionPane.showConfirmDialog(
                                 LoginDialog.this,

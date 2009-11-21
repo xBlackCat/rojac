@@ -11,10 +11,11 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.UsersList;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.StorageException;
+
+import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_USERS_PORTION;
 
 /**
  * @author xBlackCat
@@ -30,7 +31,7 @@ class GetUsersRequest extends ARequest {
         if (log.isInfoEnabled()) {
             log.info("Loading new users information.");
         }
-        Integer limit = Property.SYNCHRONIZER_LOAD_USERS_PORTION.get();
+        Integer limit = SYNCHRONIZER_LOAD_USERS_PORTION.get();
         try {
             Version localUsersVersion = RojacHelper.getVersion(VersionType.USERS_ROW_VERSION);
 

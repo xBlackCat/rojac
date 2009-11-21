@@ -12,7 +12,9 @@ import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.data.NewData;
-import org.xblackcat.rojac.service.options.Property;
+
+import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
+import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
 
 /**
  * @author xBlackCat
@@ -36,7 +38,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             log.debug("Load new messages for forums [id=" + ArrayUtils.toString(forumIds) + "]");
         }
 
-        Integer limit = Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
+        Integer limit = SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
 
         Version messagesVersion = RojacHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
         Version moderatesVersion = RojacHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
@@ -62,7 +64,9 @@ class GetNewPostsRequest extends ALoadPostsRequest {
                     limit
             );
 
-            Property.RSDN_USER_ID.set(data.getOwnUserId());
+            if (data.getOwnUserId() != 0) {
+                RSDN_USER_ID.set(data.getOwnUserId());
+            }
 
             messages = data.getMessages();
             Moderate[] moderates = data.getModerates();
