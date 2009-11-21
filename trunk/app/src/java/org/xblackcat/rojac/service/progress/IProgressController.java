@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.service.progress;
 
+import org.xblackcat.rojac.i18n.Messages;
+
 /**
  * Interface to describe actions of progress tracker to show any continues operations in the tray or progress dialog.
  *
@@ -15,9 +17,10 @@ public interface IProgressController {
     /**
      * Notify listeners about job has been started and provide a message for logging.
      *
-     * @param logMessage message to log.
+     * @param message
+     * @param arguments
      */
-    void fireJobStart(String logMessage);
+    void fireJobStart(Messages message, Object... arguments);
 
     /**
      * Notify listeners about changing jobs progress (completeness) state.
@@ -30,9 +33,10 @@ public interface IProgressController {
      * Notify listeners about changing jobs progress (completeness) state and provide a message for logging.
      *
      * @param progress   new value of progress.
-     * @param logMessage message to log.
+     * @param message
+     * @param arguments
      */
-    void fireJobProgressChanged(float progress, String logMessage);
+    void fireJobProgressChanged(float progress, Messages message, Object... arguments);
 
     /**
      * Notify listeners about job has been stopped.
@@ -42,9 +46,10 @@ public interface IProgressController {
     /**
      * Notify listeners about job has been stopped and provide a message for logging.
      *
-     * @param logMessage message to log.
+     * @param message
+     * @param arguments
      */
-    void fireJobStop(String logMessage);
+    void fireJobStop(Messages message, Object... arguments);
 
     /**
      * Notify listeners about no more tasks is processed.
@@ -54,9 +59,10 @@ public interface IProgressController {
     /**
      * Notify listeners about no more tasks is processed and provide a message for logging.
      *
-     * @param logMessage message to log.
+     * @param message
+     * @param arguments
      */
-    void fireIdle(String logMessage);
+    void fireIdle(Messages message, Object... arguments);
 
     /**
      * Registers a new progress listener.

@@ -9,9 +9,12 @@ import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.data.NewData;
+
+import java.util.Arrays;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
@@ -24,9 +27,9 @@ class GetNewPostsRequest extends ALoadPostsRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
     public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
-        trac.addLodMessage("Getting new posts started.");
-
         int[] forumIds = forumAH.getSubscribedForumIds();
+
+        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_NEW_POSTS, Arrays.toString(forumIds));
         if (ArrayUtils.isEmpty(forumIds)) {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
@@ -40,6 +43,8 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         Integer limit = SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
 
+        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
+        
         Version messagesVersion = RojacHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
         Version moderatesVersion = RojacHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
         Version ratingsVersion = RojacHelper.getVersion(VersionType.RATING_ROW_VERSION);
@@ -72,6 +77,8 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             Moderate[] moderates = data.getModerates();
             Rating[] ratings = data.getRatings();
 
+            trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
+
             storeNewPosts(messages, moderates, ratings);
 
             ratingsVersion = data.getRatingRowVersion();
@@ -84,10 +91,9 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         } while (messages.length > 0);
 
+        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USER_ID, RSDN_USER_ID.get());
 
 //        postprocessingMessages();
-
-        trac.addLodMessage("Getting new posts finished.");
 
         return new AffectedIds(processedMessages, affectedForums);
     }

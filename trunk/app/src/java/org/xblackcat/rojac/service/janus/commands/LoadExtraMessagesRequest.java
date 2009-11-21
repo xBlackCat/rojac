@@ -7,10 +7,13 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.data.Rating;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.storage.StorageException;
+
+import java.util.Arrays;
 
 /**
  * Command for loading extra and broken messages.
@@ -22,28 +25,25 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
     private static final Log log = LogFactory.getLog(LoadExtraMessagesRequest.class);
 
     public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
-        trac.addLodMessage("Loading extra messages started.");
-
         int[] messageIds = miscAH.getExtraMessages();
 
         if (!ArrayUtils.isEmpty(messageIds)) {
-            trac.addLodMessage("Loading additional messages: " + ArrayUtils.toString(messageIds));
-            loadTopics(messageIds, janusService);
+            trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_EXTRA_POSTS, Arrays.toString(messageIds));
+            loadTopics(messageIds, janusService, trac);
 
             miscAH.clearExtraMessages();
         }
 
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
         if (!ArrayUtils.isEmpty(brokenTopicIds)) {
-            trac.addLodMessage("Loading broken topics by ids: " + ArrayUtils.toString(brokenTopicIds));
-            loadTopics(brokenTopicIds, janusService);
+            trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_BROKEN_TOPICS, Arrays.toString(brokenTopicIds));
+            loadTopics(brokenTopicIds, janusService, trac);
         }
 
-        trac.addLodMessage("Loading extra messages finished.");        
         return new AffectedIds(processedMessages, affectedForums);
     }
 
-    private void loadTopics(int[] messageIds, IJanusService janusService) throws RsdnProcessorException, StorageException {
+    private void loadTopics(int[] messageIds, IJanusService janusService, IProgressTracker tracker) throws RsdnProcessorException, StorageException {
         TopicMessages extra;
         try {
             extra = janusService.getTopicByMessage(messageIds);
@@ -57,8 +57,10 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
         processedMessages.clear();
         affectedForums.clear();
 
+        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
+
         storeNewPosts(messages, moderates, ratings);
 
-        postprocessingMessages();
+//        postprocessingMessages();
     }
 }

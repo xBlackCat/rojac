@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.service.janus.commands;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.JanusService;
@@ -24,8 +26,19 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
     private final List<IRequest> requests;
     private final IResultHandler handler;
 
-    protected AffectedIds affectedIds;
-    protected final IProgressController progressController = ServiceFactory.getInstance().getProgressControl();
+    private AffectedIds affectedIds;
+    private final IProgressController progressController = ServiceFactory.getInstance().getProgressControl();
+    private final IProgressTracker tracker = new IProgressTracker() {
+        @Override
+        public void addLodMessage(Messages message, Object... arguments) {
+            progressController.fireJobProgressChanged(0, message, arguments);
+        }
+
+        @Override
+        public void postException(Throwable t) {
+            progressController.fireIdle(Messages.SYNCHRONIZE_COMMAND_EXCEPTION, ExceptionUtils.getFullStackTrace(t));
+        }
+    };
 
     public RequestProcessor(IResultHandler handler, IRequest... requests) {
         this.handler = handler;
@@ -39,25 +52,29 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
         final String userName = RSDN_USER_NAME.get();
         final JanusService janusService = new JanusService(userName, RojacHelper.getUserPassword());
 
-        progressController.fireJobProgressChanged(0f, "Synchronize [user name = " + userName + "].");
-        janusService.init(SYNCHRONIZER_USE_GZIP.get());
+        progressController.fireJobProgressChanged(0f, Messages.SYNCHRONIZE_COMMAND_START);
+        Boolean useCompression = SYNCHRONIZER_USE_GZIP.get();
+        janusService.init(useCompression);
+        progressController.fireJobProgressChanged(0f, useCompression ? Messages.SYNCHRONIZE_COMMAND_USE_COMPRESSION : Messages.SYNCHRONIZE_COMMAND_DONT_USE_COMPRESSION);
+
         janusService.testConnection();
 
         if (log.isDebugEnabled()) {
-            log.debug("Start process request(s): " + joinFrom(requests, IRequest.class).getName());
+            log.debug("Process request(s): " + joinFrom(requests, IRequest.class).getName());
         }
-
-        IProgressTracker trac = new RequestTracker();
 
         try {
             affectedIds = aggregate(
                     requests,
                     new AffectedPostsAggregator(),
-                    on(IRequest.class).process(trac, janusService)
+                    on(IRequest.class).process(tracker, janusService)
             );
         } catch (Exception e) {
             // Just in case
-            log.error("There is an exception in one of commands", e);
+            log.debug("There is an exception in one of commands", e);
+
+            progressController.fireIdle(Messages.SYNCHRONIZE_COMMAND_EXCEPTION, ExceptionUtils.getFullStackTrace(e));
+
             affectedIds = new AffectedIds();
         }
 
@@ -70,7 +87,7 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
             handler.process(affectedIds);
         }
 
-        progressController.fireJobStop();
+        progressController.fireJobStop(Messages.SYNCHRONIZE_COMMAND_DONE);
         if (log.isDebugEnabled()) {
             log.debug("Requests are processed.");
         }

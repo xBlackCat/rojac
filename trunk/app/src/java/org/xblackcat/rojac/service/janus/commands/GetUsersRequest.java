@@ -6,6 +6,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
@@ -28,10 +29,13 @@ class GetUsersRequest extends ARequest {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         IUserAH uAH = storage.getUserAH();
 
-        if (log.isInfoEnabled()) {
-            log.info("Loading new users information.");
+        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_USERS);
+        if (log.isDebugEnabled()) {
+            log.debug("Loading new users information.");
         }
         Integer limit = SYNCHRONIZER_LOAD_USERS_PORTION.get();
+        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
+
         try {
             Version localUsersVersion = RojacHelper.getVersion(VersionType.USERS_ROW_VERSION);
 
@@ -54,9 +58,11 @@ class GetUsersRequest extends ARequest {
                 RojacHelper.setVersion(VersionType.USERS_ROW_VERSION, localUsersVersion);
             } while (users.getUsers().length > 0);
 
-            if (log.isInfoEnabled()) {
-                log.info(totalUsersNumber + " user(s) was loaded.");
+            trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USERS, totalUsersNumber);
+            if (log.isDebugEnabled()) {
+                log.debug(totalUsersNumber + " user(s) was loaded.");
             }
+
         } catch (StorageException e) {
             throw new RsdnProcessorException("Can not get the local users version", e);
         } catch (JanusServiceException e) {

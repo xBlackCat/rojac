@@ -60,6 +60,9 @@ import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import static org.xblackcat.rojac.i18n.Messages.SYNCHRONIZE_COMMAND_READ;
+import static org.xblackcat.rojac.i18n.Messages.SYNCHRONIZE_COMMAND_WRITE;
+
 /**
  * This class uses Jakarta Commons's HttpClient to call a SOAP server.
  * Modification of CommonsHTTPSender to fit Janus WS requirements.
@@ -230,7 +233,7 @@ class JanusCommonsHTTPSender extends BasicHandler {
                 }
             }
 
-            progressController.fireJobProgressChanged(0f, "Read " + method.getResponseContentLength() + " bytes");
+            progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_READ, method.getResponseContentLength());
             // wrap the response body stream so that close() also releases
             // the connection back to the pool.
             InputStream releaseConnectionOnCloseStream =
@@ -817,7 +820,7 @@ class JanusCommonsHTTPSender extends BasicHandler {
         }
 
         public void writeRequest(OutputStream out) throws IOException {
-            progressController.fireJobProgressChanged(0f, "Write " + message.getContentLength() + " bytes");
+            progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_WRITE, message.getContentLength());
             try {
                 this.message.writeTo(new LogOutputStream(out, message.getContentLength()));
             } catch (SOAPException e) {
@@ -953,7 +956,7 @@ class JanusCommonsHTTPSender extends BasicHandler {
         private void logRead(long a) throws IOException {
             if (a > 0) {
                 amount += a;
-                progressController.fireJobProgressChanged(a / total);
+                progressController.fireJobProgressChanged(amount / total);
             }
         }
 

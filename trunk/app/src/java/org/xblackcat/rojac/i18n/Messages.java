@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.i18n;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -101,6 +103,29 @@ public enum Messages {
     MESSAGE_PANE_USER_LABEL,
     MESSAGE_PANE_DATE_LABEL,
     MESSAGE_PANE_TOOLBAR_TITLE_RATING,
+
+    SYNCHRONIZE_COMMAND_NAME_NEW_POSTS,
+    SYNCHRONIZE_COMMAND_NAME_EXTRA_POSTS,
+    SYNCHRONIZE_COMMAND_NAME_BROKEN_TOPICS,
+    SYNCHRONIZE_COMMAND_NAME_FORUM_LIST,
+    SYNCHRONIZE_COMMAND_NAME_USERS,
+    SYNCHRONIZE_COMMAND_NAME_SUBMIT,
+    SYNCHRONIZE_COMMAND_NAME_TEST,
+
+    SYNCHRONIZE_COMMAND_GOT_POSTS,
+    SYNCHRONIZE_COMMAND_GOT_FORUMS,
+    SYNCHRONIZE_COMMAND_GOT_USERS,
+    SYNCHRONIZE_COMMAND_GOT_USER_ID,
+
+    SYNCHRONIZE_COMMAND_PORTION,
+    SYNCHRONIZE_COMMAND_START,
+    SYNCHRONIZE_COMMAND_DONE,
+    SYNCHRONIZE_COMMAND_USE_USER,    
+    SYNCHRONIZE_COMMAND_READ,
+    SYNCHRONIZE_COMMAND_WRITE,
+    SYNCHRONIZE_COMMAND_EXCEPTION,
+    SYNCHRONIZE_COMMAND_USE_COMPRESSION,
+    SYNCHRONIZE_COMMAND_DONT_USE_COMPRESSION,
 
     // Mark descriptions
     DESCRIPTION_MARK_SELECT,
@@ -213,28 +238,28 @@ public enum Messages {
     /**
      * Returns a localized text of the constant. Optionally accepts parameters to substitute into text.
      *
-     * @param params optionally parameters for formatting message.
+     * @param arguments optionally parameters for formatting message.
      *
      * @return formatted localized message.
      *
      * @throws MissingResourceException if no localized message is exists for the constant.
      */
-    public String get(Object... params) throws MissingResourceException {
+    public String get(Object... arguments) throws MissingResourceException {
         String key = ResourceUtils.constantToProperty(name());
 
         String mes;
 
         Locale l;
         readLock.lock();
+        l = currentLocale;
         try {
             mes = messages.getString(key);
-            l = currentLocale;
-/*
         } catch (MissingResourceException e) {
-            // For testing purposes
-            mes = key;
-            l = locale;
-*/
+            if (Property.ROJAC_DEBUG_MODE.get()) {
+                mes = key + ": " + ArrayUtils.toString(arguments);
+            } else {
+                throw e;
+            }
         } finally {
             readLock.unlock();
         }
@@ -244,7 +269,7 @@ public enum Messages {
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException("Invalid encoding for string of key " + key, e);
             }
-            return String.format(l, mes, params);
+            return String.format(l, mes, arguments);
         } else {
             return key;
         }
