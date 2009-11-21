@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
@@ -28,7 +29,7 @@ class PostChangesRequest extends ARequest {
 
     public AffectedIds process(IProgressTracker trac, IJanusService janusService) {
         IStorage storage = ServiceFactory.getInstance().getStorage();
-        trac.addLodMessage("Synchronization started.");
+        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_SUBMIT);
 
         try {
             INewRatingAH nrAH = storage.getNewRatingAH();

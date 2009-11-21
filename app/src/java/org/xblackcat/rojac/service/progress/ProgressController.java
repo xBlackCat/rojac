@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.progress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.i18n.Messages;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -23,8 +24,8 @@ public class ProgressController implements IProgressController {
     }
 
     @Override
-    public void fireJobStart(String logMessage) {
-        fireProgressChanged(ProgressState.Start, null, logMessage);
+    public void fireJobStart(Messages message, Object... arguments) {
+        fireProgressChanged(ProgressState.Start, null, message.get(arguments));
     }
 
     @Override
@@ -33,8 +34,8 @@ public class ProgressController implements IProgressController {
     }
 
     @Override
-    public void fireJobProgressChanged(float progress, String logMessage) {
-        fireProgressChanged(ProgressState.Work, progress, logMessage);
+    public void fireJobProgressChanged(float progress, Messages message, Object... arguments) {
+        fireProgressChanged(ProgressState.Work, progress, message.get(arguments));
     }
 
     @Override
@@ -43,13 +44,13 @@ public class ProgressController implements IProgressController {
     }
 
     @Override
-    public void fireJobStop(String logMessage) {
-        fireProgressChanged(ProgressState.Stop, null, logMessage);
+    public void fireJobStop(Messages message, Object... arguments) {
+        fireProgressChanged(ProgressState.Stop, null, message.get(arguments));
     }
 
     @Override
-    public void fireIdle(String logMessage) {
-        fireProgressChanged(ProgressState.Idle, null, logMessage);
+    public void fireIdle(Messages message, Object... arguments) {
+        fireProgressChanged(ProgressState.Idle, null, message.get(arguments));
     }
 
     @Override

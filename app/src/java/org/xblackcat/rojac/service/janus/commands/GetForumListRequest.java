@@ -5,6 +5,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
@@ -21,9 +22,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
 
 class GetForumListRequest extends ARequest {
     public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
-        trac.addLodMessage("Forum list synchronization started.");
-
-        trac.addLodMessage("Load forum list.");
+        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_FORUM_LIST);
 
         ForumsList forumsList;
         try {
@@ -36,9 +35,10 @@ class GetForumListRequest extends ARequest {
         IForumAH fAH = storage.getForumAH();
         IForumGroupAH gAH = storage.getForumGroupAH();
 
+        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_FORUMS, forumsList.getForums().length, forumsList.getForumGroups().length);
+
         TIntHashSet updatedForums = new TIntHashSet();
         try {
-            trac.addLodMessage("Store forum groups");
             for (ForumGroup fg : forumsList.getForumGroups()) {
                 if (gAH.getForumGroupById(fg.getForumGroupId()) == null) {
                     gAH.storeForumGroup(fg);
@@ -48,7 +48,6 @@ class GetForumListRequest extends ARequest {
 
             }
 
-            trac.addLodMessage("Store forum list");
             for (Forum f : forumsList.getForums()) {
                 if (fAH.getForumById(f.getForumId()) == null) {
                     fAH.storeForum(f);
@@ -59,8 +58,6 @@ class GetForumListRequest extends ARequest {
             }
 
             RojacHelper.setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
-
-            trac.addLodMessage("Done");
         } catch (StorageException e) {
             throw new RsdnProcessorException("Can not update forum list", e);
         }
