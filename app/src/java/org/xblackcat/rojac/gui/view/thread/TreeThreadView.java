@@ -30,7 +30,9 @@ public class TreeThreadView extends AThreadView {
     protected JComponent getThreadsContainer() {
         threads.setEditable(false);
         threads.setModel(model);
-        threads.setCellRenderer(new MessageTreeCellRenderer());
+        threads.setRowHeight(0);
+        threads.setCellRenderer(new MultiLineThreadItemRenderer());
+//        threads.setCellRenderer(new MessageTreeCellRenderer());
         threads.setShowsRootHandles(true);
         threads.setRootVisible(threadControl.isRootVisible());
 
