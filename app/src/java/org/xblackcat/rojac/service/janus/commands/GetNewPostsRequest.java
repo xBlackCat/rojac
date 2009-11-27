@@ -89,7 +89,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             RojacHelper.setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
             RojacHelper.setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
 
-        } while (messages.length > 0);
+        } while (messages.length == limit);
 
         trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USER_ID, RSDN_USER_ID.get());
 

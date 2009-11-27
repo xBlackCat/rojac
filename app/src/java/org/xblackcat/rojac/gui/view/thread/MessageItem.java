@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,9 +20,14 @@ import java.util.concurrent.ExecutionException;
 class MessageItem {
     private static final Log log = LogFactory.getLog(MessageItem.class);
 
+    private final TIntObjectHashMap<MessageItem> items = new TIntObjectHashMap<MessageItem>();
     private static final MessageItem[] NO_ITEMS = new MessageItem[0];
 
     protected final int messageId;
+    /**
+     * Root of the thread.
+     */
+    protected final MessageItem root;
     protected final MessageItem parent;
     protected MessageItem[] children = null;
 
@@ -34,6 +40,22 @@ class MessageItem {
     public MessageItem(MessageItem parent, int messageId) {
         this.parent = parent;
         this.messageId = messageId;
+
+        if (parent != null) {
+            root = parent.getRootMessage();
+            root.items.put(getMessageId(), this);
+        } else {
+            root = null;
+        }
+    }
+
+    /**
+     * Returns a root of a threads.
+     *
+     * @return If message have uninitialized root field - the message is root.
+     */
+    public MessageItem getRootMessage() {
+        return root != null ? root : this;
     }
 
     public int getMessageId() {
@@ -60,6 +82,14 @@ class MessageItem {
     public Message getMessage(ThreadsModel model) {
         loadData(model);
         return message;
+    }
+
+    public MessageItem findMessage(int id) {
+        if (messageId == id) {
+            return this;
+        }
+        
+        return getRootMessage().items.get(id);
     }
 
     protected void loadData(final ThreadsModel model) {

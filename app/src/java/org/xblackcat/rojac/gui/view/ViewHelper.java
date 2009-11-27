@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.xblackcat.rojac.gui.IMessageView;
+import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.thread.ForumThreadsControl;
@@ -23,7 +23,7 @@ public final class ViewHelper {
      *
      * @return a new instance of view
      */
-    public static IMessageView makeForumThreadsView(IRootPane mainFrame) {
+    public static IItemView makeForumThreadsView(IRootPane mainFrame) {
         return new TreeThreadView(mainFrame, new ForumThreadsControl());
     }
 
@@ -34,7 +34,7 @@ public final class ViewHelper {
      *
      * @return a new instance of view
      */
-    public static IMessageView makeSingleThreadView(IRootPane mainFrame) {
+    public static IItemView makeSingleThreadView(IRootPane mainFrame) {
         return new TreeThreadView(mainFrame, new SingleThreadControl());
     }
 
@@ -45,7 +45,7 @@ public final class ViewHelper {
      *
      * @return a new instance of view
      */
-    public static IMessageView makeMessageView(IRootPane mainFrame) {
+    public static IItemView makeMessageView(IRootPane mainFrame) {
         return new MessageView(mainFrame);
     }
 
@@ -57,9 +57,9 @@ public final class ViewHelper {
      *
      * @return a new instance of view
      */
-    public static IMessageView makeTreeMessageView(IRootPane mainFrame) {
-        IMessageView threadView = ViewHelper.makeForumThreadsView(mainFrame);
-        IMessageView messageView = ViewHelper.makeMessageView(mainFrame);
+    public static IItemView makeTreeMessageView(IRootPane mainFrame) {
+        IItemView threadView = ViewHelper.makeForumThreadsView(mainFrame);
+        IItemView messageView = ViewHelper.makeMessageView(mainFrame);
 
         return new ThreadDoubleView(threadView, messageView, false, mainFrame);
     }
@@ -72,7 +72,7 @@ public final class ViewHelper {
      *
      * @return a new instance of view
      */
-    public static IMessageView makeTreeTableMessageView(IRootPane mainFrame) {
+    public static IItemView makeTreeTableMessageView(IRootPane mainFrame) {
         throw new NotImplementedException("Just in case.");
     }
 }

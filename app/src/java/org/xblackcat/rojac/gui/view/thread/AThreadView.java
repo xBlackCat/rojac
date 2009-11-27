@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.view.message.AMessageView;
+import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
  * @author xBlackCat
  */
 
-public abstract class AThreadView extends AMessageView {
+public abstract class AThreadView extends AItemView {
     private static final Log log = LogFactory.getLog(TreeThreadView.class);
     
     protected final IThreadControl threadControl;

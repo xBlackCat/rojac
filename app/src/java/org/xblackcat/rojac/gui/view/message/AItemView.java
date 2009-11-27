@@ -1,23 +1,17 @@
 package org.xblackcat.rojac.gui.view.message;
 
 import org.xblackcat.rojac.gui.IActionListener;
-import org.xblackcat.rojac.gui.IMessageView;
+import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.AView;
-
-import javax.swing.*;
 
 /**
  * @author xBlackCat
  */
 
-public abstract class AMessageView extends AView implements IMessageView {
-    protected AMessageView(IRootPane mainFrame) {
+public abstract class AItemView extends AView implements IItemView {
+    protected AItemView(IRootPane mainFrame) {
         super(mainFrame);
-    }
-
-    public JComponent getComponent() {
-        return this;
     }
 
     public void addActionListener(IActionListener l) {
