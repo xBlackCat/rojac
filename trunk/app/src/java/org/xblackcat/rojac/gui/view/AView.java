@@ -29,5 +29,8 @@ public abstract class AView extends JPanel implements IView {
 
     public void updateSettings() {
     }
-    
+
+    public final JComponent getComponent() {
+        return this;
+    }
 }

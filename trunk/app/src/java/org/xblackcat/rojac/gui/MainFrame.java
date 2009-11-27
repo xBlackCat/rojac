@@ -63,6 +63,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         public void process(AffectedIds results) {
             forumsListView.updateData(results);
             favoritesView.updateData(results);
+
+            for (View v : openedForums.values()) {
+                ((IView) v.getComponent()).updateData(results);
+            }
         }
     };
     protected RootWindow threadsRootWindow;
@@ -275,7 +279,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     private View createForumView(Forum f) {
-        IMessageView forumView = createForumViewWindow();
+        IItemView forumView = createForumViewWindow();
 
         final View view = new View(
                 f.getForumName(),
@@ -301,7 +305,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
      *
      * @return a new forum view layout.
      */
-    private IMessageView createForumViewWindow() {
+    private IItemView createForumViewWindow() {
         return ViewHelper.makeTreeMessageView(this);
     }
 

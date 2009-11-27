@@ -35,7 +35,7 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
  * @author xBlackCat
  */
 
-public class MessageView extends AMessageView implements IInternationazable {
+public class MessageView extends AItemView implements IInternationazable {
     private static final Log log = LogFactory.getLog(MessageView.class);
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();
 

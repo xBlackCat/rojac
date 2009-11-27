@@ -6,7 +6,7 @@ package org.xblackcat.rojac.gui;
  * @author xBlackCat
  */
 
-public interface IMessageView extends IView {
+public interface IItemView extends IView {
     /**
      * (Re-)initializes view and loads all the necessary data into the view.
      *

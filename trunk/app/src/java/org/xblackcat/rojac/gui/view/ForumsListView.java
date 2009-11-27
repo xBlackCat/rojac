@@ -10,6 +10,7 @@ import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -25,13 +26,18 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Main class for
+ * Main class for forum view.
  *
  * @author xBlackCat
  */
 public class ForumsListView extends AView {
-
     private static final Log log = LogFactory.getLog(ForumsListView.class);
+
+    private final IResultHandler forumUpdater = new IResultHandler() {
+        public void process(AffectedIds ids) {
+            forumsModel.updateForums(ids.getForumIds());
+        }
+    };
     // Data and models
     private ForumTableModel forumsModel = new ForumTableModel();
 
@@ -98,7 +104,11 @@ public class ForumsListView extends AView {
         });
 
         JToolBar toolBar = WindowsUtils.createToolBar(
-                WindowsUtils.setupImageButton("update", new UpdateActionListener(), Messages.VIEW_FORUMS_BUTTON_UPDATE),
+                WindowsUtils.setupImageButton("update", new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        RojacUtils.processRequests(forumUpdater, Request.GET_FORUMS_LIST);
+                    }
+                }, Messages.VIEW_FORUMS_BUTTON_UPDATE),
                 null,
                 WindowsUtils.setupToggleButton("filled_only", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -149,24 +159,7 @@ public class ForumsListView extends AView {
         });
     }
 
-    public ForumsListView getComponent() {
-        return this;
-    }
-
     public void updateData(AffectedIds changedData) {
         forumsModel.updateForums(changedData.getForumIds());
-    }
-
-    private class UpdateActionListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            mainFrame.performRequest(new NewForumsHandler(), Request.GET_FORUMS_LIST);
-        }
-
-    }
-
-    private class NewForumsHandler implements IResultHandler {
-        public void process(AffectedIds ids) {
-            forumsModel.updateForums(ids.getForumIds());
-        }
     }
 }

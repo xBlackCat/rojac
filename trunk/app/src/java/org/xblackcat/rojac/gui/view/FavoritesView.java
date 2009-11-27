@@ -16,10 +16,6 @@ public class FavoritesView extends AView {
         add(new JScrollPane(new JTable(10, 2)));
     }
 
-    public JComponent getComponent() {
-        return this;
-    }
-
     public void updateData(AffectedIds changedData) {
     }
 }
