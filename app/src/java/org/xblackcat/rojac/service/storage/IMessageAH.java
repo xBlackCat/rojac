@@ -25,6 +25,13 @@ public interface IMessageAH extends AH {
 
     int[] getBrokenTopicIds() throws StorageException;
 
+    /**
+     * Updates a message record by id.
+     *
+     * @param mes
+     *
+     * @throws StorageException
+     */
     void updateMessage(Message mes) throws StorageException;
 
     void updateMessageRecentDate(int messageId, long recentDate) throws StorageException;
