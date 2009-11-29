@@ -79,7 +79,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
             trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
 
-            storeNewPosts(messages, moderates, ratings);
+            storeNewPosts(trac, data);
 
             ratingsVersion = data.getRatingRowVersion();
             messagesVersion = data.getForumRowVersion();

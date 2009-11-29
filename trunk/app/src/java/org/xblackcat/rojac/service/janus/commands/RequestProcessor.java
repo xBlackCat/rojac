@@ -38,6 +38,11 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
         public void postException(Throwable t) {
             progressController.fireIdle(Messages.SYNCHRONIZE_COMMAND_EXCEPTION, ExceptionUtils.getFullStackTrace(t));
         }
+
+        @Override
+        public void updateProgress(int current, int total) {
+            progressController.fireJobProgressChanged((float) current / total);
+        }
     };
 
     public RequestProcessor(IResultHandler handler, IRequest... requests) {
@@ -57,13 +62,13 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
         janusService.init(useCompression);
         progressController.fireJobProgressChanged(0f, useCompression ? Messages.SYNCHRONIZE_COMMAND_USE_COMPRESSION : Messages.SYNCHRONIZE_COMMAND_DONT_USE_COMPRESSION);
 
-        janusService.testConnection();
-
-        if (log.isDebugEnabled()) {
-            log.debug("Process request(s): " + joinFrom(requests, IRequest.class).getName());
-        }
-
         try {
+            janusService.testConnection();
+
+            if (log.isDebugEnabled()) {
+                log.debug("Process request(s): " + joinFrom(requests, IRequest.class).getName());
+            }
+
             affectedIds = aggregate(
                     requests,
                     new AffectedPostsAggregator(),
@@ -73,7 +78,7 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
             // Just in case
             log.debug("There is an exception in one of commands", e);
 
-            progressController.fireIdle(Messages.SYNCHRONIZE_COMMAND_EXCEPTION, ExceptionUtils.getFullStackTrace(e));
+            tracker.postException(e);
 
             affectedIds = new AffectedIds();
         }
@@ -87,6 +92,7 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
             handler.process(affectedIds);
         }
 
+        progressController.fireJobProgressChanged(1);
         progressController.fireJobStop(Messages.SYNCHRONIZE_COMMAND_DONE);
         if (log.isDebugEnabled()) {
             log.debug("Requests are processed.");

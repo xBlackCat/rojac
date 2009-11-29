@@ -8,7 +8,9 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.data.Rating;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.storage.*;
 
 /**
@@ -54,8 +56,12 @@ abstract class ALoadPostsRequest extends ARequest {
         forumAH = storage.getForumAH();
     }
 
-    protected void storeNewPosts(Message[] messages, Moderate[] moderates, Rating[] ratings) throws StorageException {
-        for (Message mes : messages) {
+    protected void storeNewPosts(IProgressTracker tracker, TopicMessages newPosts) throws StorageException {
+        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_UPDATE_DATABASE);
+
+        int count = 0;
+        for (Message mes : newPosts.getMessages()) {
+            tracker.updateProgress(count++, newPosts.getTotalRecords());
             int mId = mes.getMessageId();
             if (mAH.isExist(mId)) {
                 mAH.updateMessage(mes);
@@ -90,7 +96,8 @@ abstract class ALoadPostsRequest extends ARequest {
             }
         }
 
-        for (Moderate mod : moderates) {
+        for (Moderate mod : newPosts.getModerates()) {
+            tracker.updateProgress(count++, newPosts.getTotalRecords());
             modAH.storeModerateInfo(mod);
             processedMessages.add(mod.getMessageId());
             int forumId = mod.getForumId();
@@ -98,7 +105,8 @@ abstract class ALoadPostsRequest extends ARequest {
                 affectedForums.add(forumId);
             }
         }
-        for (Rating r : ratings) {
+        for (Rating r : newPosts.getRatings()) {
+            tracker.updateProgress(count++, newPosts.getTotalRecords());
             rAH.storeRating(r);
             processedMessages.add(r.getMessageId());
         }
@@ -130,7 +138,7 @@ abstract class ALoadPostsRequest extends ARequest {
     /**
      * Updates resentChildDate field for parents of a new messages.
      *
-     * @param parentsUpdates trove hash map with pairs of &lt;messageId, date&gt;
+     * @param messageIds trove hash map with pairs of &lt;messageId, date&gt;
      *
      * @return an array of affected messages.
      */

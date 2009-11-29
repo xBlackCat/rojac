@@ -4,7 +4,7 @@ package org.xblackcat.rojac.service.janus.data;
  * @author ASUS
  */
 
-public final class PostException {
+public class PostException {
     private final String exception;
     private final int localMessageId;
     private final String info;

@@ -25,16 +25,16 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_USE
 class GetUsersRequest extends ARequest {
     private static final Log log = LogFactory.getLog(GetUsersRequest.class);
 
-    public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public AffectedIds process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         IUserAH uAH = storage.getUserAH();
 
-        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_USERS);
+        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_USERS);
         if (log.isDebugEnabled()) {
             log.debug("Loading new users information.");
         }
         Integer limit = SYNCHRONIZER_LOAD_USERS_PORTION.get();
-        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
+        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
 
         try {
             Version localUsersVersion = RojacHelper.getVersion(VersionType.USERS_ROW_VERSION);
@@ -48,7 +48,10 @@ class GetUsersRequest extends ARequest {
                 }
                 users = janusService.getNewUsers(localUsersVersion, limit);
                 totalUsersNumber += users.getUsers().length;
+
+                int count = 0;
                 for (User user : users.getUsers()) {
+                    tracker.updateProgress(count++, users.getUsers().length);
                     if (log.isTraceEnabled()) {
                         log.trace("Store the " + user + " in the storage.");
                     }
@@ -58,7 +61,7 @@ class GetUsersRequest extends ARequest {
                 RojacHelper.setVersion(VersionType.USERS_ROW_VERSION, localUsersVersion);
             } while (users.getUsers().length > 0);
 
-            trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USERS, totalUsersNumber);
+            tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USERS, totalUsersNumber);
             if (log.isDebugEnabled()) {
                 log.debug(totalUsersNumber + " user(s) was loaded.");
             }
