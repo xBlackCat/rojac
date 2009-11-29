@@ -21,8 +21,8 @@ import org.xblackcat.rojac.service.storage.StorageException;
  */
 
 class GetForumListRequest extends ARequest {
-    public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
-        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_FORUM_LIST);
+    public AffectedIds process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
+        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_FORUM_LIST);
 
         ForumsList forumsList;
         try {
@@ -35,11 +35,15 @@ class GetForumListRequest extends ARequest {
         IForumAH fAH = storage.getForumAH();
         IForumGroupAH gAH = storage.getForumGroupAH();
 
-        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_FORUMS, forumsList.getForums().length, forumsList.getForumGroups().length);
+        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_FORUMS, forumsList.getForums().length, forumsList.getForumGroups().length);
 
         TIntHashSet updatedForums = new TIntHashSet();
         try {
+            int total = forumsList.getForumGroups().length + forumsList.getForums().length;
+
+            int count = 0;
             for (ForumGroup fg : forumsList.getForumGroups()) {
+                tracker.updateProgress(count++, total);
                 if (gAH.getForumGroupById(fg.getForumGroupId()) == null) {
                     gAH.storeForumGroup(fg);
                 } else {
@@ -49,6 +53,7 @@ class GetForumListRequest extends ARequest {
             }
 
             for (Forum f : forumsList.getForums()) {
+                tracker.updateProgress(count++, total);
                 if (fAH.getForumById(f.getForumId()) == null) {
                     fAH.storeForum(f);
                 } else {

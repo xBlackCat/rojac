@@ -10,4 +10,6 @@ interface IProgressTracker {
     void addLodMessage(Messages message, Object... arguments);
 
     void postException(Throwable t);
+
+    void updateProgress(int current, int total);
 }

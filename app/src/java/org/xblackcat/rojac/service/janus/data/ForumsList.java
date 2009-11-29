@@ -13,7 +13,7 @@ import ru.rsdn.Janus.JanusForumInfo;
  * @author Alexey
  */
 
-public final class ForumsList {
+public class ForumsList {
     private final Forum[] forums;
     private final ForumGroup[] fourumGroups;
     private final Version version;

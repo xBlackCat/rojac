@@ -59,7 +59,7 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
 
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
 
-        storeNewPosts(messages, moderates, ratings);
+        storeNewPosts(tracker, extra);
 
 //        postprocessingMessages();
     }

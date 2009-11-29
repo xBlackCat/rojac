@@ -9,7 +9,7 @@ import ru.rsdn.Janus.UserResponse;
  * @author Alexey
  */
 
-public final class UsersList {
+public class UsersList {
     private final User[] users;
     private final Version version;
 

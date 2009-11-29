@@ -11,10 +11,10 @@ import ru.rsdn.Janus.JanusRatingInfo;
  * @author ASUS
  */
 
-public final class TopicMessages {
-    private final Message[] messages;
-    private final Moderate[] moderates;
-    private final Rating[] ratings;
+public class TopicMessages {
+    protected final Message[] messages;
+    protected final Moderate[] moderates;
+    protected final Rating[] ratings;
 
     public TopicMessages(JanusMessageInfo[] mes, JanusModerateInfo[] mod, JanusRatingInfo[] r) {
         messages = new Message[mes.length];
@@ -43,5 +43,9 @@ public final class TopicMessages {
 
     public Rating[] getRatings() {
         return ratings;
+    }
+
+    public int getTotalRecords() {
+        return messages.length + moderates.length + ratings.length;
     }
 }

@@ -6,7 +6,7 @@ import ru.rsdn.Janus.PostExceptionInfo;
  * @author ASUS
  */
 
-public final class PostInfo {
+public class PostInfo {
     private final int[] commited;
     private final PostException[] exceptions;
 

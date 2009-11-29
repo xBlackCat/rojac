@@ -23,7 +23,7 @@ public class TestRequest extends ARequest {
     public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_TEST);
 
-        int userId = 0;
+        int userId;
         try {
             NewData data = janusService.getNewData(
                     new int[]{-1},
