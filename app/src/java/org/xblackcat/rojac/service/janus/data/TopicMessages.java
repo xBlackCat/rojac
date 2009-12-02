@@ -1,8 +1,5 @@
 package org.xblackcat.rojac.service.janus.data;
 
-import org.xblackcat.rojac.data.Message;
-import org.xblackcat.rojac.data.Moderate;
-import org.xblackcat.rojac.data.Rating;
 import ru.rsdn.Janus.JanusMessageInfo;
 import ru.rsdn.Janus.JanusModerateInfo;
 import ru.rsdn.Janus.JanusRatingInfo;
@@ -12,36 +9,25 @@ import ru.rsdn.Janus.JanusRatingInfo;
  */
 
 public class TopicMessages {
-    protected final Message[] messages;
-    protected final Moderate[] moderates;
-    protected final Rating[] ratings;
+    protected final JanusMessageInfo[] messages;
+    protected final JanusModerateInfo[] moderates;
+    protected final JanusRatingInfo[] ratings;
 
-    public TopicMessages(JanusMessageInfo[] mes, JanusModerateInfo[] mod, JanusRatingInfo[] r) {
-        messages = new Message[mes.length];
-        for (int i = 0; i < mes.length; i++) {
-            messages[i] = new Message(mes[i]);
-        }
-
-        moderates = new Moderate[mod.length];
-        for (int i = 0; i < mod.length; i++) {
-            moderates[i] = new Moderate(mod[i]);
-        }
-
-        ratings = new Rating[r.length];
-        for (int i = 0; i < r.length; i++) {
-            ratings[i] = new Rating(r[i]);
-        }
+    public TopicMessages(JanusMessageInfo[] messages, JanusModerateInfo[] moderates, JanusRatingInfo[] ratings) {
+        this.messages = messages;
+        this.moderates = moderates;
+        this.ratings = ratings;
     }
 
-    public Message[] getMessages() {
+    public JanusMessageInfo[] getMessages() {
         return messages;
     }
 
-    public Moderate[] getModerates() {
+    public JanusModerateInfo[] getModerates() {
         return moderates;
     }
 
-    public Rating[] getRatings() {
+    public JanusRatingInfo[] getRatings() {
         return ratings;
     }
 

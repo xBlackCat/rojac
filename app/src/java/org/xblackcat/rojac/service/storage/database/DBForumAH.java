@@ -35,7 +35,7 @@ final class DBForumAH implements IForumAH {
 
     @Override
     public Forum getForumById(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_FORUM_CONVERTER, DataQuery.GET_OBJECT_FORUM, forumId);
+        return helper.executeSingle(Converters.TO_FORUM, DataQuery.GET_OBJECT_FORUM, forumId);
     }
 
     @Override
@@ -76,21 +76,21 @@ final class DBForumAH implements IForumAH {
 
     @Override
     public int getMessagesInForum(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_INTEGER_CONVERTER,
+        return helper.executeSingle(Converters.TO_INTEGER,
                 DataQuery.GET_MESSAGES_NUMBER_IN_FORUM,
                 forumId);
     }
 
     @Override
     public int getUnreadMessagesInForum(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_INTEGER_CONVERTER,
+        return helper.executeSingle(Converters.TO_INTEGER,
                 DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
                 forumId);
     }
 
     @Override
     public Long getLastMessageDateInForum(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_LONG_CONVERTER,
+        return helper.executeSingle(Converters.TO_LONG,
                 DataQuery.GET_LAST_MESSAGE_DATE_IN_FORUM,
                 forumId);
     }

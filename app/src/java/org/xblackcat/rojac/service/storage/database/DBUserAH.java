@@ -34,7 +34,7 @@ final class DBUserAH implements IUserAH {
     }
 
     public User getUserById(int id) throws StorageException {
-        return helper.executeSingle(Converters.TO_USER_CONVERTER, DataQuery.GET_OBJECT_USER, id);
+        return helper.executeSingle(Converters.TO_USER, DataQuery.GET_OBJECT_USER, id);
     }
 
     public int[] getAllUserIds() throws StorageException {

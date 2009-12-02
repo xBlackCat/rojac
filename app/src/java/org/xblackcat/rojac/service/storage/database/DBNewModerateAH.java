@@ -34,11 +34,11 @@ final class DBNewModerateAH implements INewModerateAH {
     }
 
     public NewModerate getNewModerateById(int id) throws StorageException {
-        return helper.executeSingle(Converters.TO_NEW_MODERATE_CONVERTER, DataQuery.GET_OBJECT_NEW_MODERATE, id);
+        return helper.executeSingle(Converters.TO_NEW_MODERATE, DataQuery.GET_OBJECT_NEW_MODERATE, id);
     }
 
     public NewModerate[] getAllNewModerates() throws StorageException {
-        Collection<NewModerate> newModerates = helper.execute(Converters.TO_NEW_MODERATE_CONVERTER, DataQuery.GET_OBJECTS_NEW_MODERATES);
+        Collection<NewModerate> newModerates = helper.execute(Converters.TO_NEW_MODERATE, DataQuery.GET_OBJECTS_NEW_MODERATES);
         return newModerates.toArray(new NewModerate[newModerates.size()]);
     }
 }

@@ -43,11 +43,11 @@ final class DBNewMessageAH implements INewMessageAH {
     }
 
     public NewMessage getNewMessageById(int id) throws StorageException {
-        return helper.executeSingle(Converters.TO_NEW_MESSAGE_CONVERTER, DataQuery.GET_OBJECT_NEW_MESSAGE, id);
+        return helper.executeSingle(Converters.TO_NEW_MESSAGE, DataQuery.GET_OBJECT_NEW_MESSAGE, id);
     }
 
     public NewMessage[] getAllNewMessages() throws StorageException {
-        Collection<NewMessage> newMessages = helper.execute(Converters.TO_NEW_MESSAGE_CONVERTER, DataQuery.GET_OBJECTS_NEW_MESSAGE);
+        Collection<NewMessage> newMessages = helper.execute(Converters.TO_NEW_MESSAGE, DataQuery.GET_OBJECTS_NEW_MESSAGE);
         return newMessages.toArray(new NewMessage[newMessages.size()]);
     }
 }

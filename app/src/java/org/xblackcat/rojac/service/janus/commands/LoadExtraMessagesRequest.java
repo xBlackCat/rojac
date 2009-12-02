@@ -4,14 +4,14 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
-import org.xblackcat.rojac.data.Message;
-import org.xblackcat.rojac.data.Moderate;
-import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.storage.StorageException;
+import ru.rsdn.Janus.JanusMessageInfo;
+import ru.rsdn.Janus.JanusModerateInfo;
+import ru.rsdn.Janus.JanusRatingInfo;
 
 import java.util.Arrays;
 
@@ -50,9 +50,9 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
         } catch (JanusServiceException e) {
             throw new RsdnProcessorException("Can not load extra messages.", e);
         }
-        Message[] messages = extra.getMessages();
-        Moderate[] moderates = extra.getModerates();
-        Rating[] ratings = extra.getRatings();
+        JanusMessageInfo[] messages = extra.getMessages();
+        JanusModerateInfo[] moderates = extra.getModerates();
+        JanusRatingInfo[] ratings = extra.getRatings();
 
         processedMessages.clear();
         affectedForums.clear();

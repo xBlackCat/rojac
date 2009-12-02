@@ -141,14 +141,9 @@ public class JanusService implements IJanusService {
         }
     }
 
-    public NewData getNewData(int[] subscribedForums, boolean firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException {
+    public NewData getNewData(RequestForumInfo[] requestForumInfos, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException {
         if (log.isInfoEnabled()) {
             log.info("Retrieve the messages from the Janus WS. Portion limit = " + maxOutput);
-        }
-
-        RequestForumInfo[] rfi = new RequestForumInfo[subscribedForums.length];
-        for (int i = 0; i < subscribedForums.length; i++) {
-            rfi[i] = new RequestForumInfo(subscribedForums[i], firstForumRequest);
         }
 
         ChangeResponse list;
@@ -157,7 +152,7 @@ public class JanusService implements IJanusService {
                     new ChangeRequest(
                             userName,
                             password,
-                            rfi,
+                            requestForumInfos,
                             ratingVer.getBytes(),
                             messageVer.getBytes(),
                             moderateVer.getBytes(),
@@ -171,7 +166,7 @@ public class JanusService implements IJanusService {
         }
         Version forumRowVersion = new Version(list.getLastForumRowVersion());
         Version ratingRowVersion = new Version(list.getLastRatingRowVersion());
-        Version moderateRowVerion = new Version(list.getLastModerateRowVersion());
+        Version moderateRowVersion = new Version(list.getLastModerateRowVersion());
 
         JanusMessageInfo[] newMessages = list.getNewMessages();
         JanusModerateInfo[] newModerate = list.getNewModerate();
@@ -187,15 +182,15 @@ public class JanusService implements IJanusService {
                     newModerate.length + " new moderate info(s)" +
                     ", messages version is " + forumRowVersion +
                     ", ratings version is " + ratingRowVersion +
-                    ", moderates version is " + moderateRowVerion
+                    ", moderates version is " + moderateRowVersion
             );
         }
-        return new NewData(ownId, forumRowVersion, ratingRowVersion, moderateRowVerion, newMessages, newModerate, newRating);
+        return new NewData(ownId, forumRowVersion, ratingRowVersion, moderateRowVersion, newMessages, newModerate, newRating);
     }
 
     public void init(boolean useCompression) throws JanusServiceException {
         try {
-            log.info("Janus SAOP service initialization has been started.");
+            log.info("Janus SOAP service initialization has been started.");
 
             SimpleProvider provider = new SimpleProvider();
 

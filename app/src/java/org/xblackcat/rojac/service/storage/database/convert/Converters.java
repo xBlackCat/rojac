@@ -7,21 +7,21 @@ import org.xblackcat.rojac.data.*;
  */
 
 public final class Converters {
-    public static final IToObjectConverter<Forum> TO_FORUM_CONVERTER = new ToForumConverter();
-    public static final IToObjectConverter<ForumGroup> TO_FORUM_GROUP_CONVERTER = new ToForumGroupConverter();
-    public static final IToObjectConverter<Message> TO_MESSAGE_CONVERTER = new ToMessageConverter();
-    public static final IToObjectConverter<Moderate> TO_MODERATE_CONVERTER = new ToModerateConverter();
-    public static final IToObjectConverter<NewMessage> TO_NEW_MESSAGE_CONVERTER = new ToNewMessageConverter();
-    public static final IToObjectConverter<NewModerate> TO_NEW_MODERATE_CONVERTER = new ToNewModerateConverter();
-    public static final IToObjectConverter<NewRating> TO_NEW_RATING_CONVERTER = new ToNewRatingConverter();
-    public static final IToObjectConverter<Rating> TO_RATING_CONVERTER = new ToRatingConverter();
-    public static final IToObjectConverter<User> TO_USER_CONVERTER = new ToUserConverter();
-    public static final IToObjectConverter<VersionInfo> TO_VERSION_INFO_CONVERTER = new ToVersionInfoConverter();
-    public static final IToObjectConverter<String> TO_STRING_CONVERTER = new ToScalarConverter<String>();
-    public static final IToObjectConverter<Integer> TO_INTEGER_CONVERTER = new ToScalarConverter<Integer>();
-    public static final IToObjectConverter<Long> TO_LONG_CONVERTER = new ToScalarConverter<Long>();
-    public static final IToObjectConverter<Boolean> TO_BOOLEAN_CONVERTER = new ToScalarConverter<Boolean>();
-    public static final IToObjectConverter<Mark> TO_MARK_CONVERTER = new ToMarkConverter();
+    public static final IToObjectConverter<Forum> TO_FORUM = new ToForumConverter();
+    public static final IToObjectConverter<ForumGroup> TO_FORUM_GROUP = new ToForumGroupConverter();
+    public static final IToObjectConverter<Message> TO_MESSAGE = new ToMessageConverter();
+    public static final IToObjectConverter<Moderate> TO_MODERATE = new ToModerateConverter();
+    public static final IToObjectConverter<NewMessage> TO_NEW_MESSAGE = new ToNewMessageConverter();
+    public static final IToObjectConverter<NewModerate> TO_NEW_MODERATE = new ToNewModerateConverter();
+    public static final IToObjectConverter<NewRating> TO_NEW_RATING = new ToNewRatingConverter();
+    public static final IToObjectConverter<Rating> TO_RATING = new ToRatingConverter();
+    public static final IToObjectConverter<User> TO_USER = new ToUserConverter();
+    public static final IToObjectConverter<VersionInfo> TO_VERSION_INFO = new ToVersionInfoConverter();
+    public static final IToObjectConverter<String> TO_STRING = new ToScalarConverter<String>();
+    public static final IToObjectConverter<Integer> TO_INTEGER = new ToScalarConverter<Integer>();
+    public static final IToObjectConverter<Long> TO_LONG = new ToScalarConverter<Long>();
+    public static final IToObjectConverter<Boolean> TO_BOOLEAN = new ToScalarConverter<Boolean>();
+    public static final IToObjectConverter<Mark> TO_MARK = new ToMarkConverter();
 
     private Converters() {
     }

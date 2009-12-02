@@ -83,7 +83,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
                 log.trace("Perform check " + check);
             }
             try {
-                Boolean c = helper.executeSingle(Converters.TO_BOOLEAN_CONVERTER, check.getSql());
+                Boolean c = helper.executeSingle(Converters.TO_BOOLEAN, check.getSql());
                 success = Boolean.TRUE.equals(c);
             } catch (StorageException e) {
                 if (log.isTraceEnabled()) {
@@ -114,7 +114,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
                     if (log.isTraceEnabled()) {
                         log.trace("Perform post-initialization check " + check);
                     }
-                    Boolean c = helper.executeSingle(Converters.TO_BOOLEAN_CONVERTER, check.getSql());
+                    Boolean c = helper.executeSingle(Converters.TO_BOOLEAN, check.getSql());
                     success = Boolean.TRUE.equals(c);
                 } catch (StorageException e) {
                     throw new StorageCheckException("Post check failed for " + check, e);
@@ -180,7 +180,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     public int[] getIds(DataQuery sql, Object... params) throws StorageException {
-        Collection<Integer> objIds = execute(Converters.TO_INTEGER_CONVERTER, sql, params);
+        Collection<Integer> objIds = execute(Converters.TO_INTEGER, sql, params);
         int[] ids;
 
         try {
