@@ -1,13 +1,14 @@
 package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Message;
+import ru.rsdn.Janus.JanusMessageInfo;
 
 /**
  * @author ASUS
  */
 
 public interface IMessageAH extends AH {
-    void storeMessage(Message fm) throws StorageException;
+    void storeMessage(JanusMessageInfo fm) throws StorageException;
 
     boolean removeForumMessage(int id) throws StorageException;
 
@@ -32,7 +33,7 @@ public interface IMessageAH extends AH {
      *
      * @throws StorageException
      */
-    void updateMessage(Message mes) throws StorageException;
+    void updateMessage(JanusMessageInfo mes) throws StorageException;
 
     void updateMessageRecentDate(int messageId, long recentDate) throws StorageException;
 

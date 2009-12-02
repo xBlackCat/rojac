@@ -9,6 +9,7 @@ import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.janus.data.UsersList;
+import ru.rsdn.Janus.RequestForumInfo;
 
 /**
  * @author Alexey
@@ -80,8 +81,7 @@ public interface IJanusService {
     /**
      * Gets new messages from Janus WS.
      *
-     * @param subscribedForums  list of subscribed forums.
-     * @param firstForumRequest
+     * @param requestForumInfos
      * @param ratingVer         last rating row version.
      * @param messageVer        last messages row version.
      * @param moderateVer       last moderate info row version.
@@ -93,7 +93,7 @@ public interface IJanusService {
      *
      * @throws JanusServiceException throws if any errors occurs.
      */
-    NewData getNewData(int[] subscribedForums, boolean firstForumRequest, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
+    NewData getNewData(RequestForumInfo[] requestForumInfos, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
 
     void init(boolean useCompression) throws JanusServiceException;
 }

@@ -2,13 +2,14 @@ package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.Rating;
+import ru.rsdn.Janus.JanusRatingInfo;
 
 /**
  * @author ASUS
  */
 
 public interface IRatingAH extends AH {
-    void storeRating(Rating ri) throws StorageException;
+    void storeRating(JanusRatingInfo ri) throws StorageException;
 
     boolean removeRatingsByMessageId(int messageId) throws StorageException;
 

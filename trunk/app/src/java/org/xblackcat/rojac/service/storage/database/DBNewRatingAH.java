@@ -21,7 +21,7 @@ final class DBNewRatingAH implements INewRatingAH {
 
     public void storeNewRating(int messageId, Mark rate) throws StorageException {
         int nextId = helper.executeSingle(
-                Converters.TO_INTEGER_CONVERTER,
+                Converters.TO_INTEGER,
                 DataQuery.GET_NEXT_ID_NEW_RATING
         );
         helper.update(
@@ -38,14 +38,14 @@ final class DBNewRatingAH implements INewRatingAH {
 
     public NewRating[] getNewRatingsByMessageId(int messageId) throws StorageException {
         Collection<NewRating> rates = helper.execute(
-                Converters.TO_NEW_RATING_CONVERTER,
+                Converters.TO_NEW_RATING,
                 DataQuery.GET_OBJECTS_NEW_RATING_BY_MESSAGE_ID,
                 messageId);
         return rates.toArray(new NewRating[rates.size()]);
     }
 
     public NewRating[] getAllNewRatings() throws StorageException {
-        Collection<NewRating> newRatings = helper.execute(Converters.TO_NEW_RATING_CONVERTER, DataQuery.GET_OBJECTS_NEW_RATING);
+        Collection<NewRating> newRatings = helper.execute(Converters.TO_NEW_RATING, DataQuery.GET_OBJECTS_NEW_RATING);
         return newRatings.toArray(new NewRating[newRatings.size()]);
     }
 
@@ -55,7 +55,7 @@ final class DBNewRatingAH implements INewRatingAH {
 
     public Mark[] getNewRatingMarksByMessageId(int messageId) throws StorageException {
         Collection<Mark> rating = helper.execute(
-                Converters.TO_MARK_CONVERTER,
+                Converters.TO_MARK,
                 DataQuery.GET_OBJECTS_NEW_RATING_MARK_BY_MESSAGE_ID,
                 messageId
         );

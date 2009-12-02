@@ -28,7 +28,7 @@ final class DBForumGroupAH implements IForumGroupAH {
     }
 
     public ForumGroup getForumGroupById(int forumGroupId) throws StorageException {
-        return helper.executeSingle(Converters.TO_FORUM_GROUP_CONVERTER, DataQuery.GET_OBJECT_FORUM_GROUP, forumGroupId);
+        return helper.executeSingle(Converters.TO_FORUM_GROUP, DataQuery.GET_OBJECT_FORUM_GROUP, forumGroupId);
     }
 
     public int[] getAllForumGroupIds() throws StorageException {

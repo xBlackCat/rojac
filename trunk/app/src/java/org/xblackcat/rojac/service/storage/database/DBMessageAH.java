@@ -1,9 +1,11 @@
 package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.data.Message;
+import org.xblackcat.rojac.data.Role;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
+import ru.rsdn.Janus.JanusMessageInfo;
 
 /**
  * @author ASUS
@@ -16,7 +18,7 @@ final class DBMessageAH implements IMessageAH {
         this.helper = helper;
     }
 
-    public void storeMessage(Message fm) throws StorageException {
+    public void storeMessage(JanusMessageInfo fm) throws StorageException {
         helper.update(DataQuery.STORE_OBJECT_MESSAGE,
                 fm.getMessageId(),
                 fm.getTopicId(),
@@ -25,19 +27,15 @@ final class DBMessageAH implements IMessageAH {
                 fm.getForumId(),
                 fm.getArticleId(),
                 fm.getUserTitleColor(),
-                fm.getUserRole().ordinal(),
-                fm.isNotifyOnResponse(),
-                fm.isRead(),
-                fm.getFavoriteIndex(),
-                fm.getMessageDate(),
-                fm.getUpdateDate(),
-                fm.getLastModerated(),
+                Role.getUserType(fm.getUserRole()).ordinal(),
+                fm.getMessageDate().getTimeInMillis(),
+                fm.getUpdateDate().getTimeInMillis(),
+                fm.getLastModerated().getTimeInMillis(),
                 fm.getSubject(),
                 fm.getMessageName(),
                 fm.getUserNick(),
                 fm.getUserTitle(),
-                fm.getMessage(),
-                fm.getResentChildDate());
+                fm.getMessage());
     }
 
     public boolean removeForumMessage(int id) throws StorageException {
@@ -45,11 +43,11 @@ final class DBMessageAH implements IMessageAH {
     }
 
     public Message getMessageById(int messageId) throws StorageException {
-        return helper.executeSingle(Converters.TO_MESSAGE_CONVERTER, DataQuery.GET_OBJECT_MESSAGE, messageId);
+        return helper.executeSingle(Converters.TO_MESSAGE, DataQuery.GET_OBJECT_MESSAGE, messageId);
     }
 
     public String getMessageBodyById(int messageId) throws StorageException {
-        return helper.executeSingle(Converters.TO_STRING_CONVERTER, DataQuery.GET_OBJECT_MESSAGE_BODY, messageId);
+        return helper.executeSingle(Converters.TO_STRING, DataQuery.GET_OBJECT_MESSAGE_BODY, messageId);
     }
 
     public int[] getMessageIdsByParentId(int parentMessageId) throws StorageException {
@@ -68,7 +66,7 @@ final class DBMessageAH implements IMessageAH {
         return helper.getIds(DataQuery.GET_BROKEN_TOPIC_IDS);
     }
 
-    public void updateMessage(Message m) throws StorageException {
+    public void updateMessage(JanusMessageInfo m) throws StorageException {
         helper.update(DataQuery.UPDATE_OBJECT_MESSAGE,
                 m.getTopicId(),
                 m.getParentId(),
@@ -76,13 +74,10 @@ final class DBMessageAH implements IMessageAH {
                 m.getForumId(),
                 m.getArticleId(),
                 m.getUserTitleColor(),
-                m.getUserRole().ordinal(),
-                m.isNotifyOnResponse(),
-                m.isRead(),
-                m.getFavoriteIndex(),
-                m.getMessageDate(),
-                m.getUpdateDate(),
-                m.getLastModerated(),
+                Role.getUserType(m.getUserRole()).ordinal(),
+                m.getMessageDate().getTimeInMillis(),
+                m.getUpdateDate().getTimeInMillis(),
+                m.getLastModerated().getTimeInMillis(),
                 m.getSubject(),
                 m.getMessageName(),
                 m.getUserNick(),
@@ -104,13 +99,13 @@ final class DBMessageAH implements IMessageAH {
     }
 
     public boolean isExist(int messageId) throws StorageException {
-        return helper.executeSingle(Converters.TO_BOOLEAN_CONVERTER,
+        return helper.executeSingle(Converters.TO_BOOLEAN,
                 DataQuery.IS_MESSAGES_EXIST,
                 messageId);
     }
 
     public int getParentIdByMessageId(int messageId) throws StorageException {
-        return helper.executeSingle(Converters.TO_INTEGER_CONVERTER, DataQuery.GET_PARENT_ID_FOR_MESSAGE_ID, messageId);
+        return helper.executeSingle(Converters.TO_INTEGER, DataQuery.GET_PARENT_ID_FOR_MESSAGE_ID, messageId);
     }
 
     public int[] getAllMessageIds() throws StorageException {

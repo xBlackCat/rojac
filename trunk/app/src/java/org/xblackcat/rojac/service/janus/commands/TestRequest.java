@@ -9,15 +9,20 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.NewData;
+import ru.rsdn.Janus.RequestForumInfo;
 
 /**
- * Dumb request to Janus service to check if the user is really registered. 
+ * Dumb request to Janus service to check if the user is really registered.
  *
  * @author xBlackCat
  */
 
 public class TestRequest extends ARequest {
     private static final Log log = LogFactory.getLog(TestRequest.class);
+
+    private static final RequestForumInfo[] DUMMY_REQUEST_INFO = new RequestForumInfo[]{
+            new RequestForumInfo(-1, true)
+    };
 
     @Override
     public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
@@ -26,8 +31,7 @@ public class TestRequest extends ARequest {
         int userId;
         try {
             NewData data = janusService.getNewData(
-                    new int[]{-1},
-                    true,
+                    DUMMY_REQUEST_INFO,
                     new Version(),
                     new Version(),
                     new Version(),
@@ -47,6 +51,6 @@ public class TestRequest extends ARequest {
         }
 
 
-        return new AffectedIds(new int[] {userId}, ArrayUtils.EMPTY_INT_ARRAY);
+        return new AffectedIds(new int[]{userId}, ArrayUtils.EMPTY_INT_ARRAY);
     }
 }

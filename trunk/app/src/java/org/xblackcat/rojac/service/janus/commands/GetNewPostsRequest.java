@@ -4,17 +4,20 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
-import org.xblackcat.rojac.data.Message;
-import org.xblackcat.rojac.data.Moderate;
-import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.data.NewData;
+import ru.rsdn.Janus.JanusMessageInfo;
+import ru.rsdn.Janus.JanusModerateInfo;
+import ru.rsdn.Janus.JanusRatingInfo;
+import ru.rsdn.Janus.RequestForumInfo;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
@@ -26,10 +29,11 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MES
 class GetNewPostsRequest extends ALoadPostsRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
-    public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public AffectedIds process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
         int[] forumIds = forumAH.getSubscribedForumIds();
 
-        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_NEW_POSTS, Arrays.toString(forumIds));
+        String idsList = Arrays.toString(forumIds);
+        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_NEW_POSTS, idsList);
         if (ArrayUtils.isEmpty(forumIds)) {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
@@ -38,13 +42,20 @@ class GetNewPostsRequest extends ALoadPostsRequest {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Load new messages for forums [id=" + ArrayUtils.toString(forumIds) + "]");
+            log.debug("Load new messages for forums [id=" + idsList + "]");
+        }
+
+        Collection<RequestForumInfo> forumInfo = new LinkedList<RequestForumInfo>();
+        for (int forumId : forumIds) {
+            int messagesInForum = forumAH.getMessagesInForum(forumId);
+            
+            forumInfo.add(new RequestForumInfo(forumId, messagesInForum == 0));
         }
 
         Integer limit = SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
 
-        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
-        
+        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
+
         Version messagesVersion = RojacHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
         Version moderatesVersion = RojacHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
         Version ratingsVersion = RojacHelper.getVersion(VersionType.RATING_ROW_VERSION);
@@ -52,16 +63,14 @@ class GetNewPostsRequest extends ALoadPostsRequest {
         processedMessages.clear();
         affectedForums.clear();
 
-        Message[] messages;
+        JanusMessageInfo[] messages;
         do {
             if (ratingsVersion.isEmpty()) {
                 ratingsVersion = moderatesVersion;
             }
 
             NewData data = janusService.getNewData(
-                    forumIds,
-                    messagesVersion.getBytes().length == 0,
-                    ratingsVersion,
+                    forumInfo.toArray(new RequestForumInfo[forumInfo.size()]), ratingsVersion,
                     messagesVersion,
                     moderatesVersion,
                     ArrayUtils.EMPTY_INT_ARRAY,
@@ -74,12 +83,12 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             }
 
             messages = data.getMessages();
-            Moderate[] moderates = data.getModerates();
-            Rating[] ratings = data.getRatings();
+            JanusModerateInfo[] moderates = data.getModerates();
+            JanusRatingInfo[] ratings = data.getRatings();
 
-            trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
+            tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
 
-            storeNewPosts(trac, data);
+            storeNewPosts(tracker, data);
 
             ratingsVersion = data.getRatingRowVersion();
             messagesVersion = data.getForumRowVersion();
@@ -91,9 +100,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         } while (messages.length == limit);
 
-        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USER_ID, RSDN_USER_ID.get());
-
-//        postprocessingMessages();
+        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USER_ID, RSDN_USER_ID.get());
 
         return new AffectedIds(processedMessages, affectedForums);
     }

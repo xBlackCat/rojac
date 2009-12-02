@@ -5,13 +5,13 @@ import gnu.trove.TIntObjectHashMap;
 import gnu.trove.TIntObjectProcedure;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.data.Message;
-import org.xblackcat.rojac.data.Moderate;
-import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.storage.*;
+import ru.rsdn.Janus.JanusMessageInfo;
+import ru.rsdn.Janus.JanusModerateInfo;
+import ru.rsdn.Janus.JanusRatingInfo;
 
 /**
  * @author xBlackCat
@@ -27,6 +27,7 @@ abstract class ALoadPostsRequest extends ARequest {
      * Placeholder of updated forum ids set.
      */
     protected final TIntHashSet affectedForums = new TIntHashSet();
+    protected final IStorage storage;
     protected final IRatingAH rAH;
     protected final IMessageAH mAH;
     protected final IModerateAH modAH;
@@ -48,7 +49,7 @@ abstract class ALoadPostsRequest extends ARequest {
     };
 
     public ALoadPostsRequest() {
-        IStorage storage = ServiceFactory.getInstance().getStorage();        
+        storage = ServiceFactory.getInstance().getStorage();
         modAH = storage.getModerateAH();
         mAH = storage.getMessageAH();
         rAH = storage.getRatingAH();
@@ -60,7 +61,7 @@ abstract class ALoadPostsRequest extends ARequest {
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_UPDATE_DATABASE);
 
         int count = 0;
-        for (Message mes : newPosts.getMessages()) {
+        for (JanusMessageInfo mes : newPosts.getMessages()) {
             tracker.updateProgress(count++, newPosts.getTotalRecords());
             int mId = mes.getMessageId();
             if (mAH.isExist(mId)) {
@@ -71,7 +72,7 @@ abstract class ALoadPostsRequest extends ARequest {
 
             loadedMessages.add(mId);
 
-            long mesDate = mes.getMessageDate();
+            long mesDate = mes.getMessageDate().getTimeInMillis();
             messageDates.put(mId, mesDate);
 
             int topicId = mes.getTopicId();
@@ -96,7 +97,7 @@ abstract class ALoadPostsRequest extends ARequest {
             }
         }
 
-        for (Moderate mod : newPosts.getModerates()) {
+        for (JanusModerateInfo mod : newPosts.getModerates()) {
             tracker.updateProgress(count++, newPosts.getTotalRecords());
             modAH.storeModerateInfo(mod);
             processedMessages.add(mod.getMessageId());
@@ -105,7 +106,7 @@ abstract class ALoadPostsRequest extends ARequest {
                 affectedForums.add(forumId);
             }
         }
-        for (Rating r : newPosts.getRatings()) {
+        for (JanusRatingInfo r : newPosts.getRatings()) {
             tracker.updateProgress(count++, newPosts.getTotalRecords());
             rAH.storeRating(r);
             processedMessages.add(r.getMessageId());

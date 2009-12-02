@@ -30,6 +30,6 @@ final class DBVersionAH implements IVersionAH {
     }
 
     public VersionInfo getVersionInfo(VersionType type) throws StorageException {
-        return helper.executeSingle(Converters.TO_VERSION_INFO_CONVERTER, DataQuery.GET_OBJECT_VERSION, type.getId());
+        return helper.executeSingle(Converters.TO_VERSION_INFO, DataQuery.GET_OBJECT_VERSION, type.getId());
     }
 }
