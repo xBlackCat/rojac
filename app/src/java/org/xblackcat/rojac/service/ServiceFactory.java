@@ -111,18 +111,11 @@ public final class ServiceFactory {
             }
             dbHome = home;
         }
-        System.setProperty("rojac.db.home", ResourceUtils.putSystemProperties(dbHome));
+        dbHome = ResourceUtils.putSystemProperties(dbHome);
+        System.setProperty("rojac.db.home", dbHome);
 
-        File homeFolder = new File(home);
-        if (!homeFolder.exists()) {
-            if (log.isTraceEnabled()) {
-                log.trace("Create home folder at " + home);
-            }
-            homeFolder.mkdirs();
-        }
-        if (!homeFolder.isDirectory()) {
-            throw new RojacException("Can not create a '" + homeFolder.getAbsolutePath() + "' folder for storing Rojac configuration.");
-        }
+        checkPath(home);
+        checkPath(dbHome);
 
         String configurationName = DBCONFIG_PACKAGE + mainProperties.getProperty("rojac.database.engine");
 
@@ -130,5 +123,18 @@ public final class ServiceFactory {
         DBStorage storage = new DBStorage(configurationName, connectionFactory);
         storage.initialize();
         return storage;
+    }
+
+    private static void checkPath(String target) throws RojacException {
+        File folder = new File(target);
+        if (!folder.exists()) {
+            if (log.isTraceEnabled()) {
+                log.trace("Create folder at " + target);
+            }
+            folder.mkdirs();
+        }
+        if (!folder.isDirectory()) {
+            throw new RojacException("Can not create a '" + folder.getAbsolutePath() + "' folder for storing Rojac configuration.");
+        }
     }
 }
