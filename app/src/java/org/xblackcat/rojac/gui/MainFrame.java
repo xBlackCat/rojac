@@ -237,12 +237,19 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                 }
             }
         }, Messages.MAINFRAME_BUTTON_SETTINGS);
+        JButton aboutButton = WindowsUtils.setupImageButton("about", new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        }, Messages.MAINFRAME_BUTTON_ABOUT);
 
         JToolBar toolBar = WindowsUtils.createToolBar(
                 updateButton,
                 loadMessageButton,
                 null,
-                settingsButton
+                settingsButton,
+                null,
+                aboutButton
         );
 
         threadsPane.add(toolBar, BorderLayout.NORTH);
