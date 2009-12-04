@@ -87,7 +87,7 @@ public final class WindowsUtils {
     }
 
     public static JButton setupButton(Messages text, ActionListener action, Messages toolTip) {
-        IButtonIcons icons = Property.ROJAC_GUI_ICONPACK.get().getButtonIcons();        
+        IButtonIcons icons = Property.ROJAC_GUI_ICONPACK.get().getButtonIcons();
 
         JButton button = new JButton();
 
@@ -215,11 +215,60 @@ public final class WindowsUtils {
         return toolBar;
     }
 
+    /**
+     * Constructs a container for buttons and fill the container with the buttons. Default alignment (CENTER) for
+     * buttons is used.
+     *
+     * @param buttons button properties to be placed to buttons container.
+     *
+     * @return container with constructed buttons.
+     */
     public static Component createButtonsBar(AButtonAction... buttons) {
         return createButtonsBar(null, null, buttons);
     }
 
+    /**
+     * Constructs a container for buttons and fill the container with the buttons. Specified alignment for buttons is
+     * used.
+     *
+     * @param align   alignment of buttons in the container.
+     * @param buttons button properties to be placed to buttons container.
+     *
+     * @return container with constructed buttons.
+     */
+    public static Component createButtonsBar(int align, AButtonAction... buttons) {
+        return createButtonsBar(null, null, align, buttons);
+    }
+
+    /**
+     * Constructs a container for buttons and fill the container with the buttons. Also sets up a dialog with default
+     * button. Default button is determined by its message. Default alignment for buttons is used.
+     *
+     * @param dlg       dialog to be set with default button.
+     * @param defAction message of default button.
+     * @param buttons   button properties to be placed to buttons container.
+     *
+     * @return container with constructed buttons.
+     */
     public static Component createButtonsBar(JDialog dlg, Messages defAction, AButtonAction... buttons) {
+        return createButtonsBar(dlg, defAction, FlowLayout.CENTER, buttons);
+    }
+
+    /**
+     * Constructs a container for buttons and fill the container with the buttons. Also sets up a dialog with default
+     * button. Default button is determined by its message. Specified alignment for buttons is used.
+     *
+     * @param dlg       dialog to be set with default button.
+     * @param defAction message of default button.
+     * @param align   alignment of buttons in the container.
+     * @param buttons   button properties to be placed to buttons container.
+     *
+     * @return container with constructed buttons.
+     */
+    public static Component createButtonsBar(JDialog dlg, Messages defAction, int align, AButtonAction... buttons) {
+        if (dlg == null && defAction != null) {
+            throw new NullPointerException("Can not set default action if target dialog is not specified.");
+        }
         JPanel buttonPane = new JPanel(new GridLayout(1, 0, 10, 5));
 
         for (AButtonAction ba : buttons) {
@@ -230,6 +279,6 @@ public final class WindowsUtils {
             buttonPane.add(b);
         }
 
-        return WindowsUtils.coverComponent(buttonPane, FlowLayout.CENTER);
+        return WindowsUtils.coverComponent(buttonPane, align);
     }
 }
