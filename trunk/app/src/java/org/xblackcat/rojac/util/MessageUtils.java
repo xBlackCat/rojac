@@ -1,8 +1,10 @@
 package org.xblackcat.rojac.util;
 
+import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.i18n.Messages;
 
+import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +17,14 @@ public final class MessageUtils {
     private static final Pattern RESP_PATTERN = Pattern.compile("^([A-Z_]>)(.+)$");
     protected static final Pattern TAGLINE_PATTERN = Pattern.compile("\\[tagline\\].+\\[/tagline\\]");
 
+    private static final TIntObjectHashMap<String> elements;
+
+    static {
+        elements = new TIntObjectHashMap<String>();
+        elements.put(38, "amp"); // & - ampersand
+        elements.put(60, "lt"); // < - less-than
+        elements.put(62, "gt"); // > - greater-than
+    }
 
     private MessageUtils() {
     }
@@ -87,4 +97,31 @@ public final class MessageUtils {
 
         return body;
     }
+
+    /**
+     * The method is copied from String utils to prevent modify russian letters into &#&lt;code&gt; form
+     *
+     * @param str string to escape.
+     *
+     * @return escaped string.
+     */
+    public static String escapeHTML(String str) {
+        StringWriter writer = new StringWriter((int) (str.length() * 1.2));
+
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            String entityName = elements.get(c);
+            if (entityName == null) {
+                writer.write(c);
+            } else {
+                writer.write('&');
+                writer.write(entityName);
+                writer.write(';');
+            }
+        }
+
+        return writer.toString();
+    }
+
 }

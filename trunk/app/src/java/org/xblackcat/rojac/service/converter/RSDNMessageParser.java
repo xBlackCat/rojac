@@ -3,12 +3,11 @@ package org.xblackcat.rojac.service.converter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.service.converter.tag.RsdnTagList;
+import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
-
-import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 
 /**
  * @author xBlackCat
@@ -71,7 +70,7 @@ public class RSDNMessageParser implements IMessageParser {
     protected String preProcessText(String rsdn) {
         rsdn = HYPERLINKS_PATTERN.matcher(rsdn).replaceAll(HYPERLINKS_REPLACEMENT);
         rsdn = PRE_QUOTATION_PATTERN.matcher(rsdn).replaceAll(PRE_QUOTATION_REPLACEMENT);
-        rsdn = escapeHtml(rsdn);
+        rsdn = MessageUtils.escapeHTML(rsdn);
 //        rsdn = QUOTATION_PATTERN.matcher(rsdn).replaceAll("<span class='lineQuote'>$1</span>");
 
         return rsdn;
