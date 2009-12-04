@@ -89,8 +89,8 @@ public final class IconPack {
             try {
                 rolloverSelectedIcon = ResourceUtils.loadIcon(imageSet + "pressed-over." + extension);
             } catch (MissingResourceException e) {
-                // Use default icon
-                rolloverSelectedIcon = rolloverIcon;
+                // Use selected icon
+                rolloverSelectedIcon = selectedIcon;
             }
             try {
                 disabledIcon = ResourceUtils.loadIcon(imageSet + "disabled." + extension);

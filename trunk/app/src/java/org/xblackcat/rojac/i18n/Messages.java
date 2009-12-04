@@ -42,6 +42,7 @@ public enum Messages {
     MAINFRAME_BUTTON_UPDATE,
     MAINFRAME_BUTTON_LOADMESSAGE,
     MAINFRAME_BUTTON_SETTINGS,
+    MAINFRAME_BUTTON_ABOUT,
 
     // Forum list view
     VIEW_FORUMS_TITLE,
@@ -84,6 +85,9 @@ public enum Messages {
     DIALOG_LOADMESSAGE_TITLE,
     DIALOG_LOADMESSAGE_LABEL,
     DIALOG_LOADMESSAGE_LOADATONCE,
+
+    // About dialog texts
+    DIALOG_ABOUT_TITLE,
 
     // Options dialog texts
     DIALOG_OPTIONS_TITLE,
