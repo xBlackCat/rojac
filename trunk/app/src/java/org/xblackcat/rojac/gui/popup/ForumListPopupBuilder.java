@@ -95,7 +95,7 @@ public class ForumListPopupBuilder implements IPopupBuilder {
 
                 @Override
                 protected void done() {
-                    forumsModel.reloadInfo(forumId);
+                    forumsModel.updateForums(forumId);
                 }
             });
         }
@@ -116,7 +116,7 @@ public class ForumListPopupBuilder implements IPopupBuilder {
 
                         @Override
                         protected void done() {
-                            forumsModel.reloadInfo(forumId);
+                            forumsModel.updateForums(forumId);
                         }
                     });
                 }

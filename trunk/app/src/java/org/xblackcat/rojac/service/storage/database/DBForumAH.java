@@ -1,11 +1,13 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author ASUS
@@ -31,18 +33,8 @@ final class DBForumAH implements IForumAH {
     }
 
     @Override
-    public boolean removeForum(int id) throws StorageException {
-        return helper.update(DataQuery.REMOVE_OBJECT_FORUM, id) > 0;
-    }
-
-    @Override
     public Forum getForumById(int forumId) throws StorageException {
         return helper.executeSingle(Converters.TO_FORUM, DataQuery.GET_OBJECT_FORUM, forumId);
-    }
-
-    @Override
-    public int[] getForumIdsInGroup(int forumGroupId) throws StorageException {
-        return helper.getIds(DataQuery.GET_IDS_FORUM_BY_FORUM_GROUP, forumGroupId);
     }
 
     @Override
@@ -77,34 +69,29 @@ final class DBForumAH implements IForumAH {
     }
 
     @Override
-    public int getMessagesInForum(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_INTEGER,
+    public Map<Integer, Integer> getMessagesInForum(int... forumIds) throws StorageException {
+        return helper.executeSingleBatch(Converters.TO_INTEGER,
                 DataQuery.GET_MESSAGES_NUMBER_IN_FORUM,
-                forumId);
+                ArrayUtils.toObject(forumIds));
     }
 
     @Override
-    public int getUnreadMessagesInForum(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_INTEGER,
+    public Map<Integer, Integer> getUnreadMessagesInForum(int... forumIds) throws StorageException {
+        return helper.executeSingleBatch(Converters.TO_INTEGER,
                 DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
-                forumId);
+                ArrayUtils.toObject(forumIds));
     }
 
     @Override
-    public Long getLastMessageDateInForum(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_LONG,
+    public Map<Integer, Long> getLastMessageDateInForum(int... forumIds) throws StorageException {
+        return helper.executeSingleBatch(Converters.TO_LONG,
                 DataQuery.GET_LAST_MESSAGE_DATE_IN_FORUM,
-                forumId);
+                ArrayUtils.toObject(forumIds));
     }
 
     @Override
     public Forum[] getAllForums() throws StorageException {
         Collection<Forum> f = helper.execute(Converters.TO_FORUM, DataQuery.GET_OBJECTS_FORUM);
         return f.toArray(new Forum[f.size()]);
-    }
-
-    @Override
-    public int[] getAllForumIds() throws StorageException {
-        return helper.getIds(DataQuery.GET_IDS_FORUM);
     }
 }

@@ -72,6 +72,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     /* Initialization routines */
+    @Override
     public void initialize() throws StorageException {
         if (log.isInfoEnabled()) {
             log.info("Check database storage structure started.");
@@ -123,62 +124,82 @@ public class DBStorage implements IStorage, IQueryExecutor {
         }
     }
 
+    @Override
     public IForumAH getForumAH() {
         return forumAH;
     }
 
+    @Override
     public IForumGroupAH getForumGroupAH() {
         return forumGroupAH;
     }
 
+    @Override
     public IMessageAH getMessageAH() {
         return messageAH;
     }
 
+    @Override
     public IModerateAH getModerateAH() {
         return moderateAH;
     }
 
+    @Override
     public INewMessageAH getNewMessageAH() {
         return newMessageAH;
     }
 
+    @Override
     public INewModerateAH getNewModerateAH() {
         return newModerateAH;
     }
 
+    @Override
     public INewRatingAH getNewRatingAH() {
         return newRatingAH;
     }
 
+    @Override
     public IRatingAH getRatingAH() {
         return ratingAH;
     }
 
+    @Override
     public IUserAH getUserAH() {
         return userAH;
     }
 
+    @Override
     public IVersionAH getVersionAH() {
         return versionAH;
     }
 
+    @Override
     public IMiscAH getMiscAH() {
         return miscAH;
     }
 
+    @Override
     public int update(DataQuery sql, Object... params) throws StorageException {
         return helper.update(getQuery(sql), params);
     }
 
+    @Override
     public <T> T executeSingle(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.executeSingle(c, getQuery(sql), params);
     }
 
+    @Override
+    public <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, DataQuery sql, K[] keys) throws StorageException {
+        return helper.executeSingleBatch(c, getQuery(sql), keys);
+    }
+
+    @Override
     public <T> Collection<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.execute(c, getQuery(sql), params);
     }
 
+    @Override
     public int[] getIds(DataQuery sql, Object... params) throws StorageException {
         Collection<Integer> objIds = execute(Converters.TO_INTEGER, sql, params);
         int[] ids;

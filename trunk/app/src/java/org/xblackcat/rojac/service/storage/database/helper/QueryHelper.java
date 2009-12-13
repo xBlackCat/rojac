@@ -13,7 +13,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ASUS
@@ -26,6 +28,7 @@ public final class QueryHelper implements IQueryHelper {
         this.connectionFactory = connectionFactory;
     }
 
+    @Override
     public <T> Collection<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         try {
             Connection con = connectionFactory.getConnection();
@@ -54,6 +57,39 @@ public final class QueryHelper implements IQueryHelper {
         }
     }
 
+    @Override
+    public <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, String sql, K... keys) throws StorageException {
+        try {
+            Connection con = connectionFactory.getConnection();
+            try {
+                PreparedStatement st = con.prepareStatement(sql);
+                try {
+                    Map<K, O> resultMap = new HashMap<K,O>();
+                    for (K key : keys) {
+                        fillStatement(st, key);
+                        ResultSet rs = st.executeQuery();
+                        try {
+                            if (rs.next()) {
+                                resultMap.put(key, c.convert(rs));
+                            }
+                        } finally {
+                            rs.close();
+                        }
+                    }
+
+                    return Collections.unmodifiableMap(resultMap);
+                } finally {
+                    st.close();
+                }
+            } finally {
+                con.close();
+            }
+        } catch (SQLException e) {
+            throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql), e);
+        }
+    }
+
+    @Override
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         Collection<T> col = execute(c, sql, parameters);
         if (col.size() > 1) {
@@ -66,6 +102,7 @@ public final class QueryHelper implements IQueryHelper {
         }
     }
 
+    @Override
     public int update(String sql, Object... parameters) throws StorageException {
         try {
             Connection con = connectionFactory.getConnection();
@@ -86,12 +123,17 @@ public final class QueryHelper implements IQueryHelper {
 
     private static PreparedStatement constructSql(Connection con, String sql, Object... parameters) throws SQLException {
         PreparedStatement pstmt = con.prepareStatement(sql);
+        fillStatement(pstmt, parameters);
+
+        return pstmt;
+    }
+
+    private static void fillStatement(PreparedStatement pstmt, Object... parameters) throws SQLException {
         // Fill parameters if any
         if (parameters != null) {
             for (int i = 0; i < parameters.length; i++) {
                 pstmt.setObject(i + 1, parameters[i]);
             }
         }
-        return pstmt;
     }
 }
