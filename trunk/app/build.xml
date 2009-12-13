@@ -230,11 +230,10 @@ javaw.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
 ]]>
         </echo>
 
-        <!-- TODO: replace with proper classpath initialization -->
         <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh"><![CDATA[#
 #!/bin/sh
 
-SET CLASSPATH=$CLASSPATH:${dist.unix.classpath}
+export CLASSPATH=../conf:`ls -1 ../lib/*.jar ../lib/*/*.jar | tr "\r\n" ":"`
 
 java -cp "%CLASSPATH%" ${rojac.launcher.class}
 ]]>
