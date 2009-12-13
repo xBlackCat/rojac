@@ -6,6 +6,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.RequestProcessor;
@@ -266,6 +267,6 @@ public final class RojacUtils {
     public static void processRequests(IResultHandler resultHandler, IRequest... requests) {
         SwingWorker sw = new RequestProcessor(resultHandler, requests);
         
-        ServiceFactory.getInstance().getExecutor().execute(sw);
+        ServiceFactory.getInstance().getExecutor().execute(sw, TaskType.Synchronization);
     }
 }

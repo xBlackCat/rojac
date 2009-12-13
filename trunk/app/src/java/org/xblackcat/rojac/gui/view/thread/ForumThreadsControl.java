@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
@@ -58,7 +59,7 @@ public class ForumThreadsControl implements IThreadControl<MessageItem> {
             }
         };
 
-        executor.execute(sw);
+        executor.execute(sw, TaskType.MessageLoading);
         return itemId;
     }
 
@@ -71,7 +72,7 @@ public class ForumThreadsControl implements IThreadControl<MessageItem> {
         item.setLoadingState(LoadingState.Loading);
         final int itemId = item.getMessageId();
 
-        executor.execute(new SwingWorker<MessageItem[], Void>() {
+        SwingWorker<MessageItem[], Void> sw = new SwingWorker<MessageItem[], Void>() {
             @Override
             protected MessageItem[] doInBackground() throws Exception {
                 int[] c;
@@ -99,11 +100,13 @@ public class ForumThreadsControl implements IThreadControl<MessageItem> {
                     } catch (ExecutionException e) {
                         log.fatal("It finally happens!", e);
                     }
-                    item.setLoadingState(LoadingState.Loaded);                    
+                    item.setLoadingState(LoadingState.Loaded);
                 }
                 threadModel.nodeStructureChanged(item);
             }
-        });
+        };
+
+        executor.execute(sw, TaskType.MessageLoading);
     }
 
     @Override

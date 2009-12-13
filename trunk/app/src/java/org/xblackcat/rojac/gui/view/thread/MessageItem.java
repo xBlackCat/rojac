@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
@@ -139,7 +140,7 @@ class MessageItem implements ITreeItem<MessageItem> {
                 }
                 model.nodeChanged(MessageItem.this);
             }
-        });
+        }, TaskType.MessageLoading);
     }
 
     @Override
