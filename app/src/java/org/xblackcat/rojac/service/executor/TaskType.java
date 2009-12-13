@@ -7,5 +7,5 @@ package org.xblackcat.rojac.service.executor;
 public enum TaskType {
     Common,
     MessageLoading,
-    ServerSynchronization
+    Synchronization
 }

@@ -31,7 +31,7 @@ public final class TaskExecutor implements IExecutor {
         Map<TaskType, Executor> pools = new EnumMap<TaskType, Executor>(TaskType.class);
         pools.put(TaskType.Common, setupCommonExecutor());
         pools.put(TaskType.MessageLoading, setupMessageLoadingExecutor());
-        pools.put(TaskType.ServerSynchronization, setupServerSynchronizationExecutor());
+        pools.put(TaskType.Synchronization, setupServerSynchronizationExecutor());
 
         this.pools = Collections.unmodifiableMap(pools);
     }
@@ -41,11 +41,11 @@ public final class TaskExecutor implements IExecutor {
     }
 
     private Executor setupMessageLoadingExecutor() {
-        return Executors.newFixedThreadPool(5);
+        return new ThreadPoolExecutor(10, 30, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
     }
 
     private Executor setupCommonExecutor() {
-        return new ThreadPoolExecutor(10, 30, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+        return Executors.newFixedThreadPool(5);
     }
 
     public void execute(Runnable target, TaskType type) {
