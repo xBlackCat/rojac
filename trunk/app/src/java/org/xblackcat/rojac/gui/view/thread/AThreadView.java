@@ -26,7 +26,7 @@ public abstract class AThreadView extends AItemView {
     
     protected final IThreadControl threadControl;
     protected final JLabel forumName = new JLabel();
-    protected final ThreadsModel model = new ThreadsModel();
+    protected final AThreadModel model = new ThreadsModel();
     protected int forumId;
 
     protected AThreadView(IRootPane mainFrame, IThreadControl threadControl) {
@@ -73,10 +73,10 @@ public abstract class AThreadView extends AItemView {
     protected abstract void selectFirstItem();
 
     public void loadItem(int itemId) {
-        int forumId = threadControl.loadThreadByItem(itemId, model);
+        int forumId = threadControl.loadThreadByItem(model, itemId);
         loadForumInfo(forumId);
 
-        selectFirstItem();
+//        selectFirstItem();
     }
 
     @Override

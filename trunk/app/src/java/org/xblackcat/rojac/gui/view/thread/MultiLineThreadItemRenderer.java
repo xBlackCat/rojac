@@ -429,7 +429,7 @@ class MultiLineThreadItemRenderer extends JLightPanel implements TreeCellRendere
         // Setup component with value-based styles
 
         if (value != null) {
-            Message mi = ((MessageItem) value).getMessage((ThreadsModel) tree.getModel());
+            Message mi = ((MessageItem) value).getMessage((AThreadModel) tree.getModel());
 
             dateLine.setText(null);
             userLine.setText(null);

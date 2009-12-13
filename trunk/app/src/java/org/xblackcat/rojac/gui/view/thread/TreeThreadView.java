@@ -38,20 +38,25 @@ public class TreeThreadView extends AThreadView {
 
         threads.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
-                MessageItem mi = (MessageItem) e.getPath().getLastPathComponent();
+                ITreeItem mi = (ITreeItem) e.getPath().getLastPathComponent();
                 fireMessageGotFocus(mi.getMessageId());
             }
         });
         threads.addTreeExpansionListener(new TreeExpansionListener() {
             public void treeExpanded(TreeExpansionEvent event) {
                 TreePath path = event.getPath();
-                MessageItem item = (MessageItem) path.getLastPathComponent();
+                ITreeItem item = (ITreeItem) path.getLastPathComponent();
 
-                MessageItem[] children = item.getChildren(model);
-                if (children.length == 1) {
-                    MessageItem child = children[0];
+                if (item.getLoadingState() == LoadingState.NotLoaded) {
+                    threadControl.loadChildren(model, item);
+                }
 
-                    threads.expandPath(path.pathByAddingChild(child));
+                if (item.getLoadingState() == LoadingState.Loaded ) {
+                    if (item.getSize() == 1) {
+                        ITreeItem child = item.getChild(0);
+
+                        threads.expandPath(path.pathByAddingChild(child));
+                    }
                 }
             }
 
@@ -92,7 +97,7 @@ public class TreeThreadView extends AThreadView {
                 TreePath path = threads.getPathForLocation(p.x, p.y);
 
                 if (path != null) {
-                    MessageItem mi = (MessageItem) path.getLastPathComponent();
+                    ITreeItem mi = (ITreeItem) path.getLastPathComponent();
 
                     JPopupMenu m = createMenu(mi);
 
@@ -101,7 +106,7 @@ public class TreeThreadView extends AThreadView {
             }
         }
 
-        private JPopupMenu createMenu(MessageItem mi) {
+        private JPopupMenu createMenu(ITreeItem mi) {
             return PopupMenuBuilder.getTreeViewPopup(mi.getMessageId(), mainFrame);
         }
 
