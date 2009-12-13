@@ -17,11 +17,13 @@ import java.util.concurrent.ExecutionException;
  * @author xBlackCat
  */
 
-class MessageItem {
+class MessageItem implements ITreeItem<MessageItem> {
     private static final Log log = LogFactory.getLog(MessageItem.class);
 
     private final TIntObjectHashMap<MessageItem> items = new TIntObjectHashMap<MessageItem>();
-    private static final MessageItem[] NO_ITEMS = new MessageItem[0];
+
+    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
+    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
     protected final int messageId;
     /**
@@ -29,20 +31,19 @@ class MessageItem {
      */
     protected final MessageItem root;
     protected final MessageItem parent;
-    protected MessageItem[] children = null;
 
+    protected MessageItem[] children = null;
     // Real data.
     private Message message;
-    private String parsedText;
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
+
+    private LoadingState loadingState = LoadingState.NotLoaded;
 
     public MessageItem(MessageItem parent, int messageId) {
         this.parent = parent;
         this.messageId = messageId;
 
         if (parent != null) {
-            root = parent.getRootMessage();
+            root = parent.getThreadMessage();
             root.items.put(getMessageId(), this);
         } else {
             root = null;
@@ -54,45 +55,57 @@ class MessageItem {
      *
      * @return If message have uninitialized root field - the message is root.
      */
-    public MessageItem getRootMessage() {
+    public MessageItem getThreadMessage() {
         return root != null ? root : this;
     }
 
+    @Override
     public int getMessageId() {
         return messageId;
     }
 
+    @Override
     public MessageItem getParent() {
         return parent;
     }
 
-    public MessageItem[] getChildren(ThreadsModel model) {
-        if (children == null) {
-            // Load children
-            loadChildren(model);
-            return NO_ITEMS;
-        }
-        return children;
+    @Override
+    public MessageItem getChild(int idx) {
+        return children[idx];
     }
 
+    @Override
+    public int getSize() {
+        return children == null ? 0 : children.length;
+    }
+
+    void setChildren(MessageItem[] children) {
+        this.children = children;
+    }
+
+    @Override
     public int getIndex(MessageItem node) {
         return ArrayUtils.indexOf(children, node);
     }
 
-    public Message getMessage(ThreadsModel model) {
+    public Message getMessage(AThreadModel model) {
         loadData(model);
         return message;
     }
 
-    public MessageItem findMessage(int id) {
+    public ITreeItem findMessage(int id) {
         if (messageId == id) {
             return this;
         }
-        
-        return getRootMessage().items.get(id);
+
+        return getThreadMessage().items.get(id);
     }
 
-    protected void loadData(final ThreadsModel model) {
+    protected void loadData(final AThreadModel model) {
+        if (messageId == -1) {
+            return;
+        }
+
         synchronized (this) {
             if (message != null) {
                 // Nothing to do
@@ -129,46 +142,12 @@ class MessageItem {
         });
     }
 
-    protected void loadChildren(final ThreadsModel model) {
-        synchronized (this) {
-            if (this.children != null) {
-                return;
-            }
-        }
+    @Override
+    public LoadingState getLoadingState() {
+        return loadingState;
+    }
 
-        executor.execute(new SwingWorker<MessageItem[], Void>() {
-            @Override
-            protected MessageItem[] doInBackground() throws Exception {
-                int[] c;
-                try {
-                    c = storage.getMessageAH().getMessageIdsByParentId(messageId);
-                } catch (StorageException e) {
-                    log.error("Can not load message children for id = " + messageId, e);
-                    throw e;
-                }
-
-                final MessageItem[] cI = new MessageItem[c.length];
-                for (int i = 0; i < c.length; i++) {
-                    cI[i] = new MessageItem(MessageItem.this, c[i]);
-                }
-                return cI;
-            }
-
-            @Override
-            protected void done() {
-                synchronized (this) {
-                    if (children == null && isDone()) {
-                        try {
-                            children = get();
-                        } catch (InterruptedException e) {
-                            log.fatal("It finally happens!", e);
-                        } catch (ExecutionException e) {
-                            log.fatal("It finally happens!", e);
-                        }
-                    }
-                }
-                model.nodeStructureChanged(MessageItem.this);
-            }
-        });
+    void setLoadingState(LoadingState loadingState) {
+        this.loadingState = loadingState;
     }
 }

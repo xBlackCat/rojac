@@ -15,7 +15,7 @@ class MessageTreeCellRenderer extends DefaultTreeCellRenderer {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
         if (value != null) {
-            Message mi = ((MessageItem) value).getMessage((ThreadsModel) tree.getModel());
+            Message mi = ((MessageItem) value).getMessage((AThreadModel) tree.getModel());
 
             if (mi != null) {
                 setText(mi.getSubject() + "(" + mi.getUserNick() + ")");

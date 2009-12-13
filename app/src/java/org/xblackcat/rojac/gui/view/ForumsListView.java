@@ -10,7 +10,6 @@ import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -106,7 +105,7 @@ public class ForumsListView extends AView {
         JToolBar toolBar = WindowsUtils.createToolBar(
                 WindowsUtils.setupImageButton("update", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        RojacUtils.processRequests(forumUpdater, Request.GET_FORUMS_LIST);
+                        mainFrame.performRequest(forumUpdater, Request.GET_FORUMS_LIST);
                     }
                 }, Messages.VIEW_FORUMS_BUTTON_UPDATE),
                 null,

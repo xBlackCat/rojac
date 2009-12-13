@@ -6,16 +6,20 @@ package org.xblackcat.rojac.gui.view.thread;
  * @author xBlackCat
  */
 
-public class SingleThreadControl implements IThreadControl {
+public class SingleThreadControl implements IThreadControl<MessageItem> {
     @Override
-    public int loadThreadByItem(int itemId, ThreadsModel model) {
+    public int loadThreadByItem(AThreadModel<MessageItem> model, int itemId) {
         MessageItem mi = new MessageItem(null, itemId);
         model.setRoot(mi);
         return mi.getMessage(model).getForumId();
     }
 
     @Override
-    public void updateItem(ThreadsModel model, int... itemId) {
+    public void updateItem(AThreadModel<MessageItem> model, int... itemId) {
+    }
+
+    @Override
+    public void loadChildren(AThreadModel<MessageItem> threadModel, MessageItem item) {
     }
 
     @Override
