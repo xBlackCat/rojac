@@ -7,7 +7,7 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
-import org.xblackcat.rojac.service.janus.commands.IResultHandler;
+import org.xblackcat.rojac.service.janus.commands.IDataHandler;
 import org.xblackcat.rojac.service.janus.commands.TestRequest;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -134,9 +134,9 @@ public class LoginDialog extends JDialog {
 
             RSDN_USER_PASSWORD_SAVE.set(fieldSavePassword.isSelected());
 
-            RojacUtils.processRequests(new IResultHandler() {
+            RojacUtils.processRequests(new IDataHandler() {
                 @Override
-                public void process(AffectedIds results) {
+                public void updateData(AffectedIds results) {
                     // This is always should be like this.
                     int userId = results.getMessageIds()[0];
 

@@ -24,7 +24,7 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
     private static final Log log = LogFactory.getLog(RequestProcessor.class);
 
     private final List<IRequest> requests;
-    private final IResultHandler handler;
+    private final IDataHandler handler;
 
     private AffectedIds affectedIds;
     private final IProgressController progressController = ServiceFactory.getInstance().getProgressControl();
@@ -45,7 +45,7 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
         }
     };
 
-    public RequestProcessor(IResultHandler handler, IRequest... requests) {
+    public RequestProcessor(IDataHandler handler, IRequest... requests) {
         this.handler = handler;
         this.requests = Arrays.asList(requests);
     }
@@ -89,7 +89,7 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
     @Override
     protected void done() {
         if (handler != null) {
-            handler.process(affectedIds);
+            handler.updateData(affectedIds);
         }
 
         progressController.fireJobProgressChanged(1);

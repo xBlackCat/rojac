@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.gui;
 
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.service.janus.commands.IDataHandler;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
-import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 
 /**
  * @author xBlackCat
@@ -11,7 +11,7 @@ import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 public interface IRootPane {
     void openForumTab(Forum f);
 
-    void performRequest(IResultHandler resultHandler, IRequest... requests);
+    void performRequest(IDataHandler dataHandler, IRequest... requests);
 
     /**
      * Show edit dialog. Possible combinations are: <ul> <li>messageId is <code>null</code> and forumId specifies a

@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.service.janus.commands.AffectedIds;
+import org.xblackcat.rojac.service.janus.commands.IDataHandler;
 
 import javax.swing.*;
 
@@ -10,18 +10,11 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-public interface IView extends IConfigurable {
+public interface IView extends IConfigurable, IDataHandler {
     /**
      * Returns a component represented the view.
      *
      * @return a component represented the view.
      */
     JComponent getComponent();
-
-    /**
-     * Updates items data identified by theirs ids.
-     *
-     * @param changedData
-     */
-    void updateData(AffectedIds changedData);
 }

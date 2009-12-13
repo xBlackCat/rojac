@@ -23,8 +23,8 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
+import org.xblackcat.rojac.service.janus.commands.IDataHandler;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
-import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -59,8 +59,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
     // Data tracking
     private Map<Integer, View> openedForums = new HashMap<Integer, View>();
-    protected IResultHandler changeHandler = new IResultHandler() {
-        public void process(AffectedIds results) {
+    protected IDataHandler changeHandler = new IDataHandler() {
+        public void updateData(AffectedIds results) {
             forumsListView.updateData(results);
             favoritesView.updateData(results);
 
@@ -401,7 +401,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         return w;
     }
 
-    public void performRequest(IResultHandler resultHandler, IRequest... requests) {
+    public void performRequest(IDataHandler dataHandler, IRequest... requests) {
         // Check if the user credentials are set first.
         while (!RojacHelper.isUserRegistered()) {
             LoginDialog ld = new LoginDialog(this);
@@ -411,7 +411,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             }
         }
 
-        RojacUtils.processRequests(resultHandler, requests);
+        RojacUtils.processRequests(dataHandler, requests);
     }
 
     public void editMessage(Integer forumId, Integer messageId) {

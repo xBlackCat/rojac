@@ -7,7 +7,6 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
-import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -22,7 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 /**
  * Main class for forum view.
@@ -32,11 +31,6 @@ import java.util.concurrent.ExecutionException;
 public class ForumsListView extends AView {
     private static final Log log = LogFactory.getLog(ForumsListView.class);
 
-    private final IResultHandler forumUpdater = new IResultHandler() {
-        public void process(AffectedIds ids) {
-            forumsModel.updateForums(ids.getForumIds());
-        }
-    };
     // Data and models
     private ForumTableModel forumsModel = new ForumTableModel();
 
@@ -105,7 +99,7 @@ public class ForumsListView extends AView {
         JToolBar toolBar = WindowsUtils.createToolBar(
                 WindowsUtils.setupImageButton("update", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        mainFrame.performRequest(forumUpdater, Request.GET_FORUMS_LIST);
+                        mainFrame.performRequest(ForumsListView.this, Request.GET_FORUMS_LIST);
                     }
                 }, Messages.VIEW_FORUMS_BUTTON_UPDATE),
                 null,
@@ -135,30 +129,52 @@ public class ForumsListView extends AView {
     public void applySettings() {
         super.applySettings();
 
-        executor.execute(new SwingWorker<int[], Void>() {
-            @Override
-            protected int[] doInBackground() throws Exception {
-                try {
-                    return storage.getForumAH().getAllForumIds();
-                } catch (StorageException e) {
-                    log.error("Can not load forum list", e);
-                    throw e;
-                }
-            }
-
-            protected void done() {
-                try {
-                    forumsModel.updateForums(get());
-                } catch (InterruptedException e) {
-                    log.fatal("It finally happens!", e);
-                } catch (ExecutionException e) {
-                    log.fatal("It finally happens!", e);
-                }
-            }
-        });
+        executor.execute(new ForumLoader());
     }
 
     public void updateData(AffectedIds changedData) {
-        forumsModel.updateForums(changedData.getForumIds());
+        if (forumsModel.getRowCount() > 0) {
+            forumsModel.updateForums(changedData.getForumIds());
+        } else {
+            executor.execute(new ForumLoader(changedData.getForumIds()));
+        }
+    }
+
+    private class ForumLoader extends SwingWorker<Void, Forum> {
+        private int[] ids;
+
+        public ForumLoader() {
+            this(null);
+        }
+
+        public ForumLoader(int[] ids) {
+            this.ids = ids;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            try {
+                publish(storage.getForumAH().getAllForums());
+            } catch (StorageException e) {
+                log.error("Can not load forum list", e);
+                throw e;
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<Forum> chunks) {
+            Forum[] forums = chunks.toArray(new Forum[chunks.size()]);
+            forumsModel.fillForums(forums);
+            if (ids == null) {
+                ids = new int[forums.length];
+
+                for (int i = 0, forumsLength = forums.length; i < forumsLength; i++) {
+                    ids[i] = forums[i].getForumId();
+                }
+            }
+            forumsModel.updateForums(ids);
+        }
     }
 }
