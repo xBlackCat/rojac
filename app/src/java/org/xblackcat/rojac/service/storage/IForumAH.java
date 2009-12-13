@@ -2,6 +2,8 @@ package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Forum;
 
+import java.util.Map;
+
 /**
  * @author ASUS
  */
@@ -9,13 +11,7 @@ import org.xblackcat.rojac.data.Forum;
 public interface IForumAH extends AH {
     void storeForum(Forum f) throws StorageException;
 
-    boolean removeForum(int id) throws StorageException;
-
     Forum getForumById(int forumId) throws StorageException;
-
-    int[] getForumIdsInGroup(int forumGroupId) throws StorageException;
-
-    int[] getAllForumIds() throws StorageException;
 
     int[] getSubscribedForumIds() throws StorageException;
 
@@ -33,6 +29,15 @@ public interface IForumAH extends AH {
     void setForumRead(int forumId, boolean read) throws StorageException;
 
     /**
+     * Returns list of all available forums.
+     *
+     * @return list of all available forums.
+     *
+     * @throws StorageException
+     */
+    Forum[] getAllForums() throws StorageException;
+
+    /**
      * Returns total amount of messages in the specified forum.
      *
      * @param forumId forum id.
@@ -41,7 +46,7 @@ public interface IForumAH extends AH {
      *
      * @throws StorageException will be thrown if something wrong.
      */
-    int getMessagesInForum(int forumId) throws StorageException;
+    Map<Integer, Integer> getMessagesInForum(int ...forumId) throws StorageException;
 
     /**
      * Returns total amount of unread messages in the specified forum.
@@ -52,7 +57,7 @@ public interface IForumAH extends AH {
      *
      * @throws StorageException will be thrown if something wrong.
      */
-    int getUnreadMessagesInForum(int forumId) throws StorageException;
+    Map<Integer, Integer> getUnreadMessagesInForum(int ...forumId) throws StorageException;
 
     /**
      * Returns last message date in the forum or <code>null</code> if forum is empty.
@@ -63,14 +68,5 @@ public interface IForumAH extends AH {
      *
      * @throws StorageException will be thrown if something wrong.
      */
-    Long getLastMessageDateInForum(int forumId) throws StorageException;
-
-    /**
-     * Returns list of all available forums.
-     *
-     * @return list of all available forums.
-     *
-     * @throws StorageException
-     */
-    Forum[] getAllForums() throws StorageException;
+    Map<Integer, Long> getLastMessageDateInForum(int ...forumId) throws StorageException;
 }

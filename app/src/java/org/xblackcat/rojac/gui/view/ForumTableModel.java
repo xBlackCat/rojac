@@ -1,23 +1,20 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+import java.util.Map;
 
 /**
  * @author xBlackCat
@@ -30,8 +27,6 @@ public class ForumTableModel extends AbstractTableModel {
     private static final Log log = LogFactory.getLog(ForumTableModel.class);
 
     private List<ForumData> forums = new ArrayList<ForumData>();
-
-    private ForumInfoProcessor processor = new ForumInfoProcessor();
 
     public ForumData getValueAt(int rowIndex, int columnIndex) {
         return forums.get(rowIndex);
@@ -50,27 +45,45 @@ public class ForumTableModel extends AbstractTableModel {
         return ForumData.class;
     }
 
-    private ForumData getForumData(int id) {
-        for (ForumData fd : forums) {
-            if (fd.getForumId() == id) {
-                return fd;
+    public void updateForums(final int... forumIds) {
+        SwingWorker<Void, ForumStatistic> infoLoader = new SwingWorker<Void, ForumStatistic>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                IForumAH fah = storage.getForumAH();
+
+                Map<Integer, Integer> totalMessages = fah.getMessagesInForum(forumIds);
+                Map<Integer, Integer> unreadMessages = fah.getUnreadMessagesInForum(forumIds);
+                Map<Integer, Long> lastPostDate = fah.getLastMessageDateInForum(forumIds);
+
+                for (int forumId : forumIds) {
+                    publish(new ForumStatistic(
+                            forumId,
+                            totalMessages.get(forumId),
+                            unreadMessages.get(forumId), 
+                            lastPostDate.get(forumId)
+                    ));
+                }
+
+                return null;
             }
-        }
-        return null;
-    }
 
-    public void updateForums(int... forumIds) {
-        for (int forumId : forumIds) {
-            ForumData fd = new ForumData(forumId);
-            if (!forums.contains(fd)) {
-                forums.add(fd);
-
-                int ind = forums.indexOf(fd);
-                fireTableRowsInserted(ind, ind);
+            @Override
+            protected void process(List<ForumStatistic> chunks) {
+                for (ForumStatistic stat : chunks) {
+                    // Get forum object
+                    for (int i = 0, forumsSize = forums.size(); i < forumsSize; i++) {
+                        ForumData fd = forums.get(i);
+                        if (fd.getForumId() == stat.getForumId()) {
+                            fd.setStat(stat);
+                            fireTableRowsUpdated(i, i);
+                            break;
+                        }
+                    }
+                }
             }
-        }
+        };
 
-        processor.processForums(forumIds);
+        executor.execute(infoLoader, TaskType.MessageLoading);
     }
 
     void fillForums(Forum... forums) {
@@ -81,83 +94,5 @@ public class ForumTableModel extends AbstractTableModel {
         }
 
         fireTableDataChanged();
-    }
-
-    public void reloadInfo(int forumId) {
-        processor.processForums(forumId);
-    }
-
-    private class ForumInfoProcessor {
-        private final Queue<Integer> forumIds = new LinkedList<Integer>();
-
-        private final Runnable processor = new Runnable() {
-            public void run() {
-                IForumAH fah = storage.getForumAH();
-
-                boolean process;
-                do {
-                    final int id;
-                    synchronized (forumIds) {
-                        id = forumIds.remove();
-                    }
-
-                    int total = 0;
-                    int unread = 0;
-                    Long lastMessageDate = null;
-                    Forum f;
-                    try {
-                        f = fah.getForumById(id);
-                    } catch (StorageException e) {
-                        log.error("Can not load forum information for forum [id:" + id + "].", e);
-                        f = null;
-                    }
-
-                    try {
-                        total = fah.getMessagesInForum(id);
-                        unread = fah.getUnreadMessagesInForum(id);
-                        lastMessageDate = fah.getLastMessageDateInForum(id);
-                    } catch (StorageException e) {
-                        log.error("Can not load statistic for forum [id:" + id + "].", e);
-                    }
-
-                    final ForumStatistic stat = new ForumStatistic(total, unread, lastMessageDate);
-                    final Forum forum = f;
-
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            ForumData data = getForumData(id);
-
-                            if (forum != null) {
-                                data.setForum(forum);
-                            }
-
-                            data.setStat(stat);
-
-                            int ind = forums.indexOf(data);
-                            fireTableRowsUpdated(ind, ind);
-                        }
-                    });
-
-                    synchronized (forumIds) {
-                        process = !forumIds.isEmpty();
-                    }
-                } while (process);
-            }
-        };
-
-        public void processForums(int... id) {
-            if (ArrayUtils.isEmpty(id)) {
-                return;
-            }
-
-            boolean startTask;
-            synchronized (forumIds) {
-                startTask = forumIds.isEmpty();
-                forumIds.addAll(Arrays.asList(ArrayUtils.toObject(id)));
-            }
-            if (startTask) {
-                executor.execute(processor);
-            }
-        }
     }
 }
