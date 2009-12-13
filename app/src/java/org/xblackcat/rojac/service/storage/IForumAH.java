@@ -64,4 +64,13 @@ public interface IForumAH extends AH {
      * @throws StorageException will be thrown if something wrong.
      */
     Long getLastMessageDateInForum(int forumId) throws StorageException;
+
+    /**
+     * Returns list of all available forums.
+     *
+     * @return list of all available forums.
+     *
+     * @throws StorageException
+     */
+    Forum[] getAllForums() throws StorageException;
 }

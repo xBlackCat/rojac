@@ -7,8 +7,8 @@ import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.janus.commands.IDataHandler;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
-import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.RequestProcessor;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
@@ -264,8 +264,8 @@ public final class RojacUtils {
         return locales.toArray(new Locale[locales.size()]);
     }
 
-    public static void processRequests(IResultHandler resultHandler, IRequest... requests) {
-        SwingWorker sw = new RequestProcessor(resultHandler, requests);
+    public static void processRequests(IDataHandler dataHandler, IRequest... requests) {
+        SwingWorker sw = new RequestProcessor(dataHandler, requests);
         
         ServiceFactory.getInstance().getExecutor().execute(sw, TaskType.Synchronization);
     }

@@ -60,8 +60,8 @@ public class ForumTableModel extends AbstractTableModel {
     }
 
     public void updateForums(int... forumIds) {
-        for (int f : forumIds) {
-            ForumData fd = new ForumData(f);
+        for (int forumId : forumIds) {
+            ForumData fd = new ForumData(forumId);
             if (!forums.contains(fd)) {
                 forums.add(fd);
 
@@ -71,6 +71,16 @@ public class ForumTableModel extends AbstractTableModel {
         }
 
         processor.processForums(forumIds);
+    }
+
+    void fillForums(Forum... forums) {
+        this.forums.clear();
+
+        for (Forum forum : forums) {
+            this.forums.add(new ForumData(forum));
+        }
+
+        fireTableDataChanged();
     }
 
     public void reloadInfo(int forumId) {

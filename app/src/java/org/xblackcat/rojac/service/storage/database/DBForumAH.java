@@ -5,6 +5,8 @@ import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
+import java.util.Collection;
+
 /**
  * @author ASUS
  */
@@ -93,6 +95,12 @@ final class DBForumAH implements IForumAH {
         return helper.executeSingle(Converters.TO_LONG,
                 DataQuery.GET_LAST_MESSAGE_DATE_IN_FORUM,
                 forumId);
+    }
+
+    @Override
+    public Forum[] getAllForums() throws StorageException {
+        Collection<Forum> f = helper.execute(Converters.TO_FORUM, DataQuery.GET_OBJECTS_FORUM);
+        return f.toArray(new Forum[f.size()]);
     }
 
     @Override
