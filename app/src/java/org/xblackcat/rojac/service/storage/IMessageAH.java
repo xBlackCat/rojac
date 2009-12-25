@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Message;
+import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.ThreadStatData;
 import ru.rsdn.Janus.JanusMessageInfo;
 
 /**
@@ -42,4 +44,17 @@ public interface IMessageAH extends AH {
     boolean isExist(int messageId) throws StorageException;
 
     int getParentIdByMessageId(int messageId) throws StorageException;
+
+    /**
+     * Loads messages of the specified thread.
+     *
+     * @param threadId
+     *
+     * @return array of messages data.
+     */
+    MessageData[] getMessageDatasByThreadId(int threadId) throws StorageException;
+
+    ThreadStatData getThreadStatByThreadId(int forumId) throws StorageException;
+
+    int getUnreadReplaysInThread(int threadId) throws StorageException;
 }

@@ -17,6 +17,6 @@ class ForumRootItem extends MessageItem {
     }
 
     @Override
-    protected void loadData(AThreadModel model) {
+    protected void loadData(AThreadModel<MessageItem> model) {
     }
 }

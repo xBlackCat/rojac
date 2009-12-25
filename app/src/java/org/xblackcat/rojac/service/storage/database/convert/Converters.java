@@ -22,6 +22,8 @@ public final class Converters {
     public static final IToObjectConverter<Long> TO_LONG = new ToScalarConverter<Long>();
     public static final IToObjectConverter<Boolean> TO_BOOLEAN = new ToScalarConverter<Boolean>();
     public static final IToObjectConverter<Mark> TO_MARK = new ToMarkConverter();
+    public static final IToObjectConverter<MessageData> TO_MESSAGE_DATA = new ToMessageDataConverter();
+    public static final IToObjectConverter<ThreadStatData> TO_THREAD_DATA = new ToThreadDataConverter();
 
     private Converters() {
     }
