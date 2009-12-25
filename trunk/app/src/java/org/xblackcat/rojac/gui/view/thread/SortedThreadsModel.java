@@ -27,7 +27,7 @@ class SortedThreadsModel extends AThreadModel<Post> {
     }
 
     public boolean isLeaf(Object node) {
-        return ((Post) node).getSize() == 0;
+        return ((Post) node).isLeaf();
     }
 
     public int getIndexOfChild(Object parent, Object child) {

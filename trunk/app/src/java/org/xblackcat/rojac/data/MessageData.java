@@ -14,8 +14,9 @@ public class MessageData {
     protected final String userName;
     protected final long messageDate;
     protected final long updateDate;
+    protected final boolean read;
 
-    public MessageData(int messageId, int topicId, int parentId, int forumId, int userId, String subject, String userName, long messageDate, long updateDate) {
+    public MessageData(int messageId, int topicId, int parentId, int forumId, int userId, String subject, String userName, long messageDate, long updateDate, boolean read) {
         this.messageId = messageId;
         this.topicId = topicId;
         this.parentId = parentId;
@@ -25,6 +26,7 @@ public class MessageData {
         this.userName = userName;
         this.messageDate = messageDate;
         this.updateDate = updateDate;
+        this.read = read;
     }
 
     public int getMessageId() {
@@ -61,6 +63,10 @@ public class MessageData {
 
     public int getParentId() {
         return parentId;
+    }
+
+    public boolean isRead() {
+        return read;
     }
 
     @Override

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static ch.lambdaj.Lambda.*;
+
 /**
  * @author xBlackCat
  */
@@ -25,7 +27,7 @@ class Post implements ITreeItem<Post> {
 
     // Tree-related fields
     protected final Post parent;
-    protected final Post threadRoot;
+    protected final Thread threadRoot;
 
     protected List<Post> childrenPosts = new ArrayList<Post>();
 
@@ -33,17 +35,13 @@ class Post implements ITreeItem<Post> {
         this(messageData, parent, null);
     }
 
-    public Post(MessageData messageData, Post parent, Post threadRoot) {
-        this(messageData, parent, threadRoot, false);
-    }
-
-    public Post(MessageData messageData, Post parent, Post threadRoot, boolean read) {
+    public Post(MessageData messageData, Post parent, Thread threadRoot) {
         this.messageData = messageData;
         this.parent = parent;
-        this.read = read;
+        this.read = messageData.isRead();
 
         if (threadRoot == null) {
-            this.threadRoot = parent != null ? parent.threadRoot : this;
+            this.threadRoot = parent != null ? parent.threadRoot : null;
         } else {
             this.threadRoot = threadRoot;
         }
@@ -69,7 +67,7 @@ class Post implements ITreeItem<Post> {
         return childrenPosts.size();
     }
 
-    protected Post getThreadRoot() {
+    protected Thread getThreadRoot() {
         return threadRoot;
     }
 
@@ -89,6 +87,14 @@ class Post implements ITreeItem<Post> {
         return messageData.getMessageId();
     }
 
+    @Override
+    public int compareTo(Post o) {
+        long dateO = o.getLastPostDate();
+        long date = getLastPostDate();
+
+        return dateO == date ? 0 : date > dateO ? 1 : -1;
+    }
+
     // State related methods
 
     @Override
@@ -96,20 +102,25 @@ class Post implements ITreeItem<Post> {
         return messageData.getMessageId();
     }
 
+    public long getLastPostDate() {
+        if (childrenPosts.isEmpty()) {
+            return messageData.getMessageDate();
+        } else {
+            return max(childrenPosts, on(Post.class).getLastPostDate());
+        }
+    }
+
     /**
      * Returns a state of the node: if the node is filled with actual data.
      *
      * @return <code>true</code> if node have been filled with actual data.
      */
-
-
-
     public LoadingState getLoadingState() {
         // Post object unlike to Thread object is always have actual data
         return LoadingState.Loaded;
     }
 
-    public final ReadStatus isRead() {
+    public ReadStatus isRead() {
         if (read) {
             return ReadStatus.Read;
         }
@@ -121,5 +132,9 @@ class Post implements ITreeItem<Post> {
         }
 
         return ReadStatus.Unread;
+    }
+
+    public boolean isLeaf() {
+        return childrenPosts.isEmpty();
     }
 }

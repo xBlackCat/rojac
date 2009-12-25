@@ -1,11 +1,15 @@
 package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.data.Message;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.Role;
+import org.xblackcat.rojac.data.ThreadStatData;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import ru.rsdn.Janus.JanusMessageInfo;
+
+import java.util.Collection;
 
 /**
  * @author ASUS
@@ -106,6 +110,25 @@ final class DBMessageAH implements IMessageAH {
 
     public int getParentIdByMessageId(int messageId) throws StorageException {
         return helper.executeSingle(Converters.TO_INTEGER, DataQuery.GET_PARENT_ID_FOR_MESSAGE_ID, messageId);
+    }
+
+    @Override
+    public MessageData[] getMessageDatasByThreadId(int threadId) throws StorageException {
+        Collection<MessageData> datas = helper.execute(
+                Converters.TO_MESSAGE_DATA,
+                DataQuery.GET_OBJECTS_MESSAGE_DATA,
+                threadId);
+        return datas.toArray(new MessageData[datas.size()]);
+    }
+
+    @Override
+    public ThreadStatData getThreadStatByThreadId(int threadId) throws StorageException {
+        return helper.executeSingle(Converters.TO_THREAD_DATA, DataQuery.GET_THREAD_STAT_DATA, threadId);
+    }
+
+    @Override
+    public int getUnreadReplaysInThread(int threadId) throws StorageException {
+        return helper.executeSingle(Converters.TO_INTEGER, DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_THREAD, threadId);
     }
 
     public int[] getAllMessageIds() throws StorageException {

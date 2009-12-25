@@ -4,6 +4,7 @@ import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.ThreadStatData;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -23,37 +24,38 @@ public class Thread extends Post {
         }
     };
 
-    private final Post loadPostItem;
-
     // State fields
     private ReadStatus readStatus;
     private boolean filled = false;
     private LoadingState loadingState = LoadingState.NotLoaded;
     private boolean empty;
 
-    public Thread(MessageData messageData, Post parent, boolean empty, ReadStatus read) {
-        super(messageData, parent, null, read == ReadStatus.Read);
+    public Thread(MessageData messageData, ThreadStatData threadStatData, int unreadPosts, Post parent) {
+        super(messageData, parent, null);
 
         threadPosts.put(messageData.getMessageId(), this);
 
-        readStatus = read;
-        loadPostItem = new Post(constructDummyMessageData(messageData), this, this);
+        if (messageData.isRead()) {
+            if (unreadPosts > 0) {
+                readStatus = ReadStatus.ReadPartially;
+            } else {
+                readStatus = ReadStatus.Read;
+            }
+        } else {
+            readStatus = ReadStatus.Unread;
+        }
 
-        this.empty = empty;
+        this.empty = threadStatData.getReplyAmount() == 0;
     }
 
-    protected Post getThreadRoot() {
+    protected Thread getThreadRoot() {
         return this;
     }
 
     @Override
     public int getIndex(Post p) {
         if (!filled) {
-            if (empty || p != loadPostItem) {
-                throw new UnsupportedOperationException("Can not get index on uninitialized collection of post " + p);
-            } else {
-                return 0;
-            }
+            return -1;
         }
         return super.getIndex(p);
     }
@@ -62,10 +64,8 @@ public class Thread extends Post {
     public Post getChild(int idx) {
         if (filled) {
             return super.getChild(idx);
-        } else if (empty) {
-            throw new IndexOutOfBoundsException("There is no responses on post " + messageData);
         } else {
-            return loadPostItem;
+            throw new IndexOutOfBoundsException("There is no responses on post " + messageData);
         }
     }
 
@@ -74,8 +74,12 @@ public class Thread extends Post {
         if (filled) {
             return super.getSize();
         } else {
-            return empty ? 0 : 1;
+            return 0;
         }
+    }
+
+    public void setLoadingState(LoadingState loadingState) {
+        this.loadingState = loadingState;
     }
 
     @Override
@@ -83,7 +87,24 @@ public class Thread extends Post {
         return empty ? LoadingState.Loaded : loadingState;
     }
 
-    private void storePosts(MessageData... posts) {
+    @Override
+    public ReadStatus isRead() {
+        return filled ? super.isRead() : readStatus;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return empty;
+    }
+
+    public int compareTo(Thread o) {
+        long dateO = o.messageData.getMessageDate();
+        long date = messageData.getMessageDate();
+
+        return dateO == date ? 0 : date > dateO ? 1 : -1;
+    }
+
+    void storePosts(MessageData... posts) {
         Arrays.sort(posts, SORT_BY_PARENTS);
 
         for (MessageData post : posts) {
@@ -99,12 +120,8 @@ public class Thread extends Post {
             // TODO: compute the flag depending on MessageData and user settings.
             boolean read = false;
 
-            Post p = new Post(post, parent, this, read);
+            Post p = new Post(post, parent, this);
             threadPosts.put(post.getMessageId(), p);
         }
-    }
-
-    private static MessageData constructDummyMessageData(MessageData messageData) {
-        return new MessageData(-1, messageData.getMessageId(), messageData.getMessageId(), messageData.getForumId(), -1, null, null, -1, -1);
     }
 }

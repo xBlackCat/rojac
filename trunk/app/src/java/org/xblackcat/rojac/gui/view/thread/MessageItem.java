@@ -89,7 +89,7 @@ class MessageItem implements ITreeItem<MessageItem> {
         return ArrayUtils.indexOf(children, node);
     }
 
-    public Message getMessage(AThreadModel model) {
+    public Message getMessage(AThreadModel<MessageItem> model) {
         loadData(model);
         return message;
     }
@@ -102,7 +102,12 @@ class MessageItem implements ITreeItem<MessageItem> {
         return getThreadMessage().items.get(id);
     }
 
-    protected void loadData(final AThreadModel model) {
+    @Override
+    public int compareTo(MessageItem o) {
+        return 0;
+    }
+
+    protected void loadData(final AThreadModel<MessageItem> model) {
         if (messageId == -1) {
             return;
         }
