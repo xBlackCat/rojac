@@ -3,8 +3,8 @@ package org.xblackcat.rojac.gui.popup;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.view.ForumData;
 import org.xblackcat.rojac.gui.view.ForumTableModel;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -42,18 +42,18 @@ public class ForumListPopupBuilder implements IPopupBuilder {
             throw new IllegalArgumentException("Invalid parameters amount.");
         }
 
-        final Forum forum = (Forum) parameters[0];
+        final ForumData forumData = (ForumData) parameters[0];
         final ForumTableModel model = (ForumTableModel) parameters[1];
         final IRootPane mainFrame = (IRootPane) parameters[2];
 
-        JPopupMenu menu = new JPopupMenu(forum.getForumName());
+        JPopupMenu menu = new JPopupMenu(forumData.getForum().getForumName());
 
-        final boolean subscribed = forum.isSubscribed();
-        final int forumId = forum.getForumId();
+        final boolean subscribed = forumData.isSubscribed();
+        final int forumId = forumData.getForumId();
 
         menu.add(new AbstractAction(Messages.POPUP_VIEW_FORUMS_OPEN.get()) {
             public void actionPerformed(ActionEvent e) {
-                mainFrame.openForumTab(forum);
+                mainFrame.openForumTab(forumData.getForum());
             }
         });
         menu.addSeparator();
@@ -95,6 +95,7 @@ public class ForumListPopupBuilder implements IPopupBuilder {
 
                 @Override
                 protected void done() {
+                    forumsModel.setSubscribed(forumId, !subscribed);
                     forumsModel.updateForums(forumId);
                 }
             });

@@ -7,10 +7,11 @@ import org.xblackcat.rojac.data.ForumStatistic;
  * @author xBlackCat
  */
 
-class ForumData {
+public class ForumData {
     private final int forumId;
     private Forum forum;
     private ForumStatistic stat;
+    private boolean subscribed;
 
     public ForumData(int forumId) {
         this.forumId = forumId;
@@ -19,6 +20,7 @@ class ForumData {
     public ForumData(Forum forum) {
         this.forum = forum;
         forumId = forum.getForumId();
+        subscribed = forum.isSubscribed();
     }
 
     public Forum getForum() {
@@ -39,6 +41,14 @@ class ForumData {
 
     public void setStat(ForumStatistic stat) {
         this.stat = stat;
+    }
+
+    public boolean isSubscribed() {
+        return subscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
     }
 
     @Override
