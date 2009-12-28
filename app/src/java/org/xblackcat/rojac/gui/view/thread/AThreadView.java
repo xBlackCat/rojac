@@ -26,7 +26,7 @@ public abstract class AThreadView extends AItemView {
     
     protected final IThreadControl threadControl;
     protected final JLabel forumName = new JLabel();
-    protected final AThreadModel model = new ThreadsModel();
+    protected final AThreadModel model = new SortedThreadsModel();
     protected int forumId;
 
     protected AThreadView(IRootPane mainFrame, IThreadControl threadControl) {

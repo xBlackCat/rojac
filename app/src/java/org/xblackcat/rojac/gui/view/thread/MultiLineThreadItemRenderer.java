@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import ch.lambdaj.Lambda;
 import org.apache.commons.lang.StringUtils;
-import org.xblackcat.rojac.data.Message;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
 import org.xblackcat.rojac.i18n.Messages;
@@ -429,15 +429,16 @@ class MultiLineThreadItemRenderer extends JLightPanel implements TreeCellRendere
         // Setup component with value-based styles
 
         if (value != null) {
-            Message mi = ((MessageItem) value).getMessage((AThreadModel) tree.getModel());
+            Post p = (Post) value;
+            MessageData md = p.getMessageData();
 
             dateLine.setText(null);
             userLine.setText(null);
 
-            if (mi != null) {
-                titleLine.setText(mi.getSubject());
+            if (md != null) {
+                titleLine.setText(md.getSubject());
 
-                long forumDate = mi.getMessageDate();
+                long forumDate = md.getMessageDate();
                 if (forumDate > 0) {
                     DateFormat dateFormat = DateFormat.getDateTimeInstance(
                             DateFormat.MEDIUM,
@@ -446,21 +447,21 @@ class MultiLineThreadItemRenderer extends JLightPanel implements TreeCellRendere
                     dateLine.setText(dateFormat.format(new Date(forumDate)));
                 }
 
-                if (StringUtils.isEmpty(mi.getUserNick())) {
-                    userLine.setText(String.valueOf(mi.getUserId()));
+                if (StringUtils.isEmpty(md.getUserName())) {
+                    userLine.setText(String.valueOf(md.getUserId()));
                 } else {
-                    userLine.setText(mi.getUserNick());
+                    userLine.setText(md.getUserName());
                 }
 
                 int style = Font.PLAIN;
-                if (!mi.isRead()) style |= Font.BOLD;
+                if (!md.isRead()) style |= Font.BOLD;
 
                 Font font = tree.getFont().deriveFont(style);
                 setFont(font);
                 components.setFont(font);
 
                 if (sel) {
-                    tree.setToolTipText(String.valueOf(mi.getMessageId()));
+                    tree.setToolTipText(String.valueOf(md.getMessageId()));
                 }
             } else {
                 titleLine.setText("Loading...");

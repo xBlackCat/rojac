@@ -26,8 +26,8 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
     protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
     @Override
-    public int loadThreadByItem(final AThreadModel<Post> model, final int threadId) {
-        final ForumRoot rootItem = new ForumRoot(threadId);
+    public int loadThreadByItem(final AThreadModel<Post> model, final int forumId) {
+        final ForumRoot rootItem = new ForumRoot(forumId);
 
         model.setRoot(rootItem);
 
@@ -37,17 +37,23 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
                 MessageData[] threadPosts;
                 IMessageAH mAH = storage.getMessageAH();
                 try {
-                    threadPosts = mAH.getMessageDatasByThreadId(threadId);
+                    threadPosts = mAH.getTopicMessageDatasByForumId(forumId);
                 } catch (StorageException e) {
-                    log.error("Can not load topics for forum with id = " + threadId, e);
+                    log.error("Can not load topics for forum #" + forumId, e);
                     throw e;
                 }
 
                 for (MessageData threadPost : threadPosts) {
-                    int unreadPosts = mAH.getUnreadReplaysInThread(threadId);
-                    ThreadStatData stat = mAH.getThreadStatByThreadId(threadId);
-                    
-                    publish(new Thread(threadPost, stat, unreadPosts, rootItem));
+                    int topicId = threadPost.getMessageId();
+
+                    try {
+                        int unreadPosts = mAH.getUnreadReplaysInThread(topicId);
+                        ThreadStatData stat = mAH.getThreadStatByThreadId(topicId);
+
+                        publish(new Thread(threadPost, stat, unreadPosts, rootItem));
+                    } catch (StorageException e) {
+                        log.error("Can not load statistic for topic #" + topicId, e);
+                    }
                 }
 
 
@@ -56,14 +62,14 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
             @Override
             protected void process(List<Thread> chunks) {
-                rootItem.setupThreads(chunks);
+                rootItem.addThread(chunks);
 
                 model.nodeStructureChanged(rootItem);
             }
         };
 
         executor.execute(sw);
-        return threadId;
+        return forumId;
     }
 
     @Override
@@ -85,7 +91,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             protected Void doInBackground() throws Exception {
                 MessageData[] messages;
                 try {
-                    messages = storage.getMessageAH().getMessageDatasByThreadId(itemId);
+                    messages = storage.getMessageAH().getMessageDatasByTopicId(itemId);
                 } catch (StorageException e) {
                     log.error("Can not load message children for id = " + itemId, e);
                     throw e;

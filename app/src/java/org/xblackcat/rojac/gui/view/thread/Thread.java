@@ -16,7 +16,7 @@ import java.util.Comparator;
 public class Thread extends Post {
     private static final Log log = LogFactory.getLog(Thread.class);
 
-    private TIntObjectHashMap<Post> threadPosts;
+    private TIntObjectHashMap<Post> threadPosts = new TIntObjectHashMap<Post>();
     private final static Comparator<MessageData> SORT_BY_PARENTS = new Comparator<MessageData>() {
         @Override
         public int compare(MessageData o1, MessageData o2) {
@@ -29,9 +29,11 @@ public class Thread extends Post {
     private boolean filled = false;
     private LoadingState loadingState = LoadingState.NotLoaded;
     private boolean empty;
+    private ThreadStatData threadStatData;
 
     public Thread(MessageData messageData, ThreadStatData threadStatData, int unreadPosts, Post parent) {
         super(messageData, parent, null);
+        this.threadStatData = threadStatData;
 
         threadPosts.put(messageData.getMessageId(), this);
 
@@ -67,6 +69,14 @@ public class Thread extends Post {
         } else {
             throw new IndexOutOfBoundsException("There is no responses on post " + messageData);
         }
+    }
+
+    @Override
+    public int compareTo(Post o) {
+        long postDate = o.getLastPostDate();
+        long thisPostDate = getLastPostDate();
+
+        return thisPostDate == postDate ? 0 : postDate > thisPostDate ? 1 : -1;
     }
 
     @Override
@@ -122,6 +132,10 @@ public class Thread extends Post {
 
             Post p = new Post(post, parent, this);
             threadPosts.put(post.getMessageId(), p);
+
+            parent.insertChild(p);
         }
+
+        filled = true;
     }
 }

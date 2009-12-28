@@ -323,6 +323,7 @@ public enum DataQuery implements IPropertiable {
      */
     UPDATE_OBJECT_NEW_MESSAGE,
 
+    GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
     /**
      * The query for retrieving ids for the specified forum group. SQL parameters:
      * <p/>

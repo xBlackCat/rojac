@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.data.MessageData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -89,10 +90,10 @@ class Post implements ITreeItem<Post> {
 
     @Override
     public int compareTo(Post o) {
-        long dateO = o.getLastPostDate();
-        long date = getLastPostDate();
+        long postDate = o.getMessageData().getMessageDate();
+        long thisPostDate = o.getMessageData().getMessageDate();
 
-        return dateO == date ? 0 : date > dateO ? 1 : -1;
+        return thisPostDate == postDate ? 0 : postDate < thisPostDate ? 1 : -1;
     }
 
     // State related methods
@@ -136,5 +137,14 @@ class Post implements ITreeItem<Post> {
 
     public boolean isLeaf() {
         return childrenPosts.isEmpty();
+    }
+
+    public MessageData getMessageData() {
+        return messageData;
+    }
+
+    public void insertChild(Post p) {
+        childrenPosts.add(p);
+        Collections.sort(childrenPosts);
     }
 }

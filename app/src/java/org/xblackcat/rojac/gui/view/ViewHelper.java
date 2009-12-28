@@ -4,8 +4,8 @@ import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.MessageView;
-import org.xblackcat.rojac.gui.view.thread.ForumThreadsControl;
 import org.xblackcat.rojac.gui.view.thread.SingleThreadControl;
+import org.xblackcat.rojac.gui.view.thread.SortedForumThreadsControl;
 import org.xblackcat.rojac.gui.view.thread.ThreadDoubleView;
 import org.xblackcat.rojac.gui.view.thread.TreeThreadView;
 
@@ -24,7 +24,7 @@ public final class ViewHelper {
      * @return a new instance of view
      */
     public static IItemView makeForumThreadsView(IRootPane mainFrame) {
-        return new TreeThreadView(mainFrame, new ForumThreadsControl());
+        return new TreeThreadView(mainFrame, new SortedForumThreadsControl());
     }
 
     /**
