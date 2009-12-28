@@ -52,7 +52,9 @@ public interface IMessageAH extends AH {
      *
      * @return array of messages data.
      */
-    MessageData[] getMessageDatasByThreadId(int threadId) throws StorageException;
+    MessageData[] getMessageDatasByTopicId(int threadId) throws StorageException;
+
+    MessageData[] getTopicMessageDatasByForumId(int threadId) throws StorageException;
 
     ThreadStatData getThreadStatByThreadId(int forumId) throws StorageException;
 

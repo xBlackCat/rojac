@@ -19,8 +19,7 @@ public class ForumRoot extends Post {
         throw new UnsupportedOperationException("There is no thread root for forum");
     }
 
-    final void setupThreads(Collection<Thread> threads) {
-        childrenPosts.clear();
+    final void addThread(Collection<Thread> threads) {
         childrenPosts.addAll(threads);
         Collections.sort(childrenPosts);
     }

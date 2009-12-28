@@ -113,11 +113,20 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public MessageData[] getMessageDatasByThreadId(int threadId) throws StorageException {
+    public MessageData[] getMessageDatasByTopicId(int threadId) throws StorageException {
         Collection<MessageData> datas = helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA,
                 threadId);
+        return datas.toArray(new MessageData[datas.size()]);
+    }
+
+    @Override
+    public MessageData[] getTopicMessageDatasByForumId(int forumId) throws StorageException {
+        Collection<MessageData> datas = helper.execute(
+                Converters.TO_MESSAGE_DATA,
+                DataQuery.GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
+                forumId);
         return datas.toArray(new MessageData[datas.size()]);
     }
 
