@@ -72,6 +72,15 @@ public class Thread extends Post {
     }
 
     @Override
+    public long getLastPostDate() {
+        if (filled) {
+            return super.getLastPostDate();
+        } else {
+            return empty ? messageData.getMessageDate() : threadStatData.getLastPostDate();
+        }
+    }
+
+    @Override
     public int compareTo(Post o) {
         long postDate = o.getLastPostDate();
         long thisPostDate = getLastPostDate();
@@ -105,13 +114,6 @@ public class Thread extends Post {
     @Override
     public boolean isLeaf() {
         return empty;
-    }
-
-    public int compareTo(Thread o) {
-        long dateO = o.messageData.getMessageDate();
-        long date = messageData.getMessageDate();
-
-        return dateO == date ? 0 : date > dateO ? 1 : -1;
     }
 
     void storePosts(MessageData... posts) {
