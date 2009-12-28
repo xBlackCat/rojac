@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.view.ForumData;
 import org.xblackcat.rojac.gui.view.ForumTableModel;
 import org.xblackcat.rojac.util.LinkUtils;
 
@@ -58,7 +58,7 @@ public class PopupMenuBuilder {
         return getBuilder(type, description, messageId, text, mainFrame);
     }
 
-    public static JPopupMenu getForumViewMenu(Forum forum, ForumTableModel forumsModel, IRootPane rootPane) {
+    public static JPopupMenu getForumViewMenu(ForumData forum, ForumTableModel forumsModel, IRootPane rootPane) {
         return getBuilder(PopupTypeEnum.ForumListCommonPopup, forum, forumsModel, rootPane);
     }
 

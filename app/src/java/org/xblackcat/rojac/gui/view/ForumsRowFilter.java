@@ -28,7 +28,7 @@ class ForumsRowFilter extends RowFilter<ForumTableModel, Integer> {
         boolean include = true;
 
         if (subscribed && f != null) {
-            include &= f.isSubscribed();
+            include &= fd.isSubscribed();
         }
 
         if (fs != null) {

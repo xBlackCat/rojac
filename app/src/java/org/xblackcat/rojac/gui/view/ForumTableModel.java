@@ -70,15 +70,10 @@ public class ForumTableModel extends AbstractTableModel {
             @Override
             protected void process(List<ForumStatistic> chunks) {
                 for (ForumStatistic stat : chunks) {
-                    // Get forum object
-                    for (int i = 0, forumsSize = forums.size(); i < forumsSize; i++) {
-                        ForumData fd = forums.get(i);
-                        if (fd.getForumId() == stat.getForumId()) {
-                            fd.setStat(stat);
-                            fireTableRowsUpdated(i, i);
-                            break;
-                        }
-                    }
+                    int idx = getForumDataIndex(stat.getForumId());
+                    ForumData fd = forums.get(idx);
+                    fd.setStat(stat);
+                    fireTableRowsUpdated(idx, idx);
                 }
             }
         };
@@ -94,5 +89,23 @@ public class ForumTableModel extends AbstractTableModel {
         }
 
         fireTableDataChanged();
+    }
+
+    private int getForumDataIndex(int forumId) {
+        for (int i = 0, forumsSize = forums.size(); i < forumsSize; i++) {
+            ForumData fd = forums.get(i);
+            if (fd.getForumId() == forumId) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public void setSubscribed(int forumId, boolean subscribed) {
+        int idx = getForumDataIndex(forumId);
+        ForumData fd = forums.get(idx);
+        fd.setSubscribed(subscribed);
+        fireTableRowsUpdated(idx, idx);
     }
 }

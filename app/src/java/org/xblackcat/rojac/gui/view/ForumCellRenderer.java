@@ -28,7 +28,7 @@ class ForumCellRenderer extends DefaultTableCellRenderer {
         StringBuilder text = new StringBuilder("<html><body><div style='overflow: hidden;'>");
         boolean isNotSubcribed = true;
         if (f != null) {
-            isNotSubcribed = !f.isSubscribed();
+            isNotSubcribed = !fd.isSubscribed();
 
             if (isNotSubcribed) text.append("<i>");
             if (hasUnread) text.append("<b>");

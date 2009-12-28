@@ -65,14 +65,14 @@ public class ForumsListView extends AView {
 
                 int modelInd = forums.convertRowIndexToModel(ind);
 
-                Forum forum = forumsModel.getValueAt(modelInd, 0).getForum();
+                ForumData forum = forumsModel.getValueAt(modelInd, 0);
 
                 if (e.isPopupTrigger()) {
                     JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, forumsModel, mainFrame);
 
                     menu.show(forums, p.x, p.y);
                 } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
-                    mainFrame.openForumTab(forum);
+                    mainFrame.openForumTab(forum.getForum());
                 }
             }
         });

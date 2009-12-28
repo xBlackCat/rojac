@@ -212,7 +212,7 @@ class MultiLineForumRenderer extends JPanel
         String dateText = "";
 
         if (f != null) {
-            isSubcribed = f.isSubscribed();
+            isSubcribed = fd.isSubscribed();
 
             titleText = f.getForumName();
 
