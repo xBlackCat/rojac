@@ -27,6 +27,9 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
     public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         int[] messageIds = miscAH.getExtraMessages();
 
+        // Just in case
+        processed.clear();
+        
         if (!ArrayUtils.isEmpty(messageIds)) {
             trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_EXTRA_POSTS, Arrays.toString(messageIds));
             loadTopics(messageIds, janusService, trac);
@@ -40,7 +43,7 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
             loadTopics(brokenTopicIds, janusService, trac);
         }
 
-        return new AffectedIds(processedMessages, affectedForums);
+        return processed;
     }
 
     private void loadTopics(int[] messageIds, IJanusService janusService, IProgressTracker tracker) throws RsdnProcessorException, StorageException {
@@ -54,13 +57,8 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
         JanusModerateInfo[] moderates = extra.getModerates();
         JanusRatingInfo[] ratings = extra.getRatings();
 
-        processedMessages.clear();
-        affectedForums.clear();
-
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
 
         storeNewPosts(tracker, extra);
-
-//        postprocessingMessages();
     }
 }

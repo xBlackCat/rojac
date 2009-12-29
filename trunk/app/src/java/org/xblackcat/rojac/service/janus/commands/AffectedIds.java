@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.service.janus.commands;
 
 import gnu.trove.TIntHashSet;
+import gnu.trove.TIntObjectHashMap;
+import gnu.trove.TObjectProcedure;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
@@ -8,41 +10,95 @@ import org.apache.commons.lang.ArrayUtils;
  */
 
 public class AffectedIds {
-    private final TIntHashSet messageIds;
-    private final TIntHashSet forumIds;
-
-    public AffectedIds(int[] messageIds, int[] forumIds) {
-        this.messageIds = new TIntHashSet(messageIds);
-        this.forumIds = new TIntHashSet(forumIds);
-    }
-
-    public AffectedIds(TIntHashSet messageIds, TIntHashSet forumIds) {
-        this.messageIds = messageIds;
-        this.forumIds = forumIds;
-    }
+    public static final int DEFAULT_GROUP = -1;
+    private final TIntObjectHashMap<TIntHashSet> messageByForums;
 
     public AffectedIds() {
-        this(ArrayUtils.EMPTY_INT_ARRAY, ArrayUtils.EMPTY_INT_ARRAY);
+        this(new TIntObjectHashMap<TIntHashSet>());
+    }
+
+    public AffectedIds(TIntObjectHashMap<TIntHashSet> messageByForums) {
+        this.messageByForums = messageByForums;
+    }
+
+    public void addMessageId(int messageId) {
+        addMessageId(DEFAULT_GROUP, messageId);
+    }
+
+    public void addMessageId(int forumId, int messageId) {
+        if (messageByForums.containsKey(forumId)) {
+            messageByForums.get(forumId).add(messageId);
+        } else {
+            messageByForums.put(forumId, new TIntHashSet(new int[] {messageId}));
+        }
+    }
+
+    public void addForumId(int forumId) {
+        if (!messageByForums.containsKey(forumId)) {
+            messageByForums.put(forumId, new TIntHashSet());
+        }
+    }
+
+    public int[] getMessageIds(int forumId) {
+        TIntHashSet messageIds = messageByForums.get(forumId);
+        if (messageIds != null && !messageIds.isEmpty()) {
+            return messageIds.toArray();
+        } else {
+            return ArrayUtils.EMPTY_INT_ARRAY;
+        }
     }
 
     public int[] getMessageIds() {
-        return messageIds.toArray();
+        return collectMessageIds().toArray();
+    }
+
+    private TIntHashSet collectMessageIds() {
+        final TIntHashSet messages = new TIntHashSet();
+
+        messageByForums.forEachValue(new TObjectProcedure<TIntHashSet>() {
+            @Override
+            public boolean execute(TIntHashSet ids) {
+                messages.addAll(ids.toArray());
+                return true;
+            }
+        });
+        return messages;
     }
 
     public int[] getForumIds() {
-        return forumIds.toArray();
+        return messageByForums.keys();
     }
 
-    public boolean isContainsMessage(int messageId) {
-        return messageIds.contains(messageId);
+    /**
+     * Checks if the message id is stored for specified forum or default group.
+     * @param forumId
+     * @param messageId
+     * @return
+     */
+    public boolean containsMessage(int forumId, int messageId) {
+        TIntHashSet messageIds = messageByForums.get(forumId);
+        if (messageIds != null && messageIds.contains(messageId)) {
+            return true;
+        }
+
+        messageIds = messageByForums.get(DEFAULT_GROUP);
+        return messageIds != null && messageIds.contains(messageId);
     }
 
-    public boolean isContainsForum(int forumId) {
-        return forumIds.contains(forumId);
+    public boolean containsMessage(int messageId) {
+        return collectMessageIds().contains(messageId);
+    }
+
+    public boolean containsForum(int forumId) {
+        return messageByForums.contains(forumId);
     }
 
     @Override
     public String toString() {
-        return "Affected ids[count: message ids = "+ messageIds.size() + ", forum ids = " + forumIds.size() + "]";
+        return "Affected ids[count: message ids = "+ collectMessageIds().size() + ", forum ids = " + messageByForums.size() + "]";
+    }
+
+    public void clear() {
+        messageByForums.clear();
     }
 }

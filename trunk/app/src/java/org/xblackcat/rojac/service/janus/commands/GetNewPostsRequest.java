@@ -60,8 +60,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
         Version moderatesVersion = RojacHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
         Version ratingsVersion = RojacHelper.getVersion(VersionType.RATING_ROW_VERSION);
 
-        processedMessages.clear();
-        affectedForums.clear();
+        processed.clear();
 
         JanusMessageInfo[] messages;
         do {
@@ -102,7 +101,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USER_ID, RSDN_USER_ID.get());
 
-        return new AffectedIds(processedMessages, affectedForums);
+        return processed;
     }
 
 }

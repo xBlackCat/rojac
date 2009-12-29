@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.thread;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
@@ -48,7 +47,9 @@ public class ThreadDoubleView extends AItemView {
             }
 
             public void itemUpdated(int messageId) {
-                masterView.updateData(new AffectedIds(new int[] {messageId}, ArrayUtils.EMPTY_INT_ARRAY));
+                AffectedIds results = new AffectedIds();
+                results.addMessageId(messageId);
+                masterView.updateData(results);
             }
         });
 

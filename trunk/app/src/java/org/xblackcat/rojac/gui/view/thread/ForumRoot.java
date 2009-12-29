@@ -19,9 +19,30 @@ public class ForumRoot extends Post {
         throw new UnsupportedOperationException("There is no thread root for forum");
     }
 
-    final void addThread(Collection<Thread> threads) {
+    final void addThreads(Collection<Thread> threads) {
         childrenPosts.addAll(threads);
         Collections.sort(childrenPosts);
+    }
+
+    /**
+     * Searches through all threads for the message Id
+     * @param messageId
+     * @return
+     */
+    @Override
+    public boolean containsId(int messageId) {
+        for (Post p : childrenPosts) {
+            if (p.getMessageId() == messageId || p.containsId(messageId)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    final Thread[] getThreads() {
+        // Forum root contains only Thread items
+        return childrenPosts.toArray(new Thread[childrenPosts.size()]);
     }
 
     private static MessageData constructDummyMessageItem(int forumId) {

@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.janus.commands;
 
 import ch.lambdaj.function.aggregate.Aggregator;
 import gnu.trove.TIntHashSet;
+import gnu.trove.TIntObjectHashMap;
 
 import java.util.Iterator;
 
@@ -11,15 +12,19 @@ import java.util.Iterator;
 class AffectedPostsAggregator implements Aggregator<AffectedIds> {
     @Override
     public AffectedIds aggregate(Iterator<? extends AffectedIds> iterator) {
-        TIntHashSet mIds = new TIntHashSet();
-        TIntHashSet fIds = new TIntHashSet();
+        TIntObjectHashMap<TIntHashSet> mIds = new TIntObjectHashMap<TIntHashSet>();
 
         while (iterator.hasNext()) {
             AffectedIds p = iterator.next();
-            mIds.addAll(p.getMessageIds());
-            fIds.addAll(p.getForumIds());
+            for (int forumId : p.getForumIds()) {                
+                if (mIds.containsKey(forumId)) {
+                    mIds.get(forumId).addAll(p.getMessageIds(forumId));
+                } else {
+                    mIds.put(forumId, new TIntHashSet(p.getMessageIds(forumId)));
+                }
+            }
         }
 
-        return new AffectedIds(mIds, fIds);
+        return new AffectedIds(mIds);
     }
 }

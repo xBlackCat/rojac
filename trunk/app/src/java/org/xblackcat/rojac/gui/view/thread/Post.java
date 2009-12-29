@@ -48,6 +48,16 @@ class Post implements ITreeItem<Post> {
         }
     }
 
+    public boolean containsId(int messageId) {
+        for (Post p : childrenPosts) {
+            if (p.getMessageId() == messageId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // Tree/table related methods.
 
     public Post getParent() {
