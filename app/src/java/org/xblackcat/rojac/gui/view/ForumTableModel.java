@@ -7,6 +7,7 @@ import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 
@@ -56,12 +57,14 @@ public class ForumTableModel extends AbstractTableModel {
                 Map<Integer, Long> lastPostDate = fah.getLastMessageDateInForum(forumIds);
 
                 for (int forumId : forumIds) {
-                    publish(new ForumStatistic(
-                            forumId,
-                            totalMessages.get(forumId),
-                            unreadMessages.get(forumId), 
-                            lastPostDate.get(forumId)
-                    ));
+                    if (forumId != AffectedIds.DEFAULT_GROUP) {
+                        publish(new ForumStatistic(
+                                forumId,
+                                totalMessages.get(forumId),
+                                unreadMessages.get(forumId),
+                                lastPostDate.get(forumId)
+                        ));
+                    }
                 }
 
                 return null;

@@ -75,13 +75,11 @@ public abstract class AThreadView extends AItemView {
     public void loadItem(int itemId) {
         int forumId = threadControl.loadThreadByItem(model, itemId);
         loadForumInfo(forumId);
-
-//        selectFirstItem();
     }
 
     @Override
     public void updateData(AffectedIds ids) {
-        if (ids.isContainsForum(forumId)) {
+        if (ids.containsForum(forumId)) {
             threadControl.updateItem(model, ids.getMessageIds());
         }
     }

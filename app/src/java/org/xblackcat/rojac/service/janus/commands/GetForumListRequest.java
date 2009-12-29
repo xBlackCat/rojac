@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.service.janus.commands;
 
-import gnu.trove.TIntHashSet;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
@@ -22,6 +21,8 @@ import org.xblackcat.rojac.service.storage.StorageException;
 
 class GetForumListRequest extends ARequest {
     public AffectedIds process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
+        AffectedIds result = new AffectedIds();
+
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_FORUM_LIST);
 
         ForumsList forumsList;
@@ -37,7 +38,6 @@ class GetForumListRequest extends ARequest {
 
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_FORUMS, forumsList.getForums().length, forumsList.getForumGroups().length);
 
-        TIntHashSet updatedForums = new TIntHashSet();
         try {
             int total = forumsList.getForumGroups().length + forumsList.getForums().length;
 
@@ -59,7 +59,7 @@ class GetForumListRequest extends ARequest {
                 } else {
                     fAH.updateForum(f);
                 }
-                updatedForums.add(f.getForumId());
+                result.addForumId(f.getForumId());
             }
 
             RojacHelper.setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
@@ -67,6 +67,6 @@ class GetForumListRequest extends ARequest {
             throw new RsdnProcessorException("Can not update forum list", e);
         }
 
-        return new AffectedIds(new TIntHashSet(), updatedForums);
+        return result;
     }
 }

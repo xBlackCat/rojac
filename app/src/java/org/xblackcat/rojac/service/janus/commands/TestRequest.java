@@ -51,6 +51,8 @@ public class TestRequest extends ARequest {
         }
 
 
-        return new AffectedIds(new int[]{userId}, ArrayUtils.EMPTY_INT_ARRAY);
+        AffectedIds result = new AffectedIds();
+        result.addForumId(userId);
+        return result;
     }
 }

@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.service.janus.commands;
 
-import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
@@ -60,10 +59,10 @@ class PostChangesRequest extends ARequest {
             // Store forum ids of new messages and message ids of new ratings to return update event
             TIntObjectHashMap<NewMessage> messageForumIds = new TIntObjectHashMap<NewMessage>();
 
-            TIntHashSet messagesToUpdate = new TIntHashSet();
+            AffectedIds result = new AffectedIds();
 
             for (NewRating nr : newRatings) {
-                messagesToUpdate.add(nr.getMessageId());
+                result.addMessageId(nr.getMessageId());
             }
 
             for (NewMessage nm : newMessages) {
@@ -78,8 +77,6 @@ class PostChangesRequest extends ARequest {
                 throw new RsdnProcessorException("Can not post your changes to the RSDN.", e);
             }
 
-            TIntHashSet forumsToUpdate = new TIntHashSet();
-
             try {
                 // Assume that all the ratings are commited.
                 nrAH.clearRatings();
@@ -87,8 +84,8 @@ class PostChangesRequest extends ARequest {
                 // Remove the commited messages from the storage.
                 for (int lmID : postInfo.getCommited()) {
                     nmeAH.removeNewMessage(lmID);
-                    forumsToUpdate.add(messageForumIds.get(lmID).getForumId());
-                    messagesToUpdate.add(messageForumIds.get(lmID).getParentId());
+                    NewMessage newMessage = messageForumIds.get(lmID);
+                    result.addMessageId(newMessage.getForumId(), newMessage.getParentId());
                 }
 
                 // Show all the PostExceptions if any
@@ -101,7 +98,7 @@ class PostChangesRequest extends ARequest {
                 throw new RsdnProcessorException("Unable to process the commit response.", e);
             }
 
-            return new AffectedIds(messagesToUpdate, forumsToUpdate);
+            return result;
         } catch (RsdnProcessorException e) {
             // Log the exception to console.
             trac.postException(e);

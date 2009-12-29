@@ -221,7 +221,7 @@ public class MessageView extends AItemView implements IInternationazable {
     }
 
     public void updateData(AffectedIds ids) {
-        if (ids.isContainsMessage(this.messageId)) {
+        if (ids.containsMessage(this.messageId)) {
             loadItem(messageId);
         }
     }

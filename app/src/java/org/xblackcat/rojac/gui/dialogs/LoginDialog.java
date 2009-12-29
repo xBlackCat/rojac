@@ -138,7 +138,7 @@ public class LoginDialog extends JDialog {
                 @Override
                 public void updateData(AffectedIds results) {
                     // This is always should be like this.
-                    int userId = results.getMessageIds()[0];
+                    int userId = results.getForumIds()[0];
 
                     if (userId != 0) {
                         RSDN_USER_ID.set(userId);

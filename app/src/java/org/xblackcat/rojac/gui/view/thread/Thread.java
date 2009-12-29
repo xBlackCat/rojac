@@ -116,6 +116,11 @@ public class Thread extends Post {
         return empty;
     }
 
+    @Override
+    public boolean containsId(int messageId) {
+        return threadPosts.containsKey(messageId);
+    }
+
     void storePosts(MessageData... posts) {
         Arrays.sort(posts, SORT_BY_PARENTS);
 

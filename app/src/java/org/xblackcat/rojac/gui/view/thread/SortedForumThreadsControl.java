@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import gnu.trove.TIntHashSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
@@ -62,7 +63,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
             @Override
             protected void process(List<Thread> chunks) {
-                rootItem.addThread(chunks);
+                rootItem.addThreads(chunks);
 
                 model.nodeStructureChanged(rootItem);
             }
@@ -74,6 +75,19 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
     @Override
     public void updateItem(AThreadModel<Post> model, int... itemId) {
+        ForumRoot forumRoot = (ForumRoot) model.getRoot();
+
+        // Store forumId
+        final int forumId = forumRoot.getMessageData().getForumId(); 
+
+        // Filter only the forum messages
+        TIntHashSet messageIds = new TIntHashSet();
+
+        for (int messageId : itemId) {
+            if (forumRoot.containsId(messageId)) {
+                messageIds.add(messageId);
+            }
+        }
     }
 
     @Override
