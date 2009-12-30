@@ -59,4 +59,6 @@ public interface IMessageAH extends AH {
     ThreadStatData getThreadStatByThreadId(int forumId) throws StorageException;
 
     int getUnreadReplaysInThread(int threadId) throws StorageException;
+
+    MessageData getMessageData(int messageId) throws StorageException;
 }

@@ -31,7 +31,18 @@ public class Thread extends Post {
     private boolean empty;
     private ThreadStatData threadStatData;
 
-    public Thread(MessageData messageData, ThreadStatData threadStatData, int unreadPosts, Post parent) {
+    /**
+     * Aux constructor for newly created thread.
+     * 
+     * @param messageData
+     * @param parent
+     */
+    Thread(MessageData messageData, ForumRoot parent) {
+        this(messageData, new ThreadStatData(messageData.getMessageDate(), 0), 0, parent);
+        filled = true;
+    }
+
+    public Thread(MessageData messageData, ThreadStatData threadStatData, int unreadPosts, ForumRoot parent) {
         super(messageData, parent, null);
         this.threadStatData = threadStatData;
 
@@ -113,7 +124,7 @@ public class Thread extends Post {
 
     @Override
     public boolean isLeaf() {
-        return empty;
+        return filled ? super.isLeaf() : empty;
     }
 
     @Override
@@ -125,24 +136,30 @@ public class Thread extends Post {
         Arrays.sort(posts, SORT_BY_PARENTS);
 
         for (MessageData post : posts) {
-            Post parent = threadPosts.get(post.getParentId());
-
-            if (parent == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("There is no parent post exists for post " + post);
-                }
-                continue;
-            }
-
-            // TODO: compute the flag depending on MessageData and user settings.
-            boolean read = false;
-
-            Post p = new Post(post, parent, this);
-            threadPosts.put(post.getMessageId(), p);
-
-            parent.insertChild(p);
+            insertChild(post);
         }
 
         filled = true;
+    }
+
+    public Post insertChild(MessageData post) {
+        Post parent = threadPosts.get(post.getParentId());
+
+        if (parent == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("There is no parent post exists for post " + post);
+            }
+            return null;
+        }
+
+        // TODO: compute the flag depending on MessageData and user settings.
+        boolean read = false;
+
+        Post p = new Post(post, parent, this);
+        threadPosts.put(post.getMessageId(), p);
+
+        parent.insertChild(p);
+
+        return p;
     }
 }

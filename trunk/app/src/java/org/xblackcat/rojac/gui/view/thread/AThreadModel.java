@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
@@ -87,7 +88,7 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
                     nodesChanged(parent, cIndexs);
                 }
             } else if (node == getRoot()) {
-                nodesChanged(node, null);
+                nodesChanged(node);
             }
         }
     }
@@ -104,22 +105,33 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         }
     }
 
+    public void nodeWasAdded(T node, T child) {
+        if (node != null) {
+            int cIndex = node.getIndex(child);
+
+            if (cIndex != -1) {
+                TreePath path = getPathToRoot(node);
+                modelSupport.fireChildAdded(path, cIndex, child);
+            }
+        }
+    }
+
     /**
      * Invoke this method after you've changed how the children identified by childIndicies are to be represented in the
      * tree.
      */
-    public void nodesChanged(T node, int[] childIndices) {
+    public void nodesChanged(T node, int... childIndexes) {
         if (node != null) {
-            if (childIndices != null) {
-                int cCount = childIndices.length;
+            if (!ArrayUtils.isEmpty(childIndexes)) {
+                int cCount = childIndexes.length;
 
                 if (cCount > 0) {
                     Object[] cChildren = new Object[cCount];
 
                     for (int counter = 0; counter < cCount; counter++) {
-                        cChildren[counter] = node.getChild(childIndices[counter]);
+                        cChildren[counter] = node.getChild(childIndexes[counter]);
                     }
-                    modelSupport.fireChildrenChanged(getPathToRoot(node), childIndices, cChildren);
+                    modelSupport.fireChildrenChanged(getPathToRoot(node), childIndexes, cChildren);
                 }
             } else if (node == getRoot()) {
                 modelSupport.firePathChanged(getPathToRoot(node));

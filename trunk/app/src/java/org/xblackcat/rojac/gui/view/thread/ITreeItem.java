@@ -24,4 +24,6 @@ public interface ITreeItem<T extends ITreeItem> extends Comparable<T> {
     T getChild(int idx);
 
     int getSize();
+
+    long getLastPostDate();
 }

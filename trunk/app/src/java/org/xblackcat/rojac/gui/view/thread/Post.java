@@ -113,11 +113,14 @@ class Post implements ITreeItem<Post> {
         return messageData.getMessageId();
     }
 
+    @Override
     public long getLastPostDate() {
         if (childrenPosts.isEmpty()) {
             return messageData.getMessageDate();
+        } else if (childrenPosts.size() == 1) {
+            return childrenPosts.get(0).getLastPostDate();
         } else {
-            return max(childrenPosts, on(Post.class).getLastPostDate());
+            return max(childrenPosts, on(ITreeItem.class).getLastPostDate());
         }
     }
 

@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
-import static ch.lambdaj.Lambda.join;
+import static ch.lambdaj.Lambda.*;
 
 public class MessagesTest extends TestCase {
     private static final Log log = LogFactory.getLog(MessagesTest.class);
