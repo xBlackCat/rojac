@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
@@ -80,7 +81,8 @@ public abstract class AThreadView extends AItemView {
     @Override
     public void updateData(AffectedIds ids) {
         if (ids.containsForum(forumId)) {
-            threadControl.updateItem(model, ids.getMessageIds());
+            int[] messageIds = ArrayUtils.addAll(ids.getMessageIds(forumId), ids.getMessageIds(AffectedIds.DEFAULT_FORUM));
+            threadControl.updateItem(model, messageIds);
         }
     }
 

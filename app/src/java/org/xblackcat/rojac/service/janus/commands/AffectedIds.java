@@ -10,7 +10,7 @@ import org.apache.commons.lang.ArrayUtils;
  */
 
 public class AffectedIds {
-    public static final int DEFAULT_GROUP = -1;
+    public static final int DEFAULT_FORUM = 0;
     private final TIntObjectHashMap<TIntHashSet> messageByForums;
 
     public AffectedIds() {
@@ -22,7 +22,7 @@ public class AffectedIds {
     }
 
     public void addMessageId(int messageId) {
-        addMessageId(DEFAULT_GROUP, messageId);
+        addMessageId(DEFAULT_FORUM, messageId);
     }
 
     public void addMessageId(int forumId, int messageId) {
@@ -81,7 +81,7 @@ public class AffectedIds {
             return true;
         }
 
-        messageIds = messageByForums.get(DEFAULT_GROUP);
+        messageIds = messageByForums.get(DEFAULT_FORUM);
         return messageIds != null && messageIds.contains(messageId);
     }
 

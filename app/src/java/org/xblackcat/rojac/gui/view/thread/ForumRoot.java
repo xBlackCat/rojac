@@ -58,4 +58,33 @@ public class ForumRoot extends Post {
                 -1,
                 false);
     }
+
+    /**
+     *
+     * @param data
+     * @return newly created item
+     */
+    public Post insertPost(MessageData data) {
+        int topicId = data.getTopicId();
+        int messageId = data.getMessageId();
+
+        if (topicId == 0) {
+            // The message is a new topic
+            Thread newThread = new Thread(data, this);
+
+            insertChild(newThread);
+
+            return newThread;
+        } else {
+            for (Post p : childrenPosts) {
+                if (p.getMessageId() == topicId) {
+                    Thread thread = (Thread) p;
+
+                    return thread.insertChild(data);
+                }
+            }
+        }
+
+        return null;
+    }
 }
