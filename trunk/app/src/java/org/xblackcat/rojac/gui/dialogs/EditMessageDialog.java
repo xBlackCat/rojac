@@ -10,6 +10,7 @@ import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -19,6 +20,8 @@ import org.xblackcat.rojac.util.WindowsUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author xBlackCat
@@ -50,39 +53,13 @@ public class EditMessageDialog extends JDialog {
         panelEdit.forcePreview();
     }
 
-    public void answerOn(int messageId) {
+    public void answerOn(final int messageId) {
         if (messageId == 0) {
             return;
         }
 
-        Message message;
-        try {
-            message = storage.getMessageAH().getMessageById(messageId);
-        } catch (StorageException e) {
-            log.error("Can not load a message.", e);
-            return;
-        }
-
-        if (message == null) {
-            JLOptionPane.showMessageDialog(
-                    this,
-                    Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE.get(messageId),
-                    Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE.get(messageId),
-                    JOptionPane.WARNING_MESSAGE
-            );
-            return;
-        }
-
-        forumId = message.getForumId();
-        parentMessageId = messageId;
-
-        String mes = MessageUtils.correctBody(message.getMessage(), message.getUserNick());
-        String subj = MessageUtils.correctSubject(message.getSubject());
-
-        panelEdit.setMessage(mes, subj);
-
-        WindowsUtils.centerOnScreen(this);
-        setVisible(true);
+        IExecutor executor = ServiceFactory.getInstance().getExecutor();
+        executor.execute(new MessageLoader(messageId));
     }
 
     public void createTopic(int forumId) {
@@ -111,16 +88,13 @@ public class EditMessageDialog extends JDialog {
         setVisible(true);
     }
 
-    private boolean saveMessage() {
-        INewMessageAH nmAH = storage.getNewMessageAH();
+    private void saveMessage() {
 
         String body = panelEdit.getBody();
 
-        if (newMessageId == 0) {
-            body = MessageUtils.addOwnTagLine(body);
-        }
+        body = MessageUtils.addOwnTagLine(body);
 
-        NewMessage nm = new NewMessage(
+        final NewMessage nm = new NewMessage(
                 newMessageId,
                 parentMessageId,
                 forumId,
@@ -128,19 +102,39 @@ public class EditMessageDialog extends JDialog {
                 body
         );
 
-        try {
-            if (newMessageId == 0) {
-                // Create a new own message
-                nmAH.storeNewMessage(nm);
-            } else {
-                nmAH.updateNewMessage(nm);
-            }
-        } catch (StorageException e) {
-            log.error("Can not store new message object: " + nm, e);
-            return false;
-        }
+        SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                try {
+                    INewMessageAH nmAH = storage.getNewMessageAH();
+                    if (newMessageId == 0) {
+                        // Create a new own message
+                        nmAH.storeNewMessage(nm);
+                    } else {
+                        nmAH.updateNewMessage(nm);
+                    }
+                } catch (StorageException e) {
+                    log.error("Can not store new message object: " + nm, e);
+                    throw e;
+                }
 
-        return true;
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    dispose();
+                } catch (InterruptedException e) {
+                    JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");
+                } catch (ExecutionException e) {
+                    JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");                    
+                }
+            }
+        };
+
+        ServiceFactory.getInstance().getExecutor().execute(sw);
     }
 
     private void initializeLayout() {
@@ -159,13 +153,7 @@ public class EditMessageDialog extends JDialog {
                 new AButtonAction(Messages.BUTTON_SAVE) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        boolean res = saveMessage();
-
-                        if (res) {
-                            dispose();
-                        } else {
-                            JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");
-                        }
+                        saveMessage();
                     }
                 },
                 new AButtonAction(Messages.BUTTON_PREVIEW) {
@@ -183,5 +171,49 @@ public class EditMessageDialog extends JDialog {
         ), BorderLayout.SOUTH);
 
         setContentPane(cp);
+    }
+
+    private class MessageLoader extends SwingWorker<Void, Message> {
+        private final int messageId;
+
+        public MessageLoader(int messageId) {
+            this.messageId = messageId;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            publish(storage.getMessageAH().getMessageById(messageId));
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<Message> chunks) {
+            for (Message message : chunks) {
+                forumId = message.getForumId();
+                parentMessageId = messageId;
+
+                String mes = MessageUtils.correctBody(message.getMessage(), message.getUserNick());
+                String subj = MessageUtils.correctSubject(message.getSubject());
+
+                panelEdit.setMessage(mes, subj);
+
+                WindowsUtils.centerOnScreen(EditMessageDialog.this);
+                setVisible(true);
+
+            }
+        }
+
+        @Override
+        protected void done() {
+            if (this.isCancelled()) {
+                JLOptionPane.showMessageDialog(
+                        EditMessageDialog.this,
+                        Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE.get(messageId),
+                        Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE.get(messageId),
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
+        }
     }
 }

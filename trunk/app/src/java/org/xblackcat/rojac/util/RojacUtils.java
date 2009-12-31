@@ -279,18 +279,25 @@ public final class RojacUtils {
     /**
      * Util class for checking if the method executed in SwingThread or not.
      */
-    public static void checkThread(boolean swing) {
-        checkThread(swing, 1);
-    }
-
-    /**
-     * Util class for checking if the method executed in SwingThread or not.
-     */
-    public static void checkThread(boolean swing, int shift) {
+    public static void checkThread(boolean swing, Class<?> tillClass) {
         if (swing != EventQueue.isDispatchThread()) {
             Throwable stack = new Throwable("Stack trace");
             StackTraceElement[] stackTrace = stack.getStackTrace();
-            stack.setStackTrace((StackTraceElement[]) ArrayUtils.subarray(stackTrace, shift, stackTrace.length - 1 - shift));
+
+            if (tillClass != null) {
+                int shift = 0;
+                while (!tillClass.getName().equals(stackTrace[shift].getClassName())) {
+                    shift ++;
+                }
+
+                while (tillClass.getName().equals(stackTrace[shift].getClassName())) {
+                    shift ++;
+                }
+
+                if (shift != stackTrace.length) {
+                    stack.setStackTrace((StackTraceElement[]) ArrayUtils.subarray(stackTrace, shift, stackTrace.length - shift - 1));
+                }
+            }
 
             if (log.isWarnEnabled()) {
                 log.warn(swing ?

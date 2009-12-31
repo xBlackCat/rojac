@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
 
@@ -150,7 +151,7 @@ public class MessageView extends AItemView implements IInternationazable {
      *
      * @param mark new mark
      */
-    private void chooseMark(Mark mark) {
+    private void chooseMark(final Mark mark) {
         if (JOptionPane.YES_OPTION ==
                 JLOptionPane.showConfirmDialog(
                         this,
@@ -158,36 +159,14 @@ public class MessageView extends AItemView implements IInternationazable {
                         Messages.DIALOG_SET_MARK_TITLE.get(),
                         JOptionPane.YES_NO_OPTION
                 )) {
-            try {
-                storage.getNewRatingAH().storeNewRating(messageId, mark);
-                updateMarksPane(messageId);
-            } catch (StorageException e) {
-                JLOptionPane.showMessageDialog(
-                        this,
-                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.get(mark),
-                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.get(),
-                        JOptionPane.DEFAULT_OPTION
-                );
-                if (log.isWarnEnabled()) {
-                    log.warn("Cann't store mark " + mark + " for message [id=" + messageId + "].", e);
-                }
-            }
+            executor.execute(new MarksUpdater(mark));
         }
     }
 
-    public void loadItem(int messageId) {
+    public void loadItem(final int messageId) {
         this.messageId = messageId;
 
-        Message mes;
-        try {
-            mes = storage.getMessageAH().getMessageById(messageId);
-
-            fillFrame(mes);
-
-            updateMarksPane(messageId);
-        } catch (StorageException e) {
-            throw new RuntimeException("Can't load message id = " + messageId, e);
-        }
+        executor.execute(new MessageLoader(messageId));
     }
 
     protected void fillFrame(NewMessage mes) {
@@ -224,14 +203,6 @@ public class MessageView extends AItemView implements IInternationazable {
         if (ids.containsMessage(this.messageId)) {
             loadItem(messageId);
         }
-    }
-
-    private void updateMarksPane(int messageId) throws StorageException {
-        Mark[] ratings = storage.getRatingAH().getRatingMarksByMessageId(messageId);
-
-        Mark[] ownRatings = storage.getNewRatingAH().getNewRatingMarksByMessageId(messageId);
-
-        fillMarksButton((Mark[]) ArrayUtils.addAll(ratings, ownRatings));
     }
 
     private void fillMarksButton(Mark[] ratings) {
@@ -334,4 +305,92 @@ public class MessageView extends AItemView implements IInternationazable {
         }
     }
 
+    private class MessageLoader extends SwingWorker<Void, MessageDataHolder> {
+        private final int messageId;
+
+        public MessageLoader(int messageId) {
+            this.messageId = messageId;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            try {
+                Message mes = storage.getMessageAH().getMessageById(messageId);
+                Mark[] ratings = storage.getRatingAH().getRatingMarksByMessageId(messageId);
+                Mark[] ownRatings = storage.getNewRatingAH().getNewRatingMarksByMessageId(messageId);
+
+                publish(new MessageDataHolder(mes, (Mark[]) ArrayUtils.addAll(ratings, ownRatings)));
+            } catch (StorageException e) {
+                throw new RuntimeException("Can't load message id = " + messageId, e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<MessageDataHolder> chunks) {
+            for (MessageDataHolder messageData : chunks) {
+                fillFrame(messageData.getMessage());
+                fillMarksButton(messageData.getMarks());
+            }
+        }
+    }
+
+    private static class MessageDataHolder {
+        private final Message message;
+        private final Mark[] marks;
+
+        private MessageDataHolder(Message message, Mark[] marks) {
+            this.message = message;
+            this.marks = marks;
+        }
+
+        public Message getMessage() {
+            return message;
+        }
+
+        public Mark[] getMarks() {
+            return marks;
+        }
+    }
+
+    private class MarksUpdater extends SwingWorker<Void, Mark> {
+        private final Mark mark;
+
+        public MarksUpdater(Mark mark) {
+            this.mark = mark;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            storage.getNewRatingAH().storeNewRating(messageId, mark);
+            Mark[] ratings = storage.getRatingAH().getRatingMarksByMessageId(messageId);
+
+            Mark[] ownRatings = storage.getNewRatingAH().getNewRatingMarksByMessageId(messageId);
+
+            publish((Mark[]) ArrayUtils.addAll(ratings, ownRatings));
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<Mark> chunks) {
+            fillMarksButton(chunks.toArray(new Mark[chunks.size()]));
+        }
+
+        @Override
+        protected void done() {
+            if (isCancelled()) {
+                JLOptionPane.showMessageDialog(
+                        MessageView.this,
+                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.get(mark),
+                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.get(),
+                        JOptionPane.DEFAULT_OPTION
+                );
+                if (log.isWarnEnabled()) {
+                    log.warn("Cann't store mark " + mark + " for message [id=" + messageId + "].");
+                }
+            }
+        }
+    }
 }

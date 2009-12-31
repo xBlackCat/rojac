@@ -27,7 +27,6 @@ import org.xblackcat.rojac.service.janus.commands.IDataHandler;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IMiscAH;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -212,16 +211,11 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                 LoadMessageDialog lmd = new LoadMessageDialog(MainFrame.this);
                 Integer messageId = lmd.readMessageId();
                 if (messageId != null) {
-                    IMiscAH s = ServiceFactory.getInstance().getStorage().getMiscAH();
+                    boolean loadAtOnce = lmd.isLoadAtOnce();
 
-                    try {
-                        s.storeExtraMessage(messageId);
-                        if (lmd.isLoadAtOnce()) {
-                            performRequest(changeHandler, Request.EXTRA_MESSAGES);
-                        }
-                    } catch (StorageException e1) {
-                        log.error("Can not store extra message id", e1);
-                    }
+                    ServiceFactory.getInstance().getExecutor().execute(
+                            new ExtraMessageLoader(messageId, loadAtOnce)
+                    );
                 }
             }
         }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
@@ -447,6 +441,32 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         @Override
         public void windowClosed(DockingWindow window) {
             openedForums.remove(forumId);
+        }
+    }
+
+    private class ExtraMessageLoader extends SwingWorker<Void, Void> {
+        private final Integer messageId;
+        private final boolean loadAtOnce;
+
+        public ExtraMessageLoader(Integer messageId, boolean loadAtOnce) {
+            this.messageId = messageId;
+            this.loadAtOnce = loadAtOnce;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            IMiscAH s = ServiceFactory.getInstance().getStorage().getMiscAH();
+
+            s.storeExtraMessage(messageId);
+
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            if (loadAtOnce) {
+                performRequest(changeHandler, Request.EXTRA_MESSAGES);
+            }
         }
     }
 }

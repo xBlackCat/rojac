@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -56,19 +57,10 @@ public abstract class AThreadView extends AItemView {
         add(internalPane, BorderLayout.CENTER);
     }
 
-    protected void loadForumInfo(int forumId) {
+    protected void loadForumInfo(final int forumId) {
         this.forumId = forumId;
-        IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
 
-        Forum f;
-        try {
-            f = fah.getForumById(forumId);
-        } catch (StorageException e) {
-            log.error("Can not load forum information for forum id = " + forumId, e);
-            return;
-        }
-
-        forumName.setText(f.getForumName() + "/" + f.getShortForumName());
+        executor.execute(new ForumInfoLoader(forumId));
     }
 
     public void loadItem(int itemId) {
@@ -94,4 +86,32 @@ public abstract class AThreadView extends AItemView {
     protected abstract Post getSelectedItem();
 
     protected abstract JComponent getThreadsContainer();
+
+    private class ForumInfoLoader extends SwingWorker<Void, Forum> {
+        private final int forumId;
+
+        public ForumInfoLoader(int forumId) {
+            this.forumId = forumId;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
+
+            try {
+                publish(fah.getForumById(forumId));
+            } catch (StorageException e) {
+                log.error("Can not load forum information for forum id = " + forumId, e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<Forum> chunks) {
+            for (Forum f : chunks) {
+                forumName.setText(f.getForumName() + "/" + f.getShortForumName());
+            }
+        }
+    }
 }

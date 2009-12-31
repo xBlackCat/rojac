@@ -14,22 +14,7 @@ class MarksTableModel extends AbstractTableModel {
 
     private MarkItem[] rates = NO_MARKS;
 
-    public void setData(Rating[] ratings, NewRating[] ownRatings) {
-        MarkItem[] items = new MarkItem[ratings.length + ownRatings.length];
-
-        int ind = 0;
-        while (ind < ratings.length) {
-            Rating r = ratings[ind];
-            items[ind] = new MarkItem(r);
-            ind++;
-        }
-
-        int i = 0;
-        while (i < ownRatings.length) {
-            NewRating r = ownRatings[i++];
-            items[ind++] = new MarkItem(r);
-        }
-
+    public void setData(MarkItem[] items) {
         rates = items;
         fireTableDataChanged();
     }

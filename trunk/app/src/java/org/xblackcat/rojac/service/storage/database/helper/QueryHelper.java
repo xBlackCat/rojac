@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database.helper;
 
 import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -30,7 +31,7 @@ public final class QueryHelper implements IQueryHelper {
 
     @Override
     public <T> Collection<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
-        RojacUtils.checkThread(false, 2);
+        RojacUtils.checkThread(false, DBStorage.class);
         try {
             Connection con = connectionFactory.getConnection();
             try {
@@ -60,7 +61,7 @@ public final class QueryHelper implements IQueryHelper {
 
     @Override
     public <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, String sql, K... keys) throws StorageException {
-        RojacUtils.checkThread(false, 2);
+        RojacUtils.checkThread(false, DBStorage.class);
         try {
             Connection con = connectionFactory.getConnection();
             try {
@@ -93,7 +94,7 @@ public final class QueryHelper implements IQueryHelper {
 
     @Override
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
-        RojacUtils.checkThread(false, 2);
+        RojacUtils.checkThread(false, DBStorage.class);
         Collection<T> col = execute(c, sql, parameters);
         if (col.size() > 1) {
             throw new StorageDataException("Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters));
@@ -107,7 +108,7 @@ public final class QueryHelper implements IQueryHelper {
 
     @Override
     public int update(String sql, Object... parameters) throws StorageException {
-        RojacUtils.checkThread(false, 2);
+        RojacUtils.checkThread(false, DBStorage.class);
         try {
             Connection con = connectionFactory.getConnection();
             try {
