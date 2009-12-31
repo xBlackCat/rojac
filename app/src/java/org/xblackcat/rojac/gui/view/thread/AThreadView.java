@@ -71,8 +71,6 @@ public abstract class AThreadView extends AItemView {
         forumName.setText(f.getForumName() + "/" + f.getShortForumName());
     }
 
-    protected abstract void selectFirstItem();
-
     public void loadItem(int itemId) {
         int forumId = threadControl.loadThreadByItem(model, itemId);
         loadForumInfo(forumId);
@@ -82,9 +80,18 @@ public abstract class AThreadView extends AItemView {
     public void updateData(AffectedIds ids) {
         if (ids.containsForum(forumId)) {
             int[] messageIds = ArrayUtils.addAll(ids.getMessageIds(forumId), ids.getMessageIds(AffectedIds.DEFAULT_FORUM));
+
+            Post currentPost = getSelectedItem();
+
             threadControl.updateItem(model, messageIds);
+
+            selectItem(currentPost);
         }
     }
+
+    protected abstract void selectItem(Post post);
+
+    protected abstract Post getSelectedItem();
 
     protected abstract JComponent getThreadsContainer();
 }

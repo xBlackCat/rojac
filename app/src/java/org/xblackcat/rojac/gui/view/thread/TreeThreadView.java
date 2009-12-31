@@ -69,8 +69,21 @@ public class TreeThreadView extends AThreadView {
     }
 
     @Override
-    protected void selectFirstItem() {
-        threads.setSelectionRow(0);
+    protected void selectItem(Post post) {
+        if (post != null) {
+            TreePath path = model.getPathToRoot(post);
+
+            threads.expandPath(path);
+            threads.setSelectionPath(path);
+        } else {
+            threads.clearSelection();
+        }
+    }
+
+    @Override
+    protected Post getSelectedItem() {
+        TreePath path = threads.getSelectionPath();
+        return path == null ? null : (Post) path.getLastPathComponent();
     }
 
     private class ItemListener extends MouseAdapter {
