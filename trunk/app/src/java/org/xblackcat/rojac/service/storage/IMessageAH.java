@@ -10,7 +10,15 @@ import ru.rsdn.Janus.JanusMessageInfo;
  */
 
 public interface IMessageAH extends AH {
-    void storeMessage(JanusMessageInfo fm) throws StorageException;
+    /**
+     * Stores a message record by id.
+     *
+     * @param fm  message data to be stored into database.
+     * @param read read state of the message. <code>true</code> - message is read and <code>false</code> otherwise.
+     *
+     * @throws StorageException
+     */
+    void storeMessage(JanusMessageInfo fm, boolean read) throws StorageException;
 
     boolean removeForumMessage(int id) throws StorageException;
 
@@ -31,11 +39,12 @@ public interface IMessageAH extends AH {
     /**
      * Updates a message record by id.
      *
-     * @param mes
+     * @param mes  message data to be stored into database.
+     * @param read read state of the message. <code>true</code> - message is read and <code>false</code> otherwise.
      *
      * @throws StorageException
      */
-    void updateMessage(JanusMessageInfo mes) throws StorageException;
+    void updateMessage(JanusMessageInfo mes, boolean read) throws StorageException;
 
     void updateMessageRecentDate(int messageId, long recentDate) throws StorageException;
 

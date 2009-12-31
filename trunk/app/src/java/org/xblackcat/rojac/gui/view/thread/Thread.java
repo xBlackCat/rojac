@@ -25,15 +25,19 @@ public class Thread extends Post {
     };
 
     // State fields
-    private ReadStatus readStatus;
+    /**
+     * State flag to indicate if this thread is filled with posts or not. If the thread is filled - statistic will be
+     * calculated from real posts data. A stat data from DB is user in other case.
+     */
     private boolean filled = false;
     private LoadingState loadingState = LoadingState.NotLoaded;
-    private boolean empty;
+
     private ThreadStatData threadStatData;
+    private int unreadPosts;
 
     /**
      * Aux constructor for newly created thread.
-     * 
+     *
      * @param messageData
      * @param parent
      */
@@ -45,20 +49,9 @@ public class Thread extends Post {
     public Thread(MessageData messageData, ThreadStatData threadStatData, int unreadPosts, ForumRoot parent) {
         super(messageData, parent, null);
         this.threadStatData = threadStatData;
+        this.unreadPosts = unreadPosts;
 
         threadPosts.put(messageData.getMessageId(), this);
-
-        if (messageData.isRead()) {
-            if (unreadPosts > 0) {
-                readStatus = ReadStatus.ReadPartially;
-            } else {
-                readStatus = ReadStatus.Read;
-            }
-        } else {
-            readStatus = ReadStatus.Unread;
-        }
-
-        this.empty = threadStatData.getReplyAmount() == 0;
     }
 
     protected Thread getThreadRoot() {
@@ -86,8 +79,10 @@ public class Thread extends Post {
     public long getLastPostDate() {
         if (filled) {
             return super.getLastPostDate();
+        } else if (threadStatData.getReplyAmount() == 0) {
+            return messageData.getMessageDate();
         } else {
-            return empty ? messageData.getMessageDate() : threadStatData.getLastPostDate();
+            return threadStatData.getLastPostDate();
         }
     }
 
@@ -114,17 +109,27 @@ public class Thread extends Post {
 
     @Override
     public LoadingState getLoadingState() {
-        return empty ? LoadingState.Loaded : loadingState;
+        return threadStatData.getReplyAmount() == 0 ? LoadingState.Loaded : loadingState;
     }
 
     @Override
     public ReadStatus isRead() {
-        return filled ? super.isRead() : readStatus;
+        if (filled) {
+            return super.isRead();
+        } else if (messageData.isRead()) {
+            if (unreadPosts > 0) {
+                return ReadStatus.ReadPartially;
+            } else {
+                return ReadStatus.Read;
+            }
+        } else {
+            return ReadStatus.Unread;
+        }
     }
 
     @Override
     public boolean isLeaf() {
-        return filled ? super.isLeaf() : empty;
+        return filled ? super.isLeaf() : threadStatData.getReplyAmount() == 0;
     }
 
     @Override
@@ -135,31 +140,42 @@ public class Thread extends Post {
     void storePosts(MessageData... posts) {
         Arrays.sort(posts, SORT_BY_PARENTS);
 
+        filled = true;
+
         for (MessageData post : posts) {
             insertChild(post);
         }
-
-        filled = true;
     }
 
-    public Post insertChild(MessageData post) {
-        Post parent = threadPosts.get(post.getParentId());
+    public void insertChild(MessageData post) {
+        if (filled) {
+            // The thread was already loaded so just insert the post into it.
+            Post parent = threadPosts.get(post.getParentId());
 
-        if (parent == null) {
-            if (log.isDebugEnabled()) {
-                log.debug("There is no parent post exists for post " + post);
+            if (parent == null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("There is no parent post exists for post " + post);
+                }
+                return;
             }
-            return null;
+
+            Post p = new Post(post, parent, this);
+            threadPosts.put(post.getMessageId(), p);
+
+            parent.insertChild(p);
+        } else {
+            // Thread is not filled so just update statistics
+            // Only for new message.
+            if (threadStatData.getLastPostDate() < post.getMessageDate()) {
+                threadStatData = new ThreadStatData(
+                        post.getMessageDate(),
+                        threadStatData.getReplyAmount() + 1
+                );
+
+                if (!post.isRead()) {
+                    unreadPosts++;
+                }
+            }
         }
-
-        // TODO: compute the flag depending on MessageData and user settings.
-        boolean read = false;
-
-        Post p = new Post(post, parent, this);
-        threadPosts.put(post.getMessageId(), p);
-
-        parent.insertChild(p);
-
-        return p;
     }
 }

@@ -22,7 +22,7 @@ final class DBMessageAH implements IMessageAH {
         this.helper = helper;
     }
 
-    public void storeMessage(JanusMessageInfo fm) throws StorageException {
+    public void storeMessage(JanusMessageInfo fm, boolean read) throws StorageException {
         helper.update(DataQuery.STORE_OBJECT_MESSAGE,
                 fm.getMessageId(),
                 fm.getTopicId(),
@@ -39,7 +39,8 @@ final class DBMessageAH implements IMessageAH {
                 fm.getMessageName(),
                 fm.getUserNick(),
                 fm.getUserTitle(),
-                fm.getMessage());
+                fm.getMessage(),
+                read);
     }
 
     public boolean removeForumMessage(int id) throws StorageException {
@@ -70,7 +71,7 @@ final class DBMessageAH implements IMessageAH {
         return helper.getIds(DataQuery.GET_BROKEN_TOPIC_IDS);
     }
 
-    public void updateMessage(JanusMessageInfo m) throws StorageException {
+    public void updateMessage(JanusMessageInfo m, boolean read) throws StorageException {
         helper.update(DataQuery.UPDATE_OBJECT_MESSAGE,
                 m.getTopicId(),
                 m.getParentId(),
@@ -87,6 +88,7 @@ final class DBMessageAH implements IMessageAH {
                 m.getUserNick(),
                 m.getUserTitle(),
                 m.getMessage(),
+                read,
                 m.getMessageId());
     }
 

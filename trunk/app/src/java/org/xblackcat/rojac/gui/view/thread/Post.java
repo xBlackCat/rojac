@@ -158,6 +158,16 @@ class Post implements ITreeItem<Post> {
 
     public void insertChild(Post p) {
         childrenPosts.add(p);
+        resort();
+    }
+
+    /**
+     * Recursively resort whole path till the node.
+     */
+    protected void resort() {
         Collections.sort(childrenPosts);
+        if (parent != null) {
+            parent.resort();
+        }
     }
 }

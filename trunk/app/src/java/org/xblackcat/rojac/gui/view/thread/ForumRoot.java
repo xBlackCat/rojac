@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.data.MessageData;
 
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * @author xBlackCat
@@ -21,7 +20,7 @@ public class ForumRoot extends Post {
 
     final void addThreads(Collection<Thread> threads) {
         childrenPosts.addAll(threads);
-        Collections.sort(childrenPosts);
+        resort();
     }
 
     /**
@@ -38,11 +37,6 @@ public class ForumRoot extends Post {
         }
 
         return false;
-    }
-
-    final Thread[] getThreads() {
-        // Forum root contains only Thread items
-        return childrenPosts.toArray(new Thread[childrenPosts.size()]);
     }
 
     private static MessageData constructDummyMessageItem(int forumId) {
@@ -64,7 +58,7 @@ public class ForumRoot extends Post {
      * @param data
      * @return newly created item
      */
-    public Post insertPost(MessageData data) {
+    public void insertPost(MessageData data) {
         int topicId = data.getTopicId();
         int messageId = data.getMessageId();
 
@@ -73,18 +67,15 @@ public class ForumRoot extends Post {
             Thread newThread = new Thread(data, this);
 
             insertChild(newThread);
-
-            return newThread;
         } else {
             for (Post p : childrenPosts) {
                 if (p.getMessageId() == topicId) {
                     Thread thread = (Thread) p;
 
-                    return thread.insertChild(data);
+                    thread.insertChild(data);
+                    return;
                 }
             }
         }
-
-        return null;
     }
 }

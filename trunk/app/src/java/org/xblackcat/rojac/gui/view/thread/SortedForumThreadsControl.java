@@ -157,10 +157,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         @Override
         protected void process(List<MessageData> chunks) {
             for (MessageData data : chunks) {
-                Post newPost = item.insertPost(data);
-                Post parentPost = newPost.getParent();
-                threadModel.nodeWasAdded(parentPost, newPost);
-                threadModel.nodeStructureChanged(parentPost);
+                item.insertPost(data);
             }
 
             threadModel.nodeStructureChanged(item);

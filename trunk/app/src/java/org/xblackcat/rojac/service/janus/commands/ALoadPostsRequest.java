@@ -44,11 +44,15 @@ abstract class ALoadPostsRequest extends ARequest {
         int count = 0;
         for (JanusMessageInfo mes : newPosts.getMessages()) {
             tracker.updateProgress(count++, newPosts.getTotalRecords());
+
+            // TODO: compute the flag depending on MessageData and user settings.
+            boolean read = false;
+
             int mId = mes.getMessageId();
             if (mAH.isExist(mId)) {
-                mAH.updateMessage(mes);
+                mAH.updateMessage(mes, read);
             } else {
-                mAH.storeMessage(mes);
+                mAH.storeMessage(mes, read);
             }
 
             loadedMessages.add(mId);
