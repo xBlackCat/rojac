@@ -4,9 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.data.Rating;
+import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -14,6 +15,7 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -40,15 +42,44 @@ class RatingDialog extends JDialog {
     }
 
     private void updateData() {
-        try {
-            Rating[] ratings = storage.getRatingAH().getRatingsByMessageId(messageId);
+        SwingWorker<Void, MarkItem> sw = new SwingWorker<Void, MarkItem>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                Rating[] ratings = storage.getRatingAH().getRatingsByMessageId(messageId);
 
-            NewRating[] ownRatings = storage.getNewRatingAH().getNewRatingsByMessageId(messageId);
+                NewRating[] ownRatings = storage.getNewRatingAH().getNewRatingsByMessageId(messageId);
 
-            marksModel.setData(ratings, ownRatings);
-        } catch (StorageException e) {
-            log.error("Can not load rating details for message [id=" + messageId + "]", e);
-        }
+                MarkItem[] items = new MarkItem[ratings.length + ownRatings.length];
+
+                int ind = 0;
+                while (ind < ratings.length) {
+                    Rating r = ratings[ind];
+
+                    User user = storage.getUserAH().getUserById(r.getUserId());
+
+                    items[ind] = new MarkItem(r, user);
+                    ind++;
+                }
+
+                int i = 0;
+                while (i < ownRatings.length) {
+                    NewRating r = ownRatings[i++];
+                    items[ind++] = new MarkItem(r);
+                }
+
+                publish(items);
+                
+                return null;
+            }
+
+            @Override
+            protected void process(List<MarkItem> chunks) {
+                marksModel.setData(chunks.toArray(new MarkItem[chunks.size()]));
+            }
+        };
+
+        IExecutor executor = ServiceFactory.getInstance().getExecutor();
+        executor.execute(sw);
     }
 
     private void initializeLayout() {

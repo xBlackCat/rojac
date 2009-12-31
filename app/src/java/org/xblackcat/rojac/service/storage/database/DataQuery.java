@@ -270,6 +270,7 @@ public enum DataQuery implements IPropertiable {
 
     // Queries for getting next id value for object primary key
     GET_NEXT_ID_NEW_RATING,
+    GET_NEXT_ID_NEW_MESSAGE,
 
     // Other queries
     /**

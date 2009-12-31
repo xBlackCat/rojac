@@ -19,8 +19,13 @@ final class DBNewMessageAH implements INewMessageAH {
     }
 
     public void storeNewMessage(NewMessage nm) throws StorageException {
+        int nextId = helper.executeSingle(
+                Converters.TO_INTEGER,
+                DataQuery.GET_NEXT_ID_NEW_MESSAGE
+        );
         helper.update(
                 DataQuery.STORE_OBJECT_NEW_MESSAGE,
+                nextId,
                 nm.getParentId(),
                 nm.getForumId(),
                 nm.getSubject(),
