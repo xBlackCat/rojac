@@ -194,7 +194,7 @@ public class JanusService implements IJanusService {
 
             SimpleProvider provider = new SimpleProvider();
 
-            provider.deployTransport("http", new JanusCommonsHTTPSender(ServiceFactory.getInstance().getProgressControl()));
+            provider.deployTransport("http", new JanusHTTPSender(ServiceFactory.getInstance().getProgressControl()));
             JanusATLocator jl = new JanusATLocator(provider);
 
             JanusATSoapStub soap = (JanusATSoapStub) jl.getJanusATSoap();
