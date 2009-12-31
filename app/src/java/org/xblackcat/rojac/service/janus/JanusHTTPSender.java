@@ -73,20 +73,20 @@ import static org.xblackcat.rojac.i18n.Messages.SYNCHRONIZE_COMMAND_WRITE;
  *         HttpState. Also we need to setCookiePolicy on HttpState to CookiePolicy.COMPATIBILITY else it is defaulting
  *         to RFC2109Spec and adding Version information to it and tomcat server not recognizing it
  */
-class JanusCommonsHTTPSender extends BasicHandler {
+class JanusHTTPSender extends BasicHandler {
     private final IProgressController progressController;
 
     /**
      * Field log
      */
     protected static Log log =
-            LogFactory.getLog(JanusCommonsHTTPSender.class.getName());
+            LogFactory.getLog(JanusHTTPSender.class.getName());
 
     protected HttpConnectionManager connectionManager;
     protected CommonsHTTPClientProperties clientProperties;
     boolean httpChunkStream = true; //Use HTTP chunking or not.
 
-    public JanusCommonsHTTPSender(IProgressController progressController) {
+    public JanusHTTPSender(IProgressController progressController) {
         this.progressController = progressController;
         
         initialize();
@@ -120,7 +120,7 @@ class JanusCommonsHTTPSender extends BasicHandler {
         HttpMethodBase method;
         if (log.isDebugEnabled()) {
             log.debug(Messages.getMessage("enter00",
-                    "CommonsHTTPSender::invoke"));
+                    "JanusHTTPSender::invoke"));
         }
         try {
             URL targetURL =
@@ -302,7 +302,7 @@ class JanusCommonsHTTPSender extends BasicHandler {
 
         if (log.isDebugEnabled()) {
             log.debug(Messages.getMessage("exit00",
-                    "CommonsHTTPSender::invoke"));
+                    "JanusHTTPSender::invoke"));
         }
     }
 

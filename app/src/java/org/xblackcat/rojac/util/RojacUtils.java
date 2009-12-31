@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.data.IRSDNable;
@@ -14,11 +16,13 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +31,8 @@ import java.util.regex.Pattern;
  */
 
 public final class RojacUtils {
+    private static final Log log = LogFactory.getLog(RojacUtils.class);
+
     public static final String VERSION = "0.1alpha";
     public static final String VERSION_STRING;
 
@@ -268,5 +274,31 @@ public final class RojacUtils {
         SwingWorker sw = new RequestProcessor(dataHandler, requests);
         
         ServiceFactory.getInstance().getExecutor().execute(sw, TaskType.Synchronization);
+    }
+
+    /**
+     * Util class for checking if the method executed in SwingThread or not.
+     */
+    public static void checkThread(boolean swing) {
+        checkThread(swing, 1);
+    }
+
+    /**
+     * Util class for checking if the method executed in SwingThread or not.
+     */
+    public static void checkThread(boolean swing, int shift) {
+        if (swing != EventQueue.isDispatchThread()) {
+            Throwable stack = new Throwable("Stack trace");
+            StackTraceElement[] stackTrace = stack.getStackTrace();
+            stack.setStackTrace((StackTraceElement[]) ArrayUtils.subarray(stackTrace, shift, stackTrace.length - 1 - shift));
+
+            if (log.isWarnEnabled()) {
+                log.warn(swing ?
+                        "The method is not executed in EventQueue!" :
+                        "The method is executed in EventQueue!",
+                        stack
+                );
+            }
+        }
     }
 }
