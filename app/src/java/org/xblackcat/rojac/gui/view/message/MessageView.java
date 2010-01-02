@@ -4,7 +4,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Mark;
-import org.xblackcat.rojac.data.Message;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IInternationazable;
 import org.xblackcat.rojac.gui.IRootPane;
@@ -184,15 +184,13 @@ public class MessageView extends AItemView implements IInternationazable {
         marks.setEnabled(false);
     }
 
-    protected void fillFrame(Message mes) {
+    protected void fillFrame(MessageData mes, String parsedText) {
         forumId = mes.getForumId();
 
-        String message = mes.getMessage();
-        String converted = rsdnToHtml.convert(message);
-        messageTextPane.setText(converted);
+        messageTextPane.setText(parsedText);
         messageTextPane.setCaretPosition(0);
         labelTopic.setText(mes.getSubject());
-        userInfoLabel.setText(mes.getUserNick());
+        userInfoLabel.setText(mes.getUserName());
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
         messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
         answer.setEnabled(true);
@@ -314,14 +312,20 @@ public class MessageView extends AItemView implements IInternationazable {
 
         @Override
         protected Void doInBackground() throws Exception {
+            String messageBody = "";
             try {
-                Message mes = storage.getMessageAH().getMessageById(messageId);
+                MessageData messageData = storage.getMessageAH().getMessageData(messageId);
+                messageBody = storage.getMessageAH().getMessageBodyById(messageId);
                 Mark[] ratings = storage.getRatingAH().getRatingMarksByMessageId(messageId);
                 Mark[] ownRatings = storage.getNewRatingAH().getNewRatingMarksByMessageId(messageId);
 
-                publish(new MessageDataHolder(mes, (Mark[]) ArrayUtils.addAll(ratings, ownRatings)));
+                String parsedText = rsdnToHtml.convert(messageBody);
+
+                publish(new MessageDataHolder(messageData, parsedText, (Mark[]) ArrayUtils.addAll(ratings, ownRatings)));
             } catch (StorageException e) {
-                throw new RuntimeException("Can't load message id = " + messageId, e);
+                throw new RuntimeException("Can't load message #" + messageId, e);
+            } catch (Exception e) {
+                throw new RuntimeException("Can't parse message #" + messageId + ". Body: " + messageBody, e);
             }
 
             return null;
@@ -330,27 +334,33 @@ public class MessageView extends AItemView implements IInternationazable {
         @Override
         protected void process(List<MessageDataHolder> chunks) {
             for (MessageDataHolder messageData : chunks) {
-                fillFrame(messageData.getMessage());
+                fillFrame(messageData.getMessage(), messageData.getMessageBody());
                 fillMarksButton(messageData.getMarks());
             }
         }
     }
 
     private static class MessageDataHolder {
-        private final Message message;
+        private final MessageData message;
+        private final String messageBody;
         private final Mark[] marks;
 
-        private MessageDataHolder(Message message, Mark[] marks) {
+        private MessageDataHolder(MessageData message, String messageBody, Mark[] marks) {
             this.message = message;
+            this.messageBody = messageBody;
             this.marks = marks;
         }
 
-        public Message getMessage() {
+        public MessageData getMessage() {
             return message;
         }
 
         public Mark[] getMarks() {
             return marks;
+        }
+
+        public String getMessageBody() {
+            return messageBody;
         }
     }
 

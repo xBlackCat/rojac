@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.dialogs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.data.Message;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.view.message.EditMessagePane;
@@ -182,7 +182,13 @@ public class EditMessageDialog extends JDialog {
 
         @Override
         protected Void doInBackground() throws Exception {
-            publish(storage.getMessageAH().getMessageById(messageId));
+            try {
+                MessageData messageData = storage.getMessageAH().getMessageData(messageId);
+                String messageBody = storage.getMessageAH().getMessageBodyById(messageId);
+                publish(new Message(messageBody, messageData));
+            } catch (StorageException e) {
+                throw new RuntimeException("Can't load message #" + messageId, e);
+            }
 
             return null;
         }
@@ -190,11 +196,11 @@ public class EditMessageDialog extends JDialog {
         @Override
         protected void process(List<Message> chunks) {
             for (Message message : chunks) {
-                forumId = message.getForumId();
+                forumId = message.getMessageData().getForumId();
                 parentMessageId = messageId;
 
-                String mes = MessageUtils.correctBody(message.getMessage(), message.getUserNick());
-                String subj = MessageUtils.correctSubject(message.getSubject());
+                String mes = MessageUtils.correctBody(message.getBody(), message.getMessageData().getUserName());
+                String subj = MessageUtils.correctSubject(message.getMessageData().getSubject());
 
                 panelEdit.setMessage(mes, subj);
 
@@ -214,6 +220,24 @@ public class EditMessageDialog extends JDialog {
                         JOptionPane.WARNING_MESSAGE
                 );
             }
+        }
+    }
+
+    private static final class Message {
+        private final MessageData messageData;
+        private final String body;
+
+        private Message(String body, MessageData messageData) {
+            this.body = body;
+            this.messageData = messageData;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        public MessageData getMessageData() {
+            return messageData;
         }
     }
 }
