@@ -453,8 +453,19 @@ class MultiLineThreadItemRenderer extends JLightPanel implements TreeCellRendere
                     userLine.setText(md.getUserName());
                 }
 
-                int style = Font.PLAIN;
-                if (!md.isRead()) style |= Font.BOLD;
+                int style;
+                switch (p.isRead()) {
+                    default:
+                    case Read:
+                        style = Font.PLAIN;
+                        break;
+                    case ReadPartially:
+                        style = Font.ITALIC;
+                        break;
+                    case Unread:
+                        style = Font.BOLD | Font.ITALIC;
+                        break;
+                }
 
                 Font font = tree.getFont().deriveFont(style);
                 setFont(font);

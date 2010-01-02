@@ -9,7 +9,6 @@ import org.xblackcat.rojac.data.*;
 public final class Converters {
     public static final IToObjectConverter<Forum> TO_FORUM = new ToForumConverter();
     public static final IToObjectConverter<ForumGroup> TO_FORUM_GROUP = new ToForumGroupConverter();
-    public static final IToObjectConverter<Message> TO_MESSAGE = new ToMessageConverter();
     public static final IToObjectConverter<Moderate> TO_MODERATE = new ToModerateConverter();
     public static final IToObjectConverter<NewMessage> TO_NEW_MESSAGE = new ToNewMessageConverter();
     public static final IToObjectConverter<NewModerate> TO_NEW_MODERATE = new ToNewModerateConverter();
