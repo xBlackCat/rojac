@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.popup;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.ForumData;
 import org.xblackcat.rojac.gui.view.ForumTableModel;
+import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;
@@ -55,15 +56,15 @@ public class PopupMenuBuilder {
             type = PopupTypeEnum.LinkMessagePopup;
         }
 
-        return getBuilder(type, description, messageId, text, mainFrame);
+        return getBuilder(type, messageId, description, text, mainFrame);
     }
 
     public static JPopupMenu getForumViewMenu(ForumData forum, ForumTableModel forumsModel, IRootPane rootPane) {
         return getBuilder(PopupTypeEnum.ForumListCommonPopup, forum, forumsModel, rootPane);
     }
 
-    public static JPopupMenu getTreeViewPopup(int messageId, IRootPane mainFrame) {
-        return getBuilder(PopupTypeEnum.TreeThreadViewPopup, Integer.valueOf(messageId), mainFrame);
+    public static JPopupMenu getTreeViewPopup(ITreeItem messageItem, IRootPane mainFrame) {
+        return getBuilder(PopupTypeEnum.TreeThreadViewPopup, messageItem, mainFrame);
     }
 
     private static JPopupMenu getBuilder(PopupTypeEnum type, Object... parameters) {

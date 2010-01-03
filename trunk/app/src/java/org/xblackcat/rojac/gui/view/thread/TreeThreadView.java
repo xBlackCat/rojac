@@ -39,6 +39,8 @@ public class TreeThreadView extends AThreadView {
             public void valueChanged(TreeSelectionEvent e) {
                 ITreeItem mi = (ITreeItem) e.getPath().getLastPathComponent();
                 fireMessageGotFocus(mi.getMessageId());
+
+                // TODO: aim the timer.
             }
         });
         threads.addTreeExpansionListener(new TreeExpansionListener() {
@@ -119,7 +121,7 @@ public class TreeThreadView extends AThreadView {
         }
 
         private JPopupMenu createMenu(ITreeItem mi) {
-            return PopupMenuBuilder.getTreeViewPopup(mi.getMessageId(), mainFrame);
+            return PopupMenuBuilder.getTreeViewPopup(mi, mainFrame);
         }
 
     }
