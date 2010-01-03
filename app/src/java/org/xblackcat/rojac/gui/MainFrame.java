@@ -57,13 +57,13 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private IView favoritesView;
 
     // Data tracking
-    private Map<Integer, View> openedForums = new HashMap<Integer, View>();
+    private Map<ViewId, View> openedViews = new HashMap<ViewId, View>();
     protected IDataHandler changeHandler = new IDataHandler() {
         public void updateData(AffectedIds results) {
             forumsListView.updateData(results);
             favoritesView.updateData(results);
 
-            for (View v : openedForums.values()) {
+            for (View v : openedViews.values()) {
                 ((IView) v.getComponent()).updateData(results);
             }
         }
@@ -279,26 +279,37 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         return view;
     }
 
-    private View createForumView(Forum f) {
-        IItemView forumView = createForumViewWindow();
-
+    private void addTabView(ViewId viewId, String viewName, IItemView itemView) {
         final View view = new View(
-                f.getForumName(),
+                viewName,
                 null,
-                forumView.getComponent()
+                itemView.getComponent()
         );
 
 
         DockingWindowProperties props = view.getWindowProperties();
         props.setMinimizeEnabled(false);
-        props.setTitleProvider(new LengthLimitedDockingWindowTitleProvider(50));
+        props.setTitleProvider(new LengthLimitedDockingWindowTitleProvider(40));
         props.setUndockEnabled(false);
 
-        view.addListener(new CloseThreadListener(f.getForumId()));
+        view.addListener(new CloseViewTabListener(viewId));
+        openedViews.put(viewId, view);
 
-        forumView.loadItem(f.getForumId());
-
-        return view;
+        DockingWindow rootWindow = threadsRootWindow.getWindow();
+        if (rootWindow != null) {
+            if (rootWindow instanceof TabWindow) {
+                ((TabWindow) rootWindow).addTab(view);
+            } else {
+                TabWindow tw = searchForTabWindow(rootWindow);
+                if (tw != null) {
+                    tw.addTab(view);
+                } else {
+                    rootWindow.split(view, Direction.RIGHT, 0.5f);
+                }
+            }
+        } else {
+            threadsRootWindow.setWindow(new TabWindow(view));
+        }
     }
 
     /**
@@ -310,6 +321,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         return ViewHelper.makeTreeMessageView(this);
     }
 
+    @Override
     public void applySettings() {
         forumsListView.applySettings();
         favoritesView.applySettings();
@@ -329,6 +341,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         // TODO: implement
     }
 
+    @Override
     public void updateSettings() {
         forumsListView.updateSettings();
         favoritesView.updateSettings();
@@ -348,32 +361,25 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         }
     }
 
+    @Override
     public void openForumTab(Forum f) {
-        View c = openedForums.get(f.getForumId());
+        View c = openedViews.get(new ViewId(f));
         if (c != null) {
             c.makeVisible();
             return;
         }
 
-        View fv = createForumView(f);
+        ViewId viewId = new ViewId(f);
+        String viewName = f.getForumName();
+        IItemView forumView = createForumViewWindow();
 
-        openedForums.put(f.getForumId(), fv);
+        addTabView(viewId, viewName, forumView);
+        forumView.loadItem(f.getForumId());
 
-        DockingWindow rootWindow = threadsRootWindow.getWindow();
-        if (rootWindow != null) {
-            if (rootWindow instanceof TabWindow) {
-                ((TabWindow) rootWindow).addTab(fv);
-            } else {
-                TabWindow tw = searchForTabWindow(rootWindow);
-                if (tw != null) {
-                    tw.addTab(fv);
-                } else {
-                    rootWindow.split(fv, Direction.RIGHT, 0.5f);
-                }
-            }
-        } else {
-            threadsRootWindow.setWindow(new TabWindow(fv));
-        }
+    }
+
+    private View openMessageForumTab(final int messageId) {
+        return null;
     }
 
     private TabWindow searchForTabWindow(DockingWindow rootWindow) {
@@ -395,6 +401,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         return w;
     }
 
+    @Override
     public void performRequest(IDataHandler dataHandler, IRequest... requests) {
         // Check if the user credentials are set first.
         while (!RojacHelper.isUserRegistered()) {
@@ -408,6 +415,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         RojacUtils.processRequests(dataHandler, requests);
     }
 
+    @Override
     public void editMessage(Integer forumId, Integer messageId) {
         EditMessageDialog editDlg = new EditMessageDialog(this);
 
@@ -417,6 +425,20 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             editDlg.createTopic(forumId);
         } else {
             editDlg.answerOn(messageId);
+        }
+    }
+
+    @Override
+    public void openMessage(int messageId, OpenMessageMethod method) {
+        switch (method) {
+            case Default:
+                openMessageForumTab(messageId);
+                break;
+            case ThisView:
+
+                break;
+            case NewTab:
+                break;
         }
     }
 
@@ -431,16 +453,16 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         }
     }
 
-    private class CloseThreadListener extends DockingWindowAdapter {
-        private final int forumId;
+    private class CloseViewTabListener extends DockingWindowAdapter {
+        private final ViewId viewId;
 
-        public CloseThreadListener(int forumId) {
-            this.forumId = forumId;
+        public CloseViewTabListener(ViewId viewId) {
+            this.viewId = viewId;
         }
 
         @Override
         public void windowClosed(DockingWindow window) {
-            openedForums.remove(forumId);
+            openedViews.remove(viewId);
         }
     }
 

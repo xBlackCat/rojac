@@ -11,7 +11,7 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-public class LinkMessagePopupBuilder extends AMessagePopupBulder {
+public class LinkMessagePopupBuilder implements IPopupBuilder {
     private static final Log log = LogFactory.getLog(LinkMessagePopupBuilder.class);
 
     /**
@@ -30,9 +30,25 @@ public class LinkMessagePopupBuilder extends AMessagePopupBulder {
             throw new IllegalArgumentException("Invalid amount of parameters for building LinkPopUp menu");
         }
 
-        final int messageId = ((Integer) parameters[1]).intValue();
+        final int messageId = ((Integer) parameters[0]).intValue();
+        final String url = (String) parameters[1];
+        final String text = (String) parameters[2];
         final IRootPane mainFrame = (IRootPane) parameters[3];
 
-        return buildMenu(messageId, mainFrame);
+        final JPopupMenu menu = new JPopupMenu("#" + messageId);
+
+        JMenuItem item = new JMenuItem("#" + messageId);
+        item.setEnabled(false);
+
+        menu.add(item);
+
+        menu.addSeparator();
+        menu.add(MenuHelper.openMessage(messageId, mainFrame));
+        MenuHelper.addOpenLink(menu, url);
+
+        menu.addSeparator();
+        menu.add(MenuHelper.copyLinkSubmenu(messageId));
+
+        return menu;
     }
 }

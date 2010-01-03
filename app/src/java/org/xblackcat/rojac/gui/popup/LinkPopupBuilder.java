@@ -3,10 +3,8 @@ package org.xblackcat.rojac.gui.popup;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.i18n.Messages;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author xBlackCat
@@ -30,29 +28,19 @@ public class LinkPopupBuilder implements IPopupBuilder {
             throw new IllegalArgumentException("Invalid amount of parameters for building LinkPopUp menu");
         }
 
-        final String url = (String) parameters[0];
+        final String url = (String) parameters[1];
+        final String text = (String) parameters[2];
 
         JPopupMenu menu = new JPopupMenu();
 
-        JMenuItem headerItem = new JMenuItem("URL: " + url);
+        JMenuItem headerItem = new JMenuItem(text);
         headerItem.setEnabled(false);
         menu.add(headerItem);
 
         menu.addSeparator();
 
-        final Desktop desktop = Desktop.getDesktop();
-
-        if (url != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            JMenuItem openInBrowserItem = new JMenuItem(Messages.POPUP_LINK_OPEN_IN_BROWSER.get());
-            openInBrowserItem.addActionListener(new OpenUrlAction(url));
-
-            menu.add(openInBrowserItem);
-        }
-
-        JMenuItem copyToClipboard = new JMenuItem(Messages.POPUP_LINK_COPY_TO_CLIPBOARD.get());
-        copyToClipboard.addActionListener(new CopyUrlAction(url));
-
-        menu.add(copyToClipboard);
+        MenuHelper.addOpenLink(menu, url);
+        menu.add(MenuHelper.copyToClipboard(url));
 
         return menu;
     }

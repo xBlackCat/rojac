@@ -45,6 +45,7 @@ public interface IMessageAH extends AH {
      * @param threadId
      *
      * @return array of messages data.
+     * @throws StorageException
      */
     MessageData[] getMessageDatasByTopicId(int threadId) throws StorageException;
 

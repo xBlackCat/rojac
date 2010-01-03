@@ -23,4 +23,11 @@ public interface IRootPane {
      * @param messageId message id or <code>null</code>.
      */
     void editMessage(Integer forumId, Integer messageId);
+
+    /**
+     * Opens a message by id
+     *
+     * @param messageId
+     */
+    void openMessage(int messageId, OpenMessageMethod method);
 }
