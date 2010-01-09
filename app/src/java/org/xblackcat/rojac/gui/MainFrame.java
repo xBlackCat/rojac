@@ -138,6 +138,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         threadsRootWindow = new RootWindow(false, new ThreadViewSerializer(), threads);
         threadsRootWindow.getRootWindowProperties().setDragRectangleBorderWidth(2);
         threadsRootWindow.getRootWindowProperties().setRecursiveTabsEnabled(false);
+        threadsRootWindow.addListener(new CloseViewTabListener());
 
         threadsRootWindow
                 .getRootWindowProperties()
@@ -247,6 +248,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
         view.getViewProperties().setAlwaysShowTitle(false);
 
+        view.addListener(new CloseViewTabListener());
+
         return view;
     }
 
@@ -278,7 +281,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         props.setTitleProvider(new LengthLimitedDockingWindowTitleProvider(40));
         props.setUndockEnabled(false);
 
-        view.addListener(new CloseViewTabListener(viewId));
         openedViews.put(viewId, view);
 
         DockingWindow rootWindow = threadsRootWindow.getWindow();
@@ -455,15 +457,17 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     private class CloseViewTabListener extends DockingWindowAdapter {
-        private final ViewId viewId;
-
-        public CloseViewTabListener(ViewId viewId) {
-            this.viewId = viewId;
-        }
-
         @Override
         public void windowClosed(DockingWindow window) {
-            openedViews.remove(viewId);
+            int views = window.getChildWindowCount();
+
+            for (int i = 0; i < views; i++) {
+                DockingWindow dw = window.getChildWindow(i);
+
+                if (openedViews.containsValue(dw)) {
+                    openedViews.values().remove(dw);
+                }
+            }
         }
     }
 
