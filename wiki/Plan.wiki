@@ -15,15 +15,15 @@
   * Implement GUI: message editor dialog _(done)_
   * Implement GUI: preference editor dialog _(done)_
   * Implement GUI: support multiple L&F _(done)_
-  * Implement core services: General tracker service *(in progress)*
-  * Implement GUI: implement progress tracker dialog *(in progress)*
-  * Implement GUI: create icons for the application.
-  * Core: optimize database
+  * Implement core services: General tracker service _(done)_
+  * Implement GUI: implement progress tracker dialog _(done)_
+  * Implement GUI: create icons for the application. _(partially done: a [http://www.pinvoke.com/ Fugue] icons pack from pinvoke)_
+  * ~~Core: optimize database~~
 == Alpha 2 ==
   * Implement GUI: TreeTable forum view 
   * Implement GUI: List based forum view.
   * Add favorites (messages, topics)
   * Add icon to tray
   * Add filter to forum view (by users, by date, by marks)
-  * Migrate JanusAT client to Axis 2
+  * Migrate JanusAT client to Axis 2 (??)
   * Allow to DnD links to create a new tab with thread/message.
