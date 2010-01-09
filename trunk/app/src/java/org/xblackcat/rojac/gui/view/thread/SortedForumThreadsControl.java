@@ -8,6 +8,7 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -71,7 +72,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             }
         };
 
-        executor.execute(sw);
+        executor.execute(sw, TaskType.MessageLoading);
         return forumId;
     }
 
@@ -80,20 +81,23 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         ForumRoot forumRoot = (ForumRoot) model.getRoot();
 
         TIntHashSet newPosts = new TIntHashSet();
-        TIntHashSet toUpdate = new TIntHashSet();
 
+        // Update existing nodes first.
         for (int messageId : itemIds) {
-            if (forumRoot.containsId(messageId)) {
-                toUpdate.add(messageId);
+            Post post = forumRoot.getMessageById(messageId);
+            if (post != null) {
+                model.pathToNodeChanged(post);
             } else {
                 newPosts.add(messageId);
             }
         }
 
-        // Store forumId
-        final int forumId = forumRoot.getMessageData().getForumId();
+        if (newPosts.isEmpty()) {
+            // Nothing to load.
+            return;
+        }
 
-        executor.execute(new MessagesLoader(forumRoot, model, newPosts.toArray()));
+        executor.execute(new MessagesLoader(forumRoot, model, newPosts.toArray()), TaskType.MessageLoading);
     }
 
     @Override
@@ -105,7 +109,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
         item.setLoadingState(LoadingState.Loading);
 
-        executor.execute(new ThreadLoader(item, threadModel));
+        executor.execute(new ThreadLoader(item, threadModel), TaskType.MessageLoading);
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -99,7 +100,7 @@ public class ForumsListView extends AView {
         JToolBar toolBar = WindowsUtils.createToolBar(
                 WindowsUtils.setupImageButton("update", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        mainFrame.performRequest(ForumsListView.this, Request.GET_FORUMS_LIST);
+                        mainFrame.performRequest(Request.GET_FORUMS_LIST);
                     }
                 }, Messages.VIEW_FORUMS_BUTTON_UPDATE),
                 null,
@@ -129,14 +130,14 @@ public class ForumsListView extends AView {
     public void applySettings() {
         super.applySettings();
 
-        executor.execute(new ForumLoader());
+        executor.execute(new ForumLoader(), TaskType.MessageLoading);
     }
 
     public void updateData(AffectedIds changedData) {
         if (forumsModel.getRowCount() > 0) {
             forumsModel.updateForums(changedData.getForumIds());
         } else {
-            executor.execute(new ForumLoader(changedData.getForumIds()));
+            executor.execute(new ForumLoader(changedData.getForumIds()), TaskType.MessageLoading);
         }
     }
 

@@ -4,23 +4,16 @@ import org.xblackcat.rojac.data.MessageData;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.max;
+import static ch.lambdaj.Lambda.on;
 
 /**
  * @author xBlackCat
  */
 
 class Post implements ITreeItem<Post> {
-    protected final static Comparator<Post> POST_COMPARATOR = new Comparator<Post>() {
-        @Override
-        public int compare(Post o1, Post o2) {
-            return (int) (o1.messageData.getMessageDate() - o2.messageData.getMessageDate());
-        }
-    };
-
     protected MessageData messageData;
 
     // Data-related fields (RW)
@@ -48,14 +41,14 @@ class Post implements ITreeItem<Post> {
         }
     }
 
-    public boolean containsId(int messageId) {
+    public Post getMessageById(int messageId) {
         for (Post p : childrenPosts) {
             if (p.getMessageId() == messageId) {
-                return true;
+                return p;
             }
         }
 
-        return false;
+        return null;
     }
 
     // Tree/table related methods.
@@ -135,17 +128,17 @@ class Post implements ITreeItem<Post> {
     }
 
     public ReadStatus isRead() {
-        if (read) {
-            return ReadStatus.Read;
+        if (!read) {
+            return ReadStatus.Unread;
         }
 
         for (Post p : childrenPosts) {
-            if (p.isRead() != ReadStatus.Unread) {
+            if (p.isRead() != ReadStatus.Read) {
                 return ReadStatus.ReadPartially;
             }
         }
 
-        return ReadStatus.Unread;
+        return ReadStatus.Read;
     }
 
     public boolean isLeaf() {
@@ -169,5 +162,9 @@ class Post implements ITreeItem<Post> {
         if (parent != null) {
             parent.resort();
         }
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }

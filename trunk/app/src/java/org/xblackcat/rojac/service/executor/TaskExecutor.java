@@ -4,12 +4,9 @@ import org.xblackcat.rojac.service.progress.IProgressController;
 
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Service for executing tasks in separate thread.
@@ -20,6 +17,10 @@ import java.util.concurrent.TimeUnit;
 public final class TaskExecutor implements IExecutor {
     private final Map<TaskType, Executor> pools;
     private final IProgressController progressController;
+
+    private final ScheduledExecutorService scheduler;
+
+    private final Map<String, ScheduledFuture<?>> scheduledTasks = new HashMap<String, ScheduledFuture<?>>();
 
     public TaskExecutor() {
         this(null);
@@ -34,6 +35,8 @@ public final class TaskExecutor implements IExecutor {
         pools.put(TaskType.Synchronization, setupServerSynchronizationExecutor());
 
         this.pools = Collections.unmodifiableMap(pools);
+
+        scheduler = new ScheduledThreadPoolExecutor(1);
     }
 
     private Executor setupServerSynchronizationExecutor() {
@@ -48,11 +51,61 @@ public final class TaskExecutor implements IExecutor {
         return Executors.newFixedThreadPool(5);
     }
 
+    @Override
     public void execute(Runnable target, TaskType type) {
         pools.get(type).execute(target);
     }
 
+    @Override
     public void execute(Runnable target) {
         execute(target, TaskType.Common);
+    }
+
+    @Override
+    public void setupTimer(String id, Runnable target, long delay) {
+        ScheduledFuture<?> taskId = scheduler.schedule(new ScheduleTaskCleaner(id, target), delay, TimeUnit.MILLISECONDS);
+
+        synchronized (scheduledTasks) {
+            ScheduledFuture<?> oldTask = scheduledTasks.get(id);
+            if (oldTask != null) {
+                oldTask.cancel(false);
+            }
+
+            scheduledTasks.put(id, taskId);
+        }
+    }
+
+    @Override
+    public boolean killTimer(String id) {
+        synchronized (scheduledTasks) {
+            ScheduledFuture<?> oldTask = scheduledTasks.remove(id);
+            if (oldTask != null) {
+                return oldTask.cancel(false);
+            }
+        }
+
+        return false;
+    }
+
+    private class ScheduleTaskCleaner implements Runnable {
+        private final String id;
+        private final Runnable task;
+
+        public ScheduleTaskCleaner(String id, Runnable task) {
+            this.id = id;
+            this.task = task;
+        }
+
+        @Override
+        public void run() {
+            try {
+                task.run();
+            } finally {
+                synchronized (scheduledTasks) {
+                    // Remove the task in all cases.
+                    scheduledTasks.remove(id);
+                }
+            }
+        }
     }
 }

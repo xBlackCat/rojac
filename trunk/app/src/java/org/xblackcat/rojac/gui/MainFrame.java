@@ -22,8 +22,8 @@ import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
-import org.xblackcat.rojac.service.janus.commands.IDataHandler;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IMiscAH;
@@ -32,12 +32,7 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -58,16 +53,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
     // Data tracking
     private Map<ViewId, View> openedViews = new HashMap<ViewId, View>();
-    protected IDataHandler changeHandler = new IDataHandler() {
-        public void updateData(AffectedIds results) {
-            forumsListView.updateData(results);
-            favoritesView.updateData(results);
-
-            for (View v : openedViews.values()) {
-                ((IView) v.getComponent()).updateData(results);
-            }
-        }
-    };
     protected RootWindow threadsRootWindow;
 
     private static final String FORUMS_VIEW_ID = "forums_view";
@@ -203,7 +188,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                         SYNCHRONIZER_LOAD_USERS.get() ?
                                 Request.SYNCHRONIZE_WITH_USERS :
                                 Request.SYNCHRONIZE;
-                performRequest(changeHandler, requests);
+                performRequest(requests);
             }
         }, Messages.MAINFRAME_BUTTON_UPDATE);
         JButton loadMessageButton = WindowsUtils.setupImageButton("extramessage", new ActionListener() {
@@ -214,7 +199,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                     boolean loadAtOnce = lmd.isLoadAtOnce();
 
                     ServiceFactory.getInstance().getExecutor().execute(
-                            new ExtraMessageLoader(messageId, loadAtOnce)
+                            new ExtraMessageLoader(messageId, loadAtOnce),
+                            TaskType.Synchronization
                     );
                 }
             }
@@ -321,6 +307,21 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         return ViewHelper.makeTreeMessageView(this);
     }
 
+    /**
+     * Method for delegating changes to all sub containers.
+     *
+     * @param results
+     */
+    @Override
+    public void updateData(AffectedIds results) {
+        forumsListView.updateData(results);
+        favoritesView.updateData(results);
+
+        for (View v : openedViews.values()) {
+            ((IView) v.getComponent()).updateData(results);
+        }
+    }
+
     @Override
     public void applySettings() {
         forumsListView.applySettings();
@@ -402,7 +403,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     @Override
-    public void performRequest(IDataHandler dataHandler, IRequest... requests) {
+    public void performRequest(IRequest... requests) {
         // Check if the user credentials are set first.
         while (!RojacHelper.isUserRegistered()) {
             LoginDialog ld = new LoginDialog(this);
@@ -412,7 +413,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             }
         }
 
-        RojacUtils.processRequests(dataHandler, requests);
+        RojacUtils.processRequests(this, requests);
     }
 
     @Override
@@ -487,7 +488,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         @Override
         protected void done() {
             if (loadAtOnce) {
-                performRequest(changeHandler, Request.EXTRA_MESSAGES);
+                performRequest(Request.EXTRA_MESSAGES);
             }
         }
     }

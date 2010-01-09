@@ -8,6 +8,7 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -28,7 +29,7 @@ public abstract class AThreadView extends AItemView {
     
     protected final IThreadControl threadControl;
     protected final JLabel forumName = new JLabel();
-    protected final AThreadModel model = new SortedThreadsModel();
+    protected final AThreadModel<Post> model = new SortedThreadsModel();
     protected int forumId;
 
     protected AThreadView(IRootPane mainFrame, IThreadControl threadControl) {
@@ -60,7 +61,7 @@ public abstract class AThreadView extends AItemView {
     protected void loadForumInfo(final int forumId) {
         this.forumId = forumId;
 
-        executor.execute(new ForumInfoLoader(forumId));
+        executor.execute(new ForumInfoLoader(forumId), TaskType.MessageLoading);
     }
 
     public void loadItem(int itemId) {

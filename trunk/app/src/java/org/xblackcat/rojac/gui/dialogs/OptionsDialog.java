@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Locale;
 
 import static org.xblackcat.rojac.service.options.Property.*;
 
@@ -110,18 +111,25 @@ public class OptionsDialog extends JDialog {
     }
 
     private void applySettings() {
+        LookAndFeel oldLAF = ROJAC_GUI_LOOK_AND_FEEL.get();
+        Locale oldLocale = ROJAC_GUI_LOCALE.get();
+
         model.applySettings();
 
-        // Load properties.
-
+        // Load changed properties.
         LookAndFeel laf = ROJAC_GUI_LOOK_AND_FEEL.get();
-        try {
-            UIUtils.setLookAndFeel(laf);
-        } catch (UnsupportedLookAndFeelException e) {
-            log.warn("Can not initialize " + laf.getName() + " L&F.", e);
+        if (!laf.getName().equals(oldLAF.getName())) {
+            try {
+                UIUtils.setLookAndFeel(laf);
+            } catch (UnsupportedLookAndFeelException e) {
+                log.warn("Can not initialize " + laf.getName() + " L&F.", e);
+            }
         }
 
-        Messages.setLocale(ROJAC_GUI_LOCALE.get());
+        Locale locale = ROJAC_GUI_LOCALE.get();
+        if (!locale.equals(oldLocale)) {
+            Messages.setLocale(locale);
+        }
     }
 
     /**

@@ -116,7 +116,7 @@ public class Thread extends Post {
     public ReadStatus isRead() {
         if (filled) {
             return super.isRead();
-        } else if (messageData.isRead()) {
+        } else if (read) {
             if (unreadPosts > 0) {
                 return ReadStatus.ReadPartially;
             } else {
@@ -133,8 +133,8 @@ public class Thread extends Post {
     }
 
     @Override
-    public boolean containsId(int messageId) {
-        return threadPosts.containsKey(messageId);
+    public Post getMessageById(int messageId) {
+        return threadPosts.get(messageId);
     }
 
     void storePosts(MessageData... posts) {

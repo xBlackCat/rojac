@@ -72,6 +72,16 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         reload(root);
     }
 
+    public void pathToNodeChanged(T node) {
+        if (node != null) {
+            TreePath toRoot = getPathToRoot(node);
+            do {
+                nodeChanged((T) toRoot.getLastPathComponent());
+                toRoot = toRoot.getParentPath();
+            } while (toRoot != null);
+        }
+    }
+
     /**
      * Invoke this method after you've changed how node is to be represented in the tree.
      */

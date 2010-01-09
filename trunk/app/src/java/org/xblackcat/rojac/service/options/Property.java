@@ -46,6 +46,9 @@ public final class Property<T> {
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.dialog.progress.autoshow", Boolean.TRUE);
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOHIDE = create("rojac.dialog.progress.autohide", Boolean.FALSE);
 
+    // Forum view properties.
+    public static final Property<Long> VIEW_THREAD_AUTOSET_READ = create("rojac.view.thread.message.read_delay", Long.valueOf(1000));
+
     // Janus synchronizator properties
 
     /**

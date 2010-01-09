@@ -11,6 +11,7 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -59,7 +60,7 @@ public class EditMessageDialog extends JDialog {
         }
 
         IExecutor executor = ServiceFactory.getInstance().getExecutor();
-        executor.execute(new MessageLoader(messageId));
+        executor.execute(new MessageLoader(messageId), TaskType.MessageLoading);
     }
 
     public void createTopic(int forumId) {
@@ -134,7 +135,7 @@ public class EditMessageDialog extends JDialog {
             }
         };
 
-        ServiceFactory.getInstance().getExecutor().execute(sw);
+        ServiceFactory.getInstance().getExecutor().execute(sw, TaskType.MessageLoading);
     }
 
     private void initializeLayout() {

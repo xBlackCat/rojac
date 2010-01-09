@@ -9,6 +9,7 @@ import org.xblackcat.rojac.gui.view.ForumTableModel;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 
@@ -98,7 +99,7 @@ public class ForumListPopupBuilder implements IPopupBuilder {
                     forumsModel.setSubscribed(forumId, !subscribed);
                     forumsModel.updateForums(forumId);
                 }
-            });
+            }, TaskType.MessageLoading);
         }
     }
 
@@ -119,7 +120,7 @@ public class ForumListPopupBuilder implements IPopupBuilder {
                         protected void done() {
                             forumsModel.updateForums(forumId);
                         }
-                    });
+                    }, TaskType.MessageLoading);
                 }
             });
         }
