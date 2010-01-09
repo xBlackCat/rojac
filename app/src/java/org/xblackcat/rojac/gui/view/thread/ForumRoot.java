@@ -25,18 +25,24 @@ public class ForumRoot extends Post {
 
     /**
      * Searches through all threads for the message Id
+     *
      * @param messageId
      * @return
      */
     @Override
-    public boolean containsId(int messageId) {
+    public Post getMessageById(int messageId) {
         for (Post p : childrenPosts) {
-            if (p.getMessageId() == messageId || p.containsId(messageId)) {
-                return true;
+            if (p.getMessageId() == messageId) {
+                return p;
+            } else {
+                Post post = p.getMessageById(messageId);
+                if (post != null) {
+                    return post;
+                }
             }
         }
 
-        return false;
+        return null;
     }
 
     private static MessageData constructDummyMessageItem(int forumId) {
@@ -54,7 +60,6 @@ public class ForumRoot extends Post {
     }
 
     /**
-     *
      * @param data
      * @return newly created item
      */

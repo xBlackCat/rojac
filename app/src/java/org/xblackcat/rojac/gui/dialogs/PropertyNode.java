@@ -9,24 +9,24 @@ import java.util.List;
 /**
 * @author xBlackCat
 */
-public class PropertyNode {
-    private final Property property;
+public class PropertyNode<T> {
+    private final Property<T> property;
     private final String name;
-    private PropertyNode parent;
+    private PropertyNode<?> parent;
 
-    private Object value;
+    private T value;
 
-    private final List<PropertyNode> children = new ArrayList<PropertyNode>();
+    private final List<PropertyNode<?>> children = new ArrayList<PropertyNode<?>>();
 
     public PropertyNode(String name) {
         this(name, null);
     }
 
-    public PropertyNode(String name, PropertyNode parent) {
+    public PropertyNode(String name, PropertyNode<?> parent) {
         this(name, parent, null);
     }
 
-    public PropertyNode(String name, PropertyNode parent, Property property) {
+    public PropertyNode(String name, PropertyNode<?> parent, Property<T> property) {
         this.property = property;
         this.name = name;
         this.parent = parent;
@@ -36,7 +36,7 @@ public class PropertyNode {
         }
     }
 
-    public Property getProperty() {
+    public Property<T> getProperty() {
         return property;
     }
 
@@ -44,7 +44,7 @@ public class PropertyNode {
         return name;
     }
 
-    public PropertyNode getParent() {
+    public PropertyNode<?> getParent() {
         return parent;
     }
 
@@ -52,15 +52,15 @@ public class PropertyNode {
         return children.size();
     }
 
-    public int indexOf(PropertyNode n) {
+    public int indexOf(PropertyNode<?> n) {
         return children.indexOf(n);
     }
 
-    public PropertyNode getChild(int i) {
+    public PropertyNode<?> getChild(int i) {
         return children.get(i);
     }
 
-    public void addChild(PropertyNode n) {
+    public void addChild(PropertyNode<?> n) {
         children.add(n);
         n.parent = this;
     }
@@ -69,15 +69,15 @@ public class PropertyNode {
         return children.isEmpty();
     }
 
-    public boolean has(PropertyNode n) {
+    public boolean has(PropertyNode<?> n) {
         return children.contains(n);
     }
 
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(T value) {
         this.value = value;
     }
 
@@ -121,14 +121,14 @@ public class PropertyNode {
         return new TreePath(makePath(0));
     }
 
-    private PropertyNode[] makePath(int depth) {
+    private PropertyNode<?>[] makePath(int depth) {
         if (parent == null) {
-            PropertyNode[] path = new PropertyNode[depth + 1];
+            PropertyNode<?>[] path = new PropertyNode[depth + 1];
             path[0] = this;
             return path;
         }
 
-        PropertyNode[] path = parent.makePath(depth + 1);
+        PropertyNode<?>[] path = parent.makePath(depth + 1);
         path[path.length - depth - 1] = this;
         return path;
     }

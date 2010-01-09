@@ -2,6 +2,10 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.janus.commands.AffectedIds;
+import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -40,7 +44,13 @@ public class TreeThreadView extends AThreadView {
                 ITreeItem mi = (ITreeItem) e.getPath().getLastPathComponent();
                 fireMessageGotFocus(mi.getMessageId());
 
-                // TODO: aim the timer.
+                Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
+                SetMessageReadFlag target = new SetMessageReadFlag(forumId, mi.getMessageId());
+                if (delay > 0) {
+                    executor.setupTimer("Forum_" + forumId, target, delay);
+                } else {
+                    executor.execute(target, TaskType.MessageLoading);
+                }
             }
         });
         threads.addTreeExpansionListener(new TreeExpansionListener() {
@@ -125,4 +135,37 @@ public class TreeThreadView extends AThreadView {
         }
 
     }
+
+    private class SetMessageReadFlag extends SwingWorker<Void, Void> {
+        private final int forumId;
+        private final int messageId;
+
+        public SetMessageReadFlag(int forumId, int messageId) {
+            this.forumId = forumId;
+            this.messageId = messageId;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            try {
+                storage.getMessageAH().updateMessageReadFlag(messageId, true);
+            } catch (StorageException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            Post post = model.getRoot().getMessageById(messageId);
+            if (post != null) {
+                post.setRead(true);
+
+                AffectedIds affectedIds = new AffectedIds();
+                affectedIds.addMessageId(forumId, messageId);
+                mainFrame.updateData(affectedIds);
+            }
+        }
+    }
+
 }
