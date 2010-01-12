@@ -62,7 +62,7 @@ public class TreeThreadView extends AThreadView {
                     threadControl.loadChildren(model, item);
                 }
 
-                if (item.getLoadingState() == LoadingState.Loaded ) {
+                if (item.getLoadingState() == LoadingState.Loaded) {
                     if (item.getSize() == 1) {
                         ITreeItem child = item.getChild(0);
 
@@ -85,7 +85,11 @@ public class TreeThreadView extends AThreadView {
         if (post != null) {
             TreePath path = model.getPathToRoot(post);
 
-            threads.expandPath(path);
+            TreePath parentPath = path.getParentPath();
+            
+            if (parentPath != null && threads.isCollapsed(parentPath)) {
+                threads.expandPath(parentPath);
+            }
             threads.setSelectionPath(path);
         } else {
             threads.clearSelection();
