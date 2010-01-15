@@ -9,8 +9,8 @@ import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.util.RojacWorker;
 
-import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +46,9 @@ public class ForumTableModel extends AbstractTableModel {
     }
 
     public void updateForums(final int... forumIds) {
-        SwingWorker<Void, ForumStatistic> infoLoader = new SwingWorker<Void, ForumStatistic>() {
+        RojacWorker<Void, ForumStatistic> infoLoader = new RojacWorker<Void, ForumStatistic>() {
             @Override
-            protected Void doInBackground() throws Exception {
+            protected Void perform() throws Exception {
                 IForumAH fah = storage.getForumAH();
 
                 Map<Integer, Integer> totalMessages = fah.getMessagesInForum(forumIds);

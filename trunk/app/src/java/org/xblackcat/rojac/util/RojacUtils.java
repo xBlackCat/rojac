@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.data.IRSDNable;
+import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.TaskType;
@@ -30,11 +31,13 @@ import java.util.regex.Pattern;
  * @author xBlackCat
  */
 
+@SuppressWarnings({"unchecked"})
 public final class RojacUtils {
     private static final Log log = LogFactory.getLog(RojacUtils.class);
 
     public static final String VERSION = "0.1alpha";
     public static final String VERSION_STRING;
+    public static final GlobalExceptionHandler GLOBAL_EXCEPTION_HANDLER = new GlobalExceptionHandler();
 
     static {
         StringBuilder versionString = new StringBuilder("Rojac v");
@@ -88,6 +91,7 @@ public final class RojacUtils {
     private RojacUtils() {
     }
 
+    @SuppressWarnings({"unchecked"})
     public static <T extends Serializable> T[] getRSDNObject(IRSDNable<T>[] ar) {
         Class<T> c = (Class<T>) ((ParameterizedType) ar.getClass().getComponentType().getGenericInterfaces()[0]).getActualTypeArguments()[0];
 
@@ -271,7 +275,7 @@ public final class RojacUtils {
     }
 
     public static void processRequests(IDataHandler dataHandler, IRequest... requests) {
-        SwingWorker sw = new RequestProcessor(dataHandler, requests);
+        RojacWorker sw = new RequestProcessor(dataHandler, requests);
         
         ServiceFactory.getInstance().getExecutor().execute(sw, TaskType.Synchronization);
     }
@@ -279,6 +283,7 @@ public final class RojacUtils {
     /**
      * Util class for checking if the method executed in SwingThread or not.
      */
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public static void checkThread(boolean swing, Class<?> tillClass) {
         if (swing != EventQueue.isDispatchThread()) {
             Throwable stack = new Throwable("Stack trace");
@@ -305,6 +310,33 @@ public final class RojacUtils {
                         "The method is executed in EventQueue!",
                         stack
                 );
+            }
+        }
+    }
+
+    public static void showExceptionDialog(Throwable e) {
+        showExceptionDialog(Thread.currentThread(), e);
+    }
+
+    public static void showExceptionDialog(Thread t, Throwable e) {
+
+        GLOBAL_EXCEPTION_HANDLER.uncaughtException(t, e);
+    }
+
+    private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
+        @Override
+        public void uncaughtException(final Thread t, final Throwable e) {
+            log.error("Got unhandled exception in " + t, e);
+
+            if (EventQueue.isDispatchThread()) {
+                ExceptionDialog.showExceptionDialog(t, e);
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        ExceptionDialog.showExceptionDialog(t, e);
+                    }
+                });
             }
         }
     }

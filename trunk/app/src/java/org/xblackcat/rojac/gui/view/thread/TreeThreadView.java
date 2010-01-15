@@ -6,6 +6,7 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -140,7 +141,7 @@ public class TreeThreadView extends AThreadView {
 
     }
 
-    private class SetMessageReadFlag extends SwingWorker<Void, Void> {
+    private class SetMessageReadFlag extends RojacWorker<Void, Void> {
         private final int forumId;
         private final int messageId;
 
@@ -150,7 +151,7 @@ public class TreeThreadView extends AThreadView {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void perform() throws Exception {
             try {
                 storage.getMessageAH().updateMessageReadFlag(messageId, true);
             } catch (StorageException e) {

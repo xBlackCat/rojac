@@ -7,6 +7,7 @@ import org.xblackcat.rojac.gui.dialogs.ProgressTrackerDialog;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -35,6 +36,9 @@ public abstract class RojacLauncher {
     }
 
     private static void launch() throws Exception {
+        // Common tasks
+        Thread.setDefaultUncaughtExceptionHandler(RojacUtils.GLOBAL_EXCEPTION_HANDLER);
+
         // Initialize core services
         ServiceFactory.initialize();
 
@@ -59,7 +63,7 @@ public abstract class RojacLauncher {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                // TODO: setup progress listeners and tray
+                // TODO: setup tray
 
                 final MainFrame mainFrame = new MainFrame();
 

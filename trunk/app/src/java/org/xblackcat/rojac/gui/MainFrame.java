@@ -27,7 +27,9 @@ import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IMiscAH;
+import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -471,7 +473,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         }
     }
 
-    private class ExtraMessageLoader extends SwingWorker<Void, Void> {
+    private class ExtraMessageLoader extends RojacWorker<Void, Void> {
         private final Integer messageId;
         private final boolean loadAtOnce;
 
@@ -481,10 +483,15 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
-            IMiscAH s = ServiceFactory.getInstance().getStorage().getMiscAH();
+        protected Void perform() throws Exception {
+            try {
+                IMiscAH s = ServiceFactory.getInstance().getStorage().getMiscAH();
 
-            s.storeExtraMessage(messageId);
+                s.storeExtraMessage(messageId);
+            } catch (StorageException e) {
+                log.error("Can not load extra message #" + messageId, e);
+                RojacUtils.showExceptionDialog(e);
+            }
 
             return null;
         }
