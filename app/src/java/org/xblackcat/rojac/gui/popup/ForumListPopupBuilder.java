@@ -12,6 +12,7 @@ import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -86,9 +87,9 @@ public class ForumListPopupBuilder implements IPopupBuilder {
         }
 
         public void actionPerformed(ActionEvent e) {
-            executor.execute(new SwingWorker<Void, Void>() {
+            executor.execute(new RojacWorker<Void, Void>() {
                 @Override
-                protected Void doInBackground() throws Exception {
+                protected Void perform() throws Exception {
                     IForumAH fah = storage.getForumAH();
                     fah.setSubscribeForum(forumId, !subscribed);
                     return null;
@@ -108,9 +109,9 @@ public class ForumListPopupBuilder implements IPopupBuilder {
             super(text.get());
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    executor.execute(new SwingWorker<Void, Void>() {
+                    executor.execute(new RojacWorker<Void, Void>() {
                         @Override
-                        protected Void doInBackground() throws Exception {
+                        protected Void perform() throws Exception {
                             IForumAH fah = storage.getForumAH();
                             fah.setForumRead(forumId, readFlag);
                             return null;

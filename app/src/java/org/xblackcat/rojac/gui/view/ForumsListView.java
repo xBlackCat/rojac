@@ -10,6 +10,7 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -141,7 +142,7 @@ public class ForumsListView extends AView {
         }
     }
 
-    private class ForumLoader extends SwingWorker<Void, Forum> {
+    private class ForumLoader extends RojacWorker<Void, Forum> {
         private int[] ids;
 
         public ForumLoader() {
@@ -153,7 +154,7 @@ public class ForumsListView extends AView {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void perform() throws Exception {
             try {
                 publish(storage.getForumAH().getAllForums());
             } catch (StorageException e) {

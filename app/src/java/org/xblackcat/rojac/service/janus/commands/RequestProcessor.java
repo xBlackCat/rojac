@@ -8,8 +8,8 @@ import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.JanusService;
 import org.xblackcat.rojac.service.progress.IProgressController;
+import org.xblackcat.rojac.util.RojacWorker;
 
-import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +20,7 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_USE_GZIP
 /**
  * @author xBlackCat
  */
-public class RequestProcessor extends SwingWorker<Void, Void> {
+public class RequestProcessor extends RojacWorker<Void, Void> {
     private static final Log log = LogFactory.getLog(RequestProcessor.class);
 
     private final List<IRequest> requests;
@@ -51,7 +51,7 @@ public class RequestProcessor extends SwingWorker<Void, Void> {
     }
 
     @Override
-    protected Void doInBackground() throws Exception {
+    protected Void perform() throws Exception {
         progressController.fireJobStart();
 
         final String userName = RSDN_USER_NAME.get();

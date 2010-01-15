@@ -12,6 +12,7 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -88,7 +89,7 @@ public abstract class AThreadView extends AItemView {
 
     protected abstract JComponent getThreadsContainer();
 
-    private class ForumInfoLoader extends SwingWorker<Void, Forum> {
+    private class ForumInfoLoader extends RojacWorker<Void, Forum> {
         private final int forumId;
 
         public ForumInfoLoader(int forumId) {
@@ -96,7 +97,7 @@ public abstract class AThreadView extends AItemView {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void perform() throws Exception {
             IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
 
             try {

@@ -17,6 +17,7 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
+import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -304,7 +305,7 @@ public class MessageView extends AItemView implements IInternationazable {
         }
     }
 
-    private class MessageLoader extends SwingWorker<Void, MessageDataHolder> {
+    private class MessageLoader extends RojacWorker<Void, MessageDataHolder> {
         private final int messageId;
 
         public MessageLoader(int messageId) {
@@ -312,7 +313,7 @@ public class MessageView extends AItemView implements IInternationazable {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void perform() throws Exception {
             String messageBody = "";
             try {
                 MessageData messageData = storage.getMessageAH().getMessageData(messageId);
@@ -365,7 +366,7 @@ public class MessageView extends AItemView implements IInternationazable {
         }
     }
 
-    private class MarksUpdater extends SwingWorker<Void, Mark> {
+    private class MarksUpdater extends RojacWorker<Void, Mark> {
         private final Mark mark;
 
         public MarksUpdater(Mark mark) {
@@ -373,7 +374,7 @@ public class MessageView extends AItemView implements IInternationazable {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void perform() throws Exception {
             storage.getNewRatingAH().storeNewRating(messageId, mark);
             Mark[] ratings = storage.getRatingAH().getRatingMarksByMessageId(messageId);
 

@@ -16,6 +16,7 @@ import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.MessageUtils;
+import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -103,9 +104,9 @@ public class EditMessageDialog extends JDialog {
                 body
         );
 
-        SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
+        RojacWorker<Void, Void> sw = new RojacWorker<Void, Void>() {
             @Override
-            protected Void doInBackground() throws Exception {
+            protected Void perform() throws Exception {
                 try {
                     INewMessageAH nmAH = storage.getNewMessageAH();
                     if (newMessageId == 0) {
@@ -174,7 +175,7 @@ public class EditMessageDialog extends JDialog {
         setContentPane(cp);
     }
 
-    private class MessageLoader extends SwingWorker<Void, Message> {
+    private class MessageLoader extends RojacWorker<Void, Message> {
         private final int messageId;
 
         public MessageLoader(int messageId) {
@@ -182,7 +183,7 @@ public class EditMessageDialog extends JDialog {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void perform() throws Exception {
             try {
                 MessageData messageData = storage.getMessageAH().getMessageData(messageId);
                 String messageBody = storage.getMessageAH().getMessageBodyById(messageId);

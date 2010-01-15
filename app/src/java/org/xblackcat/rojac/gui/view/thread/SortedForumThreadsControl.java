@@ -12,8 +12,8 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacWorker;
 
-import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,9 +35,9 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
         model.setRoot(rootItem);
 
-        SwingWorker sw = new SwingWorker<Void, Thread>() {
+        RojacWorker sw = new RojacWorker<Void, Thread>() {
             @Override
-            protected Void doInBackground() throws Exception {
+            protected Void perform() throws Exception {
                 MessageData[] threadPosts;
                 IMessageAH mAH = storage.getMessageAH();
                 try {
@@ -117,7 +117,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         return false;
     }
 
-    private class MessagesLoader extends SwingWorker<Void, MessageData> {
+    private class MessagesLoader extends RojacWorker<Void, MessageData> {
         private final ForumRoot item;
         private final AThreadModel<Post> threadModel;
         private int[] messageIds;
@@ -135,7 +135,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void perform() throws Exception {
             for (int itemId : messageIds) {
                 try {
                     MessageData messageData = storage.getMessageAH().getMessageData(itemId);
@@ -168,7 +168,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         }
     }
 
-    private class ThreadLoader extends SwingWorker<Void, MessageData> {
+    private class ThreadLoader extends RojacWorker<Void, MessageData> {
         private final Thread item;
         private final AThreadModel<Post> threadModel;
 
@@ -178,7 +178,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void perform() throws Exception {
             int itemId = item.getMessageId();
 
             MessageData[] messages;

@@ -9,6 +9,7 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -43,9 +44,9 @@ class RatingDialog extends JDialog {
     }
 
     private void updateData() {
-        SwingWorker<Void, MarkItem> sw = new SwingWorker<Void, MarkItem>() {
+        RojacWorker<Void, MarkItem> sw = new RojacWorker<Void, MarkItem>() {
             @Override
-            protected Void doInBackground() throws Exception {
+            protected Void perform() throws Exception {
                 Rating[] ratings = storage.getRatingAH().getRatingsByMessageId(messageId);
 
                 NewRating[] ownRatings = storage.getNewRatingAH().getNewRatingsByMessageId(messageId);
