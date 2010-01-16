@@ -2,14 +2,16 @@ package org.xblackcat.rojac.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 
 import javax.swing.*;
 
 /**
  * @author xBlackCat
  */
-
-public abstract class RojacWorker<T, V> extends SwingWorker<T, V> {
+@TaskType(TaskTypeEnum.DataLoading)
+public abstract class RojacWorker<T, V> extends SwingWorker<T, V> implements Runnable {
     private static final Log log = LogFactory.getLog(RojacWorker.class);
 
     @Override

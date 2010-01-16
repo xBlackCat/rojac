@@ -13,7 +13,6 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
-import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
@@ -161,14 +160,14 @@ public class MessageView extends AItemView implements IInternationazable {
                         Messages.DIALOG_SET_MARK_TITLE.get(),
                         JOptionPane.YES_NO_OPTION
                 )) {
-            executor.execute(new MarksUpdater(mark), TaskType.MessageLoading);
+            executor.execute(new MarksUpdater(mark));
         }
     }
 
     public void loadItem(final int messageId) {
         this.messageId = messageId;
 
-        executor.execute(new MessageLoader(messageId), TaskType.MessageLoading);
+        executor.execute(new MessageLoader(messageId));
     }
 
     protected void fillFrame(NewMessage mes) {

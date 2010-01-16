@@ -6,6 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.janus.JanusService;
 import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -20,6 +22,7 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_USE_GZIP
 /**
  * @author xBlackCat
  */
+@TaskType(TaskTypeEnum.Synchronization)
 public class RequestProcessor extends RojacWorker<Void, Void> {
     private static final Log log = LogFactory.getLog(RequestProcessor.class);
 

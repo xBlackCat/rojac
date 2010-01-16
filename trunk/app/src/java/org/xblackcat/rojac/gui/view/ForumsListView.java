@@ -6,7 +6,6 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -131,14 +130,14 @@ public class ForumsListView extends AView {
     public void applySettings() {
         super.applySettings();
 
-        executor.execute(new ForumLoader(), TaskType.MessageLoading);
+        executor.execute(new ForumLoader());
     }
 
     public void updateData(AffectedIds changedData) {
         if (forumsModel.getRowCount() > 0) {
             forumsModel.updateForums(changedData.getForumIds());
         } else {
-            executor.execute(new ForumLoader(changedData.getForumIds()), TaskType.MessageLoading);
+            executor.execute(new ForumLoader(changedData.getForumIds()));
         }
     }
 

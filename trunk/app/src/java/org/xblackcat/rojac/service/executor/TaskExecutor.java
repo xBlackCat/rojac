@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.service.executor;
 
-import org.xblackcat.rojac.service.progress.IProgressController;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.Collections;
 import java.util.EnumMap;
@@ -15,24 +16,19 @@ import java.util.concurrent.*;
  */
 
 public final class TaskExecutor implements IExecutor {
-    private final Map<TaskType, Executor> pools;
-    private final IProgressController progressController;
+    private static final Log log = LogFactory.getLog(TaskExecutor.class);
+
+    private final Map<TaskTypeEnum, Executor> pools;
 
     private final ScheduledExecutorService scheduler;
 
     private final Map<String, ScheduledFuture<?>> scheduledTasks = new HashMap<String, ScheduledFuture<?>>();
 
     public TaskExecutor() {
-        this(null);
-    }
-
-    public TaskExecutor(IProgressController progressController) {
-        this.progressController = progressController;
-
-        Map<TaskType, Executor> pools = new EnumMap<TaskType, Executor>(TaskType.class);
-        pools.put(TaskType.Common, setupCommonExecutor());
-        pools.put(TaskType.MessageLoading, setupMessageLoadingExecutor());
-        pools.put(TaskType.Synchronization, setupServerSynchronizationExecutor());
+        Map<TaskTypeEnum, Executor> pools = new EnumMap<TaskTypeEnum, Executor>(TaskTypeEnum.class);
+        pools.put(TaskTypeEnum.Common, setupCommonExecutor());
+        pools.put(TaskTypeEnum.DataLoading, setupMessageLoadingExecutor());
+        pools.put(TaskTypeEnum.Synchronization, setupServerSynchronizationExecutor());
 
         this.pools = Collections.unmodifiableMap(pools);
 
@@ -52,13 +48,21 @@ public final class TaskExecutor implements IExecutor {
     }
 
     @Override
-    public void execute(Runnable target, TaskType type) {
-        pools.get(type).execute(target);
-    }
-
-    @Override
     public void execute(Runnable target) {
-        execute(target, TaskType.Common);
+        if (target == null) throw new NullPointerException("Can not execute empty target.");
+
+        // Obtain target task type from annotation.
+        TaskTypeEnum type = getTargetType(target.getClass());
+
+        if (type == null) {
+            // By default use Common type.
+            type = TaskTypeEnum.Common;
+            if (log.isTraceEnabled()) {
+                log.trace("Target " + target.getClass() + " will be executed as type " + TaskTypeEnum.Common);
+            }
+        }
+
+        pools.get(type).execute(target);
     }
 
     @Override
@@ -85,6 +89,44 @@ public final class TaskExecutor implements IExecutor {
         }
 
         return false;
+    }
+
+    /**
+     * Searches a TaskType annotation in class declaration in the following order: <ul> <li>Class</li> <li>Interfaces is
+     * implemented in the class</li> <li>SuperClass</li> <li>Interfaces is implemented in the superclass</li>
+     * <li>...</li> </ul> Note that a super-interfaces of implemented interfaces will not be checked.
+     *
+     * @param clazz class to check.
+     *
+     * @return org.xblackcat.rojac.service.executor.TaskTypeEnum value or <code>null</code> if the annotation is not
+     *         present.
+     */
+    private static TaskTypeEnum getTargetType(Class<?> clazz) {
+        if (clazz == null) {
+            return null;
+        }
+
+        TaskType annotation = clazz.getAnnotation(TaskType.class);
+
+        if (annotation != null) {
+            if (log.isTraceEnabled()) {
+                log.trace("Target " + clazz + " has " + annotation.value() + " type");
+            }
+            return annotation.value();
+        }
+
+        for (Class<?> i : clazz.getInterfaces()) {
+            annotation = clazz.getAnnotation(TaskType.class);
+
+            if (annotation != null) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Target " + clazz + " has " + annotation.value() + " type from " + i + " interface.");
+                }
+                return annotation.value();
+            }
+        }
+
+        return getTargetType(clazz.getSuperclass());
     }
 
     private class ScheduleTaskCleaner implements Runnable {

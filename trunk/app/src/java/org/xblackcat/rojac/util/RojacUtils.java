@@ -9,7 +9,6 @@ import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.IDataHandler;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
 import org.xblackcat.rojac.service.janus.commands.RequestProcessor;
@@ -208,6 +207,7 @@ public final class RojacUtils {
      * @param bundle base name of bundle with / as separators and without extension.
      *
      * @return an array of available locales for the specified bundle.
+     * @throws java.io.IOException
      */
     public static Locale[] localesForBundle(String bundle) throws IOException {
         return localesForBundle(bundle, false);
@@ -220,6 +220,7 @@ public final class RojacUtils {
      * @param addDefault flag to specify is the default resource bundle should be associated with default locale.
      *
      * @return an array of available locales for the specified bundle.
+     * @throws java.io.IOException
      */
     public static Locale[] localesForBundle(String bundle, boolean addDefault) throws IOException {
         if (bundle == null) {
@@ -277,11 +278,13 @@ public final class RojacUtils {
     public static void processRequests(IDataHandler dataHandler, IRequest... requests) {
         RojacWorker sw = new RequestProcessor(dataHandler, requests);
         
-        ServiceFactory.getInstance().getExecutor().execute(sw, TaskType.Synchronization);
+        ServiceFactory.getInstance().getExecutor().execute(sw);
     }
 
     /**
      * Util class for checking if the method executed in SwingThread or not.
+     * @param swing
+     * @param tillClass
      */
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public static void checkThread(boolean swing, Class<?> tillClass) {

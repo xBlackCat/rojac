@@ -59,7 +59,7 @@ public final class ServiceFactory {
 
         progressController = new ProgressController();
 
-        executor = new TaskExecutor(progressController);
+        executor = new TaskExecutor();
     }
 
     public IStorage getStorage() {

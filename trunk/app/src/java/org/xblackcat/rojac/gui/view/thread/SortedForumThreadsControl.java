@@ -8,7 +8,6 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -72,7 +71,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             }
         };
 
-        executor.execute(sw, TaskType.MessageLoading);
+        executor.execute(sw);
         return forumId;
     }
 
@@ -97,7 +96,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             return;
         }
 
-        executor.execute(new MessagesLoader(forumRoot, model, newPosts.toArray()), TaskType.MessageLoading);
+        executor.execute(new MessagesLoader(forumRoot, model, newPosts.toArray()));
     }
 
     @Override
@@ -109,7 +108,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
         item.setLoadingState(LoadingState.Loading);
 
-        executor.execute(new ThreadLoader(item, threadModel), TaskType.MessageLoading);
+        executor.execute(new ThreadLoader(item, threadModel));
     }
 
     @Override

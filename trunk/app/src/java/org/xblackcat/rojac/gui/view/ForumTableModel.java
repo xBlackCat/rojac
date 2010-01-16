@@ -6,7 +6,6 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -80,7 +79,7 @@ public class ForumTableModel extends AbstractTableModel {
             }
         };
 
-        executor.execute(infoLoader, TaskType.MessageLoading);
+        executor.execute(infoLoader);
     }
 
     void fillForums(Forum... forums) {

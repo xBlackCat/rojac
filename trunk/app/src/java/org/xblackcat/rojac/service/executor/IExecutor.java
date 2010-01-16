@@ -5,8 +5,11 @@ package org.xblackcat.rojac.service.executor;
  */
 
 public interface IExecutor {
-    void execute(Runnable target, TaskType type);
-
+    /**
+     * Execute target task depends on its type specified in annotation.
+     *
+     * @param target target to execute.
+     */
     void execute(Runnable target);
 
     /**
@@ -22,7 +25,9 @@ public interface IExecutor {
      * Stops a timer by its id.
      *
      * @param id timer id to identify a timer.
-     * @return <code>true</code> if timer successfully stopped and <code>false</code> if timer with specified id is not set.
+     *
+     * @return <code>true</code> if timer successfully stopped and <code>false</code> if timer with specified id is not
+     *         set.
      */
     boolean killTimer(String id);
 }
