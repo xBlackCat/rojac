@@ -7,7 +7,6 @@ import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -81,7 +80,7 @@ class RatingDialog extends JDialog {
         };
 
         IExecutor executor = ServiceFactory.getInstance().getExecutor();
-        executor.execute(sw, TaskType.MessageLoading);
+        executor.execute(sw);
     }
 
     private void initializeLayout() {

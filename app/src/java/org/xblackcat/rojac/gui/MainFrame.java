@@ -22,7 +22,6 @@ import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
 import org.xblackcat.rojac.service.janus.commands.Request;
@@ -34,7 +33,12 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -202,8 +206,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                     boolean loadAtOnce = lmd.isLoadAtOnce();
 
                     ServiceFactory.getInstance().getExecutor().execute(
-                            new ExtraMessageLoader(messageId, loadAtOnce),
-                            TaskType.Synchronization
+                            new ExtraMessageLoader(messageId, loadAtOnce)
                     );
                 }
             }

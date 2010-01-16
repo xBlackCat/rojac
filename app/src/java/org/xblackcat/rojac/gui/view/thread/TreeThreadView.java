@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -50,7 +49,7 @@ public class TreeThreadView extends AThreadView {
                 if (delay > 0) {
                     executor.setupTimer("Forum_" + forumId, target, delay);
                 } else {
-                    executor.execute(target, TaskType.MessageLoading);
+                    executor.execute(target);
                 }
             }
         });
