@@ -75,7 +75,7 @@ public class PropertyCellEditor extends AbstractCellEditor implements TableCellE
             public void setValue(Object value) {
                 boolean selected = false;
                 if (value instanceof Boolean) {
-                    selected = ((Boolean) value).booleanValue();
+                    selected = (Boolean) value;
                 } else if (value instanceof String) {
                     selected = value.equals("true");
                 }
@@ -83,7 +83,7 @@ public class PropertyCellEditor extends AbstractCellEditor implements TableCellE
             }
 
             public Object getCellEditorValue() {
-                return Boolean.valueOf(checkBox.isSelected());
+                return checkBox.isSelected();
             }
         };
         checkBox.addActionListener(delegate);

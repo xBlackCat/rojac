@@ -12,6 +12,7 @@ import javax.swing.tree.TreePath;
  * @author xBlackCat
  */
 
+@SuppressWarnings({"unchecked"})
 public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel, TreeTableModel {
     protected T root;
     /**
@@ -84,6 +85,8 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
 
     /**
      * Invoke this method after you've changed how node is to be represented in the tree.
+     *
+     * @param node
      */
     public void nodeChanged(T node) {
         if (node != null) {

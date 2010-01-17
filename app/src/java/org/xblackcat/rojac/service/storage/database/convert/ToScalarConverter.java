@@ -8,6 +8,8 @@ import java.sql.SQLException;
  */
 
 class ToScalarConverter<T> implements IToObjectConverter<T> {
+    @Override
+    @SuppressWarnings({"unchecked"})
     public T convert(ResultSet rs) throws SQLException {
         return (T) rs.getObject(1);
     }

@@ -15,16 +15,16 @@ import java.util.Properties;
 public abstract class AConnectionFactory implements IConnectionFactory {
     private static final Log log = LogFactory.getLog(AConnectionFactory.class);
 
-    private static final String DSSTORAGE_JDBC_CLASS = "db.jdbc.driver.class";
-    private static final String DSSTORAGE_URL = "db.connection.url.pattern";
-    private static final String DSSTORAGE_USER = "db.access.user";
-    private static final String DSSTORAGE_PASSWORD = "db.access.password";
+    private static final String DB_STORAGE_JDBC_CLASS = "db.jdbc.driver.class";
+    private static final String DB_STORAGE_URL = "db.connection.url.pattern";
+    private static final String DB_STORAGE_USER = "db.access.user";
+    private static final String DB_STORAGE_PASSWORD = "db.access.password";
 
-    protected final String url;
-    protected final String userName;
-    protected final String password;
+    final String url;
+    final String userName;
+    final String password;
 
-    public AConnectionFactory(String configurationName) throws StorageInitializationException {
+    AConnectionFactory(String configurationName) throws StorageInitializationException {
         if (log.isTraceEnabled()) {
             log.trace("Loading database connection properties.");
         }
@@ -36,9 +36,9 @@ public abstract class AConnectionFactory implements IConnectionFactory {
             throw new StorageInitializationException("Can not load config from the database.properties", e);
         }
 
-        String jdbcClass = databaseProperties.getProperty(DSSTORAGE_JDBC_CLASS);
+        String jdbcClass = databaseProperties.getProperty(DB_STORAGE_JDBC_CLASS);
         if (jdbcClass == null) {
-            throw new StorageInitializationException("The " + DSSTORAGE_JDBC_CLASS + " property is not defined.");
+            throw new StorageInitializationException("The " + DB_STORAGE_JDBC_CLASS + " property is not defined.");
         }
 
         try {
@@ -51,19 +51,19 @@ public abstract class AConnectionFactory implements IConnectionFactory {
             throw new StorageInitializationException("Can not initialize JDBC driver.", e);
         }
 
-        String url = databaseProperties.getProperty(DSSTORAGE_URL);
+        String url = databaseProperties.getProperty(DB_STORAGE_URL);
         if (url == null) {
-            throw new StorageInitializationException("The " + DSSTORAGE_URL + " property is not defined.");
+            throw new StorageInitializationException("The " + DB_STORAGE_URL + " property is not defined.");
         }
 
-        userName = databaseProperties.getProperty(DSSTORAGE_USER);
+        userName = databaseProperties.getProperty(DB_STORAGE_USER);
         if (userName == null) {
-            throw new StorageInitializationException("The " + DSSTORAGE_USER + " property is not defined.");
+            throw new StorageInitializationException("The " + DB_STORAGE_USER + " property is not defined.");
         }
 
-        password = databaseProperties.getProperty(DSSTORAGE_PASSWORD);
+        password = databaseProperties.getProperty(DB_STORAGE_PASSWORD);
         if (password == null) {
-            throw new StorageInitializationException("The " + DSSTORAGE_PASSWORD + " property is not defined.");
+            throw new StorageInitializationException("The " + DB_STORAGE_PASSWORD + " property is not defined.");
         }
 
         // Set the system properties in the url string

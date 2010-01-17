@@ -27,7 +27,7 @@ interface IThreadControl<T extends ITreeItem<T>> {
      * Initializes a procedure to load children of the item.
      *
      * @param model
-     * @param itemId
+     * @param item
      */
     void loadChildren(AThreadModel<T> model, T item);
 

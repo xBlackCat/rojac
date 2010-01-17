@@ -11,6 +11,7 @@ class ComboBoxEditorModel extends AbstractListModel implements ComboBoxModel {
     private final IValueChecker checker;
     private Object selected;
 
+    @SuppressWarnings({"unchecked"})
     public ComboBoxEditorModel(IValueChecker checker, Object selected) {
         this.checker = checker;
         if (selected != null && checker.isValueCorrect(selected)) {
@@ -27,6 +28,7 @@ class ComboBoxEditorModel extends AbstractListModel implements ComboBoxModel {
     }
 
     @Override
+    @SuppressWarnings({"unchecked"})
     public void setSelectedItem(Object anItem) {
         if (checker.isValueCorrect(anItem)) {
             selected = anItem;

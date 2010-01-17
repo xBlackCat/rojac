@@ -74,7 +74,9 @@ class OptionCellEditor extends AbstractCellEditor implements TreeCellEditor {
 
     @Override
     public boolean stopCellEditing() {
-        if (delegatedEditor == null || delegatedEditor.stopCellEditing()) {
+        if (delegatedEditor == null) {
+            return true;
+        } else if (delegatedEditor.stopCellEditing()) {
             Object value = delegatedEditor.getCellEditorValue();
 
             return true;

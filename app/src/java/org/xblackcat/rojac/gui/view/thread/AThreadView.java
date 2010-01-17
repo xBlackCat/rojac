@@ -64,12 +64,15 @@ public abstract class AThreadView extends AItemView {
         executor.execute(new ForumInfoLoader(forumId));
     }
 
+    @SuppressWarnings({"unchecked"})
+    @Override
     public void loadItem(int itemId) {
         int forumId = threadControl.loadThreadByItem(model, itemId);
         loadForumInfo(forumId);
     }
 
     @Override
+    @SuppressWarnings({"unchecked"})
     public void updateData(AffectedIds ids) {
         if (ids.containsForum(forumId)) {
             int[] messageIds = ArrayUtils.addAll(ids.getMessageIds(forumId), ids.getMessageIds(AffectedIds.DEFAULT_FORUM));

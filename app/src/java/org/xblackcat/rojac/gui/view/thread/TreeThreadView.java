@@ -54,6 +54,7 @@ public class TreeThreadView extends AThreadView {
             }
         });
         threads.addTreeExpansionListener(new TreeExpansionListener() {
+            @SuppressWarnings({"unchecked"})
             public void treeExpanded(TreeExpansionEvent event) {
                 TreePath path = event.getPath();
                 ITreeItem item = (ITreeItem) path.getLastPathComponent();

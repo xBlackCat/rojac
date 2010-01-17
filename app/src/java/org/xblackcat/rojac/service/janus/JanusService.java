@@ -40,6 +40,7 @@ public class JanusService implements IJanusService {
         this.password = password;
     }
 
+    @Override
     public void testConnection() throws JanusServiceException {
         log.debug("Perform connection test.");
 
@@ -53,6 +54,7 @@ public class JanusService implements IJanusService {
         }
     }
 
+    @Override
     public ForumsList getForumsList(Version verRow) throws JanusServiceException {
         log.info("Retrieve the forums list from the Janus WS.");
 
@@ -72,6 +74,7 @@ public class JanusService implements IJanusService {
         return new ForumsList(forumInfos, groupInfos, version);
     }
 
+    @Override
     public UsersList getNewUsers(Version verRow, int maxOutput) throws JanusServiceException {
         log.info("Retrieve the users list from the Janus WS. Limit = " + maxOutput);
 
@@ -87,6 +90,7 @@ public class JanusService implements IJanusService {
         return new UsersList(list);
     }
 
+    @Override
     public TopicMessages getTopicByMessage(int[] messageIds) throws JanusServiceException {
         log.info("Retrieve the topics by messages from the Janus WS.");
         if (log.isDebugEnabled()) {
@@ -108,6 +112,7 @@ public class JanusService implements IJanusService {
         return new TopicMessages(messages, moderate, rating);
     }
 
+    @Override
     public PostInfo commitChanges() throws JanusServiceException {
         log.info("Commit the local changes to the Janus WS.");
 
@@ -125,6 +130,7 @@ public class JanusService implements IJanusService {
         return new PostInfo(ids, exceptions);
     }
 
+    @Override
     public void postChanges(NewMessage[] messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException {
         log.info("Post the changes to the Janus WS.");
 
@@ -141,6 +147,7 @@ public class JanusService implements IJanusService {
         }
     }
 
+    @Override
     public NewData getNewData(RequestForumInfo[] requestForumInfos, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException {
         if (log.isInfoEnabled()) {
             log.info("Retrieve the messages from the Janus WS. Portion limit = " + maxOutput);
@@ -188,6 +195,8 @@ public class JanusService implements IJanusService {
         return new NewData(ownId, forumRowVersion, ratingRowVersion, moderateRowVersion, newMessages, newModerate, newRating);
     }
 
+    @Override
+    @SuppressWarnings({"unchecked"})
     public void init(boolean useCompression) throws JanusServiceException {
         try {
             log.info("Janus SOAP service initialization has been started.");

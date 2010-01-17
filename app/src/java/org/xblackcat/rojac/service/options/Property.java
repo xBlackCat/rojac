@@ -17,6 +17,7 @@ import java.util.Locale;
  * @author Alexey
  */
 
+@SuppressWarnings({"UnnecessaryBoxing"})
 public final class Property<T> {
     /**
      * Complete map of properties names to its objects.
@@ -67,10 +68,12 @@ public final class Property<T> {
         return create(name, type, null, checker);
     }
 
+    @SuppressWarnings({"unchecked"})
     static <V> Property<V> create(String name, V defaultValue, IValueChecker<V> checker) {
         return create(name, (Class<V>) defaultValue.getClass(), defaultValue, checker);
     }
 
+    @SuppressWarnings({"unchecked"})
     static <V> Property<V> create(String name, V defaultValue) {
         return create(name, (Class<V>) defaultValue.getClass(), defaultValue, null);
     }
