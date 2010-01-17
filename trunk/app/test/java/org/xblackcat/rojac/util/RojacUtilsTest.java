@@ -16,6 +16,7 @@ import java.util.Set;
  * @author xBlackCat
  */
 
+@SuppressWarnings({"unchecked"})
 public class RojacUtilsTest extends TestCase {
     @Override
     protected void setUp() throws Exception {

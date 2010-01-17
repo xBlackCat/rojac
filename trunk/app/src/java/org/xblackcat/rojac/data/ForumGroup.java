@@ -39,9 +39,8 @@ public final class ForumGroup {
 
         ForumGroup that = (ForumGroup) o;
 
-        if (forumGroupId != that.forumGroupId) return false;
+        return forumGroupId == that.forumGroupId;
 
-        return true;
     }
 
     public int hashCode() {

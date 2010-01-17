@@ -9,7 +9,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.ImageObserver;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -34,7 +33,7 @@ public class AnimatedIcon implements Icon {
     }
 
     private Icon original;
-    private Set repaints = new HashSet();
+    private Set<RepaintArea> repaints = new HashSet<RepaintArea>();
 
     /**
      * For use by derived classes that don't have an original.
@@ -54,8 +53,8 @@ public class AnimatedIcon implements Icon {
      * Trigger a repaint on all components on which we've previously been painted.
      */
     protected synchronized void repaint() {
-        for (Iterator i = repaints.iterator(); i.hasNext();) {
-            ((RepaintArea) i.next()).repaint();
+        for (Object repaint : repaints) {
+            ((RepaintArea) repaint).repaint();
         }
         repaints.clear();
     }
@@ -167,13 +166,13 @@ public class AnimatedIcon implements Icon {
      * @author twall
      */
     private static class AnimationObserver implements ImageObserver {
-        private WeakReference ref;
+        private WeakReference<AnimatedIcon> ref;
         private ImageIcon original;
 
         public AnimationObserver(AnimatedIcon animIcon, ImageIcon original) {
             this.original = original;
             this.original.setImageObserver(this);
-            ref = new WeakReference(animIcon);
+            ref = new WeakReference<AnimatedIcon>(animIcon);
         }
 
         /**
@@ -181,7 +180,7 @@ public class AnimatedIcon implements Icon {
          */
         public boolean imageUpdate(Image img, int flags, int x, int y, int width, int height) {
             if ((flags & (FRAMEBITS | ALLBITS)) != 0) {
-                AnimatedIcon animIcon = (AnimatedIcon) ref.get();
+                AnimatedIcon animIcon = ref.get();
                 if (animIcon != null) {
                     animIcon.repaint();
                 } else {

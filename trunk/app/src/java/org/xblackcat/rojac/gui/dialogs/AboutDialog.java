@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
  * @author xBlackCat
  */
 
-public class AboutDialog extends JDialog {
+class AboutDialog extends JDialog {
     public AboutDialog(Window owner) {
         super(owner, ModalityType.APPLICATION_MODAL);
 

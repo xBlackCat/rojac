@@ -65,7 +65,6 @@ public class ForumRoot extends Post {
      */
     public void insertPost(MessageData data) {
         int topicId = data.getTopicId();
-        int messageId = data.getMessageId();
 
         if (topicId == 0) {
             // The message is a new topic

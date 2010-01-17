@@ -57,7 +57,7 @@ public class LoadMessageDialog extends JDialog {
                             try {
                                 int iId = Integer.parseInt(id);
                                 if (iId >= 0) {
-                                    messageId = Integer.valueOf(iId);
+                                    messageId = iId;
                                 } else {
                                     messageId = null;
                                 }

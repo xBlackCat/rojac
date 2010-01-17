@@ -18,7 +18,7 @@ public class RSDNMessageParser implements IMessageParser {
     private static final String PRE_QUOTATION_REPLACEMENT = "[span]$1>$2[/span]";
 
     private static final Pattern QUOTATION_PATTERN = Pattern.compile("^\\[span\\](.*)\\[/span\\]$", Pattern.MULTILINE);
-    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+)[\\.,\\!\\:]?$", Pattern.MULTILINE);
+    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+)[\\.,!:]?$", Pattern.MULTILINE);
 
     private static final String HYPERLINKS_REPLACEMENT = "$1[url=$2]$2[/url]";
     private static final ITagInfo[] EMPTY_TAG_INFO = new ITagInfo[0];
@@ -30,6 +30,7 @@ public class RSDNMessageParser implements IMessageParser {
         }
     };
     private static final Comparator<ITagInfo> TAG_COMPARATOR = new Comparator<ITagInfo>() {
+        @SuppressWarnings({"unchecked"})
         public int compare(ITagInfo o1, ITagInfo o2) {
             int m = o1.start() - o2.start();
             if (m == 0) {

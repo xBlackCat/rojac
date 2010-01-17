@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui.dialogs;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.xblackcat.rojac.service.options.IValueChecker;
 
@@ -13,8 +11,6 @@ import javax.swing.tree.TreePath;
  * @author xBlackCat
  */
 public class PropertiesModel implements TreeModel {
-    private static final Log log = LogFactory.getLog(PropertiesModel.class);
-
     private final PropertyNode root;
     private final TreeModelSupport modelSupport = new TreeModelSupport(this);
 
@@ -46,6 +42,7 @@ public class PropertiesModel implements TreeModel {
     }
 
     @Override
+    @SuppressWarnings({"unchecked"})
     public void valueForPathChanged(TreePath path, Object newValue) {
         PropertyNode n = (PropertyNode) path.getLastPathComponent();
 

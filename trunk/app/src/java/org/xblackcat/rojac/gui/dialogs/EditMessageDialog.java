@@ -43,7 +43,7 @@ public class EditMessageDialog extends JDialog {
     public EditMessageDialog(Window owner) {
         super(owner, DEFAULT_MODALITY_TYPE);
 
-        panelPreview = new PreviewMessageView(null);
+        panelPreview = new PreviewMessageView();
         panelEdit = new EditMessagePane(panelPreview);
         storage = ServiceFactory.getInstance().getStorage();
 

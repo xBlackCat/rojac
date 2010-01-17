@@ -487,10 +487,6 @@ class MultiLineThreadItemRenderer extends JLightPanel implements TreeCellRendere
         return this;
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-    }
 
     /**
      * Overrides <code>JComponent.getPreferredSize</code> to return slightly wider preferred size value.

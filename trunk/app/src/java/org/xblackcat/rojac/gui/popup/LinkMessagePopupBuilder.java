@@ -30,7 +30,7 @@ public class LinkMessagePopupBuilder implements IPopupBuilder {
             throw new IllegalArgumentException("Invalid amount of parameters for building LinkPopUp menu");
         }
 
-        final int messageId = ((Integer) parameters[0]).intValue();
+        final int messageId = (Integer) parameters[0];
         final String url = (String) parameters[1];
         final String text = (String) parameters[2];
         final IRootPane mainFrame = (IRootPane) parameters[3];

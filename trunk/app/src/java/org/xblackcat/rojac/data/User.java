@@ -76,9 +76,8 @@ public final class User {
 
         User user = (User) o;
 
-        if (id != user.id) return false;
+        return id == user.id;
 
-        return true;
     }
 
     public int hashCode() {

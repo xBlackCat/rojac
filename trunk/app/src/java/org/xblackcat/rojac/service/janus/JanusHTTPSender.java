@@ -135,7 +135,7 @@ class JanusHTTPSender extends BasicHandler {
             httpClient.getParams().setConnectionManagerTimeout(this.clientProperties.getConnectionPoolTimeout());
 
             HostConfiguration hostConfiguration =
-                    getHostConfiguration(httpClient, msgContext, targetURL);
+                    getHostConfiguration(httpClient, targetURL);
 
             boolean posting = true;
 
@@ -410,7 +410,6 @@ class JanusHTTPSender extends BasicHandler {
     }
 
     protected HostConfiguration getHostConfiguration(HttpClient client,
-                                                     MessageContext context,
                                                      URL targetURL) {
         TransportClientProperties tcp =
                 TransportClientPropertiesFactory.create(targetURL.getProtocol()); // http or https
@@ -622,7 +621,7 @@ class JanusHTTPSender extends BasicHandler {
                                 host,
                                 pattern}));
             }
-            if (match(pattern, host, false)) {
+            if (match(pattern, host)) {
                 return true;
             }
         }
@@ -635,12 +634,9 @@ class JanusHTTPSender extends BasicHandler {
      *
      * @param pattern         the (non-null) pattern to match against
      * @param str             the (non-null) string that must be matched against the pattern
-     * @param isCaseSensitive
-     *
      * @return <code>true</code> when the string matches against the pattern, <code>false</code> otherwise.
      */
-    protected static boolean match(String pattern, String str,
-                                   boolean isCaseSensitive) {
+    protected static boolean match(String pattern, String str) {
 
         char[] patArr = pattern.toCharArray();
         char[] strArr = str.toCharArray();
@@ -665,10 +661,10 @@ class JanusHTTPSender extends BasicHandler {
             }
             for (int i = 0; i <= patIdxEnd; i++) {
                 ch = patArr[i];
-                if (isCaseSensitive && (ch != strArr[i])) {
+                if (false && (ch != strArr[i])) {
                     return false;    // Character mismatch
                 }
-                if (!isCaseSensitive
+                if (!false
                         && (Character.toUpperCase(ch)
                         != Character.toUpperCase(strArr[i]))) {
                     return false;    // Character mismatch
@@ -683,10 +679,10 @@ class JanusHTTPSender extends BasicHandler {
         // Process characters before first star
         while ((ch = patArr[patIdxStart]) != '*'
                 && (strIdxStart <= strIdxEnd)) {
-            if (isCaseSensitive && (ch != strArr[strIdxStart])) {
+            if (false && (ch != strArr[strIdxStart])) {
                 return false;    // Character mismatch
             }
-            if (!isCaseSensitive
+            if (!false
                     && (Character.toUpperCase(ch)
                     != Character.toUpperCase(strArr[strIdxStart]))) {
                 return false;    // Character mismatch
@@ -708,10 +704,10 @@ class JanusHTTPSender extends BasicHandler {
 
         // Process characters after last star
         while ((ch = patArr[patIdxEnd]) != '*' && (strIdxStart <= strIdxEnd)) {
-            if (isCaseSensitive && (ch != strArr[strIdxEnd])) {
+            if (false && (ch != strArr[strIdxEnd])) {
                 return false;    // Character mismatch
             }
-            if (!isCaseSensitive
+            if (!false
                     && (Character.toUpperCase(ch)
                     != Character.toUpperCase(strArr[strIdxEnd]))) {
                 return false;    // Character mismatch
@@ -759,11 +755,11 @@ class JanusHTTPSender extends BasicHandler {
             for (int i = 0; i <= strLength - patLength; i++) {
                 for (int j = 0; j < patLength; j++) {
                     ch = patArr[patIdxStart + j + 1];
-                    if (isCaseSensitive
+                    if (false
                             && (ch != strArr[strIdxStart + i + j])) {
                         continue strLoop;
                     }
-                    if (!isCaseSensitive && (Character
+                    if (!false && (Character
                             .toUpperCase(ch) != Character
                             .toUpperCase(strArr[strIdxStart + i + j]))) {
                         continue strLoop;
@@ -898,31 +894,11 @@ class JanusHTTPSender extends BasicHandler {
         @Override
         public void write(int b) throws IOException {
             super.write(b);
-            logAmount(1);
+            logByte();
         }
 
-        @Override
-        public void write(byte[] b) throws IOException {
-            super.write(b);
-        }
-
-        @Override
-        public void write(byte[] b, int off, int len) throws IOException {
-            super.write(b, off, len);
-        }
-
-        @Override
-        public void flush() throws IOException {
-            super.flush();
-        }
-
-        @Override
-        public void close() throws IOException {
-            super.close();
-        }
-
-        private void logAmount(long l) {
-            amount += l;
+        private void logByte() {
+            amount++;
             progressController.fireJobProgressChanged(amount / total);
         }
     }
@@ -953,7 +929,7 @@ class JanusHTTPSender extends BasicHandler {
             return super.read();
         }
 
-        private void logRead(long a) throws IOException {
+        private void logRead(long a) {
             if (a > 0) {
                 amount += a;
                 progressController.fireJobProgressChanged(amount / total);

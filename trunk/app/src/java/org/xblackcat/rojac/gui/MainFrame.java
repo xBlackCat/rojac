@@ -117,6 +117,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     public void loadData() {
+        // TODO: implement loading data
     }
 
     private void initialize() {

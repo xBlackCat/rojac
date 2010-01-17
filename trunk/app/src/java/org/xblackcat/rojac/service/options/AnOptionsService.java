@@ -72,6 +72,8 @@ abstract class AnOptionsService implements IOptionsService {
      *
      * @return a value of the specified property or <code>null</code> if property is not set.
      */
+    @SuppressWarnings({"unchecked"})
+    @Override
     public <T> T getProperty(Property<T> key) {
         String name = key.getName();
         Class<?> type = key.getType();
@@ -109,6 +111,8 @@ abstract class AnOptionsService implements IOptionsService {
      *
      * @return a previous value of the property.
      */
+    @Override
+    @SuppressWarnings({"unchecked"})
     public <T> T setProperty(Property<T> key, T newValue) {
         if (key.getChecker() != null && !key.getChecker().isValueCorrect(newValue)) {
             throw new IllegalArgumentException(newValue + " is not valid value for property " + key.getName());

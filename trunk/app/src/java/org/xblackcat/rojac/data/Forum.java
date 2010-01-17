@@ -69,10 +69,8 @@ public final class Forum {
 
         Forum forum = (Forum) o;
 
-        if (forumGroupId != forum.forumGroupId) return false;
-        if (forumId != forum.forumId) return false;
+        return forumGroupId == forum.forumGroupId && forumId == forum.forumId;
 
-        return true;
     }
 
     public int hashCode() {
