@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
@@ -24,7 +22,6 @@ import java.util.List;
 
 class RatingDialog extends JDialog {
     private final IStorage storage = ServiceFactory.getInstance().getStorage();
-    private static final Log log = LogFactory.getLog(RatingDialog.class);
 
     private final MarksTableModel marksModel;
     private final int messageId;

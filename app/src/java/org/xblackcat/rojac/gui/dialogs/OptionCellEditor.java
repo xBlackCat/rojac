@@ -20,7 +20,6 @@ class OptionCellEditor extends AbstractCellEditor implements TreeCellEditor {
     private final JPanel container = new JPanel(new BorderLayout());
     private final JPanel editor = new JPanel(new BorderLayout());
     private final JLabel label = new JLabel();
-    protected CellEditorListener[] listeners;
 
     OptionCellEditor() {
         container.add(label, BorderLayout.WEST);
@@ -77,7 +76,7 @@ class OptionCellEditor extends AbstractCellEditor implements TreeCellEditor {
         if (delegatedEditor == null) {
             return true;
         } else if (delegatedEditor.stopCellEditing()) {
-            Object value = delegatedEditor.getCellEditorValue();
+            delegatedEditor.getCellEditorValue();
 
             return true;
         } else {

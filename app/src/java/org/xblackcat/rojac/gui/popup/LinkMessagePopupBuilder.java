@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.IRootPane;
 
 import javax.swing.*;
@@ -12,8 +10,6 @@ import javax.swing.*;
  */
 
 public class LinkMessagePopupBuilder implements IPopupBuilder {
-    private static final Log log = LogFactory.getLog(LinkMessagePopupBuilder.class);
-
     /**
      * Builds popup menu for RSDN message link. Available actions in the menu are: <ul> <li>"Goto" - open the message in
      * the view window</li> <li>"Open in new tab" - open the message in new tab of the main frame</li> <li>"Open thread

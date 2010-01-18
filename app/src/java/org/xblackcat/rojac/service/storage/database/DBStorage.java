@@ -299,7 +299,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
         @Override
         public String toString() {
-            return name;
+            return getName();
         }
     }
 }

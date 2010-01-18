@@ -40,7 +40,6 @@ public class JanusService implements IJanusService {
         this.password = password;
     }
 
-    @Override
     public void testConnection() throws JanusServiceException {
         log.debug("Perform connection test.");
 
@@ -195,7 +194,6 @@ public class JanusService implements IJanusService {
         return new NewData(ownId, forumRowVersion, ratingRowVersion, moderateRowVersion, newMessages, newModerate, newRating);
     }
 
-    @Override
     @SuppressWarnings({"unchecked"})
     public void init(boolean useCompression) throws JanusServiceException {
         try {

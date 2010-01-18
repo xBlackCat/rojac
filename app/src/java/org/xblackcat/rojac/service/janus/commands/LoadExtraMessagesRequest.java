@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.service.janus.commands;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.janus.IJanusService;
@@ -22,8 +20,6 @@ import java.util.Arrays;
  */
 
 class LoadExtraMessagesRequest extends ALoadPostsRequest {
-    private static final Log log = LogFactory.getLog(LoadExtraMessagesRequest.class);
-
     public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         int[] messageIds = miscAH.getExtraMessages();
 

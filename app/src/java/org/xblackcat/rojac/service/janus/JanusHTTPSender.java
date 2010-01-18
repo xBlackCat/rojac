@@ -664,9 +664,8 @@ class JanusHTTPSender extends BasicHandler {
                 if (false && (ch != strArr[i])) {
                     return false;    // Character mismatch
                 }
-                if (!false
-                        && (Character.toUpperCase(ch)
-                        != Character.toUpperCase(strArr[i]))) {
+                if (Character.toUpperCase(ch)
+                        != Character.toUpperCase(strArr[i])) {
                     return false;    // Character mismatch
                 }
             }
@@ -682,9 +681,8 @@ class JanusHTTPSender extends BasicHandler {
             if (false && (ch != strArr[strIdxStart])) {
                 return false;    // Character mismatch
             }
-            if (!false
-                    && (Character.toUpperCase(ch)
-                    != Character.toUpperCase(strArr[strIdxStart]))) {
+            if (Character.toUpperCase(ch)
+                    != Character.toUpperCase(strArr[strIdxStart])) {
                 return false;    // Character mismatch
             }
             patIdxStart++;
@@ -707,9 +705,8 @@ class JanusHTTPSender extends BasicHandler {
             if (false && (ch != strArr[strIdxEnd])) {
                 return false;    // Character mismatch
             }
-            if (!false
-                    && (Character.toUpperCase(ch)
-                    != Character.toUpperCase(strArr[strIdxEnd]))) {
+            if (Character.toUpperCase(ch)
+                    != Character.toUpperCase(strArr[strIdxEnd])) {
                 return false;    // Character mismatch
             }
             patIdxEnd--;
@@ -759,7 +756,7 @@ class JanusHTTPSender extends BasicHandler {
                             && (ch != strArr[strIdxStart + i + j])) {
                         continue strLoop;
                     }
-                    if (!false && (Character
+                    if ((Character
                             .toUpperCase(ch) != Character
                             .toUpperCase(strArr[strIdxStart + i + j]))) {
                         continue strLoop;
@@ -799,11 +796,6 @@ class JanusHTTPSender extends BasicHandler {
         private HttpMethodBase method;
         private Message message;
         boolean httpChunkStream = true; //Use HTTP chunking or not.
-
-        public MessageRequestEntity(HttpMethodBase method, Message message) {
-            this.message = message;
-            this.method = method;
-        }
 
         public MessageRequestEntity(HttpMethodBase method, Message message, boolean httpChunkStream) {
             this.message = message;
@@ -846,11 +838,6 @@ class JanusHTTPSender extends BasicHandler {
     }
 
     private class GzipMessageRequestEntity extends MessageRequestEntity {
-
-        public GzipMessageRequestEntity(HttpMethodBase method, Message message) {
-            super(method, message);
-        }
-
         public GzipMessageRequestEntity(HttpMethodBase method, Message message, boolean httpChunkStream) {
             super(method, message, httpChunkStream);
         }

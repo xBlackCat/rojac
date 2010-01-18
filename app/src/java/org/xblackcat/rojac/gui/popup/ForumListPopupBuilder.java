@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.ForumData;
 import org.xblackcat.rojac.gui.view.ForumTableModel;
@@ -22,8 +20,6 @@ import java.awt.event.ActionListener;
  */
 
 public class ForumListPopupBuilder implements IPopupBuilder {
-    private static final Log log = LogFactory.getLog(ForumListPopupBuilder.class);
-
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
     protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
