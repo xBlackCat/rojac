@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 
 public class RSDNMessageParser implements IMessageParser {
-    private static final Pattern PRE_QUOTATION_PATTERN = Pattern.compile("^([[^\\s\\p{Punct}]_]+?)>(.*?)$", Pattern.MULTILINE);
+    private static final Pattern PRE_QUOTATION_PATTERN = Pattern.compile("^([[^\\s\\p{Punct}]_]*?)>(.*?)$", Pattern.MULTILINE);
     private static final String PRE_QUOTATION_REPLACEMENT = "[span]$1>$2[/span]";
 
     private static final Pattern QUOTATION_PATTERN = Pattern.compile("^\\[span\\](.*)\\[/span\\]$", Pattern.MULTILINE);

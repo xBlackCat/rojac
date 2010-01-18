@@ -17,13 +17,6 @@ import ru.rsdn.Janus.RequestForumInfo;
 
 public interface IJanusService {
     /**
-     * Tests a connection with Janus WS.
-     *
-     * @throws JanusServiceException throws if connection can not be established.
-     */
-    void testConnection() throws JanusServiceException;
-
-    /**
      * Retrieves a forums list from Janus WS.
      *
      * @param verRow
@@ -94,6 +87,4 @@ public interface IJanusService {
      * @throws JanusServiceException throws if any errors occurs.
      */
     NewData getNewData(RequestForumInfo[] requestForumInfos, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
-
-    void init(boolean useCompression) throws JanusServiceException;
 }

@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -22,8 +20,6 @@ import java.util.Map;
 public class ForumTableModel extends AbstractTableModel {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
     protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
-
-    private static final Log log = LogFactory.getLog(ForumTableModel.class);
 
     private List<ForumData> forums = new ArrayList<ForumData>();
 

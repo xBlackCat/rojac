@@ -72,7 +72,6 @@ public abstract class StringUtils {
 	 * </pre>
 	 * @param str the CharSequence to check (may be <code>null</code>)
 	 * @return <code>true</code> if the CharSequence is not null and has length
-	 * @see #hasText(String)
 	 */
 	public static boolean hasLength(CharSequence str) {
 		return (str != null && str.length() > 0);
@@ -87,48 +86,6 @@ public abstract class StringUtils {
 	 */
 	public static boolean hasLength(String str) {
 		return hasLength((CharSequence) str);
-	}
-
-	/**
-	 * Check whether the given CharSequence has actual text.
-	 * More specifically, returns <code>true</code> if the string not <code>null</code>,
-	 * its length is greater than 0, and it contains at least one non-whitespace character.
-	 * <p><pre>
-	 * StringUtils.hasText(null) = false
-	 * StringUtils.hasText("") = false
-	 * StringUtils.hasText(" ") = false
-	 * StringUtils.hasText("12345") = true
-	 * StringUtils.hasText(" 12345 ") = true
-	 * </pre>
-	 * @param str the CharSequence to check (may be <code>null</code>)
-	 * @return <code>true</code> if the CharSequence is not <code>null</code>,
-	 * its length is greater than 0, and it does not contain whitespace only
-	 * @see java.lang.Character#isWhitespace
-	 */
-	public static boolean hasText(CharSequence str) {
-		if (!hasLength(str)) {
-			return false;
-		}
-		int strLen = str.length();
-		for (int i = 0; i < strLen; i++) {
-			if (!Character.isWhitespace(str.charAt(i))) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Check whether the given String has actual text.
-	 * More specifically, returns <code>true</code> if the string not <code>null</code>,
-	 * its length is greater than 0, and it contains at least one non-whitespace character.
-	 * @param str the String to check (may be <code>null</code>)
-	 * @return <code>true</code> if the String is not <code>null</code>, its length is
-	 * greater than 0, and it does not contain whitespace only
-	 * @see #hasText(CharSequence)
-	 */
-	public static boolean hasText(String str) {
-		return hasText((CharSequence) str);
 	}
 
 
@@ -188,51 +145,6 @@ public abstract class StringUtils {
 	//---------------------------------------------------------------------
 
     /**
-	 * Unqualify a string qualified by a '.' dot character. For example,
-	 * "this.name.is.qualified", returns "qualified".
-	 * @param qualifiedName the qualified name
-	 */
-	public static String unqualify(String qualifiedName) {
-		return unqualify(qualifiedName, '.');
-	}
-
-	/**
-	 * Unqualify a string qualified by a separator character. For example,
-	 * "this:name:is:qualified" returns "qualified" if using a ':' separator.
-	 * @param qualifiedName the qualified name
-	 * @param separator the separator
-	 */
-	public static String unqualify(String qualifiedName, char separator) {
-		return qualifiedName.substring(qualifiedName.lastIndexOf(separator) + 1);
-	}
-
-    /**
-	 * Uncapitalize a <code>String</code>, changing the first letter to
-	 * lower case as per {@link Character#toLowerCase(char)}.
-	 * No other letters are changed.
-	 * @param str the String to uncapitalize, may be <code>null</code>
-	 * @return the uncapitalized String, <code>null</code> if null
-	 */
-	public static String uncapitalize(String str) {
-		return changeFirstCharacterCase(str, false);
-	}
-
-	private static String changeFirstCharacterCase(String str, boolean capitalize) {
-		if (str == null || str.length() == 0) {
-			return str;
-		}
-		StringBuffer buf = new StringBuffer(str.length());
-		if (capitalize) {
-			buf.append(Character.toUpperCase(str.charAt(0)));
-		}
-		else {
-			buf.append(Character.toLowerCase(str.charAt(0)));
-		}
-		buf.append(str.substring(1));
-		return buf.toString();
-	}
-
-	/**
 	 * Extract the filename from the given path,
 	 * e.g. "mypath/myfile.txt" -> "myfile.txt".
 	 * @param path the file path (may be <code>null</code>)
@@ -347,28 +259,6 @@ public abstract class StringUtils {
 			return null;
 		}
 		return collection.toArray(new String[collection.size()]);
-	}
-
-    /**
-	 * Split a String at the first occurrence of the delimiter.
-	 * Does not include the delimiter in the result.
-	 * @param toSplit the string to split
-	 * @param delimiter to split the string up with
-	 * @return a two element array with index 0 being before the delimiter, and
-	 * index 1 being after the delimiter (neither element includes the delimiter);
-	 * or <code>null</code> if the delimiter wasn't found in the given input String
-	 */
-	public static String[] split(String toSplit, String delimiter) {
-		if (!hasLength(toSplit) || !hasLength(delimiter)) {
-			return null;
-		}
-		int offset = toSplit.indexOf(delimiter);
-		if (offset < 0) {
-			return null;
-		}
-		String beforeDelimiter = toSplit.substring(0, offset);
-		String afterDelimiter = toSplit.substring(offset + delimiter.length());
-		return new String[] {beforeDelimiter, afterDelimiter};
 	}
 
     /**

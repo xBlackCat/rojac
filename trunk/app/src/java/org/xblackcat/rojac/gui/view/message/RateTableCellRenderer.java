@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.service.options.Property;
 
@@ -13,7 +11,6 @@ import java.awt.*;
  * @author xBlackCat
  */
 class RateTableCellRenderer extends DefaultTableCellRenderer {
-    private static final Log log = LogFactory.getLog(RateTableCellRenderer.class);
     private static final Color LIGHT_GREEN = new Color(127, 255, 127);
 
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
