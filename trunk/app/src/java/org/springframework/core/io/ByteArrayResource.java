@@ -34,7 +34,6 @@ import java.util.Arrays;
  * @since 1.2.3
  * @see java.io.ByteArrayInputStream
  * @see InputStreamResource
- * @see org.springframework.mail.javamail.MimeMessageHelper#addAttachment(String, InputStreamSource)
  */
 public class ByteArrayResource extends AbstractResource {
 

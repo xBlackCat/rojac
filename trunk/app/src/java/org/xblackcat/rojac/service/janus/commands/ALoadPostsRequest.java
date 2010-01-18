@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.service.janus.commands;
 
 import gnu.trove.TIntHashSet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
@@ -16,8 +14,6 @@ import ru.rsdn.Janus.JanusRatingInfo;
  */
 
 abstract class ALoadPostsRequest extends ARequest {
-    private static final Log log = LogFactory.getLog(ALoadPostsRequest.class);
-
     protected final AffectedIds processed = new AffectedIds();
 
     protected final IStorage storage;
@@ -56,8 +52,6 @@ abstract class ALoadPostsRequest extends ARequest {
             }
 
             loadedMessages.add(mId);
-
-            long mesDate = mes.getMessageDate().getTimeInMillis();
 
             int forumId = mes.getForumId();
             processed.addMessageId(forumId, mId);

@@ -25,10 +25,7 @@ package org.springframework.core;
  *
  * @author Juergen Hoeller
  * @since 2.0
- * @see NestedRuntimeException
- * @see NestedCheckedException
  * @see NestedIOException
- * @see org.springframework.web.util.NestedServletException
  */
 public abstract class NestedExceptionUtils {
 

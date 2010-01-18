@@ -1,8 +1,5 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.options.IOptionsService;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -80,15 +77,11 @@ public class EditMessagePane extends JPanel {
         }
 
         private void preview() {
-            IOptionsService os = ServiceFactory.getInstance().getOptionsService();
-
-            if (true) {
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        forcePreview();
-                    }
-                });
-            }
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    forcePreview();
+                }
+            });
         }
     }
 }

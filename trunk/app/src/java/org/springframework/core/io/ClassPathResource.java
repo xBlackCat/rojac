@@ -16,9 +16,9 @@
 
 package org.springframework.core.io;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
@@ -132,7 +132,7 @@ public class ClassPathResource extends AbstractResource {
 	 * @see java.lang.Class#getResourceAsStream(String)
 	 */
 	public InputStream getInputStream() throws IOException {
-		InputStream is = null;
+		InputStream is;
 		if (this.clazz != null) {
 			is = this.clazz.getResourceAsStream(this.path);
 		}
@@ -152,7 +152,7 @@ public class ClassPathResource extends AbstractResource {
 	 * @see java.lang.Class#getResource(String)
 	 */
 	public URL getURL() throws IOException {
-		URL url = null;
+		URL url;
 		if (this.clazz != null) {
 			url = this.clazz.getResource(this.path);
 		}
@@ -227,8 +227,8 @@ public class ClassPathResource extends AbstractResource {
 		if (obj instanceof ClassPathResource) {
 			ClassPathResource otherRes = (ClassPathResource) obj;
 			return (this.path.equals(otherRes.path) &&
-					ObjectUtils.nullSafeEquals(this.classLoader, otherRes.classLoader) &&
-					ObjectUtils.nullSafeEquals(this.clazz, otherRes.clazz));
+                        ObjectUtils.equals(this.classLoader, otherRes.classLoader) &&
+					ObjectUtils.equals(this.clazz, otherRes.clazz));
 		}
 		return false;
 	}

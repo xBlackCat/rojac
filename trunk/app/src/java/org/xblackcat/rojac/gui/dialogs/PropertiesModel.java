@@ -55,9 +55,10 @@ public class PropertiesModel implements TreeModel {
     }
 
     @Override
+    @SuppressWarnings({"unchecked"})
     public int getIndexOfChild(Object parent, Object child) {
         PropertyNode n = (PropertyNode) parent;
-        return n.indexOf((PropertyNode) child);
+        return n.indexOf((PropertyNode<?>) child);
     }
 
     @Override

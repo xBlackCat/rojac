@@ -59,16 +59,7 @@ public class AntPathMatcher implements PathMatcher {
 	private String pathSeparator = DEFAULT_PATH_SEPARATOR;
 
 
-	/**
-	 * Set the path separator to use for pattern parsing.
-	 * Default is "/", as in Ant.
-	 */
-	public void setPathSeparator(String pathSeparator) {
-		this.pathSeparator = (pathSeparator != null ? pathSeparator : DEFAULT_PATH_SEPARATOR);
-	}
-
-
-	public boolean isPattern(String path) {
+    public boolean isPattern(String path) {
 		return (path.indexOf('*') != -1 || path.indexOf('?') != -1);
 	}
 
@@ -189,8 +180,8 @@ public class AntPathMatcher implements PathMatcher {
 			strLoop:
 			    for (int i = 0; i <= strLength - patLength; i++) {
 				    for (int j = 0; j < patLength; j++) {
-					    String subPat = (String) pattDirs[pattIdxStart + j + 1];
-					    String subStr = (String) pathDirs[pathIdxStart + i + j];
+					    String subPat = pattDirs[pattIdxStart + j + 1];
+					    String subStr = pathDirs[pathIdxStart + i + j];
 					    if (!matchStrings(subPat, subStr)) {
 						    continue strLoop;
 					    }
@@ -238,12 +229,12 @@ public class AntPathMatcher implements PathMatcher {
 		char ch;
 
 		boolean containsStar = false;
-		for (int i = 0; i < patArr.length; i++) {
-			if (patArr[i] == '*') {
-				containsStar = true;
-				break;
-			}
-		}
+        for (char aPatArr : patArr) {
+            if (aPatArr == '*') {
+                containsStar = true;
+                break;
+            }
+        }
 
 		if (!containsStar) {
 			// No '*'s, so we make a shortcut
@@ -360,52 +351,6 @@ public class AntPathMatcher implements PathMatcher {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Given a pattern and a full path, determine the pattern-mapped part.
-	 * <p>For example:
-	 * <ul>
-	 * <li>'<code>/docs/cvs/commit.html</code>' and '<code>/docs/cvs/commit.html</code> -> ''</li>
-	 * <li>'<code>/docs/*</code>' and '<code>/docs/cvs/commit</code> -> '<code>cvs/commit</code>'</li>
-	 * <li>'<code>/docs/cvs/*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>commit.html</code>'</li>
-	 * <li>'<code>/docs/**</code>' and '<code>/docs/cvs/commit</code> -> '<code>cvs/commit</code>'</li>
-	 * <li>'<code>/docs/**\/*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>cvs/commit.html</code>'</li>
-	 * <li>'<code>/*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>docs/cvs/commit.html</code>'</li>
-	 * <li>'<code>*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>/docs/cvs/commit.html</code>'</li>
-	 * <li>'<code>*</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>/docs/cvs/commit.html</code>'</li>
-	 * </ul>
-	 * <p>Assumes that {@link #match} returns <code>true</code> for '<code>pattern</code>'
-	 * and '<code>path</code>', but does <strong>not</strong> enforce this.
-	 */
-	public String extractPathWithinPattern(String pattern, String path) {
-		String[] patternParts = StringUtils.tokenizeToStringArray(pattern, this.pathSeparator);
-		String[] pathParts = StringUtils.tokenizeToStringArray(path, this.pathSeparator);
-
-		StringBuffer buffer = new StringBuffer();
-
-		// Add any path parts that have a wildcarded pattern part.
-		int puts = 0;
-		for (int i = 0; i < patternParts.length; i++) {
-			String patternPart = patternParts[i];
-			if ((patternPart.indexOf('*') > -1 || patternPart.indexOf('?') > -1) && pathParts.length >= i + 1) {
-				if (puts > 0 || (i == 0 && !pattern.startsWith(this.pathSeparator))) {
-					buffer.append(this.pathSeparator);
-				}
-				buffer.append(pathParts[i]);
-				puts++;
-			}
-		}
-
-		// Append any trailing path parts.
-		for (int i = patternParts.length; i < pathParts.length; i++) {
-			if (puts > 0 || i > 0) {
-				buffer.append(this.pathSeparator);
-			}
-			buffer.append(pathParts[i]);
-		}
-
-		return buffer.toString();
 	}
 
 }

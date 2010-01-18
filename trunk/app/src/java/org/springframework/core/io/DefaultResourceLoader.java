@@ -25,7 +25,6 @@ import java.net.URL;
 
 /**
  * Default implementation of the {@link ResourceLoader} interface.
- * {@link org.springframework.context.support.AbstractApplicationContext}.
  * Can also be used standalone.
  *
  * <p>Will return a {@link UrlResource} if the location value is a URL,
@@ -35,7 +34,6 @@ import java.net.URL;
  * @author Juergen Hoeller
  * @since 10.03.2004
  * @see FileSystemResourceLoader
- * @see org.springframework.context.support.ClassPathXmlApplicationContext
  */
 public class DefaultResourceLoader implements ResourceLoader {
 
@@ -111,8 +109,6 @@ public class DefaultResourceLoader implements ResourceLoader {
 	 * @param path the path to the resource
 	 * @return the corresponding Resource handle
 	 * @see ClassPathResource
-	 * @see org.springframework.context.support.FileSystemXmlApplicationContext#getResourceByPath
-	 * @see org.springframework.web.context.support.XmlWebApplicationContext#getResourceByPath
 	 */
 	protected Resource getResourceByPath(String path) {
 		return new ClassPathContextResource(path, getClassLoader());
