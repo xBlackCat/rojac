@@ -17,8 +17,11 @@
 package org.springframework.util;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Miscellaneous class utility methods. Mainly for internal use within the
@@ -29,7 +32,6 @@ import java.util.*;
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @since 1.1
- * @see ReflectionUtils
  */
 public abstract class ClassUtils {
 
@@ -44,13 +46,13 @@ public abstract class ClassUtils {
 	 * Map with primitive wrapper type as key and corresponding primitive
 	 * type as value, for example: Integer.class -> int.class.
 	 */
-	private static final Map primitiveWrapperTypeMap = new HashMap(8);
+	private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new HashMap<Class<?>, Class<?>>(8);
 
 	/**
 	 * Map with primitive type name as key and corresponding primitive
 	 * type as value, for example: "int" -> "int.class".
 	 */
-	private static final Map primitiveTypeNameMap = new HashMap(16);
+	private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<String, Class<?>>(16);
 
 
 	static {
@@ -63,7 +65,7 @@ public abstract class ClassUtils {
 		primitiveWrapperTypeMap.put(Long.class, long.class);
 		primitiveWrapperTypeMap.put(Short.class, short.class);
 
-		Set primitiveTypeNames = new HashSet(16);
+		Set<Class<?>> primitiveTypeNames = new HashSet<Class<?>>(16);
 		primitiveTypeNames.addAll(primitiveWrapperTypeMap.values());
 		primitiveTypeNames.addAll(Arrays.asList(boolean[].class, byte[].class, char[].class, double[].class,
                 float[].class, int[].class, long[].class, short[].class));
@@ -180,92 +182,8 @@ public abstract class ClassUtils {
 		// SHOULD sit in a package, so a length check is worthwhile.
 		if (name != null && name.length() <= 8) {
 			// Could be a primitive - likely.
-			result = (Class) primitiveTypeNameMap.get(name);
+			result = primitiveTypeNameMap.get(name);
 		}
 		return result;
 	}
-
-
-    /**
-	 * Determine whether the given class has a method with the given signature,
-	 * and return it if available (else return <code>null</code>).
-	 * <p>Essentially translates <code>NoSuchMethodException</code> to <code>null</code>.
-	 * @param clazz	the clazz to analyze
-	 * @param methodName the name of the method
-	 * @param paramTypes the parameter types of the method
-	 * @return the method, or <code>null</code> if not found
-	 * @see java.lang.Class#getMethod
-	 */
-	public static Method getMethodIfAvailable(Class clazz, String methodName, Class[] paramTypes) {
-		Assert.notNull(clazz, "Class must not be null");
-		Assert.notNull(methodName, "Method name must not be null");
-		try {
-			return clazz.getMethod(methodName, paramTypes);
-		}
-		catch (NoSuchMethodException ex) {
-			return null;
-		}
-	}
-
-
-    /**
-	 * Return all interfaces that the given class implements as array,
-	 * including ones implemented by superclasses.
-	 * <p>If the class itself is an interface, it gets returned as sole interface.
-	 * @param clazz the class to analyse for interfaces
-	 * @return all interfaces that the given object implements as array
-	 */
-	public static Class[] getAllInterfacesForClass(Class clazz) {
-		return getAllInterfacesForClass(clazz, null);
-	}
-
-	/**
-	 * Return all interfaces that the given class implements as array,
-	 * including ones implemented by superclasses.
-	 * <p>If the class itself is an interface, it gets returned as sole interface.
-	 * @param clazz the class to analyse for interfaces
-	 * @param classLoader the ClassLoader that the interfaces need to be visible in
-	 * (may be <code>null</code> when accepting all declared interfaces)
-	 * @return all interfaces that the given object implements as array
-	 */
-	public static Class[] getAllInterfacesForClass(Class clazz, ClassLoader classLoader) {
-		Assert.notNull(clazz, "Class must not be null");
-		if (clazz.isInterface()) {
-			return new Class[] {clazz};
-		}
-		List interfaces = new ArrayList();
-		while (clazz != null) {
-			for (int i = 0; i < clazz.getInterfaces().length; i++) {
-				Class ifc = clazz.getInterfaces()[i];
-				if (!interfaces.contains(ifc) &&
-						(classLoader == null || isVisible(ifc, classLoader))) {
-					interfaces.add(ifc);
-				}
-			}
-			clazz = clazz.getSuperclass();
-		}
-		return (Class[]) interfaces.toArray(new Class[interfaces.size()]);
-	}
-
-    /**
-	 * Check whether the given class is visible in the given ClassLoader.
-	 * @param clazz the class to check (typically an interface)
-	 * @param classLoader the ClassLoader to check against (may be <code>null</code>,
-	 * in which case this method will always return <code>true</code>)
-	 */
-	public static boolean isVisible(Class clazz, ClassLoader classLoader) {
-		if (classLoader == null) {
-			return true;
-		}
-		try {
-			Class actualClass = classLoader.loadClass(clazz.getName());
-			return (clazz == actualClass);
-			// Else: different interface class found...
-		}
-		catch (ClassNotFoundException ex) {
-			// No interface class found...
-			return false;
-		}
-	}
-
 }

@@ -19,10 +19,7 @@ package org.springframework.util;
 /**
  * Strategy interface for <code>String</code>-based path matching.
  * 
- * <p>Used by {@link org.springframework.core.io.support.PathMatchingResourcePatternResolver},
- * {@link org.springframework.web.servlet.handler.AbstractUrlHandlerMapping},
- * {@link org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver},
- * and {@link org.springframework.web.servlet.mvc.WebContentInterceptor}.
+ * <p>Used by {@link org.springframework.core.io.support.PathMatchingResourcePatternResolver}.
  *
  * <p>The default implementation is {@link AntPathMatcher}, supporting the
  * Ant-style pattern syntax.
@@ -65,27 +62,4 @@ public interface PathMatcher {
 	 * <code>false</code> if it didn't
 	 */
 	boolean matchStart(String pattern, String path);
-
-	/**
-	 * Given a pattern and a full path, determine the pattern-mapped part.
-	 * <p>This method is supposed to find out which part of the path is matched
-	 * dynamically through an actual pattern, that is, it strips off a statically
-	 * defined leading path from the given full path, returning only the actually
-	 * pattern-matched part of the path.
-	 * <p>For example: For "myroot/*.html" as pattern and "myroot/myfile.html"
-	 * as full path, this method should return "myfile.html". The detailed
-	 * determination rules are specified to this PathMatcher's matching strategy.
-	 * <p>A simple implementation may return the given full path as-is in case
-	 * of an actual pattern, and the empty String in case of the pattern not
-	 * containing any dynamic parts (i.e. the <code>pattern</code> parameter being
-	 * a static path that wouldn't qualify as an actual {@link #isPattern pattern}).
-	 * A sophisticated implementation will differentiate between the static parts
-	 * and the dynamic parts of the given path pattern.
-	 * @param pattern the path pattern
-	 * @param path the full path to introspect
-	 * @return the pattern-mapped part of the given <code>path</code>
-	 * (never <code>null</code>)
-	 */
-	String extractPathWithinPattern(String pattern, String path);
-
 }
