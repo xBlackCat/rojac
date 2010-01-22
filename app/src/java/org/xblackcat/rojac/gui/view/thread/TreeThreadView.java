@@ -2,10 +2,7 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -41,15 +38,17 @@ public class TreeThreadView extends AThreadView {
 
         threads.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
-                ITreeItem mi = (ITreeItem) e.getPath().getLastPathComponent();
+                Post mi = (Post) e.getPath().getLastPathComponent();
                 fireMessageGotFocus(mi.getMessageId());
 
                 Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
-                SetMessageReadFlag target = new SetMessageReadFlag(forumId, mi.getMessageId());
-                if (delay > 0) {
-                    executor.setupTimer("Forum_" + forumId, target, delay);
-                } else {
-                    executor.execute(target);
+                if (delay != null && delay >= 0) {
+                    SetMessageReadFlag target = new SetMessageReadFlag(mi, mainFrame);
+                    if (delay > 0) {
+                        executor.setupTimer("Forum_" + forumId, target, delay);
+                    } else {
+                        executor.execute(target);
+                    }
                 }
             }
         });
@@ -136,41 +135,9 @@ public class TreeThreadView extends AThreadView {
         }
 
         private JPopupMenu createMenu(ITreeItem mi) {
-            return PopupMenuBuilder.getTreeViewPopup(mi, mainFrame);
+            return PopupMenuBuilder.getTreeViewPopup(mi, model, mainFrame);
         }
 
-    }
-
-    private class SetMessageReadFlag extends RojacWorker<Void, Void> {
-        private final int forumId;
-        private final int messageId;
-
-        public SetMessageReadFlag(int forumId, int messageId) {
-            this.forumId = forumId;
-            this.messageId = messageId;
-        }
-
-        @Override
-        protected Void perform() throws Exception {
-            try {
-                storage.getMessageAH().updateMessageReadFlag(messageId, true);
-            } catch (StorageException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void done() {
-            Post post = model.getRoot().getMessageById(messageId);
-            if (post != null) {
-                post.setRead(true);
-
-                AffectedIds affectedIds = new AffectedIds();
-                affectedIds.addMessageId(forumId, messageId);
-                mainFrame.updateData(affectedIds);
-            }
-        }
     }
 
 }

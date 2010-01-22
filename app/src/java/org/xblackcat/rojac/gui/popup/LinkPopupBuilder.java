@@ -8,7 +8,7 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-public class LinkPopupBuilder implements IPopupBuilder {
+class LinkPopupBuilder implements IPopupBuilder {
     /**
      * Builds popup menu for downloadable link (link that points on a file like archive or document). Available actions
      * in the menu are: <ul> <li>"Open in browser" - open the link in browser </li> <li>"Copy to clipboard" - copy the
@@ -27,6 +27,18 @@ public class LinkPopupBuilder implements IPopupBuilder {
         final String url = (String) parameters[1];
         final String text = (String) parameters[2];
 
+        return buildInternal(url, text);
+    }
+
+    /**
+     * Real menu builder.
+     *
+     * @param url  
+     * @param text
+     *
+     * @return built pop-up menu.
+     */
+    private JPopupMenu buildInternal(String url, String text) {
         JPopupMenu menu = new JPopupMenu();
 
         JMenuItem headerItem = new JMenuItem(text);
