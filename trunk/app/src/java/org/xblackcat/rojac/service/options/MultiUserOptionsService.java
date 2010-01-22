@@ -5,12 +5,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,7 +20,7 @@ import java.util.Properties;
 
 public final class MultiUserOptionsService extends AnOptionsService {
     private static final Log log = LogFactory.getLog(MultiUserOptionsService.class);
-    private static final Collection<Property> DO_NOT_STORE = new HashSet<Property>(Arrays.asList(
+    private static final Collection<Property<?>> DO_NOT_STORE = new HashSet<Property<?>>(Arrays.asList(
             Property.ROJAC_DEBUG_MODE
     ));
 

@@ -15,11 +15,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * @author xBlackCat
- */
+/** @author xBlackCat */
 
-public class ForumListPopupBuilder implements IPopupBuilder {
+class ForumListPopupBuilder implements IPopupBuilder {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
     protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
@@ -31,7 +29,7 @@ public class ForumListPopupBuilder implements IPopupBuilder {
      *
      * @param parameters
      *
-     * @return
+     * @return built pop-up menu
      */
     @Override
     public JPopupMenu buildMenu(Object... parameters) {
@@ -39,10 +37,23 @@ public class ForumListPopupBuilder implements IPopupBuilder {
             throw new IllegalArgumentException("Invalid parameters amount.");
         }
 
-        final ForumData forumData = (ForumData) parameters[0];
-        final ForumTableModel model = (ForumTableModel) parameters[1];
-        final IRootPane mainFrame = (IRootPane) parameters[2];
+        ForumData forumData = (ForumData) parameters[0];
+        ForumTableModel model = (ForumTableModel) parameters[1];
+        IRootPane mainFrame = (IRootPane) parameters[2];
 
+        return buildInternal(forumData, model, mainFrame);
+    }
+
+    /**
+     * Real menu builder.
+     *
+     * @param forumData selected forum data.
+     * @param model forums view model to manipulate with its data.  
+     * @param mainFrame main frame controller.
+     *
+     * @return built pop-up menu
+     */
+    private JPopupMenu buildInternal(final ForumData forumData, ForumTableModel model, final IRootPane mainFrame) {
         JPopupMenu menu = new JPopupMenu(forumData.getForum().getForumName());
 
         final boolean subscribed = forumData.isSubscribed();

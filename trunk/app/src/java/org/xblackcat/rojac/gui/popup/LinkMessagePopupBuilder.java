@@ -5,11 +5,9 @@ import org.xblackcat.rojac.gui.IRootPane;
 
 import javax.swing.*;
 
-/**
- * @author xBlackCat
- */
+/** @author xBlackCat */
 
-public class LinkMessagePopupBuilder implements IPopupBuilder {
+class LinkMessagePopupBuilder implements IPopupBuilder {
     /**
      * Builds popup menu for RSDN message link. Available actions in the menu are: <ul> <li>"Goto" - open the message in
      * the view window</li> <li>"Open in new tab" - open the message in new tab of the main frame</li> <li>"Open thread
@@ -26,24 +24,43 @@ public class LinkMessagePopupBuilder implements IPopupBuilder {
             throw new IllegalArgumentException("Invalid amount of parameters for building LinkPopUp menu");
         }
 
-        final int messageId = (Integer) parameters[0];
+        final Integer messageId = (Integer) parameters[0];
         final String url = (String) parameters[1];
         final String text = (String) parameters[2];
         final IRootPane mainFrame = (IRootPane) parameters[3];
 
-        final JPopupMenu menu = new JPopupMenu("#" + messageId);
+        return builtInternal(messageId, url, text, mainFrame);
+    }
 
-        JMenuItem item = new JMenuItem("#" + messageId);
-        item.setEnabled(false);
+    /**
+     * Real menu builder.
+     *
+     * @param messageId message id to build 'copy link' and 'open link' actions.
+     * @param url
+     * @param text
+     * @param mainFrame
+     *
+     * @return
+     */
+    private JPopupMenu builtInternal(Integer messageId, String url, String text, IRootPane mainFrame) {
+        final JPopupMenu menu = new JPopupMenu();
 
-        menu.add(item);
+        String headerText = messageId == null ? text : "#" + messageId;
+        JMenuItem headerItem = new JMenuItem(headerText);
+        headerItem.setEnabled(false);
+        menu.add(headerItem);
 
         menu.addSeparator();
-        menu.add(MenuHelper.openMessage(messageId, mainFrame));
         MenuHelper.addOpenLink(menu, url);
+        if (messageId != null) {
+            menu.add(MenuHelper.openMessageSubmenu(messageId, mainFrame));
+        }
 
         menu.addSeparator();
-        menu.add(MenuHelper.copyLinkSubmenu(messageId));
+        menu.add(MenuHelper.copyToClipboard(url));
+        if (messageId != null) {
+            menu.add(MenuHelper.copyLinkSubmenu(messageId));
+        }
 
         return menu;
     }

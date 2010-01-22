@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
+ * Simple implementation to make copy URL into clipboard.
+ *
  * @author xBlackCat
  */
 class CopyUrlAction implements ActionListener {

@@ -5,9 +5,7 @@ package org.xblackcat.rojac.gui.popup;
  */
 
 public enum PopupTypeEnum {
-    LinkMessagePopup,
-    LinkDownloadablePopup,
-    LinkCommonPopup,
+    LinkPopup,
     TrayCommonPopup,
     ForumListCommonPopup,
     TreeThreadViewPopup

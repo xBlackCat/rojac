@@ -11,6 +11,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
+ * Simple implementation to open an URL in system browser.
+ *
  * @author xBlackCat
  */
 class OpenUrlAction implements ActionListener {
@@ -24,7 +26,13 @@ class OpenUrlAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (!Desktop.isDesktopSupported()) {
+            log.warn("Desktop is not supported.");
+            return;
+        }
+
         Desktop desktop = Desktop.getDesktop();
+
         try {
             desktop.browse(new URI(messageUrl));
         } catch (IOException e1) {

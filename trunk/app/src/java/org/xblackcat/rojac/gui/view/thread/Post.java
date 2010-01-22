@@ -107,6 +107,16 @@ class Post implements ITreeItem<Post> {
     }
 
     @Override
+    public int getForumId() {
+        return messageData.getForumId();
+    }
+    
+    @Override
+    public int getTopicId() {
+        return messageData.getTopicId();
+    }
+    
+    @Override
     public long getLastPostDate() {
         if (childrenPosts.isEmpty()) {
             return messageData.getMessageDate();

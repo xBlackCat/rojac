@@ -17,11 +17,7 @@
 package org.springframework.util;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Miscellaneous class utility methods. Mainly for internal use within the
@@ -69,9 +65,8 @@ public abstract class ClassUtils {
 		primitiveTypeNames.addAll(primitiveWrapperTypeMap.values());
 		primitiveTypeNames.addAll(Arrays.asList(boolean[].class, byte[].class, char[].class, double[].class,
                 float[].class, int[].class, long[].class, short[].class));
-        for (Object primitiveTypeName : primitiveTypeNames) {
-            Class primitiveClass = (Class) primitiveTypeName;
-            primitiveTypeNameMap.put(primitiveClass.getName(), primitiveClass);
+        for (Class<?> primitiveTypeName : primitiveTypeNames) {
+            primitiveTypeNameMap.put(primitiveTypeName.getName(), primitiveTypeName);
         }
 	}
 

@@ -2,24 +2,36 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.view.thread.AThreadModel;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 
 import javax.swing.*;
 
-/**
- * @author xBlackCat
- */
+/** @author xBlackCat */
 
-public class TreeThreadViewPopupBuilder implements IPopupBuilder {
+class TreeThreadViewPopupBuilder implements IPopupBuilder {
     @Override
     public JPopupMenu buildMenu(Object... parameters) {
-        if (ArrayUtils.isEmpty(parameters) || parameters.length != 2) {
+        if (ArrayUtils.isEmpty(parameters) || parameters.length != 3) {
             throw new IllegalArgumentException("Invalid parameters amount.");
         }
 
-        ITreeItem message = (ITreeItem) parameters[0];
-        IRootPane mainFrame = (IRootPane) parameters[1];
+        ITreeItem<?> message = (ITreeItem<?>) parameters[0];
+        AThreadModel<? extends ITreeItem<?>> model = (AThreadModel<?>) parameters[1];
+        IRootPane mainFrame = (IRootPane) parameters[2];
 
+        return buildInternal(message, model, mainFrame);
+    }
+
+    /**
+     * Real menu builder.
+     *
+     * @param message message data to build menu.
+     * @param model
+     *@param mainFrame main frame controller
+     *  @return built pop-up menu.
+     */
+    private JPopupMenu buildInternal(ITreeItem<?> message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
         int messageId = message.getMessageId();
         final JPopupMenu menu = new JPopupMenu("#" + messageId);
 
@@ -28,8 +40,16 @@ public class TreeThreadViewPopupBuilder implements IPopupBuilder {
 
         menu.add(item);
 
+        menu.add(MenuHelper.openMessageSubmenu(messageId, mainFrame));
         menu.addSeparator();
-        menu.add(MenuHelper.openMessage(messageId, mainFrame));
+
+/*
+        menu.add(MenuHelper.markRead(message, model, mainFrame));
+        menu.add(MenuHelper.markUnread(message, model, mainFrame));
+
+        menu.add(MenuHelper.markReadSubmenu(message, model, mainFrame));
+        menu.add(MenuHelper.markUnreadSubmenu(message, model, mainFrame));
+*/
 
         menu.addSeparator();
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
@@ -37,5 +57,4 @@ public class TreeThreadViewPopupBuilder implements IPopupBuilder {
 
         return menu;
     }
-
 }

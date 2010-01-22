@@ -16,7 +16,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Locale;
 
 import static org.xblackcat.rojac.service.options.Property.*;
@@ -30,7 +29,7 @@ import static org.xblackcat.rojac.service.options.Property.*;
 public class OptionsDialog extends JDialog {
     private static final Log log = LogFactory.getLog(OptionsDialog.class);
     // Hidden properties.
-    private static final Collection<Property> PROPERTIES_TO_SKIP = new HashSet<Property>(Arrays.asList(
+    private static final Collection<Property<?>> PROPERTIES_TO_SKIP = Arrays.asList(
             ROJAC_DEBUG_MODE,
             ROJAC_MAIN_FRAME_SIZE,
             ROJAC_MAIN_FRAME_POSITION,
@@ -39,7 +38,7 @@ public class OptionsDialog extends JDialog {
             RSDN_USER_NAME,
             RSDN_USER_PASSWORD,
             RSDN_USER_PASSWORD_SAVE
-    ));
+    );
 
     protected PropertiesModel model;
 

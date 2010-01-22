@@ -4,6 +4,7 @@ import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
 import gnu.trove.TObjectProcedure;
 import org.apache.commons.lang.ArrayUtils;
+import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 
 /**
  * @author xBlackCat
@@ -25,6 +26,10 @@ public class AffectedIds {
         addMessageId(DEFAULT_FORUM, messageId);
     }
 
+    public void addItem(ITreeItem<?> item) {
+        addMessageId(item.getForumId(), item.getMessageId());
+    }
+    
     public void addMessageId(int forumId, int messageId) {
         if (messageByForums.containsKey(forumId)) {
             messageByForums.get(forumId).add(messageId);

@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.popup;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.ForumData;
 import org.xblackcat.rojac.gui.view.ForumTableModel;
+import org.xblackcat.rojac.gui.view.thread.AThreadModel;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.util.LinkUtils;
 
@@ -47,13 +48,10 @@ public class PopupMenuBuilder {
             }
         }
 
-        PopupTypeEnum type = PopupTypeEnum.LinkCommonPopup;
+        PopupTypeEnum type = PopupTypeEnum.LinkPopup;
         Integer messageId = LinkUtils.getMessageId(description);
         if (messageId == null) {
             messageId = LinkUtils.getMessageId(text);
-        }
-        if (messageId != null) {
-            type = PopupTypeEnum.LinkMessagePopup;
         }
 
         return getBuilder(type, messageId, description, text, mainFrame);
@@ -63,8 +61,8 @@ public class PopupMenuBuilder {
         return getBuilder(PopupTypeEnum.ForumListCommonPopup, forum, forumsModel, rootPane);
     }
 
-    public static JPopupMenu getTreeViewPopup(ITreeItem messageItem, IRootPane mainFrame) {
-        return getBuilder(PopupTypeEnum.TreeThreadViewPopup, messageItem, mainFrame);
+    public static JPopupMenu getTreeViewPopup(ITreeItem messageItem, AThreadModel model, IRootPane mainFrame) {
+        return getBuilder(PopupTypeEnum.TreeThreadViewPopup, messageItem, model, mainFrame);
     }
 
     private static JPopupMenu getBuilder(PopupTypeEnum type, Object... parameters) {
@@ -78,9 +76,7 @@ public class PopupMenuBuilder {
     static {
         HashMap<PopupTypeEnum, IPopupBuilder> builderMap = new HashMap<PopupTypeEnum, IPopupBuilder>();
         // Initialize builders map.
-        builderMap.put(PopupTypeEnum.LinkMessagePopup, new LinkMessagePopupBuilder());
-        builderMap.put(PopupTypeEnum.LinkDownloadablePopup, new LinkDownloadablePopupBuilder());
-        builderMap.put(PopupTypeEnum.LinkCommonPopup, new LinkPopupBuilder());
+        builderMap.put(PopupTypeEnum.LinkPopup, new LinkMessagePopupBuilder());
         builderMap.put(PopupTypeEnum.ForumListCommonPopup, new ForumListPopupBuilder());
         builderMap.put(PopupTypeEnum.TreeThreadViewPopup, new TreeThreadViewPopupBuilder());
 
