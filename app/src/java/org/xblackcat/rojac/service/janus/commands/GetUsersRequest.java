@@ -25,7 +25,7 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_USE
 class GetUsersRequest extends ARequest {
     private static final Log log = LogFactory.getLog(GetUsersRequest.class);
 
-    public AffectedIds process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
+    public AffectedMessage[] process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         IUserAH uAH = storage.getUserAH();
 
@@ -71,6 +71,6 @@ class GetUsersRequest extends ARequest {
         } catch (JanusServiceException e) {
             throw new RsdnProcessorException("Can not get the users list from the RSDN server.", e);
         }
-        return new AffectedIds();
+        return AffectedMessage.EMPTY;
     }
 }

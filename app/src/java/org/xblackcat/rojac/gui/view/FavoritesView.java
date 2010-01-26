@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.service.janus.commands.AffectedIds;
+import org.xblackcat.rojac.service.ProcessPacket;
 
 import javax.swing.*;
 
@@ -16,6 +16,6 @@ public class FavoritesView extends AView {
         add(new JScrollPane(new JTable(10, 2)));
     }
 
-    public void updateData(AffectedIds changedData) {
+    public void processPacket(ProcessPacket changedData) {
     }
 }

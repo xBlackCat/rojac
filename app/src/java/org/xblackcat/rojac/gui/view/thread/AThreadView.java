@@ -7,8 +7,9 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.janus.commands.AffectedIds;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -73,9 +74,9 @@ public abstract class AThreadView extends AItemView {
 
     @Override
     @SuppressWarnings({"unchecked"})
-    public void updateData(AffectedIds ids) {
+    public void processPacket(ProcessPacket ids) {
         if (ids.containsForum(forumId)) {
-            int[] messageIds = ArrayUtils.addAll(ids.getMessageIds(forumId), ids.getMessageIds(AffectedIds.DEFAULT_FORUM));
+            int[] messageIds = ArrayUtils.addAll(ids.getMessageIds(forumId), ids.getMessageIds(AffectedMessage.DEFAULT_FORUM));
 
             Post currentPost = getSelectedItem();
 

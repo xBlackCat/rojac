@@ -4,7 +4,7 @@ import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AItemView;
-import org.xblackcat.rojac.service.janus.commands.AffectedIds;
+import org.xblackcat.rojac.service.ProcessPacket;
 
 import javax.swing.*;
 
@@ -47,9 +47,6 @@ public class ThreadDoubleView extends AItemView {
             }
 
             public void itemUpdated(int messageId) {
-                AffectedIds results = new AffectedIds();
-                results.addMessageId(messageId);
-                masterView.updateData(results);
             }
         });
 
@@ -66,8 +63,8 @@ public class ThreadDoubleView extends AItemView {
         masterView.loadItem(messageId);
     }
 
-    public void updateData(AffectedIds messageId) {
-        masterView.updateData(messageId);
-        slaveView.updateData(messageId);
+    public void processPacket(ProcessPacket messageId) {
+        masterView.processPacket(messageId);
+        slaveView.processPacket(messageId);
     }
 }

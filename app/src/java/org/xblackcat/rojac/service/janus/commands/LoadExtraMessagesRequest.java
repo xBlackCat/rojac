@@ -12,6 +12,9 @@ import ru.rsdn.Janus.JanusModerateInfo;
 import ru.rsdn.Janus.JanusRatingInfo;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Command for loading extra and broken messages.
@@ -20,15 +23,14 @@ import java.util.Arrays;
  */
 
 class LoadExtraMessagesRequest extends ALoadPostsRequest {
-    public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public AffectedMessage[] process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         int[] messageIds = miscAH.getExtraMessages();
 
-        // Just in case
-        processed.clear();
-        
+        Set<AffectedMessage> result = new HashSet<AffectedMessage>();
+
         if (!ArrayUtils.isEmpty(messageIds)) {
             trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_EXTRA_POSTS, Arrays.toString(messageIds));
-            loadTopics(messageIds, janusService, trac);
+            result.addAll(loadTopics(messageIds, janusService, trac));
 
             miscAH.clearExtraMessages();
         }
@@ -36,13 +38,13 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
         if (!ArrayUtils.isEmpty(brokenTopicIds)) {
             trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_BROKEN_TOPICS, Arrays.toString(brokenTopicIds));
-            loadTopics(brokenTopicIds, janusService, trac);
+            result.addAll(loadTopics(brokenTopicIds, janusService, trac));
         }
 
-        return processed;
+        return result.toArray(new AffectedMessage[result.size()]);
     }
 
-    private void loadTopics(int[] messageIds, IJanusService janusService, IProgressTracker tracker) throws RsdnProcessorException, StorageException {
+    private Collection<AffectedMessage> loadTopics(int[] messageIds, IJanusService janusService, IProgressTracker tracker) throws RsdnProcessorException, StorageException {
         TopicMessages extra;
         try {
             extra = janusService.getTopicByMessage(messageIds);
@@ -55,6 +57,6 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
 
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
 
-        storeNewPosts(tracker, extra);
+        return storeNewPosts(tracker, extra);
     }
 }
