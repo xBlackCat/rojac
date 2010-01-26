@@ -11,9 +11,9 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
-import org.xblackcat.rojac.service.janus.commands.AffectedIds;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -198,7 +198,7 @@ public class MessageView extends AItemView implements IInternationazable {
         marks.setEnabled(true);
     }
 
-    public void updateData(AffectedIds ids) {
+    public void processPacket(ProcessPacket ids) {
         if (ids.containsMessage(this.messageId)) {
             loadItem(messageId);
         }

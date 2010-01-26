@@ -25,7 +25,7 @@ public class TestRequest extends ARequest {
     };
 
     @Override
-    public AffectedIds process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public AffectedMessage[] process(IProgressTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_TEST);
 
         int userId;
@@ -50,9 +50,6 @@ public class TestRequest extends ARequest {
             log.debug("Got user id: " + userId);
         }
 
-
-        AffectedIds result = new AffectedIds();
-        result.addForumId(userId);
-        return result;
+        return new AffectedMessage[]{new AffectedMessage(userId)};
     }
 }

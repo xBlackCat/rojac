@@ -1,36 +1,44 @@
-package org.xblackcat.rojac.service.janus.commands;
+package org.xblackcat.rojac.service;
 
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
 import gnu.trove.TObjectProcedure;
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 
 /**
  * @author xBlackCat
  */
 
-public class AffectedIds {
-    public static final int DEFAULT_FORUM = 0;
-    private final TIntObjectHashMap<TIntHashSet> messageByForums;
+public class ProcessPacket {
+    private final TIntObjectHashMap<TIntHashSet> messageByForums = new TIntObjectHashMap<TIntHashSet>();
+    private final PacketType type;
 
-    public AffectedIds() {
-        this(new TIntObjectHashMap<TIntHashSet>());
-    }
+    public ProcessPacket(PacketType type, AffectedMessage... messages) {
+        this.type = type;
+        for (AffectedMessage am : messages) {
+            int forumId = am.getForumId();
+            if (!messageByForums.containsKey(forumId)) {
+                messageByForums.put(forumId, new TIntHashSet());
+            }
 
-    public AffectedIds(TIntObjectHashMap<TIntHashSet> messageByForums) {
-        this.messageByForums = messageByForums;
+            Integer messageId = am.getMessageId();
+            if (messageId != null) {
+                messageByForums.get(forumId).add(messageId);
+            }
+        }
     }
 
     public void addMessageId(int messageId) {
-        addMessageId(DEFAULT_FORUM, messageId);
+        addMessageId(AffectedMessage.DEFAULT_FORUM, messageId);
     }
 
     public void addItem(ITreeItem<?> item) {
         addMessageId(item.getForumId(), item.getMessageId());
     }
     
-    public void addMessageId(int forumId, int messageId) {
+    protected void addMessageId(int forumId, int messageId) {
         if (messageByForums.containsKey(forumId)) {
             messageByForums.get(forumId).add(messageId);
         } else {
@@ -38,10 +46,8 @@ public class AffectedIds {
         }
     }
 
-    public void addForumId(int forumId) {
-        if (!messageByForums.containsKey(forumId)) {
-            messageByForums.put(forumId, new TIntHashSet());
-        }
+    public PacketType getType() {
+        return type;
     }
 
     public int[] getMessageIds(int forumId) {
@@ -86,7 +92,7 @@ public class AffectedIds {
             return true;
         }
 
-        messageIds = messageByForums.get(DEFAULT_FORUM);
+        messageIds = messageByForums.get(AffectedMessage.DEFAULT_FORUM);
         return messageIds != null && messageIds.contains(messageId);
     }
 

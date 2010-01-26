@@ -19,6 +19,9 @@ import org.xblackcat.rojac.service.storage.INewRatingAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author xBlackCat
  */
@@ -26,7 +29,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
 class PostChangesRequest extends ARequest {
     private static final Log log = LogFactory.getLog(PostChangesRequest.class);
 
-    public AffectedIds process(IProgressTracker trac, IJanusService janusService) {
+    public AffectedMessage[] process(IProgressTracker trac, IJanusService janusService) {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_SUBMIT);
 
@@ -53,17 +56,13 @@ class PostChangesRequest extends ARequest {
                 if (log.isDebugEnabled()) {
                     log.debug("Nothing to post.");
                 }
-                return new AffectedIds();
+                return AffectedMessage.EMPTY;
             }
 
             // Store forum ids of new messages and message ids of new ratings to return update event
             TIntObjectHashMap<NewMessage> messageForumIds = new TIntObjectHashMap<NewMessage>();
 
-            AffectedIds result = new AffectedIds();
-
-            for (NewRating nr : newRatings) {
-                result.addMessageId(nr.getMessageId());
-            }
+            Set<AffectedMessage> result = new HashSet<AffectedMessage>();
 
             for (NewMessage nm : newMessages) {
                 messageForumIds.put(nm.getLocalMessageId(), nm);
@@ -85,7 +84,7 @@ class PostChangesRequest extends ARequest {
                 for (int lmID : postInfo.getCommited()) {
                     nmeAH.removeNewMessage(lmID);
                     NewMessage newMessage = messageForumIds.get(lmID);
-                    result.addMessageId(newMessage.getForumId(), newMessage.getParentId());
+                    result.add(new AffectedMessage(newMessage.getForumId(), newMessage.getParentId()));
                 }
 
                 // Show all the PostExceptions if any
@@ -98,11 +97,11 @@ class PostChangesRequest extends ARequest {
                 throw new RsdnProcessorException("Unable to process the commit response.", e);
             }
 
-            return result;
+            return result.toArray(new AffectedMessage[result.size()]);
         } catch (RsdnProcessorException e) {
             // Log the exception to console.
             trac.postException(e);
-            return new AffectedIds();
+            return AffectedMessage.EMPTY;
         }
     }
 }

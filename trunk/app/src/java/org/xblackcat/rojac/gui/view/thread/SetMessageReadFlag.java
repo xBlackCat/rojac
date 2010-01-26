@@ -1,8 +1,10 @@
 package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.service.PacketType;
+import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.janus.commands.AffectedIds;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -33,9 +35,11 @@ class SetMessageReadFlag extends RojacWorker<Void, Void> {
         if (post != null) {
             post.setRead(true);
 
-            AffectedIds affectedIds = new AffectedIds();
-            affectedIds.addItem(post);
-            mainFrame.updateData(affectedIds);
+            ProcessPacket processPacket = new ProcessPacket(
+                    PacketType.SetReadPost,
+                    new AffectedMessage(post.getForumId(), post.getMessageId())
+            );
+            mainFrame.processPacket(processPacket);
         }
     }
 }

@@ -17,8 +17,10 @@ import ru.rsdn.Janus.RequestForumInfo;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
@@ -30,7 +32,7 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MES
 class GetNewPostsRequest extends ALoadPostsRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
-    public AffectedIds process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
+    public AffectedMessage[] process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
         int[] forumIds = forumAH.getSubscribedForumIds();
 
         String idsList = Arrays.toString(forumIds);
@@ -39,7 +41,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
             }
-            return new AffectedIds();
+            return AffectedMessage.EMPTY;
         }
 
         if (log.isDebugEnabled()) {
@@ -60,8 +62,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
         Version moderatesVersion = RojacHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
         Version ratingsVersion = RojacHelper.getVersion(VersionType.RATING_ROW_VERSION);
 
-        processed.clear();
-
+        Set<AffectedMessage> result = new HashSet<AffectedMessage>();
         JanusMessageInfo[] messages;
         do {
             if (ratingsVersion.isEmpty()) {
@@ -87,7 +88,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
             tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
 
-            storeNewPosts(tracker, data);
+            result.addAll(storeNewPosts(tracker, data));
 
             ratingsVersion = data.getRatingRowVersion();
             messagesVersion = data.getForumRowVersion();
@@ -101,7 +102,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USER_ID, RSDN_USER_ID.get());
 
-        return processed;
+        return result.toArray(new AffectedMessage[result.size()]);
     }
 
 }

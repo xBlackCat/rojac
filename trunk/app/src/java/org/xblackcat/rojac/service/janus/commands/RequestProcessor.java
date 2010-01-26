@@ -20,6 +20,8 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_USE_GZIP;
 
 /**
+ * Synchronization processor. Processes requests to Janus WS and passes results to a result processor.
+ *
  * @author xBlackCat
  */
 @TaskType(TaskTypeEnum.Synchronization)
@@ -27,9 +29,9 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
     private static final Log log = LogFactory.getLog(RequestProcessor.class);
 
     private final List<IRequest> requests;
-    private final IDataHandler handler;
+    private final IResultHandler handler;
 
-    private AffectedIds affectedIds;
+    private AffectedMessage[] processedMessages;
     private final IProgressController progressController = ServiceFactory.getInstance().getProgressControl();
     private final IProgressTracker tracker = new IProgressTracker() {
         @Override
@@ -48,7 +50,7 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
         }
     };
 
-    public RequestProcessor(IDataHandler handler, IRequest... requests) {
+    public RequestProcessor(IResultHandler handler, IRequest... requests) {
         this.handler = handler;
         this.requests = Arrays.asList(requests);
     }
@@ -72,9 +74,9 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
                 log.debug("Process request(s): " + joinFrom(requests, IRequest.class).getName());
             }
 
-            affectedIds = aggregate(
+            processedMessages = aggregate(
                     requests,
-                    new AffectedPostsAggregator(),
+                    new AffectedMessagesAggregator(),
                     on(IRequest.class).process(tracker, janusService)
             );
         } catch (Exception e) {
@@ -83,7 +85,7 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
 
             tracker.postException(e);
 
-            affectedIds = new AffectedIds();
+            processedMessages = new AffectedMessage[0];
         }
 
         return null;
@@ -92,7 +94,7 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
     @Override
     protected void done() {
         if (handler != null) {
-            handler.updateData(affectedIds);
+            handler.process(processedMessages);
         }
 
         progressController.fireJobProgressChanged(1);

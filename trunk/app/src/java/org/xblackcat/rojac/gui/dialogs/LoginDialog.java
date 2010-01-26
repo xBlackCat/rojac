@@ -6,8 +6,8 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
-import org.xblackcat.rojac.service.janus.commands.AffectedIds;
-import org.xblackcat.rojac.service.janus.commands.IDataHandler;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
+import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.TestRequest;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -134,15 +134,25 @@ public class LoginDialog extends JDialog {
 
             RSDN_USER_PASSWORD_SAVE.set(fieldSavePassword.isSelected());
 
-            RojacUtils.processRequests(new IDataHandler() {
-                @Override
-                public void updateData(AffectedIds results) {
-                    // This is always should be like this.
-                    int userId = results.getForumIds()[0];
+            RojacUtils.processRequests(new IResultHandler() {
+                private boolean setUserId(AffectedMessage... results) {
+                    if (ArrayUtils.isEmpty(results)) {
+                        return false;
+                    }
 
-                    if (userId != 0) {
-                        RSDN_USER_ID.set(userId);
-                    } else {
+                    int userId = results[0].getForumId();
+
+                    if (userId == 0) {
+                        return false;
+                    }
+
+                    RSDN_USER_ID.set(userId);
+                    return true;
+                }
+
+                @Override
+                public void process(AffectedMessage... results) {
+                    if (!setUserId(results)) {
                         int res = JLOptionPane.showConfirmDialog(
                                 LoginDialog.this,
                                 Messages.DIALOG_LOGIN_INVALID_USERNAME.get(),

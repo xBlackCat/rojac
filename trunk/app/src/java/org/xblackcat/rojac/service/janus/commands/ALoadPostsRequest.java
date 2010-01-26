@@ -9,13 +9,15 @@ import ru.rsdn.Janus.JanusMessageInfo;
 import ru.rsdn.Janus.JanusModerateInfo;
 import ru.rsdn.Janus.JanusRatingInfo;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author xBlackCat
  */
 
 abstract class ALoadPostsRequest extends ARequest {
-    protected final AffectedIds processed = new AffectedIds();
-
     protected final IStorage storage;
     protected final IRatingAH rAH;
     protected final IMessageAH mAH;
@@ -34,8 +36,9 @@ abstract class ALoadPostsRequest extends ARequest {
         forumAH = storage.getForumAH();
     }
 
-    protected void storeNewPosts(IProgressTracker tracker, TopicMessages newPosts) throws StorageException {
+    protected Collection<AffectedMessage> storeNewPosts(IProgressTracker tracker, TopicMessages newPosts) throws StorageException {
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_UPDATE_DATABASE);
+        Set<AffectedMessage> result = new HashSet<AffectedMessage>();
 
         int count = 0;
         for (JanusMessageInfo mes : newPosts.getMessages()) {
@@ -54,18 +57,21 @@ abstract class ALoadPostsRequest extends ARequest {
             loadedMessages.add(mId);
 
             int forumId = mes.getForumId();
-            processed.addMessageId(forumId, mId);
+            result.add(new AffectedMessage(forumId, mId));
         }
 
         for (JanusModerateInfo mod : newPosts.getModerates()) {
             tracker.updateProgress(count++, newPosts.getTotalRecords());
             modAH.storeModerateInfo(mod);
-            processed.addMessageId(mod.getForumId(), mod.getMessageId());
+            result.add(new AffectedMessage(mod.getForumId(), mod.getMessageId()));
         }
+
         for (JanusRatingInfo r : newPosts.getRatings()) {
             tracker.updateProgress(count++, newPosts.getTotalRecords());
             rAH.storeRating(r);
-            processed.addMessageId(r.getMessageId());
+            result.add(new AffectedMessage(AffectedMessage.DEFAULT_FORUM, r.getMessageId()));
         }
+
+        return result;
     }
 }

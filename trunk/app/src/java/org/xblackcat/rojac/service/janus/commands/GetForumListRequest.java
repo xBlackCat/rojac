@@ -15,13 +15,16 @@ import org.xblackcat.rojac.service.storage.IForumGroupAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author xBlackCat
  */
 
 class GetForumListRequest extends ARequest {
-    public AffectedIds process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
-        AffectedIds result = new AffectedIds();
+    public AffectedMessage[] process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
+        Set<AffectedMessage> result = new HashSet<AffectedMessage>();
 
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_FORUM_LIST);
 
@@ -59,7 +62,7 @@ class GetForumListRequest extends ARequest {
                 } else {
                     fAH.updateForum(f);
                 }
-                result.addForumId(f.getForumId());
+                result.add(new AffectedMessage(f.getForumId()));
             }
 
             RojacHelper.setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
@@ -67,6 +70,6 @@ class GetForumListRequest extends ARequest {
             throw new RsdnProcessorException("Can not update forum list", e);
         }
 
-        return result;
+        return result.toArray(new AffectedMessage[result.size()]);
     }
 }

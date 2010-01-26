@@ -20,10 +20,13 @@ import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ForumsListView;
 import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.PacketType;
+import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.janus.commands.AffectedIds;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
+import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -65,6 +68,12 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private static final String FAVORITES_VIEW_ID = "favorites_view";
     private static final String THREADS_VIEW_ID = "threads_view_id";
 
+    private final IResultHandler synchronizationHandler = new IResultHandler() {
+        @Override
+        public void process(AffectedMessage... messages) {
+            processPacket(new ProcessPacket(PacketType.AddMessage, messages));
+        }
+    };
     protected final DropFilter noAuxViewsFilter = new DropFilter() {
         @Override
         public boolean acceptDrop(DropInfo dropInfo) {
@@ -321,12 +330,12 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
      * @param results
      */
     @Override
-    public void updateData(AffectedIds results) {
-        forumsListView.updateData(results);
-        favoritesView.updateData(results);
+    public void processPacket(ProcessPacket results) {
+        forumsListView.processPacket(results);
+        favoritesView.processPacket(results);
 
         for (View v : openedViews.values()) {
-            ((IView) v.getComponent()).updateData(results);
+            ((IView) v.getComponent()).processPacket(results);
         }
     }
 
@@ -421,7 +430,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
             }
         }
 
-        RojacUtils.processRequests(this, requests);
+        RojacUtils.processRequests(synchronizationHandler, requests);
     }
 
     @Override
