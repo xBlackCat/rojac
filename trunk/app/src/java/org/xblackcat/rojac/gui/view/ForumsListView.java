@@ -6,9 +6,13 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.PacketType;
 import org.xblackcat.rojac.service.ProcessPacket;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
+import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -100,7 +104,16 @@ public class ForumsListView extends AView {
         JToolBar toolBar = WindowsUtils.createToolBar(
                 WindowsUtils.setupImageButton("update", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        mainFrame.performRequest(Request.GET_FORUMS_LIST);
+                        RojacUtils.processRequests(
+                                SwingUtilities.windowForComponent(ForumsListView.this),
+                                new IResultHandler() {
+                                    @Override
+                                    public void process(AffectedMessage... messages) {
+                                        mainFrame.processPacket(new ProcessPacket(PacketType.ForumsLoaded, messages));
+                                    }
+                                },
+                                Request.GET_FORUMS_LIST
+                        );
                     }
                 }, Messages.VIEW_FORUMS_BUTTON_UPDATE),
                 null,
@@ -134,10 +147,26 @@ public class ForumsListView extends AView {
     }
 
     public void processPacket(ProcessPacket changedData) {
-        if (forumsModel.getRowCount() > 0) {
-            forumsModel.updateForums(changedData.getForumIds());
-        } else {
-            executor.execute(new ForumLoader(changedData.getForumIds()));
+        switch (changedData.getType()) {
+            case AddMessages:
+                break;
+            case UpdateMessages:
+                break;
+            case SetReadForum:
+                break;
+            case SetUnreadForum:
+                break;
+            case SetReadThread:
+                break;
+            case SetUnreadThread:
+                break;
+            case SetReadPost:
+                break;
+            case SetUnreadPost:
+                break;
+            case ForumsLoaded:
+                executor.execute(new ForumLoader(changedData.getForumIds()));
+                break;
         }
     }
 

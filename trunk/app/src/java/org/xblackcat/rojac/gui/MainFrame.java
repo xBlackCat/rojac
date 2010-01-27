@@ -14,7 +14,6 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
-import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.gui.dialogs.OptionsDialog;
 import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ForumsListView;
@@ -22,7 +21,6 @@ import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.PacketType;
 import org.xblackcat.rojac.service.ProcessPacket;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
@@ -36,12 +34,7 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -71,7 +64,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private final IResultHandler synchronizationHandler = new IResultHandler() {
         @Override
         public void process(AffectedMessage... messages) {
-            processPacket(new ProcessPacket(PacketType.AddMessage, messages));
+            processPacket(new ProcessPacket(PacketType.AddMessages, messages));
         }
     };
     protected final DropFilter noAuxViewsFilter = new DropFilter() {
@@ -205,7 +198,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
                         SYNCHRONIZER_LOAD_USERS.get() ?
                                 Request.SYNCHRONIZE_WITH_USERS :
                                 Request.SYNCHRONIZE;
-                performRequest(requests);
+
+                RojacUtils.processRequests(MainFrame.this, synchronizationHandler, requests);
             }
         }, Messages.MAINFRAME_BUTTON_UPDATE);
         JButton loadMessageButton = WindowsUtils.setupImageButton("extramessage", new ActionListener() {
@@ -420,20 +414,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     }
 
     @Override
-    public void performRequest(IRequest... requests) {
-        // Check if the user credentials are set first.
-        while (!RojacHelper.isUserRegistered()) {
-            LoginDialog ld = new LoginDialog(this);
-            WindowsUtils.center(ld, this);
-            if (ld.showLoginDialog()) {
-                return;
-            }
-        }
-
-        RojacUtils.processRequests(synchronizationHandler, requests);
-    }
-
-    @Override
     public void editMessage(Integer forumId, Integer messageId) {
         EditMessageDialog editDlg = new EditMessageDialog(this);
 
@@ -512,7 +492,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         @Override
         protected void done() {
             if (loadAtOnce) {
-                performRequest(Request.EXTRA_MESSAGES);
+                RojacUtils.processRequests(MainFrame.this, synchronizationHandler, Request.EXTRA_MESSAGES);
             }
         }
     }

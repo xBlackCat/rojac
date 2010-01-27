@@ -11,7 +11,7 @@ public class AffectedMessage {
     private final Integer messageId;
     private final int forumId;
 
-    AffectedMessage(int forumId) {
+    public AffectedMessage(int forumId) {
         this.forumId = forumId;
         messageId = null;
     }

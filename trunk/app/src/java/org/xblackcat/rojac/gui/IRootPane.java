@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.service.IDataHandler;
-import org.xblackcat.rojac.service.janus.commands.IRequest;
 
 /**
  * @author xBlackCat
@@ -10,8 +9,6 @@ import org.xblackcat.rojac.service.janus.commands.IRequest;
 
 public interface IRootPane extends IDataHandler {
     void openForumTab(Forum f);
-
-    void performRequest(IRequest... requests);
 
     /**
      * Show edit dialog. Possible combinations are: <ul> <li>messageId is <code>null</code> and forumId specifies a
