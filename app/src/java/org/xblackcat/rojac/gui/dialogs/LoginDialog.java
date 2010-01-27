@@ -8,7 +8,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
-import org.xblackcat.rojac.service.janus.commands.TestRequest;
+import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -134,7 +134,7 @@ public class LoginDialog extends JDialog {
 
             RSDN_USER_PASSWORD_SAVE.set(fieldSavePassword.isSelected());
 
-            RojacUtils.processRequests(new IResultHandler() {
+            RojacUtils.processRequests(getOwner(), new IResultHandler() {
                 private boolean setUserId(AffectedMessage... results) {
                     if (ArrayUtils.isEmpty(results)) {
                         return false;
@@ -168,7 +168,7 @@ public class LoginDialog extends JDialog {
                     canceled = false;
                     setVisible(false);
                 }
-            }, new TestRequest());
+            }, Request.GET_USER_ID);
         }
     }
 }

@@ -5,8 +5,11 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.ForumData;
 import org.xblackcat.rojac.gui.view.ForumTableModel;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.PacketType;
+import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -66,8 +69,8 @@ class ForumListPopupBuilder implements IPopupBuilder {
         });
         menu.addSeparator();
 
-        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_READ_ALL, forumId, model, true));
-        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_UNREAD_ALL, forumId, model, false));
+        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_READ_ALL, forumId, mainFrame, true));
+        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_UNREAD_ALL, forumId, mainFrame, false));
 
         menu.addSeparator();
 
@@ -111,7 +114,7 @@ class ForumListPopupBuilder implements IPopupBuilder {
     }
 
     private class SetForumReadMenuItem extends JMenuItem {
-        public SetForumReadMenuItem(Messages text, final int forumId, final ForumTableModel forumsModel, final boolean readFlag) {
+        public SetForumReadMenuItem(Messages text, final int forumId, final IRootPane mainFrame, final boolean readFlag) {
             super(text.get());
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -125,7 +128,9 @@ class ForumListPopupBuilder implements IPopupBuilder {
 
                         @Override
                         protected void done() {
-                            forumsModel.updateForums(forumId);
+                            PacketType type = readFlag ? PacketType.SetReadForum : PacketType.SetUnreadForum;
+                            ProcessPacket p = new ProcessPacket(type, new AffectedMessage(forumId));
+                            mainFrame.processPacket(p);
                         }
                     });
                 }

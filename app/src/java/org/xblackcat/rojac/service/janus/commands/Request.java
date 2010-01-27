@@ -12,6 +12,7 @@ public final class Request {
     public static final IRequest POST_CHANGES = new PostChangesRequest();
     public static final IRequest GET_USERS = new GetUsersRequest();
     public static final IRequest GET_FORUMS_LIST = new GetForumListRequest();
+    public static final IRequest GET_USER_ID = new TestRequest();
 
     /**
      * Set of requests to synchronize local DB with RSDN. Contains following requests: post changes, get new posts, load

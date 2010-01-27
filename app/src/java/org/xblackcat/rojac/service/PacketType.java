@@ -5,8 +5,9 @@ package org.xblackcat.rojac.service;
  */
 
 public enum PacketType {
-    AddMessage,
-    UpdateMessage,
+    ForumsLoaded,
+    AddMessages,
+    UpdateMessages,
     SetReadForum,
     SetUnreadForum,
     SetReadThread,

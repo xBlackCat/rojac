@@ -17,7 +17,7 @@ import ru.rsdn.Janus.RequestForumInfo;
  * @author xBlackCat
  */
 
-public class TestRequest extends ARequest {
+class TestRequest extends ARequest {
     private static final Log log = LogFactory.getLog(TestRequest.class);
 
     private static final RequestForumInfo[] DUMMY_REQUEST_INFO = new RequestForumInfo[]{
