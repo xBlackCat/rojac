@@ -109,7 +109,7 @@
         <mkdir dir="${rojac-application.dist.dir}"/>
 
         <!-- Paste resource file with revision information -->
-        <exec executable="svn" output="${rojac-application.output.dir}/svninfo.xml">
+        <exec executable="svn" output="${rojac-application.output.dir}/svninfo.xml" failifexecutionfails="false">
             <arg line="info"/>
             <arg line="-r HEAD"/>
             <arg line="--xml"/>
@@ -118,7 +118,7 @@
         </exec>
 
         <xmlproperty file="${rojac-application.output.dir}/svninfo.xml" prefix="svn" keepRoot="no"/>
-        <delete file="${rojac-application.output.dir}/svninfo.xml"/>
+        <delete file="${rojac-application.output.dir}/svninfo.xml" failonerror="false"/>
     </target>
 
     <target name="compile" description="Compile application" depends="prepare">
@@ -142,12 +142,6 @@
             </fileset>
         </copy>
 
-        <echo file="${revision.number.file}"># Application revision information
-            relative.path=${svn.entry.url}
-            revision=${svn.entry(revision)}
-        </echo>
-
-        <replace file="${revision.number.file}" token="${svn.entry.repository.root}" value=""/>
 
         <!--Compile test classes-->
         <javac destdir="${rojac-application.testoutput.dir}" debug="${compiler.debug}"
@@ -168,6 +162,16 @@
                 <type type="file"/>
             </fileset>
         </copy>
+    </target>
+
+    <!-- Run the task only if svn info is success fully obtained. -->
+    <target name="add.svn.info" if="svn.entry(revision)">
+        <echo file="${revision.number.file}"># Application revision information
+            relative.path=${svn.entry.url}
+            revision=${svn.entry(revision)}
+        </echo>
+
+        <replace file="${revision.number.file}" token="${svn.entry.repository.root}" value=""/>
     </target>
 
     <target name="test" description="Make tests before packaging application" depends="compile" if="perform.tests">
@@ -293,8 +297,16 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         <launch4j configFile="${rojac-application.basedir}/classes/sender.launch4j.xml"/>
     </target>
 
-    <target name="pack" description="Make archive of the project" depends="rebuild">
-        <zip destfile="${rojac-application.archive.dir}/${rojac.filename}-r${svn.entry(revision)}.zip" level="9"
+    <target name="make.name" unless="svn.entry(revision)">
+        <property name="rojac.pack.filename" value="${rojac.filename}"/>
+    </target>
+
+    <target name="make.name.revision" if="svn.entry(revision)">
+        <property name="rojac.pack.filename" value="${rojac.filename}-r${svn.entry(revision)}"/>
+    </target>
+
+    <target name="pack" description="Make archive of the project" depends="rebuild, make.name, make.name.revision">
+        <zip destfile="${rojac-application.archive.dir}/${rojac.pack.filename}.zip" level="9"
              compress="yes">
             <fileset dir="${rojac-application.dist.dir}">
                 <include name="bin/${rojac.filename}*"/>
@@ -304,7 +316,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
             </fileset>
         </zip>
 
-        <zip destfile="${rojac-application.archive.dir}/${rojac.filename}-r${svn.entry(revision)}-src.zip" level="9"
+        <zip destfile="${rojac-application.archive.dir}/${rojac.pack.filename}-src.zip" level="9"
              compress="yes">
             <fileset dir="${rojac-application.basedir}">
                 <include name="docs/**/*"/>
