@@ -9,10 +9,8 @@ import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
 import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
-import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.RequestProcessor;
@@ -343,14 +341,6 @@ public final class RojacUtils {
     public static void showExceptionDialog(Thread t, Throwable e) {
 
         GLOBAL_EXCEPTION_HANDLER.uncaughtException(t, e);
-    }
-
-    public static AffectedMessage[] toAffectedMessages(ITreeItem<?>... items) {
-        Collection<AffectedMessage> result = new LinkedList<AffectedMessage>();
-        for (ITreeItem<?> i : items) {
-            result.add(new AffectedMessage(i.getForumId(), i.getMessageId()));
-        }
-        return result.toArray(new AffectedMessage[result.size()]);
     }
 
     private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {

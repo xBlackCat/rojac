@@ -67,7 +67,7 @@ public abstract class AThreadView extends AItemView {
 
     @SuppressWarnings({"unchecked"})
     @Override
-    public void loadItem(int itemId) {
+    public void loadItem(AffectedMessage itemId) {
         int forumId = threadControl.loadThreadByItem(model, itemId);
         loadForumInfo(forumId);
     }
@@ -76,7 +76,10 @@ public abstract class AThreadView extends AItemView {
     @SuppressWarnings({"unchecked"})
     public void processPacket(ProcessPacket ids) {
         if (ids.containsForum(forumId)) {
-            int[] messageIds = ArrayUtils.addAll(ids.getMessageIds(forumId), ids.getMessageIds(AffectedMessage.DEFAULT_FORUM));
+            AffectedMessage[] messageIds = (AffectedMessage[]) ArrayUtils.addAll(
+                    ids.getAffectedMessages(forumId),
+                    ids.getAffectedMessages(AffectedMessage.DEFAULT_FORUM)
+            );
 
             Post currentPost = getSelectedItem();
 

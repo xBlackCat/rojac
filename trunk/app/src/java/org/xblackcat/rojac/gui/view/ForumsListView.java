@@ -152,17 +152,17 @@ public class ForumsListView extends AView {
                 break;
             case UpdateMessages:
                 break;
-            case SetReadForum:
+            case SetForumRead:
                 break;
-            case SetUnreadForum:
+            case SetForumUnread:
                 break;
-            case SetReadThread:
+            case SetThreadRead:
                 break;
-            case SetUnreadThread:
+            case SetThreadUnread:
                 break;
-            case SetReadPost:
+            case SetPostRead:
                 break;
-            case SetUnreadPost:
+            case SetPostUnread:
                 break;
             case ForumsLoaded:
                 executor.execute(new ForumLoader(changedData.getForumIds()));

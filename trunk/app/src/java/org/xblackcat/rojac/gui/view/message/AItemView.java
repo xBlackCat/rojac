@@ -4,6 +4,7 @@ import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 
 /**
  * @author xBlackCat
@@ -22,7 +23,7 @@ public abstract class AItemView extends AView implements IItemView {
         listenerList.remove(IActionListener.class, l);
     }
 
-    protected void fireMessageGotFocus(int messageId) {
+    protected void fireMessageGotFocus(AffectedMessage messageId) {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == IActionListener.class) {
@@ -31,7 +32,7 @@ public abstract class AItemView extends AView implements IItemView {
         }
     }
 
-    protected void fireMessageLostFocus(int messageId) {
+    protected void fireMessageLostFocus(AffectedMessage messageId) {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == IActionListener.class) {
@@ -40,7 +41,7 @@ public abstract class AItemView extends AView implements IItemView {
         }
     }
 
-    protected void fireMessageUpdated(int messageId) {
+    protected void fireMessageUpdated(AffectedMessage messageId) {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == IActionListener.class) {

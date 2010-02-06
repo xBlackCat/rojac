@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
+
 /**
  * Control of single-thread view.
  *
@@ -8,7 +10,7 @@ package org.xblackcat.rojac.gui.view.thread;
 
 public class SortedSingleThreadControl implements IThreadControl<Post> {
     @Override
-    public int loadThreadByItem(AThreadModel<Post> model, int itemId) {
+    public int loadThreadByItem(AThreadModel<Post> model, AffectedMessage itemId) {
 //        Post mi = new Post(null, itemId);
 //        model.setRoot(mi);
 //        return mi.getMessageData().getForumId();
@@ -16,7 +18,7 @@ public class SortedSingleThreadControl implements IThreadControl<Post> {
     }
 
     @Override
-    public void updateItem(AThreadModel<Post> model, int... itemId) {
+    public void updateItem(AThreadModel<Post> model, AffectedMessage... itemId) {
     }
 
     @Override

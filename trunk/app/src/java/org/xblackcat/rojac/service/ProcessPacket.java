@@ -6,7 +6,7 @@ import gnu.trove.TObjectProcedure;
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
-import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.PacketUtils;
 
 /**
  * @author xBlackCat
@@ -43,11 +43,20 @@ public final class ProcessPacket {
     }
 
     public ProcessPacket(PacketType type, ITreeItem<?> ... items) {
-        this(type, RojacUtils.toAffectedMessages(items));
+        this(type, PacketUtils.toAffectedMessages(items));
     }
 
     public PacketType getType() {
         return type;
+    }
+
+    public AffectedMessage[] getAffectedMessages(int forumId) {
+        TIntHashSet messageIds = messageByForums.get(forumId);
+        if (messageIds != null && !messageIds.isEmpty()) {
+            return PacketUtils.makeAffectedMessages(forumId, messageIds.toArray());
+        } else {
+            return AffectedMessage.EMPTY;
+        }
     }
 
     public int[] getMessageIds(int forumId) {
@@ -107,9 +116,5 @@ public final class ProcessPacket {
     @Override
     public String toString() {
         return "Affected ids[count: message ids = "+ collectMessageIds().size() + ", forum ids = " + messageByForums.size() + "]";
-    }
-
-    public void clear() {
-        messageByForums.clear();
     }
 }
