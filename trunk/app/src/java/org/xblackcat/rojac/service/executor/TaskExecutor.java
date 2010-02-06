@@ -26,7 +26,7 @@ public final class TaskExecutor implements IExecutor {
 
     public TaskExecutor() {
         Map<TaskTypeEnum, Executor> pools = new EnumMap<TaskTypeEnum, Executor>(TaskTypeEnum.class);
-        pools.put(TaskTypeEnum.Common, setupCommonExecutor());
+        pools.put(TaskTypeEnum.Background, setupCommonExecutor());
         pools.put(TaskTypeEnum.DataLoading, setupMessageLoadingExecutor());
         pools.put(TaskTypeEnum.Synchronization, setupServerSynchronizationExecutor());
 
@@ -55,10 +55,10 @@ public final class TaskExecutor implements IExecutor {
         TaskTypeEnum type = getTargetType(target.getClass());
 
         if (type == null) {
-            // By default use Common type.
-            type = TaskTypeEnum.Common;
+            // By default use Background type.
+            type = TaskTypeEnum.Background;
             if (log.isTraceEnabled()) {
-                log.trace("Target " + target.getClass() + " will be executed as type " + TaskTypeEnum.Common);
+                log.trace("Target " + target.getClass() + " will be executed as type " + TaskTypeEnum.Background);
             }
         }
 
@@ -92,14 +92,13 @@ public final class TaskExecutor implements IExecutor {
     }
 
     /**
-     * Searches a TaskType annotation in class declaration in the following order: <ul> <li>Class</li> <li>Interfaces is
-     * implemented in the class</li> <li>SuperClass</li> <li>Interfaces is implemented in the superclass</li>
-     * <li>...</li> </ul> Note that a super-interfaces of implemented interfaces will not be checked.
+     * Searches a TaskType annotation in class declaration in the following order: <ul> <li>Class</li>
+     * <li>SuperClass</li> <li>Superclass of the superclass</li> <li>...</li> </ul> Note that implemented interfaces
+     * will not be checked for annotations.
      *
      * @param clazz class to check.
      *
-     * @return org.xblackcat.rojac.service.executor.TaskTypeEnum value or <code>null</code> if the annotation is not
-     *         present.
+     * @return TaskTypeEnum value or <code>null</code> if the annotation is not present.
      */
     private static TaskTypeEnum getTargetType(Class<?> clazz) {
         if (clazz == null) {
@@ -113,17 +112,6 @@ public final class TaskExecutor implements IExecutor {
                 log.trace("Target " + clazz + " has " + annotation.value() + " type");
             }
             return annotation.value();
-        }
-
-        for (Class<?> i : clazz.getInterfaces()) {
-            annotation = clazz.getAnnotation(TaskType.class);
-
-            if (annotation != null) {
-                if (log.isTraceEnabled()) {
-                    log.trace("Target " + clazz + " has " + annotation.value() + " type from " + i + " interface.");
-                }
-                return annotation.value();
-            }
         }
 
         return getTargetType(clazz.getSuperclass());
