@@ -25,6 +25,12 @@ interface IThreadControl<T extends ITreeItem<T>> {
      */
     void updateItem(AThreadModel<T> model, AffectedMessage... itemId);
 
+    void markForumRead(AThreadModel<T> model, boolean read);
+
+    void markThreadRead(AThreadModel<T> model, int threadRootId, boolean read);
+
+    void markPostRead(AThreadModel<T> model, int postId, boolean read);
+
     /**
      * Initializes a procedure to load children of the item.
      *

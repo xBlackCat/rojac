@@ -83,6 +83,21 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         }
     }
 
+    public void subTreeNodesChanged(T node) {
+        if (node != null) {
+            subTreeChanged(getPathToRoot(node));
+        }
+    }
+
+    private void subTreeChanged(TreePath path) {
+        final T node = (T) path.getLastPathComponent();
+        nodeChanged(node);
+
+        for (int i = 0; i < node.getSize(); i++ ){
+            subTreeChanged(path.pathByAddingChild(node.getChild(i)));
+        }
+    }
+
     /**
      * Invoke this method after you've changed how node is to be represented in the tree.
      *

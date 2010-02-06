@@ -13,17 +13,19 @@ import org.xblackcat.rojac.util.RojacWorker;
 class SetMessageReadFlag extends RojacWorker<Void, Void> {
     private Post post;
     private IRootPane mainFrame;
+    protected boolean read;
 
-    public SetMessageReadFlag(Post post, IRootPane mainFrame) {
+    public SetMessageReadFlag(Post post, IRootPane mainFrame, boolean read) {
         this.post = post;
         this.mainFrame = mainFrame;
+        this.read = read;
     }
 
     @Override
     protected Void perform() throws Exception {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         try {
-            storage.getMessageAH().updateMessageReadFlag(post.getMessageId(), true);
+            storage.getMessageAH().updateMessageReadFlag(post.getMessageId(), read);
         } catch (StorageException e) {
             e.printStackTrace();
         }
@@ -33,13 +35,17 @@ class SetMessageReadFlag extends RojacWorker<Void, Void> {
     @Override
     protected void done() {
         if (post != null) {
-            post.setRead(true);
+            // Fire event only if post read state is differ than new post state.
+            // Just in case.
+            if ((post.isRead() == ReadStatus.Unread) == read) { 
+                post.setRead(read);
 
-            ProcessPacket processPacket = new ProcessPacket(
-                    PacketType.SetPostRead,
-                    new AffectedMessage(post.getForumId(), post.getMessageId())
-            );
-            mainFrame.processPacket(processPacket);
+                ProcessPacket processPacket = new ProcessPacket(
+                        read ? PacketType.SetPostRead : PacketType.SetPostUnread,
+                        new AffectedMessage(post.getForumId(), post.getMessageId())
+                );
+                mainFrame.processPacket(processPacket);
+            }
         }
     }
 }

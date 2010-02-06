@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Messages;
@@ -11,6 +12,7 @@ import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
+import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -27,6 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Main class for forum view.
@@ -109,7 +112,7 @@ public class ForumsListView extends AView {
                                 new IResultHandler() {
                                     @Override
                                     public void process(AffectedMessage... messages) {
-                                        mainFrame.processPacket(new ProcessPacket(PacketType.ForumsLoaded, messages));
+                                        mainFrame.processPacket(new ProcessPacket(PacketType.ForumsLoaded));
                                     }
                                 },
                                 Request.GET_FORUMS_LIST
@@ -147,40 +150,90 @@ public class ForumsListView extends AView {
     }
 
     public void processPacket(ProcessPacket changedData) {
+        final int[] forumIds = changedData.getForumIds();
         switch (changedData.getType()) {
-            case AddMessages:
-                break;
-            case UpdateMessages:
-                break;
             case SetForumRead:
+                forumsModel.setRead(true, forumIds);
                 break;
             case SetForumUnread:
+                forumsModel.setRead(false, forumIds);
                 break;
+            case AddMessages:
+            case UpdateMessages:
             case SetThreadRead:
-                break;
             case SetThreadUnread:
+                loadForumStatistic(forumIds);
                 break;
             case SetPostRead:
+                for (int forumId : forumIds) {
+                    adjustUnreadPosts(-1, forumId);
+                }
                 break;
             case SetPostUnread:
+                for (int forumId : forumIds) {
+                    adjustUnreadPosts(1, forumId);
+                }
                 break;
             case ForumsLoaded:
-                executor.execute(new ForumLoader(changedData.getForumIds()));
+                executor.execute(new ForumLoader());
                 break;
         }
     }
 
+    private void adjustUnreadPosts(int amount, int forumId) {
+        ForumData data = forumsModel.getForumData(forumId);
+        ForumStatistic oldStatistic = data.getStat();
+
+        ForumStatistic newStatistic = new ForumStatistic(
+                forumId,
+                oldStatistic.getTotalMessages(),
+                oldStatistic.getUnreadMessages() + amount,
+                oldStatistic.getLastMessageDate()
+        );
+
+        forumsModel.updateStatistic(newStatistic);
+    }
+
+    private void loadForumStatistic(int[] forumIds) {
+        executor.execute(new ForumUpdater(forumIds));
+    }
+
+    private class ForumUpdater extends RojacWorker<Void, ForumStatistic> {
+        private final int[] forumIds;
+
+        public ForumUpdater(int... forumIds) {
+            this.forumIds = forumIds;
+        }
+
+        @Override
+        protected Void perform() throws Exception {
+            IForumAH fah = storage.getForumAH();
+
+            Map<Integer, Integer> totalMessages = fah.getMessagesInForum(forumIds);
+            Map<Integer, Integer> unreadMessages = fah.getUnreadMessagesInForum(forumIds);
+            Map<Integer, Long> lastPostDate = fah.getLastMessageDateInForum(forumIds);
+
+            for (int forumId : forumIds) {
+                publish(new ForumStatistic(
+                        forumId,
+                        totalMessages.get(forumId),
+                        unreadMessages.get(forumId),
+                        lastPostDate.get(forumId)
+                ));
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<ForumStatistic> chunks) {
+            for (ForumStatistic stat : chunks) {
+                forumsModel.updateStatistic(stat);
+            }
+        }
+    }
+
     private class ForumLoader extends RojacWorker<Void, Forum> {
-        private int[] ids;
-
-        public ForumLoader() {
-            this(null);
-        }
-
-        public ForumLoader(int[] ids) {
-            this.ids = ids;
-        }
-
         @Override
         protected Void perform() throws Exception {
             try {
@@ -197,14 +250,13 @@ public class ForumsListView extends AView {
         protected void process(List<Forum> chunks) {
             Forum[] forums = chunks.toArray(new Forum[chunks.size()]);
             forumsModel.fillForums(forums);
-            if (ids == null) {
-                ids = new int[forums.length];
+            int[] ids = new int[forums.length];
 
-                for (int i = 0, forumsLength = forums.length; i < forumsLength; i++) {
-                    ids[i] = forums[i].getForumId();
-                }
+            for (int i = 0, forumsLength = forums.length; i < forumsLength; i++) {
+                ids[i] = forums[i].getForumId();
             }
-            forumsModel.updateForums(ids);
+
+            loadForumStatistic(ids);
         }
     }
 }

@@ -177,4 +177,11 @@ class Post implements ITreeItem<Post> {
     public void setRead(boolean read) {
         this.read = read;
     }
+
+    protected void setDeepRead(boolean read) {
+        setRead(read);
+        for (Post p : childrenPosts) {
+            p.setDeepRead(read);
+        }
+    }
 }
