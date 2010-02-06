@@ -6,12 +6,17 @@ import gnu.trove.TObjectProcedure;
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
+import org.xblackcat.rojac.util.RojacUtils;
 
 /**
  * @author xBlackCat
  */
 
-public class ProcessPacket {
+public final class ProcessPacket {
+    /**
+     * The constant is used for preventing generating large amount of empty HashSet objects.
+     */
+    private static final TIntHashSet EMPTY_FORUM = new TIntHashSet();
     private final TIntObjectHashMap<TIntHashSet> messageByForums = new TIntObjectHashMap<TIntHashSet>();
     private final PacketType type;
 
@@ -30,20 +35,15 @@ public class ProcessPacket {
         }
     }
 
-    public void addMessageId(int messageId) {
-        addMessageId(AffectedMessage.DEFAULT_FORUM, messageId);
+    public ProcessPacket(PacketType type, int... forumIds) {
+        this.type = type;
+        for (int forumId : forumIds) {
+            messageByForums.put(forumId, EMPTY_FORUM);
+        }
     }
 
-    public void addItem(ITreeItem<?> item) {
-        addMessageId(item.getForumId(), item.getMessageId());
-    }
-    
-    protected void addMessageId(int forumId, int messageId) {
-        if (messageByForums.containsKey(forumId)) {
-            messageByForums.get(forumId).add(messageId);
-        } else {
-            messageByForums.put(forumId, new TIntHashSet(new int[] {messageId}));
-        }
+    public ProcessPacket(PacketType type, ITreeItem<?> ... items) {
+        this(type, RojacUtils.toAffectedMessages(items));
     }
 
     public PacketType getType() {

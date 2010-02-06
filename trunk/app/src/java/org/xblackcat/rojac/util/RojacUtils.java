@@ -9,8 +9,10 @@ import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
 import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
+import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IRequest;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.RequestProcessor;
@@ -125,6 +127,7 @@ public final class RojacUtils {
     /*
     * Util methods for converting values.
     */
+
     public static <T extends Enum<T>> T toEnum(Class<T> enumClass, String val) {
         if (val != null) {
             return Enum.valueOf(enumClass, val);
@@ -136,7 +139,7 @@ public final class RojacUtils {
     /**
      * Generates a tree path of the specified property by its name.
      *
-     * @param p
+     * @param p property object to generate a path of.
      *
      * @return root of the path.
      */
@@ -209,7 +212,8 @@ public final class RojacUtils {
      * @param bundle base name of bundle with / as separators and without extension.
      *
      * @return an array of available locales for the specified bundle.
-     * @throws java.io.IOException
+     *
+     * @throws IOException if bundle list can not be obtained.
      */
     public static Locale[] localesForBundle(String bundle) throws IOException {
         return localesForBundle(bundle, false);
@@ -222,7 +226,8 @@ public final class RojacUtils {
      * @param addDefault flag to specify is the default resource bundle should be associated with default locale.
      *
      * @return an array of available locales for the specified bundle.
-     * @throws java.io.IOException
+     *
+     * @throws IOException if bundle list can not be obtained.
      */
     public static Locale[] localesForBundle(String bundle, boolean addDefault) throws IOException {
         if (bundle == null) {
@@ -288,14 +293,17 @@ public final class RojacUtils {
         }
 
         RojacWorker sw = new RequestProcessor(dataHandler, requests);
-        
+
         ServiceFactory.getInstance().getExecutor().execute(sw);
     }
 
     /**
      * Util class for checking if the method executed in SwingThread or not.
-     * @param swing
-     * @param tillClass
+     *
+     * @param swing     control flag. If set to <code>true</code> the current method will check if it is executing in
+     *                  the EventDispatching thread. If set to <code>false</code> - in the non-EventDispatching thread.
+     *                  If condition is failed a message will be added into logs.
+     * @param tillClass class object till which a stack trace should be trimmed.
      */
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public static void checkThread(boolean swing, Class<?> tillClass) {
@@ -306,11 +314,11 @@ public final class RojacUtils {
             if (tillClass != null) {
                 int shift = 0;
                 while (!tillClass.getName().equals(stackTrace[shift].getClassName())) {
-                    shift ++;
+                    shift++;
                 }
 
                 while (tillClass.getName().equals(stackTrace[shift].getClassName())) {
-                    shift ++;
+                    shift++;
                 }
 
                 if (shift != stackTrace.length) {
@@ -335,6 +343,14 @@ public final class RojacUtils {
     public static void showExceptionDialog(Thread t, Throwable e) {
 
         GLOBAL_EXCEPTION_HANDLER.uncaughtException(t, e);
+    }
+
+    public static AffectedMessage[] toAffectedMessages(ITreeItem<?>... items) {
+        Collection<AffectedMessage> result = new LinkedList<AffectedMessage>();
+        for (ITreeItem<?> i : items) {
+            result.add(new AffectedMessage(i.getForumId(), i.getMessageId()));
+        }
+        return result.toArray(new AffectedMessage[result.size()]);
     }
 
     private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
