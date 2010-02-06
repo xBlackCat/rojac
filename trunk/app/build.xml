@@ -107,7 +107,9 @@
         <mkdir dir="${rojac-application.output.dir}"/>
         <mkdir dir="${rojac-application.testoutput.dir}"/>
         <mkdir dir="${rojac-application.dist.dir}"/>
+    </target>
 
+    <target name="get.gevision" depends="prepare" if="get.source.revision">
         <!-- Paste resource file with revision information -->
         <exec executable="svn" output="${rojac-application.output.dir}/svninfo.xml" failifexecutionfails="false">
             <arg line="info"/>
@@ -121,7 +123,7 @@
         <delete file="${rojac-application.output.dir}/svninfo.xml" failonerror="false"/>
     </target>
 
-    <target name="compile" description="Compile application" depends="prepare">
+    <target name="compile" description="Compile application" depends="prepare, get.gevision">
         <!--Compile application classes-->
         <javac destdir="${rojac-application.output.dir}" debug="${compiler.debug}"
                nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
@@ -332,9 +334,10 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
 
     <target name="rebuild" description="Rebuild application" depends="clean, compile, build, build.exe"/>
 
-    <target name="pack-tests"
-            description="Force run tests before making code distributive not depending on if the skip.tests property is set or not.">
+    <target name="make-product"
+            description="Force run all additional tasks to make production distributive.">
         <property name="perform.tests" value="on"/>
+        <property name="get.source.revision" value="on"/>
 
         <antcall target="pack" inheritall="on"/>
     </target>
