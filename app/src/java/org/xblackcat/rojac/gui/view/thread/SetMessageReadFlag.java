@@ -36,7 +36,7 @@ class SetMessageReadFlag extends RojacWorker<Void, Void> {
             post.setRead(true);
 
             ProcessPacket processPacket = new ProcessPacket(
-                    PacketType.SetReadPost,
+                    PacketType.SetPostRead,
                     new AffectedMessage(post.getForumId(), post.getMessageId())
             );
             mainFrame.processPacket(processPacket);

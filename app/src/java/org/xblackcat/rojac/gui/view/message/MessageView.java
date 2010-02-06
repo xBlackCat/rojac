@@ -14,6 +14,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -164,8 +165,8 @@ public class MessageView extends AItemView implements IInternationazable {
         }
     }
 
-    public void loadItem(final int messageId) {
-        this.messageId = messageId;
+    public void loadItem(final AffectedMessage message) {
+        messageId = message.getMessageId();
 
         executor.execute(new MessageLoader(messageId));
     }
@@ -200,7 +201,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
     public void processPacket(ProcessPacket ids) {
         if (ids.containsMessage(this.messageId)) {
-            loadItem(messageId);
+            loadItem(new AffectedMessage(AffectedMessage.DEFAULT_FORUM, messageId));
         }
     }
 

@@ -9,7 +9,6 @@ import org.xblackcat.rojac.service.PacketType;
 import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -128,8 +127,8 @@ class ForumListPopupBuilder implements IPopupBuilder {
 
                         @Override
                         protected void done() {
-                            PacketType type = readFlag ? PacketType.SetReadForum : PacketType.SetUnreadForum;
-                            ProcessPacket p = new ProcessPacket(type, new AffectedMessage(forumId));
+                            PacketType type = readFlag ? PacketType.SetForumRead : PacketType.SetForumUnread;
+                            ProcessPacket p = new ProcessPacket(type, forumId);
                             mainFrame.processPacket(p);
                         }
                     });

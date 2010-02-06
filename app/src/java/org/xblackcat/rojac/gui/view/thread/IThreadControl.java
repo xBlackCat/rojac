@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
+
 /**
  * Interface to avoid sub-classing Thread view class.
  */
@@ -13,7 +15,7 @@ interface IThreadControl<T extends ITreeItem<T>> {
      * @param itemId item id to identify how to initialize model.
      * @return forum id the view is belonged to. Used to load forum information.
      */
-    int loadThreadByItem(AThreadModel<T> model, int itemId);
+    int loadThreadByItem(AThreadModel<T> model, AffectedMessage itemId);
 
     /**
      * Updates the item information.
@@ -21,7 +23,7 @@ interface IThreadControl<T extends ITreeItem<T>> {
      * @param model  item container model.
      * @param itemId item to be updated.
      */
-    void updateItem(AThreadModel<T> model, int... itemId);
+    void updateItem(AThreadModel<T> model, AffectedMessage... itemId);
 
     /**
      * Initializes a procedure to load children of the item.

@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
@@ -39,7 +40,7 @@ public class TreeThreadView extends AThreadView {
         threads.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                 Post mi = (Post) e.getPath().getLastPathComponent();
-                fireMessageGotFocus(mi.getMessageId());
+                fireMessageGotFocus(new AffectedMessage(mi.getForumId(), mi.getMessageId()));
 
                 Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
                 if (delay != null && delay >= 0) {

@@ -34,7 +34,12 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -386,7 +391,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         IItemView forumView = createForumViewWindow();
 
         addTabView(viewId, viewName, forumView);
-        forumView.loadItem(f.getForumId());
+        forumView.loadItem(new AffectedMessage(f.getForumId()));
 
     }
 

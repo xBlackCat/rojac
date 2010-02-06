@@ -5,6 +5,7 @@ import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.service.ProcessPacket;
+import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 
 import javax.swing.*;
 
@@ -19,6 +20,8 @@ public class ThreadDoubleView extends AItemView {
     /**
      * Create combined forum thread view. Contains from master (upper component) and slave (lover component).
      *
+     * @param mv
+     * @param sv
      * @param verticalSplit
      * @param mainFrame
      */
@@ -28,25 +31,25 @@ public class ThreadDoubleView extends AItemView {
         this.slaveView = sv;
 
         masterView.addActionListener(new IActionListener() {
-            public void itemGotFocus(int messageId) {
+            public void itemGotFocus(AffectedMessage messageId) {
                 slaveView.loadItem(messageId);
             }
 
-            public void itemLostFocus(int messageId) {
+            public void itemLostFocus(AffectedMessage messageId) {
             }
 
-            public void itemUpdated(int messageId) {
+            public void itemUpdated(AffectedMessage messageId) {
             }
         });
 
         slaveView.addActionListener(new IActionListener() {
-            public void itemGotFocus(int messageId) {
+            public void itemGotFocus(AffectedMessage messageId) {
             }
 
-            public void itemLostFocus(int messageId) {
+            public void itemLostFocus(AffectedMessage messageId) {
             }
 
-            public void itemUpdated(int messageId) {
+            public void itemUpdated(AffectedMessage messageId) {
             }
         });
 
@@ -59,7 +62,7 @@ public class ThreadDoubleView extends AItemView {
         add(splitPane);
     }
 
-    public void loadItem(int messageId) {
+    public void loadItem(AffectedMessage messageId) {
         masterView.loadItem(messageId);
     }
 
