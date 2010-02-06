@@ -14,7 +14,7 @@ public enum TaskTypeEnum {
      */
     Synchronization,
     /**
-     * Tasks not fit to previous types.
+     * Tasks to be performed in background but not related to GUI.
      */
-    Common,
+    Background,
 }
