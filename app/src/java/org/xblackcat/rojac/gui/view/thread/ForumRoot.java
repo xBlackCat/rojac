@@ -27,6 +27,7 @@ public class ForumRoot extends Post {
      * Searches through all threads for the message Id
      *
      * @param messageId
+     *
      * @return
      */
     @Override
@@ -61,6 +62,7 @@ public class ForumRoot extends Post {
 
     /**
      * @param data
+     *
      * @return newly created item
      */
     public void insertPost(MessageData data) {
@@ -80,6 +82,18 @@ public class ForumRoot extends Post {
                     return;
                 }
             }
+        }
+    }
+
+    /**
+     * Sets whole forum as read or as unread.
+     *
+     * @param read
+     */
+    @Override
+    public void setRead(boolean read) {
+        for (Post threadRoot : childrenPosts) {
+            threadRoot.setDeepRead(read);
         }
     }
 }

@@ -102,6 +102,26 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
     }
 
     @Override
+    public void markForumRead(AThreadModel<Post> model, boolean read) {
+        model.getRoot().setRead(read);
+
+        model.subTreeNodesChanged(model.getRoot());
+    }
+
+    @Override
+    public void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
+    }
+
+    @Override
+    public void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
+        final Post post = model.getRoot().getMessageById(postId);
+        if (post != null) {
+            post.setRead(read);
+            model.pathToNodeChanged(post);
+        }
+    }
+
+    @Override
     public void loadChildren(final AThreadModel<Post> threadModel, Post p) {
         //  In the Sorted model only Thread object could be loaded.
 

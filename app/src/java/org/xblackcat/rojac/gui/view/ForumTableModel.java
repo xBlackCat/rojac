@@ -4,14 +4,11 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author xBlackCat
@@ -40,44 +37,6 @@ public class ForumTableModel extends AbstractTableModel {
         return ForumData.class;
     }
 
-    public void updateForums(final int... forumIds) {
-        RojacWorker<Void, ForumStatistic> infoLoader = new RojacWorker<Void, ForumStatistic>() {
-            @Override
-            protected Void perform() throws Exception {
-                IForumAH fah = storage.getForumAH();
-
-                Map<Integer, Integer> totalMessages = fah.getMessagesInForum(forumIds);
-                Map<Integer, Integer> unreadMessages = fah.getUnreadMessagesInForum(forumIds);
-                Map<Integer, Long> lastPostDate = fah.getLastMessageDateInForum(forumIds);
-
-                for (int forumId : forumIds) {
-                    publish(new ForumStatistic(
-                            forumId,
-                            totalMessages.get(forumId),
-                            unreadMessages.get(forumId),
-                            lastPostDate.get(forumId)
-                    ));
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void process(List<ForumStatistic> chunks) {
-                for (ForumStatistic stat : chunks) {
-                    int idx = getForumDataIndex(stat.getForumId());
-                    if (idx != -1) {
-                        ForumData fd = forums.get(idx);
-                        fd.setStat(stat);
-                        fireTableRowsUpdated(idx, idx);
-                    }
-                }
-            }
-        };
-
-        executor.execute(infoLoader);
-    }
-
     void fillForums(Forum... forums) {
         this.forums.clear();
 
@@ -86,6 +45,15 @@ public class ForumTableModel extends AbstractTableModel {
         }
 
         fireTableDataChanged();
+    }
+
+    public ForumData getForumData(int forumId) {
+        int idx = getForumDataIndex(forumId);
+        if (idx != -1) {
+            return forums.get(idx);
+        } else {
+            return null;
+        }
     }
 
     private int getForumDataIndex(int forumId) {
@@ -104,5 +72,29 @@ public class ForumTableModel extends AbstractTableModel {
         ForumData fd = forums.get(idx);
         fd.setSubscribed(subscribed);
         fireTableRowsUpdated(idx, idx);
+    }
+
+    public void setRead(boolean read, int... forumIds) {
+        for (int forumId : forumIds) {
+            int idx = getForumDataIndex(forumId);
+            ForumData fd = forums.get(idx);
+            ForumStatistic oldStatistic = fd.getStat();
+            final ForumStatistic newStatistic = new ForumStatistic(
+                    forumId,
+                    oldStatistic.getTotalMessages(),
+                    read ? 0 : oldStatistic.getTotalMessages(),
+                    oldStatistic.getLastMessageDate());
+            fd.setStat(newStatistic);
+            fireTableRowsUpdated(idx, idx);
+        }
+    }
+
+    public void updateStatistic(ForumStatistic stat) {
+        int idx = getForumDataIndex(stat.getForumId());
+        if (idx != -1) {
+            ForumData fd = forums.get(idx);
+            fd.setStat(stat);
+            fireTableRowsUpdated(idx, idx);
+        }
     }
 }

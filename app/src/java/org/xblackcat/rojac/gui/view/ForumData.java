@@ -27,10 +27,6 @@ public class ForumData {
         return forum;
     }
 
-    public void setForum(Forum forum) {
-        this.forum = forum;
-    }
-
     public int getForumId() {
         return forumId;
     }
@@ -39,7 +35,7 @@ public class ForumData {
         return stat;
     }
 
-    public void setStat(ForumStatistic stat) {
+    void setStat(ForumStatistic stat) {
         this.stat = stat;
     }
 
@@ -47,7 +43,7 @@ public class ForumData {
         return subscribed;
     }
 
-    public void setSubscribed(boolean subscribed) {
+    void setSubscribed(boolean subscribed) {
         this.subscribed = subscribed;
     }
 

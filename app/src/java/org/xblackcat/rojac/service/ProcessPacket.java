@@ -20,6 +20,10 @@ public final class ProcessPacket {
     private final TIntObjectHashMap<TIntHashSet> messageByForums = new TIntObjectHashMap<TIntHashSet>();
     private final PacketType type;
 
+    public ProcessPacket(PacketType type) {
+        this.type = type;
+    }
+
     public ProcessPacket(PacketType type, AffectedMessage... messages) {
         this.type = type;
         for (AffectedMessage am : messages) {

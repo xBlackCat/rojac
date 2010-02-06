@@ -178,4 +178,16 @@ public class Thread extends Post {
             }
         }
     }
+
+    @Override
+    protected void setDeepRead(boolean read) {
+        if (filled) {
+            // Thread has already filled - go through nodes and set them as read.
+            super.setDeepRead(read);
+        } else {
+            // Thread hasn't filled yet - just reset statistic data.
+            setRead(read);
+            unreadPosts = read ? 0 : threadStatData.getReplyAmount();
+        }
+    }
 }

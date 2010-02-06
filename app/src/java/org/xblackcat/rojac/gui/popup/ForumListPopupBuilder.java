@@ -106,7 +106,6 @@ class ForumListPopupBuilder implements IPopupBuilder {
                 @Override
                 protected void done() {
                     forumsModel.setSubscribed(forumId, !subscribed);
-                    forumsModel.updateForums(forumId);
                 }
             });
         }

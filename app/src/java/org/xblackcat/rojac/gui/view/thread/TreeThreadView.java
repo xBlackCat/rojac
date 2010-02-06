@@ -42,13 +42,15 @@ public class TreeThreadView extends AThreadView {
                 Post mi = (Post) e.getPath().getLastPathComponent();
                 fireMessageGotFocus(new AffectedMessage(mi.getForumId(), mi.getMessageId()));
 
-                Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
-                if (delay != null && delay >= 0) {
-                    SetMessageReadFlag target = new SetMessageReadFlag(mi, mainFrame);
-                    if (delay > 0) {
-                        executor.setupTimer("Forum_" + forumId, target, delay);
-                    } else {
-                        executor.execute(target);
+                if (mi.isRead() == ReadStatus.Unread) {
+                    Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
+                    if (delay != null && delay >= 0) {
+                        SetMessageReadFlag target = new SetMessageReadFlag(mi, mainFrame, true);
+                        if (delay > 0) {
+                            executor.setupTimer("Forum_" + forumId, target, delay);
+                        } else {
+                            executor.execute(target);
+                        }
                     }
                 }
             }
@@ -87,7 +89,7 @@ public class TreeThreadView extends AThreadView {
             TreePath path = model.getPathToRoot(post);
 
             TreePath parentPath = path.getParentPath();
-            
+
             if (parentPath != null && threads.isCollapsed(parentPath)) {
                 threads.expandPath(parentPath);
             }

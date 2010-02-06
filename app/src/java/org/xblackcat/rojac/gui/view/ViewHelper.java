@@ -5,7 +5,6 @@ import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.thread.SortedForumThreadsControl;
-import org.xblackcat.rojac.gui.view.thread.SortedSingleThreadControl;
 import org.xblackcat.rojac.gui.view.thread.ThreadDoubleView;
 import org.xblackcat.rojac.gui.view.thread.TreeThreadView;
 
@@ -25,17 +24,6 @@ public final class ViewHelper {
      */
     public static IItemView makeForumThreadsView(IRootPane mainFrame) {
         return new TreeThreadView(mainFrame, new SortedForumThreadsControl());
-    }
-
-    /**
-     * Creates a tree-based single thread view: only messages of the specified thread.
-     *
-     * @param mainFrame root component.
-     *
-     * @return a new instance of view
-     */
-    public static IItemView makeSingleThreadView(IRootPane mainFrame) {
-        return new TreeThreadView(mainFrame, new SortedSingleThreadControl());
     }
 
     /**

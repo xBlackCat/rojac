@@ -27,7 +27,7 @@ import java.util.List;
 
 public abstract class AThreadView extends AItemView {
     private static final Log log = LogFactory.getLog(TreeThreadView.class);
-    
+
     protected final IThreadControl threadControl;
     protected final JLabel forumName = new JLabel();
     protected final AThreadModel<Post> model = new SortedThreadsModel();
@@ -76,17 +76,55 @@ public abstract class AThreadView extends AItemView {
     @SuppressWarnings({"unchecked"})
     public void processPacket(ProcessPacket ids) {
         if (ids.containsForum(forumId)) {
-            AffectedMessage[] messageIds = (AffectedMessage[]) ArrayUtils.addAll(
-                    ids.getAffectedMessages(forumId),
-                    ids.getAffectedMessages(AffectedMessage.DEFAULT_FORUM)
-            );
-
-            Post currentPost = getSelectedItem();
-
-            threadControl.updateItem(model, messageIds);
-
-            selectItem(currentPost);
+            switch (ids.getType()) {
+                case ForumsLoaded:
+                    // Do nothing
+                    break;
+                case AddMessages:
+                case UpdateMessages:
+                    updateMessages(ids);
+                    break;
+                case SetForumRead:
+                    threadControl.markForumRead(model, true);
+                    break;
+                case SetForumUnread:
+                    threadControl.markForumRead(model, false);
+                    break;
+                case SetThreadRead:
+                    for (AffectedMessage threadRootId : ids.getAffectedMessages(forumId)) {
+                        threadControl.markThreadRead(model, threadRootId.getMessageId(), true);
+                    }
+                    break;
+                case SetThreadUnread:
+                    for (AffectedMessage threadRootId : ids.getAffectedMessages(forumId)) {
+                        threadControl.markThreadRead(model, threadRootId.getMessageId(), false);
+                    }
+                    break;
+                case SetPostRead:
+                    for (AffectedMessage postId : ids.getAffectedMessages(forumId)) {
+                        threadControl.markPostRead(model, postId.getMessageId(), true);
+                    }
+                    break;
+                case SetPostUnread:
+                    for (AffectedMessage postId : ids.getAffectedMessages(forumId)) {
+                        threadControl.markPostRead(model, postId.getMessageId(), false);
+                    }
+                    break;
+            }
         }
+    }
+
+    private void updateMessages(ProcessPacket ids) {
+        AffectedMessage[] messageIds = (AffectedMessage[]) ArrayUtils.addAll(
+                ids.getAffectedMessages(forumId),
+                ids.getAffectedMessages(AffectedMessage.DEFAULT_FORUM)
+        );
+
+        Post currentPost = getSelectedItem();
+
+        threadControl.updateItem(model, messageIds);
+
+        selectItem(currentPost);
     }
 
     protected abstract void selectItem(Post post);
