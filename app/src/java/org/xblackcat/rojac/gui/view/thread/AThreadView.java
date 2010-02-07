@@ -53,7 +53,10 @@ public abstract class AThreadView extends AItemView {
                 mainFrame.editMessage(forumId, null);
             }
         }, Messages.VIEW_THREAD_BUTTON_NEW_THREAD);
-        JToolBar toolbar = WindowsUtils.createToolBar(newThreadButton);
+        JButton prevUnreadButton = WindowsUtils.setupImageButton("prev_unread", new PreviousUnreadSelector(), Messages.VIEW_THREAD_BUTTON_PREVIOUS_UNREAD);
+        JButton nextUnreadButton = WindowsUtils.setupImageButton("next_unread", new NextUnreadSelector(), Messages.VIEW_THREAD_BUTTON_NEXT_UNREAD);
+
+        JToolBar toolbar = WindowsUtils.createToolBar(newThreadButton, null, prevUnreadButton, nextUnreadButton);
         internalPane.add(toolbar, BorderLayout.NORTH);
 
         add(internalPane, BorderLayout.CENTER);
@@ -133,6 +136,74 @@ public abstract class AThreadView extends AItemView {
 
     protected abstract JComponent getThreadsContainer();
 
+    private Post getPrevUnread(Post post, int idx) {
+        // TODO: implement
+        return null;
+    }
+
+    private void selectNextUnread(Post currentPost) {
+        Post nextUnread = getNextUnread(currentPost, 0);
+        if (nextUnread != null) {
+            selectItem(nextUnread);
+        }
+    }
+
+    private Post getNextUnread(Post post, int idx) {
+        if (post == null) {
+            post = model.getRoot();
+            if (post.getSize() == 0) {
+                return null;
+            }
+        }
+
+        if (post.getLoadingState() == LoadingState.NotLoaded && post.isRead() == ReadStatus.ReadPartially) {
+            // Has unread children but their have not loaded yet.
+            threadControl.loadChildren(model, post, new LoadNextUnread(post));
+            // Change post selection when children are loaded
+            return null;
+        }
+
+        if (post.getLoadingState() == LoadingState.Loaded && idx >= post.getSize() || post.isRead() == ReadStatus.Read) {
+            // All items in the subtree are read.
+            // Go to parent and search again
+            Post parent = post.getParent();
+            if (parent != null) {
+                int nextIdx = parent.getIndex(post) + 1;
+                return getNextUnread(parent, nextIdx);
+            } else {
+                return null;
+            }
+        }
+
+        int i = idx;
+        while (i < post.getSize()) {
+            Post p = post.getChild(i);
+            switch (p.isRead()) {
+                case Read:
+                    // Go to next child of post
+                    i++;
+                    break;
+                case ReadPartially:
+                    switch (p.getLoadingState()) {
+                        case Loaded:
+                            // Go deep to next child of the child
+                            i = 0;
+                            post = p;
+                            break;
+                        case NotLoaded:
+                            threadControl.loadChildren(model, p, new LoadNextUnread(p));
+                        case Loading:
+                            return null;
+                    }
+                case Unread:
+                    return p;
+            }
+        }
+
+        // No next unread post is found
+        return null;
+    }
+
     private class ForumInfoLoader extends RojacWorker<Void, Forum> {
         private final int forumId;
 
@@ -158,6 +229,36 @@ public abstract class AThreadView extends AItemView {
             for (Forum f : chunks) {
                 forumName.setText(f.getForumName() + "/" + f.getShortForumName());
             }
+        }
+    }
+
+    private class PreviousUnreadSelector implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            Post prevUnread = getPrevUnread(currentPost, -1);
+            if (prevUnread != null) {
+                selectItem(prevUnread);
+            }
+        }
+    }
+
+    private class NextUnreadSelector implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            selectNextUnread(currentPost);
+        }
+    }
+
+    private class LoadNextUnread implements IItemProcessor {
+        private final Post p;
+
+        public LoadNextUnread(Post p) {
+            this.p = p;
+        }
+
+        @Override
+        public void processItem(ITreeItem item) {
+            selectNextUnread(p);
         }
     }
 }

@@ -122,7 +122,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
     }
 
     @Override
-    public void loadChildren(final AThreadModel<Post> threadModel, Post p) {
+    public void loadChildren(final AThreadModel<Post> threadModel, Post p, IItemProcessor<Post> postProcessor) {
         //  In the Sorted model only Thread object could be loaded.
 
         // Watch out for the line!
@@ -130,7 +130,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
         item.setLoadingState(LoadingState.Loading);
 
-        executor.execute(new ThreadLoader(item, threadModel));
+        executor.execute(new ThreadLoader(item, threadModel, postProcessor));
     }
 
     @Override
@@ -192,10 +192,16 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
     private class ThreadLoader extends RojacWorker<Void, MessageData> {
         private final Thread item;
         private final AThreadModel<Post> threadModel;
+        private final IItemProcessor<Post> postProcessor;
 
         public ThreadLoader(Thread item, AThreadModel<Post> threadModel) {
+            this(item, threadModel, null);
+        }
+
+        public ThreadLoader(Thread item, AThreadModel<Post> threadModel, IItemProcessor<Post> postProcessor) {
             this.item = item;
             this.threadModel = threadModel;
+            this.postProcessor = postProcessor;
         }
 
         @Override
@@ -221,6 +227,10 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             item.setLoadingState(LoadingState.Loaded);
 
             threadModel.nodeStructureChanged(item);
+
+            if (postProcessor!= null) {
+                postProcessor.processItem(item);
+            }
         }
     }
 }

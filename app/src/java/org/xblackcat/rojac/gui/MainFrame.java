@@ -459,14 +459,19 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private class CloseViewTabListener extends DockingWindowAdapter {
         @Override
         public void windowClosed(DockingWindow window) {
+            unregisterWindow(window);
             int views = window.getChildWindowCount();
 
             for (int i = 0; i < views; i++) {
                 DockingWindow dw = window.getChildWindow(i);
 
-                if (openedViews.containsValue(dw)) {
-                    openedViews.values().remove(dw);
-                }
+                unregisterWindow(dw);
+            }
+        }
+
+        private void unregisterWindow(DockingWindow dw) {
+            if (openedViews.containsValue(dw)) {
+                openedViews.values().remove(dw);
             }
         }
     }

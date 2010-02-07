@@ -58,6 +58,8 @@ public enum Messages {
 
     // Threads view
     VIEW_THREAD_BUTTON_NEW_THREAD,
+    VIEW_THREAD_BUTTON_PREVIOUS_UNREAD,
+    VIEW_THREAD_BUTTON_NEXT_UNREAD,
 
     //
     // Dialog texts

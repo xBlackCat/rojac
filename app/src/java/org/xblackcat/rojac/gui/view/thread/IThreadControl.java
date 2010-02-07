@@ -36,8 +36,9 @@ interface IThreadControl<T extends ITreeItem<T>> {
      *
      * @param model
      * @param item
+     * @param postProcessor
      */
-    void loadChildren(AThreadModel<T> model, T item);
+    void loadChildren(AThreadModel<T> model, T item, IItemProcessor<T> postProcessor);
 
     /**
      * Returns root item visibility state.
