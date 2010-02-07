@@ -109,7 +109,7 @@
         <mkdir dir="${rojac-application.dist.dir}"/>
     </target>
 
-    <target name="get.gevision" depends="prepare" if="get.source.revision">
+    <target name="get.revision" depends="prepare" if="get.source.revision">
         <!-- Paste resource file with revision information -->
         <exec executable="svn" output="${rojac-application.output.dir}/svninfo.xml" failifexecutionfails="false">
             <arg line="info"/>
@@ -123,7 +123,7 @@
         <delete file="${rojac-application.output.dir}/svninfo.xml" failonerror="false"/>
     </target>
 
-    <target name="compile" description="Compile application" depends="prepare, get.gevision">
+    <target name="compile" description="Compile application" depends="prepare, get.revision">
         <!--Compile application classes-->
         <javac destdir="${rojac-application.output.dir}" debug="${compiler.debug}"
                nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
@@ -164,6 +164,8 @@
                 <type type="file"/>
             </fileset>
         </copy>
+
+        <antcall target="add.svn.info" inheritall="on"/>        
     </target>
 
     <!-- Run the task only if svn info is success fully obtained. -->
