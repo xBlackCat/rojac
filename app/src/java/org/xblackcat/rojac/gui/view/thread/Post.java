@@ -94,7 +94,7 @@ class Post implements ITreeItem<Post> {
     @Override
     public int compareTo(Post o) {
         long postDate = o.getMessageData().getMessageDate();
-        long thisPostDate = o.getMessageData().getMessageDate();
+        long thisPostDate = getMessageData().getMessageDate();
 
         return thisPostDate == postDate ? 0 : postDate < thisPostDate ? 1 : -1;
     }
