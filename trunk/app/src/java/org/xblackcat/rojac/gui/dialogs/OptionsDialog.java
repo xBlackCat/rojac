@@ -14,11 +14,10 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Locale;
 
-import static org.xblackcat.rojac.service.options.Property.*;
+import static org.xblackcat.rojac.service.options.Property.ROJAC_GUI_LOCALE;
+import static org.xblackcat.rojac.service.options.Property.ROJAC_GUI_LOOK_AND_FEEL;
 
 /**
  * Shows a dialog to configure the application.
@@ -28,20 +27,7 @@ import static org.xblackcat.rojac.service.options.Property.*;
 
 public class OptionsDialog extends JDialog {
     private static final Log log = LogFactory.getLog(OptionsDialog.class);
-    // Hidden properties.
-    private static final Collection<Property<?>> PROPERTIES_TO_SKIP = Arrays.asList(
-            ROJAC_DEBUG_MODE,
-            ROJAC_MAIN_FRAME_SIZE,
-            ROJAC_MAIN_FRAME_POSITION,
-            ROJAC_MAIN_FRAME_STATE,
-            RSDN_USER_ID,
-            RSDN_USER_NAME,
-            RSDN_USER_PASSWORD,
-            RSDN_USER_PASSWORD_SAVE
-    );
-
     protected PropertiesModel model;
-
 
     public OptionsDialog(Window mainFrame) throws RojacException {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
@@ -142,9 +128,9 @@ public class OptionsDialog extends JDialog {
         PropertyNode root = null;
 
         for (Property<?> p : Property.getAllProperties()) {
-            if (PROPERTIES_TO_SKIP.contains(p)) {
+            if (!p.isPublic()) {
                 if (log.isTraceEnabled()) {
-                    log.trace(p + " is in ignore list - skipping.");
+                    log.trace(p + " is in not public - skipping.");
                 }
                 continue;
             }
