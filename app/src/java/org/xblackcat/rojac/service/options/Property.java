@@ -25,12 +25,12 @@ public final class Property<T> {
     private static final Collection<Property<?>> ALL_PROPERTIES = new LinkedList<Property<?>>();
 
     // Global development properties
-    public static final Property<Boolean> ROJAC_DEBUG_MODE = create("rojac.global.debug.mode", Boolean.FALSE);
+    public static final Property<Boolean> ROJAC_DEBUG_MODE = createPrivate("rojac.global.debug.mode", Boolean.FALSE);
 
     // Application component properties
-    public static final Property<Dimension> ROJAC_MAIN_FRAME_SIZE = create("rojac.main_frame.size", Dimension.class);
-    public static final Property<Point> ROJAC_MAIN_FRAME_POSITION = create("rojac.main_frame.position", Point.class);
-    public static final Property<Integer> ROJAC_MAIN_FRAME_STATE = create("rojac.main_frame.state", Integer.class);
+    public static final Property<Dimension> ROJAC_MAIN_FRAME_SIZE = createPrivate("rojac.main_frame.size", Dimension.class);
+    public static final Property<Point> ROJAC_MAIN_FRAME_POSITION = createPrivate("rojac.main_frame.position", Point.class);
+    public static final Property<Integer> ROJAC_MAIN_FRAME_STATE = createPrivate("rojac.main_frame.state", Integer.class);
 
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());
@@ -38,10 +38,10 @@ public final class Property<T> {
     public static final Property<IconPack> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", IconPackValueChecker.DEFAULT_ICON_PACK, new IconPackValueChecker());
 
     // User properties (login dialog)
-    public static final Property<String> RSDN_USER_NAME = create("rojac.rsdn.user.name", String.class);
-    public static final Property<Password> RSDN_USER_PASSWORD = create("rojac.rsdn.user.password", Password.class);
-    public static final Property<Integer> RSDN_USER_ID = create("rojac.rsdn.user.id", Integer.class);
-    public static final Property<Boolean> RSDN_USER_PASSWORD_SAVE = create("rojac.rsdn.user.password.save", Boolean.FALSE);
+    public static final Property<String> RSDN_USER_NAME = createPrivate("rojac.rsdn.user.name", String.class);
+    public static final Property<Password> RSDN_USER_PASSWORD = createPrivate("rojac.rsdn.user.password", Password.class);
+    public static final Property<Integer> RSDN_USER_ID = createPrivate("rojac.rsdn.user.id", Integer.class);
+    public static final Property<Boolean> RSDN_USER_PASSWORD_SAVE = createPrivate("rojac.rsdn.user.password.save", Boolean.FALSE);
 
     // Progress dialog properties
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.dialog.progress.autoshow", Boolean.TRUE);
@@ -64,6 +64,11 @@ public final class Property<T> {
 
     public static final Property<Boolean> MESSAGE_PANE_SHOW_MARKS = create("rojac.viewer.show_marks_pane", Boolean.FALSE);
 
+    // Forum list view state properties.
+    public static final Property<Boolean> VIEW_FORUM_LIST_SUBSCRIBED_ONLY = createPrivate("rojac.view.forum_list.subscribed_only", Boolean.FALSE);
+    public static final Property<Boolean> VIEW_FORUM_LIST_UNREAD_ONLY = createPrivate("rojac.view.forum_list.unread_only", Boolean.FALSE);
+    public static final Property<Boolean> VIEW_FORUM_LIST_FILLED_ONLY = createPrivate("rojac.view.forum_list.filled_only", Boolean.FALSE);
+
     static <V> Property<V> create(String name, Class<V> type, IValueChecker<V> checker) {
         return create(name, type, null, checker);
     }
@@ -74,12 +79,21 @@ public final class Property<T> {
     }
 
     @SuppressWarnings({"unchecked"})
+    static <V> Property<V> createPrivate(String name, V defaultValue) {
+        return create(false, name, (Class<V>) defaultValue.getClass(), defaultValue, null);
+    }
+
+    @SuppressWarnings({"unchecked"})
     static <V> Property<V> create(String name, V defaultValue) {
         return create(name, (Class<V>) defaultValue.getClass(), defaultValue, null);
     }
 
     static <V> Property<V> create(String name, Class<V> type, V defaultValue, IValueChecker<V> checker) {
-        Property<V> prop = new Property<V>(name, type, defaultValue, checker);
+        return create(true, name, type, defaultValue, checker);
+    }
+
+    static <V> Property<V> create(boolean isPublic, String name, Class<V> type, V defaultValue, IValueChecker<V> checker) {
+        Property<V> prop = new Property<V>(isPublic, name, type, defaultValue, checker);
         ALL_PROPERTIES.add(prop);
         return prop;
     }
@@ -98,6 +112,19 @@ public final class Property<T> {
     }
 
     /**
+     * Util method for create property object.
+     *
+     * @param name property name
+     * @param type class representing property value type.
+     * @param <E>  property value type
+     *
+     * @return newly generated property object.
+     */
+    static <E> Property<E> createPrivate(String name, Class<E> type) {
+        return create(false, name, type, null, null);
+    }
+
+    /**
      * Returns all properties as an array.
      *
      * @return all option properties.
@@ -106,15 +133,20 @@ public final class Property<T> {
         return ALL_PROPERTIES.toArray(new Property[ALL_PROPERTIES.size()]);
     }
 
+    /**
+     * Only public properties can be shown in Options dialog. 
+     */
+    private final boolean pub;
     private final String name;
     private final Class<T> type;
     private final T defaultValue;
     private final IValueChecker<T> checker;
 
-    private Property(String name, Class<T> type, T defaultValue, IValueChecker<T> checker) {
+    private Property(boolean pub, String name, Class<T> type, T defaultValue, IValueChecker<T> checker) {
         if (name == null) throw new NullPointerException("Property name can not be null.");
         if (type == null) throw new NullPointerException("Class type can not be null.");
 
+        this.pub = pub;
         this.name = name;
         this.type = type;
         this.checker = checker;
@@ -146,6 +178,10 @@ public final class Property<T> {
      */
     public IValueChecker<T> getChecker() {
         return checker;
+    }
+
+    public boolean isPublic() {
+        return pub;
     }
 
     /**

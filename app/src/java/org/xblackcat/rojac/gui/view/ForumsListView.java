@@ -12,6 +12,7 @@ import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -104,6 +105,31 @@ public class ForumsListView extends AView {
             }
         });
 
+        JToggleButton filledOnlyButton = WindowsUtils.setupToggleButton("filled_only", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean newState = !forumsRowFilter.isNotEmpty();
+                Property.VIEW_FORUM_LIST_FILLED_ONLY.set(newState);
+                forumsRowFilter.setNotEmpty(newState);
+                forumsRowSorter.sort();
+            }
+        }, Messages.VIEW_FORUMS_BUTTON_FILLED);
+        JToggleButton subscribedOnlyButton = WindowsUtils.setupToggleButton("subscribed_only", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean newState = !forumsRowFilter.isSubscribed();
+                forumsRowFilter.setSubscribed(newState);
+                Property.VIEW_FORUM_LIST_SUBSCRIBED_ONLY.set(newState);
+                forumsRowSorter.sort();
+            }
+        }, Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED);
+        JToggleButton unreadOnlyButton = WindowsUtils.setupToggleButton("unread_only", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean newState = !forumsRowFilter.isUnread();
+                forumsRowFilter.setUnread(newState);
+                Property.VIEW_FORUM_LIST_UNREAD_ONLY.set(newState);
+                forumsRowSorter.sort();
+            }
+        }, Messages.VIEW_FORUMS_BUTTON_HASUNREAD);
+
         JToolBar toolBar = WindowsUtils.createToolBar(
                 WindowsUtils.setupImageButton("update", new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -120,27 +146,19 @@ public class ForumsListView extends AView {
                     }
                 }, Messages.VIEW_FORUMS_BUTTON_UPDATE),
                 null,
-                WindowsUtils.setupToggleButton("filled_only", new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        forumsRowFilter.setNotEmpty(!forumsRowFilter.isNotEmpty());
-                        forumsRowSorter.sort();
-                    }
-                }, Messages.VIEW_FORUMS_BUTTON_FILLED),
-                WindowsUtils.setupToggleButton("subscribed_only", new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        forumsRowFilter.setSubscribed(!forumsRowFilter.isSubscribed());
-                        forumsRowSorter.sort();
-                    }
-                }, Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED),
-                WindowsUtils.setupToggleButton("unread_only", new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        forumsRowFilter.setUnread(!forumsRowFilter.isUnread());
-                        forumsRowSorter.sort();
-                    }
-                }, Messages.VIEW_FORUMS_BUTTON_HASUNREAD));
+                filledOnlyButton,
+                subscribedOnlyButton,
+                unreadOnlyButton);
 
+        filledOnlyButton.setSelected(Property.VIEW_FORUM_LIST_FILLED_ONLY.get());
+        subscribedOnlyButton.setSelected(Property.VIEW_FORUM_LIST_SUBSCRIBED_ONLY.get());
+        unreadOnlyButton.setSelected(Property.VIEW_FORUM_LIST_UNREAD_ONLY.get());
+
+        forumsRowFilter.setNotEmpty(Property.VIEW_FORUM_LIST_FILLED_ONLY.get());
+        forumsRowFilter.setSubscribed(Property.VIEW_FORUM_LIST_SUBSCRIBED_ONLY.get());
+        forumsRowFilter.setUnread(Property.VIEW_FORUM_LIST_UNREAD_ONLY.get());
+        
         add(toolBar, BorderLayout.NORTH);
-
     }
 
     public void applySettings() {
