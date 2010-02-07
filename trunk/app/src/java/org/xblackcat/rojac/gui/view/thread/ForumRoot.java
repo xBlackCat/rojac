@@ -11,6 +11,7 @@ import java.util.Collection;
 public class ForumRoot extends Post {
     public ForumRoot(int forumId) {
         super(constructDummyMessageItem(forumId), null);
+        read = true;
     }
 
     @Override

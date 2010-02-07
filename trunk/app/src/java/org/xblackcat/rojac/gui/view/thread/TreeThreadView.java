@@ -62,7 +62,7 @@ public class TreeThreadView extends AThreadView {
                 ITreeItem item = (ITreeItem) path.getLastPathComponent();
 
                 if (item.getLoadingState() == LoadingState.NotLoaded) {
-                    threadControl.loadChildren(model, item);
+                    threadControl.loadChildren(model, item, null);
                 }
 
                 if (item.getLoadingState() == LoadingState.Loaded) {
@@ -94,6 +94,10 @@ public class TreeThreadView extends AThreadView {
                 threads.expandPath(parentPath);
             }
             threads.setSelectionPath(path);
+            Rectangle bounds = threads.getPathBounds(path);
+            bounds.setLocation(0, bounds.y);
+            threads.scrollRectToVisible(bounds);
+            threads.scrollPathToVisible(path);
         } else {
             threads.clearSelection();
         }
