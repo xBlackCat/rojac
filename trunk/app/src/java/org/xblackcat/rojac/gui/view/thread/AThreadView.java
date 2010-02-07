@@ -28,12 +28,12 @@ import java.util.List;
 public abstract class AThreadView extends AItemView {
     private static final Log log = LogFactory.getLog(TreeThreadView.class);
 
-    protected final IThreadControl threadControl;
+    protected final IThreadControl<Post> threadControl;
     protected final JLabel forumName = new JLabel();
     protected final AThreadModel<Post> model = new SortedThreadsModel();
     protected int forumId;
 
-    protected AThreadView(IRootPane mainFrame, IThreadControl threadControl) {
+    protected AThreadView(IRootPane mainFrame, IThreadControl<Post> threadControl) {
         super(mainFrame);
         this.threadControl = threadControl;
     }
@@ -68,7 +68,6 @@ public abstract class AThreadView extends AItemView {
         executor.execute(new ForumInfoLoader(forumId));
     }
 
-    @SuppressWarnings({"unchecked"})
     @Override
     public void loadItem(AffectedMessage itemId) {
         int forumId = threadControl.loadThreadByItem(model, itemId);
@@ -76,7 +75,6 @@ public abstract class AThreadView extends AItemView {
     }
 
     @Override
-    @SuppressWarnings({"unchecked"})
     public void processPacket(ProcessPacket ids) {
         if (ids.containsForum(forumId)) {
             switch (ids.getType()) {
@@ -136,15 +134,17 @@ public abstract class AThreadView extends AItemView {
 
     protected abstract JComponent getThreadsContainer();
 
-    private Post getPrevUnread(Post post, int idx) {
-        // TODO: implement
-        return null;
-    }
-
     private void selectNextUnread(Post currentPost) {
         Post nextUnread = getNextUnread(currentPost, 0);
         if (nextUnread != null) {
             selectItem(nextUnread);
+        }
+    }
+
+    private void selectPrevUnread(Post currentPost) {
+        Post prevUnread = getPrevUnread(currentPost);
+        if (prevUnread != null) {
+            selectItem(prevUnread);
         }
     }
 
@@ -158,7 +158,7 @@ public abstract class AThreadView extends AItemView {
 
         if (post.getLoadingState() == LoadingState.NotLoaded && post.isRead() == ReadStatus.ReadPartially) {
             // Has unread children but their have not loaded yet.
-            threadControl.loadChildren(model, post, new LoadNextUnread(post));
+            threadControl.loadChildren(model, post, new LoadNextUnread());
             // Change post selection when children are loaded
             return null;
         }
@@ -191,16 +191,99 @@ public abstract class AThreadView extends AItemView {
                             post = p;
                             break;
                         case NotLoaded:
-                            threadControl.loadChildren(model, p, new LoadNextUnread(p));
+                            threadControl.loadChildren(model, p, new LoadNextUnread());
                         case Loading:
                             return null;
                     }
+                    break;
                 case Unread:
                     return p;
             }
         }
 
-        // No next unread post is found
+        // Thread has unread posts only before the selected post. Go to parent and continue the search.
+        Post parent = post.getParent();
+        if (parent != null) {
+            int nextIdx = parent.getIndex(post) + 1;
+            return getNextUnread(parent, nextIdx);
+        } else {
+            return null;
+        }
+    }
+
+    private Post getPrevUnread(Post post) {
+        try {
+            if (post == null) {
+                return findLastUnreadPost(model.getRoot());
+            }
+
+            Post parent = post.getParent();
+            if (parent == null) {
+                return null;
+            }
+
+            int idx = parent.getIndex(post) - 1;
+
+            while (idx >= 0) {
+                Post p = parent.getChild(idx);
+                switch (p.isRead()) {
+                    case Read:
+                        idx--;
+                        break;
+                    case ReadPartially:
+                    case Unread:
+                        return findLastUnreadPost(p);
+                }
+            }
+
+            switch (parent.isRead()) {
+                case Read:
+                case ReadPartially:
+                    return getPrevUnread(parent);
+                case Unread:
+                    return parent;
+            }
+        } catch (RuntimeException e) {
+            // Just go through to restart search later
+        }
+
+        return null;
+    }
+
+    /**
+     * Searches for the last unread post in the tree thread.
+     *
+     * @param post root of subtree.
+     *
+     * @return last unread post in subtree or <code>null</code> if no unread post is exist in subtree.
+     *
+     * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
+     */
+    private Post findLastUnreadPost(Post post) throws RuntimeException {
+        if (post.isRead() == ReadStatus.Read) {
+            return null;
+        }
+
+        switch (post.getLoadingState()) {
+            case NotLoaded:
+                threadControl.loadChildren(model, post, new LoadPreviousUnread());
+            case Loading:
+                throw new RuntimeException("Restart search later");
+        }
+
+        int idx = post.getSize() - 1;
+        while (idx >= 0) {
+            Post p = findLastUnreadPost(post.getChild(idx));
+            if (p != null) {
+                return p;
+            }
+            idx --;
+        }
+
+        if (post.isRead() == ReadStatus.Unread) {
+            return post;
+        }
+
         return null;
     }
 
@@ -235,10 +318,7 @@ public abstract class AThreadView extends AItemView {
     private class PreviousUnreadSelector implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             Post currentPost = getSelectedItem();
-            Post prevUnread = getPrevUnread(currentPost, -1);
-            if (prevUnread != null) {
-                selectItem(prevUnread);
-            }
+            selectPrevUnread(currentPost);
         }
     }
 
@@ -249,16 +329,20 @@ public abstract class AThreadView extends AItemView {
         }
     }
 
-    private class LoadNextUnread implements IItemProcessor {
-        private final Post p;
-
-        public LoadNextUnread(Post p) {
-            this.p = p;
-        }
-
+    private class LoadNextUnread implements IItemProcessor<Post> {
         @Override
-        public void processItem(ITreeItem item) {
-            selectNextUnread(p);
+        public void processItem(Post item) {
+            selectNextUnread(item);
+        }
+    }
+
+    private class LoadPreviousUnread implements IItemProcessor<Post> {
+        @Override
+        public void processItem(Post item) {
+            Post prevUnread = findLastUnreadPost(item);
+            if (prevUnread != null) {
+                selectItem(prevUnread);
+            }
         }
     }
 }
