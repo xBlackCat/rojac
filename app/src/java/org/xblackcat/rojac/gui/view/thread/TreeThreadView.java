@@ -22,7 +22,7 @@ import java.awt.event.MouseEvent;
 public class TreeThreadView extends AThreadView {
     protected final JTree threads = new JTree();
 
-    public TreeThreadView(IRootPane mainFrame, IThreadControl threadControl) {
+    public TreeThreadView(IRootPane mainFrame, IThreadControl<Post> threadControl) {
         super(mainFrame, threadControl);
 
         initializeLayout();
@@ -56,10 +56,9 @@ public class TreeThreadView extends AThreadView {
             }
         });
         threads.addTreeExpansionListener(new TreeExpansionListener() {
-            @SuppressWarnings({"unchecked"})
             public void treeExpanded(TreeExpansionEvent event) {
                 TreePath path = event.getPath();
-                ITreeItem item = (ITreeItem) path.getLastPathComponent();
+                Post item = (Post) path.getLastPathComponent();
 
                 if (item.getLoadingState() == LoadingState.NotLoaded) {
                     threadControl.loadChildren(model, item, null);
