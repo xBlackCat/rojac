@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.gui.dialogs.AboutDialog;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.OptionsDialog;
@@ -31,6 +32,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -90,6 +92,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
 
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
+
+        setIconImage(ResourceUtils.loadImage("images/rojac-icon.png"));
 
         forumsListView = new ForumsListView(this);
         favoritesView = new FavoritesView(this);
@@ -235,6 +239,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         JButton aboutButton = WindowsUtils.setupImageButton("about", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AboutDialog ad = new AboutDialog(MainFrame.this);
+                ad.pack();
+                WindowsUtils.centerOnScreen(ad);
+                ad.setVisible(true);
             }
         }, Messages.MAINFRAME_BUTTON_ABOUT);
 
