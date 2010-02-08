@@ -282,12 +282,6 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
     <jre>
         <minVersion>1.6.0</minVersion>
     </jre>
-    <splash>
-        <file>${rojac-application.basedir}/extras/design/rojac.bmp</file>
-        <waitForWindow>true</waitForWindow>
-        <timeout>60</timeout>
-        <timeoutErr>true</timeoutErr>
-    </splash>      
 </launch4jConfig>]]>
         </echo>
 

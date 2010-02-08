@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.dialogs;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,7 @@ import java.awt.event.ActionEvent;
  * @author xBlackCat
  */
 
-class AboutDialog extends JDialog {
+public class AboutDialog extends JDialog {
     public AboutDialog(Window owner) {
         super(owner, ModalityType.APPLICATION_MODAL);
 
@@ -32,6 +33,8 @@ class AboutDialog extends JDialog {
         JPanel cp = new JPanel(new BorderLayout());
 
         cp.add(buttonsBar, BorderLayout.SOUTH);
+
+        cp.add(new JLabel(ResourceUtils.loadIcon("/images/rojac-logo.png")), BorderLayout.CENTER);
 
         setContentPane(cp);
     }
