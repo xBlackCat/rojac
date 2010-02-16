@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2008, xBlackCat.
+  -->
+
+<project name="rojac-application" default="rebuild">
+    <description>
+        This build file is used for compiling and preparing Rojac distributive.
+    </description>
+
+    <property environment="env"/>
+
+    <property name="rojac.filename" value="rojac"/>
+    <property name="rojac.launcher.class" value="org.xblackcat.rojac.RojacLauncher"/>
+
+    <dirname property="rojac-application.basedir" file="${ant.file.rojac-application}"/>
+
+    <property file="build.properties"/>
+
+    <property name="rojac-application.lib.dir" value="${rojac-application.basedir}/libs"/>
+
+    <property name="rojac-application.output.dir" value="${rojac-application.basedir}/classes/bin"/>
+    <property name="rojac-application.testoutput.dir" value="${rojac-application.basedir}/classes/test"/>
+    <property name="rojac-application.dist.dir" value="${rojac-application.basedir}/dist"/>
+
+    <!-- Revision number file is used to determine current build -->
+    <property name="revision.number.file" value="${rojac-application.output.dir}/config/rojac.revision"/>
+    <!-- Compiler options -->
+
+    <property name="compiler.generate.no.warnings" value="off"/>
+    <!--<property name="compiler.args" value="-target jsr14"/>-->
+    <patternset id="compiler.resources">
+        <include name="**/?*.properties"/>
+        <include name="**/?*.xml"/>
+        <include name="**/?*.gif"/>
+        <include name="**/?*.png"/>
+        <include name="**/?*.jpeg"/>
+        <include name="**/?*.jpg"/>
+        <include name="**/?*.html"/>
+        <include name="**/?*.dtd"/>
+        <include name="**/?*.tld"/>
+        <include name="**/?*.wsdd"/>
+        <include name="**/?*.txt"/>
+        <include name="**/?*.config"/>
+        <include name="**/?*.words"/>
+        <include name="**/?*.css"/>
+    </patternset>
+
+    <!-- JDK definitions -->
+    <path id="jdk.classpath">
+        <fileset dir="${jdk.home}">
+            <include name="jre/lib/charsets.jar"/>
+            <include name="jre/lib/deploy.jar"/>
+            <include name="jre/lib/javaws.jar"/>
+            <include name="jre/lib/jce.jar"/>
+            <include name="jre/lib/jsse.jar"/>
+            <include name="jre/lib/plugin.jar"/>
+            <include name="jre/lib/rt.jar"/>
+            <include name="jre/lib/ext/dnsns.jar"/>
+            <include name="jre/lib/ext/localedata.jar"/>
+            <include name="jre/lib/ext/sunjce_provider.jar"/>
+            <include name="jre/lib/ext/sunpkcs11.jar"/>
+        </fileset>
+    </path>
+
+    <path id="rojac-application.module.bootclasspath">
+        <!-- Paths to be included in compilation bootclasspath -->
+    </path>
+
+    <path id="rojac-application.module.classpath">
+        <path refid="jdk.classpath"/>
+        <fileset dir="${rojac-application.lib.dir}">
+            <include name="**/*.jar"/>
+            <exclude name="**/junit*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="rojac-application.module.classpath.compile">
+        <path refid="jdk.classpath"/>
+        <fileset dir="${rojac-application.lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <property name="project.jdk.home" value="${jdk.home}"/>
+    <property name="project.jdk.classpath" value="jdk.classpath"/>
+
+    <path id="rojac-application.module.sourcepath">
+        <dirset dir="${rojac-application.basedir}">
+            <include name="src/java"/>
+        </dirset>
+    </path>
+
+    <path id="rojac-application.module.test.sourcepath">
+        <dirset dir="${rojac-application.basedir}">
+            <include name="test/java"/>
+        </dirset>
+    </path>
+
+    <target name="clean" description="cleanup all">
+        <delete dir="${rojac-application.dist.dir}"/>
+        <delete dir="${rojac-application.basedir}/classes"/>
+        <delete dir="${rojac-application.basedir}/report"/>
+    </target>
+
+    <target name="prepare">
+        <mkdir dir="${rojac-application.output.dir}"/>
+        <mkdir dir="${rojac-application.testoutput.dir}"/>
+        <mkdir dir="${rojac-application.dist.dir}"/>
+    </target>
+
+    <target name="get.revision" depends="prepare" if="get.source.revision">
+        <!-- Paste resource file with revision information -->
+        <exec executable="svn" output="${rojac-application.output.dir}/svninfo.xml" failifexecutionfails="false">
+            <arg line="info"/>
+            <arg line="-r HEAD"/>
+            <arg line="--xml"/>
+            <!-- any filename can be here, because we need only Revision property, which is general for all filenames -->
+            <arg value="${rojac-application.basedir}"/>
+        </exec>
+
+        <xmlproperty file="${rojac-application.output.dir}/svninfo.xml" prefix="svn" keepRoot="no"/>
+        <delete file="${rojac-application.output.dir}/svninfo.xml" failonerror="false"/>
+    </target>
+
+    <target name="compile" description="Compile application" depends="prepare, get.revision">
+        <!--Compile application classes-->
+        <javac destdir="${rojac-application.output.dir}" debug="${compiler.debug}"
+               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+            <compilerarg line="${compiler.args.rojac}"/>
+            <bootclasspath refid="rojac-application.module.bootclasspath"/>
+            <classpath refid="rojac-application.module.classpath"/>
+            <src refid="rojac-application.module.sourcepath"/>
+        </javac>
+
+        <copy todir="${rojac-application.output.dir}">
+            <fileset dir="${rojac-application.basedir}/src/java">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${rojac-application.basedir}/src/res">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+
+
+        <!--Compile test classes-->
+        <javac destdir="${rojac-application.testoutput.dir}" debug="${compiler.debug}"
+               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+            <compilerarg line="${compiler.args.rojac}"/>
+            <classpath refid="rojac-application.module.classpath.compile"/>
+            <classpath location="${rojac-application.output.dir}"/>
+            <src refid="rojac-application.module.test.sourcepath"/>
+        </javac>
+
+        <copy todir="${rojac-application.testoutput.dir}">
+            <fileset dir="${rojac-application.basedir}/test/java">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${rojac-application.basedir}/test/res">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+
+        <antcall target="add.svn.info" inheritall="on"/>        
+    </target>
+
+    <!-- Run the task only if svn info is success fully obtained. -->
+    <target name="add.svn.info" if="svn.entry(revision)">
+        <echo file="${revision.number.file}"># Application revision information
+            relative.path=${svn.entry.url}
+            revision=${svn.entry(revision)}
+        </echo>
+
+        <replace file="${revision.number.file}" token="${svn.entry.repository.root}" value=""/>
+    </target>
+
+    <target name="test" description="Make tests before packaging application" depends="compile" if="perform.tests">
+        <mkdir dir="${rojac-application.basedir}/report"/>
+        <junit haltonerror="yes" haltonfailure="yes">
+            <classpath>
+                <path refid="rojac-application.module.classpath.compile"/>
+                <pathelement location="${rojac-application.output.dir}"/>
+                <pathelement location="${rojac-application.testoutput.dir}"/>
+                <pathelement location="${rojac-application.basedir}/test/res"/>
+                <!-- External resources are not included into compile output folder -->
+                <pathelement location="${rojac-application.basedir}/src/res.ext"/>
+            </classpath>
+
+            <batchtest todir="${rojac-application.basedir}/report">
+                <formatter type="xml"/>
+                <fileset dir="${rojac-application.testoutput.dir}">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="build" description="Make distributive of the application. Generate scripts to run application"
+            depends="compile, test">
+        <mkdir dir="${rojac-application.dist.dir}/lib"/>
+        <mkdir dir="${rojac-application.dist.dir}/bin"/>
+        <mkdir dir="${rojac-application.dist.dir}/conf"/>
+
+        <fileset id="rojac.runtime.libs" dir="${rojac-application.lib.dir}">
+            <include name="**/*.jar"/>
+            <exclude name="**/junit*.jar"/>
+        </fileset>
+
+        <copy todir="${rojac-application.dist.dir}/conf">
+            <fileset dir="${rojac-application.basedir}/src/res.ext">
+                <patternset refid="compiler.resources"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${rojac-application.dist.dir}/lib">
+            <fileset refid="rojac.runtime.libs"/>
+        </copy>
+
+        <jar jarfile="${rojac-application.dist.dir}/lib/${rojac.filename}.jar">
+            <fileset dir="${rojac-application.output.dir}"/>
+        </jar>
+
+        <echo file="${rojac-application.dist.dir}/bin/setclasspath.bat"><![CDATA[
+@SET CLASSPATH=%CLASSPATH%;%1
+]]>
+        </echo>
+
+        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.cmd"><![CDATA[@echo off
+
+SET CLASSPATH=%CLASSPATH%;..\conf
+FOR /F %%j IN ('DIR /S /B ..\lib\*.jar') DO CALL setclasspath.bat "%%j"
+
+javaw.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
+]]>
+        </echo>
+
+        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh"><![CDATA[#
+#!/bin/sh
+
+export CLASSPATH=../conf:`ls -1 ../lib/*.jar ../lib/*/*.jar | tr "\r\n" ":"`
+
+java -cp "%CLASSPATH%" ${rojac.launcher.class}
+]]>
+        </echo>
+
+        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.bat"><![CDATA[@echo off
+
+SET CLASSPATH=%CLASSPATH%;..\conf
+FOR /F %%j IN ('DIR /S /B ..\lib\*.jar') DO CALL setclasspath.bat "%%j"
+
+java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
+]]>
+        </echo>
+
+        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.cmd" eol="dos"/>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.bat" eol="dos"/>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh"  eol="unix"/>
+
+        <chmod file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh" perm="755" failonerror="false"/>
+    </target>
+
+    <target name="build.exe" if="launch4j.dir">
+        <!-- Generate launch4j config file -->
+        <echo file="${rojac-application.basedir}/classes/sender.launch4j.xml"><![CDATA[
+<launch4jConfig>
+    <headerType>gui</headerType>
+    <outfile>${rojac-application.dist.dir}/bin/${rojac.filename}.exe</outfile>
+    <errTitle>Rojac</errTitle>
+    <dontWrapJar>true</dontWrapJar>
+    <customProcName>true</customProcName>
+    <icon>${rojac-application.basedir}/extras/design/rojac.ico</icon>
+    <classPath>
+        <mainClass>${rojac.launcher.class}</mainClass>
+        <cp>../conf</cp>
+        <cp>../lib/*.jar</cp>
+        <cp>../lib/lnf/*.jar</cp>
+    </classPath>
+    <jre>
+        <minVersion>1.6.0</minVersion>
+    </jre>
+</launch4jConfig>]]>
+        </echo>
+
+        <!-- Perform  -->
+        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask">
+            <classpath>
+                <fileset file="${launch4j.dir}/launch4j.jar"/>
+                <fileset file="${launch4j.dir}/lib/xstream.jar"/>
+            </classpath>
+        </taskdef>
+        <launch4j configFile="${rojac-application.basedir}/classes/sender.launch4j.xml"/>
+    </target>
+
+    <target name="make.name" unless="svn.entry(revision)">
+        <property name="rojac.pack.filename" value="${rojac.filename}"/>
+    </target>
+
+    <target name="make.name.revision" if="svn.entry(revision)">
+        <property name="rojac.pack.filename" value="${rojac.filename}-r${svn.entry(revision)}"/>
+    </target>
+
+    <target name="pack" description="Make archive of the project" depends="rebuild, make.name, make.name.revision">
+        <zip destfile="${rojac-application.archive.dir}/${rojac.pack.filename}.zip" level="9"
+             compress="yes">
+            <fileset dir="${rojac-application.dist.dir}">
+                <include name="bin/${rojac.filename}*"/>
+                <include name="lib/**/*.jar"/>
+                <exclude name="lib/${rojac.filename}-tests.jar"/>
+                <include name="conf/**/*"/>
+            </fileset>
+        </zip>
+
+        <zip destfile="${rojac-application.archive.dir}/${rojac.pack.filename}-src.zip" level="9"
+             compress="yes">
+            <fileset dir="${rojac-application.basedir}">
+                <include name="docs/**/*"/>
+                <include name="extras/**/*"/>
+                <include name="libs/**/*"/>
+                <include name="src/**/*"/>
+                <include name="test/**/*"/>
+                <include name="build.*"/>
+                <exclude name="**/.svn"/>
+            </fileset>
+        </zip>
+    </target>
+
+    <target name="rebuild" description="Rebuild application" depends="clean, compile, build, build.exe"/>
+
+    <target name="make-product"
+            description="Force run all additional tasks to make production distributive.">
+        <property name="perform.tests" value="on"/>
+        <property name="get.source.revision" value="on"/>
+
+        <antcall target="pack" inheritall="on"/>
+    </target>
+</project>

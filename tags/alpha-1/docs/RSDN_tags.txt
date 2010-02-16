@@ -1,0 +1,100 @@
+Простой
+[b]Жирный[/b]
+[i]Курсив[/i]
+[url=#]ссылка[/url]
+Картинка: [img]http://i.ru-board.com/avatars/BlackCat.gif[/img]
+
+Список
+[list]
+[*]Раз
+[*]Два
+[/list]
+
+Нумерованный список
+[list=1]
+[*]Раз
+[*]Два
+[/list]
+
+Буквенный список
+[list=a]
+[*]Раз
+[*]Два
+[/list]
+
+[email]Почта[/email]
+
+[q]
+Цитата
+[/q]
+
+Прямая линия
+[hr]
+
+Языки:
+[c#]
+C#
+[/c#]
+[msil]
+MSIL
+[/msil]
+[midl]
+MIDL
+[/midl]
+[asm]
+ASM
+[/asm]
+[ccode]
+C/C++
+[/ccode]
+[code]
+Unknown
+[/code]
+[pascal]
+Pascal
+[/pascal]
+[vb]
+Visual Basic
+[/vb]
+[sql]
+SQL
+[/sql]
+[java]
+Java
+[/java]
+[perl]
+Perl
+[/perl]
+[php]
+PHP
+[/php]
+
+
+[msdn]Поиск в MSDN[/msdn]
+
+Таблица:
+[T]
+[tr]
+[td]1[/td][td]2[/td]
+[/tr]
+[/T]
+
+Смайлики
+ :)
+ :(
+ ;)
+ :))
+ :)))
+ :-\
+ :???:
+ :no:
+ :up:
+ :down:
+ :super:
+ :shuffle:
+ :wow:
+ :crash:
+ :user:
+ :maniac:
+ :xz:
+ :beer:
