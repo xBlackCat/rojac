@@ -21,9 +21,17 @@
   * ~~Core: optimize database~~
 == Alpha 2 ==
   * Implement GUI: TreeTable forum view 
-  * Implement GUI: List based forum view.
-  * Add favorites (messages, topics)
-  * Add icon to tray
-  * Add filter to forum view (by users, by date, by marks)
+  * Database: include full support for HSQL and SQLite.
   * Migrate JanusAT client to Axis 2 (??)
+  * Add scheduled synchronizer.
+  * Add tray icon.
+  * Add favorites (messages, topics, you posts, responses)
+  * Implement GUI: List based forum view.
+== Alpha 3 ==
+  * Add filter to forum view (by users, by date, by marks)
+  * Add keyboard shortcuts.
+  * Add keyboard shortcuts manager.
   * Allow to DnD links to create a new tab with thread/message.
+== Alpha 4 ==
+  * GUI changes: add missed translations.
+  * GUI changes: redesign options dialog.
