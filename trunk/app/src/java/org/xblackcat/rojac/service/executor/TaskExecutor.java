@@ -80,6 +80,20 @@ public final class TaskExecutor implements IExecutor {
     }
 
     @Override
+    public void setupPeriodicTask(String id, Runnable target, int period) {
+        ScheduledFuture<?> taskId = scheduler.scheduleWithFixedDelay(target, period, period, TimeUnit.SECONDS);
+
+        synchronized (scheduledTasks) {
+            ScheduledFuture<?> oldTask = scheduledTasks.get(id);
+            if (oldTask != null) {
+                oldTask.cancel(false);
+            }
+
+            scheduledTasks.put(id, taskId);
+        }
+    }
+
+    @Override
     public boolean killTimer(String id) {
         synchronized (scheduledTasks) {
             ScheduledFuture<?> oldTask = scheduledTasks.remove(id);

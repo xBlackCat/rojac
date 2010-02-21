@@ -10,7 +10,6 @@ import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Password;
-import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -134,41 +133,43 @@ public class LoginDialog extends JDialog {
 
             RSDN_USER_PASSWORD_SAVE.set(fieldSavePassword.isSelected());
 
-            RojacUtils.processRequests(getOwner(), new IResultHandler() {
-                private boolean setUserId(AffectedMessage... results) {
-                    if (ArrayUtils.isEmpty(results)) {
-                        return false;
-                    }
+            Request.GET_USER_ID.process(new UserChecker());
+        }
+    }
 
-                    int userId = results[0].getForumId();
+    private class UserChecker implements IResultHandler {
+        private boolean setUserId(AffectedMessage... results) {
+            if (ArrayUtils.isEmpty(results)) {
+                return false;
+            }
 
-                    if (userId == 0) {
-                        return false;
-                    }
+            int userId = results[0].getForumId();
 
-                    RSDN_USER_ID.set(userId);
-                    return true;
+            if (userId == 0) {
+                return false;
+            }
+
+            RSDN_USER_ID.set(userId);
+            return true;
+        }
+
+        @Override
+        public void process(AffectedMessage... results) {
+            if (!setUserId(results)) {
+                int res = JLOptionPane.showConfirmDialog(
+                        LoginDialog.this,
+                        Messages.DIALOG_LOGIN_INVALID_USERNAME.get(),
+                        Messages.DIALOG_LOGIN_INVALID_USERNAME_TITLE.get(),
+                        JOptionPane.YES_NO_OPTION
+                        );
+                if (res == JOptionPane.NO_OPTION) {
+                    // Let user to enter another login/password.
+                    return;
                 }
+            }
 
-                @Override
-                public void process(AffectedMessage... results) {
-                    if (!setUserId(results)) {
-                        int res = JLOptionPane.showConfirmDialog(
-                                LoginDialog.this,
-                                Messages.DIALOG_LOGIN_INVALID_USERNAME.get(),
-                                Messages.DIALOG_LOGIN_INVALID_USERNAME_TITLE.get(),
-                                JOptionPane.YES_NO_OPTION
-                                );
-                        if (res == JOptionPane.NO_OPTION) {
-                            // Let user to enter another login/password.
-                            return;
-                        }
-                    }
-
-                    canceled = false;
-                    setVisible(false);
-                }
-            }, Request.GET_USER_ID);
+            canceled = false;
+            setVisible(false);
         }
     }
 }

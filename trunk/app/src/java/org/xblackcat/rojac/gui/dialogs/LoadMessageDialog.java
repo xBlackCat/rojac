@@ -15,6 +15,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 
+import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_BROKEN_TOPICS_AT_ONCE;
+
 /**
  * @author xBlackCat
  */
@@ -91,8 +93,10 @@ public class LoadMessageDialog extends JDialog {
         messageIdText.setHorizontalAlignment(JTextField.RIGHT);
         cp.add(messageIdText, BorderLayout.NORTH);
 
-        loadAtOnce = new JCheckBox();
-        loadAtOnce.setText(Messages.DIALOG_LOADMESSAGE_LOADATONCE.get());
+        loadAtOnce = new JCheckBox(
+                Messages.DIALOG_LOADMESSAGE_LOADATONCE.get(),
+                SYNCHRONIZER_LOAD_BROKEN_TOPICS_AT_ONCE.get()
+        );
         cp.add(loadAtOnce, BorderLayout.SOUTH);
 
         add(cp, BorderLayout.CENTER);
@@ -139,6 +143,8 @@ public class LoadMessageDialog extends JDialog {
         WindowsUtils.center(this, getOwner());
 
         setVisible(true);
+
+        SYNCHRONIZER_LOAD_BROKEN_TOPICS_AT_ONCE.set(loadAtOnce.isSelected());
 
         return messageId;
     }
