@@ -51,6 +51,7 @@ public final class Property<T> {
     public static final Property<Long> VIEW_THREAD_AUTOSET_READ = create("rojac.view.thread.message.read_delay", Long.valueOf(1000));
 
     // Janus synchronizator properties
+    public static final Property<Integer> SYNCHRONIZER_SCHEDULE_PERIOD = create("rojac.synchronizer.schedule.period", Integer.valueOf(0));
 
     /**
      * This boolean property indicated is should be used GZip compression while retrieving information from Janus WS.
@@ -68,10 +69,6 @@ public final class Property<T> {
     public static final Property<Boolean> VIEW_FORUM_LIST_SUBSCRIBED_ONLY = createPrivate("rojac.view.forum_list.subscribed_only", Boolean.FALSE);
     public static final Property<Boolean> VIEW_FORUM_LIST_UNREAD_ONLY = createPrivate("rojac.view.forum_list.unread_only", Boolean.FALSE);
     public static final Property<Boolean> VIEW_FORUM_LIST_FILLED_ONLY = createPrivate("rojac.view.forum_list.filled_only", Boolean.FALSE);
-
-    static <V> Property<V> create(String name, Class<V> type, IValueChecker<V> checker) {
-        return create(name, type, null, checker);
-    }
 
     @SuppressWarnings({"unchecked"})
     static <V> Property<V> create(String name, V defaultValue, IValueChecker<V> checker) {

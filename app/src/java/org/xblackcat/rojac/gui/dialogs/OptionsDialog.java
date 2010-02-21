@@ -3,10 +3,12 @@ package org.xblackcat.rojac.gui.dialogs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
+import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.SynchronizationUtils;
 import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -16,8 +18,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Locale;
 
-import static org.xblackcat.rojac.service.options.Property.ROJAC_GUI_LOCALE;
-import static org.xblackcat.rojac.service.options.Property.ROJAC_GUI_LOOK_AND_FEEL;
+import static org.xblackcat.rojac.service.options.Property.*;
 
 /**
  * Shows a dialog to configure the application.
@@ -28,9 +29,11 @@ import static org.xblackcat.rojac.service.options.Property.ROJAC_GUI_LOOK_AND_FE
 public class OptionsDialog extends JDialog {
     private static final Log log = LogFactory.getLog(OptionsDialog.class);
     protected PropertiesModel model;
+    private final MainFrame mainFrame;
 
-    public OptionsDialog(Window mainFrame) throws RojacException {
+    public OptionsDialog(MainFrame mainFrame) throws RojacException {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
+        this.mainFrame = mainFrame;
         model = createModel();
 
         setTitle(Messages.DIALOG_OPTIONS_TITLE.get());
@@ -98,6 +101,7 @@ public class OptionsDialog extends JDialog {
     private void applySettings() {
         LookAndFeel oldLAF = ROJAC_GUI_LOOK_AND_FEEL.get();
         Locale oldLocale = ROJAC_GUI_LOCALE.get();
+        int schedulePeriod = SYNCHRONIZER_SCHEDULE_PERIOD.getDefault();
 
         model.applySettings();
 
@@ -114,6 +118,10 @@ public class OptionsDialog extends JDialog {
         Locale locale = ROJAC_GUI_LOCALE.get();
         if (!locale.equals(oldLocale)) {
             Messages.setLocale(locale);
+        }
+
+        if (schedulePeriod != SYNCHRONIZER_SCHEDULE_PERIOD.get()) {
+            SynchronizationUtils.setScheduleSynchronizer(mainFrame);
         }
     }
 
@@ -169,6 +177,4 @@ public class OptionsDialog extends JDialog {
 
         return tree;
     }
-
-
 }

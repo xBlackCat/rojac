@@ -20,17 +20,14 @@ import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ForumsListView;
 import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.PacketType;
 import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
-import org.xblackcat.rojac.service.janus.commands.IRequest;
-import org.xblackcat.rojac.service.janus.commands.IResultHandler;
-import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.SynchronizationUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -68,12 +65,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
     private static final String FAVORITES_VIEW_ID = "favorites_view";
     private static final String THREADS_VIEW_ID = "threads_view_id";
 
-    private final IResultHandler synchronizationHandler = new IResultHandler() {
-        @Override
-        public void process(AffectedMessage... messages) {
-            processPacket(new ProcessPacket(PacketType.AddMessages, messages));
-        }
-    };
     protected final DropFilter noAuxViewsFilter = new DropFilter() {
         @Override
         public boolean acceptDrop(DropInfo dropInfo) {
@@ -203,12 +194,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         // Setup toolbar
         JButton updateButton = WindowsUtils.setupImageButton("update", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                IRequest[] requests =
-                        SYNCHRONIZER_LOAD_USERS.get() ?
-                                Request.SYNCHRONIZE_WITH_USERS :
-                                Request.SYNCHRONIZE;
-
-                RojacUtils.processRequests(MainFrame.this, synchronizationHandler, requests);
+                SynchronizationUtils.startSynchronization(MainFrame.this);
             }
         }, Messages.MAINFRAME_BUTTON_UPDATE);
         JButton loadMessageButton = WindowsUtils.setupImageButton("extramessage", new ActionListener() {
@@ -510,7 +496,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
         @Override
         protected void done() {
             if (loadAtOnce) {
-                RojacUtils.processRequests(MainFrame.this, synchronizationHandler, Request.EXTRA_MESSAGES);
+                SynchronizationUtils.loadExtraMessages(MainFrame.this);
             }
         }
     }

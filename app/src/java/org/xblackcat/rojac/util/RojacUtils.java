@@ -8,13 +8,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
-import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
-import org.xblackcat.rojac.service.RojacHelper;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.janus.commands.IRequest;
-import org.xblackcat.rojac.service.janus.commands.IResultHandler;
-import org.xblackcat.rojac.service.janus.commands.RequestProcessor;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -286,21 +280,6 @@ public final class RojacUtils {
         }
 
         return locales.toArray(new Locale[locales.size()]);
-    }
-
-    public static void processRequests(Window frame, IResultHandler dataHandler, IRequest... requests) {
-        // Check if the user credentials are set first.
-        while (!RojacHelper.isUserRegistered()) {
-            LoginDialog ld = new LoginDialog(frame);
-            WindowsUtils.center(ld, frame);
-            if (ld.showLoginDialog()) {
-                return;
-            }
-        }
-
-        RojacWorker sw = new RequestProcessor(dataHandler, requests);
-
-        ServiceFactory.getInstance().getExecutor().execute(sw);
     }
 
     /**

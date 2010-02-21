@@ -15,7 +15,6 @@ import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -130,21 +129,22 @@ public class ForumsListView extends AView {
             }
         }, Messages.VIEW_FORUMS_BUTTON_HASUNREAD);
 
+        JButton updateListButton = WindowsUtils.setupImageButton("update", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Request.GET_FORUMS_LIST.process(
+                        SwingUtilities.windowForComponent(ForumsListView.this),
+                        new IResultHandler() {
+                            @Override
+                            public void process(AffectedMessage... messages) {
+                                mainFrame.processPacket(new ProcessPacket(PacketType.ForumsLoaded));
+                            }
+                        }
+                );
+            }
+        }, Messages.VIEW_FORUMS_BUTTON_UPDATE);
+
         JToolBar toolBar = WindowsUtils.createToolBar(
-                WindowsUtils.setupImageButton("update", new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        RojacUtils.processRequests(
-                                SwingUtilities.windowForComponent(ForumsListView.this),
-                                new IResultHandler() {
-                                    @Override
-                                    public void process(AffectedMessage... messages) {
-                                        mainFrame.processPacket(new ProcessPacket(PacketType.ForumsLoaded));
-                                    }
-                                },
-                                Request.GET_FORUMS_LIST
-                        );
-                    }
-                }, Messages.VIEW_FORUMS_BUTTON_UPDATE),
+                updateListButton,
                 null,
                 filledOnlyButton,
                 subscribedOnlyButton,
