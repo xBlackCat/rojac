@@ -46,6 +46,9 @@ public final class SynchronizationUtils {
             return;
         }
 
+        // Convert minutes into seconds
+        period *= 60;
+
         executor.setupPeriodicTask(SCHEDULED_TASK_ID, new ScheduleSynchronization(mainFrame), period);
     }
 
