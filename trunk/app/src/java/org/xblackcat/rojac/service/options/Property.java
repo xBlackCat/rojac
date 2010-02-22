@@ -50,8 +50,9 @@ public final class Property<T> {
     // Forum view properties.
     public static final Property<Long> VIEW_THREAD_AUTOSET_READ = create("rojac.view.thread.message.read_delay", Long.valueOf(1000));
 
-    // Janus synchronizator properties
+    // Janus synchronizer properties
     public static final Property<Integer> SYNCHRONIZER_SCHEDULE_PERIOD = create("rojac.synchronizer.schedule.period", Integer.valueOf(0));
+    public static final Property<Boolean> SYNCHRONIZER_SCHEDULE_AT_START = create("rojac.synchronizer.schedule.at_start", Boolean.FALSE);
 
     /**
      * This boolean property indicated is should be used GZip compression while retrieving information from Janus WS.

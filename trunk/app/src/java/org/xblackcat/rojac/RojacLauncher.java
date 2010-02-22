@@ -8,6 +8,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.SynchronizationUtils;
 import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -90,9 +91,17 @@ public abstract class RojacLauncher {
                         .getProgressControl()
                         .addProgressListener(ptd);
 
+                // Setup scheduled synchronizer
+                SynchronizationUtils.setScheduleSynchronizer(mainFrame);
+
                 mainFrame.setVisible(true);
 
                 WindowsUtils.center(ptd, mainFrame);
+
+                // Start synchronization
+                if (SYNCHRONIZER_SCHEDULE_AT_START.get()) {
+                    SynchronizationUtils.startSynchronization(mainFrame);
+                }
             }
         });
     }
