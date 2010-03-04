@@ -119,7 +119,7 @@ class SortedThreadsModel extends AThreadModel<Post> {
         Header(Class<?> aClass, Messages title) {
             this.aClass = aClass;
             this.title = title;
-            if (aClass.getSuperclass() == APostData.class) {
+            if (aClass.getSuperclass() == APostProxy.class) {
                 try {
                     this.constructor = aClass.getConstructor(Post.class);
                 } catch (NoSuchMethodException e) {

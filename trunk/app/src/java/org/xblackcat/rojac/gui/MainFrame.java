@@ -314,7 +314,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane {
      * @return a new forum view layout.
      */
     private IItemView createForumViewWindow() {
-        return ViewHelper.makeTreeMessageView(this);
+//        return ViewHelper.makeTreeMessageView(this);
+        return ViewHelper.makeTreeTableMessageView(this);
     }
 
     /**
