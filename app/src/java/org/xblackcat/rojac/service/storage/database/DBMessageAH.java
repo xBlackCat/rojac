@@ -88,7 +88,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public MessageData[] getMessageDatasByTopicId(int threadId) throws StorageException {
+    public MessageData[] getMessagesDataByTopicId(int threadId) throws StorageException {
         Collection<MessageData> datas = helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA,
@@ -97,7 +97,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public MessageData[] getTopicMessageDatasByForumId(int forumId) throws StorageException {
+    public MessageData[] getTopicMessagesDataByForumId(int forumId) throws StorageException {
         Collection<MessageData> datas = helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,

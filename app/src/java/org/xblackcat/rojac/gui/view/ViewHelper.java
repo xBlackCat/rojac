@@ -1,11 +1,11 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.thread.SortedForumThreadsControl;
 import org.xblackcat.rojac.gui.view.thread.ThreadDoubleView;
+import org.xblackcat.rojac.gui.view.thread.TreeTableThreadView;
 import org.xblackcat.rojac.gui.view.thread.TreeThreadView;
 
 /**
@@ -24,6 +24,10 @@ public final class ViewHelper {
      */
     public static IItemView makeForumThreadsView(IRootPane mainFrame) {
         return new TreeThreadView(mainFrame, new SortedForumThreadsControl());
+    }
+
+    public static IItemView makeForumTTThreadsView(IRootPane mainFrame) {
+        return new TreeTableThreadView(mainFrame, new SortedForumThreadsControl());
     }
 
     /**
@@ -61,6 +65,9 @@ public final class ViewHelper {
      * @return a new instance of view
      */
     public static IItemView makeTreeTableMessageView(IRootPane mainFrame) {
-        throw new NotImplementedException("Just in case.");
+        IItemView threadView = ViewHelper.makeForumTTThreadsView(mainFrame);
+        IItemView messageView = ViewHelper.makeMessageView(mainFrame);
+
+        return new ThreadDoubleView(threadView, messageView, true, mainFrame);
     }
 }

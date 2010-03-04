@@ -14,6 +14,7 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,12 +43,13 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
                 MessageData[] threadPosts;
                 IMessageAH mAH = storage.getMessageAH();
                 try {
-                    threadPosts = mAH.getTopicMessageDatasByForumId(forumId);
+                    threadPosts = mAH.getTopicMessagesDataByForumId(forumId);
                 } catch (StorageException e) {
                     log.error("Can not load topics for forum #" + forumId, e);
                     throw e;
                 }
 
+                List<Thread> threads = new ArrayList<Thread>(threadPosts.length);
                 for (MessageData threadPost : threadPosts) {
                     int topicId = threadPost.getMessageId();
 
@@ -55,12 +57,13 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
                         int unreadPosts = mAH.getUnreadReplaysInThread(topicId);
                         ThreadStatData stat = mAH.getThreadStatByThreadId(topicId);
 
-                        publish(new Thread(threadPost, stat, unreadPosts, rootItem));
+                        threads.add(new Thread(threadPost, stat, unreadPosts, rootItem));
                     } catch (StorageException e) {
                         log.error("Can not load statistic for topic #" + topicId, e);
                     }
                 }
 
+                publish(threads.toArray(new Thread[threads.size()]));
 
                 return null;
             }
@@ -210,7 +213,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
             MessageData[] messages;
             try {
-                messages = storage.getMessageAH().getMessageDatasByTopicId(itemId);
+                messages = storage.getMessageAH().getMessagesDataByTopicId(itemId);
             } catch (StorageException e) {
                 log.error("Can not load message children for id = " + itemId, e);
                 throw e;
