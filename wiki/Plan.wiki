@@ -23,7 +23,7 @@
   * Implement GUI: TreeTable forum view 
   * Database: include full support for HSQL and SQLite.
   * Migrate JanusAT client to Axis 2 (??)
-  * Add scheduled synchronizer.
+  * Add scheduled synchronizer. _(done)_
   * Add tray icon.
   * Add favorites (messages, topics, you posts, responses)
   * Implement GUI: List based forum view.
