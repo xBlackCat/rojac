@@ -9,7 +9,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
@@ -33,7 +33,6 @@ public class TreeTableThreadView extends AThreadView {
     protected JComponent getThreadsContainer() {
         threads.setEditable(false);
         threads.setTreeTableModel(model);
-        threads.setRowHeight(0);
         threads.setShowsRootHandles(true);
         threads.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         threads.setEditable(false);
@@ -42,7 +41,8 @@ public class TreeTableThreadView extends AThreadView {
         threads.setRowSelectionAllowed(true);
         threads.setRootVisible(threadControl.isRootVisible());
 
-        threads.setDefaultRenderer(Post.class, new PostTableCellRenderer());
+        threads.setDefaultRenderer(APostProxy.class, new PostTableCellRenderer());
+        threads.setTreeCellRenderer(new PostTreeCellRenderer());
 
         threads.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
@@ -146,12 +146,31 @@ public class TreeTableThreadView extends AThreadView {
 
     }
 
-    private static class PostTableCellRenderer extends DefaultTableCellRenderer {
+    private static class PostTreeCellRenderer extends DefaultTreeCellRenderer {
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+            
+            Post post = (Post) value;
+            int style;
+            switch (post.isRead()) {
+                default:
+                case Read:
+                    style = Font.PLAIN;
+                    break;
+                case ReadPartially:
+                    style = Font.ITALIC;
+                    break;
+                case Unread:
+                    style = Font.BOLD | Font.ITALIC;
+                    break;
+            }
 
+            Font font = getFont().deriveFont(style);
+            setFont(font);
 
+            setText(post.getMessageData().getSubject());
+            
             return this;
         }
     }

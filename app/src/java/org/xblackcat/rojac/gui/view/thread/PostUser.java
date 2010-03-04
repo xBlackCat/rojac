@@ -5,17 +5,13 @@ package org.xblackcat.rojac.gui.view.thread;
  *
 * @author xBlackCat
 */
-final class PostUser extends APostData {
+final class PostUser extends APostProxy {
     public PostUser(Post post) {
         super(post);
     }
 
-    public String getUserName() {
-        return post.getMessageData().getUserName();
+    @Override
+    protected void setValue(PostTableCellRenderer renderer) {
+        renderer.setText(post.getMessageData().getUserName());
     }
-
-    public int getUserId() {
-        return post.getMessageData().getUserId();
-    }
-
 }

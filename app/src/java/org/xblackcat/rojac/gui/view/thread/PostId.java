@@ -5,12 +5,13 @@ package org.xblackcat.rojac.gui.view.thread;
  *
  * @author xBlackCat
  */
-final class PostId extends APostData {
+final class PostId extends APostProxy {
     public PostId(Post post) {
         super(post);
     }
 
-    public int getPostId() {
-        return post.getMessageId();
+    @Override
+    protected void setValue(PostTableCellRenderer renderer) {
+        renderer.setText(String.valueOf(post.getMessageData().getMessageId()));
     }
 }
