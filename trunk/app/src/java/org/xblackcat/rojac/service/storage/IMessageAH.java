@@ -12,7 +12,7 @@ public interface IMessageAH extends AH {
     /**
      * Stores a message record by id.
      *
-     * @param fm  message data to be stored into database.
+     * @param fm   message data to be stored into database.
      * @param read read state of the message. <code>true</code> - message is read and <code>false</code> otherwise.
      *
      * @throws StorageException
@@ -45,11 +45,21 @@ public interface IMessageAH extends AH {
      * @param threadId
      *
      * @return array of messages data.
+     *
      * @throws StorageException
      */
-    MessageData[] getMessageDatasByTopicId(int threadId) throws StorageException;
+    MessageData[] getMessagesDataByTopicId(int threadId) throws StorageException;
 
-    MessageData[] getTopicMessageDatasByForumId(int threadId) throws StorageException;
+    /**
+     * Returns messages data for specified forum id.
+     *
+     * @param forumId target forum id
+     *
+     * @return array of topic messages data.
+     *
+     * @throws StorageException
+     */
+    MessageData[] getTopicMessagesDataByForumId(int forumId) throws StorageException;
 
     ThreadStatData getThreadStatByThreadId(int forumId) throws StorageException;
 

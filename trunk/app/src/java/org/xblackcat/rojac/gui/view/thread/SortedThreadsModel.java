@@ -1,23 +1,18 @@
 package org.xblackcat.rojac.gui.view.thread;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.i18n.Messages;
 
 import javax.swing.tree.TreePath;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author xBlackCat
  */
 
 class SortedThreadsModel extends AThreadModel<Post> {
-    private static final Messages[] COLUMN_NAMES = new Messages[]{
-            Messages.PANEL_THREAD_HEADER_ID,
-            Messages.PANEL_THREAD_HEADER_SUBJECT,
-            Messages.PANEL_THREAD_HEADER_USER,
-            Messages.PANEL_THREAD_HEADER_RATING,
-            Messages.PANEL_THREAD_HEADER_DATE
-    };
-
     public Post getChild(Object parent, int index) {
         return ((Post) parent).getChild(index);
     }
@@ -44,15 +39,15 @@ class SortedThreadsModel extends AThreadModel<Post> {
     }
 
     public Class<?> getColumnClass(int columnIndex) {
-        return Post.class;
+        return Header.values()[columnIndex].getObjectClass();
     }
 
     public int getColumnCount() {
-        return COLUMN_NAMES.length;
+        return Header.values().length;
     }
 
     public String getColumnName(int column) {
-        return COLUMN_NAMES[column].get();
+        return Header.values()[column].getTitle();
     }
 
     public int getHierarchicalColumn() {
@@ -60,7 +55,11 @@ class SortedThreadsModel extends AThreadModel<Post> {
     }
 
     public Object getValueAt(Object node, int column) {
-        return (Post) node;
+        try {
+            return Header.values()[column].getObjectData(node);
+        } catch (RojacException e) {
+            throw new IllegalArgumentException("Can not convert node for column " + column + ". Node: " + node);
+        }
     }
 
     public boolean isCellEditable(Object node, int column) {
@@ -105,5 +104,54 @@ class SortedThreadsModel extends AThreadModel<Post> {
             retNodes[retNodes.length - depth] = aNode;
         }
         return retNodes;
+    }
+
+    private static enum Header {
+        ID(PostId.class, Messages.PANEL_THREAD_HEADER_ID),
+        SUBJECT(Post.class, Messages.PANEL_THREAD_HEADER_SUBJECT),
+        USER(PostUser.class, Messages.PANEL_THREAD_HEADER_USER),
+        DATE(PostDate.class, Messages.PANEL_THREAD_HEADER_DATE);
+
+        private final Class<?> aClass;
+        private final Constructor<?> constructor;
+        private final Messages title;
+
+        Header(Class<?> aClass, Messages title) {
+            this.aClass = aClass;
+            this.title = title;
+            if (aClass.getSuperclass() == APostData.class) {
+                try {
+                    this.constructor = aClass.getConstructor(Post.class);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException("Can not prepare convertor for class " + aClass.getName(), e);
+                }
+            } else {
+                this.constructor = null;
+            }
+        }
+
+        public Class<?> getObjectClass() {
+            return aClass;
+        }
+
+        public Object getObjectData(Object o) throws RojacException {
+            if (constructor != null && o instanceof Post) {
+                try {
+                    return constructor.newInstance(o);
+                } catch (InstantiationException e) {
+                    throw new RojacException("Can not initialize data class " + aClass.getName(), e);
+                } catch (IllegalAccessException e) {
+                    throw new RojacException("Security check not passed for data class " + aClass.getName(), e);
+                } catch (InvocationTargetException e) {
+                    throw new RojacException("Can not initialize data class " + aClass.getName(), e);
+                }
+            } else {
+                return o;
+            }
+        }
+
+        public String getTitle() {
+            return title.get();
+        }
     }
 }

@@ -10,6 +10,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -277,7 +278,7 @@ public abstract class AThreadView extends AItemView {
             if (p != null) {
                 return p;
             }
-            idx --;
+            idx--;
         }
 
         if (post.isRead() == ReadStatus.Unread) {
@@ -285,6 +286,28 @@ public abstract class AThreadView extends AItemView {
         }
 
         return null;
+    }
+
+    /**
+     * Make common tasks for selected post: notify listeners about focus changing and aim a timer to make the post
+     * readable after a specified time period.
+     *
+     * @param mi selected post.
+     */
+    protected void setSelectedPost(Post mi) {
+        fireMessageGotFocus(new AffectedMessage(mi.getForumId(), mi.getMessageId()));
+
+        if (mi.isRead() == ReadStatus.Unread) {
+            Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
+            if (delay != null && delay >= 0) {
+                SetMessageReadFlag target = new SetMessageReadFlag(mi, mainFrame, true);
+                if (delay > 0) {
+                    executor.setupTimer("Forum_" + forumId, target, delay);
+                } else {
+                    executor.execute(target);
+                }
+            }
+        }
     }
 
     private class ForumInfoLoader extends RojacWorker<Void, Forum> {
