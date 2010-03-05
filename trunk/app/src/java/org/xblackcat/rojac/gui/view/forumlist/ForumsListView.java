@@ -8,8 +8,9 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.PacketType;
-import org.xblackcat.rojac.service.ProcessPacket;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.PacketType;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
@@ -137,7 +138,7 @@ public class ForumsListView extends AView {
                         new IResultHandler() {
                             @Override
                             public void process(AffectedMessage... messages) {
-                                mainFrame.processPacket(new ProcessPacket(PacketType.ForumsLoaded));
+                                ServiceFactory.getInstance().getDataDispatcher().processPacket(new ProcessPacket(PacketType.ForumsLoaded));
                             }
                         }
                 );

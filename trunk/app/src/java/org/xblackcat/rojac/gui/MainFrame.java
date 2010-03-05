@@ -20,8 +20,9 @@ import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.IDataHandler;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -51,7 +52,7 @@ import static org.xblackcat.rojac.service.options.Property.*;
  * @author xBlackCat
  */
 
-public class MainFrame extends JFrame implements IConfigurable, IRootPane {
+public class MainFrame extends JFrame implements IConfigurable, IRootPane, IDataHandler {
     private static final Log log = LogFactory.getLog(MainFrame.class);
 
     private IView forumsListView;

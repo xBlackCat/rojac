@@ -5,9 +5,9 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.forumlist.ForumTableModel;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.PacketType;
-import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.PacketType;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
@@ -68,8 +68,8 @@ class ForumListPopupBuilder implements IPopupBuilder {
         });
         menu.addSeparator();
 
-        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_READ_ALL, forumId, mainFrame, true));
-        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_UNREAD_ALL, forumId, mainFrame, false));
+        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_READ_ALL, forumId, true));
+        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_UNREAD_ALL, forumId, false));
 
         menu.addSeparator();
 
@@ -112,7 +112,7 @@ class ForumListPopupBuilder implements IPopupBuilder {
     }
 
     private class SetForumReadMenuItem extends JMenuItem {
-        public SetForumReadMenuItem(Messages text, final int forumId, final IRootPane mainFrame, final boolean readFlag) {
+        public SetForumReadMenuItem(Messages text, final int forumId, final boolean readFlag) {
             super(text.get());
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -128,7 +128,7 @@ class ForumListPopupBuilder implements IPopupBuilder {
                         protected void done() {
                             PacketType type = readFlag ? PacketType.SetForumRead : PacketType.SetForumUnread;
                             ProcessPacket p = new ProcessPacket(type, forumId);
-                            mainFrame.processPacket(p);
+                            ServiceFactory.getInstance().getDataDispatcher().processPacket(p);
                         }
                     });
                 }

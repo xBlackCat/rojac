@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.service.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 
 import javax.swing.*;
 

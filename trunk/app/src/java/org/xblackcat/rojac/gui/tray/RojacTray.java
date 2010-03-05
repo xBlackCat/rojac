@@ -2,8 +2,9 @@ package org.xblackcat.rojac.gui.tray;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.IDataHandler;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
@@ -23,9 +24,9 @@ public class RojacTray {
     private final boolean supported;
     private RojacState state = RojacState.Initialized;
     protected final TrayIcon trayIcon;
-    private final MainFrame mainFrame;
+    private final Window mainFrame;
 
-    public RojacTray(MainFrame mainFrame) {
+    public RojacTray(Window mainFrame) {
         this.mainFrame = mainFrame;
         boolean supported = SystemTray.isSupported();
         trayIcon = new TrayIcon(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB));
@@ -50,6 +51,7 @@ public class RojacTray {
         setState(RojacState.Initialized);
 
         ServiceFactory.getInstance().getProgressControl().addProgressListener(new TrayProgressListener());
+        ServiceFactory.getInstance().getDataDispatcher().addDataHandler(new TrayDataDispatcher());        
     }
 
     protected void setState(RojacState state, Object... arguments) {
@@ -112,4 +114,9 @@ public class RojacTray {
         }
     }
 
+    private class TrayDataDispatcher implements IDataHandler {
+        @Override
+        public void processPacket(ProcessPacket results) {
+        }
+    }
 }

@@ -7,8 +7,8 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
@@ -300,7 +300,7 @@ public abstract class AThreadView extends AItemView {
         if (mi.isRead() == ReadStatus.Unread) {
             Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
             if (delay != null && delay >= 0) {
-                SetMessageReadFlag target = new SetMessageReadFlag(mi, mainFrame, true);
+                SetMessageReadFlag target = new SetMessageReadFlag(mi, true);
                 if (delay > 0) {
                     executor.setupTimer("Forum_" + forumId, target, delay);
                 } else {

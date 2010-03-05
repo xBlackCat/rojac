@@ -6,6 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.converter.RSDNMessageParserFactory;
+import org.xblackcat.rojac.service.datahandler.DataDispatcher;
+import org.xblackcat.rojac.service.datahandler.IDataDispatcher;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskExecutor;
 import org.xblackcat.rojac.service.options.IOptionsService;
@@ -45,8 +47,14 @@ public final class ServiceFactory {
     private final IOptionsService optionsService;
     private final IMessageParser messageParser;
     private final IProgressController progressController;
+    private final IDataDispatcher dataDispatcher;
 
     private ServiceFactory() throws RojacException {
+        progressController = new ProgressController();
+        dataDispatcher = new DataDispatcher();
+
+        executor = new TaskExecutor();
+
         storage = initializeStorage();
 
         optionsService = new MultiUserOptionsService();
@@ -56,10 +64,6 @@ public final class ServiceFactory {
         } catch (IOException e) {
             throw new RuntimeException("Can't initialize message formatter.", e);
         }
-
-        progressController = new ProgressController();
-
-        executor = new TaskExecutor();
     }
 
     public IStorage getStorage() {
@@ -80,6 +84,10 @@ public final class ServiceFactory {
 
     public IProgressController getProgressControl() {
         return progressController;
+    }
+
+    public IDataDispatcher getDataDispatcher() {
+        return dataDispatcher;
     }
 
     private static DBStorage initializeStorage() throws RojacException {

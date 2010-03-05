@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.dialogs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
-import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
@@ -29,11 +28,9 @@ import static org.xblackcat.rojac.service.options.Property.*;
 public class OptionsDialog extends JDialog {
     private static final Log log = LogFactory.getLog(OptionsDialog.class);
     protected PropertiesModel model;
-    private final MainFrame mainFrame;
 
-    public OptionsDialog(MainFrame mainFrame) throws RojacException {
+    public OptionsDialog(Window mainFrame) throws RojacException {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
-        this.mainFrame = mainFrame;
         model = createModel();
 
         setTitle(Messages.DIALOG_OPTIONS_TITLE.get());
@@ -121,7 +118,7 @@ public class OptionsDialog extends JDialog {
         }
 
         if (schedulePeriod != SYNCHRONIZER_SCHEDULE_PERIOD.get()) {
-            SynchronizationUtils.setScheduleSynchronizer(mainFrame);
+            SynchronizationUtils.setScheduleSynchronizer(this.getOwner());
         }
     }
 
