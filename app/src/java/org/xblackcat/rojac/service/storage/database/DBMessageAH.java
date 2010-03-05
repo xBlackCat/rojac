@@ -120,4 +120,14 @@ final class DBMessageAH implements IMessageAH {
         return helper.executeSingle(Converters.TO_MESSAGE_DATA, DataQuery.GET_OBJECT_MESSAGE_DATA, messageId);
     }
 
+    @Override
+    public int getUnreadMessages() throws StorageException {
+        return helper.executeSingle(Converters.TO_INTEGER, DataQuery.GET_UNREAD_MESSAGES_NUMBER);
+    }
+
+    @Override
+    public int getUnreadReplies(int userId) throws StorageException {
+        return helper.executeSingle(Converters.TO_INTEGER, DataQuery.GET_UNREAD_REPLIES_NUMBER, userId);
+    }
+
 }

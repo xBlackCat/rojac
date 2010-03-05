@@ -2,10 +2,16 @@ package org.xblackcat.rojac.gui.tray;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.utils.ResourceUtils;
+import org.xblackcat.rojac.gui.MainFrame;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.progress.IProgressListener;
+import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
+import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.util.RojacWorker;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * @author xBlackCat
@@ -17,10 +23,12 @@ public class RojacTray {
     private final boolean supported;
     private RojacState state = RojacState.Initialized;
     protected final TrayIcon trayIcon;
+    private final MainFrame mainFrame;
 
-    public RojacTray() {
+    public RojacTray(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         boolean supported = SystemTray.isSupported();
-        trayIcon = new TrayIcon(ResourceUtils.loadImage(""), RojacUtils.VERSION_STRING);
+        trayIcon = new TrayIcon(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB));
 
         if (supported) {
             try {
@@ -32,9 +40,76 @@ public class RojacTray {
         }
 
         this.supported = supported;
+
+        if (supported) {
+            setupTray();
+        }
     }
 
-    private void updateTray() {
+    private void setupTray() {
+        setState(RojacState.Initialized);
 
+        ServiceFactory.getInstance().getProgressControl().addProgressListener(new TrayProgressListener());
     }
+
+    protected void setState(RojacState state, Object... arguments) {
+        trayIcon.setImage(state.getImage());
+        trayIcon.setToolTip(state.getToolTip(arguments));
+    }
+
+    public boolean isSupported() {
+        return supported;
+    }
+
+    private void checkUnreadMessages() {
+        RojacWorker<Void, Integer> rw = new UnreadMessagesCount();
+        ServiceFactory.getInstance().getExecutor().execute(rw);
+    }
+
+    private class UnreadMessagesCount extends RojacWorker<Void, Integer> {
+        protected int unreadMessages;
+        protected int unreadReplies;
+
+        @Override
+        protected Void perform() throws Exception {
+            IMessageAH mAH = ServiceFactory.getInstance().getStorage().getMessageAH();
+
+            unreadMessages = mAH.getUnreadMessages();
+            Integer userId = Property.RSDN_USER_ID.get();
+            if (userId != null && userId > 0) {
+                unreadReplies = mAH.getUnreadReplies(userId);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            if (unreadMessages > 0) {
+                setState(RojacState.HaveUnreadMessages, unreadMessages, unreadReplies);
+            }
+        }
+    }
+
+    private class TrayProgressListener implements IProgressListener {
+        @Override
+        public void progressChanged(ProgressChangeEvent e) {
+            switch (e.getState()) {
+                case Idle:
+                    setState(RojacState.Normal);
+                    break;
+                case Start:
+                    break;
+                case Work:
+                    setState(RojacState.Synchronizing, e.getText(), e.getProgress());
+                    break;
+                case Stop:
+                    setState(RojacState.Normal);
+
+                    checkUnreadMessages();
+                    break;
+            }
+        }
+    }
+
 }

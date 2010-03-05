@@ -61,6 +61,13 @@ public enum Messages {
     VIEW_THREAD_BUTTON_PREVIOUS_UNREAD,
     VIEW_THREAD_BUTTON_NEXT_UNREAD,
 
+    // Tray texts
+    // Note that the first parameter is always a version string.
+    TRAY_STATE_INITIALIZED,
+    TRAY_STATE_NORMAL,
+    TRAY_STATE_SYNCHRONIZATION,
+    TRAY_STATE_HAVE_UNREAD_MESSAGES,
+
     //
     // Dialog texts
     //
