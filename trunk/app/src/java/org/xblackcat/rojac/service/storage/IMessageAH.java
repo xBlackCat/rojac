@@ -66,4 +66,8 @@ public interface IMessageAH extends AH {
     int getUnreadReplaysInThread(int threadId) throws StorageException;
 
     MessageData getMessageData(int messageId) throws StorageException;
+
+    int getUnreadMessages() throws StorageException;
+
+    int getUnreadReplies(int userId) throws StorageException;
 }
