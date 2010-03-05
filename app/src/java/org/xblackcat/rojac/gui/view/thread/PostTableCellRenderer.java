@@ -57,13 +57,6 @@ public class PostTableCellRenderer extends JLabel
     private static final Border DEFAULT_NO_FOCUS_BORDER = new EmptyBorder(1, 1, 1, 1);
     protected static Border noFocusBorder = DEFAULT_NO_FOCUS_BORDER;
 
-    // We need a place to store the color the JLabel should be returned
-    // to after its foreground and background colors have been set
-    // to the selection background color.
-    // These ivars will be made protected when their names are finalized.
-    private Color unselectedForeground;
-    private Color unselectedBackground;
-
     /**
      * Creates a default table cell renderer.
      */
@@ -85,28 +78,6 @@ public class PostTableCellRenderer extends JLabel
             }
         }
         return noFocusBorder;
-    }
-
-    /**
-     * Overrides <code>JComponent.setForeground</code> to assign the unselected-foreground color to the specified
-     * color.
-     *
-     * @param c set the foreground color to this value
-     */
-    public void setForeground(Color c) {
-        super.setForeground(c);
-        unselectedForeground = c;
-    }
-
-    /**
-     * Overrides <code>JComponent.setBackground</code> to assign the unselected-background color to the specified
-     * color.
-     *
-     * @param c set the background color to this value
-     */
-    public void setBackground(Color c) {
-        super.setBackground(c);
-        unselectedBackground = c;
     }
 
     /**
@@ -173,18 +144,16 @@ public class PostTableCellRenderer extends JLabel
             super.setBackground(bg == null ? table.getSelectionBackground()
                     : bg);
         } else {
-            Color background = unselectedBackground != null
-                    ? unselectedBackground
-                    : table.getBackground();
+            Color background = table.getBackground();
             if (background == null || background instanceof javax.swing.plaf.UIResource) {
-                Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
-                if (alternateColor != null && row % 2 == 0) {
-                    background = alternateColor;
+                if (row % 2 == 0) {
+                    Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
+                    if (alternateColor != null) {
+                        background = alternateColor;
+                    }
                 }
             }
-            super.setForeground(unselectedForeground != null
-                    ? unselectedForeground
-                    : table.getForeground());
+            super.setForeground(table.getForeground());
             super.setBackground(background);
         }
 

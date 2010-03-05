@@ -9,6 +9,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -44,6 +46,12 @@ public class TreeTableThreadView extends AThreadView {
         threads.setDefaultRenderer(APostProxy.class, new PostTableCellRenderer());
         threads.setTreeCellRenderer(new PostTreeCellRenderer());
 
+        threads.addTreeSelectionListener(new TreeSelectionListener() {
+            public void valueChanged(TreeSelectionEvent e) {
+                Post mi = (Post) e.getPath().getLastPathComponent();
+                setSelectedPost(mi);
+            }
+        });
         threads.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 TreePath path = threads.getPathForRow(e.getFirstIndex());
@@ -72,8 +80,13 @@ public class TreeTableThreadView extends AThreadView {
             public void treeCollapsed(TreeExpansionEvent event) {
             }
         });
-
         threads.addMouseListener(new ItemListener());
+
+        for (Header h : Header.values()) {
+            if (h.getWidth() > 0) {
+                threads.getColumnModel().getColumn(h.ordinal()).setWidth(h.getWidth());
+            }
+        }
 
         return threads;
     }

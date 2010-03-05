@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.view;
+package org.xblackcat.rojac.gui.view.forumlist;
 
 import org.xblackcat.rojac.data.Forum;
 
