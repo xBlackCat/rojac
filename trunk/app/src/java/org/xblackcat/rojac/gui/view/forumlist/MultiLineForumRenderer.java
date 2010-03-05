@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.view;
+package org.xblackcat.rojac.gui.view.forumlist;
 
 import ch.lambdaj.Lambda;
 import org.xblackcat.rojac.data.Forum;
@@ -28,13 +28,6 @@ class MultiLineForumRenderer extends JPanel
     private static final Border SAFE_NO_FOCUS_BORDER = new EmptyBorder(1, 1, 1, 1);
     private static final Border DEFAULT_NO_FOCUS_BORDER = new EmptyBorder(1, 1, 1, 1);
     protected static Border noFocusBorder = DEFAULT_NO_FOCUS_BORDER;
-
-    // We need a place to store the color the JLabel should be returned
-    // to after its foreground and background colors have been set
-    // to the selection background color.
-    // These ivars will be made protected when their names are finalized.
-    private Color unselectedForeground;
-    private Color unselectedBackground;
 
     private LineRenderer titleLine = new LineRenderer(JLabel.LEFT);
     private LineRenderer dateLine = new LineRenderer(JLabel.RIGHT);
@@ -69,28 +62,6 @@ class MultiLineForumRenderer extends JPanel
             }
         }
         return noFocusBorder;
-    }
-
-    /**
-     * Overrides <code>JComponent.setForeground</code> to assign the unselected-foreground color to the specified
-     * color.
-     *
-     * @param c set the foreground color to this value
-     */
-    public void setForeground(Color c) {
-        super.setForeground(c);
-        unselectedForeground = c;
-    }
-
-    /**
-     * Overrides <code>JComponent.setBackground</code> to assign the unselected-background color to the specified
-     * color.
-     *
-     * @param c set the background color to this value
-     */
-    public void setBackground(Color c) {
-        super.setBackground(c);
-        unselectedBackground = c;
     }
 
     /**
@@ -152,7 +123,7 @@ class MultiLineForumRenderer extends JPanel
             components.setForeground(fg == null ? table.getSelectionForeground() : fg);
             components.setBackground(bg == null ? table.getSelectionBackground() : bg);
         } else {
-            Color background = unselectedBackground != null ? unselectedBackground : table.getBackground();
+            Color background = table.getBackground();
             if (background == null || background instanceof javax.swing.plaf.UIResource) {
                 if (row % 2 == 0) {
                     Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
@@ -161,10 +132,11 @@ class MultiLineForumRenderer extends JPanel
                     }
                 }
             }
-            super.setForeground(unselectedForeground != null ? unselectedForeground : table.getForeground());
+            Color foreground = table.getForeground();
+            super.setForeground(foreground);
             super.setBackground(background);
 
-            components.setForeground(unselectedForeground != null ? unselectedForeground : table.getForeground());
+            components.setForeground(foreground);
             components.setBackground(background);
         }
 

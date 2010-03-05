@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.view.ForumData;
-import org.xblackcat.rojac.gui.view.ForumTableModel;
+import org.xblackcat.rojac.gui.view.forumlist.ForumData;
+import org.xblackcat.rojac.gui.view.forumlist.ForumTableModel;
 import org.xblackcat.rojac.gui.view.thread.AThreadModel;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.util.LinkUtils;

@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.view;
+package org.xblackcat.rojac.gui.view.forumlist;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -6,6 +6,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.PacketType;
 import org.xblackcat.rojac.service.ProcessPacket;

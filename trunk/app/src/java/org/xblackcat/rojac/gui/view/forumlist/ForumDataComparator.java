@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.view;
+package org.xblackcat.rojac.gui.view.forumlist;
 
 import java.util.Comparator;
 

@@ -2,8 +2,8 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.view.ForumData;
-import org.xblackcat.rojac.gui.view.ForumTableModel;
+import org.xblackcat.rojac.gui.view.forumlist.ForumData;
+import org.xblackcat.rojac.gui.view.forumlist.ForumTableModel;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.PacketType;
 import org.xblackcat.rojac.service.ProcessPacket;
