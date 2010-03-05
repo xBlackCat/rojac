@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.service.IDataHandler;
+import org.xblackcat.rojac.service.datahandler.IDataHandler;
 
 import javax.swing.*;
 

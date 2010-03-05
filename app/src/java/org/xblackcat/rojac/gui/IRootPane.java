@@ -1,13 +1,12 @@
 package org.xblackcat.rojac.gui;
 
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.service.IDataHandler;
 
 /**
  * @author xBlackCat
  */
 
-public interface IRootPane extends IDataHandler {
+public interface IRootPane {
     void openForumTab(Forum f);
 
     /**

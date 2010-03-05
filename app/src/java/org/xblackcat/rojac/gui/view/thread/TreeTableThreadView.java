@@ -5,8 +5,6 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -42,6 +40,7 @@ public class TreeTableThreadView extends AThreadView {
         threads.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         threads.setRowSelectionAllowed(true);
         threads.setRootVisible(threadControl.isRootVisible());
+        threads.setToggleClickCount(2);
 
         threads.setDefaultRenderer(APostProxy.class, new PostTableCellRenderer());
         threads.setTreeCellRenderer(new PostTreeCellRenderer());
@@ -52,13 +51,7 @@ public class TreeTableThreadView extends AThreadView {
                 setSelectedPost(mi);
             }
         });
-        threads.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-                TreePath path = threads.getPathForRow(e.getFirstIndex());
-                Post mi = (Post) path.getLastPathComponent();
-                setSelectedPost(mi);
-            }
-        });
+
         threads.addTreeExpansionListener(new TreeExpansionListener() {
             public void treeExpanded(TreeExpansionEvent event) {
                 TreePath path = event.getPath();

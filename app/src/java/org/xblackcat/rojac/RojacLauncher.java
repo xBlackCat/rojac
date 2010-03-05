@@ -63,54 +63,7 @@ public abstract class RojacLauncher {
 
         Messages.setLocale(ROJAC_GUI_LOCALE.get());
 
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                final MainFrame mainFrame = new MainFrame();
-
-                // Setup tray
-                RojacTray tray = new RojacTray(mainFrame);
-                if (!tray.isSupported()) {
-                    if (log.isInfoEnabled()) {
-                        log.info("Tray is not supported by the system.");
-                    }
-                }
-
-                mainFrame.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        mainFrame.updateSettings();
-
-                        storeSettings();
-
-                        System.exit(0);
-                    }
-                });
-
-                setupUserSettings();
-
-                mainFrame.applySettings();
-
-                mainFrame.loadData();
-
-                // Setup progress dialog.
-                ProgressTrackerDialog ptd = new ProgressTrackerDialog(mainFrame);
-                ServiceFactory.getInstance()
-                        .getProgressControl()
-                        .addProgressListener(ptd);
-
-                // Setup scheduled synchronizer
-                SynchronizationUtils.setScheduleSynchronizer(mainFrame);
-
-                mainFrame.setVisible(true);
-
-                WindowsUtils.center(ptd, mainFrame);
-
-                // Start synchronization
-                if (SYNCHRONIZER_SCHEDULE_AT_START.get()) {
-                    SynchronizationUtils.startSynchronization(mainFrame);
-                }
-            }
-        });
+        SwingUtilities.invokeLater(new SwingPartInitializer());
     }
 
     private static void storeSettings() {
@@ -125,4 +78,54 @@ public abstract class RojacLauncher {
         // TODO: Load user settings from options
     }
 
+    private static class SwingPartInitializer implements Runnable {
+        public void run() {
+            final MainFrame mainFrame = new MainFrame();
+
+            ServiceFactory.getInstance().getDataDispatcher().addDataHandler(mainFrame);
+
+            // Setup tray
+            RojacTray tray = new RojacTray(mainFrame);
+            if (!tray.isSupported()) {
+                if (log.isInfoEnabled()) {
+                    log.info("Tray is not supported by the system.");
+                }
+            }
+
+            mainFrame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    mainFrame.updateSettings();
+
+                    storeSettings();
+
+                    System.exit(0);
+                }
+            });
+
+            setupUserSettings();
+
+            mainFrame.applySettings();
+
+            mainFrame.loadData();
+
+            // Setup progress dialog.
+            ProgressTrackerDialog ptd = new ProgressTrackerDialog(mainFrame);
+            ServiceFactory.getInstance()
+                    .getProgressControl()
+                    .addProgressListener(ptd);
+
+            // Setup scheduled synchronizer
+            SynchronizationUtils.setScheduleSynchronizer(mainFrame);
+
+            mainFrame.setVisible(true);
+
+            WindowsUtils.center(ptd, mainFrame);
+
+            // Start synchronization
+            if (SYNCHRONIZER_SCHEDULE_AT_START.get()) {
+                SynchronizationUtils.startSynchronization(mainFrame);
+            }
+        }
+    }
 }

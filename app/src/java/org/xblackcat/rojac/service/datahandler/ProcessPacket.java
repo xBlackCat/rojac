@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service;
+package org.xblackcat.rojac.service.datahandler;
 
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;

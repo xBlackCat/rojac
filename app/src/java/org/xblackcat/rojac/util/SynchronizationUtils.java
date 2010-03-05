@@ -1,15 +1,15 @@
 package org.xblackcat.rojac.util;
 
-import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.MainFrame;
-import org.xblackcat.rojac.service.PacketType;
-import org.xblackcat.rojac.service.ProcessPacket;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.PacketType;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
+
+import java.awt.*;
 
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_USERS;
 
@@ -23,20 +23,20 @@ public final class SynchronizationUtils {
     private SynchronizationUtils() {
     }
 
-    public static void startSynchronization(MainFrame mainFrame) {
+    public static void startSynchronization(Window mainFrame) {
         Request requests =
                 SYNCHRONIZER_LOAD_USERS.get() ?
                         Request.SYNCHRONIZE_WITH_USERS :
                         Request.SYNCHRONIZE;
 
-        requests.process(mainFrame, new NewMessagesHandler(mainFrame));
+        requests.process(mainFrame, new NewMessagesHandler());
     }
 
-    public static void loadExtraMessages(MainFrame mainFrame) {
-        Request.EXTRA_MESSAGES.process(mainFrame, new NewMessagesHandler(mainFrame));        
+    public static void loadExtraMessages(Window mainFrame) {
+        Request.EXTRA_MESSAGES.process(mainFrame, new NewMessagesHandler());
     }
 
-    public static void setScheduleSynchronizer(MainFrame mainFrame) {
+    public static void setScheduleSynchronizer(Window mainFrame) {
         Integer period = Property.SYNCHRONIZER_SCHEDULE_PERIOD.get();
 
         IExecutor executor = ServiceFactory.getInstance().getExecutor();
@@ -53,22 +53,19 @@ public final class SynchronizationUtils {
     }
 
     private static class NewMessagesHandler implements IResultHandler {
-        private final IRootPane rootPane;
-
-        private NewMessagesHandler(IRootPane rootPane) {
-            this.rootPane = rootPane;
+        private NewMessagesHandler() {
         }
 
         @Override
         public void process(AffectedMessage... messages) {
-            rootPane.processPacket(new ProcessPacket(PacketType.AddMessages, messages));
+            ServiceFactory.getInstance().getDataDispatcher().processPacket(new ProcessPacket(PacketType.AddMessages, messages));
         }
     }
 
     private static class ScheduleSynchronization implements Runnable {
-        private final MainFrame mainFrame;
+        private final Window mainFrame;
 
-        public ScheduleSynchronization(MainFrame mainFrame) {
+        public ScheduleSynchronization(Window mainFrame) {
             this.mainFrame = mainFrame;
         }
 
