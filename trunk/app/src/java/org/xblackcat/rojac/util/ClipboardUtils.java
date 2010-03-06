@@ -4,11 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.datatransfer.*;
 import java.io.IOException;
 
 /**
@@ -39,7 +35,7 @@ public final class ClipboardUtils {
             try {
                 return (String) contents.getTransferData(DataFlavor.stringFlavor);
             } catch (UnsupportedFlavorException ex) {
-                log.fatal("Standart flavor is unsupported. Check environment in your window - probably armageddon is close by.", ex);
+                log.fatal("Standard flavor is unsupported. Check environment in your window - probably armageddon is close by.", ex);
             } catch (IOException ex) {
                 log.warn("Can not get a content from the system clipboard.", ex);
             }
