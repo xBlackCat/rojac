@@ -11,12 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ASUS
@@ -137,7 +132,11 @@ public final class QueryHelper implements IQueryHelper {
         // Fill parameters if any
         if (parameters != null) {
             for (int i = 0; i < parameters.length; i++) {
-                pstmt.setObject(i + 1, parameters[i]);
+                if (parameters[i] instanceof Boolean) {
+                    pstmt.setInt(i + 1, ((Boolean)(parameters[i])) ? 1 : 0);
+                } else {
+                    pstmt.setObject(i + 1, parameters[i]);
+                }
             }
         }
     }
