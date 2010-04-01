@@ -9,13 +9,15 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.MissingResourceException;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.join;
 
 public class MessagesTest extends TestCase {
     private static final Log log = LogFactory.getLog(MessagesTest.class);
@@ -35,21 +37,40 @@ public class MessagesTest extends TestCase {
             log.info("Found " + locales.size() + " locales to test: " + join(locales));
         }
 
+        boolean noErrors = true;
         for (Locale l : locales) {
             if (log.isInfoEnabled()) {
                 log.info("Test resources for locale " + l);
             }
-            localeTest(l);
+            try {
+                noErrors &= localeTest(l);
+            } catch (IllegalArgumentException e) {
+                log.error("Can not set locale " + l, e);
+                noErrors = false;
+            }
         }
+
+        assertTrue("Some translations is missed.", noErrors);
     }
 
-    private static void localeTest(Locale l) {
+    private static boolean localeTest(Locale l) {
+        boolean noErrors = true;
         Messages.setLocale(l, true);
         for (Messages m : Messages.values()) {
             if (log.isDebugEnabled()) {
                 log.debug("Check resource " + m);
             }
-            assertNotNull(m.get(EMPTY));
+            try {
+                if (m.get(EMPTY) == null) {
+                    log.error("There is no translation for " + ResourceUtils.constantToProperty(m.name()));
+                    noErrors = false;
+                }
+            } catch (MissingResourceException e) {
+                log.error("There is no translation for " + ResourceUtils.constantToProperty(m.name()));
+                noErrors = false;
+            }
         }
+
+        return noErrors;
     }
 }
