@@ -42,6 +42,10 @@ public final class ServiceFactory {
         INSTANCE = new ServiceFactory();
     }
 
+    public static void initializeTest(IExecutor executor, IStorage storage, IOptionsService optionsService, IMessageParser messageParser, IProgressController progressController, IDataDispatcher dataDispatcher) {
+        INSTANCE = new ServiceFactory(executor, storage, optionsService, messageParser, progressController, dataDispatcher);
+    }
+
     private final IExecutor executor;
     private final IStorage storage;
     private final IOptionsService optionsService;
@@ -64,6 +68,25 @@ public final class ServiceFactory {
         } catch (IOException e) {
             throw new RuntimeException("Can't initialize message formatter.", e);
         }
+    }
+
+    /**
+     * For testing purposes.
+     *
+     * @param executor
+     * @param storage
+     * @param optionsService
+     * @param messageParser
+     * @param progressController
+     * @param dataDispatcher
+     */
+    private ServiceFactory(IExecutor executor, IStorage storage, IOptionsService optionsService, IMessageParser messageParser, IProgressController progressController, IDataDispatcher dataDispatcher) {
+        this.executor = executor;
+        this.storage = storage;
+        this.optionsService = optionsService;
+        this.messageParser = messageParser;
+        this.progressController = progressController;
+        this.dataDispatcher = dataDispatcher;
     }
 
     public IStorage getStorage() {

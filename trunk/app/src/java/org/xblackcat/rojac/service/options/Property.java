@@ -188,7 +188,10 @@ public final class Property<T> {
      * @return <code>true</code> if property is initiated and <code>false</code> if default value will be used.
      */
     public boolean isSet() {
-        return ServiceFactory.getInstance().getOptionsService().getProperty(this) != null;
+        ServiceFactory instance = ServiceFactory.getInstance();
+        // If options service is not initialized - consider property is not set.
+        return instance != null && instance.getOptionsService() != null && instance.getOptionsService().getProperty(this) != null;
+
     }
 
     /**
@@ -211,7 +214,7 @@ public final class Property<T> {
         ServiceFactory instance = ServiceFactory.getInstance();
         // For testcase purposes.
         if (instance == null) {
-            return null;
+            return defValue;
         }
 
         T val = instance.getOptionsService().getProperty(this);
@@ -236,7 +239,12 @@ public final class Property<T> {
      * @return previous value of the property or <code>null</code> if property was empty.
      */
     public T set(T val) {
-        return ServiceFactory.getInstance().getOptionsService().setProperty(this, val);
+        ServiceFactory instance = ServiceFactory.getInstance();
+        if (instance != null && instance.getOptionsService() != null) {
+            return instance.getOptionsService().setProperty(this, val);
+        }
+
+        return getDefault();
     }
 
     /**
