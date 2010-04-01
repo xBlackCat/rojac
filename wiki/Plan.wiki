@@ -20,12 +20,12 @@
   * Implement GUI: create icons for the application. _(partially done: a [http://www.pinvoke.com/ Fugue] icons pack from pinvoke)_
   * ~~Core: optimize database~~
 == Alpha 2 ==
-  * Implement GUI: TreeTable forum view 
-  * Database: include full support for HSQL and SQLite.
-  * Migrate JanusAT client to Axis 2 (??)
+  * Implement GUI: TreeTable forum view *(in progress)*
+  * Database: include full support for HSQL and SQLite. _(done)_
   * Add scheduled synchronizer. _(done)_
-  * Add tray icon.
+  * Add tray icon. *(in progress)*
   * Add favorites (messages, topics, you posts, responses)
+  * Migrate JanusAT client to Axis 2 (??)
   * Implement GUI: List based forum view.
 == Alpha 3 ==
   * Add filter to forum view (by users, by date, by marks)
