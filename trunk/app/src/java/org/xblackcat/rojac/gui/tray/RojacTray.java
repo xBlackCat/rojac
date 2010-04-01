@@ -12,6 +12,8 @@ import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 /**
@@ -51,7 +53,13 @@ public class RojacTray {
         setState(RojacState.Initialized);
 
         ServiceFactory.getInstance().getProgressControl().addProgressListener(new TrayProgressListener());
-        ServiceFactory.getInstance().getDataDispatcher().addDataHandler(new TrayDataDispatcher());        
+        ServiceFactory.getInstance().getDataDispatcher().addDataHandler(new TrayDataDispatcher());
+
+        trayIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+        });
     }
 
     protected void setState(RojacState state, Object... arguments) {
