@@ -17,6 +17,7 @@ import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
+import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
@@ -214,70 +215,8 @@ public class MessageView extends AItemView implements IInternationazable {
             return;
         }
 
-        int smiles = 0;
-        int agrees = 0;
-        int disagrees = 0;
-        int plusOnes = 0;
-        int rate = 0;
-        int rateAmount = 0;
-
-        for (Mark r : ratings) {
-            switch (r) {
-                case Agree:
-                    ++agrees;
-                    break;
-                case Disagree:
-                    ++disagrees;
-                    break;
-                case PlusOne:
-                    ++plusOnes;
-                    break;
-                case Remove:
-                    // Do nothig
-                    break;
-                case Smile:
-                    ++smiles;
-                    break;
-                case x3:
-                    ++rate;
-                case x2:
-                    ++rate;
-                case x1:
-                    ++rate;
-                    ++rateAmount;
-                    break;
-            }
-        }
-
-        StringBuilder text = new StringBuilder("<html><body>");
-
-        if (rateAmount > 0) {
-            text.append("<b>");
-            text.append(rate);
-            text.append("(");
-            text.append(rateAmount);
-            text.append(")</b> ");
-        }
-
-        text.append(addInfo(Mark.PlusOne, plusOnes));
-        text.append(addInfo(Mark.Agree, agrees));
-        text.append(addInfo(Mark.Disagree, disagrees));
-        text.append(addInfo(Mark.Smile, smiles));
-
-        marksButton.setText(text.toString());
+        marksButton.setText(MessageUtils.buildRateString(ratings));
         revalidate();
-    }
-
-    private String addInfo(Mark m, int amount) {
-        if (amount > 0) {
-            String res = "&nbsp;<img src='" + m.getUrl().toString() + "'>";
-            if (amount > 1) {
-                return res + "<i>x" + amount + "</i>";
-            } else {
-                return res;
-            }
-        }
-        return "";
     }
 
     public void loadLabels() {

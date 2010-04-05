@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.tray;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -102,6 +103,8 @@ public class RojacTray {
     }
 
     private class TrayProgressListener implements IProgressListener {
+        protected String lastText;
+
         @Override
         public void progressChanged(ProgressChangeEvent e) {
             switch (e.getState()) {
@@ -111,7 +114,16 @@ public class RojacTray {
                 case Start:
                     break;
                 case Work:
-                    setState(RojacState.Synchronizing, e.getText(), e.getProgress());
+                    if (StringUtils.isNotBlank(e.getText())) {
+                        lastText = e.getText();
+                    }
+                    String progress;
+                    if (e.getProgress() != null) {
+                        progress = "(" + (int) (e.getProgress() * 100) + "%)";
+                    } else {
+                        progress = "";
+                    }
+                    setState(RojacState.Synchronizing, lastText, progress);
                     break;
                 case Stop:
                     setState(RojacState.Normal);

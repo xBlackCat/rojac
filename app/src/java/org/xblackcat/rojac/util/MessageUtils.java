@@ -2,6 +2,7 @@ package org.xblackcat.rojac.util;
 
 import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.lang.StringUtils;
+import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.i18n.Messages;
 
 import java.io.StringWriter;
@@ -13,6 +14,8 @@ import java.util.regex.Pattern;
  */
 
 public final class MessageUtils {
+    public final static Mark[] NO_MARKS = new Mark[0];
+
     private static final Pattern SUBJ_PATTERN = Pattern.compile("^Re(?:\\[(\\d+)\\])?:\\s+(.+)$");
     private static final Pattern RESP_PATTERN = Pattern.compile("^([A-Z_]>)(.+)$");
     protected static final Pattern TAGLINE_PATTERN = Pattern.compile("\\[tagline\\].+\\[/tagline\\]");
@@ -124,4 +127,70 @@ public final class MessageUtils {
         return writer.toString();
     }
 
+    public static String buildRateString(Mark[] ratings) {
+        int smiles = 0;
+        int agrees = 0;
+        int disagrees = 0;
+        int plusOnes = 0;
+        int rate = 0;
+        int rateAmount = 0;
+
+        for (Mark r : ratings) {
+            switch (r) {
+                case Agree:
+                    ++agrees;
+                    break;
+                case Disagree:
+                    ++disagrees;
+                    break;
+                case PlusOne:
+                    ++plusOnes;
+                    break;
+                case Remove:
+                    // Do nothig
+                    break;
+                case Smile:
+                    ++smiles;
+                    break;
+                case x3:
+                    ++rate;
+                case x2:
+                    ++rate;
+                case x1:
+                    ++rate;
+                    ++rateAmount;
+                    break;
+            }
+        }
+
+        StringBuilder text = new StringBuilder("<html><body>");
+
+        if (rateAmount > 0) {
+            text.append("<b>");
+            text.append(rate);
+            text.append("(");
+            text.append(rateAmount);
+            text.append(")</b> ");
+        }
+
+        text.append(addInfo(Mark.PlusOne, plusOnes));
+        text.append(addInfo(Mark.Agree, agrees));
+        text.append(addInfo(Mark.Disagree, disagrees));
+        text.append(addInfo(Mark.Smile, smiles));
+
+        String ratingString = text.toString();
+        return ratingString;
+    }
+
+    public static String addInfo(Mark m, int amount) {
+        if (amount > 0) {
+            String res = "&nbsp;<img src='" + m.getUrl().toString() + "'>";
+            if (amount > 1) {
+                return res + "<i>x" + amount + "</i>";
+            } else {
+                return res;
+            }
+        }
+        return "";
+    }
 }
