@@ -58,12 +58,13 @@ public abstract class AConnectionFactory implements IConnectionFactory {
 
         userName = databaseProperties.getProperty(DB_STORAGE_USER);
         if (userName == null) {
-            throw new StorageInitializationException("The " + DB_STORAGE_USER + " property is not defined.");
-        }
-
-        password = databaseProperties.getProperty(DB_STORAGE_PASSWORD);
-        if (password == null) {
-            throw new StorageInitializationException("The " + DB_STORAGE_PASSWORD + " property is not defined.");
+            log.info("The " + DB_STORAGE_USER + " property is not defined. Unrestricted access to database.");
+            password = null;
+        } else {
+            password = databaseProperties.getProperty(DB_STORAGE_PASSWORD);
+            if (password == null) {
+                log.info("The " + DB_STORAGE_PASSWORD + " property is not defined. Will be used empty password.");
+            }
         }
 
         // Set the system properties in the url string
