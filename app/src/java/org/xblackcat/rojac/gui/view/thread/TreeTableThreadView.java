@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.thread;
 
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 
@@ -32,9 +33,9 @@ public class TreeTableThreadView extends AThreadView {
     @Override
     protected JComponent getThreadsContainer() {
         threads.setEditable(false);
+        threads.setAutoCreateColumnsFromModel(false);
         threads.setTreeTableModel(model);
         threads.setShowsRootHandles(true);
-        threads.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         threads.setEditable(false);
         threads.setSortable(false);
         threads.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -75,10 +76,16 @@ public class TreeTableThreadView extends AThreadView {
         });
         threads.addMouseListener(new ItemListener());
 
+        threads.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
         for (Header h : Header.values()) {
+            TableColumnExt column = new TableColumnExt(h.ordinal());
             if (h.getWidth() > 0) {
-                threads.getColumnModel().getColumn(h.ordinal()).setWidth(h.getWidth());
+                column.setPreferredWidth(h.getWidth());
+                column.setMaxWidth(h.getWidth() << 2);
+                column.setMinWidth(0);
             }
+            column.setToolTipText(h.getTitle());
+            threads.addColumn(column);
         }
 
         return threads;
