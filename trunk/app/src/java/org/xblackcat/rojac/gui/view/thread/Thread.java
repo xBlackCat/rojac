@@ -103,6 +103,15 @@ public class Thread extends Post {
         }
     }
 
+    @Override
+    public int getRepliesAmount() {
+        if (filled) {
+            return threadPosts.size();
+        } else {
+            return threadStatData.getReplyAmount();
+        }
+    }
+
     public void setLoadingState(LoadingState loadingState) {
         this.loadingState = loadingState;
     }

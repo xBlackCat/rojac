@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MessageData;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ class Post implements ITreeItem<Post> {
     protected final Thread threadRoot;
 
     protected List<Post> childrenPosts = new ArrayList<Post>();
+    private Mark[] rating;
 
     public Post(MessageData messageData, Post parent) {
         this(messageData, parent, null);
@@ -71,6 +73,19 @@ class Post implements ITreeItem<Post> {
         return childrenPosts.size();
     }
 
+    /**
+     * Returns real amount of replies on the post wherever the node is in loaded state or not.
+     *
+     * @return real replies amount.
+     */
+    public int getRepliesAmount() {
+        int replies = childrenPosts.size();
+        for (Post c : childrenPosts) {
+            replies += c.getRepliesAmount();
+        }
+        return replies;
+    }
+
     protected Thread getThreadRoot() {
         return threadRoot;
     }
@@ -110,12 +125,12 @@ class Post implements ITreeItem<Post> {
     public int getForumId() {
         return messageData.getForumId();
     }
-    
+
     @Override
     public int getTopicId() {
         return messageData.getTopicId();
     }
-    
+
     @Override
     public long getLastPostDate() {
         if (childrenPosts.isEmpty()) {
@@ -183,5 +198,13 @@ class Post implements ITreeItem<Post> {
         for (Post p : childrenPosts) {
             p.setDeepRead(read);
         }
+    }
+
+    void setRating(Mark[] rating) {
+        this.rating = rating;
+    }
+
+    public Mark[] getRating() {
+        return rating;
     }
 }
