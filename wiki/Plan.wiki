@@ -21,7 +21,7 @@
   * ~~Core: optimize database~~
 == Alpha 2 ==
   * Implement GUI: TreeTable forum view *(in progress)*
-  * Database: include full support for HSQL and SQLite. _(done)_
+  * Database: include full support for HSQL ~~and SQLite~~. _(done)_
   * Add scheduled synchronizer. _(done)_
   * Add tray icon. *(in progress)*
   * Add favorites (messages, topics, you posts, responses)
