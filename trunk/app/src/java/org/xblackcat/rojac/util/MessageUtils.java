@@ -178,8 +178,7 @@ public final class MessageUtils {
         text.append(addInfo(Mark.Disagree, disagrees));
         text.append(addInfo(Mark.Smile, smiles));
 
-        String ratingString = text.toString();
-        return ratingString;
+        return text.toString();
     }
 
     public static String addInfo(Mark m, int amount) {
