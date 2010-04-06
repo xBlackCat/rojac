@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.view.forumlist;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IStorage;
 
 import javax.swing.table.AbstractTableModel;
@@ -16,7 +15,6 @@ import java.util.List;
 
 public class ForumTableModel extends AbstractTableModel {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
     private List<ForumData> forums = new ArrayList<ForumData>();
 

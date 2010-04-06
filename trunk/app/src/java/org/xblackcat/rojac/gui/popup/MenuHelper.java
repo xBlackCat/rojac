@@ -60,6 +60,7 @@ final class MenuHelper {
      * @return sub-menu with registered actions to open message in various ways.
      */
     static JMenu openMessageSubmenu(int messageId, IRootPane mainFrame) {
+        // TODO: move all text to i18n
         JMenu menu = new JMenu();
         menu.setText("Open message");
 
@@ -113,19 +114,39 @@ final class MenuHelper {
      *@param mainFrame
      *  @return
      */
-    public static JMenuItem markRead(ITreeItem message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
-        return null;
+    static JMenuItem markRead(ITreeItem message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
+        JMenuItem markRead = new JMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_READ.get());
+        markRead.addActionListener(new MarkMessageAction(message, true));
+
+        return markRead;
     }
 
-    public static JMenuItem markUnread(ITreeItem message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
-        return null;
+    static JMenuItem markUnread(ITreeItem message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
+        JMenuItem markRead = new JMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_UNREAD.get());
+        markRead.addActionListener(new MarkMessageAction(message, false));
+
+        return markRead;
     }
 
-    public static JMenuItem markReadSubmenu(ITreeItem message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
-        return null;
-    }
+    static JMenuItem markReadUnreadSubmenu(ITreeItem message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
+        JMenu menu = new JMenu();
+        menu.setText(Messages.POPUP_VIEW_THREADS_TREE_MARK_TITLE.get());
 
-    public static JMenuItem markUnreadSubmenu(ITreeItem message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
-        return null;
+        JMenuItem markThreadRead = new JMenuItem();
+        markThreadRead.setText(Messages.POPUP_VIEW_THREADS_TREE_MARK_THREAD_READ.get());
+        // TODO: add action
+        menu.add(markThreadRead);
+
+        JMenuItem markThreadUnread = new JMenuItem();
+        markThreadUnread.setText(Messages.POPUP_VIEW_THREADS_TREE_MARK_THREAD_UNREAD.get());
+        // TODO: add action
+        menu.add(markThreadUnread);
+
+        menu.addSeparator();
+
+        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_READ_ALL, message.getForumId(), true));
+        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_UNREAD_ALL, message.getForumId(), false));
+
+        return menu;
     }
 }

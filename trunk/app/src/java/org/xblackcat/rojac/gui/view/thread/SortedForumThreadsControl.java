@@ -7,7 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
@@ -28,7 +27,6 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
     private static final Log log = LogFactory.getLog(SortedForumThreadsControl.class);
 
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
     @Override
     public int loadThreadByItem(final AThreadModel<Post> model, final AffectedMessage forum) {
@@ -37,46 +35,8 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
         model.setRoot(rootItem);
 
-        RojacWorker sw = new RojacWorker<Void, Thread>() {
-            @Override
-            protected Void perform() throws Exception {
-                MessageData[] threadPosts;
-                IMessageAH mAH = storage.getMessageAH();
-                try {
-                    threadPosts = mAH.getTopicMessagesDataByForumId(forumId);
-                } catch (StorageException e) {
-                    log.error("Can not load topics for forum #" + forumId, e);
-                    throw e;
-                }
+        new ThreadsLoader(forumId, rootItem, model).execute();
 
-                List<Thread> threads = new ArrayList<Thread>(threadPosts.length);
-                for (MessageData threadPost : threadPosts) {
-                    int topicId = threadPost.getMessageId();
-
-                    try {
-                        int unreadPosts = mAH.getUnreadReplaysInThread(topicId);
-                        ThreadStatData stat = mAH.getThreadStatByThreadId(topicId);
-
-                        threads.add(new Thread(threadPost, stat, unreadPosts, rootItem));
-                    } catch (StorageException e) {
-                        log.error("Can not load statistic for topic #" + topicId, e);
-                    }
-                }
-
-                publish(threads.toArray(new Thread[threads.size()]));
-
-                return null;
-            }
-
-            @Override
-            protected void process(List<Thread> chunks) {
-                rootItem.addThreads(chunks);
-
-                model.nodeStructureChanged(rootItem);
-            }
-        };
-
-        executor.execute(sw);
         return forumId;
     }
 
@@ -101,7 +61,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             return;
         }
 
-        executor.execute(new MessagesLoader(forumRoot, model, newPosts.toArray()));
+        new MessagesLoader(forumRoot, model, newPosts.toArray()).execute();
     }
 
     @Override
@@ -133,7 +93,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
         item.setLoadingState(LoadingState.Loading);
 
-        executor.execute(new ThreadLoader(item, threadModel, postProcessor));
+        new ThreadLoader(item, threadModel, postProcessor).execute();
     }
 
     @Override
@@ -197,10 +157,6 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         private final AThreadModel<Post> threadModel;
         private final IItemProcessor<Post> postProcessor;
 
-        public ThreadLoader(Thread item, AThreadModel<Post> threadModel) {
-            this(item, threadModel, null);
-        }
-
         public ThreadLoader(Thread item, AThreadModel<Post> threadModel, IItemProcessor<Post> postProcessor) {
             this.item = item;
             this.threadModel = threadModel;
@@ -234,6 +190,55 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             if (postProcessor!= null) {
                 postProcessor.processItem(item);
             }
+        }
+    }
+
+    private class ThreadsLoader extends RojacWorker<Void, Thread> {
+        private final int forumId;
+        private final ForumRoot rootItem;
+        private final AThreadModel<Post> model;
+
+        public ThreadsLoader(int forumId, ForumRoot rootItem, AThreadModel<Post> model) {
+            this.forumId = forumId;
+            this.rootItem = rootItem;
+            this.model = model;
+        }
+
+        @Override
+        protected Void perform() throws Exception {
+            MessageData[] threadPosts;
+            IMessageAH mAH = storage.getMessageAH();
+            try {
+                threadPosts = mAH.getTopicMessagesDataByForumId(forumId);
+            } catch (StorageException e) {
+                log.error("Can not load topics for forum #" + forumId, e);
+                throw e;
+            }
+
+            List<Thread> threads = new ArrayList<Thread>(threadPosts.length);
+            for (MessageData threadPost : threadPosts) {
+                int topicId = threadPost.getMessageId();
+
+                try {
+                    int unreadPosts = mAH.getUnreadReplaysInThread(topicId);
+                    ThreadStatData stat = mAH.getThreadStatByThreadId(topicId);
+
+                    threads.add(new Thread(threadPost, stat, unreadPosts, rootItem));
+                } catch (StorageException e) {
+                    log.error("Can not load statistic for topic #" + topicId, e);
+                }
+            }
+
+            publish(threads.toArray(new Thread[threads.size()]));
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<Thread> chunks) {
+            rootItem.addThreads(chunks);
+
+            model.nodeStructureChanged(rootItem);
         }
     }
 }

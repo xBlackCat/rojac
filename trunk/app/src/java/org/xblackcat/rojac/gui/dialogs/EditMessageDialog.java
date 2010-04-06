@@ -10,7 +10,6 @@ import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -59,8 +58,7 @@ public class EditMessageDialog extends JDialog {
             return;
         }
 
-        IExecutor executor = ServiceFactory.getInstance().getExecutor();
-        executor.execute(new MessageLoader(messageId));
+        new MessageLoader(messageId).execute();
     }
 
     public void createTopic(int forumId) {
@@ -135,7 +133,7 @@ public class EditMessageDialog extends JDialog {
             }
         };
 
-        ServiceFactory.getInstance().getExecutor().execute(sw);
+        sw.execute();
     }
 
     private void initializeLayout() {

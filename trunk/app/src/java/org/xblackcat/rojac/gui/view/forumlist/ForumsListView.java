@@ -166,7 +166,7 @@ public class ForumsListView extends AView {
     public void applySettings() {
         super.applySettings();
 
-        executor.execute(new ForumLoader());
+        new ForumLoader().execute();
     }
 
     public void processPacket(ProcessPacket changedData) {
@@ -195,7 +195,7 @@ public class ForumsListView extends AView {
                 }
                 break;
             case ForumsLoaded:
-                executor.execute(new ForumLoader());
+                new ForumLoader().execute();
                 break;
         }
     }
@@ -215,7 +215,7 @@ public class ForumsListView extends AView {
     }
 
     private void loadForumStatistic(int[] forumIds) {
-        executor.execute(new ForumUpdater(forumIds));
+        new ForumUpdater(forumIds).execute();
     }
 
     private class ForumUpdater extends RojacWorker<Void, ForumStatistic> {

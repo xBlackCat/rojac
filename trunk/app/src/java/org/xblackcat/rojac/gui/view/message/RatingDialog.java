@@ -4,7 +4,6 @@ import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -40,44 +39,7 @@ class RatingDialog extends JDialog {
     }
 
     private void updateData() {
-        RojacWorker<Void, MarkItem> sw = new RojacWorker<Void, MarkItem>() {
-            @Override
-            protected Void perform() throws Exception {
-                Rating[] ratings = storage.getRatingAH().getRatingsByMessageId(messageId);
-
-                NewRating[] ownRatings = storage.getNewRatingAH().getNewRatingsByMessageId(messageId);
-
-                MarkItem[] items = new MarkItem[ratings.length + ownRatings.length];
-
-                int ind = 0;
-                while (ind < ratings.length) {
-                    Rating r = ratings[ind];
-
-                    User user = storage.getUserAH().getUserById(r.getUserId());
-
-                    items[ind] = new MarkItem(r, user);
-                    ind++;
-                }
-
-                int i = 0;
-                while (i < ownRatings.length) {
-                    NewRating r = ownRatings[i++];
-                    items[ind++] = new MarkItem(r);
-                }
-
-                publish(items);
-                
-                return null;
-            }
-
-            @Override
-            protected void process(List<MarkItem> chunks) {
-                marksModel.setData(chunks.toArray(new MarkItem[chunks.size()]));
-            }
-        };
-
-        IExecutor executor = ServiceFactory.getInstance().getExecutor();
-        executor.execute(sw);
+        new RatingUpdater().execute();
     }
 
     private void initializeLayout() {
@@ -115,5 +77,41 @@ class RatingDialog extends JDialog {
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(t, BorderLayout.CENTER);
+    }
+
+    private class RatingUpdater extends RojacWorker<Void, MarkItem> {
+        @Override
+        protected Void perform() throws Exception {
+            Rating[] ratings = storage.getRatingAH().getRatingsByMessageId(messageId);
+
+            NewRating[] ownRatings = storage.getNewRatingAH().getNewRatingsByMessageId(messageId);
+
+            MarkItem[] items = new MarkItem[ratings.length + ownRatings.length];
+
+            int ind = 0;
+            while (ind < ratings.length) {
+                Rating r = ratings[ind];
+
+                User user = storage.getUserAH().getUserById(r.getUserId());
+
+                items[ind] = new MarkItem(r, user);
+                ind++;
+            }
+
+            int i = 0;
+            while (i < ownRatings.length) {
+                NewRating r = ownRatings[i++];
+                items[ind++] = new MarkItem(r);
+            }
+
+            publish(items);
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<MarkItem> chunks) {
+            marksModel.setData(chunks.toArray(new MarkItem[chunks.size()]));
+        }
     }
 }

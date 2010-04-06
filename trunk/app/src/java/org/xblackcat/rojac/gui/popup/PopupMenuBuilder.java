@@ -31,6 +31,7 @@ public class PopupMenuBuilder {
      * @param url         URL object of the link.
      * @param description Text representing of the link.
      * @param text        Text associated with the link.
+     * @param mainFrame   back link to main window control.
      *
      * @return new popup menu for the specified url.
      */
