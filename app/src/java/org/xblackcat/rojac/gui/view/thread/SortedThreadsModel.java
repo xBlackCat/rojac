@@ -21,7 +21,7 @@ class SortedThreadsModel extends AThreadModel<Post> {
         if (child.getRating() == null) {
             child.setRating(MessageUtils.NO_MARKS);
 
-            ServiceFactory.getInstance().getExecutor().execute(new MarksLoader(child));
+            new MarksLoader(child).execute();
         }
         return child;
     }

@@ -2,7 +2,6 @@ package org.xblackcat.rojac.service.janus.commands;
 
 import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.service.RojacHelper;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -34,7 +33,7 @@ public enum Request {
     public void process(IResultHandler handler) {
         RojacWorker sw = new RequestProcessor(handler, requests);
 
-        ServiceFactory.getInstance().getExecutor().execute(sw);
+        sw.execute();
     }
 
     public void process(Window frame, IResultHandler handler) {

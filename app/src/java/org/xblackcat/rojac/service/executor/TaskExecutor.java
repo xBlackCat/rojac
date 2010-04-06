@@ -1,13 +1,14 @@
 package org.xblackcat.rojac.service.executor;
 
+import ch.lambdaj.function.aggregate.Aggregator;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
+
+import static ch.lambdaj.Lambda.*;
 
 /**
  * Service for executing tasks in separate thread.
@@ -15,17 +16,17 @@ import java.util.concurrent.*;
  * @author xBlackCat
  */
 
-public final class TaskExecutor implements IExecutor {
+public final class TaskExecutor implements IExecutor, ExecutorService {
     private static final Log log = LogFactory.getLog(TaskExecutor.class);
 
-    private final Map<TaskTypeEnum, Executor> pools;
+    private final Map<TaskTypeEnum, ExecutorService> pools;
 
     private final ScheduledExecutorService scheduler;
 
     private final Map<String, ScheduledFuture<?>> scheduledTasks = new HashMap<String, ScheduledFuture<?>>();
 
     public TaskExecutor() {
-        Map<TaskTypeEnum, Executor> pools = new EnumMap<TaskTypeEnum, Executor>(TaskTypeEnum.class);
+        Map<TaskTypeEnum, ExecutorService> pools = new EnumMap<TaskTypeEnum, ExecutorService>(TaskTypeEnum.class);
         pools.put(TaskTypeEnum.Background, setupCommonExecutor());
         pools.put(TaskTypeEnum.DataLoading, setupMessageLoadingExecutor());
         pools.put(TaskTypeEnum.Synchronization, setupServerSynchronizationExecutor());
@@ -35,34 +36,21 @@ public final class TaskExecutor implements IExecutor {
         scheduler = new ScheduledThreadPoolExecutor(1);
     }
 
-    private Executor setupServerSynchronizationExecutor() {
+    private ExecutorService setupServerSynchronizationExecutor() {
         return Executors.newSingleThreadExecutor();
     }
 
-    private Executor setupMessageLoadingExecutor() {
+    private ExecutorService setupMessageLoadingExecutor() {
         return new ThreadPoolExecutor(10, 30, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
     }
 
-    private Executor setupCommonExecutor() {
+    private ExecutorService setupCommonExecutor() {
         return Executors.newFixedThreadPool(5);
     }
 
     @Override
     public void execute(Runnable target) {
-        if (target == null) throw new NullPointerException("Can not execute empty target.");
-
-        // Obtain target task type from annotation.
-        TaskTypeEnum type = getTargetType(target.getClass());
-
-        if (type == null) {
-            // By default use Background type.
-            type = TaskTypeEnum.Background;
-            if (log.isTraceEnabled()) {
-                log.trace("Target " + target.getClass() + " will be executed as type " + TaskTypeEnum.Background);
-            }
-        }
-
-        pools.get(type).execute(target);
+        getAnnotatedPool(target).execute(target);
     }
 
     @Override
@@ -105,6 +93,75 @@ public final class TaskExecutor implements IExecutor {
         return false;
     }
 
+    @Override
+    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void shutdown() {
+        forEach(pools.values()).shutdown();
+    }
+
+    @Override
+    public List<Runnable> shutdownNow() {
+        return aggregate(pools.values(), new Aggregator<List<Runnable>>() {
+            @Override
+            public List<Runnable> aggregate(Iterator<? extends List<Runnable>> iterator) {
+                List<Runnable> list = new ArrayList<Runnable>();
+                while (iterator.hasNext()) {
+                    list.addAll(iterator.next());
+                }
+                return list;
+            }
+        }, on(ExecutorService.class).shutdownNow());
+    }
+
+    @Override
+    public boolean isShutdown() {
+        return min(pools.values(), on(ExecutorService.class).isShutdown());
+    }
+
+    @Override
+    public boolean isTerminated() {
+        return min(pools.values(), on(ExecutorService.class).isShutdown());
+    }
+
+    @Override
+    public <T> Future<T> submit(Callable<T> task) {
+        return getAnnotatedPool(task).submit(task);
+    }
+
+    @Override
+    public <T> Future<T> submit(Runnable task, T result) {
+        return getAnnotatedPool(task).submit(task, result);
+    }
+
+    @Override
+    public Future<?> submit(Runnable task) {
+        return getAnnotatedPool(task).submit(task);
+    }
+
+    @Override
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        throw new NotImplementedException();
+    }
+
     /**
      * Searches a TaskType annotation in class declaration in the following order: <ul> <li>Class</li>
      * <li>SuperClass</li> <li>Superclass of the superclass</li> <li>...</li> </ul> Note that implemented interfaces
@@ -129,6 +186,23 @@ public final class TaskExecutor implements IExecutor {
         }
 
         return getTargetType(clazz.getSuperclass());
+    }
+
+    private <T> ExecutorService getAnnotatedPool(T target) {
+        if (target == null) throw new NullPointerException("Can not execute empty target.");
+
+        // Obtain target task type from annotation.
+        TaskTypeEnum type = getTargetType(target.getClass());
+
+        if (type == null) {
+            // By default use Background type.
+            type = TaskTypeEnum.Background;
+            if (log.isTraceEnabled()) {
+                log.trace("Target " + target.getClass() + " will be executed as type " + TaskTypeEnum.Background);
+            }
+        }
+
+        return pools.get(type);
     }
 
     private class ScheduleTaskCleaner implements Runnable {

@@ -205,9 +205,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
                 if (messageId != null) {
                     boolean loadAtOnce = lmd.isLoadAtOnce();
 
-                    ServiceFactory.getInstance().getExecutor().execute(
-                            new ExtraMessageLoader(messageId, loadAtOnce)
-                    );
+                    new ExtraMessageLoader(messageId, loadAtOnce).execute();
                 }
             }
         }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);

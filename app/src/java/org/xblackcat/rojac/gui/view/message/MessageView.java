@@ -162,14 +162,14 @@ public class MessageView extends AItemView implements IInternationazable {
                         Messages.DIALOG_SET_MARK_TITLE.get(),
                         JOptionPane.YES_NO_OPTION
                 )) {
-            executor.execute(new MarksUpdater(mark));
+            new MarksUpdater(mark).execute();
         }
     }
 
     public void loadItem(final AffectedMessage message) {
         messageId = message.getMessageId();
 
-        executor.execute(new MessageLoader(messageId));
+        new MessageLoader(messageId).execute();
     }
 
     protected void fillFrame(NewMessage mes) {

@@ -6,9 +6,6 @@ import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.forumlist.ForumTableModel;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.PacketType;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
-import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -21,7 +18,6 @@ import java.awt.event.ActionListener;
 
 class ForumListPopupBuilder implements IPopupBuilder {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
 
     /**
      * Builds popup menu for RSDN message link. Available actions in the menu are: <ul> <li>"Goto" - open the message in
@@ -95,7 +91,7 @@ class ForumListPopupBuilder implements IPopupBuilder {
         }
 
         public void actionPerformed(ActionEvent e) {
-            executor.execute(new RojacWorker<Void, Void>() {
+            new RojacWorker<Void, Void>() {
                 @Override
                 protected Void perform() throws Exception {
                     IForumAH fah = storage.getForumAH();
@@ -107,32 +103,7 @@ class ForumListPopupBuilder implements IPopupBuilder {
                 protected void done() {
                     forumsModel.setSubscribed(forumId, !subscribed);
                 }
-            });
-        }
-    }
-
-    private class SetForumReadMenuItem extends JMenuItem {
-        public SetForumReadMenuItem(Messages text, final int forumId, final boolean readFlag) {
-            super(text.get());
-            addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    executor.execute(new RojacWorker<Void, Void>() {
-                        @Override
-                        protected Void perform() throws Exception {
-                            IForumAH fah = storage.getForumAH();
-                            fah.setForumRead(forumId, readFlag);
-                            return null;
-                        }
-
-                        @Override
-                        protected void done() {
-                            PacketType type = readFlag ? PacketType.SetForumRead : PacketType.SetForumUnread;
-                            ProcessPacket p = new ProcessPacket(type, forumId);
-                            ServiceFactory.getInstance().getDataDispatcher().processPacket(p);
-                        }
-                    });
-                }
-            });
+            }.execute();
         }
     }
 }

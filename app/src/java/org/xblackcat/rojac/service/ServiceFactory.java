@@ -19,7 +19,9 @@ import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.connection.PooledConnectionFactoryl;
 import org.xblackcat.utils.ResourceUtils;
+import sun.awt.AppContext;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -58,6 +60,8 @@ public final class ServiceFactory {
         dataDispatcher = new DataDispatcher();
 
         executor = new TaskExecutor();
+        final AppContext appContext = AppContext.getAppContext();
+        appContext.put(SwingWorker.class, executor);
 
         storage = initializeStorage();
 

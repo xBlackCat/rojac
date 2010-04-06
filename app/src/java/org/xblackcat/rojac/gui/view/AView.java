@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.view;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.IView;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IStorage;
 
 import javax.swing.*;
@@ -14,7 +13,6 @@ import java.awt.*;
  */
 
 public abstract class AView extends JPanel implements IView {
-    protected final IExecutor executor = ServiceFactory.getInstance().getExecutor();
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
     
     protected final IRootPane mainFrame;

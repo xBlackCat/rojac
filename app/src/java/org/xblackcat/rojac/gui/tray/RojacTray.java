@@ -74,8 +74,7 @@ public class RojacTray {
     }
 
     private void checkUnreadMessages() {
-        RojacWorker<Void, Integer> rw = new UnreadMessagesCount();
-        ServiceFactory.getInstance().getExecutor().execute(rw);
+        new UnreadMessagesCount().execute();
     }
 
     private class UnreadMessagesCount extends RojacWorker<Void, Integer> {
