@@ -14,6 +14,7 @@ import javax.swing.tree.TreePath;
 
 @SuppressWarnings({"unchecked"})
 public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel, TreeTableModel {
+    protected boolean initialized;
     protected T root;
     /**
      * Provides support for event dispatching.
@@ -131,6 +132,14 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         if (node != null) {
             modelSupport.firePathChanged(getPathToRoot(node));
         }
+    }
+
+    public void markInitialized() {
+        initialized = true;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
     }
 
     public void nodeWasAdded(T node, T child) {

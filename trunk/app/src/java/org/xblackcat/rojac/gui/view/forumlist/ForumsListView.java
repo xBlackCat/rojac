@@ -82,7 +82,7 @@ public class ForumsListView extends AView {
 
                     menu.show(forums, p.x, p.y);
                 } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
-                    mainFrame.openForumTab(forum.getForum());
+                    mainFrame.openForumTab(forum.getForum().getForumId());
                 }
             }
         });

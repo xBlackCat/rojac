@@ -18,6 +18,8 @@ import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +35,7 @@ public abstract class AThreadView extends AItemView {
     protected final IThreadControl<Post> threadControl;
     protected final JLabel forumName = new JLabel();
     protected final AThreadModel<Post> model = new SortedThreadsModel();
+    protected Forum forum;
     protected int forumId;
 
     protected AThreadView(IRootPane mainFrame, IThreadControl<Post> threadControl) {
@@ -64,16 +67,11 @@ public abstract class AThreadView extends AItemView {
         add(internalPane, BorderLayout.CENTER);
     }
 
-    protected void loadForumInfo(final int forumId) {
-        this.forumId = forumId;
-
-        new ForumInfoLoader(forumId).execute();
-    }
-
     @Override
     public void loadItem(AffectedMessage itemId) {
-        int forumId = threadControl.loadThreadByItem(model, itemId);
-        loadForumInfo(forumId);
+        this.forumId = threadControl.loadThreadByItem(model, itemId);
+        
+        new ForumInfoLoader(forumId).execute();
     }
 
     @Override
@@ -115,6 +113,55 @@ public abstract class AThreadView extends AItemView {
                     break;
             }
         }
+    }
+
+    @Override
+    public void makeVisible(final ITreeItem item) {
+        Post post = model.getRoot().getMessageById(item.getMessageId());
+        if (post != null) {
+            selectItem(post);
+        } else {
+            if (!model.isInitialized()) {
+                // Forum not yet loaded.
+                model.addTreeModelListener(new TreeModelListener() {
+                    @Override
+                    public void treeNodesChanged(TreeModelEvent e) {
+                    }
+
+                    @Override
+                    public void treeNodesInserted(TreeModelEvent e) {
+                    }
+
+                    @Override
+                    public void treeNodesRemoved(TreeModelEvent e) {
+                    }
+
+                    @Override
+                    public void treeStructureChanged(TreeModelEvent e) {
+                        model.removeTreeModelListener(this);
+                        int topicId = item.getTopicId() == 0 ? item.getMessageId() : item.getTopicId();
+                        expandThread(topicId, item.getMessageId());
+                    }
+                });
+            } else {
+                expandThread(item.getTopicId(), item.getMessageId());
+            }
+        }
+    }
+
+    private void expandThread(int topicId, final int messageId) {
+        final Post root = model.getRoot();
+        threadControl.loadChildren(model, root.getMessageById(topicId), new IItemProcessor<Post>() {
+            @Override
+            public void processItem(Post item) {
+                selectItem(root.getMessageById(messageId));
+            }
+        });
+    }
+
+    @Override
+    public ITreeItem searchItem(AffectedMessage id) {
+        return model.getRoot().getMessageById(id.getMessageId());
     }
 
     private void updateMessages(ProcessPacket ids) {
@@ -312,6 +359,15 @@ public abstract class AThreadView extends AItemView {
         }
     }
 
+    @Override
+    public String getTabTitle() {
+        if (forum == null) {
+            return "#" + forumId;
+        } else {
+            return forum.getForumName();
+        }
+    }
+
     private class ForumInfoLoader extends RojacWorker<Void, Forum> {
         private final int forumId;
 
@@ -335,7 +391,9 @@ public abstract class AThreadView extends AItemView {
         @Override
         protected void process(List<Forum> chunks) {
             for (Forum f : chunks) {
-                forumName.setText(f.getForumName() + "/" + f.getShortForumName());
+                forum = f;
+                forumName.setText(forum.getForumName() + "/" + forum.getShortForumName());
+                fireItemUpdated(new AffectedMessage(forumId));
             }
         }
     }

@@ -70,4 +70,32 @@ public class ThreadDoubleView extends AItemView {
         masterView.processPacket(messageId);
         slaveView.processPacket(messageId);
     }
+
+    @Override
+    public void makeVisible(ITreeItem item) {
+        masterView.makeVisible(item);
+        slaveView.makeVisible(item);
+    }
+
+    @Override
+    public ITreeItem searchItem(AffectedMessage id) {
+        return masterView.searchItem(id);
+    }
+
+    @Override
+    public void addActionListener(IActionListener l) {
+        masterView.addActionListener(l);
+        slaveView.addActionListener(l);
+    }
+
+    @Override
+    public void removeActionListener(IActionListener l) {
+        masterView.removeActionListener(l);
+        slaveView.removeActionListener(l);
+    }
+
+    @Override
+    public String getTabTitle() {
+        return masterView.getTabTitle();
+    }
 }

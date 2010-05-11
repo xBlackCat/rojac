@@ -14,7 +14,7 @@ import static ch.lambdaj.Lambda.on;
  * @author xBlackCat
  */
 
-class Post implements ITreeItem<Post> {
+public class Post implements ITreeItem<Post> {
     protected MessageData messageData;
 
     // Data-related fields (RW)

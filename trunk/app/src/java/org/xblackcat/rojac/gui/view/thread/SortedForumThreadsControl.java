@@ -239,6 +239,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             rootItem.addThreads(chunks);
 
             model.nodeStructureChanged(rootItem);
+            model.markInitialized();
         }
     }
 }
