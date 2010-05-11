@@ -1,13 +1,11 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.data.Forum;
-
 /**
  * @author xBlackCat
  */
 
 public interface IRootPane {
-    void openForumTab(Forum f);
+    void openForumTab(int forumId);
 
     /**
      * Show edit dialog. Possible combinations are: <ul> <li>messageId is <code>null</code> and forumId specifies a

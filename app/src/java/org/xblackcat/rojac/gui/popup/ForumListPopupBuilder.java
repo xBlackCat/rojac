@@ -59,7 +59,7 @@ class ForumListPopupBuilder implements IPopupBuilder {
 
         menu.add(new AbstractAction(Messages.POPUP_VIEW_FORUMS_OPEN.get()) {
             public void actionPerformed(ActionEvent e) {
-                mainFrame.openForumTab(forumData.getForum());
+                mainFrame.openForumTab(forumId);
             }
         });
         menu.addSeparator();

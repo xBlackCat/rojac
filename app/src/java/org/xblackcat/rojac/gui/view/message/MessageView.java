@@ -9,6 +9,7 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IInternationazable;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -57,6 +58,7 @@ public class MessageView extends AItemView implements IInternationazable {
     private JLabel dateLabel;
     protected JButton answer;
     protected JComboBox marks;
+    private String messageTitle = "#";
 
     public MessageView(IRootPane mainFrame) {
         super(mainFrame);
@@ -168,6 +170,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
     public void loadItem(final AffectedMessage message) {
         messageId = message.getMessageId();
+        messageTitle = "#" + messageId;
 
         new MessageLoader(messageId).execute();
     }
@@ -200,10 +203,31 @@ public class MessageView extends AItemView implements IInternationazable {
         marks.setEnabled(true);
     }
 
+    @Override
+    public String getTabTitle() {
+        return messageTitle;
+    }
+
     public void processPacket(ProcessPacket ids) {
         if (ids.containsMessage(this.messageId)) {
             loadItem(new AffectedMessage(AffectedMessage.DEFAULT_FORUM, messageId));
         }
+    }
+
+    public void loadLabels() {
+        answer.setToolTipText(Messages.BUTTON_REPLY_TOOLTIP.get());
+        userLabel.setText(Messages.MESSAGE_PANE_USER_LABEL.get());
+        dateLabel.setText(Messages.MESSAGE_PANE_DATE_LABEL.get());
+    }
+
+    @Override
+    public void makeVisible(ITreeItem item) {
+        loadItem(new AffectedMessage(item.getForumId(), item.getMessageId()));
+    }
+
+    @Override
+    public ITreeItem searchItem(AffectedMessage id) {
+        return null;
     }
 
     private void fillMarksButton(Mark[] ratings) {
@@ -217,12 +241,6 @@ public class MessageView extends AItemView implements IInternationazable {
 
         marksButton.setText(MessageUtils.buildRateString(ratings));
         revalidate();
-    }
-
-    public void loadLabels() {
-        answer.setToolTipText(Messages.BUTTON_REPLY_TOOLTIP.get());
-        userLabel.setText(Messages.MESSAGE_PANE_USER_LABEL.get());
-        dateLabel.setText(Messages.MESSAGE_PANE_DATE_LABEL.get());
     }
 
     private class HyperlinkHandler implements HyperlinkListener {
@@ -277,6 +295,8 @@ public class MessageView extends AItemView implements IInternationazable {
             for (MessageDataHolder messageData : chunks) {
                 fillFrame(messageData.getMessage(), messageData.getMessageBody());
                 fillMarksButton(messageData.getMarks());
+                messageTitle = "#" + messageId + " " + messageData.getMessage().getSubject();
+                fireItemUpdated(new AffectedMessage(messageId, forumId));
             }
         }
     }

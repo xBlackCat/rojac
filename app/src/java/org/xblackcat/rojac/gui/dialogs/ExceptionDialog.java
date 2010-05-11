@@ -17,6 +17,10 @@ public class ExceptionDialog extends JDialog {
         super(owner, ModalityType.APPLICATION_MODAL);
     }
 
+    public static void showExceptionDialog(Throwable t) {
+        showExceptionDialog(Thread.currentThread(), t);
+    }
+
     public static void showExceptionDialog(Thread thread, Throwable t) {
         RojacUtils.checkThread(true, null);
 

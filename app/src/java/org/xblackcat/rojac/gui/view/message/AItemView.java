@@ -41,7 +41,7 @@ public abstract class AItemView extends AView implements IItemView {
         }
     }
 
-    protected void fireMessageUpdated(AffectedMessage messageId) {
+    protected void fireItemUpdated(AffectedMessage messageId) {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == IActionListener.class) {

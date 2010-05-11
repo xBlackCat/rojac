@@ -60,22 +60,21 @@ final class MenuHelper {
      * @return sub-menu with registered actions to open message in various ways.
      */
     static JMenu openMessageSubmenu(int messageId, IRootPane mainFrame) {
-        // TODO: move all text to i18n
         JMenu menu = new JMenu();
-        menu.setText("Open message");
+        menu.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE.get());
 
         JMenuItem open = new JMenuItem();
-        open.setText("Open message");
+        open.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE.get());
         open.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.Default));
         menu.add(open);
 
         JMenuItem openHere = new JMenuItem();
-        openHere.setText("Open message in current view");
+        openHere.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE.get());
         openHere.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.ThisView));
         menu.add(openHere);
 
         JMenuItem openNewTab = new JMenuItem();
-        openNewTab.setText("Open in new tab");
+        openNewTab.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE.get());
         openNewTab.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.NewTab));
         menu.add(openNewTab);
 
