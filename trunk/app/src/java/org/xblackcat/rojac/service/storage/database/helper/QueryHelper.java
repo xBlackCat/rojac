@@ -12,6 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author ASUS
@@ -19,29 +22,40 @@ import java.util.*;
 
 public final class QueryHelper implements IQueryHelper {
     private final IConnectionFactory connectionFactory;
+    private final Lock writeLock;
+    private final Lock readLock;
+
 
     public QueryHelper(IConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
+        ReadWriteLock lock = new ReentrantReadWriteLock();
+        writeLock = lock.writeLock();
+        readLock = lock.readLock();
     }
 
     @Override
     public <T> Collection<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         RojacUtils.checkThread(false, DBStorage.class);
         try {
-            Connection con = connectionFactory.getConnection();
+            Connection con = connectionFactory.getReadConnection();
             try {
                 PreparedStatement st = constructSql(con, sql, parameters);
                 try {
-                    ResultSet rs = st.executeQuery();
+                    readLock.lock();
                     try {
-                        List<T> res = new ArrayList<T>();
-                        while (rs.next()) {
-                            res.add(c.convert(rs));
-                        }
+                        ResultSet rs = st.executeQuery();
+                        try {
+                            List<T> res = new ArrayList<T>();
+                            while (rs.next()) {
+                                res.add(c.convert(rs));
+                            }
 
-                        return Collections.unmodifiableCollection(res);
+                            return Collections.unmodifiableCollection(res);
+                        } finally {
+                            rs.close();
+                        }
                     } finally {
-                        rs.close();
+                        readLock.unlock();
                     }
                 } finally {
                     st.close();
@@ -58,20 +72,26 @@ public final class QueryHelper implements IQueryHelper {
     public <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, String sql, K... keys) throws StorageException {
         RojacUtils.checkThread(false, DBStorage.class);
         try {
-            Connection con = connectionFactory.getConnection();
+            Connection con = connectionFactory.getReadConnection();
             try {
                 PreparedStatement st = con.prepareStatement(sql);
                 try {
                     Map<K, O> resultMap = new HashMap<K,O>();
                     for (K key : keys) {
                         fillStatement(st, key);
-                        ResultSet rs = st.executeQuery();
+
+                        readLock.lock();
                         try {
-                            if (rs.next()) {
-                                resultMap.put(key, c.convert(rs));
+                            ResultSet rs = st.executeQuery();
+                            try {
+                                if (rs.next()) {
+                                    resultMap.put(key, c.convert(rs));
+                                }
+                            } finally {
+                                rs.close();
                             }
                         } finally {
-                            rs.close();
+                            readLock.unlock();
                         }
                     }
 
@@ -105,11 +125,16 @@ public final class QueryHelper implements IQueryHelper {
     public int update(String sql, Object... parameters) throws StorageException {
         RojacUtils.checkThread(false, DBStorage.class);
         try {
-            Connection con = connectionFactory.getConnection();
+            Connection con = connectionFactory.getWriteConnection();
             try {
                 PreparedStatement st = constructSql(con, sql, parameters);
                 try {
-                    return st.executeUpdate();
+                    writeLock.lock();
+                    try {
+                        return st.executeUpdate();
+                    } finally {
+                        writeLock.unlock();
+                    }
                 } finally {
                     st.close();
                 }

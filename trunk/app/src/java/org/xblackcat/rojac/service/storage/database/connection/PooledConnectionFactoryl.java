@@ -20,14 +20,22 @@ public class PooledConnectionFactoryl extends AConnectionFactory {
     public PooledConnectionFactoryl(String configurationName) throws StorageInitializationException {
         super(configurationName);
 
-        ObjectPool connectionPool = new GenericObjectPool(null, 1);
+        ObjectPool writeConnectionPool = new GenericObjectPool(null, 1);
+        ObjectPool readConnectionPool = new GenericObjectPool(null, 10);
 
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(url, userName, password);
 
+        new PoolableConnectionFactory(
+                connectionFactory,
+                writeConnectionPool,
+                null,
+                "SELECT 1+1",
+                false,
+                true);
 
         new PoolableConnectionFactory(
                 connectionFactory,
-                connectionPool,
+                readConnectionPool,
                 null,
                 "SELECT 1+1",
                 false,
@@ -43,10 +51,16 @@ public class PooledConnectionFactoryl extends AConnectionFactory {
             throw new StorageInitializationException("Can not obtain pooling driver", e);
         }
 
-        driver.registerPool("rojacdb", connectionPool);
+        driver.registerPool("rojacdb_write", writeConnectionPool);
+        driver.registerPool("rojacdb_read", readConnectionPool);
     }
 
-    public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:apache:commons:dbcp:rojacdb");
+    public Connection getWriteConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:apache:commons:dbcp:rojacdb_write");
+    }
+
+    @Override
+    public Connection getReadConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:apache:commons:dbcp:rojacdb_read");
     }
 }
