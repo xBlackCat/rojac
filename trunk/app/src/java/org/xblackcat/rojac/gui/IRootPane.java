@@ -23,5 +23,7 @@ public interface IRootPane {
      *
      * @param messageId
      */
-    void openMessage(int messageId, OpenMessageMethod method);
+    void openMessage(int messageId);
+
+    void openMessageTab(int messageId);
 }

@@ -29,7 +29,12 @@ public class LoadMessageDialog extends JDialog {
     protected JCheckBox loadAtOnce;
 
     public LoadMessageDialog(Window mainFrame) {
+        this(mainFrame, null);
+    }
+
+    public LoadMessageDialog(Window mainFrame, Integer messageId) {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
+        this.messageId = messageId;
 
         setTitle(Messages.DIALOG_LOADMESSAGE_TITLE.get());
 
@@ -101,7 +106,14 @@ public class LoadMessageDialog extends JDialog {
 
         add(cp, BorderLayout.CENTER);
 
-        JLabel l = new JLabel(Messages.DIALOG_LOADMESSAGE_LABEL.get());
+        String label;
+        if (messageId == null) {
+            label = Messages.DIALOG_LOADMESSAGE_LABEL.get();
+        } else {
+            label = Messages.DIALOG_LOADMESSAGE_MESSAGE_NOT_EXISTS.get(messageId);
+            messageIdText.setEditable(false);
+        }
+        JLabel l = new JLabel(label);
 
         add(l, BorderLayout.NORTH);
 
@@ -114,15 +126,23 @@ public class LoadMessageDialog extends JDialog {
         String cl = ClipboardUtils.getStringFromClipboard();
 
         boolean wasSet = false;
+        // If a message id is given - just use it.
+        if (messageId != null) {
+            messageIdText.setText(String.valueOf(messageId));
+            wasSet = true;
+        }
+
         // Check if the clipboard contains integer value
-        try {
-            int mId = Integer.parseInt(cl);
-            if (mId >= 0) {
-                messageIdText.setText(cl);
-                wasSet = true;
+        if (!wasSet) {
+            try {
+                int mId = Integer.parseInt(cl);
+                if (mId >= 0) {
+                    messageIdText.setText(cl);
+                    wasSet = true;
+                }
+            } catch (NumberFormatException e) {
+                // The clipboard is not contains an integer value.
             }
-        } catch (NumberFormatException e) {
-            // The clipboard is not contains an integer value.
         }
 
         if (!wasSet) {

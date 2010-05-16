@@ -2,6 +2,8 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;
 
@@ -51,12 +53,17 @@ class LinkMessagePopupBuilder implements IPopupBuilder {
         menu.add(headerItem);
 
         menu.addSeparator();
-        MenuHelper.addOpenLink(menu, url);
         if (messageId != null) {
-            menu.add(MenuHelper.openMessageSubmenu(messageId, mainFrame));
+            menu.add(MenuHelper.openMessage(messageId, mainFrame));
+            menu.add(MenuHelper.openMessageInTab(messageId, mainFrame));
+            menu.addSeparator();
+            MenuHelper.addOpenLink(menu, Messages.POPUP_LINK_OPEN_MESSAGE_IN_BROWSER, url);
+            MenuHelper.addOpenLink(menu, Messages.POPUP_LINK_OPEN_THREAD_IN_BROWSER, LinkUtils.buildThreadLink(messageId));
+
+        } else {
+            MenuHelper.addOpenLink(menu, Messages.POPUP_LINK_OPEN_IN_BROWSER, url);
         }
 
-        menu.addSeparator();
         menu.add(MenuHelper.copyToClipboard(url));
         if (messageId != null) {
             menu.add(MenuHelper.copyLinkSubmenu(messageId));

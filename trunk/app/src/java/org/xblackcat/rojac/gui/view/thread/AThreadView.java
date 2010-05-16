@@ -5,7 +5,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.message.AItemView;
+import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.ProcessPacket;
@@ -70,7 +72,7 @@ public abstract class AThreadView extends AItemView {
     @Override
     public void loadItem(AffectedMessage itemId) {
         this.forumId = threadControl.loadThreadByItem(model, itemId);
-        
+
         new ForumInfoLoader(forumId).execute();
     }
 
@@ -116,8 +118,8 @@ public abstract class AThreadView extends AItemView {
     }
 
     @Override
-    public void makeVisible(final ITreeItem item) {
-        Post post = model.getRoot().getMessageById(item.getMessageId());
+    public void makeVisible(final int messageId) {
+        Post post = model.getRoot().getMessageById(messageId);
         if (post != null) {
             selectItem(post);
         } else {
@@ -139,29 +141,28 @@ public abstract class AThreadView extends AItemView {
                     @Override
                     public void treeStructureChanged(TreeModelEvent e) {
                         model.removeTreeModelListener(this);
-                        int topicId = item.getTopicId() == 0 ? item.getMessageId() : item.getTopicId();
-                        expandThread(topicId, item.getMessageId());
+                        expandThread(messageId);
                     }
                 });
             } else {
-                expandThread(item.getTopicId(), item.getMessageId());
+                expandThread(messageId);
             }
         }
     }
 
-    private void expandThread(int topicId, final int messageId) {
-        final Post root = model.getRoot();
-        threadControl.loadChildren(model, root.getMessageById(topicId), new IItemProcessor<Post>() {
-            @Override
-            public void processItem(Post item) {
-                selectItem(root.getMessageById(messageId));
-            }
-        });
+    private void expandThread(final int messageId) {
+        // Check for threads
+        Post post = model.getRoot().getMessageById(messageId);
+        if (post != null) {
+            selectItem(post);
+        } else {
+            new ThreadChecker(messageId).execute();
+        }
     }
 
     @Override
-    public ITreeItem searchItem(AffectedMessage id) {
-        return model.getRoot().getMessageById(id.getMessageId());
+    public boolean containsItem(int messageId) {
+        return model.getRoot().getMessageById(messageId) != null;
     }
 
     private void updateMessages(ProcessPacket ids) {
@@ -425,6 +426,32 @@ public abstract class AThreadView extends AItemView {
             Post prevUnread = findLastUnreadPost(item);
             if (prevUnread != null) {
                 selectItem(prevUnread);
+            }
+        }
+    }
+
+    private class ThreadChecker extends MessageChecker {
+        public ThreadChecker(int messageId) {
+            super(messageId);
+        }
+
+        @Override
+        protected void done() {
+            if (data != null) {
+                final Post root = model.getRoot();
+                threadControl.loadChildren(model, root.getMessageById(data.getTopicId()), new IItemProcessor<Post>() {
+                    @Override
+                    public void processItem(Post item) {
+                        selectItem(root.getMessageById(messageId));
+                    }
+                });
+            } else {
+                JLOptionPane.showMessageDialog(
+                        SwingUtilities.windowForComponent(AThreadView.this),
+                        Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE.get(messageId),
+                        Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE.get(messageId),
+                        JOptionPane.WARNING_MESSAGE
+                );
             }
         }
     }

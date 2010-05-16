@@ -18,10 +18,9 @@ import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.OptionsDialog;
 import org.xblackcat.rojac.gui.view.FavoritesView;
+import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
-import org.xblackcat.rojac.gui.view.thread.ITreeItem;
-import org.xblackcat.rojac.gui.view.thread.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
@@ -202,13 +201,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         }, Messages.MAINFRAME_BUTTON_UPDATE);
         JButton loadMessageButton = WindowsUtils.setupImageButton("extramessage", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                LoadMessageDialog lmd = new LoadMessageDialog(MainFrame.this);
-                Integer messageId = lmd.readMessageId();
-                if (messageId != null) {
-                    boolean loadAtOnce = lmd.isLoadAtOnce();
-
-                    new ExtraMessageLoader(messageId, loadAtOnce, MainFrame.this).execute();
-                }
+                extraMessagesDialog(null);
             }
         }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
         JButton settingsButton = WindowsUtils.setupImageButton("settings", new ActionListener() {
@@ -260,6 +253,16 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         view.addListener(new CloseViewTabListener());
 
         return view;
+    }
+
+    private void extraMessagesDialog(Integer id) {
+        LoadMessageDialog lmd = new LoadMessageDialog(this, id);
+        Integer messageId = lmd.readMessageId();
+        if (messageId != null) {
+            boolean loadAtOnce = lmd.isLoadAtOnce();
+
+            new ExtraMessageLoader(messageId, loadAtOnce, this).execute();
+        }
     }
 
     private static View createView(Messages title, IView comp) {
@@ -333,6 +336,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
     private IItemView createForumViewWindow() {
 //        return ViewHelper.makeTreeMessageView(this);
         return ViewHelper.makeTreeTableMessageView(this);
+    }
+
+    private IItemView createMessageViewWindow() {
+        return ViewHelper.makeMessageView(this);
     }
 
     /**
@@ -439,26 +446,46 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
     }
 
     @Override
-    public void openMessage(int messageId, OpenMessageMethod method) {
+    public void openMessage(int messageId) {
         // Search thought existing data for the message first.
-        AffectedMessage id = new AffectedMessage(AffectedMessage.DEFAULT_FORUM, messageId);
         for (View v : openedViews.values()) {
             if (v.getComponent() instanceof IItemView) {
                 IItemView itemView = (IItemView) v.getComponent();
 
-                ITreeItem item = itemView.searchItem(id);
-                if (item != null) {
+                if (itemView.containsItem(messageId)) {
                     // Item found in the view.
                     // Make the view visible and open it.
-
                     v.makeVisible();
-                    itemView.makeVisible(item);
+                    itemView.makeVisible(messageId);
                     return;
                 }
             }
         }
 
         new MessageNavigator(messageId).execute();
+    }
+
+    @Override
+    public void openMessageTab(int messageId) {
+        // Search thought existing data for the message first.
+        final ViewId id = new ViewId(null, messageId);
+        if (openedViews.containsKey(id)) {
+            openedViews.get(id).makeVisible();
+            return;
+        }
+
+        new MessageChecker(messageId) {
+            @Override
+            protected void done() {
+                if (data != null) {
+                    IItemView messageView = createMessageViewWindow();
+                    addTabView(id, "#" + messageId, messageView);
+                    messageView.loadItem(new AffectedMessage(data.getForumId(), messageId));
+                } else {
+                    extraMessagesDialog(messageId);
+                }
+            }
+        }.execute();
     }
 
     private static class ThreadViewSerializer implements ViewSerializer {
@@ -516,39 +543,20 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         @Override
         protected void done() {
             if (message == null) {
-                // TODO: show dialog to confirm message loading in next synchronization and put the id to load queue.
+                extraMessagesDialog(messageId);
                 return;
             }
 
             int forumId = message.getForumId();
-            ITreeItem item = new Post(message, null);
-            AffectedMessage targetId = new AffectedMessage(forumId, messageId);
-
-            ViewId messageViewId = new ViewId(message);
             ViewId forumViewId = new ViewId(forumId, null);
 
-            View c = openedViews.get(forumViewId);
-            if (c != null) {
-                c.makeVisible();
-                IItemView itemView = (IItemView) c.getComponent();
-                itemView.makeVisible(item);
-                return;
-            }
-
-            // Check if the message view is already opened
-            c = openedViews.get(messageViewId);
-            if (c != null) {
-                c.makeVisible();
-                return;
-            }
-
             openForumTab(forumId);
-            c = openedViews.get(forumViewId);
+            View c = openedViews.get(forumViewId);
             if (c != null) {
                 // Just in case :)
                 c.makeVisible();
                 IItemView itemView = (IItemView) c.getComponent();
-                itemView.makeVisible(item);
+                itemView.makeVisible(messageId);
             } else {
                 ExceptionDialog.showExceptionDialog(new RuntimeException("F*cka-morgana! Forum view is not loaded!"));
             }

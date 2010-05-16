@@ -24,6 +24,13 @@ class OpenMessageAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        mainFrame.openMessage(messageId, openMessageMethod);
+        switch (openMessageMethod) {
+            case Default:
+                mainFrame.openMessage(messageId);
+                break;
+            case NewTab:
+                mainFrame.openMessageTab(messageId);
+                break;
+        }
     }
 }
