@@ -49,50 +49,32 @@ final class MenuHelper {
         return menu;
     }
 
-    /**
-     * Creates a sub-menu with open-message actions. The actions are: <ul> <li>Open the message. If the message is in
-     * one of opened views, the view will be moved for front and the message will be selected in it. If correspond forum
-     * view is not opened it will be opened.</li> <li>Open the message in the current message view.</li> <li>Open
-     * message view in a separate tab.</li> </ul>
-     *
-     * @param messageId target message id.
-     * @param mainFrame link to common frame.
-     *
-     * @return sub-menu with registered actions to open message in various ways.
-     */
-    static JMenu openMessageSubmenu(int messageId, IRootPane mainFrame) {
-        JMenu menu = new JMenu();
-        menu.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE.get());
-
+    static JMenuItem openMessage(int messageId, IRootPane mainFrame) {
         JMenuItem open = new JMenuItem();
         open.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE.get());
         open.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.Default));
-        menu.add(open);
+        return open;        
+    }
 
-        JMenuItem openHere = new JMenuItem();
-        openHere.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE.get());
-        openHere.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.ThisView));
-        menu.add(openHere);
-
-        JMenuItem openNewTab = new JMenuItem();
-        openNewTab.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE.get());
-        openNewTab.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.NewTab));
-        menu.add(openNewTab);
-
-        return menu;
+    static JMenuItem openMessageInTab(int messageId, IRootPane mainFrame) {
+        JMenuItem open = new JMenuItem();
+        open.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE_NEW_TAB.get());
+        open.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.NewTab));
+        return open;
     }
 
     /**
      * Adds to an menu a 'open in browser' action if it supported by current OS.
      *
      * @param menu target menu to be filled with the menu item.
+     * @param linkMessage
      * @param url
      */
-    static void addOpenLink(JPopupMenu menu, String url) {
+    static void addOpenLink(JPopupMenu menu, Messages linkMessage, String url) {
         final Desktop desktop = Desktop.getDesktop();
 
         if (url != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            JMenuItem openInBrowserItem = new JMenuItem(Messages.POPUP_LINK_OPEN_IN_BROWSER.get());
+            JMenuItem openInBrowserItem = new JMenuItem(linkMessage.get());
             openInBrowserItem.addActionListener(new OpenUrlAction(url));
 
             menu.add(openInBrowserItem);

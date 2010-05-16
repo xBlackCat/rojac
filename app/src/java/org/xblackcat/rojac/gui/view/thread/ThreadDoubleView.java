@@ -72,14 +72,14 @@ public class ThreadDoubleView extends AItemView {
     }
 
     @Override
-    public void makeVisible(ITreeItem item) {
-        masterView.makeVisible(item);
-        slaveView.makeVisible(item);
+    public void makeVisible(int messageId) {
+        masterView.makeVisible(messageId);
+        slaveView.makeVisible(messageId);
     }
 
     @Override
-    public ITreeItem searchItem(AffectedMessage id) {
-        return masterView.searchItem(id);
+    public boolean containsItem(int messageId) {
+        return masterView.containsItem(messageId);
     }
 
     @Override

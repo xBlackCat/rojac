@@ -10,10 +10,6 @@ public enum OpenMessageMethod {
      */
     Default,
     /**
-     * Message will be opened in focused message view.
-     */
-    ThisView,
-    /**
      * Open a new tab with message view and show the message there.
      */
     NewTab

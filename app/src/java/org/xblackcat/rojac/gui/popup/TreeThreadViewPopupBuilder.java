@@ -5,10 +5,14 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.thread.AThreadModel;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.gui.view.thread.Post;
+import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;
 
-/** @author xBlackCat */
+/**
+ * @author xBlackCat
+ */
 
 class TreeThreadViewPopupBuilder implements IPopupBuilder {
     @Override
@@ -27,10 +31,11 @@ class TreeThreadViewPopupBuilder implements IPopupBuilder {
     /**
      * Real menu builder.
      *
-     * @param message message data to build menu.
+     * @param message   message data to build menu.
      * @param model
-     *@param mainFrame main frame controller
-     *  @return built pop-up menu.
+     * @param mainFrame main frame controller
+     *
+     * @return built pop-up menu.
      */
     private JPopupMenu buildInternal(Post message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
         int messageId = message.getMessageId();
@@ -41,7 +46,8 @@ class TreeThreadViewPopupBuilder implements IPopupBuilder {
 
         menu.add(item);
 
-        menu.add(MenuHelper.openMessageSubmenu(messageId, mainFrame));
+        menu.add(MenuHelper.openMessage(messageId, mainFrame));
+        menu.add(MenuHelper.openMessageInTab(messageId, mainFrame));
         menu.addSeparator();
 
         menu.add(MenuHelper.markRead(message, model, mainFrame));
@@ -50,6 +56,8 @@ class TreeThreadViewPopupBuilder implements IPopupBuilder {
         menu.add(MenuHelper.markReadUnreadSubmenu(message, model, mainFrame));
 
         menu.addSeparator();
+        MenuHelper.addOpenLink(menu, Messages.POPUP_LINK_OPEN_MESSAGE_IN_BROWSER, LinkUtils.buildMessageLink(messageId));
+        MenuHelper.addOpenLink(menu, Messages.POPUP_LINK_OPEN_THREAD_IN_BROWSER, LinkUtils.buildThreadLink(messageId));
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
 

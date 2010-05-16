@@ -9,7 +9,6 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IInternationazable;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -221,13 +220,15 @@ public class MessageView extends AItemView implements IInternationazable {
     }
 
     @Override
-    public void makeVisible(ITreeItem item) {
-        loadItem(new AffectedMessage(item.getForumId(), item.getMessageId()));
+    public void makeVisible(int messageId) {
+        if (messageId != this.messageId) {
+            loadItem(new AffectedMessage(AffectedMessage.DEFAULT_FORUM, messageId));
+        }
     }
 
     @Override
-    public ITreeItem searchItem(AffectedMessage id) {
-        return null;
+    public boolean containsItem(int messageId) {
+        return messageId == this.messageId;
     }
 
     private void fillMarksButton(Mark[] ratings) {

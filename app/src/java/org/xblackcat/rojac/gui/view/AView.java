@@ -14,7 +14,7 @@ import java.awt.*;
 
 public abstract class AView extends JPanel implements IView {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-    
+
     protected final IRootPane mainFrame;
 
     public AView(IRootPane rootPane) {
@@ -31,4 +31,5 @@ public abstract class AView extends JPanel implements IView {
     public final JComponent getComponent() {
         return this;
     }
+
 }
