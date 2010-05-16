@@ -166,12 +166,13 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         @Override
         protected Void perform() throws Exception {
             int itemId = item.getMessageId();
+            int forumId = item.getForumId();
 
             MessageData[] messages;
             try {
-                messages = storage.getMessageAH().getMessagesDataByTopicId(itemId);
+                messages = storage.getMessageAH().getMessagesDataByTopicId(itemId, forumId);
             } catch (StorageException e) {
-                log.error("Can not load message children for id = " + itemId, e);
+                log.error("Can not load message children for id = " + itemId + " (forum #" + forumId + ")", e);
                 throw e;
             }
 

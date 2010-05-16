@@ -4,6 +4,7 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.thread.AThreadModel;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
+import org.xblackcat.rojac.gui.view.thread.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
 
@@ -113,14 +114,14 @@ final class MenuHelper {
      *@param mainFrame
      *  @return
      */
-    static JMenuItem markRead(ITreeItem message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
+    static JMenuItem markRead(Post message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
         JMenuItem markRead = new JMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_READ.get());
         markRead.addActionListener(new MarkMessageAction(message, true));
 
         return markRead;
     }
 
-    static JMenuItem markUnread(ITreeItem message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
+    static JMenuItem markUnread(Post message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
         JMenuItem markRead = new JMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_UNREAD.get());
         markRead.addActionListener(new MarkMessageAction(message, false));
 

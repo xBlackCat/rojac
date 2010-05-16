@@ -4,6 +4,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.thread.AThreadModel;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
+import org.xblackcat.rojac.gui.view.thread.Post;
 
 import javax.swing.*;
 
@@ -16,7 +17,7 @@ class TreeThreadViewPopupBuilder implements IPopupBuilder {
             throw new IllegalArgumentException("Invalid parameters amount.");
         }
 
-        ITreeItem<?> message = (ITreeItem<?>) parameters[0];
+        Post message = (Post) parameters[0];
         AThreadModel<? extends ITreeItem<?>> model = (AThreadModel<?>) parameters[1];
         IRootPane mainFrame = (IRootPane) parameters[2];
 
@@ -31,7 +32,7 @@ class TreeThreadViewPopupBuilder implements IPopupBuilder {
      *@param mainFrame main frame controller
      *  @return built pop-up menu.
      */
-    private JPopupMenu buildInternal(ITreeItem<?> message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
+    private JPopupMenu buildInternal(Post message, AThreadModel<? extends ITreeItem<?>> model, IRootPane mainFrame) {
         int messageId = message.getMessageId();
         final JPopupMenu menu = new JPopupMenu("#" + messageId);
 
