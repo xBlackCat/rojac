@@ -46,7 +46,6 @@ class TreeThreadViewPopupBuilder implements IPopupBuilder {
 
         menu.add(item);
 
-        menu.add(MenuHelper.openMessage(messageId, mainFrame));
         menu.add(MenuHelper.openMessageInTab(messageId, mainFrame));
         menu.addSeparator();
 
