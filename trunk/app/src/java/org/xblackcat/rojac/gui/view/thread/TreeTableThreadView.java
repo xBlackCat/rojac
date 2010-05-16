@@ -12,7 +12,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -38,7 +37,7 @@ public class TreeTableThreadView extends AThreadView {
         threads.setShowsRootHandles(true);
         threads.setEditable(false);
         threads.setSortable(false);
-        threads.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        threads.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         threads.setRowSelectionAllowed(true);
         threads.setRootVisible(threadControl.isRootVisible());
         threads.setToggleClickCount(2);
