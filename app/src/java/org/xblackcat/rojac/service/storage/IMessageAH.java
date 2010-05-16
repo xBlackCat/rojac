@@ -44,11 +44,12 @@ public interface IMessageAH extends AH {
      *
      * @param threadId
      *
+     * @param forumId
      * @return array of messages data.
      *
      * @throws StorageException
      */
-    MessageData[] getMessagesDataByTopicId(int threadId) throws StorageException;
+    MessageData[] getMessagesDataByTopicId(int threadId, int forumId) throws StorageException;
 
     /**
      * Returns messages data for specified forum id.

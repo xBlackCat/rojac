@@ -9,13 +9,19 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
 /** @author xBlackCat */
-class SetMessageReadFlag extends RojacWorker<Void, Void> {
+public class SetMessageReadFlag extends RojacWorker<Void, Void> {
     private Post post;
     protected boolean read;
+    private final int forumId;
 
     public SetMessageReadFlag(Post post, boolean read) {
         this.post = post;
         this.read = read;
+        this.forumId = post.getForumId() == 0 ? post.getThreadRoot().getForumId() : post.getForumId();
+
+        if (forumId == 0) {
+            throw new IllegalArgumentException("Message #" + post.getMessageId() + " has not linked to any forums.");
+        }
     }
 
     @Override
@@ -39,7 +45,7 @@ class SetMessageReadFlag extends RojacWorker<Void, Void> {
 
                 ProcessPacket processPacket = new ProcessPacket(
                         read ? PacketType.SetPostRead : PacketType.SetPostUnread,
-                        new AffectedMessage(post.getForumId(), post.getMessageId())
+                        new AffectedMessage(forumId, post.getMessageId())
                 );
                 ServiceFactory.getInstance().getDataDispatcher().processPacket(processPacket);
             }

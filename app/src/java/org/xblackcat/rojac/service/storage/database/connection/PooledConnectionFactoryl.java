@@ -20,7 +20,7 @@ public class PooledConnectionFactoryl extends AConnectionFactory {
     public PooledConnectionFactoryl(String configurationName) throws StorageInitializationException {
         super(configurationName);
 
-        ObjectPool connectionPool = new GenericObjectPool(null);
+        ObjectPool connectionPool = new GenericObjectPool(null, 1);
 
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(url, userName, password);
 
