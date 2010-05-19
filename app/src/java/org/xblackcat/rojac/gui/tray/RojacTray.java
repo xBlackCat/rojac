@@ -12,6 +12,7 @@ import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.util.RojacWorker;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -27,9 +28,9 @@ public class RojacTray {
     private final boolean supported;
     private RojacState state = RojacState.Initialized;
     protected final TrayIcon trayIcon;
-    private final Window mainFrame;
+    private final JFrame mainFrame;
 
-    public RojacTray(Window mainFrame) {
+    public RojacTray(JFrame mainFrame) {
         this.mainFrame = mainFrame;
         boolean supported = SystemTray.isSupported();
         trayIcon = new TrayIcon(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB));
@@ -59,6 +60,16 @@ public class RojacTray {
         trayIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
+                    if (mainFrame.isVisible()) {
+                        mainFrame.setState(Frame.ICONIFIED);
+                        mainFrame.setVisible(false);
+                    } else {
+                        mainFrame.setVisible(true);
+                        mainFrame.setState(Frame.NORMAL);
+                        mainFrame.toFront();
+                    }
+                }
             }
         });
     }
