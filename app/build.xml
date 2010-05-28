@@ -308,6 +308,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
              compress="yes">
             <fileset dir="${rojac-application.dist.dir}">
                 <include name="bin/${rojac.filename}*"/>
+                <include name="bin/setclasspath.bat"/>
                 <include name="lib/**/*.jar"/>
                 <exclude name="lib/${rojac.filename}-tests.jar"/>
                 <include name="conf/**/*"/>
