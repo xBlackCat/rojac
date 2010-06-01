@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
+import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.util.UIUtils;
@@ -19,22 +20,24 @@ import java.util.Locale;
 
 @SuppressWarnings({"UnnecessaryBoxing"})
 public final class Property<T> {
+    private static final LocaleValueChecker localeChecker = new LocaleValueChecker();
+
     /**
      * Complete map of properties names to its objects.
      */
     private static final Collection<Property<?>> ALL_PROPERTIES = new LinkedList<Property<?>>();
-
     // Global development properties
-    public static final Property<Boolean> ROJAC_DEBUG_MODE = createPrivate("rojac.global.debug.mode", Boolean.FALSE);
 
+    public static final Property<Boolean> ROJAC_DEBUG_MODE = createPrivate("rojac.global.debug.mode", Boolean.FALSE);
     // Application component properties
     public static final Property<Dimension> ROJAC_MAIN_FRAME_SIZE = createPrivate("rojac.main_frame.size", Dimension.class);
     public static final Property<Point> ROJAC_MAIN_FRAME_POSITION = createPrivate("rojac.main_frame.position", Point.class);
-    public static final Property<Integer> ROJAC_MAIN_FRAME_STATE = createPrivate("rojac.main_frame.state", Integer.class);
 
+    public static final Property<Integer> ROJAC_MAIN_FRAME_STATE = createPrivate("rojac.main_frame.state", Integer.class);
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());
-    public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", Locale.getDefault(), new LocaleValueChecker());
+    public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", getDefaultLocale(), localeChecker);
+
     public static final Property<IconPack> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", IconPackValueChecker.DEFAULT_ICON_PACK, new IconPackValueChecker());
 
     // User properties (login dialog)
@@ -120,6 +123,26 @@ public final class Property<T> {
      */
     static <E> Property<E> createPrivate(String name, Class<E> type) {
         return create(false, name, type, null, null);
+    }
+
+    /*
+     * Other util methods
+     */
+    private static Locale getDefaultLocale() {
+        Locale locale = Locale.getDefault();
+        if (localeChecker.isValueCorrect(locale)) {
+            return locale;
+        }
+
+        if (!StringUtils.isEmpty(locale.getLanguage())) {
+            for (Locale l : localeChecker.getPossibleValues()) {
+                if (locale.getLanguage().equals(l.getLanguage())) {
+                    return l;
+                }
+            }
+        }
+
+        return Locale.ROOT;
     }
 
     /**
