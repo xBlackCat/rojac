@@ -170,6 +170,12 @@ public final class WindowsUtils {
     }
 
     public static void center(Window window, Component parent) {
+        if (!parent.isVisible()) {
+            // Parent is not visible - center window on a screen
+            centerOnScreen(window);
+            return;
+        }
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         Rectangle bounds = new Rectangle(parent.getLocationOnScreen(), parent.getSize());

@@ -241,9 +241,13 @@ javaw.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh"><![CDATA[#
 #!/bin/sh
 
-export CLASSPATH=../conf:`ls -1 ../lib/*.jar ../lib/*/*.jar | tr "\r\n" ":"`
+BASEDIR=`dirname $0`
 
-java -cp "%CLASSPATH%" ${rojac.launcher.class}
+cd "$BASEDIR" 
+
+export CLASSPATH=$BASEDIR/../conf:`ls -1 $BASEDIR/../lib/*.jar $BASEDIR/../lib/*/*.jar | tr "\r\n" ":"`
+
+java -cp "$CLASSPATH" ${rojac.launcher.class}
 ]]>
         </echo>
 
