@@ -47,11 +47,17 @@ final class LocaleValueChecker implements IValueChecker<Locale> {
 
     @Override
     public String getValueDescription(Locale v) throws IllegalArgumentException {
-        return v != null ? v.getDisplayName() : "error";
+        if (v == null) {
+            return "error";
+        } else if (v == Locale.ROOT) {
+            return "Default";
+        } else {
+            return v.getDisplayName();
+        }
     }
 
     @Override
     public boolean isValueCorrect(Locale v) {
-        return locales.contains(v);
+        return locales.contains(v) || v == Locale.ROOT;
     }
 }

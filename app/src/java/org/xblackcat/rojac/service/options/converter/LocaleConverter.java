@@ -23,9 +23,7 @@ public class LocaleConverter implements IConverter<Locale> {
             return new Locale(loc[0], loc[1]);
         }
 
-        log.error("Invalid locale: " + s);
-
-        return null;
+        return Locale.ROOT;
     }
 
     public String toString(Locale o) {
