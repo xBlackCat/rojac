@@ -3,6 +3,7 @@ package org.xblackcat.rojac;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
+import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
 import org.xblackcat.rojac.gui.dialogs.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.tray.RojacTray;
 import org.xblackcat.rojac.i18n.Messages;
@@ -80,6 +81,15 @@ public abstract class RojacLauncher {
 
     private static class SwingPartInitializer implements Runnable {
         public void run() {
+            try {
+                perform();
+            } catch (Exception e) {
+                log.fatal("Can not initialize Swing part of Rojac", e);
+                ExceptionDialog.showExceptionDialog(e, false);
+            }
+        }
+
+        private void perform() {
             final MainFrame mainFrame = new MainFrame();
 
             ServiceFactory.getInstance().getDataDispatcher().addDataHandler(mainFrame);
