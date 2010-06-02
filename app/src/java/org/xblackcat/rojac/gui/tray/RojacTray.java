@@ -33,15 +33,17 @@ public class RojacTray {
     public RojacTray(JFrame mainFrame) {
         this.mainFrame = mainFrame;
         boolean supported = SystemTray.isSupported();
-        trayIcon = new TrayIcon(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB));
 
         if (supported) {
+            trayIcon = new TrayIcon(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB));
             try {
                 SystemTray.getSystemTray().add(trayIcon);
             } catch (AWTException e) {
                 log.error("Can not add tray icon", e);
                 supported = false;
             }
+        } else {
+            trayIcon = null;
         }
 
         this.supported = supported;
