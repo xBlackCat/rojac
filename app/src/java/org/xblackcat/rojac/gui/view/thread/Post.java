@@ -4,11 +4,11 @@ import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MessageData;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.max;
-import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.*;
 
 /**
  * @author xBlackCat
@@ -112,6 +112,21 @@ public class Post implements ITreeItem<Post> {
         long thisPostDate = getMessageData().getMessageDate();
 
         return thisPostDate == postDate ? 0 : postDate < thisPostDate ? 1 : -1;
+    }
+
+    /**
+     * Return flatten sub-tree.
+     *
+     * @return array of all the post children.
+     */
+    public Collection<Post> getChildren() {
+        Collection<Post> subPosts = new ArrayList<Post>();
+        subPosts.addAll(childrenPosts);
+        for (Post p : childrenPosts) {
+            subPosts.addAll(p.getChildren());
+        }
+
+        return subPosts;
     }
 
     // State related methods

@@ -17,7 +17,7 @@ class SetItemReadMenuItem extends JMenuItem {
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new SetMessageReadFlag(post, read).execute();
+                new SetMessageReadFlag(read, post).execute();
             }
         });
     }

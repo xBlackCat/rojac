@@ -1,12 +1,14 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.gui.view.thread.Post;
+import org.xblackcat.rojac.gui.view.thread.SetMessageReadFlag;
 import org.xblackcat.rojac.gui.view.thread.Thread;
 import org.xblackcat.rojac.i18n.Messages;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 
 /**
 * @author xBlackCat
@@ -22,7 +24,11 @@ public SetThreadReadMenuItem(Messages text, final Post post, final boolean read)
             if (threadRoot.equals(post)) {
                 // Mark whole thread.
             } else {
-                // Collect sub-items to be marked. 
+                // Collect sub-items to be marked.
+                // All sub-items already loaded, so just mark them as read/unread.
+                Collection<Post> posts = post.getChildren();
+                posts.add(post);
+                new SetMessageReadFlag(read, posts.toArray(new Post[posts.size()])).execute();
             }
         }
     });

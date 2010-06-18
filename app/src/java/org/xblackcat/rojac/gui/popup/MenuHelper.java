@@ -90,15 +90,8 @@ final class MenuHelper {
         JMenu menu = new JMenu();
         menu.setText(Messages.POPUP_VIEW_THREADS_TREE_MARK_TITLE.get());
 
-        JMenuItem markThreadRead = new JMenuItem();
-        markThreadRead.setText(Messages.POPUP_VIEW_THREADS_TREE_MARK_THREAD_READ.get());
-        // TODO: add action
-        menu.add(markThreadRead);
-
-        JMenuItem markThreadUnread = new JMenuItem();
-        markThreadUnread.setText(Messages.POPUP_VIEW_THREADS_TREE_MARK_THREAD_UNREAD.get());
-        // TODO: add action
-        menu.add(markThreadUnread);
+        menu.add(new SetThreadReadMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_THREAD_READ, message, true));
+        menu.add(new SetThreadReadMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_THREAD_UNREAD, message, false));
 
         menu.addSeparator();
 

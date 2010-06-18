@@ -349,7 +349,7 @@ public abstract class AThreadView extends AItemView {
         if (mi.isRead() == ReadStatus.Unread) {
             Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
             if (delay != null && delay >= 0) {
-                SetMessageReadFlag target = new SetMessageReadFlag(mi, true);
+                SetMessageReadFlag target = new SetMessageReadFlag(true, mi);
                 IExecutor executor = ServiceFactory.getInstance().getExecutor();
                 if (delay > 0) {
                     executor.setupTimer("Forum_" + forumId, target, delay);
