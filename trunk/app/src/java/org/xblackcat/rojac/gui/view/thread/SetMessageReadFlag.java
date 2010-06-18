@@ -3,32 +3,33 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.PacketType;
 import org.xblackcat.rojac.service.datahandler.ProcessPacket;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
-/** @author xBlackCat */
+import java.util.ArrayList;
+import java.util.Collection;
+
+
+/**
+ * @author xBlackCat
+ */
 public class SetMessageReadFlag extends RojacWorker<Void, Void> {
-    private Post post;
+    private Post[] posts;
     protected boolean read;
-    private final int forumId;
 
-    public SetMessageReadFlag(Post post, boolean read) {
-        this.post = post;
+    public SetMessageReadFlag(boolean read, Post... posts) {
+        this.posts = posts;
         this.read = read;
-        this.forumId = post.getForumId() == 0 ? post.getThreadRoot().getForumId() : post.getForumId();
-
-        if (forumId == 0) {
-            throw new IllegalArgumentException("Message #" + post.getMessageId() + " has not linked to any forums.");
-        }
     }
 
     @Override
     protected Void perform() throws Exception {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         try {
-            storage.getMessageAH().updateMessageReadFlag(post.getMessageId(), read);
+            for (Post p : posts) {
+                storage.getMessageAH().updateMessageReadFlag(p.getMessageId(), read);
+            }
         } catch (StorageException e) {
             e.printStackTrace();
         }
@@ -37,18 +38,20 @@ public class SetMessageReadFlag extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        if (post != null) {
+        Collection<Post> affectedPosts = new ArrayList<Post>(posts.length);
+        for (Post p : posts) {
             // Fire event only if post read state is differ than new post state.
             // Just in case.
-            if ((post.isRead() == ReadStatus.Unread) == read) { 
-                post.setRead(read);
-
-                ProcessPacket processPacket = new ProcessPacket(
-                        read ? PacketType.SetPostRead : PacketType.SetPostUnread,
-                        new AffectedMessage(forumId, post.getMessageId())
-                );
-                ServiceFactory.getInstance().getDataDispatcher().processPacket(processPacket);
+            if ((p.isRead() == ReadStatus.Unread) == read) {
+                p.setRead(read);
+                affectedPosts.add(p);
             }
         }
+
+        ProcessPacket processPacket = new ProcessPacket(
+                read ? PacketType.SetPostRead : PacketType.SetPostUnread,
+                affectedPosts.toArray(new Post[affectedPosts.size()])
+        );
+        ServiceFactory.getInstance().getDataDispatcher().processPacket(processPacket);
     }
 }

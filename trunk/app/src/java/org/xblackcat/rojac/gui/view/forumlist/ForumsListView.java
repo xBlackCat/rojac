@@ -186,12 +186,12 @@ public class ForumsListView extends AView {
                 break;
             case SetPostRead:
                 for (int forumId : forumIds) {
-                    adjustUnreadPosts(-1, forumId);
+                    adjustUnreadPosts(-changedData.getAffectedMessages(forumId).length, forumId);
                 }
                 break;
             case SetPostUnread:
                 for (int forumId : forumIds) {
-                    adjustUnreadPosts(1, forumId);
+                    adjustUnreadPosts(changedData.getAffectedMessages(forumId).length, forumId);
                 }
                 break;
             case ForumsLoaded:
