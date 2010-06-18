@@ -77,8 +77,10 @@ public class RojacTray {
     }
 
     protected void setState(RojacState state, Object... arguments) {
-        this.state = state;
-        trayIcon.setImage(state.getImage());
+        if (this.state != state) {
+            this.state = state;
+            trayIcon.setImage(state.getImage());
+        }
         trayIcon.setToolTip(state.getToolTip(arguments));
     }
 
