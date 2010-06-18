@@ -4,7 +4,6 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.PacketType;
 import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import java.util.ArrayList;
@@ -26,12 +25,8 @@ public class SetMessageReadFlag extends RojacWorker<Void, Void> {
     @Override
     protected Void perform() throws Exception {
         IStorage storage = ServiceFactory.getInstance().getStorage();
-        try {
-            for (Post p : posts) {
-                storage.getMessageAH().updateMessageReadFlag(p.getMessageId(), read);
-            }
-        } catch (StorageException e) {
-            e.printStackTrace();
+        for (Post p : posts) {
+            storage.getMessageAH().updateMessageReadFlag(p.getMessageId(), read);
         }
         return null;
     }
