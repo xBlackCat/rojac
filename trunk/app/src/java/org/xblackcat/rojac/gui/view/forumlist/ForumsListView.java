@@ -80,7 +80,7 @@ public class ForumsListView extends AView {
                 if (e.isPopupTrigger()) {
                     JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, forumsModel, mainFrame);
 
-                    menu.show(forums, p.x, p.y);
+                    menu.show(e.getComponent(), p.x, p.y);
                 } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
                     mainFrame.openForumTab(forum.getForum().getForumId());
                 }
