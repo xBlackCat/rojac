@@ -26,7 +26,7 @@ public class RojacTray {
     private static final Log log = LogFactory.getLog(RojacTray.class);
 
     private final boolean supported;
-    private RojacState state = RojacState.Initialized;
+    private RojacState state = null;
     protected final TrayIcon trayIcon;
     private final JFrame mainFrame;
 

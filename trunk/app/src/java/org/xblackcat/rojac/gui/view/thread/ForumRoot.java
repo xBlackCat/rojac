@@ -15,7 +15,7 @@ public class ForumRoot extends Post {
     }
 
     @Override
-    protected Thread getThreadRoot() {
+    public Thread getThreadRoot() {
         throw new UnsupportedOperationException("There is no thread root for forum");
     }
 

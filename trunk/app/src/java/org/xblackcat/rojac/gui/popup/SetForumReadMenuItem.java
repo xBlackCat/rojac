@@ -13,6 +13,7 @@ class SetForumReadMenuItem extends JMenuItem {
     public SetForumReadMenuItem(Messages text, final int forumId, final boolean readFlag) {
         super(text.get());
         addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 new ForumReadUpdater(forumId, readFlag).execute();
             }

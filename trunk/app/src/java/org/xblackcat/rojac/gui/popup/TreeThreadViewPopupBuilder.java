@@ -49,10 +49,10 @@ class TreeThreadViewPopupBuilder implements IPopupBuilder {
         menu.add(MenuHelper.openMessageInTab(messageId, mainFrame));
         menu.addSeparator();
 
-        menu.add(MenuHelper.markRead(message, model, mainFrame));
-        menu.add(MenuHelper.markUnread(message, model, mainFrame));
+        menu.add(new SetItemReadMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_READ, message, true));
+        menu.add(new SetItemReadMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_UNREAD, message, false));
 
-        menu.add(MenuHelper.markReadUnreadSubmenu(message, model, mainFrame));
+        menu.add(MenuHelper.markReadUnreadSubmenu(message));
 
         menu.addSeparator();
         MenuHelper.addOpenLink(menu, Messages.POPUP_LINK_OPEN_MESSAGE_IN_BROWSER, LinkUtils.buildMessageLink(messageId));

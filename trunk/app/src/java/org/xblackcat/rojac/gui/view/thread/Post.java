@@ -86,7 +86,7 @@ public class Post implements ITreeItem<Post> {
         return replies;
     }
 
-    protected Thread getThreadRoot() {
+    public Thread getThreadRoot() {
         return threadRoot;
     }
 

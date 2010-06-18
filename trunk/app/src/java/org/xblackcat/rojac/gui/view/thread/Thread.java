@@ -54,7 +54,7 @@ public class Thread extends Post {
         threadPosts.put(messageData.getMessageId(), this);
     }
 
-    protected Thread getThreadRoot() {
+    public Thread getThreadRoot() {
         return this;
     }
 
