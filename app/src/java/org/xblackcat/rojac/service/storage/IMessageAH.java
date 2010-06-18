@@ -21,8 +21,24 @@ public interface IMessageAH extends AH {
 
     boolean removeForumMessage(int id) throws StorageException;
 
+    /**
+     * Loads a message body for specified message id.
+     *
+     * @param messageId id of message body to be loaded.
+     *
+     * @return the message body.
+     *
+     * @throws StorageException
+     */
     String getMessageBodyById(int messageId) throws StorageException;
 
+    /**
+     * Returns a list of topics which roots have not loaded yet.
+     *
+     * @return topic ids to have been loaded.
+     *
+     * @throws StorageException
+     */
     int[] getBrokenTopicIds() throws StorageException;
 
     /**
@@ -35,16 +51,33 @@ public interface IMessageAH extends AH {
      */
     void updateMessage(JanusMessageInfo mes, boolean read) throws StorageException;
 
+    /**
+     * Updates read flag of the specified message.
+     *
+     * @param messageId message id to be updated
+     * @param read      new state of flag.
+     *
+     * @throws StorageException
+     */
     void updateMessageReadFlag(int messageId, boolean read) throws StorageException;
 
+    /**
+     * Checks if a message with specified id is exists.
+     *
+     * @param messageId message id to check
+     *
+     * @return <code>true</code> if message already loaded and <code>false</code> elsewise.
+     *
+     * @throws StorageException
+     */
     boolean isExist(int messageId) throws StorageException;
 
     /**
      * Loads messages of the specified thread.
      *
      * @param threadId
-     *
      * @param forumId
+     *
      * @return array of messages data.
      *
      * @throws StorageException
@@ -71,4 +104,6 @@ public interface IMessageAH extends AH {
     int getUnreadMessages() throws StorageException;
 
     int getUnreadReplies(int userId) throws StorageException;
+
+    void updateThreadReadFlag(int messageId, boolean read) throws StorageException;
 }

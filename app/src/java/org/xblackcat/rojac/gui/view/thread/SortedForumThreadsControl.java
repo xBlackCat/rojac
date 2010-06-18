@@ -73,6 +73,19 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
     @Override
     public void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
+        final Post post = model.getRoot().getMessageById(threadRootId);
+        post.setDeepRead(read);
+
+        if (post != null) {
+            updateState(model, post, read);
+        }
+    }
+
+    private void updateState(AThreadModel<Post> model, Post post, boolean read) {
+        model.pathToNodeChanged(post);
+        for (Post p : post.getChildren()) {
+            updateState(model, p, read);
+        }
     }
 
     @Override

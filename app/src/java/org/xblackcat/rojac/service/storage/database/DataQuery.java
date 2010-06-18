@@ -311,6 +311,12 @@ public enum DataQuery implements IPropertiable {
      */
     UPDATE_MESSAGE_READ_FLAG,
     /**
+     * The query for updating the read field of message objects: thread root and all the belongs posts. Set query parameters in following order:
+     * <p/>
+     * read(boolean), id(int)
+     */
+    UPDATE_THREAD_READ_FLAG,
+    /**
      * The query for updating the read field of messages in the specified forum. Set query parameters in following
      * order:
      * <p/>
