@@ -121,7 +121,7 @@ public class TreeThreadView extends AThreadView {
 
                     JPopupMenu m = createMenu(mi);
 
-                    m.show(TreeThreadView.this, p.x, p.y);
+                    m.show(e.getComponent(), p.x, p.y);
                 }
             }
         }
