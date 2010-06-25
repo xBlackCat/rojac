@@ -208,7 +208,7 @@ public class MessageView extends AItemView implements IInternationazable {
     }
 
     public void processPacket(ProcessPacket ids) {
-        if (ids.containsMessage(this.messageId)) {
+        if (this.messageId != 0 && ids.containsMessage(this.messageId)) {
             loadItem(new AffectedMessage(AffectedMessage.DEFAULT_FORUM, messageId));
         }
     }

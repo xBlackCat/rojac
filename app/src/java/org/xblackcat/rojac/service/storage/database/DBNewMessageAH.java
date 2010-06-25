@@ -19,8 +19,8 @@ final class DBNewMessageAH implements INewMessageAH {
     }
 
     public void storeNewMessage(NewMessage nm) throws StorageException {
-        int nextId = helper.executeSingle(
-                Converters.TO_INTEGER,
+        Long nextId = helper.executeSingle(
+                Converters.TO_LONG,
                 DataQuery.GET_NEXT_ID_NEW_MESSAGE
         );
         helper.update(
