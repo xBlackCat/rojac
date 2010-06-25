@@ -4,8 +4,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.janus.JanusService;
@@ -60,7 +60,7 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
         progressController.fireJobStart();
 
         final String userName = RSDN_USER_NAME.get();
-        final JanusService janusService = new JanusService(userName, RojacHelper.getUserPassword());
+        final JanusService janusService = new JanusService(userName, UserHelper.getUserPassword());
 
         progressController.fireJobProgressChanged(0f, Messages.SYNCHRONIZE_COMMAND_START);
         Boolean useCompression = SYNCHRONIZER_USE_GZIP.get();

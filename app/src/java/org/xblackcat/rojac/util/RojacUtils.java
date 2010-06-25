@@ -7,7 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.data.IRSDNable;
-import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
@@ -336,12 +335,12 @@ public final class RojacUtils {
             log.error("Got unhandled exception in " + t, e);
 
             if (EventQueue.isDispatchThread()) {
-                ExceptionDialog.showExceptionDialog(t, e);
+                DialogHelper.showExceptionDialog(t, e);
             } else {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        ExceptionDialog.showExceptionDialog(t, e);
+                        DialogHelper.showExceptionDialog(t, e);
                     }
                 });
             }

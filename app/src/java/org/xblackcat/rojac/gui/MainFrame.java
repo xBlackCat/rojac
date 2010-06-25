@@ -10,13 +10,9 @@ import net.infonode.docking.util.WindowMenuUtil;
 import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.gui.dialogs.AboutDialog;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
-import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
-import org.xblackcat.rojac.gui.dialogs.OptionsDialog;
 import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewHelper;
@@ -27,20 +23,12 @@ import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.SynchronizationUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -206,23 +194,13 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
         JButton settingsButton = WindowsUtils.setupImageButton("settings", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    OptionsDialog od = new OptionsDialog(MainFrame.this);
-
-                    WindowsUtils.center(od, MainFrame.this);
-                    od.setVisible(true);
-                } catch (RojacException ex) {
-                    log.error("A model for options dialog.", ex);
-                }
+                DialogHelper.showOptionsDialog(MainFrame.this);
             }
         }, Messages.MAINFRAME_BUTTON_SETTINGS);
         JButton aboutButton = WindowsUtils.setupImageButton("about", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AboutDialog ad = new AboutDialog(MainFrame.this);
-                ad.pack();
-                WindowsUtils.centerOnScreen(ad);
-                ad.setVisible(true);
+                DialogHelper.showAboutDialog(MainFrame.this);
             }
         }, Messages.MAINFRAME_BUTTON_ABOUT);
 
@@ -558,7 +536,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
                 IItemView itemView = (IItemView) c.getComponent();
                 itemView.makeVisible(messageId);
             } else {
-                ExceptionDialog.showExceptionDialog(new RuntimeException("F*cka-morgana! Forum view is not loaded!"));
+                DialogHelper.showExceptionDialog(new RuntimeException("F*cka-morgana! Forum view is not loaded!"));
             }
         }
     }

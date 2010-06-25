@@ -7,7 +7,6 @@ import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
@@ -37,7 +36,7 @@ class GetUsersRequest extends ARequest {
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
 
         try {
-            Version localUsersVersion = RojacHelper.getVersion(VersionType.USERS_ROW_VERSION);
+            Version localUsersVersion = DataHelper.getVersion(VersionType.USERS_ROW_VERSION);
 
             int totalUsersNumber = 0;
 
@@ -58,7 +57,7 @@ class GetUsersRequest extends ARequest {
                     uAH.storeUser(user);
                 }
                 localUsersVersion = users.getVersion();
-                RojacHelper.setVersion(VersionType.USERS_ROW_VERSION, localUsersVersion);
+                DataHelper.setVersion(VersionType.USERS_ROW_VERSION, localUsersVersion);
             } while (users.getUsers().length > 0);
 
             tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USERS, totalUsersNumber);

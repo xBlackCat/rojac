@@ -13,11 +13,7 @@ import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.PostException;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
-import org.xblackcat.rojac.service.storage.INewMessageAH;
-import org.xblackcat.rojac.service.storage.INewModerateAH;
-import org.xblackcat.rojac.service.storage.INewRatingAH;
-import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.*;
 
 import java.util.HashSet;
 import java.util.Set;

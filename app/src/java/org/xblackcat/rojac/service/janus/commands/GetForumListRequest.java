@@ -5,7 +5,6 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
@@ -30,7 +29,7 @@ class GetForumListRequest extends ARequest {
 
         ForumsList forumsList;
         try {
-            forumsList = janusService.getForumsList(RojacHelper.getVersion(VersionType.FORUM_ROW_VERSION));
+            forumsList = janusService.getForumsList(DataHelper.getVersion(VersionType.FORUM_ROW_VERSION));
         } catch (JanusServiceException e) {
             throw new RsdnProcessorException("Can not obtain forums list", e);
         }
@@ -65,7 +64,7 @@ class GetForumListRequest extends ARequest {
                 result.add(new AffectedMessage(f.getForumId()));
             }
 
-            RojacHelper.setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
+            DataHelper.setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
         } catch (StorageException e) {
             throw new RsdnProcessorException("Can not update forum list", e);
         }
