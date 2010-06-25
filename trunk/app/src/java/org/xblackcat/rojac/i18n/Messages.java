@@ -69,6 +69,15 @@ public enum Messages {
     TRAY_STATE_SYNCHRONIZATION,
     TRAY_STATE_HAVE_UNREAD_MESSAGES,
 
+    // Tray popup menu texts
+    TRAY_POPUP_ITEM_SHOW_MAINFRAME,
+    TRAY_POPUP_ITEM_HIDE_MAINFRAME,
+    TRAY_POPUP_ITEM_SYNCHRONIZE,
+    TRAY_POPUP_ITEM_CANCEL_SYNC,
+    TRAY_POPUP_ITEM_OPTIONS,
+    TRAY_POPUP_ITEM_ABOUT,
+    TRAY_POPUP_ITEM_EXIT,
+
     //
     // Dialog texts
     //
@@ -79,6 +88,10 @@ public enum Messages {
      */
     DIALOG_SET_MARK_MESSAGE,
     DIALOG_SET_MARK_TITLE,
+
+    // Confirm exit dialog
+    DIALOG_CONFIRM_EXIT_MESSAGE,
+    DIALOG_CONFIRM_EXIT_TITLE,
 
     // Login dialog related messages
     DIALOG_LOGIN_TITLE,

@@ -7,7 +7,6 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.RojacHelper;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import ru.rsdn.Janus.JanusMessageInfo;
@@ -15,12 +14,7 @@ import ru.rsdn.Janus.JanusModerateInfo;
 import ru.rsdn.Janus.JanusRatingInfo;
 import ru.rsdn.Janus.RequestForumInfo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
@@ -58,9 +52,9 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
 
-        Version messagesVersion = RojacHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
-        Version moderatesVersion = RojacHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
-        Version ratingsVersion = RojacHelper.getVersion(VersionType.RATING_ROW_VERSION);
+        Version messagesVersion = DataHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
+        Version moderatesVersion = DataHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
+        Version ratingsVersion = DataHelper.getVersion(VersionType.RATING_ROW_VERSION);
 
         Set<AffectedMessage> result = new HashSet<AffectedMessage>();
         JanusMessageInfo[] messages;
@@ -94,9 +88,9 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             messagesVersion = data.getForumRowVersion();
             moderatesVersion = data.getModerateRowVersion();
 
-            RojacHelper.setVersion(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
-            RojacHelper.setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
-            RojacHelper.setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
+            DataHelper.setVersion(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
+            DataHelper.setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
+            DataHelper.setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
 
         } while (messages.length == limit);
 

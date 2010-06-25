@@ -3,18 +3,16 @@ package org.xblackcat.rojac;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
-import org.xblackcat.rojac.gui.dialogs.ExceptionDialog;
 import org.xblackcat.rojac.gui.dialogs.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.tray.RojacTray;
+import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
-import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.SynchronizationUtils;
-import org.xblackcat.rojac.util.UIUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.rojac.util.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -85,7 +83,7 @@ public abstract class RojacLauncher {
                 perform();
             } catch (Exception e) {
                 log.fatal("Can not initialize Swing part of Rojac", e);
-                ExceptionDialog.showExceptionDialog(e, false);
+                DialogHelper.showExceptionDialog(e, false);
             }
         }
 
@@ -95,7 +93,7 @@ public abstract class RojacLauncher {
             ServiceFactory.getInstance().getDataDispatcher().addDataHandler(mainFrame);
 
             // Setup tray
-            RojacTray tray = new RojacTray(mainFrame);
+            final RojacTray tray = new RojacTray(mainFrame);
             if (!tray.isSupported()) {
                 if (log.isInfoEnabled()) {
                     log.info("Tray is not supported by the system.");
@@ -104,7 +102,38 @@ public abstract class RojacLauncher {
 
             mainFrame.addWindowListener(new WindowAdapter() {
                 @Override
+                public void windowIconified(WindowEvent e) {
+                    if (tray.isSupported()) {
+                        if (ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE.get()) {
+                            mainFrame.setVisible(false);
+                        }
+                    }
+                }
+
+                @Override
                 public void windowClosing(WindowEvent e) {
+                    // Hide to tray if such option is set.
+                    if (tray.isSupported() && e.getSource() != tray) {
+                        if (ROJAC_MAIN_FRAME_HIDE_ON_CLOSE.get()) {
+                            mainFrame.setState(Frame.ICONIFIED);
+                            mainFrame.setVisible(false);
+                            return;
+                        }
+                    }
+
+                    if (ROJAC_MAIN_FRAME_ASK_ON_CLOSE.get()) {
+                        int answer = JLOptionPane.showConfirmDialog(
+                                mainFrame,
+                                Messages.DIALOG_CONFIRM_EXIT_MESSAGE.get(),
+                                Messages.DIALOG_CONFIRM_EXIT_TITLE.get(),
+                                JOptionPane.YES_NO_OPTION
+                        );
+
+                        if (answer == JOptionPane.NO_OPTION) {
+                            return;
+                        }
+                    }
+
                     mainFrame.updateSettings();
 
                     storeSettings();
@@ -128,7 +157,9 @@ public abstract class RojacLauncher {
             // Setup scheduled synchronizer
             SynchronizationUtils.setScheduleSynchronizer(mainFrame);
 
-            mainFrame.setVisible(true);
+            mainFrame.setVisible(mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported());
+
+            tray.updateState();
 
             WindowsUtils.center(ptd, mainFrame);
 

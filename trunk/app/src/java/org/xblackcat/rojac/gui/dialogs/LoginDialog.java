@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.RojacHelper;
+import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
@@ -128,7 +128,7 @@ public class LoginDialog extends JDialog {
 
             char[] p = fieldPassword.getPassword();
             if (!ArrayUtils.isEmpty(p)) {
-                RojacHelper.setUserPassword(p);
+                UserHelper.setUserPassword(p);
             }
 
             RSDN_USER_PASSWORD_SAVE.set(fieldSavePassword.isSelected());

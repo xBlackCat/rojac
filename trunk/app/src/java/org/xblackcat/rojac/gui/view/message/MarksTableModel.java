@@ -1,8 +1,5 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import org.xblackcat.rojac.data.NewRating;
-import org.xblackcat.rojac.data.Rating;
-
 import javax.swing.table.AbstractTableModel;
 
 /**

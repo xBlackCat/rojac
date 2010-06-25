@@ -16,16 +16,8 @@
 
 package org.springframework.core.io.support;
 
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.UrlResource;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.Assert;
-import org.springframework.util.PathMatcher;
-import org.springframework.util.ResourceUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.core.io.*;
+import org.springframework.util.*;
 
 import java.io.File;
 import java.io.IOException;

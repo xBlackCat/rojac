@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.janus.commands;
 
 import org.xblackcat.rojac.gui.dialogs.LoginDialog;
-import org.xblackcat.rojac.service.RojacHelper;
+import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -37,7 +37,7 @@ public enum Request {
     }
 
     public void process(Window frame, IResultHandler handler) {
-        while (!RojacHelper.isUserRegistered()) {
+        while (!UserHelper.isUserRegistered()) {
             LoginDialog ld = new LoginDialog(frame);
             WindowsUtils.center(ld, frame);
             if (ld.showLoginDialog()) {
