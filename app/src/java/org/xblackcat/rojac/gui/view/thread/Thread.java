@@ -106,7 +106,8 @@ public class Thread extends Post {
     @Override
     public int getRepliesAmount() {
         if (filled) {
-            return threadPosts.size();
+            // Do not count itself.
+            return threadPosts.size() - 1;
         } else {
             return threadStatData.getReplyAmount();
         }
