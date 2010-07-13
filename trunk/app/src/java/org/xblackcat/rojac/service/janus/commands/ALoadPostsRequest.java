@@ -4,6 +4,7 @@ import gnu.trove.TIntHashSet;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
 import ru.rsdn.Janus.JanusMessageInfo;
 import ru.rsdn.Janus.JanusModerateInfo;
@@ -46,6 +47,9 @@ abstract class ALoadPostsRequest extends ARequest {
 
             // TODO: compute the flag depending on MessageData and user settings.
             boolean read = false;
+            if (Property.SYNCHRONIZER_MARK_MY_POST_READ.get() && Property.RSDN_USER_ID.isSet()) {
+                read = mes.getUserId() == Property.RSDN_USER_ID.get();
+            }
 
             int mId = mes.getMessageId();
             if (mAH.isExist(mId)) {
