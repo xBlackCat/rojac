@@ -23,6 +23,7 @@ import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
@@ -53,8 +54,8 @@ public class MessageView extends AItemView implements IInternationazable {
     private int messageId;
     private int forumId;
 
-    private JLabel userLabel;
-    private JLabel dateLabel;
+    private JLabel userLabel = new JLabel();
+    private JLabel dateLabel = new JLabel();
     protected JButton answer;
     protected JComboBox marks;
     private String messageTitle = "#";
@@ -77,12 +78,23 @@ public class MessageView extends AItemView implements IInternationazable {
     }
 
     private Component createTitleBar() {
-        JPanel p = new JPanel(new BorderLayout(5, 5));
-        JPanel labelPane = new JPanel(new BorderLayout());
-        p.add(labelPane, BorderLayout.NORTH);
+        JPanel titlePane = new JPanel(new BorderLayout(5, 5));
 
-        labelPane.add(labelTopic, BorderLayout.CENTER);
-        labelPane.add(marksButton, BorderLayout.EAST);
+        titlePane.add(labelTopic, BorderLayout.NORTH);
+        labelTopic.setBorder(new EmptyBorder(5, 5, 0, 5));
+
+        JPanel labelPane = new JPanel(new BorderLayout());
+        titlePane.add(labelPane, BorderLayout.CENTER);
+
+        JPanel userInfoPane = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        labelPane.add(userInfoPane, BorderLayout.WEST);
+        userInfoPane.add(userLabel);
+        userInfoPane.add(userInfoLabel);
+
+        JPanel messageInfoPane = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        labelPane.add(messageInfoPane, BorderLayout.EAST);
+        messageInfoPane.add(dateLabel);
+        messageInfoPane.add(messageDateLabel);
 
         marksButton.setDefaultCapable(false);
         marksButton.setFocusable(false);
@@ -128,26 +140,13 @@ public class MessageView extends AItemView implements IInternationazable {
             }
         }, Messages.BUTTON_REPLY_TOOLTIP);
 
-        JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         controls.add(answer);
         controls.add(marks);
-        p.add(controls, BorderLayout.EAST);
+        controls.add(marksButton);
+        titlePane.add(controls, BorderLayout.SOUTH);
 
-        userLabel = new JLabel();
-        dateLabel = new JLabel();
-
-        JPanel labels = new JPanel(new GridLayout(0, 1));
-        p.add(labels, BorderLayout.WEST);
-        labels.add(userLabel);
-        labels.add(dateLabel);
-
-        JPanel infoPane = new JPanel(new GridLayout(0, 1));
-        p.add(infoPane, BorderLayout.CENTER);
-
-        infoPane.add(userInfoLabel);
-        infoPane.add(messageDateLabel);
-
-        return p;
+        return titlePane;
     }
 
     /**
