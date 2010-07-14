@@ -99,7 +99,11 @@ public class MessageView extends AItemView implements IInternationazable {
         marksButton.setDefaultCapable(false);
         marksButton.setFocusable(false);
         marksButton.setFocusPainted(false);
-        marksButton.setMargin(WindowsUtils.EMPTY_MARGIN);
+        marksButton.setBorderPainted(false);
+        marksButton.setHorizontalAlignment(SwingConstants.CENTER);
+        marksButton.setVerticalAlignment(SwingConstants.BOTTOM);
+        marksButton.setBackground(Color.white);
+        marksButton.setOpaque(false);
         marksButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 RatingDialog rd = new RatingDialog(SwingUtilities.windowForComponent(MessageView.this), messageId);
@@ -235,6 +239,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
         marksButton.setVisible(!empty);
         if (empty) {
+            // Just in case
             marksButton.setText("No marks");
             return;
         }
