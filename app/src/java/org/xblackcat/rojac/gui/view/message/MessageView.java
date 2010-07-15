@@ -23,7 +23,6 @@ import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
@@ -44,21 +43,23 @@ public class MessageView extends AItemView implements IInternationazable {
     private static final Log log = LogFactory.getLog(MessageView.class);
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();
 
-    private final JTextPane messageTextPane = new JTextPane();
-
-    private final JLabel labelTopic = new JLabel();
-    private final JButton marksButton = new JButton();
-    private final JLabel userInfoLabel = new JLabel();
-    private final JLabel messageDateLabel = new JLabel();
-
     private int messageId;
     private int forumId;
 
+    private final JTextPane messageTextPane = new JTextPane();
+
+    private final JButton marksButton = new JButton();
+    private final JLabel userInfoLabel = new JLabel();
+    private final JLabel messageDateLabel = new JLabel();
     private JLabel userLabel = new JLabel();
     private JLabel dateLabel = new JLabel();
-    protected JButton answer;
-    protected JComboBox marks;
+    private JButton answer;
+    private JComboBox marks;
     private String messageTitle = "#";
+
+    protected final JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+    protected final JComponent titleBar = createTitleBar();
+
 
     public MessageView(IRootPane mainFrame) {
         super(mainFrame);
@@ -73,15 +74,12 @@ public class MessageView extends AItemView implements IInternationazable {
         messageTextPane.setEditable(false);
         messageTextPane.addHyperlinkListener(new HyperlinkHandler());
 
-        add(createTitleBar(), BorderLayout.NORTH);
+        add(titleBar, BorderLayout.NORTH);
         add(new JScrollPane(messageTextPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
     }
 
-    private Component createTitleBar() {
+    private JComponent createTitleBar() {
         JPanel titlePane = new JPanel(new BorderLayout(5, 5));
-
-        titlePane.add(labelTopic, BorderLayout.NORTH);
-        labelTopic.setBorder(new EmptyBorder(5, 5, 0, 5));
 
         JPanel labelPane = new JPanel(new BorderLayout());
         titlePane.add(labelPane, BorderLayout.CENTER);
@@ -144,7 +142,6 @@ public class MessageView extends AItemView implements IInternationazable {
             }
         }, Messages.BUTTON_REPLY_TOOLTIP);
 
-        JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         controls.add(answer);
         controls.add(marks);
         controls.add(marksButton);
@@ -184,7 +181,6 @@ public class MessageView extends AItemView implements IInternationazable {
         String converted = rsdnToHtml.convert(message);
         messageTextPane.setText(converted);
         messageTextPane.setCaretPosition(0);
-        labelTopic.setText(mes.getSubject());
         userInfoLabel.setText(RSDN_USER_NAME.get());
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
         messageDateLabel.setText(df.format(new Date()));
@@ -197,7 +193,6 @@ public class MessageView extends AItemView implements IInternationazable {
 
         messageTextPane.setText(parsedText);
         messageTextPane.setCaretPosition(0);
-        labelTopic.setText(mes.getSubject());
         userInfoLabel.setText(mes.getUserName());
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
         messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));

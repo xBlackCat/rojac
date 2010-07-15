@@ -57,7 +57,7 @@ public class ThreadDoubleView extends AItemView {
         splitPane.setBottomComponent(slaveView.getComponent());
         splitPane.setTopComponent(masterView.getComponent());
         splitPane.setOrientation(verticalSplit ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setDividerLocation(.4);
+        splitPane.setDividerLocation(200);
         splitPane.setResizeWeight(.4);
         add(splitPane);
     }
