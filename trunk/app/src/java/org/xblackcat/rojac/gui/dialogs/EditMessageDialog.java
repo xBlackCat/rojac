@@ -139,10 +139,10 @@ public class EditMessageDialog extends JDialog {
     private void initializeLayout() {
         JPanel cp = new JPanel(new BorderLayout(5, 10));
 
-        JSplitPane center = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, panelEdit, panelPreview);
+        final JSplitPane center = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, panelEdit, panelPreview);
         center.setOneTouchExpandable(true);
         center.setResizeWeight(0.5);
-        center.setDividerLocation(1.);
+        center.setDividerLocation(Integer.MAX_VALUE);
 
         cp.add(center, BorderLayout.CENTER);
 
@@ -159,6 +159,11 @@ public class EditMessageDialog extends JDialog {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         panelEdit.forcePreview();
+                        if (center.getDividerLocation() <= 1) {
+                            center.setDividerLocation(Integer.MAX_VALUE);
+                        } else {
+                            center.setDividerLocation(0);
+                        }
                     }
                 },
                 new AButtonAction(Messages.BUTTON_CANCEL) {

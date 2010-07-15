@@ -35,7 +35,6 @@ public abstract class AThreadView extends AItemView {
     private static final Log log = LogFactory.getLog(TreeThreadView.class);
 
     protected final IThreadControl<Post> threadControl;
-    protected final JLabel forumName = new JLabel();
     protected final AThreadModel<Post> model = new SortedThreadsModel();
     protected Forum forum;
     protected int forumId;
@@ -47,13 +46,9 @@ public abstract class AThreadView extends AItemView {
 
     protected void initializeLayout() {
         // Initialize tree
-        add(forumName, BorderLayout.NORTH);
-
-        JPanel internalPane = new JPanel(new BorderLayout(0, 0));
-
         JComponent threadsContainer = getThreadsContainer();
         JScrollPane sp = new JScrollPane(threadsContainer);
-        internalPane.add(sp, BorderLayout.CENTER);
+        add(sp, BorderLayout.CENTER);
 
         JButton newThreadButton = WindowsUtils.setupImageButton("new_thread", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -64,9 +59,7 @@ public abstract class AThreadView extends AItemView {
         JButton nextUnreadButton = WindowsUtils.setupImageButton("next_unread", new NextUnreadSelector(), Messages.VIEW_THREAD_BUTTON_NEXT_UNREAD);
 
         JToolBar toolbar = WindowsUtils.createToolBar(newThreadButton, null, prevUnreadButton, nextUnreadButton);
-        internalPane.add(toolbar, BorderLayout.NORTH);
-
-        add(internalPane, BorderLayout.CENTER);
+        add(toolbar, BorderLayout.NORTH);
     }
 
     @Override
@@ -393,7 +386,6 @@ public abstract class AThreadView extends AItemView {
         protected void process(List<Forum> chunks) {
             for (Forum f : chunks) {
                 forum = f;
-                forumName.setText(forum.getForumName() + "/" + forum.getShortForumName());
                 fireItemUpdated(new AffectedMessage(forumId));
             }
         }

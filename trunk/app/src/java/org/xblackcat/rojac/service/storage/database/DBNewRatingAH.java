@@ -20,10 +20,10 @@ final class DBNewRatingAH implements INewRatingAH {
     }
 
     public void storeNewRating(int messageId, Mark rate) throws StorageException {
-        Long nextId = helper.executeSingle(
-                Converters.TO_LONG,
+        long nextId = helper.executeSingle(
+                Converters.TO_NUMBER,
                 DataQuery.GET_NEXT_ID_NEW_RATING
-        );
+        ).longValue();
         helper.update(
                 DataQuery.STORE_OBJECT_NEW_RATING,
                 nextId,
