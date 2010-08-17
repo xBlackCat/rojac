@@ -113,7 +113,7 @@
         <!-- Paste resource file with revision information -->
         <exec executable="svn" output="${rojac-application.output.dir}/svninfo.xml" failifexecutionfails="false">
             <arg line="info"/>
-            <arg line="-r HEAD"/>
+            <arg line="-r BASE"/>
             <arg line="--xml"/>
             <!-- any filename can be here, because we need only Revision property, which is general for all filenames -->
             <arg value="${rojac-application.basedir}"/>
