@@ -170,7 +170,7 @@ public final class WindowsUtils {
     }
 
     public static void center(Window window, Component parent) {
-        if (!parent.isVisible()) {
+        if (parent == null || !parent.isVisible()) {
             // Parent is not visible - center window on a screen
             centerOnScreen(window);
             return;
