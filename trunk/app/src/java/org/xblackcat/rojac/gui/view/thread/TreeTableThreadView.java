@@ -10,7 +10,6 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -158,32 +157,4 @@ public class TreeTableThreadView extends AThreadView {
 
     }
 
-    private static class PostTreeCellRenderer extends DefaultTreeCellRenderer {
-        @Override
-        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-            
-            Post post = (Post) value;
-            int style;
-            switch (post.isRead()) {
-                default:
-                case Read:
-                    style = Font.PLAIN;
-                    break;
-                case ReadPartially:
-                    style = Font.ITALIC;
-                    break;
-                case Unread:
-                    style = Font.BOLD | Font.ITALIC;
-                    break;
-            }
-
-            Font font = getFont().deriveFont(style);
-            setFont(font);
-
-            setText(post.getMessageData().getSubject());
-            
-            return this;
-        }
-    }
 }

@@ -3,6 +3,8 @@ package org.xblackcat.rojac.gui.theme;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.MissingResourceException;
 
 /**
@@ -15,6 +17,8 @@ public final class IconPack {
     private final String extension;
     private final String name;
     private final String pathPrefix;
+
+    private final Map<AnIcon, Icon> iconsCache = new HashMap<AnIcon, Icon>();
 
     public IconPack(String name, String pathPrefix, String extension) {
         this.name = name;
@@ -60,6 +64,20 @@ public final class IconPack {
 
     public IButtonIcons getImageButtonIcons(String buttonName) {
         return new IconsGetter(buttonName);
+    }
+
+    public Icon getIcon(AnIcon icon) {
+        if (iconsCache.containsKey(icon)) {
+            return iconsCache.get(icon);
+        }
+
+        // Icon is not loaded yet - load it!
+        String iconPath = pathPrefix + "/icons/" + icon.getFilename();
+
+        // If the icon is not present a MissingResourceException will be thrown.
+        Icon i = ResourceUtils.loadIcon(iconPath);
+        iconsCache.put(icon, i);
+        return i;
     }
 
     private final class IconsGetter implements IButtonIcons {
