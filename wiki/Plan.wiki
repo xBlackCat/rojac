@@ -24,14 +24,16 @@
   * Database: include full support for HSQL ~~and SQLite~~. _(done)_
   * Add scheduled synchronizer. _(done)_
   * Implement navigation between messages by links in message body. _(done)_
-  * Add tray icon. _*(in progress)*_
-  * Migrate JanusAT client to Axis 2 (??) _*(in progress)*_
+  * Add tray icon. _(done)_
 == Alpha 3 ==
-  * Add favorites (messages, topics, you posts, responses)
-  * Add filter to forum view (by users, by date, by marks)
+  * Make theads view info load more lazy _*(in progress)*_
   * Add keyboard shortcuts.
   * Add keyboard shortcuts manager.
   * Allow to DnD links to create a new tab with thread/message.
+  * Add favorites (messages, topics, you posts, responses)
+  * Add filter to forum view (by users, by date, by marks)
 == Alpha 4 ==
   * Implement GUI: List based forum view. (??)
   * GUI changes: redesign (options dialog, etc).
+
+  * Migrate JanusAT client to Axis 2 (??) _(temporary postponed)_
