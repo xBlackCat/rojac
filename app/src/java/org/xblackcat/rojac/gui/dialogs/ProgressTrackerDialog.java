@@ -65,7 +65,10 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
 
         if (e.getProgress() != null) {
             float progress = e.getProgress();
-            logProgress.setValue((int) (progress * logProgress.getMaximum()));
+            if (progress >= 0) {
+                logProgress.setValue((int) (progress * logProgress.getMaximum()));
+            }
+            logProgress.setIndeterminate(progress < 0);
         }
 
         if (e.getText() != null) {

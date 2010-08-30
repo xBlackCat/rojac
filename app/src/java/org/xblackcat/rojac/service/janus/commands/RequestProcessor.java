@@ -65,7 +65,7 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
         progressController.fireJobProgressChanged(0f, Messages.SYNCHRONIZE_COMMAND_START);
         Boolean useCompression = SYNCHRONIZER_USE_GZIP.get();
         janusService.init(useCompression);
-        progressController.fireJobProgressChanged(0f, useCompression ? Messages.SYNCHRONIZE_COMMAND_USE_COMPRESSION : Messages.SYNCHRONIZE_COMMAND_DONT_USE_COMPRESSION);
+        progressController.fireJobProgressChanged(0f, useCompression ? Messages.SYNCHRONIZE_COMMAND_COMPRESSION_USED : Messages.SYNCHRONIZE_COMMAND_COMPRESSION_NOT_USED);
 
         try {
             janusService.testConnection();
