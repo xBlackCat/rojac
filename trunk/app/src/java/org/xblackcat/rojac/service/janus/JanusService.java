@@ -11,7 +11,11 @@ import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.janus.data.*;
+import org.xblackcat.rojac.service.janus.data.ForumsList;
+import org.xblackcat.rojac.service.janus.data.NewData;
+import org.xblackcat.rojac.service.janus.data.PostInfo;
+import org.xblackcat.rojac.service.janus.data.TopicMessages;
+import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.util.RojacUtils;
 import ru.rsdn.Janus.*;
 
@@ -207,7 +211,7 @@ public class JanusService implements IJanusService {
                 log.info("Data compression is enabled.");
                 // Tell the server it can compress the response
                 soap._setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
-                soap._setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
+//                soap._setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
             }
             soap._setProperty(Call.SESSION_MAINTAIN_PROPERTY, Boolean.TRUE);
             Hashtable rh = new Hashtable();

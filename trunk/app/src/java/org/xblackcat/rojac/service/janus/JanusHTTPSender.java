@@ -44,18 +44,27 @@ import org.xblackcat.rojac.service.progress.IProgressController;
 import javax.xml.soap.MimeHeader;
 import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPException;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import static org.xblackcat.rojac.i18n.Messages.SYNCHRONIZE_COMMAND_READ;
-import static org.xblackcat.rojac.i18n.Messages.SYNCHRONIZE_COMMAND_WRITE;
+import static org.xblackcat.rojac.i18n.Messages.*;
 
 /**
- * This class uses Jakarta Commons's HttpClient to call a SOAP server.
- * Modification of CommonsHTTPSender to fit Janus WS requirements.
+ * This class uses Jakarta Commons's HttpClient to call a SOAP server. Modification of CommonsHTTPSender to fit Janus WS
+ * requirements.
  *
  * @author xBlackCat
  * @author Davanum Srinivas (dims@yahoo.com) History: By Chandra Talluri Modifications done for maintaining sessions.
@@ -78,7 +87,7 @@ class JanusHTTPSender extends BasicHandler {
 
     public JanusHTTPSender(IProgressController progressController) {
         this.progressController = progressController;
-        
+
         initialize();
     }
 
@@ -223,7 +232,11 @@ class JanusHTTPSender extends BasicHandler {
                 }
             }
 
-            progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_READ, method.getResponseContentLength());
+            if (method.getResponseContentLength() < 0) {
+                progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_READ_UNKNOWN);
+            } else {
+                progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_READ, method.getResponseContentLength());
+            }
             // wrap the response body stream so that close() also releases
             // the connection back to the pool.
             InputStream releaseConnectionOnCloseStream =
@@ -536,20 +549,22 @@ class JanusHTTPSender extends BasicHandler {
                     HTTPConstants.COMPRESSION_GZIP);
         }
 
-        // Transfer MIME headers of SOAPMessage to HTTP headers.
-        MimeHeaders mimeHeaders = msg.getMimeHeaders();
-        if (mimeHeaders != null) {
-            for (Iterator i = mimeHeaders.getAllHeaders(); i.hasNext();) {
-                MimeHeader mimeHeader = (MimeHeader) i.next();
-                //HEADER_CONTENT_TYPE and HEADER_SOAP_ACTION are already set.
-                //Let's not duplicate them.
-                String headerName = mimeHeader.getName();
-                if (headerName.equals(HTTPConstants.HEADER_CONTENT_TYPE)
-                        || headerName.equals(HTTPConstants.HEADER_SOAP_ACTION)) {
-                    continue;
+        if (msg != null) {
+            // Transfer MIME headers of SOAPMessage to HTTP headers.
+            MimeHeaders mimeHeaders = msg.getMimeHeaders();
+            if (mimeHeaders != null) {
+                for (Iterator i = mimeHeaders.getAllHeaders(); i.hasNext();) {
+                    MimeHeader mimeHeader = (MimeHeader) i.next();
+                    //HEADER_CONTENT_TYPE and HEADER_SOAP_ACTION are already set.
+                    //Let's not duplicate them.
+                    String headerName = mimeHeader.getName();
+                    if (headerName.equals(HTTPConstants.HEADER_CONTENT_TYPE)
+                            || headerName.equals(HTTPConstants.HEADER_SOAP_ACTION)) {
+                        continue;
+                    }
+                    method.addRequestHeader(mimeHeader.getName(),
+                            mimeHeader.getValue());
                 }
-                method.addRequestHeader(mimeHeader.getName(),
-                        mimeHeader.getValue());
             }
         }
 
@@ -622,8 +637,9 @@ class JanusHTTPSender extends BasicHandler {
      * Matches a string against a pattern. The pattern contains two special characters: '*' which means zero or more
      * characters,
      *
-     * @param pattern         the (non-null) pattern to match against
-     * @param str             the (non-null) string that must be matched against the pattern
+     * @param pattern the (non-null) pattern to match against
+     * @param str     the (non-null) string that must be matched against the pattern
+     *
      * @return <code>true</code> when the string matches against the pattern, <code>false</code> otherwise.
      */
     protected static boolean match(String pattern, String str) {
@@ -882,13 +898,16 @@ class JanusHTTPSender extends BasicHandler {
 
     private class AutoCloseInputStream extends FilterInputStream {
         private final HttpMethodBase method;
-        private long amount = 0;
         protected final float total;
+        private long amount = 0;
 
         public AutoCloseInputStream(HttpMethodBase method) throws IOException {
             super(method.getResponseBodyAsStream());
             this.method = method;
             total = method.getResponseContentLength();
+            if (total < 0) {
+                progressController.fireJobProgressChanged(-1);
+            }
         }
 
         public void close() throws IOException {
@@ -896,7 +915,7 @@ class JanusHTTPSender extends BasicHandler {
                 super.close();
             } finally {
                 method.releaseConnection();
-                progressController.fireJobProgressChanged(1f);
+                progressController.fireJobProgressChanged(1f, SYNCHRONIZE_COMMAND_WAS_READ, amount);
             }
         }
 
@@ -909,7 +928,9 @@ class JanusHTTPSender extends BasicHandler {
         private void logRead(long a) {
             if (a > 0) {
                 amount += a;
-                progressController.fireJobProgressChanged(amount / total);
+                if (total > 0) {
+                    progressController.fireJobProgressChanged(amount / total);
+                }
             }
         }
 
