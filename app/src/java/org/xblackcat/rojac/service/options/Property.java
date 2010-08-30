@@ -72,6 +72,12 @@ public final class Property<T> {
     public static final Property<Integer> SYNCHRONIZER_LOAD_USERS_PORTION = create("rojac.synchronizer.load.users.portion", Integer.valueOf(1000));
     public static final Property<Integer> SYNCHRONIZER_LOAD_MESSAGES_PORTION = create("rojac.synchronizer.load.messages.portion", Integer.valueOf(100));
 
+    public static final Property<Boolean> SYNCHRONIZER_PROXY_ENABLED = create("rojac.synchronizer.proxy", Boolean.FALSE);
+    public static final Property<String> SYNCHRONIZER_PROXY_HOST = create("rojac.synchronizer.proxy.host", String.class);
+    public static final Property<Integer> SYNCHRONIZER_PROXY_PORT = create("rojac.synchronizer.proxy.port", Integer.class);
+    public static final Property<String> SYNCHRONIZER_PROXY_USER = create("rojac.synchronizer.proxy.user", String.class);
+    public static final Property<Password> SYNCHRONIZER_PROXY_PASSWORD = create("rojac.synchronizer.proxy.pass", Password.class);
+
     public static final Property<Boolean> SYNCHRONIZER_MARK_MY_POST_READ = create("rojac.synchronizer.messages.my_as_read", Boolean.FALSE);
 
     public static final Property<Boolean> MESSAGE_PANE_SHOW_MARKS = create("rojac.viewer.show_marks_pane", Boolean.FALSE);

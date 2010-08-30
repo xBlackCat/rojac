@@ -22,8 +22,6 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.components.logger.LogFactory;
 import org.apache.axis.components.net.CommonsHTTPClientProperties;
 import org.apache.axis.components.net.CommonsHTTPClientPropertiesFactory;
-import org.apache.axis.components.net.TransportClientProperties;
-import org.apache.axis.components.net.TransportClientPropertiesFactory;
 import org.apache.axis.handlers.BasicHandler;
 import org.apache.axis.soap.SOAP12Constants;
 import org.apache.axis.soap.SOAPConstants;
@@ -61,6 +59,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import static org.xblackcat.rojac.i18n.Messages.*;
+import static org.xblackcat.rojac.service.options.Property.*;
 
 /**
  * This class uses Jakarta Commons's HttpClient to call a SOAP server. Modification of CommonsHTTPSender to fit Janus WS
@@ -414,11 +413,8 @@ class JanusHTTPSender extends BasicHandler {
 
     protected HostConfiguration getHostConfiguration(HttpClient client,
                                                      URL targetURL) {
-        TransportClientProperties tcp =
-                TransportClientPropertiesFactory.create(targetURL.getProtocol()); // http or https
         int port = targetURL.getPort();
-        boolean hostInNonProxyList =
-                isHostInNonProxyList(targetURL.getHost(), tcp.getNonProxyHosts());
+        boolean useProxy = SYNCHRONIZER_PROXY_ENABLED.get(false);
 
         HostConfiguration config = new HostConfiguration();
 
@@ -430,33 +426,33 @@ class JanusHTTPSender extends BasicHandler {
             }
         }
 
-        if (hostInNonProxyList) {
-            config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
+        config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
+        if (!useProxy) {
         } else {
-            if (tcp.getProxyHost().length() == 0 ||
-                    tcp.getProxyPort().length() == 0) {
+            String pHost = SYNCHRONIZER_PROXY_HOST.get("");
+            Integer pPort = SYNCHRONIZER_PROXY_PORT.get(0);
+            if (pHost.length() == 0 || pPort == 0) {
                 config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
             } else {
-                if (tcp.getProxyUser().length() != 0) {
+                progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_PROXY_USED, pHost, pPort);
+                String pUser = SYNCHRONIZER_PROXY_USER.get("");
+                if (pUser.length() != 0) {
+                    String pPass = SYNCHRONIZER_PROXY_PASSWORD.get().toString();
                     Credentials proxyCred =
-                            new UsernamePasswordCredentials(tcp.getProxyUser(),
-                                    tcp.getProxyPassword());
+                            new UsernamePasswordCredentials(pUser, pPass);
                     // if the username is in the form "user\domain"
                     // then use NTCredentials instead.
-                    int domainIndex = tcp.getProxyUser().indexOf("\\");
+                    int domainIndex = pUser.indexOf("\\");
                     if (domainIndex > 0) {
-                        String domain = tcp.getProxyUser().substring(0, domainIndex);
-                        if (tcp.getProxyUser().length() > domainIndex + 1) {
-                            String user = tcp.getProxyUser().substring(domainIndex + 1);
-                            proxyCred = new NTCredentials(user,
-                                    tcp.getProxyPassword(),
-                                    tcp.getProxyHost(), domain);
+                        String domain = pUser.substring(0, domainIndex);
+                        if (pUser.length() > domainIndex + 1) {
+                            String user = pUser.substring(domainIndex + 1);
+                            proxyCred = new NTCredentials(user, pPass, pHost, domain);
                         }
                     }
                     client.getState().setProxyCredentials(AuthScope.ANY, proxyCred);
                 }
-                int proxyPort = Integer.parseInt(tcp.getProxyPort());
-                config.setProxy(tcp.getProxyHost(), proxyPort);
+                config.setProxy(pHost, pPort);
             }
         }
         return config;
