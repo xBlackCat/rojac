@@ -1,10 +1,15 @@
 package org.xblackcat.rojac.util;
 
 import gnu.trove.TIntObjectHashMap;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.i18n.Messages;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -127,7 +132,11 @@ public final class MessageUtils {
         return writer.toString();
     }
 
-    public static String buildRateString(Mark[] ratings) {
+    public static ImageIcon buildRateImage(Mark[] ratings, Font targetFont, Color textColor) {
+        if (ArrayUtils.isEmpty(ratings)) {
+            return null;
+        }
+
         int smiles = 0;
         int agrees = 0;
         int disagrees = 0;
@@ -154,8 +163,10 @@ public final class MessageUtils {
                     break;
                 case x3:
                     ++rate;
+                    // Fall down
                 case x2:
                     ++rate;
+                    // Fall down
                 case x1:
                     ++rate;
                     ++rateAmount;
@@ -163,33 +174,65 @@ public final class MessageUtils {
             }
         }
 
-        StringBuilder text = new StringBuilder("<html><body>");
-
-        if (rateAmount > 0) {
-            text.append("<b>");
-            text.append(rate);
-            text.append("(");
-            text.append(rateAmount);
-            text.append(")</b> ");
+        int width = 0;
+        if (rate > 0) {
+            width += 70;
+        }
+        if (agrees > 0) {
+            width += 45;
+        }
+        if (disagrees > 0) {
+            width += 45;
+        }
+        if (smiles > 0) {
+            width += 40;
+        }
+        if (plusOnes > 0) {
+            width += 45;
         }
 
-        text.append(addInfo(Mark.PlusOne, plusOnes));
-        text.append(addInfo(Mark.Agree, agrees));
-        text.append(addInfo(Mark.Disagree, disagrees));
-        text.append(addInfo(Mark.Smile, smiles));
+        if (width == 0) {
+            return null;
+        }
+        BufferedImage im = new BufferedImage(width, 16, BufferedImage.TYPE_INT_ARGB);
 
-        return text.toString();
+        Graphics g = im.getGraphics();
+        int offset = 0;
+
+        g.setColor(textColor);
+        g.setFont(targetFont);
+        if (rateAmount > 0) {
+            String rateStr = rate + "(" + rateAmount + ")";
+            Rectangle2D bounds = g.getFontMetrics().getStringBounds(rateStr, g);
+            g.drawString(rateStr, 0, (int) bounds.getHeight() - 2);
+            offset += bounds.getWidth();
+        }
+
+        offset += addIcon(g, offset, Mark.PlusOne, plusOnes);
+        offset += addIcon(g, offset, Mark.Agree, agrees);
+        offset += addIcon(g, offset, Mark.Disagree, disagrees);
+        offset += addIcon(g, offset, Mark.Smile, smiles);
+
+        im.flush();
+
+        return new ImageIcon(im.getSubimage(0, 0, offset, im.getHeight()));
     }
 
-    public static String addInfo(Mark m, int amount) {
-        if (amount > 0) {
-            String res = "&nbsp;<img src='" + m.getUrl().toString() + "'>";
-            if (amount > 1) {
-                return res + "<i>x" + amount + "</i>";
-            } else {
-                return res;
-            }
+    private static int addIcon(Graphics g, int offset, Mark mark, int amount) {
+        if (amount == 0) {
+            return 0;
         }
-        return "";
+
+        g.drawImage(mark.getIcon().getImage(), offset + 2, 0, null);
+        int width = 2 + mark.getIcon().getIconWidth();
+
+        if (amount > 1) {
+            String amountString = "x" + amount;
+            Rectangle2D bounds = g.getFontMetrics().getStringBounds(amountString, g);
+            g.drawString(amountString, offset + width, (int) bounds.getHeight());
+            width += bounds.getWidth();
+        }
+
+        return width;
     }
 }

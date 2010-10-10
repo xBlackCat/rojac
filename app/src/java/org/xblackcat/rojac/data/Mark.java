@@ -4,7 +4,6 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
-import java.net.URL;
 
 /**
  * @author xBlackCat
@@ -32,25 +31,21 @@ public enum Mark {
     }
 
     private final int value;
-    private final String path;
     private final Messages description;
+    private final ImageIcon markIcon;
 
     private Mark(int value, Messages description, String imgName) {
         this.value = value;
         this.description = description;
-        path = IMAGES_MARKS_PATH + imgName;
+        markIcon = ResourceUtils.loadImageIcon("/images/" + IMAGES_MARKS_PATH + imgName);
     }
 
     public int getValue() {
         return value;
     }
 
-    public Icon getIcon() {
-        return ResourceUtils.loadIcon("/images/" + path);
-    }
-
-    public URL getUrl() {
-        return ResourceUtils.getResource("/images/" + path);
+    public ImageIcon getIcon() {
+        return markIcon;
     }
 
     public String toString() {

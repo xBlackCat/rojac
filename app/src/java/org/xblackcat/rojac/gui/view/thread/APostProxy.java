@@ -30,6 +30,8 @@ public abstract class APostProxy {
 
         Font font = renderer.getFont().deriveFont(style);
         renderer.setFont(font);
+        renderer.setText(null);
+        renderer.setIcon(null);
 
         setValue(renderer);
     }
