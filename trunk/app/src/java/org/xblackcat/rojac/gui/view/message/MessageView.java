@@ -236,10 +236,12 @@ public class MessageView extends AItemView implements IInternationazable {
         if (empty) {
             // Just in case
             marksButton.setText("No marks");
+            marksButton.setIcon(null);
             return;
         }
 
-        marksButton.setText(MessageUtils.buildRateString(ratings));
+        marksButton.setIcon(MessageUtils.buildRateImage(ratings, marksButton.getFont(), marksButton.getForeground()));
+        marksButton.setText(null);
         revalidate();
     }
 

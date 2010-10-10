@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.thread;
 
-import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.util.MessageUtils;
 
 /**
@@ -15,7 +14,7 @@ final class PostRating extends APostProxy {
 
     @Override
     protected void setValue(PostTableCellRenderer renderer) {
-        Mark[] ratings = post.getRating();
-        renderer.setText(MessageUtils.buildRateString(ratings));
+        renderer.setIcon(MessageUtils.buildRateImage(post.getRating(), renderer.getFont(), renderer.getForeground()));
+        renderer.setText(null);
     }
 }
