@@ -12,6 +12,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -85,6 +87,45 @@ public class TreeTableThreadView extends AThreadView {
             column.setToolTipText(h.getTitle());
             threads.addColumn(column);
         }
+
+        // Handle keyboard events to emulate tree navigation in TreeTable
+        threads.getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "prevOrClose");
+        threads.getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "nextOrExpand");
+
+        threads.getActionMap().put("prevOrClose", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = threads.getSelectedRow();
+                if (row == -1) {
+                    return;
+                }
+
+                if (threads.isExpanded(row)) {
+                    threads.collapseRow(row);
+                    threads.scrollRowToVisible(row);
+                } else if (row > 0) {
+                    threads.setRowSelectionInterval(row - 1, row - 1);
+                    threads.scrollRowToVisible(row - 1);
+                }
+            }
+        });
+        threads.getActionMap().put("nextOrExpand", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = threads.getSelectedRow();
+                if (row == -1) {
+                    return;
+                }
+
+                if (!threads.isExpanded(row) && !model.isLeaf(threads.getPathForRow(row).getLastPathComponent())) {
+                    threads.expandRow(row);
+                    threads.scrollRowToVisible(row);
+                } else if (row < threads.getRowCount() - 1) {
+                    threads.scrollRowToVisible(row + 1);
+                    threads.setRowSelectionInterval(row + 1, row + 1);
+                }
+            }
+        });
 
         return threads;
     }
