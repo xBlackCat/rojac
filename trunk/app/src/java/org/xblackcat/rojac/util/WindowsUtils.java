@@ -7,7 +7,6 @@ import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 /**
  * @author xBlackCat
@@ -71,22 +70,26 @@ public final class WindowsUtils {
     }
 
 
-    public static JToggleButton setupToggleButton(String imageSet, ActionListener action, Messages toolTip) {
-        return setupToggleButton(imageSet, action, toolTip, null);
+    public static JToggleButton setupToggleButton(String imageSet, AButtonAction action) {
+        return setupToggleButton(imageSet, action,  null);
     }
 
-    public static JToggleButton setupToggleButton(String buttonName, ActionListener action, Messages toolTip, ButtonGroup bg) {
+    public static JToggleButton setupToggleButton(String buttonName, AButtonAction action, ButtonGroup bg) {
         IButtonIcons icons = Property.ROJAC_GUI_ICONPACK.get().getImageButtonIcons(buttonName);
 
         JToggleButton toggleButton = new JToggleButton();
-        setupImageButton(toggleButton, icons, toolTip, action);
+        setupImageButton(toggleButton, icons, action);
         if (bg != null) {
             bg.add(toggleButton);
         }
         return toggleButton;
     }
 
-    public static JButton setupButton(Messages text, ActionListener action, Messages toolTip) {
+    public static JButton setupButton(AButtonAction action) {
+        return setupButton(action, action.getMessage());
+    }
+
+    public static JButton setupButton(AButtonAction action, Messages toolTip) {
         IButtonIcons icons = Property.ROJAC_GUI_ICONPACK.get().getButtonIcons();
 
         JButton button = new JButton();
@@ -106,7 +109,7 @@ public final class WindowsUtils {
 
         // Set texts
         button.setToolTipText(toolTip.get());
-        button.setText(text.get());
+        button.setText(action.getMessage().get());
         return button;
     }
 
@@ -116,20 +119,19 @@ public final class WindowsUtils {
      *
      * @param buttonName identifier of images set for the button.
      * @param action     action listener to fire when action is performed.
-     * @param toolTip    localized message identifier.
      *
      * @return initialized button.
      */
-    public static JButton setupImageButton(String buttonName, ActionListener action, Messages toolTip) {
+    public static JButton setupImageButton(String buttonName, AButtonAction action) {
         IButtonIcons icons = Property.ROJAC_GUI_ICONPACK.get().getImageButtonIcons(buttonName);
 
         JButton button = new JButton();
-        setupImageButton(button, icons, toolTip, action);
+        setupImageButton(button, icons, action);
 
         return button;
     }
 
-    private static void setupImageButton(AbstractButton button, IButtonIcons icons, Messages toolTip, ActionListener action) {
+    private static void setupImageButton(AbstractButton button, IButtonIcons icons, AButtonAction action) {
         // Set common parameters
         button.setHorizontalAlignment(SwingConstants.CENTER);
         button.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -150,7 +152,7 @@ public final class WindowsUtils {
 
         // Set other options
         button.addActionListener(action);
-        button.setToolTipText(toolTip.get());
+        button.setToolTipText(action.getMessage().get());
     }
 
     public static void centerOnScreen(Window window) {
@@ -273,13 +275,13 @@ public final class WindowsUtils {
      */
     public static Component createButtonsBar(JDialog dlg, Messages defAction, int align, AButtonAction... buttons) {
         if (dlg == null && defAction != null) {
-            throw new NullPointerException("Can not set default action if target dialog is not specified.");
+            throw new IllegalArgumentException("Can not set default action if target dialog is not specified.");
         }
         JPanel buttonPane = new JPanel(new GridLayout(1, 0, 10, 5));
 
         for (AButtonAction ba : buttons) {
-            JButton b = WindowsUtils.setupButton(ba.getMessage(), ba, ba.getMessage());
-            if (ba.getMessage() == defAction) {
+            JButton b = WindowsUtils.setupButton(ba);
+            if (dlg != null && ba.getMessage() == defAction) {
                 dlg.getRootPane().setDefaultButton(b);
             }
             buttonPane.add(b);
