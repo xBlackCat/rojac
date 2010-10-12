@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
@@ -24,7 +25,6 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -50,13 +50,9 @@ public abstract class AThreadView extends AItemView {
         JScrollPane sp = new JScrollPane(threadsContainer);
         add(sp, BorderLayout.CENTER);
 
-        JButton newThreadButton = WindowsUtils.setupImageButton("new_thread", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.editMessage(forumId, null);
-            }
-        }, Messages.VIEW_THREAD_BUTTON_NEW_THREAD);
-        JButton prevUnreadButton = WindowsUtils.setupImageButton("prev_unread", new PreviousUnreadSelector(), Messages.VIEW_THREAD_BUTTON_PREVIOUS_UNREAD);
-        JButton nextUnreadButton = WindowsUtils.setupImageButton("next_unread", new NextUnreadSelector(), Messages.VIEW_THREAD_BUTTON_NEXT_UNREAD);
+        JButton newThreadButton = WindowsUtils.setupImageButton("new_thread", new NewThreadAction());
+        JButton prevUnreadButton = WindowsUtils.setupImageButton("prev_unread", new PreviousUnreadAction());
+        JButton nextUnreadButton = WindowsUtils.setupImageButton("next_unread", new NextUnreadAction());
 
         JToolBar toolbar = WindowsUtils.createToolBar(newThreadButton, null, prevUnreadButton, nextUnreadButton);
         add(toolbar, BorderLayout.NORTH);
@@ -391,20 +387,6 @@ public abstract class AThreadView extends AItemView {
         }
     }
 
-    private class PreviousUnreadSelector implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
-            selectPrevUnread(currentPost);
-        }
-    }
-
-    private class NextUnreadSelector implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
-            selectNextUnread(currentPost);
-        }
-    }
-
     private class LoadNextUnread implements IItemProcessor<Post> {
         @Override
         public void processItem(Post item) {
@@ -445,6 +427,38 @@ public abstract class AThreadView extends AItemView {
                         JOptionPane.WARNING_MESSAGE
                 );
             }
+        }
+    }
+
+    private class NewThreadAction extends AButtonAction {
+        public NewThreadAction() {
+            super(Messages.VIEW_THREAD_BUTTON_NEW_THREAD);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            mainFrame.editMessage(forumId, null);
+        }
+    }
+
+    private class PreviousUnreadAction extends AButtonAction {
+        private PreviousUnreadAction() {
+            super(Messages.VIEW_THREAD_BUTTON_PREVIOUS_UNREAD);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            selectPrevUnread(currentPost);
+        }
+    }
+
+    private class NextUnreadAction extends AButtonAction {
+        private NextUnreadAction() {
+            super(Messages.VIEW_THREAD_BUTTON_NEXT_UNREAD);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            selectNextUnread(currentPost);
         }
     }
 }

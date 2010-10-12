@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.theme;
 
+import org.apache.commons.lang.StringUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -88,6 +89,11 @@ public final class IconPack {
         private Icon rolloverSelectedIcon;
 
         private IconsGetter(String buttonName) {
+            if (StringUtils.isBlank(buttonName)) {
+                // No icons is provided.
+                return;
+            }
+
             String imageSet = pathPrefix + "/button/" + buttonName + '/';
             // Load icons for the button.
             // If default icon is not present a MissingResourceException will be thrown.

@@ -8,6 +8,7 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IInternationazable;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
@@ -28,7 +29,6 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -48,9 +48,9 @@ public class MessageView extends AItemView implements IInternationazable {
 
     private final JTextPane messageTextPane = new JTextPane();
 
-    private final JButton marksButton = new JButton();
-    private final JLabel userInfoLabel = new JLabel();
-    private final JLabel messageDateLabel = new JLabel();
+    private JButton marksButton;
+    private JLabel userInfoLabel = new JLabel();
+    private JLabel messageDateLabel = new JLabel();
     private JLabel userLabel = new JLabel();
     private JLabel dateLabel = new JLabel();
     private JButton answer;
@@ -94,6 +94,7 @@ public class MessageView extends AItemView implements IInternationazable {
         messageInfoPane.add(dateLabel);
         messageInfoPane.add(messageDateLabel);
 
+        marksButton = WindowsUtils.setupImageButton(null, new ShowMarksAction());
         marksButton.setDefaultCapable(false);
         marksButton.setFocusable(false);
         marksButton.setFocusPainted(false);
@@ -102,13 +103,6 @@ public class MessageView extends AItemView implements IInternationazable {
         marksButton.setVerticalAlignment(SwingConstants.BOTTOM);
         marksButton.setBackground(Color.white);
         marksButton.setOpaque(false);
-        marksButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                RatingDialog rd = new RatingDialog(SwingUtilities.windowForComponent(MessageView.this), messageId);
-                WindowsUtils.center(rd, marksButton);
-                rd.setVisible(true);
-            }
-        });
         marksButton.setRolloverEnabled(true);
         marksButton.setVisible(false);
 
@@ -124,23 +118,21 @@ public class MessageView extends AItemView implements IInternationazable {
 
         final MarkRender markRender = new MarkRender(ResourceUtils.loadIcon("images/marks/select.gif"));
 
-        marks = new JComboBox(marksModel);
-        marks.setFocusable(false);
-        marks.setToolTipText(Messages.DESCRIPTION_MARK_SELECT.get());
-        marks.setRenderer(markRender);
-        marks.addActionListener(new ActionListener() {
+        AButtonAction marksAction = new AButtonAction(Messages.DESCRIPTION_MARK_SELECT) {
             public void actionPerformed(ActionEvent e) {
                 marks.setPopupVisible(false);
                 chooseMark(marksModel.getSelectedItem());
                 marksModel.reset();
             }
-        });
+        };
 
-        answer = WindowsUtils.setupImageButton("reply", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.editMessage(forumId, messageId);
-            }
-        }, Messages.BUTTON_REPLY_TOOLTIP);
+        marks = new JComboBox(marksModel);
+        marks.setFocusable(false);
+        marks.setToolTipText(marksAction.getMessage().get());
+        marks.setRenderer(markRender);
+        marks.addActionListener(marksAction);
+
+        answer = WindowsUtils.setupImageButton("reply", new ReplyAction());
 
         controls.add(answer);
         controls.add(marks);
@@ -364,6 +356,29 @@ public class MessageView extends AItemView implements IInternationazable {
                     log.warn("Cann't store mark " + mark + " for message [id=" + messageId + "].");
                 }
             }
+        }
+    }
+
+    private class ReplyAction extends AButtonAction {
+        public ReplyAction() {
+            super(Messages.BUTTON_REPLY_TOOLTIP);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            mainFrame.editMessage(forumId, messageId);
+        }
+    }
+
+    private class ShowMarksAction extends AButtonAction {
+        public ShowMarksAction() {
+            super(Messages.BUTTON_MARKS_TOOLTIP);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            RatingDialog rd = new RatingDialog(SwingUtilities.windowForComponent(MessageView.this), messageId);
+            WindowsUtils.center(rd, marksButton);
+            rd.setVisible(true);
         }
     }
 }

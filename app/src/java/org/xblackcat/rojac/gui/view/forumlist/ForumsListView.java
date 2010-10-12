@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Messages;
@@ -26,7 +27,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
@@ -106,44 +106,32 @@ public class ForumsListView extends AView {
             }
         });
 
-        JToggleButton filledOnlyButton = WindowsUtils.setupToggleButton("filled_only", new ActionListener() {
+        JToggleButton filledOnlyButton = WindowsUtils.setupToggleButton("filled_only", new AButtonAction(Messages.VIEW_FORUMS_BUTTON_FILLED) {
             public void actionPerformed(ActionEvent e) {
                 boolean newState = !forumsRowFilter.isNotEmpty();
                 Property.VIEW_FORUM_LIST_FILLED_ONLY.set(newState);
                 forumsRowFilter.setNotEmpty(newState);
                 forumsRowSorter.sort();
             }
-        }, Messages.VIEW_FORUMS_BUTTON_FILLED);
-        JToggleButton subscribedOnlyButton = WindowsUtils.setupToggleButton("subscribed_only", new ActionListener() {
+        });
+        JToggleButton subscribedOnlyButton = WindowsUtils.setupToggleButton("subscribed_only", new AButtonAction(Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED) {
             public void actionPerformed(ActionEvent e) {
                 boolean newState = !forumsRowFilter.isSubscribed();
                 forumsRowFilter.setSubscribed(newState);
                 Property.VIEW_FORUM_LIST_SUBSCRIBED_ONLY.set(newState);
                 forumsRowSorter.sort();
             }
-        }, Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED);
-        JToggleButton unreadOnlyButton = WindowsUtils.setupToggleButton("unread_only", new ActionListener() {
+        });
+        JToggleButton unreadOnlyButton = WindowsUtils.setupToggleButton("unread_only", new AButtonAction(Messages.VIEW_FORUMS_BUTTON_HASUNREAD) {
             public void actionPerformed(ActionEvent e) {
                 boolean newState = !forumsRowFilter.isUnread();
                 forumsRowFilter.setUnread(newState);
                 Property.VIEW_FORUM_LIST_UNREAD_ONLY.set(newState);
                 forumsRowSorter.sort();
             }
-        }, Messages.VIEW_FORUMS_BUTTON_HASUNREAD);
+        });
 
-        JButton updateListButton = WindowsUtils.setupImageButton("update", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Request.GET_FORUMS_LIST.process(
-                        SwingUtilities.windowForComponent(ForumsListView.this),
-                        new IResultHandler() {
-                            @Override
-                            public void process(AffectedMessage... messages) {
-                                ServiceFactory.getInstance().getDataDispatcher().processPacket(new ProcessPacket(PacketType.ForumsLoaded));
-                            }
-                        }
-                );
-            }
-        }, Messages.VIEW_FORUMS_BUTTON_UPDATE);
+        JButton updateListButton = WindowsUtils.setupImageButton("update", new UpdateForumListAction());
 
         JToolBar toolBar = WindowsUtils.createToolBar(
                 updateListButton,
@@ -277,6 +265,24 @@ public class ForumsListView extends AView {
             }
 
             loadForumStatistic(ids);
+        }
+    }
+
+    private class UpdateForumListAction extends AButtonAction {
+        public UpdateForumListAction() {
+            super(Messages.VIEW_FORUMS_BUTTON_UPDATE);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Request.GET_FORUMS_LIST.process(
+                    SwingUtilities.windowForComponent(ForumsListView.this),
+                    new IResultHandler() {
+                        @Override
+                        public void process(AffectedMessage... messages) {
+                            ServiceFactory.getInstance().getDataDispatcher().processPacket(new ProcessPacket(PacketType.ForumsLoaded));
+                        }
+                    }
+            );
         }
     }
 }

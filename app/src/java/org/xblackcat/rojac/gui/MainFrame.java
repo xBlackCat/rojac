@@ -11,6 +11,7 @@ import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.view.FavoritesView;
@@ -23,12 +24,20 @@ import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.*;
+import org.xblackcat.rojac.util.DialogHelper;
+import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.SynchronizationUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -182,27 +191,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         JPanel threadsPane = new JPanel(new BorderLayout(0, 0));
 
         // Setup toolbar
-        JButton updateButton = WindowsUtils.setupImageButton("update", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                SynchronizationUtils.startSynchronization(MainFrame.this);
-            }
-        }, Messages.MAINFRAME_BUTTON_UPDATE);
-        JButton loadMessageButton = WindowsUtils.setupImageButton("extramessage", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                extraMessagesDialog(null);
-            }
-        }, Messages.MAINFRAME_BUTTON_LOADMESSAGE);
-        JButton settingsButton = WindowsUtils.setupImageButton("settings", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                DialogHelper.showOptionsDialog(MainFrame.this);
-            }
-        }, Messages.MAINFRAME_BUTTON_SETTINGS);
-        JButton aboutButton = WindowsUtils.setupImageButton("about", new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DialogHelper.showAboutDialog(MainFrame.this);
-            }
-        }, Messages.MAINFRAME_BUTTON_ABOUT);
+        JButton updateButton = WindowsUtils.setupImageButton("update", new SynchronizationAction());
+        JButton loadMessageButton = WindowsUtils.setupImageButton("extramessage", new LoadExtraMessagesAction());
+        JButton settingsButton = WindowsUtils.setupImageButton("settings", new SettingsAction());
+        JButton aboutButton = WindowsUtils.setupImageButton("about", new AboutAction());
 
         JToolBar toolBar = WindowsUtils.createToolBar(
                 updateButton,
@@ -538,6 +530,47 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
             } else {
                 DialogHelper.showExceptionDialog(new RuntimeException("F*cka-morgana! Forum view is not loaded!"));
             }
+        }
+    }
+
+    private class AboutAction extends AButtonAction {
+        public AboutAction() {
+            super(Messages.MAINFRAME_BUTTON_ABOUT);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DialogHelper.showAboutDialog(MainFrame.this);
+        }
+    }
+
+    private class SettingsAction extends AButtonAction {
+        public SettingsAction() {
+            super(Messages.MAINFRAME_BUTTON_SETTINGS);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            DialogHelper.showOptionsDialog(MainFrame.this);
+        }
+    }
+
+    private class LoadExtraMessagesAction extends AButtonAction {
+        public LoadExtraMessagesAction() {
+            super(Messages.MAINFRAME_BUTTON_LOADMESSAGE);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            extraMessagesDialog(null);
+        }
+    }
+
+    private class SynchronizationAction extends AButtonAction {
+        public SynchronizationAction() {
+            super(Messages.MAINFRAME_BUTTON_UPDATE);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            SynchronizationUtils.startSynchronization(MainFrame.this);
         }
     }
 }
