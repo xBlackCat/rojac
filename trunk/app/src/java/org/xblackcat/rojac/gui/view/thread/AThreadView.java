@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.keyboard.ShortCut;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
@@ -50,11 +51,19 @@ public abstract class AThreadView extends AItemView {
         JScrollPane sp = new JScrollPane(threadsContainer);
         add(sp, BorderLayout.CENTER);
 
-        JButton newThreadButton = WindowsUtils.setupImageButton("new_thread", new NewThreadAction());
-        JButton prevUnreadButton = WindowsUtils.setupImageButton("prev_unread", new PreviousUnreadAction());
-        JButton nextUnreadButton = WindowsUtils.setupImageButton("next_unread", new NextUnreadAction());
+        JButton newThreadButton = registerImageButton("new_thread", new NewThreadAction());
+        JButton prevUnreadButton = registerImageButton("prev_unread", new PreviousUnreadAction());
+        JButton nextUnreadButton = registerImageButton("next_unread", new NextUnreadAction());
 
         JToolBar toolbar = WindowsUtils.createToolBar(newThreadButton, null, prevUnreadButton, nextUnreadButton);
+
+        threadsContainer.setInputMap(
+                WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+                WindowsUtils.copyShortcuts(
+                        getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT),
+                        threadsContainer.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                )
+        );
         add(toolbar, BorderLayout.NORTH);
     }
 
@@ -432,7 +441,7 @@ public abstract class AThreadView extends AItemView {
 
     private class NewThreadAction extends AButtonAction {
         public NewThreadAction() {
-            super(Messages.VIEW_THREAD_BUTTON_NEW_THREAD);
+            super(Messages.VIEW_THREAD_BUTTON_NEW_THREAD, ShortCut.NewThread);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -442,7 +451,7 @@ public abstract class AThreadView extends AItemView {
 
     private class PreviousUnreadAction extends AButtonAction {
         private PreviousUnreadAction() {
-            super(Messages.VIEW_THREAD_BUTTON_PREVIOUS_UNREAD);
+            super(Messages.VIEW_THREAD_BUTTON_PREVIOUS_UNREAD, ShortCut.PrevUnreadMessage);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -453,7 +462,7 @@ public abstract class AThreadView extends AItemView {
 
     private class NextUnreadAction extends AButtonAction {
         private NextUnreadAction() {
-            super(Messages.VIEW_THREAD_BUTTON_NEXT_UNREAD);
+            super(Messages.VIEW_THREAD_BUTTON_NEXT_UNREAD, ShortCut.NextUnreadMessage);
         }
 
         public void actionPerformed(ActionEvent e) {
