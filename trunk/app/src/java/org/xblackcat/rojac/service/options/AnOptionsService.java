@@ -4,11 +4,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.options.converter.IConverter;
-import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.PropertyUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -75,6 +76,11 @@ abstract class AnOptionsService implements IOptionsService {
     @SuppressWarnings({"unchecked"})
     @Override
     public <T> T getProperty(Property<T> key) {
+        T cache = key.getCache();
+        if (cache != null) {
+            return cache;
+        }
+
         String name = key.getName();
         Class<?> type = key.getType();
 
@@ -82,7 +88,19 @@ abstract class AnOptionsService implements IOptionsService {
 
         // Handle enums in special way
         if (Enum.class.isAssignableFrom(type)) {
-            return (T) RojacUtils.toEnum((Class<Enum>) type, val);
+            T value = (T) PropertyUtils.toEnum((Class<Enum>) type, val);
+            key.setCache(value);
+            return value;
+        }
+        // Handle enum sets in special way
+        if (EnumSet.class.isAssignableFrom(type)) {
+            T keyDefault = key.getDefault();
+            if (keyDefault == null) {
+                throw new RuntimeException("Parameter with EnumSet type should have default values!");
+            }
+            T value = (T) PropertyUtils.toEnumSet((EnumSet) keyDefault, val);
+            key.setCache(value);
+            return value;
         }
         IConverter<T> conv;
 
@@ -90,7 +108,9 @@ abstract class AnOptionsService implements IOptionsService {
             conv = (IConverter<T>) converters.get(type);
             if (conv != null) {
                 try {
-                    return conv.convert(val);
+                    T value = conv.convert(val);
+                    key.setCache(value);
+                    return value;
                 } catch (RuntimeException e) {
                     log.error("Can not load property " + name, e);
                     throw e;
@@ -125,8 +145,22 @@ abstract class AnOptionsService implements IOptionsService {
         if (Enum.class.isAssignableFrom(type)) {
             String v = newValue == null ? null : ((Enum) newValue).name();
             String val = setProperty(name, v);
-            return (T) RojacUtils.toEnum((Class<Enum>) type, val);
+            key.setCache(newValue);
+            return (T) PropertyUtils.toEnum((Class<Enum>) type, val);
         }
+
+        // Handle enum sets in special way
+        if (EnumSet.class.isAssignableFrom(type)) {
+            String v = newValue == null ? null : PropertyUtils.toString((EnumSet<? extends Enum>) newValue);
+            String val = setProperty(name, v);
+            key.setCache(newValue);
+            T keyDefault = key.getDefault();
+            if (keyDefault == null) {
+                throw new RuntimeException("Parameter with EnumSet type should have default values!");
+            }
+            return (T) PropertyUtils.toEnumSet((EnumSet) keyDefault, val);
+        }
+
         IConverter conv;
 
         do {
@@ -134,6 +168,7 @@ abstract class AnOptionsService implements IOptionsService {
             if (conv != null) {
                 try {
                     String val = setProperty(name, conv.toString(newValue));
+                    key.setCache(newValue);
                     return (T) conv.convert(val);
                 } catch (RuntimeException e) {
                     log.error("Can not load property " + name, e);

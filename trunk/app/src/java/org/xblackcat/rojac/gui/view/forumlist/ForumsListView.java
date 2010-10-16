@@ -6,6 +6,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.keyboard.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Messages;
@@ -42,7 +43,12 @@ public class ForumsListView extends AView {
     private static final Log log = LogFactory.getLog(ForumsListView.class);
 
     // Data and models
-    private ForumTableModel forumsModel = new ForumTableModel();
+    private final ForumTableModel forumsModel = new ForumTableModel();
+    private final ForumsRowFilter forumsRowFilter = new ForumsRowFilter();
+    private final TableRowSorter<ForumTableModel> forumTableModelTableRowSorter = new TableRowSorter<ForumTableModel>(forumsModel);
+    private final JToggleButton filled_only;
+    private final JToggleButton subscribed_only;
+    private final JToggleButton unread_only;
 
     public ForumsListView(IRootPane rootPane) {
         super(rootPane);
@@ -87,68 +93,71 @@ public class ForumsListView extends AView {
             }
         });
 
-        final ForumsRowFilter forumsRowFilter = new ForumsRowFilter();
-        final TableRowSorter<ForumTableModel> forumsRowSorter = new TableRowSorter<ForumTableModel>(forumsModel);
-        forumsRowSorter.setComparator(0, new ForumDataComparator());
-        forumsRowSorter.setStringConverter(new ForumsTableStringConverter());
-        forumsRowSorter.setSortable(0, true);
-        forumsRowSorter.setSortsOnUpdates(false);
-        forumsRowSorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
-        forumsRowSorter.setRowFilter(forumsRowFilter);
-        forumsRowSorter.sort();
-        forums.setRowSorter(forumsRowSorter);
+        forumTableModelTableRowSorter.setComparator(0, new ForumDataComparator());
+        forumTableModelTableRowSorter.setStringConverter(new ForumsTableStringConverter());
+        forumTableModelTableRowSorter.setSortable(0, true);
+        forumTableModelTableRowSorter.setSortsOnUpdates(false);
+        forumTableModelTableRowSorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
+        forumTableModelTableRowSorter.setRowFilter(forumsRowFilter);
+        forumTableModelTableRowSorter.sort();
+        forums.setRowSorter(forumTableModelTableRowSorter);
 
         forumsModel.addTableModelListener(new TableModelListener() {
             public void tableChanged(TableModelEvent e) {
                 if (e.getType() == TableModelEvent.UPDATE) {
-                    forumsRowSorter.sort();
+                    forumTableModelTableRowSorter.sort();
                 }
             }
         });
 
-        JToggleButton filledOnlyButton = WindowsUtils.setupToggleButton("filled_only", new AButtonAction(Messages.VIEW_FORUMS_BUTTON_FILLED) {
-            public void actionPerformed(ActionEvent e) {
-                boolean newState = !forumsRowFilter.isNotEmpty();
-                Property.VIEW_FORUM_LIST_FILLED_ONLY.set(newState);
-                forumsRowFilter.setNotEmpty(newState);
-                forumsRowSorter.sort();
-            }
-        });
-        JToggleButton subscribedOnlyButton = WindowsUtils.setupToggleButton("subscribed_only", new AButtonAction(Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED) {
-            public void actionPerformed(ActionEvent e) {
-                boolean newState = !forumsRowFilter.isSubscribed();
-                forumsRowFilter.setSubscribed(newState);
-                Property.VIEW_FORUM_LIST_SUBSCRIBED_ONLY.set(newState);
-                forumsRowSorter.sort();
-            }
-        });
-        JToggleButton unreadOnlyButton = WindowsUtils.setupToggleButton("unread_only", new AButtonAction(Messages.VIEW_FORUMS_BUTTON_HASUNREAD) {
-            public void actionPerformed(ActionEvent e) {
-                boolean newState = !forumsRowFilter.isUnread();
-                forumsRowFilter.setUnread(newState);
-                Property.VIEW_FORUM_LIST_UNREAD_ONLY.set(newState);
-                forumsRowSorter.sort();
-            }
-        });
+        filled_only = WindowsUtils.registerToggleButton(
+                this,
+                "filled_only",
+                new FilterSetAction(
+                        Messages.VIEW_FORUMS_BUTTON_FILLED,
+                        ShortCut.ShowOnlyNotEmpty,
+                        ForumFilterState.NotEmpty
+                )
+        );
+        subscribed_only = WindowsUtils.registerToggleButton(
+                this,
+                "subscribed_only",
+                new FilterSetAction(
+                        Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED,
+                        ShortCut.ShowOnlySubscribed,
+                        ForumFilterState.Subscribed
+                )
+        );
+        unread_only = WindowsUtils.registerToggleButton(
+                this,
+                "unread_only",
+                new FilterSetAction(
+                        Messages.VIEW_FORUMS_BUTTON_HASUNREAD,
+                        ShortCut.ShowOnlyUnread,
+                        ForumFilterState.Unread
+                )
+        );
 
         JButton updateListButton = WindowsUtils.setupImageButton("update", new UpdateForumListAction());
 
         JToolBar toolBar = WindowsUtils.createToolBar(
                 updateListButton,
                 null,
-                filledOnlyButton,
-                subscribedOnlyButton,
-                unreadOnlyButton);
+                filled_only,
+                subscribed_only,
+                unread_only);
 
-        filledOnlyButton.setSelected(Property.VIEW_FORUM_LIST_FILLED_ONLY.get());
-        subscribedOnlyButton.setSelected(Property.VIEW_FORUM_LIST_SUBSCRIBED_ONLY.get());
-        unreadOnlyButton.setSelected(Property.VIEW_FORUM_LIST_UNREAD_ONLY.get());
+        forumsRowFilter.setState(Property.VIEW_FORUM_LIST_FILTER.get());
 
-        forumsRowFilter.setNotEmpty(Property.VIEW_FORUM_LIST_FILLED_ONLY.get());
-        forumsRowFilter.setSubscribed(Property.VIEW_FORUM_LIST_SUBSCRIBED_ONLY.get());
-        forumsRowFilter.setUnread(Property.VIEW_FORUM_LIST_UNREAD_ONLY.get());
-        
+        updateButtonsState();
+
         add(toolBar, BorderLayout.NORTH);
+    }
+
+    private void updateButtonsState() {
+        filled_only.setSelected(forumsRowFilter.is(ForumFilterState.NotEmpty));
+        subscribed_only.setSelected(forumsRowFilter.is(ForumFilterState.Subscribed));
+        unread_only.setSelected(forumsRowFilter.is(ForumFilterState.Unread));
     }
 
     public void applySettings() {
@@ -283,6 +292,23 @@ public class ForumsListView extends AView {
                         }
                     }
             );
+        }
+    }
+
+    private class FilterSetAction extends AButtonAction {
+        protected final ForumFilterState option;
+
+        public FilterSetAction(Messages message, ShortCut showOnlyNotEmpty, ForumFilterState option) {
+            super(message, showOnlyNotEmpty);
+            this.option = option;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            boolean newState = !forumsRowFilter.is(option);
+            forumsRowFilter.set(option, newState);
+            forumTableModelTableRowSorter.sort();
+            Property.VIEW_FORUM_LIST_FILTER.set(forumsRowFilter.getState());
+            updateButtonsState();
         }
     }
 }

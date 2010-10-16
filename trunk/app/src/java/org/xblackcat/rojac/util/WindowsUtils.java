@@ -72,6 +72,13 @@ public final class WindowsUtils {
         return setupToggleButton(imageSet, action, null);
     }
 
+
+    public static JToggleButton registerToggleButton(JComponent comp, String imageSet, AButtonAction action) {
+        registerAction(comp, action);
+
+        return setupToggleButton(imageSet, action, null);
+    }
+
     public static JToggleButton setupToggleButton(String buttonName, AButtonAction action, ButtonGroup bg) {
         IButtonIcons icons = Property.ROJAC_GUI_ICONPACK.get().getImageButtonIcons(buttonName);
 
@@ -328,12 +335,16 @@ public final class WindowsUtils {
     }
 
     public static JButton registerImageButton(JComponent comp, String buttonName, AButtonAction action) {
+        registerAction(comp, action);
+
+        return setupImageButton(buttonName, action);
+    }
+
+    private static void registerAction(JComponent comp, AButtonAction action) {
         ShortCut sc = action.getShortCut();
         if (sc != null) {
             comp.getInputMap(sc.getCondition()).put(sc.getKeyStroke(), sc.name());
             comp.getActionMap().put(sc.name(), action);
         }
-
-        return setupImageButton(buttonName, action);
     }
 }

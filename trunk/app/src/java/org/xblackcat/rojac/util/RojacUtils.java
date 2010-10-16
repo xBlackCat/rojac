@@ -7,8 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.data.IRSDNable;
-import org.xblackcat.rojac.gui.dialogs.PropertyNode;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -26,7 +24,6 @@ import java.util.regex.Pattern;
  * @author xBlackCat
  */
 
-@SuppressWarnings({"unchecked"})
 public final class RojacUtils {
     private static final Log log = LogFactory.getLog(RojacUtils.class);
 
@@ -126,84 +123,6 @@ public final class RojacUtils {
     /*
     * Util methods for converting values.
     */
-
-    public static <T extends Enum<T>> T toEnum(Class<T> enumClass, String val) {
-        if (val != null) {
-            return Enum.valueOf(enumClass, val);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Generates a tree path of the specified property by its name.
-     *
-     * @param p property object to generate a path of.
-     *
-     * @return root of the path.
-     */
-    public static PropertyNode propertyPath(Property p) {
-        String propertyName = p.getName();
-
-        String[] names = propertyName.split("\\.+");
-
-        if (ArrayUtils.isEmpty(names)) {
-            return null;
-        }
-
-        if (names.length == 1) {
-            return new PropertyNode(names[0], null, p);
-        }
-
-        PropertyNode[] nodes = new PropertyNode[names.length];
-
-        nodes[0] = new PropertyNode(names[0]);
-
-        int i = 1, lastNode = names.length - 1;
-        while (i < lastNode) {
-            String name = names[i];
-
-            nodes[i] = new PropertyNode(name, nodes[i - 1]);
-            nodes[i - 1].addChild(nodes[i]);
-
-            i++;
-        }
-
-        PropertyNode lastParent = nodes[names.length - 2];
-        lastParent.addChild(new PropertyNode(names[lastNode], lastParent, p));
-
-        return nodes[0];
-    }
-
-    public static boolean addProperty(PropertyNode root, Property p) {
-        if (root == null) {
-            throw new NullPointerException("Node root is null");
-        }
-
-        PropertyNode path = propertyPath(p);
-
-        if (!path.equals(root)) {
-            return false;
-        }
-
-        if (path.isEmpty()) {
-            return false;
-        }
-
-        do {
-            // Assumes that path have only one child or no one.
-            path = path.getChild(0);
-
-            if (!root.has(path)) {
-                root.addChild(path);
-                return true;
-            }
-
-            root = root.getChild(root.indexOf(path));
-        } while (!path.isEmpty());
-
-        return false;
-    }
 
     /**
      * Returns a list of available locales for specified bundle.
