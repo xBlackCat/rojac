@@ -19,6 +19,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -59,7 +60,7 @@ public abstract class AThreadView extends AItemView {
 
         threadsContainer.setInputMap(
                 WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                WindowsUtils.copyShortcuts(
+                ShortCutUtils.mergeInputMaps(
                         getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT),
                         threadsContainer.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                 )
