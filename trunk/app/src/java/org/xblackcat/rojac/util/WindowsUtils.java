@@ -1,30 +1,19 @@
 package org.xblackcat.rojac.util;
 
-import org.apache.commons.lang.WordUtils;
 import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.keyboard.ShortCut;
 import org.xblackcat.rojac.gui.theme.IButtonIcons;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author xBlackCat
  */
 
 public final class WindowsUtils {
-    private static final String BUTTON_IMAGES_PREFIX = "button/";
-    private static final VKCollection vkCollect = new VKCollection();
-
-    public static final Insets EMPTY_MARGIN = new Insets(0, 2, 0, 2);
-
     private WindowsUtils() {
     }
 
@@ -117,15 +106,7 @@ public final class WindowsUtils {
         button.addActionListener(action);
 
         // Set texts
-        String toolTipStr = toolTip.get();
-        if (action.getShortCut() != null && action.getShortCut().getKeyStroke() != null) {
-            toolTipStr = String.format(
-                    "<html><body>%1$s <span style='font-style:italic;'>%2$s</span>",
-                    toolTipStr,
-                    keyStrokeHint(action.getShortCut().getKeyStroke())
-            );
-        }
-        button.setToolTipText(toolTipStr);
+        button.setToolTipText(getToolTip(toolTip, action.getShortCut()));
         button.setText(action.getMessage().get());
         return button;
     }
@@ -169,17 +150,31 @@ public final class WindowsUtils {
 
         // Set other options
         button.addActionListener(action);
-        String toolTipStr = action.getMessage().get();
-        if (action.getShortCut() != null && action.getShortCut().getKeyStroke() != null) {
-            toolTipStr = String.format(
-                    "<html><body>%1$s <span style='font-style:italic;'>%2$s</span>",
-                    toolTipStr,
-                    keyStrokeHint(action.getShortCut().getKeyStroke())
-            );
-        }
-        button.setToolTipText(toolTipStr);
+        button.setToolTipText(getToolTip(action.getMessage(), action.getShortCut()));
     }
 
+    /**
+     * Generate tooltip string for action: use message as tooltip base and add an shortcut mnemonic if any.
+     *
+     * @param toolTip  tooltip text.
+     * @param shortCut keyboard surtcut for the action.
+     *
+     * @return tool tip text.
+     */
+    private static String getToolTip(Messages toolTip, ShortCut shortCut) {
+        String toolTipStr = toolTip.get();
+        if (shortCut != null && shortCut.getKeyStroke() != null) {
+            return toolTipStr + " (" + ShortCutUtils.keyStrokeHint(shortCut.getKeyStroke()) + ')';
+        } else {
+            return toolTipStr;
+        }
+    }
+
+    /**
+     * Place specified window at the center of the screen.
+     *
+     * @param window window to center.
+     */
     public static void centerOnScreen(Window window) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension windowSize = window.getSize();
@@ -196,6 +191,15 @@ public final class WindowsUtils {
                 (screenSize.height - windowSize.height) / 2);
     }
 
+    /**
+     * Place specified window at the center of specified component. If component is not visible or <code>null</code> -
+     * window will be placed at the center of the screen.
+     *
+     * @param window window to be centered
+     * @param parent anchor component.
+     *
+     * @see #centerOnScreen(java.awt.Window)
+     */
     public static void center(Window window, Component parent) {
         if (parent == null || !parent.isVisible()) {
             // Parent is not visible - center window on a screen
@@ -234,6 +238,14 @@ public final class WindowsUtils {
         window.setBounds(x, y, w, h);
     }
 
+    /**
+     * Creates a toolbar and fills it with specified components. If component is <code>null</code> a separator will be
+     * placed.
+     *
+     * @param components list of components to be placed into a new toolbar.
+     *
+     * @return a toolbar with specified components.
+     */
     public static JToolBar createToolBar(JComponent... components) {
         JToolBar toolBar = new JToolBar();
 
@@ -313,100 +325,6 @@ public final class WindowsUtils {
         }
 
         return WindowsUtils.coverComponent(buttonPane, align);
-    }
-
-    public static InputMap copyShortcuts(InputMap from, InputMap to) {
-        InputMap copy = new InputMap();
-        for (KeyStroke k : to.keys()) {
-            copy.put(k, to.get(k));
-        }
-
-        for (KeyStroke k : from.keys()) {
-            copy.put(k, from.get(k));
-        }
-
-        copy.setParent(to.getParent());
-
-        return copy;
-    }
-
-    public static String keyStrokeHint(KeyStroke keyStroke) {
-        int modifiers = keyStroke.getModifiers();
-
-        StringBuffer buf = new StringBuffer();
-
-        if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
-            buf.append("Shift+");
-        }
-        if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
-            buf.append("Ctrl+");
-        }
-        if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
-            buf.append("Meta+");
-        }
-        if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
-            buf.append("Alt+");
-        }
-        if ((modifiers & InputEvent.ALT_GRAPH_DOWN_MASK) != 0) {
-            buf.append("AltGr+");
-        }
-
-        buf.append(WordUtils.capitalizeFully(getVKText(keyStroke.getKeyCode())));
-
-        return buf.toString();
-    }
-
-    static String getVKText(int key) {
-        String name = vkCollect.findName(key);
-        if (name != null) {
-            return name.substring(3);
-        }
-        int expected_modifiers =
-                (Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL);
-
-        Field[] fields = KeyEvent.class.getDeclaredFields();
-        for (Field field : fields) {
-            try {
-                if (field.getModifiers() == expected_modifiers
-                        && field.getType() == Integer.TYPE
-                        && field.getName().startsWith("VK_")
-                        && field.getInt(KeyEvent.class) == key) {
-                    name = field.getName();
-                    vkCollect.put(name, key);
-                    return name.substring(3);
-                }
-            } catch (IllegalAccessException e) {
-                assert (false);
-            }
-        }
-        return "UNKNOWN";
-    }
-
-    static class VKCollection {
-        Map<Integer, String> code2name;
-        Map<String, Integer> name2code;
-
-        public VKCollection() {
-            code2name = new HashMap<Integer, String>();
-            name2code = new HashMap<String, Integer>();
-        }
-
-        public synchronized void put(String name, int code) {
-            assert (name != null);
-            assert (findName(code) == null);
-            assert (findCode(name) == null);
-            code2name.put(code, name);
-            name2code.put(name, code);
-        }
-
-        public synchronized Integer findCode(String name) {
-            assert (name != null);
-            return name2code.get(name);
-        }
-
-        public synchronized String findName(int code) {
-            return code2name.get(code);
-        }
     }
 
 }
