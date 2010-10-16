@@ -2,12 +2,15 @@ package org.xblackcat.rojac.service.options;
 
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.gui.theme.IconPack;
+import org.xblackcat.rojac.gui.view.forumlist.ForumFilterState;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.ref.SoftReference;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.Locale;
 
@@ -83,9 +86,7 @@ public final class Property<T> {
     public static final Property<Boolean> MESSAGE_PANE_SHOW_MARKS = create("rojac.viewer.show_marks_pane", Boolean.FALSE);
 
     // Forum list view state properties.
-    public static final Property<Boolean> VIEW_FORUM_LIST_SUBSCRIBED_ONLY = createPrivate("rojac.view.forum_list.subscribed_only", Boolean.FALSE);
-    public static final Property<Boolean> VIEW_FORUM_LIST_UNREAD_ONLY = createPrivate("rojac.view.forum_list.unread_only", Boolean.FALSE);
-    public static final Property<Boolean> VIEW_FORUM_LIST_FILLED_ONLY = createPrivate("rojac.view.forum_list.filled_only", Boolean.FALSE);
+    public static final Property<EnumSet<ForumFilterState>> VIEW_FORUM_LIST_FILTER = createPrivate("rojac.view.forum_list.filter", EnumSet.noneOf(ForumFilterState.class));
 
     @SuppressWarnings({"unchecked"})
     static <V> Property<V> create(String name, V defaultValue, IValueChecker<V> checker) {
@@ -168,13 +169,15 @@ public final class Property<T> {
     }
 
     /**
-     * Only public properties can be shown in Options dialog. 
+     * Only public properties can be shown in Options dialog.
      */
     private final boolean pub;
     private final String name;
     private final Class<T> type;
     private final T defaultValue;
     private final IValueChecker<T> checker;
+
+    private SoftReference<T> cache;
 
     private Property(boolean pub, String name, Class<T> type, T defaultValue, IValueChecker<T> checker) {
         if (name == null) throw new NullPointerException("Property name can not be null.");
@@ -309,4 +312,11 @@ public final class Property<T> {
         return "Property[" + name + '(' + type.getName() + ")]";
     }
 
+    public T getCache() {
+        return cache != null ? cache.get() : null;
+    }
+
+    public void setCache(T cache) {
+        this.cache = new SoftReference<T>(cache);
+    }
 }

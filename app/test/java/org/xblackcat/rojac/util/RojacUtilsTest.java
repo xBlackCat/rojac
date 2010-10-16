@@ -42,7 +42,7 @@ public class RojacUtilsTest extends TestCase {
         // rojac.viewer.show.marks.pane (5 nodes)
         Property p = Property.MESSAGE_PANE_SHOW_MARKS;
 
-        PropertyNode node = RojacUtils.propertyPath(p);
+        PropertyNode node = PropertyUtils.propertyPath(p);
 
         assertEquals("rojac", node.getName());
         assertNull(node.getProperty());
@@ -80,7 +80,7 @@ public class RojacUtilsTest extends TestCase {
         assertEquals(0, childLevel2.childrenCount());
 
         // Process merge
-        assertTrue(RojacUtils.addProperty(rootNode, p));
+        assertTrue(PropertyUtils.addProperty(rootNode, p));
 
         assertEquals(1, rootNode.childrenCount());
         assertEquals(2, childLevel1.childrenCount());

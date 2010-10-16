@@ -6,7 +6,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.PropertyUtils;
 import org.xblackcat.rojac.util.SynchronizationUtils;
 import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -141,7 +141,7 @@ public class OptionsDialog extends JDialog {
             }
 
             if (root == null) {
-                root = RojacUtils.propertyPath(p);
+                root = PropertyUtils.propertyPath(p);
 
                 if (root == null) {
                     if (log.isTraceEnabled()) {
@@ -149,7 +149,7 @@ public class OptionsDialog extends JDialog {
                     }
                 }
             } else {
-                if (!RojacUtils.addProperty(root, p)) {
+                if (!PropertyUtils.addProperty(root, p)) {
                     if (log.isTraceEnabled()) {
                         log.trace("Can not add " + p + " to a root " + root.getName());
                     }

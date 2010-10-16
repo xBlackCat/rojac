@@ -4,18 +4,17 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 
 import javax.swing.*;
+import java.util.EnumSet;
 
 /**
  * @author xBlackCat
  */
 class ForumsRowFilter extends RowFilter<ForumTableModel, Integer> {
-    private boolean subscribed;
-    private boolean notEmpty;
-    private boolean unread;
+    private final EnumSet<ForumFilterState> state = EnumSet.noneOf(ForumFilterState.class);
 
     @Override
     public boolean include(Entry<? extends ForumTableModel, ? extends Integer> entry) {
-        if (!subscribed && !notEmpty && !unread) {
+        if (state.isEmpty()) {
             return true;
         }
         ForumTableModel m = entry.getModel();
@@ -25,42 +24,43 @@ class ForumsRowFilter extends RowFilter<ForumTableModel, Integer> {
         Forum f = fd.getForum();
         ForumStatistic fs = fd.getStat();
 
-        boolean include = true;
-
-        if (subscribed && f != null) {
-            include &= fd.isSubscribed();
+        if (state.contains(ForumFilterState.Subscribed) && f != null) {
+            if (!fd.isSubscribed()) {
+                return false;
+            }
         }
 
         if (fs != null) {
-            include &= !unread || fs.getUnreadMessages() > 0;
+            if (state.contains(ForumFilterState.Unread) && fs.getUnreadMessages() == 0){
+                return false;
+            }
 
-            include &= !notEmpty || fs.getTotalMessages() > 0;
+            if (state.contains(ForumFilterState.NotEmpty) && fs.getTotalMessages() <= 0) {
+                return false;
+            }
         }
 
-        return include;
+        return true;
     }
 
-    public void setSubscribed(boolean subscribed) {
-        this.subscribed = subscribed;
+    public void set(ForumFilterState s, boolean set) {
+        if (set) {
+            state.add(s);
+        } else {
+            state.remove(s);
+        }
     }
 
-    public void setNotEmpty(boolean notEmpty) {
-        this.notEmpty = notEmpty;
+    public boolean is(ForumFilterState s) {
+        return state.contains(s);
     }
 
-    public void setUnread(boolean unread) {
-        this.unread = unread;
+    public void setState(EnumSet<ForumFilterState> newState) {
+        state.clear();
+        state.addAll(newState);
     }
 
-    public boolean isSubscribed() {
-        return subscribed;
-    }
-
-    public boolean isNotEmpty() {
-        return notEmpty;
-    }
-
-    public boolean isUnread() {
-        return unread;
+    public EnumSet<ForumFilterState> getState() {
+        return state.clone();
     }
 }
