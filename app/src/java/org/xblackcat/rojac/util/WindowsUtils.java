@@ -327,4 +327,13 @@ public final class WindowsUtils {
         return WindowsUtils.coverComponent(buttonPane, align);
     }
 
+    public static JButton registerImageButton(JComponent comp, String buttonName, AButtonAction action) {
+        ShortCut sc = action.getShortCut();
+        if (sc != null) {
+            comp.getInputMap(sc.getCondition()).put(sc.getKeyStroke(), sc.name());
+            comp.getActionMap().put(sc.name(), action);
+        }
+
+        return setupImageButton(buttonName, action);
+    }
 }
