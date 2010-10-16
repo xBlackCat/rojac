@@ -63,6 +63,7 @@ public class PropertyUtils {
         return nodes[0];
     }
 
+    @SuppressWarnings({"unchecked"})
     public static boolean addProperty(PropertyNode root, Property p) {
         if (root == null) {
             throw new NullPointerException("Node root is null");
