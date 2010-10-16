@@ -52,9 +52,9 @@ public abstract class AThreadView extends AItemView {
         JScrollPane sp = new JScrollPane(threadsContainer);
         add(sp, BorderLayout.CENTER);
 
-        JButton newThreadButton = registerImageButton("new_thread", new NewThreadAction());
-        JButton prevUnreadButton = registerImageButton("prev_unread", new PreviousUnreadAction());
-        JButton nextUnreadButton = registerImageButton("next_unread", new NextUnreadAction());
+        JButton newThreadButton = WindowsUtils.registerImageButton(this, "new_thread", new NewThreadAction());
+        JButton prevUnreadButton = WindowsUtils.registerImageButton(this, "prev_unread", new PreviousUnreadAction());
+        JButton nextUnreadButton = WindowsUtils.registerImageButton(this, "next_unread", new NextUnreadAction());
 
         JToolBar toolbar = WindowsUtils.createToolBar(newThreadButton, null, prevUnreadButton, nextUnreadButton);
 

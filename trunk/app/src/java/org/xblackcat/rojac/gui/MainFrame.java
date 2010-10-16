@@ -14,6 +14,7 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
+import org.xblackcat.rojac.gui.keyboard.ShortCut;
 import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewHelper;
@@ -191,10 +192,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         JPanel threadsPane = new JPanel(new BorderLayout(0, 0));
 
         // Setup toolbar
-        JButton updateButton = WindowsUtils.setupImageButton("update", new SynchronizationAction());
-        JButton loadMessageButton = WindowsUtils.setupImageButton("extramessage", new LoadExtraMessagesAction());
-        JButton settingsButton = WindowsUtils.setupImageButton("settings", new SettingsAction());
-        JButton aboutButton = WindowsUtils.setupImageButton("about", new AboutAction());
+        JButton updateButton = WindowsUtils.registerImageButton(threadsPane, "update", new SynchronizationAction());
+        JButton loadMessageButton = WindowsUtils.registerImageButton(threadsPane, "extramessage", new LoadExtraMessagesAction());
+        JButton settingsButton = WindowsUtils.registerImageButton(threadsPane, "settings", new SettingsAction());
+        JButton aboutButton = WindowsUtils.registerImageButton(threadsPane, "about", new AboutAction());
 
         JToolBar toolBar = WindowsUtils.createToolBar(
                 updateButton,
@@ -535,7 +536,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
     private class AboutAction extends AButtonAction {
         public AboutAction() {
-            super(Messages.MAINFRAME_BUTTON_ABOUT);
+            super(Messages.MAINFRAME_BUTTON_ABOUT, ShortCut.About);
         }
 
         @Override
@@ -546,7 +547,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
     private class SettingsAction extends AButtonAction {
         public SettingsAction() {
-            super(Messages.MAINFRAME_BUTTON_SETTINGS);
+            super(Messages.MAINFRAME_BUTTON_SETTINGS, ShortCut.Settings);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -556,7 +557,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
     private class LoadExtraMessagesAction extends AButtonAction {
         public LoadExtraMessagesAction() {
-            super(Messages.MAINFRAME_BUTTON_LOADMESSAGE);
+            super(Messages.MAINFRAME_BUTTON_LOADMESSAGE, ShortCut.LoadExtraMessages);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -566,7 +567,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
     private class SynchronizationAction extends AButtonAction {
         public SynchronizationAction() {
-            super(Messages.MAINFRAME_BUTTON_UPDATE);
+            super(Messages.MAINFRAME_BUTTON_UPDATE, ShortCut.Synchronization);
         }
 
         public void actionPerformed(ActionEvent e) {

@@ -12,7 +12,12 @@ import java.awt.event.KeyEvent;
 public enum ShortCut {
     NextUnreadMessage(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK),
     PrevUnreadMessage(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK),
-    NewThread(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK),;
+    NewThread(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK),
+    Synchronization(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, 0),
+    LoadExtraMessages(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, KeyEvent.SHIFT_DOWN_MASK),
+    Settings(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK),
+    About(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F1, 0),
+    ;
 
     private final int condition;
     private final KeyStroke defKeystroke;
