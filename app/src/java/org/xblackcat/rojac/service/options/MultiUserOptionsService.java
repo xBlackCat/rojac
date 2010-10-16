@@ -5,7 +5,12 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -66,8 +71,8 @@ public final class MultiUserOptionsService extends AnOptionsService {
             String key = p.getName();
             String val = config.getProperty(key);
             if (val == null) {
-                if (log.isWarnEnabled()) {
-                    log.warn("Can not obtain value for the " + p + " from config file.");
+                if (log.isDebugEnabled()) {
+                    log.debug("Can not obtain value for the " + p + " from config file.");
                 }
                 continue;
             }
