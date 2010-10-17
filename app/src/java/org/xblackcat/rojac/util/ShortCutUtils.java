@@ -1,8 +1,11 @@
 package org.xblackcat.rojac.util;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.WordUtils;
+import org.xblackcat.rojac.gui.component.ShortCut;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
@@ -94,6 +97,47 @@ public class ShortCutUtils {
             }
         }
         return "UNKNOWN";
+    }
+
+    public static void updateShortCuts(Component component) {
+        if (component instanceof JComponent) {
+            // Update action maps
+            updateInputMap(((JComponent) component).getInputMap(JComponent.WHEN_FOCUSED));
+            updateInputMap(((JComponent) component).getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
+            updateInputMap(((JComponent) component).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW));
+        }
+
+        if (component instanceof Container) {
+            for (Component c : ((Container) component).getComponents()) {
+                updateShortCuts(c);
+            }
+        }
+    }
+
+    private static void updateInputMap(InputMap map) {
+        if (map == null) {
+            return;
+        }
+
+        KeyStroke[] keys = map.keys();
+        if (ArrayUtils.isEmpty(keys)) {
+            return;
+        }
+
+        for (KeyStroke key : keys) {
+            Object action = map.get(key);
+
+            if (action instanceof ShortCut) {
+                ShortCut sc = (ShortCut) action;
+                if (sc.getKeyStroke() != key) {
+                    // Shortcut was changed.
+                    map.remove(key);
+                    map.put(sc.getKeyStroke(), sc);
+                }
+            }
+        }
+
+        updateInputMap(map.getParent());
     }
 
     private static class VKCollection {
