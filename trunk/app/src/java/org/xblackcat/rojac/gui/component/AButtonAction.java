@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.component;
 
-import org.xblackcat.rojac.gui.keyboard.ShortCut;
 import org.xblackcat.rojac.i18n.Messages;
 
 import javax.swing.*;

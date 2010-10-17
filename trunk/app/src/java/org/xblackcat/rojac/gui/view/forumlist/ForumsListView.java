@@ -6,7 +6,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.component.AButtonAction;
-import org.xblackcat.rojac.gui.keyboard.ShortCut;
+import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Messages;

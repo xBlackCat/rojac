@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.util;
 
 import org.xblackcat.rojac.gui.component.AButtonAction;
-import org.xblackcat.rojac.gui.keyboard.ShortCut;
+import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.theme.IButtonIcons;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
@@ -343,8 +343,8 @@ public final class WindowsUtils {
     private static void registerAction(JComponent comp, AButtonAction action) {
         ShortCut sc = action.getShortCut();
         if (sc != null) {
-            comp.getInputMap(sc.getCondition()).put(sc.getKeyStroke(), sc.name());
-            comp.getActionMap().put(sc.name(), action);
+            comp.getInputMap(sc.getCondition()).put(sc.getKeyStroke(), sc);
+            comp.getActionMap().put(sc, action);
         }
     }
 }

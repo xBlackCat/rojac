@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.keyboard;
+package org.xblackcat.rojac.gui.component;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -24,10 +24,24 @@ public enum ShortCut {
     ShowOnlySubscribed(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, KeyEvent.VK_2, KeyEvent.CTRL_DOWN_MASK),
     ShowOnlyUnread(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, KeyEvent.VK_3, KeyEvent.CTRL_DOWN_MASK),
     ;
+    private static final String ACTION_PREFIX = "Action:";
+
+    public static ShortCut getShortCut(String action) {
+        if (!action.startsWith(ACTION_PREFIX)) {
+            return null;
+        }
+
+        try {
+            return valueOf(action.substring(ACTION_PREFIX.length()));
+        } catch (IllegalArgumentException e) {
+            // No such action shortcut.
+            return null;
+        }
+    }
 
     private final int condition;
     private final KeyStroke defKeystroke;
-    private KeyStroke keystroke;
+    private KeyStroke keyStroke;
 
     ShortCut(int condition, int keyCode, int modifier) {
         this.condition = condition;
@@ -35,11 +49,23 @@ public enum ShortCut {
     }
 
     public KeyStroke getKeyStroke() {
-        return keystroke == null ? defKeystroke : keystroke;
+        return keyStroke == null ? defKeystroke : keyStroke;
+    }
+
+    public void setShortCut(int keyCode, int modifier) {
+        keyStroke = KeyStroke.getKeyStroke(keyCode, modifier);
     }
 
     public int getCondition() {
         return condition;
     }
 
+    public String getActionName() {
+        return ACTION_PREFIX + name();
+    }
+
+    @Override
+    public String toString() {
+        return getActionName();
+    }
 }
