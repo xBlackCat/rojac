@@ -6,15 +6,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.IRSDNable;
+import org.xblackcat.rojac.service.options.CheckUpdatesEnum;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,11 +36,13 @@ public final class RojacUtils {
     public static final String VERSION = "0.1";
     public static final String VERSION_MODIFIER = "alpha";
     public static final String VERSION_STRING;
+    public static final Integer REVISION_NUMBER;
     public static final GlobalExceptionHandler GLOBAL_EXCEPTION_HANDLER = new GlobalExceptionHandler();
 
     static {
         StringBuilder versionString = new StringBuilder("Rojac v");
         versionString.append(VERSION);
+        Integer rev = null;
 
         if (StringUtils.isNotEmpty(VERSION_MODIFIER)) {
             versionString.append(" (");
@@ -49,6 +57,12 @@ public final class RojacUtils {
             // Remember - we are working only with build.xml revision!
             String revNum = revInfo.getProperty("revision");
             String file = revInfo.getProperty("relative.path");
+
+            try {
+                rev = Integer.parseInt(revNum);
+            } catch (NumberFormatException e) {
+                // Assume that we have no revision number :)
+            }
 
             // Now fill additional info
 
@@ -84,7 +98,7 @@ public final class RojacUtils {
             // No resource is available - do not append revision number
         }
         VERSION_STRING = versionString.toString();
-
+        REVISION_NUMBER = rev;
     }
 
     private RojacUtils() {
@@ -198,6 +212,34 @@ public final class RojacUtils {
         }
 
         return locales.toArray(new Locale[locales.size()]);
+    }
+
+    /**
+     * Checks if a newer version of rojac is exist on google code server.
+     * @return <code>null</code> if no info should be displayed and integer (revision number) if revision is obtained.
+     */
+    public static Integer getLastBuild() throws RojacException {
+        CheckUpdatesEnum period = Property.UPDATER_PERIOD.get(CheckUpdatesEnum.EveryWeek);
+        try {
+            if (period.shouldCheck(Property.UPDATER_LAST_CHECK.get())) {
+                // Load revision info.
+
+                URL updateLink = new URL("http://rojac.googlecode.com/files/last-revision.txt");
+                BufferedReader r = new BufferedReader(new InputStreamReader(updateLink.openStream()));
+
+                String revision = r.readLine();
+
+                r.close();
+
+                return Integer.parseInt(revision.trim());
+            }
+        } catch (IOException e) {
+            throw new RojacException("Can not read revision number.", e);
+        } catch (NumberFormatException e) {
+            throw new RojacException("Revision is not number.", e);
+        }
+
+        return null;
     }
 
     /**
