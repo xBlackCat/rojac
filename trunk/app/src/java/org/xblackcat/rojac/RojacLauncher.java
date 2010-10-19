@@ -167,6 +167,36 @@ public abstract class RojacLauncher {
             if (SYNCHRONIZER_SCHEDULE_AT_START.get()) {
                 SynchronizationUtils.startSynchronization(mainFrame);
             }
+
+            new RojacWorker<Void, Integer>() {
+                @Override
+                protected Void perform() throws Exception {
+                    try {
+                        Integer lastBuild = RojacUtils.getLastBuild();
+
+                        if (lastBuild != null) {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Revision on site: " + lastBuild + ". Current revision: " + RojacUtils.REVISION_NUMBER);
+                            }
+
+                            if (RojacUtils.REVISION_NUMBER != null && RojacUtils.REVISION_NUMBER < lastBuild) {
+                                if (log.isDebugEnabled()) {
+                                    log.debug("User should update Rojac dist up to latest version.");
+                                }
+                                // TODO: show notification dialog about new version on a site.
+                            }
+                        }
+                    } catch (RojacException e) {
+                        if (log.isWarnEnabled()) {
+                            log.warn("Can not read available last revision from site.", e);
+                        }
+                        // TODO: show error dialog: can not obtain last version on a site.
+                    }
+
+                    return null;
+                }
+            }.execute();
+
         }
     }
 }
