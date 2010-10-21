@@ -41,7 +41,7 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
 
         @Override
         public void postException(Throwable t) {
-            progressController.fireIdle(Messages.SYNCHRONIZE_COMMAND_EXCEPTION, ExceptionUtils.getFullStackTrace(t));
+            progressController.fireIdle(Messages.Synchronize_Command_Exception, ExceptionUtils.getFullStackTrace(t));
         }
 
         @Override
@@ -62,10 +62,15 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
         final String userName = RSDN_USER_NAME.get();
         final JanusService janusService = new JanusService(userName, UserHelper.getUserPassword());
 
-        progressController.fireJobProgressChanged(0f, Messages.SYNCHRONIZE_COMMAND_START);
+        progressController.fireJobProgressChanged(0f, Messages.Synchronize_Command_Start);
         Boolean useCompression = SYNCHRONIZER_USE_GZIP.get();
         janusService.init(useCompression);
-        progressController.fireJobProgressChanged(0f, useCompression ? Messages.SYNCHRONIZE_COMMAND_COMPRESSION_USED : Messages.SYNCHRONIZE_COMMAND_COMPRESSION_NOT_USED);
+        progressController.fireJobProgressChanged(
+                0f,
+                useCompression ?
+                        Messages.Synchronize_Command_CompressionUsed :
+                        Messages.Synchronize_Command_CompressionNotUsed
+        );
 
         try {
             janusService.testConnection();
@@ -98,7 +103,7 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
         }
 
         progressController.fireJobProgressChanged(1);
-        progressController.fireJobStop(Messages.SYNCHRONIZE_COMMAND_DONE);
+        progressController.fireJobStop(Messages.Synchronize_Command_Done);
         if (log.isDebugEnabled()) {
             log.debug("Requests are processed.");
         }

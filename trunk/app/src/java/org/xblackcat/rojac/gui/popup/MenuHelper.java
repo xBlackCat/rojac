@@ -28,20 +28,20 @@ final class MenuHelper {
         /* Copy link sub-menu. */
 
         JMenu menu = new JMenu();
-        menu.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL.get());
+        menu.setText(Messages.Popup_View_ThreadsTree_CopyUrl.get());
 
         JMenuItem copyUrl = new JMenuItem();
-        copyUrl.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL_MESSAGE.get());
+        copyUrl.setText(Messages.Popup_View_ThreadsTree_CopyUrl_Message.get());
         copyUrl.addActionListener(new CopyUrlAction(LinkUtils.buildMessageLink(messageId)));
         menu.add(copyUrl);
 
         JMenuItem copyFlatUrl = new JMenuItem();
-        copyFlatUrl.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL_FLAT.get());
+        copyFlatUrl.setText(Messages.Popup_View_ThreadsTree_CopyUrl_Flat.get());
         copyFlatUrl.addActionListener(new CopyUrlAction(LinkUtils.buildFlatThreadLink(messageId)));
         menu.add(copyFlatUrl);
 
         JMenuItem copyThreadUrl = new JMenuItem();
-        copyThreadUrl.setText(Messages.POPUP_VIEW_THREADS_TREE_COPYURL_THREAD.get());
+        copyThreadUrl.setText(Messages.Popup_View_ThreadsTree_CopyUrl_Thread.get());
         copyThreadUrl.addActionListener(new CopyUrlAction(LinkUtils.buildThreadLink(messageId)));
         menu.add(copyThreadUrl);
         return menu;
@@ -49,14 +49,14 @@ final class MenuHelper {
 
     static JMenuItem openMessage(int messageId, IRootPane mainFrame) {
         JMenuItem open = new JMenuItem();
-        open.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE.get());
+        open.setText(Messages.Popup_View_ThreadsTree_OpenMessage.get());
         open.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.Default));
         return open;        
     }
 
     static JMenuItem openMessageInTab(int messageId, IRootPane mainFrame) {
         JMenuItem open = new JMenuItem();
-        open.setText(Messages.POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE_NEW_TAB.get());
+        open.setText(Messages.Popup_View_ThreadsTree_OpenMessage_NewTab.get());
         open.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.NewTab));
         return open;
     }
@@ -80,23 +80,27 @@ final class MenuHelper {
     }
 
     static JMenuItem copyToClipboard(String url) {
-        JMenuItem copyToClipboard = new JMenuItem(Messages.POPUP_LINK_COPY_TO_CLIPBOARD.get());
+        JMenuItem copyToClipboard = new JMenuItem(Messages.Popup_Link_Copy_ToClipboard.get());
         copyToClipboard.addActionListener(new CopyUrlAction(url));
 
         return copyToClipboard;
     }
 
-    static JMenuItem markReadUnreadSubmenu(Post message) {
+    static JMenuItem markReadUnreadSubmenu(Post message, IRootPane mainFrame) {
         JMenu menu = new JMenu();
-        menu.setText(Messages.POPUP_VIEW_THREADS_TREE_MARK_TITLE.get());
+        menu.setText(Messages.Popup_View_ThreadsTree_Mark_Title.get());
 
-        menu.add(new SetThreadReadMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_THREAD_READ, message, true));
-        menu.add(new SetThreadReadMenuItem(Messages.POPUP_VIEW_THREADS_TREE_MARK_THREAD_UNREAD, message, false));
+        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadRead, message, true));
+        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadUnread, message, false));
 
         menu.addSeparator();
 
-        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_READ_ALL, message.getForumId(), true));
-        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_UNREAD_ALL, message.getForumId(), false));
+//        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, message, mainFrame));
+
+        menu.addSeparator();
+
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_Forums_SetReadAll, message.getForumId(), true));
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_Forums_SetUnreadAll, message.getForumId(), false));
 
         return menu;
     }

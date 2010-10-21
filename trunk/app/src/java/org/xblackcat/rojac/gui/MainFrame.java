@@ -25,20 +25,12 @@ import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.DialogHelper;
-import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.SynchronizationUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -128,13 +120,13 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
         // Setup forums view
         View viewForums = createView(
-                Messages.VIEW_FORUMS_TITLE,
+                Messages.View_Forums_Title,
                 forumsListView
         );
 
         // Setup favorites view
         View viewFavorites = createView(
-                Messages.VIEW_FAVORITES_TITLE,
+                Messages.View_Favorites_Title,
                 favoritesView
         );
 
@@ -536,7 +528,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
     private class AboutAction extends AButtonAction {
         public AboutAction() {
-            super(Messages.MAINFRAME_BUTTON_ABOUT, ShortCut.About);
+            super(Messages.MainFrame_Button_About, ShortCut.About);
         }
 
         @Override
@@ -547,7 +539,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
     private class SettingsAction extends AButtonAction {
         public SettingsAction() {
-            super(Messages.MAINFRAME_BUTTON_SETTINGS, ShortCut.Settings);
+            super(Messages.MainFrame_Button_Settings, ShortCut.Settings);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -557,7 +549,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
     private class LoadExtraMessagesAction extends AButtonAction {
         public LoadExtraMessagesAction() {
-            super(Messages.MAINFRAME_BUTTON_LOADMESSAGE, ShortCut.LoadExtraMessages);
+            super(Messages.MainFrame_Button_LoadMessage, ShortCut.LoadExtraMessages);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -567,7 +559,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
     private class SynchronizationAction extends AButtonAction {
         public SynchronizationAction() {
-            super(Messages.MAINFRAME_BUTTON_UPDATE, ShortCut.Synchronization);
+            super(Messages.MainFrame_Button_Update, ShortCut.Synchronization);
         }
 
         public void actionPerformed(ActionEvent e) {

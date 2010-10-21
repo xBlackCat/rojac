@@ -27,7 +27,7 @@ class PostChangesRequest extends ARequest {
 
     public AffectedMessage[] process(IProgressTracker trac, IJanusService janusService) {
         IStorage storage = ServiceFactory.getInstance().getStorage();
-        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_SUBMIT);
+        trac.addLodMessage(Messages.Synchronize_Command_Name_Submit);
 
         try {
             INewRatingAH nrAH = storage.getNewRatingAH();

@@ -12,10 +12,10 @@ import java.awt.*;
  */
 
 public enum RojacState {
-    Initialized(Messages.TRAY_STATE_INITIALIZED, ResourceUtils.loadImage("/images/tray/initialized.png")),
-    Normal(Messages.TRAY_STATE_NORMAL, ResourceUtils.loadImage("/images/tray/normal.png")),
-    Synchronizing(Messages.TRAY_STATE_SYNCHRONIZATION, ResourceUtils.loadImage("/images/tray/synchronization.png")),
-    HaveUnreadMessages(Messages.TRAY_STATE_HAVE_UNREAD_MESSAGES, ResourceUtils.loadImage("/images/tray/has_unread.png"));
+    Initialized(Messages.Tray_State_Initialized, ResourceUtils.loadImage("/images/tray/initialized.png")),
+    Normal(Messages.Tray_State_Normal, ResourceUtils.loadImage("/images/tray/normal.png")),
+    Synchronizing(Messages.Tray_State_Synchronization, ResourceUtils.loadImage("/images/tray/synchronization.png")),
+    HaveUnreadMessages(Messages.Tray_State_HaveUnreadMessages, ResourceUtils.loadImage("/images/tray/has_unread.png"));
 
     private final Image image;
     private final Messages title;

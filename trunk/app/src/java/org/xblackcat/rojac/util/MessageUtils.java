@@ -58,7 +58,7 @@ public final class MessageUtils {
 
         StringBuilder res = new StringBuilder();
 
-        res.append(Messages.MESSAGE_RESPONSE_HEADER.get(userName));
+        res.append(Messages.Message_Response_Header.get(userName));
 
         String abbr = abbreviateUserName(userName);
 

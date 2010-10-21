@@ -97,7 +97,7 @@ public class RojacTray {
         menu.setFont(UIManager.getFont("Label.font"));
 
         MenuItem showHideItem = new MenuItem();
-        Messages message = mainFrame.isVisible() ? Messages.TRAY_POPUP_ITEM_HIDE_MAINFRAME : Messages.TRAY_POPUP_ITEM_SHOW_MAINFRAME;
+        Messages message = mainFrame.isVisible() ? Messages.Tray_Popup_Item_HideMainframe : Messages.Tray_Popup_Item_ShowMainframe;
         showHideItem.setLabel(message.get());
         showHideItem.setFont(menu.getFont().deriveFont(Font.BOLD));
         showHideItem.addActionListener(new ActionListener() {
@@ -110,7 +110,7 @@ public class RojacTray {
 
         menu.addSeparator();
 
-        MenuItem optionsItem = new MenuItem(Messages.TRAY_POPUP_ITEM_OPTIONS.get());
+        MenuItem optionsItem = new MenuItem(Messages.Tray_Popup_Item_Options.get());
         optionsItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -119,7 +119,7 @@ public class RojacTray {
         });
         menu.add(optionsItem);
 
-        MenuItem aboutItem = new MenuItem(Messages.TRAY_POPUP_ITEM_ABOUT.get());
+        MenuItem aboutItem = new MenuItem(Messages.Tray_Popup_Item_About.get());
         aboutItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -130,7 +130,7 @@ public class RojacTray {
 
         menu.addSeparator();
 
-        MenuItem exitItem = new MenuItem(Messages.TRAY_POPUP_ITEM_EXIT.get());
+        MenuItem exitItem = new MenuItem(Messages.Tray_Popup_Item_Exit.get());
         exitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -9,11 +9,11 @@ import java.util.Calendar;
  */
 
 public enum CheckUpdatesEnum {
-    None(Messages.DESCRIPTION_UPDATE_PERIOD_NONE, 0, 0),
-    EveryRun(Messages.DESCRIPTION_UPDATE_PERIOD_EVERYRUN, 0, 0),
-    EveryDay(Messages.DESCRIPTION_UPDATE_PERIOD_EVERYDAY, Calendar.DAY_OF_MONTH, 1),
-    EveryWeek(Messages.DESCRIPTION_UPDATE_PERIOD_EVERYWEEK, Calendar.DAY_OF_MONTH, 7),
-    EveryMonth(Messages.DESCRIPTION_UPDATE_PERIOD_EVERYMONTH, Calendar.MONTH, 1);
+    None(Messages.Description_UpdatePeriod_None, 0, 0),
+    EveryRun(Messages.Description_UpdatePeriod_EveryRun, 0, 0),
+    EveryDay(Messages.Description_UpdatePeriod_EveryDay, Calendar.DAY_OF_MONTH, 1),
+    EveryWeek(Messages.Description_UpdatePeriod_EveryWeek, Calendar.DAY_OF_MONTH, 7),
+    EveryMonth(Messages.Description_UpdatePeriod_EveryMonth, Calendar.MONTH, 1);
 
     private final Messages description;
     private final int field;

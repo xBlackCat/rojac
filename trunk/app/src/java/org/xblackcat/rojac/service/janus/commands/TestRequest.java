@@ -26,7 +26,7 @@ class TestRequest extends ARequest {
 
     @Override
     public AffectedMessage[] process(IProgressTracker trac, IJanusService janusService) throws RojacException {
-        trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_TEST);
+        trac.addLodMessage(Messages.Synchronize_Command_Name_Test);
 
         int userId;
         try {
@@ -41,7 +41,7 @@ class TestRequest extends ARequest {
             );
 
             userId = data.getOwnUserId();
-            trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USER_ID, userId);
+            trac.addLodMessage(Messages.Synchronize_Command_GotUserId, userId);
         } catch (JanusServiceException e) {
             // Login rejected
             userId = 0;

@@ -118,7 +118,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
         final MarkRender markRender = new MarkRender(ResourceUtils.loadIcon("images/marks/select.gif"));
 
-        AButtonAction marksAction = new AButtonAction(Messages.DESCRIPTION_MARK_SELECT) {
+        AButtonAction marksAction = new AButtonAction(Messages.Description_Mark_Select) {
             public void actionPerformed(ActionEvent e) {
                 marks.setPopupVisible(false);
                 chooseMark(marksModel.getSelectedItem());
@@ -151,8 +151,8 @@ public class MessageView extends AItemView implements IInternationazable {
         if (JOptionPane.YES_OPTION ==
                 JLOptionPane.showConfirmDialog(
                         this,
-                        Messages.DIALOG_SET_MARK_MESSAGE.get(mark),
-                        Messages.DIALOG_SET_MARK_TITLE.get(),
+                        Messages.Dialog_SetMark_Message.get(mark),
+                        Messages.Dialog_SetMark_Title.get(),
                         JOptionPane.YES_NO_OPTION
                 )) {
             new MarksUpdater(mark).execute();
@@ -204,9 +204,9 @@ public class MessageView extends AItemView implements IInternationazable {
     }
 
     public void loadLabels() {
-        answer.setToolTipText(Messages.BUTTON_REPLY_TOOLTIP.get());
-        userLabel.setText(Messages.MESSAGE_PANE_USER_LABEL.get());
-        dateLabel.setText(Messages.MESSAGE_PANE_DATE_LABEL.get());
+        answer.setToolTipText(Messages.Button_Reply_ToolTip.get());
+        userLabel.setText(Messages.Panel_Message_Label_User.get());
+        dateLabel.setText(Messages.Panel_Message_Label_Date.get());
     }
 
     @Override
@@ -348,12 +348,12 @@ public class MessageView extends AItemView implements IInternationazable {
             if (isCancelled()) {
                 JLOptionPane.showMessageDialog(
                         MessageView.this,
-                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.get(mark),
-                        Messages.ERROR_DIALOG_SET_MARK_MESSAGE.get(),
+                        Messages.ErrorDialog_SetMark_Message.get(mark),
+                        Messages.ErrorDialog_SetMark_Message.get(),
                         JOptionPane.DEFAULT_OPTION
                 );
                 if (log.isWarnEnabled()) {
-                    log.warn("Cann't store mark " + mark + " for message [id=" + messageId + "].");
+                    log.warn("Can't store mark " + mark + " for message [id=" + messageId + "].");
                 }
             }
         }
@@ -361,7 +361,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
     private class ReplyAction extends AButtonAction {
         public ReplyAction() {
-            super(Messages.BUTTON_REPLY_TOOLTIP);
+            super(Messages.Button_Reply_ToolTip);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -371,7 +371,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
     private class ShowMarksAction extends AButtonAction {
         public ShowMarksAction() {
-            super(Messages.BUTTON_MARKS_TOOLTIP);
+            super(Messages.Button_Marks_ToolTip);
         }
 
         @Override

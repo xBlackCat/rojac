@@ -32,7 +32,7 @@ public class LoginDialog extends JDialog {
 
     public LoginDialog(Window mainFrame) {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
-        setTitle(Messages.DIALOG_LOGIN_TITLE.get());
+        setTitle(Messages.Dialog_Login_Title.get());
 
         setContentPane(setupContentPane());
 
@@ -46,9 +46,9 @@ public class LoginDialog extends JDialog {
 
         cp.add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.BUTTON_OK,
+                Messages.Button_Ok,
                 new CheckCredentialsAction(),
-                new AButtonAction(Messages.BUTTON_CANCEL) {
+                new AButtonAction(Messages.Button_Cancel) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         canceled = true;
@@ -61,11 +61,11 @@ public class LoginDialog extends JDialog {
         JPanel pane = new JPanel(new BorderLayout(5, 5));
         cp.add(pane, BorderLayout.CENTER);
 
-        pane.add(new JLabel(Messages.DIALOG_LOGIN_TEXT.get(), JLabel.CENTER), BorderLayout.NORTH);
+        pane.add(new JLabel(Messages.Dialog_Login_Text.get(), JLabel.CENTER), BorderLayout.NORTH);
 
         fieldLogin = new JTextField(20);
         fieldPassword = new JPasswordField(20);
-        fieldSavePassword = new JCheckBox(Messages.DIALOG_LOGIN_SAVE_PASSWORD.get(), RSDN_USER_PASSWORD_SAVE.get());
+        fieldSavePassword = new JCheckBox(Messages.Dialog_Login_SavePassword.get(), RSDN_USER_PASSWORD_SAVE.get());
 
         JPanel fields = new JPanel(new GridLayout(0, 1));
         fields.add(fieldLogin);
@@ -74,8 +74,8 @@ public class LoginDialog extends JDialog {
         pane.add(fields, BorderLayout.CENTER);
 
         JPanel labels = new JPanel(new GridLayout(0, 1));
-        labels.add(new JLabel(Messages.DIALOG_LOGIN_USERNAME.get()));
-        labels.add(new JLabel(Messages.DIALOG_LOGIN_PASSWORD.get()));
+        labels.add(new JLabel(Messages.Dialog_Login_UserName.get()));
+        labels.add(new JLabel(Messages.Dialog_Login_Password.get()));
 
         pane.add(labels, BorderLayout.WEST);
 
@@ -106,18 +106,18 @@ public class LoginDialog extends JDialog {
 
     private class CheckCredentialsAction extends AButtonAction {
         public CheckCredentialsAction() {
-            super(Messages.BUTTON_OK);
+            super(Messages.Button_Ok);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             if (StringUtils.isEmpty(fieldLogin.getText())) {
-                JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_USERNAME.get());
+                JLOptionPane.showMessageDialog(LoginDialog.this, Messages.Dialog_Login_EmptyUserName.get());
                 return;
             }
 
             if (ArrayUtils.isEmpty(fieldPassword.getPassword())) {
-                JLOptionPane.showMessageDialog(LoginDialog.this, Messages.DIALOG_LOGIN_EMPTY_PASSWORD.get());
+                JLOptionPane.showMessageDialog(LoginDialog.this, Messages.Dialog_Login_EmptyPassword.get());
                 return;
             }
 
@@ -158,8 +158,8 @@ public class LoginDialog extends JDialog {
             if (!setUserId(results)) {
                 int res = JLOptionPane.showConfirmDialog(
                         LoginDialog.this,
-                        Messages.DIALOG_LOGIN_INVALID_USERNAME.get(),
-                        Messages.DIALOG_LOGIN_INVALID_USERNAME_TITLE.get(),
+                        Messages.Dialog_Login_InvalidUserName.get(),
+                        Messages.Dialog_Login_InvalidUserName_Title.get(),
                         JOptionPane.YES_NO_OPTION
                         );
                 if (res == JOptionPane.NO_OPTION) {

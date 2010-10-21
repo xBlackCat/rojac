@@ -118,6 +118,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         private final ForumRoot item;
         private final AThreadModel<Post> threadModel;
         private int[] messageIds;
+        private final int forumId;
 
         public MessagesLoader(ForumRoot item, AThreadModel<Post> threadModel, int[] messageIds) {
             this.item = item;
@@ -129,6 +130,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             if (log.isDebugEnabled()) {
                 log.debug("Message ids to load: " + ArrayUtils.toString(messageIds));
             }
+            forumId = this.item.getMessageData().getForumId();
         }
 
         @Override
@@ -143,7 +145,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
                     }
 
                     // Check if the message from the forum
-                    if (messageData.getForumId() == item.getMessageData().getForumId()) {
+                    if (messageData.getForumId() == forumId) {
                         publish(messageData);
                     }
                 } catch (Exception e) {

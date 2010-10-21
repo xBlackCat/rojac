@@ -10,12 +10,12 @@ import java.lang.reflect.InvocationTargetException;
 * @author xBlackCat
 */
 enum Header {
-    ID(PostId.class, Messages.PANEL_THREAD_HEADER_ID, 70),
-    SUBJECT(Post.class, Messages.PANEL_THREAD_HEADER_SUBJECT, 0),
-    USER(PostUser.class, Messages.PANEL_THREAD_HEADER_USER, 100),
-    REPLIES(PostReplies.class, Messages.PANEL_THREAD_HEADER_REPLIES, 30),
-    RATING(PostRating.class, Messages.PANEL_THREAD_HEADER_RATING, 70),
-    DATE(PostDate.class, Messages.PANEL_THREAD_HEADER_DATE, 140);
+    ID(PostId.class, Messages.Panel_Thread_Header_Id, 70),
+    SUBJECT(Post.class, Messages.Panel_Thread_Header_Subject, 0),
+    USER(PostUser.class, Messages.Panel_Thread_Header_User, 100),
+    REPLIES(PostReplies.class, Messages.Panel_Thread_Header_Replies, 30),
+    RATING(PostRating.class, Messages.Panel_Thread_Header_Rating, 70),
+    DATE(PostDate.class, Messages.Panel_Thread_Header_Date, 140);
 
     private final Class<?> aClass;
     private final Constructor<?> constructor;

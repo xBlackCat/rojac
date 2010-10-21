@@ -9,7 +9,6 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -62,11 +61,11 @@ public class MessagesTest extends TestCase {
             }
             try {
                 if (m.get(EMPTY) == null) {
-                    log.error("There is no translation for " + ResourceUtils.constantToProperty(m.name()));
+                    log.error("There is no translation for " + m.key());
                     noErrors = false;
                 }
             } catch (MissingResourceException e) {
-                log.error("There is no translation for " + ResourceUtils.constantToProperty(m.name()));
+                log.error("There is no translation for " + m.key());
                 noErrors = false;
             }
         }

@@ -124,8 +124,8 @@ public abstract class RojacLauncher {
                     if (ROJAC_MAIN_FRAME_ASK_ON_CLOSE.get()) {
                         int answer = JLOptionPane.showConfirmDialog(
                                 mainFrame,
-                                Messages.DIALOG_CONFIRM_EXIT_MESSAGE.get(),
-                                Messages.DIALOG_CONFIRM_EXIT_TITLE.get(),
+                                Messages.Dialog_ConfirmExit_Message.get(),
+                                Messages.Dialog_ConfirmExit_Title.get(),
                                 JOptionPane.YES_NO_OPTION
                         );
 
@@ -168,35 +168,9 @@ public abstract class RojacLauncher {
                 SynchronizationUtils.startSynchronization(mainFrame);
             }
 
-            new RojacWorker<Void, Integer>() {
-                @Override
-                protected Void perform() throws Exception {
-                    try {
-                        Integer lastBuild = RojacUtils.getLastBuild();
-
-                        if (lastBuild != null) {
-                            if (log.isDebugEnabled()) {
-                                log.debug("Revision on site: " + lastBuild + ". Current revision: " + RojacUtils.REVISION_NUMBER);
-                            }
-
-                            if (RojacUtils.REVISION_NUMBER != null && RojacUtils.REVISION_NUMBER < lastBuild) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug("User should update Rojac dist up to latest version.");
-                                }
-                                // TODO: show notification dialog about new version on a site.
-                            }
-                        }
-                    } catch (RojacException e) {
-                        if (log.isWarnEnabled()) {
-                            log.warn("Can not read available last revision from site.", e);
-                        }
-                        // TODO: show error dialog: can not obtain last version on a site.
-                    }
-
-                    return null;
-                }
-            }.execute();
-
+            new VersionChecker(mainFrame).execute();
         }
+
     }
+
 }

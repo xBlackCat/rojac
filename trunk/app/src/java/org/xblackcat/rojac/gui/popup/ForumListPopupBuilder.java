@@ -57,20 +57,20 @@ class ForumListPopupBuilder implements IPopupBuilder {
         final boolean subscribed = forumData.isSubscribed();
         final int forumId = forumData.getForumId();
 
-        menu.add(new AbstractAction(Messages.POPUP_VIEW_FORUMS_OPEN.get()) {
+        menu.add(new AbstractAction(Messages.Popup_View_Forums_Open.get()) {
             public void actionPerformed(ActionEvent e) {
                 mainFrame.openForumTab(forumId);
             }
         });
         menu.addSeparator();
 
-        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_READ_ALL, forumId, true));
-        menu.add(new SetForumReadMenuItem(Messages.POPUP_VIEW_FORUMS_SET_UNREAD_ALL, forumId, false));
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_Forums_SetReadAll, forumId, true));
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_Forums_SetUnreadAll, forumId, false));
 
         menu.addSeparator();
 
         {
-            JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.POPUP_VIEW_FORUMS_SUBSCRIBE.get(), subscribed);
+            JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.Popup_View_Forums_Subscribe.get(), subscribed);
             mi.addActionListener(new SubscribeChangeListener(forumId, model, subscribed));
             menu.add(mi);
         }

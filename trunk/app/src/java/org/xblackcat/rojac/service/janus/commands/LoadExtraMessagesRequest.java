@@ -29,7 +29,7 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
         Set<AffectedMessage> result = new HashSet<AffectedMessage>();
 
         if (!ArrayUtils.isEmpty(messageIds)) {
-            trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_EXTRA_POSTS, Arrays.toString(messageIds));
+            trac.addLodMessage(Messages.Synchronize_Command_Name_ExtraPosts, Arrays.toString(messageIds));
             result.addAll(loadTopics(messageIds, janusService, trac));
 
             miscAH.clearExtraMessages();
@@ -37,7 +37,7 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
 
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
         if (!ArrayUtils.isEmpty(brokenTopicIds)) {
-            trac.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_BROKEN_TOPICS, Arrays.toString(brokenTopicIds));
+            trac.addLodMessage(Messages.Synchronize_Command_Name_BrokenTopics, Arrays.toString(brokenTopicIds));
             result.addAll(loadTopics(brokenTopicIds, janusService, trac));
         }
 
@@ -55,7 +55,7 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
         JanusModerateInfo[] moderates = extra.getModerates();
         JanusRatingInfo[] ratings = extra.getRatings();
 
-        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
+        tracker.addLodMessage(Messages.Synchronize_Command_GotPosts, messages.length, moderates.length, ratings.length);
 
         return storeNewPosts(tracker, extra);
     }
