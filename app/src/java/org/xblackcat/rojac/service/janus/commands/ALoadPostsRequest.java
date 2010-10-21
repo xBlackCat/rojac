@@ -38,7 +38,7 @@ abstract class ALoadPostsRequest extends ARequest {
     }
 
     protected Collection<AffectedMessage> storeNewPosts(IProgressTracker tracker, TopicMessages newPosts) throws StorageException {
-        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_UPDATE_DATABASE);
+        tracker.addLodMessage(Messages.Synchronize_Command_UpdateDatabase);
         Set<AffectedMessage> result = new HashSet<AffectedMessage>();
 
         int count = 0;

@@ -36,7 +36,7 @@ public class LoadMessageDialog extends JDialog {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
         this.messageId = messageId;
 
-        setTitle(Messages.DIALOG_LOADMESSAGE_TITLE.get());
+        setTitle(Messages.Dialog_LoadMessage_Title.get());
 
         initializeLayout();
 
@@ -52,8 +52,8 @@ public class LoadMessageDialog extends JDialog {
 
         add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.BUTTON_OK,
-                new AButtonAction(Messages.BUTTON_OK) {
+                Messages.Button_Ok,
+                new AButtonAction(Messages.Button_Ok) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String id = messageIdText.getText();
@@ -79,7 +79,7 @@ public class LoadMessageDialog extends JDialog {
                         setVisible(false);
                     }
                 },
-                new AButtonAction(Messages.BUTTON_CANCEL) {
+                new AButtonAction(Messages.Button_Cancel) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         messageId = null;
@@ -99,7 +99,7 @@ public class LoadMessageDialog extends JDialog {
         cp.add(messageIdText, BorderLayout.NORTH);
 
         loadAtOnce = new JCheckBox(
-                Messages.DIALOG_LOADMESSAGE_LOADATONCE.get(),
+                Messages.Dialog_LoadMessage_LoadAtOnce.get(),
                 SYNCHRONIZER_LOAD_BROKEN_TOPICS_AT_ONCE.get()
         );
         cp.add(loadAtOnce, BorderLayout.SOUTH);
@@ -108,9 +108,9 @@ public class LoadMessageDialog extends JDialog {
 
         String label;
         if (messageId == null) {
-            label = Messages.DIALOG_LOADMESSAGE_LABEL.get();
+            label = Messages.Dialog_LoadMessage_Label.get();
         } else {
-            label = Messages.DIALOG_LOADMESSAGE_MESSAGE_NOT_EXISTS.get(messageId);
+            label = Messages.Dialog_LoadMessage_MessageNotExists.get(messageId);
             messageIdText.setEditable(false);
         }
         JLabel l = new JLabel(label);

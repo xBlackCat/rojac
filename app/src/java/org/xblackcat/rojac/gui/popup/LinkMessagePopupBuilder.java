@@ -57,11 +57,11 @@ class LinkMessagePopupBuilder implements IPopupBuilder {
             menu.add(MenuHelper.openMessage(messageId, mainFrame));
             menu.add(MenuHelper.openMessageInTab(messageId, mainFrame));
             menu.addSeparator();
-            MenuHelper.addOpenLink(menu, Messages.POPUP_LINK_OPEN_MESSAGE_IN_BROWSER, url);
-            MenuHelper.addOpenLink(menu, Messages.POPUP_LINK_OPEN_THREAD_IN_BROWSER, LinkUtils.buildThreadLink(messageId));
+            MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, url);
+            MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
 
         } else {
-            MenuHelper.addOpenLink(menu, Messages.POPUP_LINK_OPEN_IN_BROWSER, url);
+            MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser, url);
         }
 
         menu.add(MenuHelper.copyToClipboard(url));

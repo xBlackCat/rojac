@@ -25,7 +25,7 @@ class GetForumListRequest extends ARequest {
     public AffectedMessage[] process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
         Set<AffectedMessage> result = new HashSet<AffectedMessage>();
 
-        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_FORUM_LIST);
+        tracker.addLodMessage(Messages.Synchronize_Command_Name_ForumList);
 
         ForumsList forumsList;
         try {
@@ -38,7 +38,7 @@ class GetForumListRequest extends ARequest {
         IForumAH fAH = storage.getForumAH();
         IForumGroupAH gAH = storage.getForumGroupAH();
 
-        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_FORUMS, forumsList.getForums().length, forumsList.getForumGroups().length);
+        tracker.addLodMessage(Messages.Synchronize_Command_GotForums, forumsList.getForums().length, forumsList.getForumGroups().length);
 
         try {
             int total = forumsList.getForumGroups().length + forumsList.getForums().length;

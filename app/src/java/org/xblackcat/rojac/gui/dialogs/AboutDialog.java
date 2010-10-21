@@ -17,13 +17,13 @@ public class AboutDialog extends JDialog {
     public AboutDialog(Window owner) {
         super(owner, ModalityType.APPLICATION_MODAL);
 
-        setTitle(Messages.DIALOG_ABOUT_TITLE.get());
+        setTitle(Messages.Dialog_About_Title.get());
 
         initializeLayout();
     }
 
     private void initializeLayout() {
-        Component buttonsBar = WindowsUtils.createButtonsBar(this, Messages.BUTTON_OK, new AButtonAction(Messages.BUTTON_OK) {
+        Component buttonsBar = WindowsUtils.createButtonsBar(this, Messages.Button_Ok, new AButtonAction(Messages.Button_Ok) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();

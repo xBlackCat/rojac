@@ -42,19 +42,9 @@ import org.xblackcat.rojac.service.progress.IProgressController;
 import javax.xml.soap.MimeHeader;
 import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPException;
-import java.io.ByteArrayOutputStream;
-import java.io.FilterInputStream;
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -232,9 +222,9 @@ class JanusHTTPSender extends BasicHandler {
             }
 
             if (method.getResponseContentLength() < 0) {
-                progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_READ_UNKNOWN);
+                progressController.fireJobProgressChanged(0f, Synchronize_Command_ReadUnknown);
             } else {
-                progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_READ, method.getResponseContentLength());
+                progressController.fireJobProgressChanged(0f, Synchronize_Command_Read, method.getResponseContentLength());
             }
             // wrap the response body stream so that close() also releases
             // the connection back to the pool.
@@ -434,7 +424,7 @@ class JanusHTTPSender extends BasicHandler {
             if (pHost.length() == 0 || pPort == 0) {
                 config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
             } else {
-                progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_PROXY_USED, pHost, pPort);
+                progressController.fireJobProgressChanged(0f, Synchronize_Command_ProxyUsed, pHost, pPort);
                 String pUser = SYNCHRONIZER_PROXY_USER.get("");
                 if (pUser.length() != 0) {
                     String pPass = SYNCHRONIZER_PROXY_PASSWORD.get().toString();
@@ -500,35 +490,35 @@ class JanusHTTPSender extends BasicHandler {
         }
         method.setRequestHeader(new Header(HTTPConstants.HEADER_SOAP_ACTION,
                 "\"" + action + "\""));
-        String userID = msgContext.getUsername();
-        String passwd = msgContext.getPassword();
+        String userId = msgContext.getUsername();
+        String password = msgContext.getPassword();
 
         // if UserID is not part of the context, but is in the URL, use
         // the one in the URL.
-        if ((userID == null) && (tmpURL.getUserInfo() != null)) {
+        if ((userId == null) && (tmpURL.getUserInfo() != null)) {
             String info = tmpURL.getUserInfo();
             int sep = info.indexOf(':');
 
             if ((sep >= 0) && (sep + 1 < info.length())) {
-                userID = info.substring(0, sep);
-                passwd = info.substring(sep + 1);
+                userId = info.substring(0, sep);
+                password = info.substring(sep + 1);
             } else {
-                userID = info;
+                userId = info;
             }
         }
-        if (userID != null) {
+        if (userId != null) {
             Credentials proxyCred =
-                    new UsernamePasswordCredentials(userID,
-                            passwd);
+                    new UsernamePasswordCredentials(userId,
+                            password);
             // if the username is in the form "user\domain"
             // then use NTCredentials instead.
-            int domainIndex = userID.indexOf("\\");
+            int domainIndex = userId.indexOf("\\");
             if (domainIndex > 0) {
-                String domain = userID.substring(0, domainIndex);
-                if (userID.length() > domainIndex + 1) {
-                    String user = userID.substring(domainIndex + 1);
+                String domain = userId.substring(0, domainIndex);
+                if (userId.length() > domainIndex + 1) {
+                    String user = userId.substring(domainIndex + 1);
                     proxyCred = new NTCredentials(user,
-                            passwd,
+                            password,
                             NetworkUtils.getLocalHostname(), domain);
                 }
             }
@@ -810,7 +800,7 @@ class JanusHTTPSender extends BasicHandler {
         }
 
         public void writeRequest(OutputStream out) throws IOException {
-            progressController.fireJobProgressChanged(0f, SYNCHRONIZE_COMMAND_WRITE, message.getContentLength());
+            progressController.fireJobProgressChanged(0f, Synchronize_Command_Write, message.getContentLength());
             try {
                 this.message.writeTo(new LogOutputStream(out, message.getContentLength()));
             } catch (SOAPException e) {
@@ -856,11 +846,11 @@ class JanusHTTPSender extends BasicHandler {
 
         public long getContentLength() {
             if (isContentLengthNeeded()) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 try {
-                    writeRequest(baos);
-                    cachedStream = baos;
-                    return baos.size();
+                    writeRequest(outputStream);
+                    cachedStream = outputStream;
+                    return outputStream.size();
                 } catch (IOException e) {
                     // fall through to doing chunked.
                 }
@@ -911,7 +901,7 @@ class JanusHTTPSender extends BasicHandler {
                 super.close();
             } finally {
                 method.releaseConnection();
-                progressController.fireJobProgressChanged(1f, SYNCHRONIZE_COMMAND_WAS_READ, amount);
+                progressController.fireJobProgressChanged(1f, Synchronize_Command_WasRead, amount);
             }
         }
 

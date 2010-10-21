@@ -10,14 +10,14 @@ import javax.swing.*;
  */
 
 public enum Mark {
-    PlusOne(-3, Messages.DESCRIPTION_MARK_PLUSONE, "plus_one.gif"),
-    Agree(-4, Messages.DESCRIPTION_MARK_AGREE, "plus.gif"),
-    Disagree(0, Messages.DESCRIPTION_MARK_DISAGREE, "minus.gif"),
-    x1(1, Messages.DESCRIPTION_MARK_X1, "x1.gif"),
-    x2(2, Messages.DESCRIPTION_MARK_X2, "x2.gif"),
-    x3(3, Messages.DESCRIPTION_MARK_X3, "x3.gif"),
-    Smile(-2, Messages.DESCRIPTION_MARK_SMILE, "smile.gif"),
-    Remove(-1, Messages.DESCRIPTION_MARK_REMOVE, "smile.gif");
+    PlusOne(-3, Messages.Description_Mark_PlusOne, "plus_one.gif"),
+    Agree(-4, Messages.Description_Mark_Agree, "plus.gif"),
+    Disagree(0, Messages.Description_Mark_Disagree, "minus.gif"),
+    x1(1, Messages.Description_Mark_X1, "x1.gif"),
+    x2(2, Messages.Description_Mark_X2, "x2.gif"),
+    x3(3, Messages.Description_Mark_X3, "x3.gif"),
+    Smile(-2, Messages.Description_Mark_Smile, "smile.gif"),
+    Remove(-1, Messages.Description_Mark_Remove, "smile.gif");
 
     private static final String IMAGES_MARKS_PATH = "marks/";
 

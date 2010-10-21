@@ -432,8 +432,8 @@ public abstract class AThreadView extends AItemView {
             } else {
                 JLOptionPane.showMessageDialog(
                         SwingUtilities.windowForComponent(AThreadView.this),
-                        Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE.get(messageId),
-                        Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE.get(messageId),
+                        Messages.ErrorDialog_MessageNotFound_Message.get(messageId),
+                        Messages.ErrorDialog_MessageNotFound_Title.get(messageId),
                         JOptionPane.WARNING_MESSAGE
                 );
             }
@@ -442,7 +442,7 @@ public abstract class AThreadView extends AItemView {
 
     private class NewThreadAction extends AButtonAction {
         public NewThreadAction() {
-            super(Messages.VIEW_THREAD_BUTTON_NEW_THREAD, ShortCut.NewThread);
+            super(Messages.View_Thread_Button_NewThread, ShortCut.NewThread);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -452,7 +452,7 @@ public abstract class AThreadView extends AItemView {
 
     private class PreviousUnreadAction extends AButtonAction {
         private PreviousUnreadAction() {
-            super(Messages.VIEW_THREAD_BUTTON_PREVIOUS_UNREAD, ShortCut.PrevUnreadMessage);
+            super(Messages.View_Thread_Button_PreviousUnread, ShortCut.PrevUnreadMessage);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -463,7 +463,7 @@ public abstract class AThreadView extends AItemView {
 
     private class NextUnreadAction extends AButtonAction {
         private NextUnreadAction() {
-            super(Messages.VIEW_THREAD_BUTTON_NEXT_UNREAD, ShortCut.NextUnreadMessage);
+            super(Messages.View_Thread_Button_NextUnread, ShortCut.NextUnreadMessage);
         }
 
         public void actionPerformed(ActionEvent e) {

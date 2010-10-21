@@ -114,7 +114,7 @@ public class ForumsListView extends AView {
                 this,
                 "filled_only",
                 new FilterSetAction(
-                        Messages.VIEW_FORUMS_BUTTON_FILLED,
+                        Messages.View_Forums_Button_Filled,
                         ShortCut.ShowOnlyNotEmpty,
                         ForumFilterState.NotEmpty
                 )
@@ -123,7 +123,7 @@ public class ForumsListView extends AView {
                 this,
                 "subscribed_only",
                 new FilterSetAction(
-                        Messages.VIEW_FORUMS_BUTTON_SUBSCRIBED,
+                        Messages.View_Forums_Button_Subscribed,
                         ShortCut.ShowOnlySubscribed,
                         ForumFilterState.Subscribed
                 )
@@ -132,7 +132,7 @@ public class ForumsListView extends AView {
                 this,
                 "unread_only",
                 new FilterSetAction(
-                        Messages.VIEW_FORUMS_BUTTON_HASUNREAD,
+                        Messages.View_Forums_Button_HasUnread,
                         ShortCut.ShowOnlyUnread,
                         ForumFilterState.Unread
                 )
@@ -279,7 +279,7 @@ public class ForumsListView extends AView {
 
     private class UpdateForumListAction extends AButtonAction {
         public UpdateForumListAction() {
-            super(Messages.VIEW_FORUMS_BUTTON_UPDATE);
+            super(Messages.View_Forums_Button_Update);
         }
 
         public void actionPerformed(ActionEvent e) {

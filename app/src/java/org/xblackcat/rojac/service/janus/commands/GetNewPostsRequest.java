@@ -30,7 +30,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
         int[] forumIds = forumAH.getSubscribedForumIds();
 
         String idsList = Arrays.toString(forumIds);
-        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_NEW_POSTS, idsList);
+        tracker.addLodMessage(Messages.Synchronize_Command_Name_NewPosts, idsList);
         if (ArrayUtils.isEmpty(forumIds)) {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
@@ -50,7 +50,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         Integer limit = SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
 
-        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
+        tracker.addLodMessage(Messages.Synchronize_Command_Portion, limit);
 
         Version messagesVersion = DataHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
         Version moderatesVersion = DataHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
@@ -80,7 +80,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             JanusModerateInfo[] moderates = data.getModerates();
             JanusRatingInfo[] ratings = data.getRatings();
 
-            tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_POSTS, messages.length, moderates.length, ratings.length);
+            tracker.addLodMessage(Messages.Synchronize_Command_GotPosts, messages.length, moderates.length, ratings.length);
 
             result.addAll(storeNewPosts(tracker, data));
 
@@ -94,7 +94,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         } while (messages.length == limit);
 
-        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USER_ID, RSDN_USER_ID.get());
+        tracker.addLodMessage(Messages.Synchronize_Command_GotUserId, RSDN_USER_ID.get());
 
         return result.toArray(new AffectedMessage[result.size()]);
     }

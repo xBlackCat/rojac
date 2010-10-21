@@ -28,12 +28,12 @@ class GetUsersRequest extends ARequest {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         IUserAH uAH = storage.getUserAH();
 
-        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_NAME_USERS);
+        tracker.addLodMessage(Messages.Synchronize_Command_Name_Users);
         if (log.isDebugEnabled()) {
             log.debug("Loading new users information.");
         }
         Integer limit = SYNCHRONIZER_LOAD_USERS_PORTION.get();
-        tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_PORTION, limit);
+        tracker.addLodMessage(Messages.Synchronize_Command_Portion, limit);
 
         try {
             Version localUsersVersion = DataHelper.getVersion(VersionType.USERS_ROW_VERSION);
@@ -60,7 +60,7 @@ class GetUsersRequest extends ARequest {
                 DataHelper.setVersion(VersionType.USERS_ROW_VERSION, localUsersVersion);
             } while (users.getUsers().length > 0);
 
-            tracker.addLodMessage(Messages.SYNCHRONIZE_COMMAND_GOT_USERS, totalUsersNumber);
+            tracker.addLodMessage(Messages.Synchronize_Command_GotUsers, totalUsersNumber);
             if (log.isDebugEnabled()) {
                 log.debug(totalUsersNumber + " user(s) was loaded.");
             }

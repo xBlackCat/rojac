@@ -33,7 +33,7 @@ public class OptionsDialog extends JDialog {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
         model = createModel();
 
-        setTitle(Messages.DIALOG_OPTIONS_TITLE.get());
+        setTitle(Messages.Dialog_Options_Title.get());
 
         initializeLayout();
 
@@ -45,7 +45,7 @@ public class OptionsDialog extends JDialog {
         JPanel cp = new JPanel(new BorderLayout(5, 10));
         cp.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        cp.add(new JLabel(Messages.DIALOG_OPTIONS_DESCRIPTION.get()), BorderLayout.NORTH);
+        cp.add(new JLabel(Messages.Dialog_Options_Description.get()), BorderLayout.NORTH);
 
         JComponent centerComp;
         if (model != null) {
@@ -59,15 +59,15 @@ public class OptionsDialog extends JDialog {
 
         cp.add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.BUTTON_OK,
-                new AButtonAction(Messages.BUTTON_CHANGEPASSWORD) {
+                Messages.Button_Ok,
+                new AButtonAction(Messages.Button_ChangePassword) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         LoginDialog ld = new LoginDialog(OptionsDialog.this);
                         ld.showLoginDialog();
                     }
                 },
-                new AButtonAction(Messages.BUTTON_OK) {
+                new AButtonAction(Messages.Button_Ok) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         applySettings();
@@ -75,13 +75,13 @@ public class OptionsDialog extends JDialog {
                         dispose();
                     }
                 },
-                new AButtonAction(Messages.BUTTON_APPLY) {
+                new AButtonAction(Messages.Button_Apply) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         applySettings();
                     }
                 },
-                new AButtonAction(Messages.BUTTON_CANCEL) {
+                new AButtonAction(Messages.Button_Cancel) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         setVisible(false);

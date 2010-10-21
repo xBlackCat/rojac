@@ -148,14 +148,14 @@ public class EditMessageDialog extends JDialog {
 
         cp.add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.BUTTON_SAVE,
-                new AButtonAction(Messages.BUTTON_SAVE) {
+                Messages.Button_Save,
+                new AButtonAction(Messages.Button_Save) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         saveMessage();
                     }
                 },
-                new AButtonAction(Messages.BUTTON_PREVIEW) {
+                new AButtonAction(Messages.Button_Preview) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         panelEdit.forcePreview();
@@ -166,7 +166,7 @@ public class EditMessageDialog extends JDialog {
                         }
                     }
                 },
-                new AButtonAction(Messages.BUTTON_CANCEL) {
+                new AButtonAction(Messages.Button_Cancel) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         dispose();
@@ -219,8 +219,8 @@ public class EditMessageDialog extends JDialog {
             if (this.isCancelled()) {
                 JLOptionPane.showMessageDialog(
                         EditMessageDialog.this,
-                        Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE.get(messageId),
-                        Messages.ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE.get(messageId),
+                        Messages.ErrorDialog_MessageNotFound_Message.get(messageId),
+                        Messages.ErrorDialog_MessageNotFound_Title.get(messageId),
                         JOptionPane.WARNING_MESSAGE
                 );
             }

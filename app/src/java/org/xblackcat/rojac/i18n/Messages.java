@@ -4,7 +4,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.utils.ResourceUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -12,72 +11,73 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
 
 /**
  * @author xBlackCat
  */
 
 public enum Messages {
-    MAIN_WINDOW_TITLE,
+    Main_Window_Title,
     // Button texts
-    BUTTON_OK,
-    BUTTON_CANCEL,
-    BUTTON_APPLY,
-    BUTTON_SAVE,
-    BUTTON_PREVIEW,
-    BUTTON_IGNORE,
-    BUTTON_YES,
-    BUTTON_NO,
-    BUTTON_CHANGEPASSWORD,
+    Button_Ok,
+    Button_Cancel,
+    Button_Apply,
+    Button_Save,
+    Button_Preview,
+    Button_Ignore,
+    Button_Yes,
+    Button_No,
+    Button_ChangePassword,
 
-    BUTTON_MARKS_TOOLTIP,
-    BUTTON_REPLY_TOOLTIP,
+    Button_Marks_ToolTip,
+    Button_Reply_ToolTip,
 
-    PANEL_THREAD_HEADER_ID,
-    PANEL_THREAD_HEADER_SUBJECT,
-    PANEL_THREAD_HEADER_USER,
-    PANEL_THREAD_HEADER_REPLIES,
-    PANEL_THREAD_HEADER_RATING,
-    PANEL_THREAD_HEADER_DATE,
+    Panel_Thread_Header_Id,
+    Panel_Thread_Header_Subject,
+    Panel_Thread_Header_User,
+    Panel_Thread_Header_Replies,
+    Panel_Thread_Header_Rating,
+    Panel_Thread_Header_Date,
 
     // Main window view
-    MAINFRAME_BUTTON_UPDATE,
-    MAINFRAME_BUTTON_LOADMESSAGE,
-    MAINFRAME_BUTTON_SETTINGS,
-    MAINFRAME_BUTTON_ABOUT,
+    MainFrame_Button_Update,
+    MainFrame_Button_LoadMessage,
+    MainFrame_Button_Settings,
+    MainFrame_Button_About,
 
     // Forum list view
-    VIEW_FORUMS_TITLE,
-    VIEW_FORUMS_TAB_TEXT,
-    VIEW_FORUMS_BUTTON_UPDATE,
-    VIEW_FORUMS_BUTTON_SUBSCRIBED,
-    VIEW_FORUMS_BUTTON_FILLED,
-    VIEW_FORUMS_BUTTON_HASUNREAD,
+    View_Forums_Title,
+    View_Forums_Tab_Text,
+    View_Forums_Button_Update,
+    View_Forums_Button_Subscribed,
+    View_Forums_Button_Filled,
+    View_Forums_Button_HasUnread,
 
     // Favorites view
-    VIEW_FAVORITES_TITLE,
-    VIEW_FAVORITES_TAB_TEXT,
+    View_Favorites_Title,
+    View_Favorites_Tab_Text,
 
     // Threads view
-    VIEW_THREAD_BUTTON_NEW_THREAD,
-    VIEW_THREAD_BUTTON_PREVIOUS_UNREAD,
-    VIEW_THREAD_BUTTON_NEXT_UNREAD,
+    View_Thread_Button_NewThread,
+    View_Thread_Button_PreviousUnread,
+    View_Thread_Button_NextUnread,
 
     // Tray texts
     // Note that the first parameter is always a version string.
-    TRAY_STATE_INITIALIZED,
-    TRAY_STATE_NORMAL,
-    TRAY_STATE_SYNCHRONIZATION,
-    TRAY_STATE_HAVE_UNREAD_MESSAGES,
+    Tray_State_Initialized,
+    Tray_State_Normal,
+    Tray_State_Synchronization,
+    Tray_State_HaveUnreadMessages,
 
     // Tray popup menu texts
-    TRAY_POPUP_ITEM_SHOW_MAINFRAME,
-    TRAY_POPUP_ITEM_HIDE_MAINFRAME,
-    TRAY_POPUP_ITEM_SYNCHRONIZE,
-    TRAY_POPUP_ITEM_CANCEL_SYNC,
-    TRAY_POPUP_ITEM_OPTIONS,
-    TRAY_POPUP_ITEM_ABOUT,
-    TRAY_POPUP_ITEM_EXIT,
+    Tray_Popup_Item_ShowMainframe,
+    Tray_Popup_Item_HideMainframe,
+    Tray_Popup_Item_Synchronize,
+    Tray_Popup_Item_CancelSync,
+    Tray_Popup_Item_Options,
+    Tray_Popup_Item_About,
+    Tray_Popup_Item_Exit,
 
     //
     // Dialog texts
@@ -87,139 +87,147 @@ public enum Messages {
     /**
      * Parameters are: 1. Mark description
      */
-    DIALOG_SET_MARK_MESSAGE,
-    DIALOG_SET_MARK_TITLE,
+    Dialog_SetMark_Message,
+    Dialog_SetMark_Title,
 
     // Confirm exit dialog
-    DIALOG_CONFIRM_EXIT_MESSAGE,
-    DIALOG_CONFIRM_EXIT_TITLE,
+    Dialog_ConfirmExit_Message,
+    Dialog_ConfirmExit_Title,
 
     // Login dialog related messages
-    DIALOG_LOGIN_TITLE,
-    DIALOG_LOGIN_TEXT,
-    DIALOG_LOGIN_USERNAME,
-    DIALOG_LOGIN_PASSWORD,
-    DIALOG_LOGIN_SAVE_PASSWORD,
-    DIALOG_LOGIN_EMPTY_USERNAME,
-    DIALOG_LOGIN_EMPTY_PASSWORD,
-    DIALOG_LOGIN_INVALID_USERNAME,
-    DIALOG_LOGIN_INVALID_USERNAME_TITLE,
+    Dialog_Login_Title,
+    Dialog_Login_Text,
+    Dialog_Login_UserName,
+    Dialog_Login_Password,
+    Dialog_Login_SavePassword,
+    Dialog_Login_EmptyUserName,
+    Dialog_Login_EmptyPassword,
+    Dialog_Login_InvalidUserName,
+    Dialog_Login_InvalidUserName_Title,
 
     // Load extra messages dialog texts
-    DIALOG_LOADMESSAGE_TITLE,
-    DIALOG_LOADMESSAGE_LABEL,
-    DIALOG_LOADMESSAGE_MESSAGE_NOT_EXISTS,
-    DIALOG_LOADMESSAGE_LOADATONCE,
+    Dialog_LoadMessage_Title,
+    Dialog_LoadMessage_Label,
+    Dialog_LoadMessage_MessageNotExists,
+    Dialog_LoadMessage_LoadAtOnce,
 
     // About dialog texts
-    DIALOG_ABOUT_TITLE,
+    Dialog_About_Title,
 
     // Options dialog texts
-    DIALOG_OPTIONS_TITLE,
-    DIALOG_OPTIONS_DESCRIPTION,
+    Dialog_Options_Title,
+    Dialog_Options_Description,
 
     // Edit message dialog related texts
-    ERROR_DIALOG_MESSAGE_NOT_FOUND_MESSAGE,
-    ERROR_DIALOG_MESSAGE_NOT_FOUND_TITLE,
-    MESSAGE_RESPONSE_HEADER,
+    ErrorDialog_MessageNotFound_Message,
+    ErrorDialog_MessageNotFound_Title,
+    Message_Response_Header,
+
+    // Updater dialog mesages
+    /**
+     * Has one int parameter last version number.
+     */
+    Dialog_Updater_UpdateExists,
+    Dialog_Updater_UpdateExists_Title,
+    Dialog_Updater_NoUpdate,
+    Dialog_Updater_NoUpdate_Title,
 
     /**
      * Parameters are: 1. Mark description
      */
-    ERROR_DIALOG_SET_MARK_MESSAGE,
-    ERROR_DIALOG_SET_MARK_TITLE,
+    ErrorDialog_SetMark_Message,
+    ErrorDialog_SetMark_Title,
 
-    MESSAGE_PANE_USER_LABEL,
-    MESSAGE_PANE_DATE_LABEL,
-    MESSAGE_PANE_TOOLBAR_TITLE_RATING,
+    Panel_Message_Label_User,
+    Panel_Message_Label_Date,
+    Panel_Message_Toolbar_Rating,
 
-    SYNCHRONIZE_COMMAND_NAME_NEW_POSTS,
-    SYNCHRONIZE_COMMAND_NAME_EXTRA_POSTS,
-    SYNCHRONIZE_COMMAND_NAME_BROKEN_TOPICS,
-    SYNCHRONIZE_COMMAND_NAME_FORUM_LIST,
-    SYNCHRONIZE_COMMAND_NAME_USERS,
-    SYNCHRONIZE_COMMAND_NAME_SUBMIT,
-    SYNCHRONIZE_COMMAND_NAME_TEST,
+    Synchronize_Command_Name_NewPosts,
+    Synchronize_Command_Name_ExtraPosts,
+    Synchronize_Command_Name_BrokenTopics,
+    Synchronize_Command_Name_ForumList,
+    Synchronize_Command_Name_Users,
+    Synchronize_Command_Name_Submit,
+    Synchronize_Command_Name_Test,
 
-    SYNCHRONIZE_COMMAND_GOT_POSTS,
-    SYNCHRONIZE_COMMAND_GOT_FORUMS,
-    SYNCHRONIZE_COMMAND_GOT_USERS,
-    SYNCHRONIZE_COMMAND_GOT_USER_ID,
+    Synchronize_Command_GotPosts,
+    Synchronize_Command_GotForums,
+    Synchronize_Command_GotUsers,
+    Synchronize_Command_GotUserId,
 
-    SYNCHRONIZE_COMMAND_UPDATE_DATABASE,
-    SYNCHRONIZE_COMMAND_PORTION,
-    SYNCHRONIZE_COMMAND_START,
-    SYNCHRONIZE_COMMAND_DONE,
-    SYNCHRONIZE_COMMAND_USE_USER,    
-    SYNCHRONIZE_COMMAND_READ,
-    SYNCHRONIZE_COMMAND_WAS_READ,
-    SYNCHRONIZE_COMMAND_READ_UNKNOWN,
-    SYNCHRONIZE_COMMAND_WRITE,
-    SYNCHRONIZE_COMMAND_EXCEPTION,
-    SYNCHRONIZE_COMMAND_COMPRESSION_USED,
-    SYNCHRONIZE_COMMAND_COMPRESSION_NOT_USED,
-    SYNCHRONIZE_COMMAND_PROXY_USED,
+    Synchronize_Command_UpdateDatabase,
+    Synchronize_Command_Portion,
+    Synchronize_Command_Start,
+    Synchronize_Command_Done,
+    Synchronize_Command_UseUser,
+    Synchronize_Command_Read,
+    Synchronize_Command_WasRead,
+    Synchronize_Command_ReadUnknown,
+    Synchronize_Command_Write,
+    Synchronize_Command_Exception,
+    Synchronize_Command_CompressionUsed,
+    Synchronize_Command_CompressionNotUsed,
+    Synchronize_Command_ProxyUsed,
 
     // Mark descriptions
-    DESCRIPTION_MARK_SELECT,
-    DESCRIPTION_MARK_PLUSONE,
-    DESCRIPTION_MARK_AGREE,
-    DESCRIPTION_MARK_DISAGREE,
-    DESCRIPTION_MARK_X1,
-    DESCRIPTION_MARK_X2,
-    DESCRIPTION_MARK_X3,
-    DESCRIPTION_MARK_SMILE,
-    DESCRIPTION_MARK_REMOVE,
+    Description_Mark_Select,
+    Description_Mark_PlusOne,
+    Description_Mark_Agree,
+    Description_Mark_Disagree,
+    Description_Mark_X1,
+    Description_Mark_X2,
+    Description_Mark_X3,
+    Description_Mark_Smile,
+    Description_Mark_Remove,
 
     //Smile descriptions
-    DESCRIPTION_SMILE_SMILE,
-    DESCRIPTION_SMILE_SAD,
-    DESCRIPTION_SMILE_WINK,
-    DESCRIPTION_SMILE_BIGGRIN,
-    DESCRIPTION_SMILE_LOL,
-    DESCRIPTION_SMILE_SMIRK,
-    DESCRIPTION_SMILE_CONFUSED,
-    DESCRIPTION_SMILE_NO,
-    DESCRIPTION_SMILE_SUPER,
-    DESCRIPTION_SMILE_SHUFFLE,
-    DESCRIPTION_SMILE_WOW,
-    DESCRIPTION_SMILE_CRASH,
-    DESCRIPTION_SMILE_USER,
-    DESCRIPTION_SMILE_MANIAC,
-    DESCRIPTION_SMILE_DONOTKNOW,
+    Description_Smile_Smile,
+    Description_Smile_Sad,
+    Description_Smile_Wink,
+    Description_Smile_BigGrin,
+    Description_Smile_Lol,
+    Description_Smile_Smirk,
+    Description_Smile_Confused,
+    Description_Smile_No,
+    Description_Smile_Super,
+    Description_Smile_Shuffle,
+    Description_Smile_Wow,
+    Description_Smile_Crash,
+    Description_Smile_User,
+    Description_Smile_Maniac,
+    Description_Smile_DoNotKnow,
 
-    DESCRIPTION_UPDATE_PERIOD_NONE,
-    DESCRIPTION_UPDATE_PERIOD_EVERYRUN,
-    DESCRIPTION_UPDATE_PERIOD_EVERYDAY,
-    DESCRIPTION_UPDATE_PERIOD_EVERYWEEK,
-    DESCRIPTION_UPDATE_PERIOD_EVERYMONTH,
+    Description_UpdatePeriod_None,
+    Description_UpdatePeriod_EveryRun,
+    Description_UpdatePeriod_EveryDay,
+    Description_UpdatePeriod_EveryWeek,
+    Description_UpdatePeriod_EveryMonth,
     // Popup menu texts
-    POPUP_LINK_OPEN_IN_BROWSER,
-    POPUP_LINK_COPY_TO_CLIPBOARD,
-    POPUP_LINK_OPEN_MESSAGE_IN_BROWSER,
-    POPUP_LINK_OPEN_THREAD_IN_BROWSER,
+    Popup_Link_Open_InBrowser,
+    Popup_Link_Copy_ToClipboard,
+    Popup_Link_Open_InBrowser_Message,
+    Popup_Link_Open_InBrowser_Thread,
     // Menu of forum view
-    POPUP_VIEW_FORUMS_SUBSCRIBE,
-    POPUP_VIEW_FORUMS_OPEN,
-    POPUP_VIEW_FORUMS_SET_READ_ALL,
-    POPUP_VIEW_FORUMS_SET_UNREAD_ALL,
+    Popup_View_Forums_Subscribe,
+    Popup_View_Forums_Open,
+    Popup_View_Forums_SetReadAll,
+    Popup_View_Forums_SetUnreadAll,
     // Messages threads view related messages
-    POPUP_VIEW_THREADS_TREE_MARK_TITLE,
-    POPUP_VIEW_THREADS_TREE_MARK_READ,
-    POPUP_VIEW_THREADS_TREE_MARK_UNREAD,
-    POPUP_VIEW_THREADS_TREE_MARK_THREAD_READ,
-    POPUP_VIEW_THREADS_TREE_MARK_THREAD_UNREAD,
-    POPUP_VIEW_THREADS_TREE_EXTENDED_MARK,
+    Popup_View_ThreadsTree_Mark_Title,
+    Popup_View_ThreadsTree_Mark_Read,
+    Popup_View_ThreadsTree_Mark_Unread,
+    Popup_View_ThreadsTree_Mark_ThreadRead,
+    Popup_View_ThreadsTree_Mark_ThreadUnread,
+    Popup_View_ThreadsTree_Mark_Extended,
 
-    POPUP_VIEW_THREADS_TREE_COPYURL,
-    POPUP_VIEW_THREADS_TREE_COPYURL_MESSAGE,
-    POPUP_VIEW_THREADS_TREE_COPYURL_FLAT,
-    POPUP_VIEW_THREADS_TREE_COPYURL_THREAD,
+    Popup_View_ThreadsTree_CopyUrl,
+    Popup_View_ThreadsTree_CopyUrl_Message,
+    Popup_View_ThreadsTree_CopyUrl_Flat,
+    Popup_View_ThreadsTree_CopyUrl_Thread,
 
-    POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE,
-    POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE_NEW_TAB,
-    POPUP_VIEW_THREADS_TREE_OPEN_MESSAGE_CURRENT_VIEW,
-    ;
+    Popup_View_ThreadsTree_OpenMessage,
+    Popup_View_ThreadsTree_OpenMessage_NewTab,
+    Popup_View_ThreadsTree_OpenMessage_CurrentView,;
 
     private static final Log log = LogFactory.getLog(Messages.class);
     // Constants
@@ -294,7 +302,7 @@ public enum Messages {
      * @throws MissingResourceException if no localized message is exists for the constant.
      */
     public String get(Object... arguments) throws MissingResourceException {
-        String key = ResourceUtils.constantToProperty(name());
+        String key = key();
 
         String mes;
 
@@ -324,8 +332,12 @@ public enum Messages {
         }
     }
 
+    public String key() {
+        return constantCamelToPropertyName(name());
+    }
+
     public String toString() {
-        return "Constant: " + name() + " (" + ResourceUtils.constantToProperty(name()) + ")";
+        return "Constant: " + name() + " (" + key() + ")";
     }
 
     public static Locale getLocale() {
@@ -335,5 +347,33 @@ public enum Messages {
         } finally {
             readLock.unlock();
         }
+    }
+
+    private static final Pattern DOTS_PATTERN = Pattern.compile("\\.{2,}");
+
+    // TODO: move to org.xblackcat.utils.ResourceUtils
+    private static String constantCamelToPropertyName(String s) {
+        if (s == null) {
+            return null;
+        }
+        StringBuilder result = new StringBuilder(s.length() << 1);
+        boolean wasDot = true;
+        for (char c : s.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                if (!wasDot) {
+                    result.append('_');
+                }
+                c = Character.toLowerCase(c);
+            }
+            if (c == '_') {
+                result.append('.');
+                wasDot = true;
+            } else {
+                result.append(c);
+                wasDot = false;
+            }
+        }
+
+        return DOTS_PATTERN.matcher(result).replaceAll(".");
     }
 }
