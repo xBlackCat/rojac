@@ -54,7 +54,7 @@ public final class Property<T> {
     public static final Property<Integer> RSDN_USER_ID = createPrivate("rojac.rsdn.user.id", Integer.class);
     public static final Property<Boolean> RSDN_USER_PASSWORD_SAVE = createPrivate("rojac.rsdn.user.password.save", Boolean.FALSE);
 
-    public static final Property<CheckUpdatesEnum> UPDATER_PERIOD = createPrivate("rojac.updater.period", CheckUpdatesEnum.EveryWeek);
+    public static final Property<CheckUpdatesEnum> UPDATER_PERIOD = create("rojac.updater.period", CheckUpdatesEnum.EveryWeek, new CheckUpdatesEnumChecker());
     public static final Property<Long> UPDATER_LAST_CHECK = createPrivate("rojac.updater.last_check", Long.class);
 
     // Progress dialog properties
@@ -322,4 +322,5 @@ public final class Property<T> {
     public void setCache(T cache) {
         this.cache = new SoftReference<T>(cache);
     }
+
 }
