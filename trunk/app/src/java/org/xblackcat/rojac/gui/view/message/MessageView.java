@@ -9,6 +9,7 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IInternationazable;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
@@ -29,6 +30,8 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -94,7 +97,7 @@ public class MessageView extends AItemView implements IInternationazable {
         messageInfoPane.add(dateLabel);
         messageInfoPane.add(messageDateLabel);
 
-        marksButton = WindowsUtils.setupImageButton(null, new ShowMarksAction());
+        marksButton = WindowsUtils.registerImageButton(this, null, new ShowMarksAction());
         marksButton.setDefaultCapable(false);
         marksButton.setFocusable(false);
         marksButton.setFocusPainted(false);
@@ -118,21 +121,19 @@ public class MessageView extends AItemView implements IInternationazable {
 
         final MarkRender markRender = new MarkRender(ResourceUtils.loadIcon("images/marks/select.gif"));
 
-        AButtonAction marksAction = new AButtonAction(Messages.Description_Mark_Select) {
-            public void actionPerformed(ActionEvent e) {
-                marks.setPopupVisible(false);
-                chooseMark(marksModel.getSelectedItem());
-                marksModel.reset();
-            }
-        };
+        SelectMarkAction marksAction = new SelectMarkAction(marksModel);
+        ShowMarkSelectorAction selectorAction = new ShowMarkSelectorAction(marksModel);
 
         marks = new JComboBox(marksModel);
         marks.setFocusable(false);
-        marks.setToolTipText(marksAction.getMessage().get());
+        marks.setToolTipText(selectorAction.getMessage().get());
         marks.setRenderer(markRender);
         marks.addActionListener(marksAction);
+        marks.addKeyListener(marksAction);
 
-        answer = WindowsUtils.setupImageButton("reply", new ReplyAction());
+        WindowsUtils.registerAction(this, selectorAction);
+
+        answer = WindowsUtils.registerImageButton(this, "reply", new ReplyAction());
 
         controls.add(answer);
         controls.add(marks);
@@ -148,7 +149,8 @@ public class MessageView extends AItemView implements IInternationazable {
      * @param mark new mark
      */
     private void chooseMark(final Mark mark) {
-        if (JOptionPane.YES_OPTION ==
+        if (mark != null &&
+                JOptionPane.YES_OPTION ==
                 JLOptionPane.showConfirmDialog(
                         this,
                         Messages.Dialog_SetMark_Message.get(mark),
@@ -361,7 +363,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
     private class ReplyAction extends AButtonAction {
         public ReplyAction() {
-            super(Messages.Button_Reply_ToolTip);
+            super(Messages.Button_Reply_ToolTip, ShortCut.ReplyOnMessage);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -371,7 +373,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
     private class ShowMarksAction extends AButtonAction {
         public ShowMarksAction() {
-            super(Messages.Button_Marks_ToolTip);
+            super(Messages.Description_Mark_Select, ShortCut.ShowMessageMarks);
         }
 
         @Override
@@ -379,6 +381,71 @@ public class MessageView extends AItemView implements IInternationazable {
             RatingDialog rd = new RatingDialog(SwingUtilities.windowForComponent(MessageView.this), messageId);
             WindowsUtils.center(rd, marksButton);
             rd.setVisible(true);
+        }
+    }
+
+    private class ShowMarkSelectorAction extends AButtonAction {
+        private final IconsModel marksModel;
+
+
+        public ShowMarkSelectorAction(IconsModel marksModel) {
+            super(Messages.Description_Mark_Select, ShortCut.SetMarkOnMessage);
+            this.marksModel = marksModel;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            marks.setFocusable(true);
+            marks.setPopupVisible(true);
+            marks.requestFocusInWindow();
+            marks.requestFocus();
+        }
+    }
+
+    private class SelectMarkAction extends AbstractAction implements KeyListener {
+        private final IconsModel marksModel;
+
+        public SelectMarkAction(IconsModel marksModel) {
+            this.marksModel = marksModel;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            if ((AWTEvent.MOUSE_EVENT_MASK & e.getModifiers()) != 0) {
+               selectMark();
+            }
+        }
+
+        private void selectMark() {
+            marks.setPopupVisible(false);
+            chooseMark(marksModel.getSelectedItem());
+            marksModel.reset();
+            marks.getParent().requestFocus();
+        }
+
+        private void checkKey(KeyEvent e) {
+            if (marksModel.getSelectedItem() != null &&
+                    (e.getKeyCode() == KeyEvent.VK_ENTER ||
+                    e.getKeyCode() == KeyEvent.VK_SPACE)) {
+                selectMark();
+            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                marksModel.reset();
+                selectMark();
+            }
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            checkKey(e);
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            checkKey(e);
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            checkKey(e);
         }
     }
 }

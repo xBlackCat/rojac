@@ -6,6 +6,7 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
+import org.xblackcat.rojac.util.ShortCutUtils;
 
 import javax.swing.*;
 
@@ -60,6 +61,9 @@ public class ThreadDoubleView extends AItemView {
         splitPane.setDividerLocation(200);
         splitPane.setResizeWeight(.4);
         add(splitPane);
+
+        ShortCutUtils.mergeInputMaps(this, slaveView.getComponent());
+        ShortCutUtils.mergeInputMaps(this, masterView.getComponent());
     }
 
     public void loadItem(AffectedMessage messageId) {

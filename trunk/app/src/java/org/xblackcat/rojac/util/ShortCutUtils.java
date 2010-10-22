@@ -34,17 +34,52 @@ public class ShortCutUtils {
      */
     public static InputMap mergeInputMaps(InputMap base, InputMap target) {
         InputMap copy = new InputMap();
-        for (KeyStroke k : target.keys()) {
-            copy.put(k, target.get(k));
+        if (target != null) {
+            KeyStroke[] keys = target.keys();
+            if (keys != null) {
+                for (KeyStroke k : keys) {
+                    copy.put(k, target.get(k));
+                }
+            }
         }
 
-        for (KeyStroke k : base.keys()) {
-            copy.put(k, base.get(k));
+        if (base != null) {
+            KeyStroke[] keys = base.keys();
+            if (keys != null) {
+                for (KeyStroke k : keys) {
+                    copy.put(k, base.get(k));
+                }
+            }
         }
 
         copy.setParent(target.getParent());
 
         return copy;
+    }
+
+    /**
+     * Copy InputMap and add proxy to actions to target component.
+     *
+     * @param base
+     * @param target
+     *
+     * @return
+     */
+    public static void mergeInputMaps(JComponent holder, final JComponent target) {
+        InputMap copy = holder.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        InputMap targetInputMap = target.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        if (targetInputMap != null) {
+            KeyStroke[] keys = targetInputMap.keys();
+            if (keys != null) {
+                for (KeyStroke k : keys) {
+                    Object actionKey = targetInputMap.get(k);
+
+                    copy.put(k, actionKey);
+                    holder.getActionMap().put(actionKey, target.getActionMap().get(actionKey));
+                }
+            }
+        }
     }
 
     public static String keyStrokeHint(KeyStroke keyStroke) {

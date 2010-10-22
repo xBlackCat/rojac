@@ -340,7 +340,7 @@ public final class WindowsUtils {
         return setupImageButton(buttonName, action);
     }
 
-    private static void registerAction(JComponent comp, AButtonAction action) {
+    public static void registerAction(JComponent comp, AButtonAction action) {
         ShortCut sc = action.getShortCut();
         if (sc != null) {
             comp.getInputMap(sc.getCondition()).put(sc.getKeyStroke(), sc);
