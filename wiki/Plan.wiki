@@ -27,8 +27,8 @@
   * Add tray icon. _(done)_
 == Alpha 3 ==
   * Make theads view info load more lazy _*(in progress)*_
-  * Add keyboard shortcuts.
-  * Add keyboard shortcuts manager.
+  * Add keyboard shortcuts. _*(in progress)*_
+  * Add keyboard shortcuts manager. _*(in progress)*_
   * Allow to DnD links to create a new tab with thread/message.
   * Add favorites (messages, topics, you posts, responses)
   * Add filter to forum view (by users, by date, by marks)
