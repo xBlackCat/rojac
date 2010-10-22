@@ -30,7 +30,6 @@ public enum Messages {
     Button_No,
     Button_ChangePassword,
 
-    Button_Marks_ToolTip,
     Button_Reply_ToolTip,
 
     Panel_Thread_Header_Id,
