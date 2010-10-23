@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.forumlist;
 
-import ch.lambdaj.Lambda;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.component.LineRenderer;
@@ -14,7 +13,6 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.io.Serializable;
 import java.text.DateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 class MultiLineForumRenderer extends JPanel
@@ -33,8 +31,6 @@ class MultiLineForumRenderer extends JPanel
     private LineRenderer dateLine = new LineRenderer(JLabel.RIGHT);
     private LineRenderer statLine = new LineRenderer(JLabel.RIGHT);
 
-    protected final JComponent components;
-
     /**
      * Creates a default table cell renderer.
      */
@@ -47,8 +43,6 @@ class MultiLineForumRenderer extends JPanel
         add(titleLine, BorderLayout.NORTH);
         add(statLine, BorderLayout.EAST);
         add(dateLine, BorderLayout.WEST);
-
-        components = Lambda.forEach(Arrays.asList(titleLine, statLine, dateLine));
     }
 
     private Border getNoFocusBorder() {
@@ -74,6 +68,36 @@ class MultiLineForumRenderer extends JPanel
         super.updateUI();
         setForeground(null);
         setBackground(null);
+    }
+
+    @Override
+    public void setFont(Font font) {
+        super.setFont(font);
+        if (statLine != null) {
+            titleLine.setFont(font);
+            dateLine.setFont(font);
+            statLine.setFont(font);
+        }
+    }
+
+    @Override
+    public void setForeground(Color fg) {
+        super.setForeground(fg);
+        if (statLine != null) {
+            titleLine.setForeground(fg);
+            dateLine.setForeground(fg);
+            statLine.setForeground(fg);
+        }
+    }
+
+    @Override
+    public void setBackground(Color bg) {
+        super.setBackground(bg);
+        if (statLine != null) {
+            titleLine.setBackground(bg);
+            dateLine.setBackground(bg);
+            statLine.setBackground(bg);
+        }
     }
 
     // implements javax.swing.table.TableCellRenderer
@@ -116,14 +140,13 @@ class MultiLineForumRenderer extends JPanel
             isSelected = true;
         }
 
+        Color foreground;
+        Color background;
         if (isSelected) {
-            super.setForeground(fg == null ? table.getSelectionForeground() : fg);
-            super.setBackground(bg == null ? table.getSelectionBackground() : bg);
-
-            components.setForeground(fg == null ? table.getSelectionForeground() : fg);
-            components.setBackground(bg == null ? table.getSelectionBackground() : bg);
+            foreground = fg == null ? table.getSelectionForeground() : fg;
+            background = bg == null ? table.getSelectionBackground() : bg;
         } else {
-            Color background = table.getBackground();
+            background = table.getBackground();
             if (background == null || background instanceof javax.swing.plaf.UIResource) {
                 if (row % 2 == 0) {
                     Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
@@ -132,13 +155,11 @@ class MultiLineForumRenderer extends JPanel
                     }
                 }
             }
-            Color foreground = table.getForeground();
-            super.setForeground(foreground);
-            super.setBackground(background);
-
-            components.setForeground(foreground);
-            components.setBackground(background);
+            foreground = table.getForeground();
         }
+
+        setForeground(foreground);
+        setBackground(background);
 
         if (hasFocus) {
             Border border = null;
@@ -154,21 +175,19 @@ class MultiLineForumRenderer extends JPanel
                 Color col;
                 col = DefaultLookup.getColor(this, ui, "Table.focusCellForeground");
                 if (col != null) {
-                    super.setForeground(col);
-
-                    components.setForeground(col);
+                    setForeground(col);
                 }
                 col = DefaultLookup.getColor(this, ui, "Table.focusCellBackground");
                 if (col != null) {
-                    super.setBackground(col);
-
-                    components.setBackground(col);
+                    setBackground(col);
                 }
             }
         } else {
             setBorder(getNoFocusBorder());
         }
-        components.setBorder(null);
+        titleLine.setBorder(null);
+        dateLine.setBorder(null);
+        statLine.setBorder(null);
 
         // Setup component with value-based styles
 
@@ -217,7 +236,6 @@ class MultiLineForumRenderer extends JPanel
 
         Font font = table.getFont().deriveFont(style);
         setFont(font);
-        components.setFont(font);
 
         titleLine.setText(titleText);
         statLine.setText(statText);
