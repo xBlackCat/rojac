@@ -17,7 +17,7 @@ import ru.rsdn.Janus.RequestForumInfo;
  * @author xBlackCat
  */
 
-class TestRequest extends ARequest {
+class TestRequest extends ARequest<Integer> {
     private static final Log log = LogFactory.getLog(TestRequest.class);
 
     private static final RequestForumInfo[] DUMMY_REQUEST_INFO = new RequestForumInfo[]{
@@ -25,10 +25,10 @@ class TestRequest extends ARequest {
     };
 
     @Override
-    public AffectedMessage[] process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<Integer> handler, IProgressTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage(Messages.Synchronize_Command_Name_Test);
 
-        int userId;
+        Integer userId;
         try {
             NewData data = janusService.getNewData(
                     DUMMY_REQUEST_INFO,
@@ -44,12 +44,12 @@ class TestRequest extends ARequest {
             trac.addLodMessage(Messages.Synchronize_Command_GotUserId, userId);
         } catch (JanusServiceException e) {
             // Login rejected
-            userId = 0;
+            userId = null;
         }
         if (log.isDebugEnabled()) {
             log.debug("Got user id: " + userId);
         }
 
-        return new AffectedMessage[]{new AffectedMessage(userId)};
+        handler.process(userId);
     }
 }

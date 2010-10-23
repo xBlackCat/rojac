@@ -3,11 +3,11 @@ package org.xblackcat.rojac.gui;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.SynchronizationUtils;
 
 import java.awt.*;
 
@@ -44,7 +44,7 @@ class ExtraMessageLoader extends RojacWorker<Void, Void> {
     @Override
     protected void done() {
         if (loadAtOnce) {
-            SynchronizationUtils.loadExtraMessages(frame);
+            Request.EXTRA_MESSAGES.process(frame);
         }
     }
 }

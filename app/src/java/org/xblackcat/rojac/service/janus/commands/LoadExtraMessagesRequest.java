@@ -3,6 +3,8 @@ package org.xblackcat.rojac.service.janus.commands;
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.datahandler.PacketType;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
@@ -23,7 +25,7 @@ import java.util.Set;
  */
 
 class LoadExtraMessagesRequest extends ALoadPostsRequest {
-    public AffectedMessage[] process(IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<ProcessPacket> handler, IProgressTracker trac, IJanusService janusService) throws RojacException {
         int[] messageIds = miscAH.getExtraMessages();
 
         Set<AffectedMessage> result = new HashSet<AffectedMessage>();
@@ -41,7 +43,7 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
             result.addAll(loadTopics(brokenTopicIds, janusService, trac));
         }
 
-        return result.toArray(new AffectedMessage[result.size()]);
+        handler.process(new ProcessPacket(PacketType.AddMessages, result));
     }
 
     private Collection<AffectedMessage> loadTopics(int[] messageIds, IJanusService janusService, IProgressTracker tracker) throws RsdnProcessorException, StorageException {

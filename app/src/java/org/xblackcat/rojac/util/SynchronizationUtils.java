@@ -1,11 +1,7 @@
 package org.xblackcat.rojac.util;
 
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.PacketType;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
-import org.xblackcat.rojac.service.janus.commands.IResultHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
 
@@ -29,11 +25,7 @@ public final class SynchronizationUtils {
                         Request.SYNCHRONIZE_WITH_USERS :
                         Request.SYNCHRONIZE;
 
-        requests.process(mainFrame, new NewMessagesHandler());
-    }
-
-    public static void loadExtraMessages(Window mainFrame) {
-        Request.EXTRA_MESSAGES.process(mainFrame, new NewMessagesHandler());
+        requests.process(mainFrame);
     }
 
     public static void setScheduleSynchronizer(Window mainFrame) {
@@ -50,16 +42,6 @@ public final class SynchronizationUtils {
         period *= 60;
 
         executor.setupPeriodicTask(SCHEDULED_TASK_ID, new ScheduleSynchronization(mainFrame), period);
-    }
-
-    private static class NewMessagesHandler implements IResultHandler {
-        private NewMessagesHandler() {
-        }
-
-        @Override
-        public void process(AffectedMessage... messages) {
-            ServiceFactory.getInstance().getDataDispatcher().processPacket(new ProcessPacket(PacketType.AddMessages, messages));
-        }
     }
 
     private static class ScheduleSynchronization implements Runnable {

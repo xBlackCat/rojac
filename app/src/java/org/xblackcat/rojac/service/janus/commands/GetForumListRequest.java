@@ -6,6 +6,8 @@ import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.PacketType;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.ForumsList;
@@ -21,8 +23,8 @@ import java.util.Set;
  * @author xBlackCat
  */
 
-class GetForumListRequest extends ARequest {
-    public AffectedMessage[] process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
+class GetForumListRequest extends ARequest<ProcessPacket> {
+    public void process(IResultHandler<ProcessPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
         Set<AffectedMessage> result = new HashSet<AffectedMessage>();
 
         tracker.addLodMessage(Messages.Synchronize_Command_Name_ForumList);
@@ -69,6 +71,6 @@ class GetForumListRequest extends ARequest {
             throw new RsdnProcessorException("Can not update forum list", e);
         }
 
-        return result.toArray(new AffectedMessage[result.size()]);
+        handler.process(new ProcessPacket(PacketType.ForumsLoaded/*, result.toArray(new AffectedMessage[result.size()])*/));
     }
 }

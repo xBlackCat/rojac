@@ -3,6 +3,7 @@ package org.xblackcat.rojac.service.janus.commands;
 import gnu.trove.TIntHashSet;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
@@ -18,7 +19,7 @@ import java.util.Set;
  * @author xBlackCat
  */
 
-abstract class ALoadPostsRequest extends ARequest {
+abstract class ALoadPostsRequest extends ARequest<ProcessPacket> {
     protected final IStorage storage;
     protected final IRatingAH rAH;
     protected final IMessageAH mAH;
@@ -26,7 +27,7 @@ abstract class ALoadPostsRequest extends ARequest {
     protected final IMiscAH miscAH;
     protected final IForumAH forumAH;
 
-    private final TIntHashSet loadedMessages = new TIntHashSet();
+    private final TIntHashSet updatedTopics = new TIntHashSet();
 
     public ALoadPostsRequest() {
         storage = ServiceFactory.getInstance().getStorage();
@@ -41,6 +42,7 @@ abstract class ALoadPostsRequest extends ARequest {
         tracker.addLodMessage(Messages.Synchronize_Command_UpdateDatabase);
         Set<AffectedMessage> result = new HashSet<AffectedMessage>();
 
+        TIntHashSet updatedTopics = new TIntHashSet();
         int count = 0;
         for (JanusMessageInfo mes : newPosts.getMessages()) {
             tracker.updateProgress(count++, newPosts.getTotalRecords());
@@ -52,13 +54,18 @@ abstract class ALoadPostsRequest extends ARequest {
             }
 
             int mId = mes.getMessageId();
+            if (mes.getTopicId() == 0) {
+                updatedTopics.add(mes.getMessageId());
+            } else {
+                updatedTopics.add(mes.getTopicId());
+            }
+
             if (mAH.isExist(mId)) {
                 mAH.updateMessage(mes, read);
             } else {
                 mAH.storeMessage(mes, read);
             }
 
-            loadedMessages.add(mId);
 
             int forumId = mes.getForumId();
             result.add(new AffectedMessage(forumId, mId));

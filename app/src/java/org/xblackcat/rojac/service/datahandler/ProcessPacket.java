@@ -8,6 +8,8 @@ import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.util.PacketUtils;
 
+import java.util.Collection;
+
 /**
  * @author xBlackCat
  */
@@ -24,7 +26,7 @@ public final class ProcessPacket {
         this.type = type;
     }
 
-    public ProcessPacket(PacketType type, AffectedMessage... messages) {
+    public ProcessPacket(PacketType type, Collection<AffectedMessage> messages) {
         this.type = type;
         for (AffectedMessage am : messages) {
             int forumId = am.getForumId();

@@ -7,6 +7,8 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.datahandler.PacketType;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import ru.rsdn.Janus.JanusMessageInfo;
@@ -14,7 +16,12 @@ import ru.rsdn.Janus.JanusModerateInfo;
 import ru.rsdn.Janus.JanusRatingInfo;
 import ru.rsdn.Janus.RequestForumInfo;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
@@ -26,7 +33,7 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MES
 class GetNewPostsRequest extends ALoadPostsRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
-    public AffectedMessage[] process(IProgressTracker tracker, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<ProcessPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
         int[] forumIds = forumAH.getSubscribedForumIds();
 
         String idsList = Arrays.toString(forumIds);
@@ -35,7 +42,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
             }
-            return AffectedMessage.EMPTY;
+            return;
         }
 
         if (log.isDebugEnabled()) {
@@ -96,7 +103,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         tracker.addLodMessage(Messages.Synchronize_Command_GotUserId, RSDN_USER_ID.get());
 
-        return result.toArray(new AffectedMessage[result.size()]);
+        handler.process(new ProcessPacket(PacketType.AddMessages, result));
     }
 
 }

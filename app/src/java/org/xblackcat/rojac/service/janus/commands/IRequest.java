@@ -7,8 +7,8 @@ import org.xblackcat.rojac.service.janus.IJanusService;
  * @author xBlackCat
  */
 
-public interface IRequest {
-    AffectedMessage[] process(IProgressTracker trac, IJanusService janusService) throws RojacException;
+public interface IRequest<T> {
+    void process(IResultHandler<T> handler, IProgressTracker trac, IJanusService janusService) throws RojacException;
 
     String getName();
 }

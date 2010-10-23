@@ -15,7 +15,8 @@ import org.xblackcat.rojac.util.RojacWorker;
 import java.util.Arrays;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.forEach;
+import static ch.lambdaj.Lambda.joinFrom;
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_USE_GZIP;
 
@@ -79,11 +80,7 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
                 log.debug("Process request(s): " + joinFrom(requests, IRequest.class).getName());
             }
 
-            processedMessages = aggregate(
-                    requests,
-                    new AffectedMessagesAggregator(),
-                    on(IRequest.class).process(tracker, janusService)
-            );
+            forEach(requests, IRequest.class).process(handler, tracker, janusService);
         } catch (Exception e) {
             // Just in case
             log.debug("There is an exception in one of commands", e);
