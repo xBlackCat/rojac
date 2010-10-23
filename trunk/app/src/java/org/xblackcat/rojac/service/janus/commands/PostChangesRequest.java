@@ -9,11 +9,17 @@ import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.PacketType;
+import org.xblackcat.rojac.service.datahandler.ProcessPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.PostException;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
-import org.xblackcat.rojac.service.storage.*;
+import org.xblackcat.rojac.service.storage.INewMessageAH;
+import org.xblackcat.rojac.service.storage.INewModerateAH;
+import org.xblackcat.rojac.service.storage.INewRatingAH;
+import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.StorageException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,10 +28,10 @@ import java.util.Set;
  * @author xBlackCat
  */
 
-class PostChangesRequest extends ARequest {
+class PostChangesRequest extends ARequest<ProcessPacket> {
     private static final Log log = LogFactory.getLog(PostChangesRequest.class);
 
-    public AffectedMessage[] process(IProgressTracker trac, IJanusService janusService) {
+    public void process(IResultHandler<ProcessPacket> handler, IProgressTracker trac, IJanusService janusService) {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         trac.addLodMessage(Messages.Synchronize_Command_Name_Submit);
 
@@ -52,7 +58,7 @@ class PostChangesRequest extends ARequest {
                 if (log.isDebugEnabled()) {
                     log.debug("Nothing to post.");
                 }
-                return AffectedMessage.EMPTY;
+                return;
             }
 
             // Store forum ids of new messages and message ids of new ratings to return update event
@@ -93,11 +99,10 @@ class PostChangesRequest extends ARequest {
                 throw new RsdnProcessorException("Unable to process the commit response.", e);
             }
 
-            return result.toArray(new AffectedMessage[result.size()]);
+            handler.process(new ProcessPacket(PacketType.AddMessages, result));
         } catch (RsdnProcessorException e) {
             // Log the exception to console.
             trac.postException(e);
-            return AffectedMessage.EMPTY;
         }
     }
 }

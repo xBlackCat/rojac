@@ -14,12 +14,12 @@ public final class PacketUtils {
     private PacketUtils() {
     }
 
-    public static AffectedMessage[] toAffectedMessages(ITreeItem<?>... items) {
+    public static Collection<AffectedMessage> toAffectedMessages(ITreeItem<?>... items) {
         Collection<AffectedMessage> result = new LinkedList<AffectedMessage>();
         for (ITreeItem<?> i : items) {
             result.add(new AffectedMessage(i.getForumId(), i.getMessageId()));
         }
-        return result.toArray(new AffectedMessage[result.size()]);
+        return result;
     }
 
     public static AffectedMessage[] makeAffectedMessages(int forumId, int... messageIds) {

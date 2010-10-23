@@ -6,8 +6,7 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.UserHelper;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
-import org.xblackcat.rojac.service.janus.commands.IResultHandler;
+import org.xblackcat.rojac.service.janus.commands.ASwingThreadedHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -137,15 +136,9 @@ public class LoginDialog extends JDialog {
         }
     }
 
-    private class UserChecker implements IResultHandler {
-        private boolean setUserId(AffectedMessage... results) {
-            if (ArrayUtils.isEmpty(results)) {
-                return false;
-            }
-
-            int userId = results[0].getForumId();
-
-            if (userId == 0) {
+    private class UserChecker extends ASwingThreadedHandler<Integer> {
+        private boolean setUserId(Integer userId) {
+            if (userId == null || userId == 0) {
                 return false;
             }
 
@@ -154,8 +147,8 @@ public class LoginDialog extends JDialog {
         }
 
         @Override
-        public void process(AffectedMessage... results) {
-            if (!setUserId(results)) {
+        public void execute(Integer userId) {
+            if (!setUserId(userId)) {
                 int res = JLOptionPane.showConfirmDialog(
                         LoginDialog.this,
                         Messages.Dialog_Login_InvalidUserName.get(),
