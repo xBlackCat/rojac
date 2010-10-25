@@ -12,11 +12,6 @@ import org.xblackcat.rojac.service.janus.JanusService;
 import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.util.RojacWorker;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static ch.lambdaj.Lambda.forEach;
-import static ch.lambdaj.Lambda.joinFrom;
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_USE_GZIP;
 
@@ -26,13 +21,12 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_USE_GZIP
  * @author xBlackCat
  */
 @TaskType(TaskTypeEnum.Synchronization)
-public class RequestProcessor extends RojacWorker<Void, Void> {
+public class RequestProcessor<T> extends RojacWorker<Void, Void> {
     private static final Log log = LogFactory.getLog(RequestProcessor.class);
 
-    private final List<IRequest> requests;
-    private final IResultHandler handler;
+    private final IRequest<T>[] requests;
+    private final IResultHandler<T> handler;
 
-    private AffectedMessage[] processedMessages;
     private final IProgressController progressController = ServiceFactory.getInstance().getProgressControl();
     private final IProgressTracker tracker = new IProgressTracker() {
         @Override
@@ -51,9 +45,9 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
         }
     };
 
-    public RequestProcessor(IResultHandler handler, IRequest... requests) {
+    public RequestProcessor(IResultHandler<T> handler, IRequest<T>... requests) {
         this.handler = handler;
-        this.requests = Arrays.asList(requests);
+        this.requests = requests;
     }
 
     @Override
@@ -76,18 +70,18 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
         try {
             janusService.testConnection();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Process request(s): " + joinFrom(requests, IRequest.class).getName());
-            }
+            for (IRequest<T> r : requests) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Process request: " + r.getName());
+                }
 
-            forEach(requests, IRequest.class).process(handler, tracker, janusService);
+                r.process(handler, tracker, janusService);
+            }
         } catch (Exception e) {
             // Just in case
             log.debug("There is an exception in one of commands", e);
 
             tracker.postException(e);
-
-            processedMessages = new AffectedMessage[0];
         }
 
         return null;
@@ -95,10 +89,6 @@ public class RequestProcessor extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        if (handler != null) {
-            handler.process(processedMessages);
-        }
-
         progressController.fireJobProgressChanged(1);
         progressController.fireJobStop(Messages.Synchronize_Command_Done);
         if (log.isDebugEnabled()) {
