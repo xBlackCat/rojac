@@ -15,26 +15,38 @@ import java.awt.*;
  * @author xBlackCat
  */
 
-public enum Request {
-    EXTRA_MESSAGES(new LoadExtraMessagesRequest()),
-    GET_NEW_POSTS(new GetNewPostsRequest()),
-    POST_CHANGES(new PostChangesRequest()),
-    GET_USERS(new GetUsersRequest()),
-    GET_FORUMS_LIST(new GetForumListRequest()),
-    GET_USER_ID(new TestRequest()),
-    SYNCHRONIZE(new PostChangesRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest()),
-    SYNCHRONIZE_WITH_USERS(new PostChangesRequest(), new GetUsersRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
-
-    private static final IResultHandler<?> defaultHandler = new ASwingThreadedHandler<ProcessPacket>() {
+@SuppressWarnings({"unchecked"})
+public class Request<T> {
+    private static final IResultHandler<ProcessPacket> PACKET_HANDLER = new ASwingThreadedHandler<ProcessPacket>() {
         @Override
         public void execute(ProcessPacket packet) {
             ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
         }
     };
+    /**
+     * Common handler to prevent invoking requests without associated handler.
+     */
+    private static final IResultHandler NO_HANDLER = new IResultHandler() {
+        @Override
+        public void process(Object data) {
+            throw new RuntimeException("No result handler defined for the request!");
+        }
+    };
 
-    private final IRequest<?>[] requests;
+    public static final Request<ProcessPacket> EXTRA_MESSAGES = new Request<ProcessPacket>(PACKET_HANDLER, new LoadExtraMessagesRequest());
+    public static final Request<ProcessPacket> GET_NEW_POSTS = new Request<ProcessPacket>(PACKET_HANDLER, new GetNewPostsRequest());
+    public static final Request<ProcessPacket> POST_CHANGES = new Request<ProcessPacket>(PACKET_HANDLER, new PostChangesRequest());
+    public static final Request<ProcessPacket> GET_USERS = new Request<ProcessPacket>(PACKET_HANDLER, new GetUsersRequest());
+    public static final Request<ProcessPacket> GET_FORUMS_LIST = new Request<ProcessPacket>(PACKET_HANDLER, new GetForumListRequest());
+    public static final Request<Integer> GET_USER_ID = new Request<Integer>(NO_HANDLER, new TestRequest());
+    public static final Request<ProcessPacket> SYNCHRONIZE = new Request<ProcessPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
+    public static final Request<ProcessPacket> SYNCHRONIZE_WITH_USERS = new Request<ProcessPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetUsersRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
 
-    private Request(IRequest<?>... requests) {
+    private final IResultHandler<T> defaultHandler;
+    private final IRequest<T>[] requests;
+
+    private Request(IResultHandler<T> defaultHandler, IRequest<T>... requests) {
+        this.defaultHandler = defaultHandler;
         this.requests = requests;
     }
 
@@ -43,7 +55,7 @@ public enum Request {
      *
      * @param handler custom handler to process request(s) results.
      */
-    public void process(IResultHandler<?> handler) {
+    public void process(IResultHandler<T> handler) {
         process(null, handler);
     }
 
@@ -60,16 +72,16 @@ public enum Request {
      * Process request(s) without user registration check and default result handler.
      */
     public void process() {
-        process(null, defaultHandler);
+        process((Window) null);
     }
 
     /**
      * Process request(s) with user registration check and custom result handler.
      *
-     * @param frame parent frame for Login dialog if it should be displayed.
+     * @param frame   parent frame for Login dialog if it should be displayed.
      * @param handler custom handler to process request(s) results.
      */
-    public void process(Window frame, IResultHandler<?> handler) {
+    public void process(Window frame, IResultHandler<T> handler) {
         RojacUtils.checkThread(true, Request.class);
 
         if (frame != null) {
@@ -82,7 +94,7 @@ public enum Request {
             }
         }
 
-        new RequestProcessor(handler, requests).execute();
+        new RequestProcessor<T>(handler, requests).execute();
     }
 
 }

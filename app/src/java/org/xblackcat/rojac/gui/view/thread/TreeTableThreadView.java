@@ -40,6 +40,8 @@ public class TreeTableThreadView extends AThreadView {
         threads.setSortable(false);
         threads.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         threads.setRowSelectionAllowed(true);
+        threads.setColumnSelectionAllowed(false);
+        threads.setScrollsOnExpand(true);
         threads.setRootVisible(threadControl.isRootVisible());
         threads.setToggleClickCount(2);
 
@@ -89,9 +91,6 @@ public class TreeTableThreadView extends AThreadView {
         }
 
         // Handle keyboard events to emulate tree navigation in TreeTable
-//        threads.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).setParent(null);
-//        threads.getInputMap(WHEN_IN_FOCUSED_WINDOW).setParent(null);
-
         threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "prevOrClose");
         threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "nextOrExpand");
 
