@@ -1,8 +1,7 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.PacketType;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -29,8 +28,6 @@ class ForumReadUpdater extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        PacketType type = readFlag ? PacketType.SetForumRead : PacketType.SetForumUnread;
-        ProcessPacket p = new ProcessPacket(type, forumId);
-        ServiceFactory.getInstance().getDataDispatcher().processPacket(p);
+        ServiceFactory.getInstance().getDataDispatcher().processPacket(new SetForumReadPacket(readFlag, forumId));
     }
 }

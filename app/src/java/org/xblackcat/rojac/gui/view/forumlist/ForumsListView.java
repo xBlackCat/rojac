@@ -10,7 +10,11 @@ import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.ForumsLoadedPacket;
+import org.xblackcat.rojac.service.datahandler.ForumsUpdatePacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
@@ -162,35 +166,28 @@ public class ForumsListView extends AView {
         new ForumLoader().execute();
     }
 
-    public void processPacket(ProcessPacket changedData) {
-        final int[] forumIds = changedData.getForumIds();
-        switch (changedData.getType()) {
-            case SetForumRead:
-                forumsModel.setRead(true, forumIds);
-                break;
-            case SetForumUnread:
-                forumsModel.setRead(false, forumIds);
-                break;
-            case AddMessages:
-            case UpdateMessages:
-            case SetThreadRead:
-            case SetThreadUnread:
-                loadForumStatistic(forumIds);
-                break;
-            case SetPostRead:
-                for (int forumId : forumIds) {
-                    adjustUnreadPosts(-changedData.getAffectedMessages(forumId).length, forumId);
+    @Override
+    protected IPacketProcessor<? extends IPacket>[] getProcessors() {
+        return new IPacketProcessor[]{
+                new IPacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
+                        forumsModel.setRead(p.isRead(), p.getForumId());
+                    }
+                },
+                new IPacketProcessor<ForumsLoadedPacket>() {
+                    @Override
+                    public void process(ForumsLoadedPacket p) {
+                        new ForumLoader().execute();
+                    }
+                },
+                new IPacketProcessor<ForumsUpdatePacket>() {
+                    @Override
+                    public void process(ForumsUpdatePacket p) {
+                        loadForumStatistic(p.getForumIds());
+                    }
                 }
-                break;
-            case SetPostUnread:
-                for (int forumId : forumIds) {
-                    adjustUnreadPosts(changedData.getAffectedMessages(forumId).length, forumId);
-                }
-                break;
-            case ForumsLoaded:
-                new ForumLoader().execute();
-                break;
-        }
+        };
     }
 
     private void adjustUnreadPosts(int amount, int forumId) {
@@ -207,8 +204,8 @@ public class ForumsListView extends AView {
         forumsModel.updateStatistic(newStatistic);
     }
 
-    private void loadForumStatistic(int[] forumIds) {
-        new ForumUpdater(forumIds).execute();
+    private void loadForumStatistic(int... forumId) {
+        new ForumUpdater(forumId).execute();
     }
 
     private class ForumUpdater extends RojacWorker<Void, ForumStatistic> {
@@ -263,13 +260,10 @@ public class ForumsListView extends AView {
         protected void process(List<Forum> chunks) {
             Forum[] forums = chunks.toArray(new Forum[chunks.size()]);
             forumsModel.fillForums(forums);
-            int[] ids = new int[forums.length];
-
-            for (int i = 0, forumsLength = forums.length; i < forumsLength; i++) {
-                ids[i] = forums[i].getForumId();
+            for (Forum forum : forums) {
+                loadForumStatistic(forum.getForumId());
             }
 
-            loadForumStatistic(ids);
         }
     }
 

@@ -350,7 +350,6 @@ public enum Messages {
 
     private static final Pattern DOTS_PATTERN = Pattern.compile("\\.{2,}");
 
-    // TODO: move to org.xblackcat.utils.ResourceUtils
     private static String constantCamelToPropertyName(String s) {
         if (s == null) {
             return null;

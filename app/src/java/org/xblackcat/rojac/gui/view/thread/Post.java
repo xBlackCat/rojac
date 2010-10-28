@@ -8,7 +8,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.max;
+import static ch.lambdaj.Lambda.on;
 
 /**
  * @author xBlackCat
@@ -219,7 +220,22 @@ public class Post implements ITreeItem<Post> {
         this.rating = rating;
     }
 
+    /**
+     * Recursively resort whole sub-tree of the posts.
+     */
+    protected void deepResort() {
+        Collections.sort(childrenPosts);
+
+        for (Post child : childrenPosts) {
+            child.deepResort();
+        }
+    }
+
     public Mark[] getRating() {
         return rating;
+    }
+
+    public void setMessageData(MessageData messageData) {
+        this.messageData = messageData;
     }
 }

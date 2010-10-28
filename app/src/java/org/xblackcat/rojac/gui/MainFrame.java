@@ -22,15 +22,23 @@ import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.*;
+import org.xblackcat.rojac.util.DialogHelper;
+import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.SynchronizationUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -308,15 +316,15 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
     /**
      * Method for delegating changes to all sub containers.
      *
-     * @param results
+     * @param packet
      */
     @Override
-    public void processPacket(ProcessPacket results) {
-        forumsListView.processPacket(results);
-        favoritesView.processPacket(results);
+    public void processPacket(IPacket packet) {
+        forumsListView.processPacket(packet);
+        favoritesView.processPacket(packet);
 
         for (View v : openedViews.values()) {
-            ((IView) v.getComponent()).processPacket(results);
+            ((IView) v.getComponent()).processPacket(packet);
         }
     }
 

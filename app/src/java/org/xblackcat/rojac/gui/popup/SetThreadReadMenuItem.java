@@ -1,19 +1,17 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.gui.view.thread.Post;
-import org.xblackcat.rojac.gui.view.thread.SetMessageReadFlag;
 import org.xblackcat.rojac.gui.view.thread.Thread;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.PacketType;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.SetThreadReadPacket;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
 
 /**
  * @author xBlackCat
@@ -29,12 +27,6 @@ class SetThreadReadMenuItem extends JMenuItem {
                 if (threadRoot.equals(post)) {
                     // Mark whole thread.
                     new SetThreadReadFlag(read, threadRoot).execute();
-                } else {
-                    // Collect sub-items to be marked.
-                    // All sub-items already loaded, so just mark them as read/unread.
-                    Collection<Post> posts = post.getChildren();
-                    posts.add(post);
-                    new SetMessageReadFlag(read, posts.toArray(new Post[posts.size()])).execute();
                 }
             }
         });
@@ -58,11 +50,8 @@ class SetThreadReadMenuItem extends JMenuItem {
 
         @Override
         protected void done() {
-            ProcessPacket processPacket = new ProcessPacket(
-                    read ? PacketType.SetThreadRead: PacketType.SetThreadUnread,
-                    threadRoot
-            );
-            ServiceFactory.getInstance().getDataDispatcher().processPacket(processPacket);
+            IPacket packet = new SetThreadReadPacket(read, threadRoot.getForumId(), threadRoot.getMessageId());
+            ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
         }
     }
 }

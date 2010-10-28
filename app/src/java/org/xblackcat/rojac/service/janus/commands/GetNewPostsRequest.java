@@ -7,8 +7,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.PacketType;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import ru.rsdn.Janus.JanusMessageInfo;
@@ -18,10 +17,8 @@ import ru.rsdn.Janus.RequestForumInfo;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
@@ -33,7 +30,7 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MES
 class GetNewPostsRequest extends ALoadPostsRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
-    public void process(IResultHandler<ProcessPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
         int[] forumIds = forumAH.getSubscribedForumIds();
 
         String idsList = Arrays.toString(forumIds);
@@ -63,7 +60,6 @@ class GetNewPostsRequest extends ALoadPostsRequest {
         Version moderatesVersion = DataHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
         Version ratingsVersion = DataHelper.getVersion(VersionType.RATING_ROW_VERSION);
 
-        Set<AffectedMessage> result = new HashSet<AffectedMessage>();
         JanusMessageInfo[] messages;
         do {
             if (ratingsVersion.isEmpty()) {
@@ -89,7 +85,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
             tracker.addLodMessage(Messages.Synchronize_Command_GotPosts, messages.length, moderates.length, ratings.length);
 
-            result.addAll(storeNewPosts(tracker, data));
+            storeNewPosts(tracker, data);
 
             ratingsVersion = data.getRatingRowVersion();
             messagesVersion = data.getForumRowVersion();
@@ -103,7 +99,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         tracker.addLodMessage(Messages.Synchronize_Command_GotUserId, RSDN_USER_ID.get());
 
-        handler.process(new ProcessPacket(PacketType.AddMessages, result));
+        setNotifications(handler);
     }
 
 }

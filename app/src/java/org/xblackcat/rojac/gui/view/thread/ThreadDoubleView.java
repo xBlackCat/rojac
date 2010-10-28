@@ -4,7 +4,8 @@ import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AItemView;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.util.ShortCutUtils;
 
@@ -70,9 +71,17 @@ public class ThreadDoubleView extends AItemView {
         masterView.loadItem(messageId);
     }
 
-    public void processPacket(ProcessPacket messageId) {
-        masterView.processPacket(messageId);
-        slaveView.processPacket(messageId);
+    @Override
+    protected IPacketProcessor<? extends IPacket>[] getProcessors() {
+        return new IPacketProcessor[] {
+                new IPacketProcessor<IPacket>() {
+                    @Override
+                    public void process(IPacket p) {
+                        masterView.processPacket(p);
+                        slaveView.processPacket(p);
+                    }
+                }
+        };
     }
 
     @Override

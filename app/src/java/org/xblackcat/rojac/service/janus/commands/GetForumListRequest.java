@@ -6,8 +6,8 @@ import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.PacketType;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.ForumsLoadedPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.ForumsList;
@@ -16,17 +16,12 @@ import org.xblackcat.rojac.service.storage.IForumGroupAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @author xBlackCat
  */
 
-class GetForumListRequest extends ARequest<ProcessPacket> {
-    public void process(IResultHandler<ProcessPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
-        Set<AffectedMessage> result = new HashSet<AffectedMessage>();
-
+class GetForumListRequest extends ARequest<IPacket> {
+    public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
         tracker.addLodMessage(Messages.Synchronize_Command_Name_ForumList);
 
         ForumsList forumsList;
@@ -63,7 +58,6 @@ class GetForumListRequest extends ARequest<ProcessPacket> {
                 } else {
                     fAH.updateForum(f);
                 }
-                result.add(new AffectedMessage(f.getForumId()));
             }
 
             DataHelper.setVersion(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
@@ -71,6 +65,6 @@ class GetForumListRequest extends ARequest<ProcessPacket> {
             throw new RsdnProcessorException("Can not update forum list", e);
         }
 
-        handler.process(new ProcessPacket(PacketType.ForumsLoaded/*, result.toArray(new AffectedMessage[result.size()])*/));
+        handler.process(new ForumsLoadedPacket());
     }
 }
