@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.thread;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
@@ -12,7 +11,12 @@ import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetThreadReadPacket;
+import org.xblackcat.rojac.service.datahandler.ThreadsUpdatePacket;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.options.Property;
@@ -76,44 +80,44 @@ public abstract class AThreadView extends AItemView {
     }
 
     @Override
-    public void processPacket(ProcessPacket ids) {
-        if (ids.containsForum(forumId)) {
-            switch (ids.getType()) {
-                case ForumsLoaded:
-                    // Do nothing
-                    break;
-                case AddMessages:
-                case UpdateMessages:
-                    updateMessages(ids);
-                    break;
-                case SetForumRead:
-                    threadControl.markForumRead(model, true);
-                    break;
-                case SetForumUnread:
-                    threadControl.markForumRead(model, false);
-                    break;
-                case SetThreadRead:
-                    for (AffectedMessage threadRootId : ids.getAffectedMessages(forumId)) {
-                        threadControl.markThreadRead(model, threadRootId.getMessageId(), true);
+    @SuppressWarnings({"unchecked"})
+    protected IPacketProcessor<? extends IPacket>[] getProcessors() {
+        return new IPacketProcessor[]{
+                new IPacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
+                        if (p.getForumId() == forumId) {
+                            threadControl.markForumRead(model, p.isRead());
+                        }
                     }
-                    break;
-                case SetThreadUnread:
-                    for (AffectedMessage threadRootId : ids.getAffectedMessages(forumId)) {
-                        threadControl.markThreadRead(model, threadRootId.getMessageId(), false);
+                },
+                new IPacketProcessor<SetThreadReadPacket>() {
+                    @Override
+                    public void process(SetThreadReadPacket p) {
+                        if (p.getForumId() == forumId) {
+                            threadControl.markThreadRead(model, p.getThreadId(), p.isRead());
+                        }
                     }
-                    break;
-                case SetPostRead:
-                    for (AffectedMessage postId : ids.getAffectedMessages(forumId)) {
-                        threadControl.markPostRead(model, postId.getMessageId(), true);
+                },
+                new IPacketProcessor<SetPostReadPacket>() {
+                    @Override
+                    public void process(SetPostReadPacket p) {
+                        if (p.getForumId() == forumId) {
+                            threadControl.markPostRead(model, p.getPostId(), p.isRead());
+                        }
                     }
-                    break;
-                case SetPostUnread:
-                    for (AffectedMessage postId : ids.getAffectedMessages(forumId)) {
-                        threadControl.markPostRead(model, postId.getMessageId(), false);
+                },
+                new IPacketProcessor<ThreadsUpdatePacket>() {
+                    @Override
+                    public void process(ThreadsUpdatePacket p) {
+                        for (int threadId : p.getThreadIds()) {
+                            Thread t = model.getRoot().getMessageById(threadId).getThreadRoot();
+
+                            threadControl.loadChildren(model, t, null);
+                        }
                     }
-                    break;
-            }
-        }
+                }
+        };
     }
 
     @Override
@@ -164,18 +168,18 @@ public abstract class AThreadView extends AItemView {
         return model.getRoot().getMessageById(messageId) != null;
     }
 
-    private void updateMessages(ProcessPacket ids) {
-        AffectedMessage[] messageIds = (AffectedMessage[]) ArrayUtils.addAll(
-                ids.getAffectedMessages(forumId),
-                ids.getAffectedMessages(AffectedMessage.DEFAULT_FORUM)
-        );
-
-        Post currentPost = getSelectedItem();
-
-        threadControl.updateItem(model, messageIds);
-
-        selectItem(currentPost);
-    }
+//    private void updateMessages(ProcessPacket ids) {
+//        AffectedMessage[] messageIds = (AffectedMessage[]) ArrayUtils.addAll(
+//                ids.getAffectedMessages(forumId),
+//                ids.getAffectedMessages(AffectedMessage.DEFAULT_FORUM)
+//        );
+//
+//        Post currentPost = getSelectedItem();
+//
+//        threadControl.updateItem(model, messageIds);
+//
+//        selectItem(currentPost);
+//    }
 
     protected abstract void selectItem(Post post);
 

@@ -76,9 +76,7 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         final Post post = model.getRoot().getMessageById(threadRootId);
         post.setDeepRead(read);
 
-        if (post != null) {
-            updateState(model, post, read);
-        }
+        updateState(model, post, read);
     }
 
     private void updateState(AThreadModel<Post> model, Post post, boolean read) {
@@ -198,12 +196,12 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
 
         @Override
         protected void process(List<MessageData> chunks) {
-            item.storePosts(chunks.toArray(new MessageData[chunks.size()]));
+            item.fillThread(chunks);
             item.setLoadingState(LoadingState.Loaded);
 
             threadModel.nodeStructureChanged(item);
 
-            if (postProcessor!= null) {
+            if (postProcessor != null) {
                 postProcessor.processItem(item);
             }
         }

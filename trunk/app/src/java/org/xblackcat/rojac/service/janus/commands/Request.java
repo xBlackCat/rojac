@@ -3,7 +3,7 @@ package org.xblackcat.rojac.service.janus.commands;
 import org.xblackcat.rojac.gui.dialogs.LoginDialog;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.UserHelper;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -17,9 +17,9 @@ import java.awt.*;
 
 @SuppressWarnings({"unchecked"})
 public class Request<T> {
-    private static final IResultHandler<ProcessPacket> PACKET_HANDLER = new ASwingThreadedHandler<ProcessPacket>() {
+    private static final IResultHandler<IPacket> PACKET_HANDLER = new ASwingThreadedHandler<IPacket>() {
         @Override
-        public void execute(ProcessPacket packet) {
+        public void execute(IPacket packet) {
             ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
         }
     };
@@ -33,14 +33,14 @@ public class Request<T> {
         }
     };
 
-    public static final Request<ProcessPacket> EXTRA_MESSAGES = new Request<ProcessPacket>(PACKET_HANDLER, new LoadExtraMessagesRequest());
-    public static final Request<ProcessPacket> GET_NEW_POSTS = new Request<ProcessPacket>(PACKET_HANDLER, new GetNewPostsRequest());
-    public static final Request<ProcessPacket> POST_CHANGES = new Request<ProcessPacket>(PACKET_HANDLER, new PostChangesRequest());
-    public static final Request<ProcessPacket> GET_USERS = new Request<ProcessPacket>(PACKET_HANDLER, new GetUsersRequest());
-    public static final Request<ProcessPacket> GET_FORUMS_LIST = new Request<ProcessPacket>(PACKET_HANDLER, new GetForumListRequest());
+    public static final Request<IPacket> EXTRA_MESSAGES = new Request<IPacket>(PACKET_HANDLER, new LoadExtraMessagesRequest());
+    public static final Request<IPacket> GET_NEW_POSTS = new Request<IPacket>(PACKET_HANDLER, new GetNewPostsRequest());
+    public static final Request<IPacket> POST_CHANGES = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest());
+    public static final Request<IPacket> GET_USERS = new Request<IPacket>(PACKET_HANDLER, new GetUsersRequest());
+    public static final Request<IPacket> GET_FORUMS_LIST = new Request<IPacket>(PACKET_HANDLER, new GetForumListRequest());
     public static final Request<Integer> GET_USER_ID = new Request<Integer>(NO_HANDLER, new TestRequest());
-    public static final Request<ProcessPacket> SYNCHRONIZE = new Request<ProcessPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
-    public static final Request<ProcessPacket> SYNCHRONIZE_WITH_USERS = new Request<ProcessPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetUsersRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
+    public static final Request<IPacket> SYNCHRONIZE = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
+    public static final Request<IPacket> SYNCHRONIZE_WITH_USERS = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetUsersRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
 
     private final IResultHandler<T> defaultHandler;
     private final IRequest<T>[] requests;

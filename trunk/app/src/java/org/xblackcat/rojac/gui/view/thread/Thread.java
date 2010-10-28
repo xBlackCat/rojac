@@ -6,8 +6,9 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -147,32 +148,62 @@ public class Thread extends Post {
         return threadPosts.get(messageId);
     }
 
-    void storePosts(MessageData... posts) {
-        Arrays.sort(posts, SORT_BY_PARENTS);
+    void fillThread(List<MessageData> posts) {
+        if (!filled) {
+            Collections.sort(posts, SORT_BY_PARENTS);
 
-        filled = true;
+            filled = true;
+        }
 
         for (MessageData post : posts) {
-            insertChild(post);
+            Post p = threadPosts.get(post.getMessageId());
+
+            if (p == null) {
+                // New post
+                Post parent = threadPosts.get(post.getParentId());
+
+                if (parent == null) {
+                    throw new RuntimeException("No parent for post #" + post.getMessageId() + " in thread #" + getMessageId());
+                }
+
+                Post newPost = new Post(post, parent, this);
+                threadPosts.put(post.getMessageId(), newPost);
+
+                // Postpone sorting
+                parent.childrenPosts.add(newPost);
+            } else {
+                // Post exists
+
+                p.setMessageData(post);
+            }
         }
+
+        // Sorting...
+        deepResort();
     }
 
     public void insertChild(MessageData post) {
         if (filled) {
             // The thread was already loaded so just insert the post into it.
-            Post parent = threadPosts.get(post.getParentId());
+            Post p = threadPosts.get(post.getMessageId());
+            if (p == null) {
+                Post parent = threadPosts.get(post.getParentId());
 
-            if (parent == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("There is no parent post exists for post " + post);
+                if (parent == null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("There is no parent post exists for post " + post);
+                    }
+                    return;
                 }
-                return;
+
+                Post newPost = new Post(post, parent, this);
+                threadPosts.put(post.getMessageId(), newPost);
+
+                parent.insertChild(newPost);
+            } else {
+                // Post is exists. Update data.
+                p.setMessageData(post);
             }
-
-            Post p = new Post(post, parent, this);
-            threadPosts.put(post.getMessageId(), p);
-
-            parent.insertChild(p);
         } else {
             // Thread is not filled so just update statistics
             // Only for new message.

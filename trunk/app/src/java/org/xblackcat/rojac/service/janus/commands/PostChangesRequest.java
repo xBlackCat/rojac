@@ -9,8 +9,7 @@ import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.PacketType;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.PostException;
@@ -28,10 +27,10 @@ import java.util.Set;
  * @author xBlackCat
  */
 
-class PostChangesRequest extends ARequest<ProcessPacket> {
+class PostChangesRequest extends ARequest<IPacket> {
     private static final Log log = LogFactory.getLog(PostChangesRequest.class);
 
-    public void process(IResultHandler<ProcessPacket> handler, IProgressTracker trac, IJanusService janusService) {
+    public void process(IResultHandler<IPacket> handler, IProgressTracker trac, IJanusService janusService) {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         trac.addLodMessage(Messages.Synchronize_Command_Name_Submit);
 
@@ -86,7 +85,6 @@ class PostChangesRequest extends ARequest<ProcessPacket> {
                 for (int lmID : postInfo.getCommited()) {
                     nmeAH.removeNewMessage(lmID);
                     NewMessage newMessage = messageForumIds.get(lmID);
-                    result.add(new AffectedMessage(newMessage.getForumId(), newMessage.getParentId()));
                 }
 
                 // Show all the PostExceptions if any
@@ -99,7 +97,7 @@ class PostChangesRequest extends ARequest<ProcessPacket> {
                 throw new RsdnProcessorException("Unable to process the commit response.", e);
             }
 
-            handler.process(new ProcessPacket(PacketType.AddMessages, result));
+            // TODO: add notification if non-sent messages is shown in threads
         } catch (RsdnProcessorException e) {
             // Log the exception to console.
             trac.postException(e);

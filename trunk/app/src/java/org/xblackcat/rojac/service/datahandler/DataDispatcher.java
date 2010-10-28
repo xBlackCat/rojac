@@ -26,13 +26,13 @@ public class DataDispatcher implements IDataDispatcher {
     }
 
     @Override
-    public void processPacket(ProcessPacket results) {
+    public void processPacket(IPacket packet) {
         if (Property.ROJAC_DEBUG_MODE.get()) {
             RojacUtils.checkThread(true, DataDispatcher.class);
         }
 
         for (IDataHandler h : handlers) {
-            h.processPacket(results);
+            h.processPacket(packet);
         }
     }
 }

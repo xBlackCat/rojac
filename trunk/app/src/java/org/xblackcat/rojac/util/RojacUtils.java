@@ -106,7 +106,7 @@ public final class RojacUtils {
 
     @SuppressWarnings({"unchecked"})
     public static <T extends Serializable> T[] getRSDNObject(IRSDNable<T>[] ar) {
-        Class<T> c = (Class<T>) ((ParameterizedType) ar.getClass().getComponentType().getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        Class<T> c = getGenericClass(ar.getClass().getComponentType());
 
         List<T> res = new ArrayList<T>(ar.length);
 
@@ -116,6 +116,11 @@ public final class RojacUtils {
 
         T[] a = (T[]) Array.newInstance(c, ar.length);
         return res.toArray(a);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public static <T> Class<T> getGenericClass(Class<?> type) {
+        return (Class<T>) ((ParameterizedType) type.getGenericInterfaces()[0]).getActualTypeArguments()[0];
     }
 
     public static String constructDebugSQL(String sql, Object... parameters) {
@@ -216,7 +221,9 @@ public final class RojacUtils {
 
     /**
      * Checks if a newer version of rojac is exist on google code server.
+     *
      * @return <code>null</code> if no info should be displayed and integer (revision number) if revision is obtained.
+     * @throws RojacException thrown if version can not be obtained.
      */
     public static Integer getLastBuild() throws RojacException {
         CheckUpdatesEnum period = Property.UPDATER_PERIOD.get(CheckUpdatesEnum.EveryWeek);

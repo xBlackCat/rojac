@@ -1,7 +1,8 @@
 package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 
 import javax.swing.*;
 
@@ -16,6 +17,8 @@ public class FavoritesView extends AView {
         add(new JScrollPane(new JTable(10, 2)));
     }
 
-    public void processPacket(ProcessPacket changedData) {
+    @Override
+    protected IPacketProcessor<IPacket>[] getProcessors() {
+        return null;
     }
 }

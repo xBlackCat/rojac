@@ -15,7 +15,9 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.PostsUpdatePacket;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
@@ -199,10 +201,18 @@ public class MessageView extends AItemView implements IInternationazable {
         return messageTitle;
     }
 
-    public void processPacket(ProcessPacket ids) {
-        if (this.messageId != 0 && ids.containsMessage(this.messageId)) {
-            loadItem(new AffectedMessage(AffectedMessage.DEFAULT_FORUM, messageId));
-        }
+    @Override
+    protected IPacketProcessor<? extends IPacket>[] getProcessors() {
+        return new IPacketProcessor[] {
+                new IPacketProcessor<PostsUpdatePacket>() {
+                    @Override
+                    public void process(PostsUpdatePacket p) {
+                        if (ArrayUtils.contains(p.getMessageIds(), messageId)) {
+                            loadItem(new AffectedMessage(AffectedMessage.DEFAULT_FORUM, messageId));
+                        }
+                    }
+                }
+        };
     }
 
     public void loadLabels() {

@@ -6,7 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
-import org.xblackcat.rojac.service.datahandler.ProcessPacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
@@ -16,7 +16,11 @@ import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 /**
@@ -218,7 +222,7 @@ public class RojacTray {
 
     private class TrayDataDispatcher implements IDataHandler {
         @Override
-        public void processPacket(ProcessPacket results) {
+        public void processPacket(IPacket packet) {
         }
     }
 }

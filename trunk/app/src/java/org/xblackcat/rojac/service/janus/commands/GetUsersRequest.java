@@ -8,6 +8,7 @@ import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.UsersList;
@@ -21,10 +22,10 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_USE
  * @author xBlackCat
  */
 
-class GetUsersRequest extends ARequest {
+class GetUsersRequest extends ARequest<IPacket> {
     private static final Log log = LogFactory.getLog(GetUsersRequest.class);
 
-    public void process(IResultHandler handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         IUserAH uAH = storage.getUserAH();
 
