@@ -202,7 +202,8 @@ public class MessageView extends AItemView implements IInternationazable {
     }
 
     @Override
-    protected IPacketProcessor<? extends IPacket>[] getProcessors() {
+    @SuppressWarnings({"unchecked"})
+    protected IPacketProcessor<IPacket>[] getProcessors() {
         return new IPacketProcessor[] {
                 new IPacketProcessor<PostsUpdatePacket>() {
                     @Override

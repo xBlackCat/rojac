@@ -72,7 +72,8 @@ public class ThreadDoubleView extends AItemView {
     }
 
     @Override
-    protected IPacketProcessor<? extends IPacket>[] getProcessors() {
+    @SuppressWarnings({"unchecked"})
+    protected IPacketProcessor<IPacket>[] getProcessors() {
         return new IPacketProcessor[] {
                 new IPacketProcessor<IPacket>() {
                     @Override

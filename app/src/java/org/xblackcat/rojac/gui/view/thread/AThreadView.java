@@ -11,12 +11,7 @@ import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
-import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
-import org.xblackcat.rojac.service.datahandler.SetThreadReadPacket;
-import org.xblackcat.rojac.service.datahandler.ThreadsUpdatePacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.options.Property;
@@ -81,7 +76,7 @@ public abstract class AThreadView extends AItemView {
 
     @Override
     @SuppressWarnings({"unchecked"})
-    protected IPacketProcessor<? extends IPacket>[] getProcessors() {
+    protected IPacketProcessor<IPacket>[] getProcessors() {
         return new IPacketProcessor[]{
                 new IPacketProcessor<SetForumReadPacket>() {
                     @Override
