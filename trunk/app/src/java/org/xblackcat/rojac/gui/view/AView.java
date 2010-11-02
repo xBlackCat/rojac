@@ -27,7 +27,7 @@ public abstract class AView extends JPanel implements IView {
         packetDispatcher = new PacketDispatcher(getProcessors());
     }
 
-    protected abstract IPacketProcessor<? extends IPacket>[] getProcessors();
+    protected abstract IPacketProcessor<IPacket>[] getProcessors();
 
     public void applySettings() {
     }

@@ -10,11 +10,7 @@ import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.ForumsLoadedPacket;
-import org.xblackcat.rojac.service.datahandler.ForumsUpdatePacket;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
@@ -167,7 +163,8 @@ public class ForumsListView extends AView {
     }
 
     @Override
-    protected IPacketProcessor<? extends IPacket>[] getProcessors() {
+    @SuppressWarnings({"unchecked"})
+    protected IPacketProcessor<IPacket>[] getProcessors() {
         return new IPacketProcessor[]{
                 new IPacketProcessor<SetForumReadPacket>() {
                     @Override

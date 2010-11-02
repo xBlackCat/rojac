@@ -320,7 +320,11 @@ public final class Property<T> {
     }
 
     public void setCache(T cache) {
-        this.cache = new SoftReference<T>(cache);
+        if (cache != null) {
+            this.cache = new SoftReference<T>(cache);
+        } else {
+            this.cache = null;
+        }
     }
 
 }

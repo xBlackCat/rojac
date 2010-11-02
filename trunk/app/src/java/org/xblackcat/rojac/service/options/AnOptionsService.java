@@ -8,11 +8,7 @@ import org.xblackcat.rojac.util.PropertyUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author Alexey
@@ -145,7 +141,7 @@ abstract class AnOptionsService implements IOptionsService {
         if (Enum.class.isAssignableFrom(type)) {
             String v = newValue == null ? null : ((Enum) newValue).name();
             String val = setProperty(name, v);
-            key.setCache(newValue);
+            key.setCache(null);
             return (T) PropertyUtils.toEnum((Class<Enum>) type, val);
         }
 
@@ -153,7 +149,7 @@ abstract class AnOptionsService implements IOptionsService {
         if (EnumSet.class.isAssignableFrom(type)) {
             String v = newValue == null ? null : PropertyUtils.toString((EnumSet<? extends Enum>) newValue);
             String val = setProperty(name, v);
-            key.setCache(newValue);
+            key.setCache(null);
             T keyDefault = key.getDefault();
             if (keyDefault == null) {
                 throw new RuntimeException("Parameter with EnumSet type should have default values!");
@@ -168,7 +164,7 @@ abstract class AnOptionsService implements IOptionsService {
             if (conv != null) {
                 try {
                     String val = setProperty(name, conv.toString(newValue));
-                    key.setCache(newValue);
+                    key.setCache(null);
                     return (T) conv.convert(val);
                 } catch (RuntimeException e) {
                     log.error("Can not load property " + name, e);
