@@ -4,7 +4,6 @@ import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.AView;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 
 /**
  * @author xBlackCat
@@ -23,29 +22,29 @@ public abstract class AItemView extends AView implements IItemView {
         listenerList.remove(IActionListener.class, l);
     }
 
-    protected void fireMessageGotFocus(AffectedMessage messageId) {
+    protected void fireMessageGotFocus(int forumId, Integer messageId) {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == IActionListener.class) {
-                ((IActionListener) listeners[i + 1]).itemGotFocus(messageId);
+                ((IActionListener) listeners[i + 1]).itemGotFocus(forumId, messageId);
             }
         }
     }
 
-    protected void fireMessageLostFocus(AffectedMessage messageId) {
+    protected void fireMessageLostFocus(int forumId, Integer messageId) {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == IActionListener.class) {
-                ((IActionListener) listeners[i + 1]).itemLostFocus(messageId);
+                ((IActionListener) listeners[i + 1]).itemLostFocus(forumId, messageId);
             }
         }
     }
 
-    protected void fireItemUpdated(AffectedMessage messageId) {
+    protected void fireItemUpdated(Integer forumId, Integer messageId) {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == IActionListener.class) {
-                ((IActionListener) listeners[i + 1]).itemUpdated(messageId);
+                ((IActionListener) listeners[i + 1]).itemUpdated(forumId, messageId);
             }
         }
     }

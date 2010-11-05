@@ -9,7 +9,9 @@ import org.xblackcat.rojac.util.LinkUtils;
 import javax.swing.*;
 import java.awt.*;
 
-/** @author xBlackCat */
+/**
+ * @author xBlackCat
+ */
 
 final class MenuHelper {
     private MenuHelper() {
@@ -51,7 +53,7 @@ final class MenuHelper {
         JMenuItem open = new JMenuItem();
         open.setText(Messages.Popup_View_ThreadsTree_OpenMessage.get());
         open.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.Default));
-        return open;        
+        return open;
     }
 
     static JMenuItem openMessageInTab(int messageId, IRootPane mainFrame) {
@@ -64,7 +66,7 @@ final class MenuHelper {
     /**
      * Adds to an menu a 'open in browser' action if it supported by current OS.
      *
-     * @param menu target menu to be filled with the menu item.
+     * @param menu        target menu to be filled with the menu item.
      * @param linkMessage
      * @param url
      */

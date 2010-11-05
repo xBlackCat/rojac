@@ -6,7 +6,6 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.util.ShortCutUtils;
 
 import javax.swing.*;
@@ -33,25 +32,25 @@ public class ThreadDoubleView extends AItemView {
         this.slaveView = sv;
 
         masterView.addActionListener(new IActionListener() {
-            public void itemGotFocus(AffectedMessage messageId) {
+            public void itemGotFocus(Integer forumId, Integer messageId) {
                 slaveView.loadItem(messageId);
             }
 
-            public void itemLostFocus(AffectedMessage messageId) {
+            public void itemLostFocus(Integer forumId, Integer messageId) {
             }
 
-            public void itemUpdated(AffectedMessage messageId) {
+            public void itemUpdated(Integer forumId, Integer messageId) {
             }
         });
 
         slaveView.addActionListener(new IActionListener() {
-            public void itemGotFocus(AffectedMessage messageId) {
+            public void itemGotFocus(Integer forumId, Integer messageId) {
             }
 
-            public void itemLostFocus(AffectedMessage messageId) {
+            public void itemLostFocus(Integer forumId, Integer messageId) {
             }
 
-            public void itemUpdated(AffectedMessage messageId) {
+            public void itemUpdated(Integer forumId, Integer messageId) {
             }
         });
 
@@ -67,14 +66,14 @@ public class ThreadDoubleView extends AItemView {
         ShortCutUtils.mergeInputMaps(this, masterView.getComponent());
     }
 
-    public void loadItem(AffectedMessage messageId) {
-        masterView.loadItem(messageId);
+    public void loadItem(int itemId) {
+        masterView.loadItem(itemId);
     }
 
     @Override
     @SuppressWarnings({"unchecked"})
     protected IPacketProcessor<IPacket>[] getProcessors() {
-        return new IPacketProcessor[] {
+        return new IPacketProcessor[]{
                 new IPacketProcessor<IPacket>() {
                     @Override
                     public void process(IPacket p) {

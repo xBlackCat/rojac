@@ -7,8 +7,8 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ForumReadUpdater extends RojacWorker<Void, Void> {
     private final int forumId;
     private final boolean readFlag;

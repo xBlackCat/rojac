@@ -15,10 +15,9 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
+import org.xblackcat.rojac.service.datahandler.IMessageUpdatePacket;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.PostsUpdatePacket;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.MessageUtils;
@@ -153,18 +152,18 @@ public class MessageView extends AItemView implements IInternationazable {
     private void chooseMark(final Mark mark) {
         if (mark != null &&
                 JOptionPane.YES_OPTION ==
-                JLOptionPane.showConfirmDialog(
-                        this,
-                        Messages.Dialog_SetMark_Message.get(mark),
-                        Messages.Dialog_SetMark_Title.get(),
-                        JOptionPane.YES_NO_OPTION
-                )) {
+                        JLOptionPane.showConfirmDialog(
+                                this,
+                                Messages.Dialog_SetMark_Message.get(mark),
+                                Messages.Dialog_SetMark_Title.get(),
+                                JOptionPane.YES_NO_OPTION
+                        )) {
             new MarksUpdater(mark).execute();
         }
     }
 
-    public void loadItem(final AffectedMessage message) {
-        messageId = message.getMessageId();
+    public void loadItem(final int messageId) {
+        this.messageId = messageId;
         messageTitle = "#" + messageId;
 
         new MessageLoader(messageId).execute();
@@ -204,15 +203,16 @@ public class MessageView extends AItemView implements IInternationazable {
     @Override
     @SuppressWarnings({"unchecked"})
     protected IPacketProcessor<IPacket>[] getProcessors() {
-        return new IPacketProcessor[] {
-                new IPacketProcessor<PostsUpdatePacket>() {
+        return new IPacketProcessor[]{
+                new IPacketProcessor<IMessageUpdatePacket>() {
                     @Override
-                    public void process(PostsUpdatePacket p) {
-                        if (ArrayUtils.contains(p.getMessageIds(), messageId)) {
-                            loadItem(new AffectedMessage(AffectedMessage.DEFAULT_FORUM, messageId));
+                    public void process(IMessageUpdatePacket p) {
+                        if (p.isMessageAffected(messageId)) {
+                            loadItem(messageId);
                         }
                     }
                 }
+
         };
     }
 
@@ -225,7 +225,7 @@ public class MessageView extends AItemView implements IInternationazable {
     @Override
     public void makeVisible(int messageId) {
         if (messageId != this.messageId) {
-            loadItem(new AffectedMessage(AffectedMessage.DEFAULT_FORUM, messageId));
+            loadItem(messageId);
         }
     }
 
@@ -303,7 +303,7 @@ public class MessageView extends AItemView implements IInternationazable {
                 fillFrame(messageData.getMessage(), messageData.getMessageBody());
                 fillMarksButton(messageData.getMarks());
                 messageTitle = "#" + messageId + " " + messageData.getMessage().getSubject();
-                fireItemUpdated(new AffectedMessage(messageId, forumId));
+                fireItemUpdated(forumId, messageId);
             }
         }
     }
@@ -422,7 +422,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
         public void actionPerformed(ActionEvent e) {
             if ((AWTEvent.MOUSE_EVENT_MASK & e.getModifiers()) != 0) {
-               selectMark();
+                selectMark();
             }
         }
 
@@ -436,7 +436,7 @@ public class MessageView extends AItemView implements IInternationazable {
         private void checkKey(KeyEvent e) {
             if (marksModel.getSelectedItem() != null &&
                     (e.getKeyCode() == KeyEvent.VK_ENTER ||
-                    e.getKeyCode() == KeyEvent.VK_SPACE)) {
+                            e.getKeyCode() == KeyEvent.VK_SPACE)) {
                 selectMark();
             } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 marksModel.reset();

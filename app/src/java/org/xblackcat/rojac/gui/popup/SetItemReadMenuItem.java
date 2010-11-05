@@ -9,8 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class SetItemReadMenuItem extends JMenuItem {
     public SetItemReadMenuItem(Messages text, final Post post, final boolean read) {
         super(text.get());

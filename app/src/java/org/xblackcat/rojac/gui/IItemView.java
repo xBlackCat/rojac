@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
-
 /**
  * Main class of item-related views like message pane or threads view.
  *
@@ -14,7 +12,7 @@ public interface IItemView extends IView {
      *
      * @param itemId item id to identify a new data set for the view.
      */
-    void loadItem(AffectedMessage itemId);
+    void loadItem(int itemId);
 
     /**
      * Registers a new action listener for the message View to subscribe to events like selected message was changed.
@@ -35,6 +33,7 @@ public interface IItemView extends IView {
      * elsewise.
      *
      * @param messageId
+     *
      * @return found item or <code>null</code> if item is not exists in the view.
      */
     boolean containsItem(int messageId);

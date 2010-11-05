@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
-
 import java.util.EventListener;
 
 /**
@@ -9,9 +7,9 @@ import java.util.EventListener;
  */
 
 public interface IActionListener extends EventListener {
-    void itemGotFocus(AffectedMessage itemId);
+    void itemGotFocus(Integer forumId, Integer messageId);
 
-    void itemLostFocus(AffectedMessage itemId);
+    void itemLostFocus(Integer forumId, Integer messageId);
 
-    void itemUpdated(AffectedMessage itemId);
+    void itemUpdated(Integer forumId, Integer messageId);
 }

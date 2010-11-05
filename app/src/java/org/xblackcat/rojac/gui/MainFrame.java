@@ -23,7 +23,6 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.DialogHelper;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -266,15 +265,15 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
         itemView.addActionListener(new IActionListener() {
             @Override
-            public void itemGotFocus(AffectedMessage itemId) {
+            public void itemGotFocus(Integer forumId, Integer messageId) {
             }
 
             @Override
-            public void itemLostFocus(AffectedMessage itemId) {
+            public void itemLostFocus(Integer forumId, Integer messageId) {
             }
 
             @Override
-            public void itemUpdated(AffectedMessage itemId) {
+            public void itemUpdated(Integer forumId, Integer messageId) {
                 String title = itemView.getTabTitle();
                 view.getViewProperties().setTitle(title);
             }
@@ -380,7 +379,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         IItemView forumView = createForumViewWindow();
 
         addTabView(viewId, "#" + forumId, forumView);
-        forumView.loadItem(new AffectedMessage(forumId));
+        forumView.loadItem(forumId);
 
     }
 
@@ -451,7 +450,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
                 if (data != null) {
                     IItemView messageView = createMessageViewWindow();
                     addTabView(id, "#" + messageId, messageView);
-                    messageView.loadItem(new AffectedMessage(data.getForumId(), messageId));
+                    messageView.loadItem(messageId);
                 } else {
                     extraMessagesDialog(messageId);
                 }
