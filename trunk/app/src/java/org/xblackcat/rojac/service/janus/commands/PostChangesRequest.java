@@ -20,9 +20,6 @@ import org.xblackcat.rojac.service.storage.INewRatingAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @author xBlackCat
  */
@@ -62,8 +59,6 @@ class PostChangesRequest extends ARequest<IPacket> {
 
             // Store forum ids of new messages and message ids of new ratings to return update event
             TIntObjectHashMap<NewMessage> messageForumIds = new TIntObjectHashMap<NewMessage>();
-
-            Set<AffectedMessage> result = new HashSet<AffectedMessage>();
 
             for (NewMessage nm : newMessages) {
                 messageForumIds.put(nm.getLocalMessageId(), nm);

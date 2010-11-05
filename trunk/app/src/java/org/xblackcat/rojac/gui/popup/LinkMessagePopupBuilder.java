@@ -7,7 +7,9 @@ import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;
 
-/** @author xBlackCat */
+/**
+ * @author xBlackCat
+ */
 
 class LinkMessagePopupBuilder implements IPopupBuilder {
     /**

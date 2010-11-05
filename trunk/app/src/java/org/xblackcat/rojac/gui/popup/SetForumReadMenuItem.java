@@ -7,8 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class SetForumReadMenuItem extends JMenuItem {
     public SetForumReadMenuItem(Messages text, final int forumId, final boolean readFlag) {
         super(text.get());

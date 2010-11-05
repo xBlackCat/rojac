@@ -11,9 +11,13 @@ import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.IThreadsUpdatePacket;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetThreadReadPacket;
 import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -68,8 +72,9 @@ public abstract class AThreadView extends AItemView {
     }
 
     @Override
-    public void loadItem(AffectedMessage itemId) {
-        this.forumId = threadControl.loadThreadByItem(model, itemId);
+    public void loadItem(int forumId) {
+        this.forumId = forumId;
+        threadControl.fillModelByItemId(model, forumId);
 
         new ForumInfoLoader(forumId).execute();
     }
@@ -102,16 +107,16 @@ public abstract class AThreadView extends AItemView {
                         }
                     }
                 },
-                new IPacketProcessor<ThreadsUpdatePacket>() {
+                new IPacketProcessor<IThreadsUpdatePacket>() {
                     @Override
-                    public void process(ThreadsUpdatePacket p) {
+                    public void process(IThreadsUpdatePacket p) {
                         for (int threadId : p.getThreadIds()) {
                             Thread t = model.getRoot().getMessageById(threadId).getThreadRoot();
 
                             threadControl.loadChildren(model, t, null);
                         }
                     }
-                }
+                },
         };
     }
 
@@ -342,7 +347,7 @@ public abstract class AThreadView extends AItemView {
      * @param mi selected post.
      */
     protected void setSelectedPost(Post mi) {
-        fireMessageGotFocus(new AffectedMessage(mi.getForumId(), mi.getMessageId()));
+        fireMessageGotFocus(mi.getForumId(), mi.getMessageId());
 
         if (mi.isRead() == ReadStatus.Unread) {
             Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
@@ -391,7 +396,7 @@ public abstract class AThreadView extends AItemView {
         protected void process(List<Forum> chunks) {
             for (Forum f : chunks) {
                 forum = f;
-                fireItemUpdated(new AffectedMessage(forumId));
+                fireItemUpdated(forumId, null);
             }
         }
     }

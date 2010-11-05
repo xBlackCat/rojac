@@ -7,7 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.janus.commands.AffectedMessage;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -29,30 +28,27 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     @Override
-    public int loadThreadByItem(final AThreadModel<Post> model, final AffectedMessage forum) {
-        final int forumId = forum.getForumId();
+    public void fillModelByItemId(final AThreadModel<Post> model, int forumId) {
         final ForumRoot rootItem = new ForumRoot(forumId);
 
         model.setRoot(rootItem);
 
         new ThreadsLoader(forumId, rootItem, model).execute();
-
-        return forumId;
     }
 
     @Override
-    public void updateItem(AThreadModel<Post> model, AffectedMessage... itemIds) {
+    public void updateItem(AThreadModel<Post> model, int... itemIds) {
         ForumRoot forumRoot = (ForumRoot) model.getRoot();
 
         TIntHashSet newPosts = new TIntHashSet();
 
         // Update existing nodes first.
-        for (AffectedMessage message : itemIds) {
-            Post post = forumRoot.getMessageById(message.getMessageId());
+        for (int messageId : itemIds) {
+            Post post = forumRoot.getMessageById(messageId);
             if (post != null) {
                 model.pathToNodeChanged(post);
             } else {
-                newPosts.add(message.getMessageId());
+                newPosts.add(messageId);
             }
         }
 

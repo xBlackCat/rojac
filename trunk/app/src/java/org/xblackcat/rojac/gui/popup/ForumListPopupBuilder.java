@@ -14,7 +14,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/** @author xBlackCat */
+/**
+ * @author xBlackCat
+ */
 
 class ForumListPopupBuilder implements IPopupBuilder {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
@@ -46,7 +48,7 @@ class ForumListPopupBuilder implements IPopupBuilder {
      * Real menu builder.
      *
      * @param forumData selected forum data.
-     * @param model forums view model to manipulate with its data.  
+     * @param model     forums view model to manipulate with its data.
      * @param mainFrame main frame controller.
      *
      * @return built pop-up menu

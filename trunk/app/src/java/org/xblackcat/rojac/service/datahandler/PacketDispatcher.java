@@ -13,7 +13,7 @@ public class PacketDispatcher {
     private final IPacketProcessor<IPacket>[] processors;
 
     @SuppressWarnings({"unchecked"})
-    public PacketDispatcher(IPacketProcessor<IPacket> ... processors) {
+    public PacketDispatcher(IPacketProcessor<IPacket>... processors) {
         if (processors == null) {
             processors = new IPacketProcessor[0];
         }

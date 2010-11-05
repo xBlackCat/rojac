@@ -10,7 +10,11 @@ import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.ForumsLoadedPacket;
+import org.xblackcat.rojac.service.datahandler.IForumUpdatePacket;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
@@ -178,9 +182,9 @@ public class ForumsListView extends AView {
                         new ForumLoader().execute();
                     }
                 },
-                new IPacketProcessor<ForumsUpdatePacket>() {
+                new IPacketProcessor<IForumUpdatePacket>() {
                     @Override
-                    public void process(ForumsUpdatePacket p) {
+                    public void process(IForumUpdatePacket p) {
                         loadForumStatistic(p.getForumIds());
                     }
                 }
