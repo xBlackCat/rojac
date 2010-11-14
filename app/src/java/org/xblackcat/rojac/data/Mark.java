@@ -27,6 +27,10 @@ public enum Mark {
                 return m;
             }
         }
+
+        if (code < -4) {
+            return Disagree;
+        }
         throw new IllegalArgumentException("Unknown mark type: " + code);
     }
 
