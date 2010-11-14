@@ -141,4 +141,11 @@ final class DBMessageAH implements IMessageAH {
                 messageId);
     }
 
+    @Override
+    public void updateMessageRatingCache(int id, String ratingsCache) throws StorageException {
+        helper.update(DataQuery.UPDATE_MESSAGE_RATING_CACHE,
+                ratingsCache,
+                id);
+    }
+
 }

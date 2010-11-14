@@ -13,6 +13,7 @@ import org.xblackcat.rojac.service.storage.database.helper.QueryHelper;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -247,16 +248,48 @@ public class DBStorage implements IStorage, IQueryExecutor {
         return Collections.unmodifiableMap(qs);
     }
 
+    /**
+     * Loads and returns a new Properties object for given resource or path name.
+     *
+     * @param propertiesFile
+     *
+     * @return
+     */
+    private static Map<String, String> loadProperties(String propertiesFile) throws IOException {
+        InputStream is;
+        try {
+            is = ResourceUtils.getResourceAsStream(propertiesFile);
+        } catch (MissingResourceException e) {
+            if (propertiesFile.toLowerCase().endsWith(".properties")) {
+                throw e;
+            } else {
+                is = ResourceUtils.getResourceAsStream(propertiesFile + ".properties");
+            }
+        }
+
+        final Map<String, String> map = new LinkedHashMap<String, String>();
+        // Workaround to load properties in natural order.
+        Properties p = new Properties() {
+            @Override
+            public Object put(Object key, Object value) {
+                map.put(key.toString(), value.toString());
+                return super.put(key, value);
+            }
+        };
+        p.load(is);
+
+        return map;
+    }
     private Map<SQL, List<SQL>> loadInitializeSQLs(String checkProp, String initProps, String config) throws IOException {
-        Properties check = ResourceUtils.loadProperties(checkProp);
+        Map<String, String> check = loadProperties(checkProp);
         Properties init = ResourceUtils.loadProperties(initProps);
         Properties clue = ResourceUtils.loadProperties(config);
 
-        Map<SQL, List<SQL>> map = new HashMap<SQL, List<SQL>>();
+        Map<SQL, List<SQL>> map = new LinkedHashMap<SQL, List<SQL>>();
 
-        for (Map.Entry<Object, Object> ce : check.entrySet()) {
-            String name = (String) ce.getKey();
-            String sql = (String) ce.getValue();
+        for (Map.Entry<String, String> ce : check.entrySet()) {
+            String name = ce.getKey();
+            String sql = ce.getValue();
 
             String inits = clue.getProperty(name, "");
             List<SQL> sqls = new ArrayList<SQL>();

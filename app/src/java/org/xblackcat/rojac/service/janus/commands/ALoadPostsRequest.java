@@ -10,6 +10,7 @@ import org.xblackcat.rojac.service.datahandler.ThreadsUpdatePacket;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
+import org.xblackcat.rojac.util.MessageUtils;
 import ru.rsdn.Janus.JanusMessageInfo;
 import ru.rsdn.Janus.JanusModerateInfo;
 import ru.rsdn.Janus.JanusRatingInfo;
@@ -42,9 +43,11 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
     protected void storeNewPosts(IProgressTracker tracker, TopicMessages newPosts) throws StorageException {
         tracker.addLodMessage(Messages.Synchronize_Command_UpdateDatabase);
 
+        TIntHashSet cacheUpdate = new TIntHashSet();
+
         int count = 0;
         for (JanusMessageInfo mes : newPosts.getMessages()) {
-            tracker.updateProgress(count++, newPosts.getTotalRecords());
+            tracker.updateProgress(count++, newPosts.getMessages().length);
 
             // TODO: compute the flag depending on MessageData and user settings.
             boolean read = false;
@@ -59,6 +62,8 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
                 mAH.storeMessage(mes, read);
             }
 
+            cacheUpdate.add(mId);
+
             if (mes.getTopicId() == 0) {
                 updatedTopics.add(mes.getMessageId());
             } else {
@@ -68,17 +73,27 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
             updatedForums.add(mes.getForumId());
         }
 
+        count = 0;
         for (JanusModerateInfo mod : newPosts.getModerates()) {
-            tracker.updateProgress(count++, newPosts.getTotalRecords());
+            tracker.updateProgress(count++, newPosts.getModerates().length);
             modAH.storeModerateInfo(mod);
             updatedForums.add(mod.getForumId());
             updatedMessages.add(mod.getMessageId());
         }
 
+        count = 0;
         for (JanusRatingInfo r : newPosts.getRatings()) {
-            tracker.updateProgress(count++, newPosts.getTotalRecords());
+            tracker.updateProgress(count++, newPosts.getRatings().length);
             rAH.storeRating(r);
             updatedMessages.add(r.getMessageId());
+            cacheUpdate.add(r.getMessageId());
+        }
+
+        count = 0;
+        int[] forUpdate = cacheUpdate.toArray();
+        for (int id : forUpdate) {
+            tracker.updateProgress(count++, forUpdate.length);
+            MessageUtils.updateRatingCache(id);
         }
     }
 

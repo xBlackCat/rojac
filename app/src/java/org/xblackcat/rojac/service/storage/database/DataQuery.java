@@ -37,7 +37,7 @@ public enum DataQuery implements IPropertiable {
      * The query should fetch the message data properties in following order:
      * <p/>
      * id (int), topic id (int), parent id (int), forum id (int), user id (int), subject (String), user nick (String),
-     * message date (long), update date (long), read (boolean)
+     * message date (long), update date (long), read (boolean), rating (String)
      *
      * Parameter: threadId (int)
      */
@@ -329,6 +329,12 @@ public enum DataQuery implements IPropertiable {
      * parent id(int), forum id(int), subject(String), message(String), id (int)
      */
     UPDATE_OBJECT_NEW_MESSAGE,
+    /**
+     * Query for updating ratings cache for message.
+     *
+     * rating cache (string), message id (int)
+     */
+    UPDATE_MESSAGE_RATING_CACHE,
 
     GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
     /**
@@ -383,13 +389,13 @@ public enum DataQuery implements IPropertiable {
     GET_PARENT_ID_FOR_MESSAGE_ID,
     GET_BROKEN_TOPIC_IDS;
 
-    private final String properyName = ResourceUtils.constantToProperty(this.name());
+    private final String propertyName = ResourceUtils.constantToProperty(this.name());
 
     public String getPropertyName() {
-        return properyName;
+        return propertyName;
     }
 
     public String toString() {
-        return super.toString() + '[' + properyName + ']';
+        return super.toString() + '[' + propertyName + ']';
     }
 }

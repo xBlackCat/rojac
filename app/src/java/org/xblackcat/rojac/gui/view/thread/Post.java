@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.thread;
 
-import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MessageData;
 
 import java.util.ArrayList;
@@ -26,7 +25,6 @@ public class Post implements ITreeItem<Post> {
     protected final Thread threadRoot;
 
     protected List<Post> childrenPosts = new ArrayList<Post>();
-    private Mark[] rating;
 
     public Post(MessageData messageData, Post parent) {
         this(messageData, parent, null);
@@ -216,10 +214,6 @@ public class Post implements ITreeItem<Post> {
         }
     }
 
-    void setRating(Mark[] rating) {
-        this.rating = rating;
-    }
-
     /**
      * Recursively resort whole sub-tree of the posts.
      */
@@ -229,10 +223,6 @@ public class Post implements ITreeItem<Post> {
         for (Post child : childrenPosts) {
             child.deepResort();
         }
-    }
-
-    public Mark[] getRating() {
-        return rating;
     }
 
     public void setMessageData(MessageData messageData) {
