@@ -1,10 +1,15 @@
 package org.xblackcat.rojac.util;
 
 import gnu.trove.TIntObjectHashMap;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.data.Mark;
+import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IRatingAH;
+import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +24,6 @@ import java.util.regex.Pattern;
  */
 
 public final class MessageUtils {
-    public final static Mark[] NO_MARKS = new Mark[0];
-
     private static final Pattern SUBJ_PATTERN = Pattern.compile("^Re(?:\\[(\\d+)\\])?:\\s+(.+)$");
     private static final Pattern RESP_PATTERN = Pattern.compile("^([A-Z_]>)(.+)$");
     protected static final Pattern TAGLINE_PATTERN = Pattern.compile("\\[tagline\\].+\\[/tagline\\]");
@@ -106,6 +109,18 @@ public final class MessageUtils {
         return body;
     }
 
+    public static RatingCache updateRatingCache(int id) throws StorageException {
+        IStorage storage = ServiceFactory.getInstance().getStorage();
+        IMessageAH mAH = storage.getMessageAH();
+        IRatingAH rAH = storage.getRatingAH();
+
+        Mark[] marks = rAH.getRatingMarksByMessageId(id);
+        RatingCache ratingCache = new RatingCache(marks);
+        mAH.updateMessageRatingCache(id, ratingCache.asString());
+        return ratingCache;
+    }
+
+
     /**
      * The method is copied from String utils to prevent modify russian letters into &#&lt;code&gt; form
      *
@@ -132,62 +147,28 @@ public final class MessageUtils {
         return writer.toString();
     }
 
-    public static ImageIcon buildRateImage(Mark[] ratings, Font targetFont, Color textColor) {
-        if (ArrayUtils.isEmpty(ratings)) {
+    public static ImageIcon buildRateImage(RatingCache ratings, Font targetFont, Color textColor) {
+        if (ratings.isEmpty()) {
             return null;
         }
 
-        int smiles = 0;
-        int agrees = 0;
-        int disagrees = 0;
-        int plusOnes = 0;
-        int rate = 0;
-        int rateAmount = 0;
-
-        for (Mark r : ratings) {
-            switch (r) {
-                case Agree:
-                    ++agrees;
-                    break;
-                case Disagree:
-                    ++disagrees;
-                    break;
-                case PlusOne:
-                    ++plusOnes;
-                    break;
-                case Remove:
-                    // Do nothig
-                    break;
-                case Smile:
-                    ++smiles;
-                    break;
-                case x3:
-                    ++rate;
-                    // Fall down
-                case x2:
-                    ++rate;
-                    // Fall down
-                case x1:
-                    ++rate;
-                    ++rateAmount;
-                    break;
-            }
-        }
+        int rate = ratings.getRating(Mark.x1) + 2 * ratings.getRating(Mark.x2) + 3 * ratings.getRating(Mark.x3);
+        int rateAmount = ratings.getRating(Mark.x1) + ratings.getRating(Mark.x2) + ratings.getRating(Mark.x3);
 
         int width = 0;
         if (rate > 0) {
             width += 70;
         }
-        if (agrees > 0) {
+        if (ratings.getRating(Mark.Agree) > 0) {
             width += 45;
         }
-        if (disagrees > 0) {
+        if (ratings.getRating(Mark.Disagree) > 0) {
             width += 45;
         }
-        if (smiles > 0) {
+        if (ratings.getRating(Mark.Smile) > 0) {
             width += 40;
         }
-        if (plusOnes > 0) {
+        if (ratings.getRating(Mark.PlusOne) > 0) {
             width += 45;
         }
 
@@ -208,10 +189,10 @@ public final class MessageUtils {
             offset += bounds.getWidth();
         }
 
-        offset += addIcon(g, offset, Mark.PlusOne, plusOnes);
-        offset += addIcon(g, offset, Mark.Agree, agrees);
-        offset += addIcon(g, offset, Mark.Disagree, disagrees);
-        offset += addIcon(g, offset, Mark.Smile, smiles);
+        offset += addIcon(g, offset, Mark.PlusOne, ratings.getRating(Mark.PlusOne));
+        offset += addIcon(g, offset, Mark.Agree, ratings.getRating(Mark.Agree));
+        offset += addIcon(g, offset, Mark.Disagree, ratings.getRating(Mark.Disagree));
+        offset += addIcon(g, offset, Mark.Smile, ratings.getRating(Mark.Smile));
 
         im.flush();
 

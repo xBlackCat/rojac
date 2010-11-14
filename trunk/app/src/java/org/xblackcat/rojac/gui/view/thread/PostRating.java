@@ -14,7 +14,13 @@ final class PostRating extends APostProxy {
 
     @Override
     protected void setValue(PostTableCellRenderer renderer) {
-        renderer.setIcon(MessageUtils.buildRateImage(post.getRating(), renderer.getFont(), renderer.getForeground()));
+        renderer.setIcon(
+                MessageUtils.buildRateImage(
+                        post.getMessageData().getRating(),
+                        renderer.getFont(),
+                        renderer.getForeground()
+                )
+        );
         renderer.setText(null);
     }
 }

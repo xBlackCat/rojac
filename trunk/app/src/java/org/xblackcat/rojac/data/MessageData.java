@@ -15,8 +15,9 @@ public class MessageData {
     protected final long messageDate;
     protected final long updateDate;
     protected final boolean read;
+    protected final RatingCache rating;
 
-    public MessageData(int messageId, int topicId, int parentId, int forumId, int userId, String subject, String userName, long messageDate, long updateDate, boolean read) {
+    public MessageData(int messageId, int topicId, int parentId, int forumId, int userId, String subject, String userName, long messageDate, long updateDate, boolean read, String rating) {
         this.messageId = messageId;
         this.topicId = topicId;
         this.parentId = parentId;
@@ -27,6 +28,7 @@ public class MessageData {
         this.messageDate = messageDate;
         this.updateDate = updateDate;
         this.read = read;
+        this.rating = new RatingCache(rating);
     }
 
     public int getMessageId() {
@@ -67,6 +69,10 @@ public class MessageData {
 
     public boolean isRead() {
         return read;
+    }
+
+    public RatingCache getRating() {
+        return rating;
     }
 
     @Override

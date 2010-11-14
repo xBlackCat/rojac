@@ -2,14 +2,8 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.RojacException;
-import org.xblackcat.rojac.data.Mark;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.MessageUtils;
-import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.tree.TreePath;
-import java.util.List;
 
 /**
  * @author xBlackCat
@@ -17,13 +11,7 @@ import java.util.List;
 
 class SortedThreadsModel extends AThreadModel<Post> {
     public Post getChild(Object parent, int index) {
-        final Post child = ((Post) parent).getChild(index);
-        if (child.getRating() == null) {
-            child.setRating(MessageUtils.NO_MARKS);
-
-            new MarksLoader(child).execute();
-        }
-        return child;
+        return ((Post) parent).getChild(index);
     }
 
     public int getChildCount(Object parent) {
@@ -113,31 +101,5 @@ class SortedThreadsModel extends AThreadModel<Post> {
             retNodes[retNodes.length - depth] = aNode;
         }
         return retNodes;
-    }
-
-    private class MarksLoader extends RojacWorker<Void, Mark> {
-        private final Post child;
-
-        public MarksLoader(Post child) {
-            this.child = child;
-        }
-
-        @Override
-        protected Void perform() throws Exception {
-            int messageId = child.getMessageId();
-            IStorage storage = ServiceFactory.getInstance().getStorage();
-
-            publish(storage.getRatingAH().getRatingMarksByMessageId(messageId));
-            publish(storage.getNewRatingAH().getNewRatingMarksByMessageId(messageId));
-
-            return null;
-        }
-
-        @Override
-        protected void process(List<Mark> chunks) {
-            child.setRating(chunks.toArray(new Mark[chunks.size()]));
-
-            nodeChanged(child);
-        }
     }
 }

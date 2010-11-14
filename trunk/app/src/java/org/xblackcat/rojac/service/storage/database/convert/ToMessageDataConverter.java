@@ -21,6 +21,7 @@ class ToMessageDataConverter implements IToObjectConverter<MessageData> {
         long messageDate = rs.getLong(8);
         long updateDate = rs.getLong(9);
         boolean read = rs.getBoolean(10);
+        String rating = rs.getString(11);
 
         return new MessageData(
                 messageId,
@@ -32,7 +33,8 @@ class ToMessageDataConverter implements IToObjectConverter<MessageData> {
                 userName,
                 messageDate,
                 updateDate,
-                read
+                read,
+                rating
         );
     }
 }

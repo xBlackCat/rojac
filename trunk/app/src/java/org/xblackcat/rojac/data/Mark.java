@@ -21,7 +21,7 @@ public enum Mark {
 
     private static final String IMAGES_MARKS_PATH = "marks/";
 
-    public static Mark getMark(int code) {
+    public static Mark getMark(int code) throws IllegalArgumentException {
         for (Mark m : values()) {
             if (m.getValue() == code) {
                 return m;

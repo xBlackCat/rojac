@@ -1,11 +1,11 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
+import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.gui.IInternationazable;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.component.AButtonAction;
@@ -35,6 +35,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
@@ -123,7 +124,7 @@ public class MessageView extends AItemView implements IInternationazable {
         final MarkRender markRender = new MarkRender(ResourceUtils.loadIcon("images/marks/select.gif"));
 
         SelectMarkAction marksAction = new SelectMarkAction(marksModel);
-        ShowMarkSelectorAction selectorAction = new ShowMarkSelectorAction(marksModel);
+        ShowMarkSelectorAction selectorAction = new ShowMarkSelectorAction();
 
         marks = new JComboBox(marksModel);
         marks.setFocusable(false);
@@ -234,8 +235,8 @@ public class MessageView extends AItemView implements IInternationazable {
         return messageId == this.messageId;
     }
 
-    private void fillMarksButton(Mark[] ratings) {
-        boolean empty = ArrayUtils.isEmpty(ratings);
+    private void fillMarksButton(RatingCache ratings) {
+        boolean empty = ratings.isEmpty();
 
         marksButton.setVisible(!empty);
         if (empty) {
@@ -282,12 +283,10 @@ public class MessageView extends AItemView implements IInternationazable {
             try {
                 MessageData messageData = storage.getMessageAH().getMessageData(messageId);
                 messageBody = storage.getMessageAH().getMessageBodyById(messageId);
-                Mark[] ratings = storage.getRatingAH().getRatingMarksByMessageId(messageId);
-                Mark[] ownRatings = storage.getNewRatingAH().getNewRatingMarksByMessageId(messageId);
 
                 String parsedText = rsdnToHtml.convert(messageBody);
 
-                publish(new MessageDataHolder(messageData, parsedText, (Mark[]) ArrayUtils.addAll(ratings, ownRatings)));
+                publish(new MessageDataHolder(messageData, parsedText));
             } catch (StorageException e) {
                 throw new RuntimeException("Can't load message #" + messageId, e);
             } catch (Exception e) {
@@ -301,7 +300,7 @@ public class MessageView extends AItemView implements IInternationazable {
         protected void process(List<MessageDataHolder> chunks) {
             for (MessageDataHolder messageData : chunks) {
                 fillFrame(messageData.getMessage(), messageData.getMessageBody());
-                fillMarksButton(messageData.getMarks());
+                fillMarksButton(messageData.getMessage().getRating());
                 messageTitle = "#" + messageId + " " + messageData.getMessage().getSubject();
                 fireItemUpdated(forumId, messageId);
             }
@@ -311,20 +310,14 @@ public class MessageView extends AItemView implements IInternationazable {
     private static class MessageDataHolder {
         private final MessageData message;
         private final String messageBody;
-        private final Mark[] marks;
 
-        private MessageDataHolder(MessageData message, String messageBody, Mark[] marks) {
+        private MessageDataHolder(MessageData message, String messageBody) {
             this.message = message;
             this.messageBody = messageBody;
-            this.marks = marks;
         }
 
         public MessageData getMessage() {
             return message;
-        }
-
-        public Mark[] getMarks() {
-            return marks;
         }
 
         public String getMessageBody() {
@@ -332,7 +325,7 @@ public class MessageView extends AItemView implements IInternationazable {
         }
     }
 
-    private class MarksUpdater extends RojacWorker<Void, Mark> {
+    private class MarksUpdater extends RojacWorker<Void, RatingCache> {
         private final Mark mark;
 
         public MarksUpdater(Mark mark) {
@@ -342,18 +335,18 @@ public class MessageView extends AItemView implements IInternationazable {
         @Override
         protected Void perform() throws Exception {
             storage.getNewRatingAH().storeNewRating(messageId, mark);
-            Mark[] ratings = storage.getRatingAH().getRatingMarksByMessageId(messageId);
 
-            Mark[] ownRatings = storage.getNewRatingAH().getNewRatingMarksByMessageId(messageId);
-
-            publish((Mark[]) ArrayUtils.addAll(ratings, ownRatings));
+            publish(MessageUtils.updateRatingCache(messageId));
 
             return null;
         }
 
         @Override
-        protected void process(List<Mark> chunks) {
-            fillMarksButton(chunks.toArray(new Mark[chunks.size()]));
+        protected void process(List<RatingCache> chunks) {
+            Iterator<RatingCache> iterator = chunks.iterator();
+            if (iterator.hasNext()) {
+                fillMarksButton(iterator.next());
+            }
         }
 
         @Override
@@ -396,12 +389,8 @@ public class MessageView extends AItemView implements IInternationazable {
     }
 
     private class ShowMarkSelectorAction extends AButtonAction {
-        private final IconsModel marksModel;
-
-
-        public ShowMarkSelectorAction(IconsModel marksModel) {
+        public ShowMarkSelectorAction() {
             super(Messages.Description_Mark_Select, ShortCut.SetMarkOnMessage);
-            this.marksModel = marksModel;
         }
 
         @Override
