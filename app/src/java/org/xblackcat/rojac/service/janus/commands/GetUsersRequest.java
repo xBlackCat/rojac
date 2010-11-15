@@ -34,7 +34,7 @@ class GetUsersRequest extends ARequest<IPacket> {
             log.debug("Loading new users information.");
         }
         Integer limit = SYNCHRONIZER_LOAD_USERS_PORTION.get();
-        tracker.addLodMessage(Messages.Synchronize_Command_Portion, limit);
+        tracker.addLodMessage(Messages.Synchronize_Message_Portion, limit);
 
         try {
             Version localUsersVersion = DataHelper.getVersion(VersionType.USERS_ROW_VERSION);
@@ -61,7 +61,7 @@ class GetUsersRequest extends ARequest<IPacket> {
                 DataHelper.setVersion(VersionType.USERS_ROW_VERSION, localUsersVersion);
             } while (users.getUsers().length > 0);
 
-            tracker.addLodMessage(Messages.Synchronize_Command_GotUsers, totalUsersNumber);
+            tracker.addLodMessage(Messages.Synchronize_Message_GotUsers, totalUsersNumber);
             if (log.isDebugEnabled()) {
                 log.debug(totalUsersNumber + " user(s) was loaded.");
             }

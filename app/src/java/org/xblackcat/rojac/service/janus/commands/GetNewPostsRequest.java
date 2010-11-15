@@ -54,7 +54,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         Integer limit = SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
 
-        tracker.addLodMessage(Messages.Synchronize_Command_Portion, limit);
+        tracker.addLodMessage(Messages.Synchronize_Message_Portion, limit);
 
         Version messagesVersion = DataHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
         Version moderatesVersion = DataHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
@@ -83,7 +83,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             JanusModerateInfo[] moderates = data.getModerates();
             JanusRatingInfo[] ratings = data.getRatings();
 
-            tracker.addLodMessage(Messages.Synchronize_Command_GotPosts, messages.length, moderates.length, ratings.length);
+            tracker.addLodMessage(Messages.Synchronize_Message_GotPosts, messages.length, moderates.length, ratings.length);
 
             storeNewPosts(tracker, data);
 
@@ -97,7 +97,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         } while (messages.length == limit);
 
-        tracker.addLodMessage(Messages.Synchronize_Command_GotUserId, RSDN_USER_ID.get());
+        tracker.addLodMessage(Messages.Synchronize_Message_GotUserId, RSDN_USER_ID.get());
 
         setNotifications(handler);
     }
