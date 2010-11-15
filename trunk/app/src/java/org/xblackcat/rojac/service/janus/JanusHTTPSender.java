@@ -42,9 +42,19 @@ import org.xblackcat.rojac.service.progress.IProgressController;
 import javax.xml.soap.MimeHeader;
 import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPException;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -222,9 +232,9 @@ class JanusHTTPSender extends BasicHandler {
             }
 
             if (method.getResponseContentLength() < 0) {
-                progressController.fireJobProgressChanged(0f, Synchronize_Command_ReadUnknown);
+                progressController.fireJobProgressChanged(0f, Synchronize_Message_ReadUnknown);
             } else {
-                progressController.fireJobProgressChanged(0f, Synchronize_Command_Read, method.getResponseContentLength());
+                progressController.fireJobProgressChanged(0f, Synchronize_Message_Read, method.getResponseContentLength());
             }
             // wrap the response body stream so that close() also releases
             // the connection back to the pool.
@@ -424,7 +434,7 @@ class JanusHTTPSender extends BasicHandler {
             if (pHost.length() == 0 || pPort == 0) {
                 config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
             } else {
-                progressController.fireJobProgressChanged(0f, Synchronize_Command_ProxyUsed, pHost, pPort);
+                progressController.fireJobProgressChanged(0f, Synchronize_Message_ProxyUsed, pHost, pPort);
                 String pUser = SYNCHRONIZER_PROXY_USER.get("");
                 if (pUser.length() != 0) {
                     String pPass = SYNCHRONIZER_PROXY_PASSWORD.get().toString();
@@ -800,7 +810,7 @@ class JanusHTTPSender extends BasicHandler {
         }
 
         public void writeRequest(OutputStream out) throws IOException {
-            progressController.fireJobProgressChanged(0f, Synchronize_Command_Write, message.getContentLength());
+            progressController.fireJobProgressChanged(0f, Synchronize_Message_Write, message.getContentLength());
             try {
                 this.message.writeTo(new LogOutputStream(out, message.getContentLength()));
             } catch (SOAPException e) {
@@ -901,7 +911,7 @@ class JanusHTTPSender extends BasicHandler {
                 super.close();
             } finally {
                 method.releaseConnection();
-                progressController.fireJobProgressChanged(1f, Synchronize_Command_WasRead, amount);
+                progressController.fireJobProgressChanged(1f, Synchronize_Message_WasRead, amount);
             }
         }
 

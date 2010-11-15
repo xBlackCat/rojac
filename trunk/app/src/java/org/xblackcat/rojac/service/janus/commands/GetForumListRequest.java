@@ -35,7 +35,7 @@ class GetForumListRequest extends ARequest<IPacket> {
         IForumAH fAH = storage.getForumAH();
         IForumGroupAH gAH = storage.getForumGroupAH();
 
-        tracker.addLodMessage(Messages.Synchronize_Command_GotForums, forumsList.getForums().length, forumsList.getForumGroups().length);
+        tracker.addLodMessage(Messages.Synchronize_Message_GotForums, forumsList.getForums().length, forumsList.getForumGroups().length);
 
         try {
             int total = forumsList.getForumGroups().length + forumsList.getForums().length;

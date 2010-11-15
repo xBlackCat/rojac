@@ -41,7 +41,7 @@ class TestRequest extends ARequest<Integer> {
             );
 
             userId = data.getOwnUserId();
-            trac.addLodMessage(Messages.Synchronize_Command_GotUserId, userId);
+            trac.addLodMessage(Messages.Synchronize_Message_GotUserId, userId);
         } catch (JanusServiceException e) {
             // Login rejected
             userId = null;

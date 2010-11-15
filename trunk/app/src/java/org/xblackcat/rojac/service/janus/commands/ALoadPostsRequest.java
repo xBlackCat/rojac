@@ -41,10 +41,11 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
     }
 
     protected void storeNewPosts(IProgressTracker tracker, TopicMessages newPosts) throws StorageException {
-        tracker.addLodMessage(Messages.Synchronize_Command_UpdateDatabase);
+        tracker.addLodMessage(Messages.Synchronize_Message_UpdateDatabase);
 
         TIntHashSet cacheUpdate = new TIntHashSet();
 
+        tracker.addLodMessage(Messages.Synchronize_Message_StoreMessages);
         int count = 0;
         for (JanusMessageInfo mes : newPosts.getMessages()) {
             tracker.updateProgress(count++, newPosts.getMessages().length);
@@ -73,6 +74,7 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
             updatedForums.add(mes.getForumId());
         }
 
+        tracker.addLodMessage(Messages.Synchronize_Message_StoreModerates);
         count = 0;
         for (JanusModerateInfo mod : newPosts.getModerates()) {
             tracker.updateProgress(count++, newPosts.getModerates().length);
@@ -81,6 +83,7 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
             updatedMessages.add(mod.getMessageId());
         }
 
+        tracker.addLodMessage(Messages.Synchronize_Message_StoreRatings);
         count = 0;
         for (JanusRatingInfo r : newPosts.getRatings()) {
             tracker.updateProgress(count++, newPosts.getRatings().length);
@@ -91,6 +94,7 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
 
         count = 0;
         int[] forUpdate = cacheUpdate.toArray();
+        tracker.addLodMessage(Messages.Synchronize_Message_UpdateCaches);
         for (int id : forUpdate) {
             tracker.updateProgress(count++, forUpdate.length);
             MessageUtils.updateRatingCache(id);

@@ -51,7 +51,7 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
         JanusModerateInfo[] moderates = extra.getModerates();
         JanusRatingInfo[] ratings = extra.getRatings();
 
-        tracker.addLodMessage(Messages.Synchronize_Command_GotPosts, messages.length, moderates.length, ratings.length);
+        tracker.addLodMessage(Messages.Synchronize_Message_GotPosts, messages.length, moderates.length, ratings.length);
 
         storeNewPosts(tracker, extra);
     }
