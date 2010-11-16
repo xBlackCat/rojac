@@ -33,7 +33,7 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
         JPanel cp = new JPanel(new BorderLayout());
 
         cp.add(new JScrollPane(logArea), BorderLayout.CENTER);
-        logProgress = new JProgressBar(JProgressBar.VERTICAL, 0, 200);
+        logProgress = new JProgressBar(JProgressBar.VERTICAL, 0, 100);
         logProgress.setStringPainted(true);
         cp.add(logProgress, BorderLayout.EAST);
 
@@ -64,9 +64,9 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
         }
 
         if (e.getProgress() != null) {
-            float progress = e.getProgress();
+            int progress = e.getProgress();
             if (progress >= 0) {
-                logProgress.setValue((int) (progress * logProgress.getMaximum()));
+                logProgress.setValue(progress);
             }
             logProgress.setIndeterminate(progress < 0);
         }
