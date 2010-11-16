@@ -8,10 +8,10 @@ import java.util.EventObject;
 
 public class ProgressChangeEvent extends EventObject {
     private ProgressState state;
-    private Float progress;
+    private Integer progress;
     private String text;
 
-    public ProgressChangeEvent(Object source, ProgressState state, Float progress, String text) {
+    public ProgressChangeEvent(Object source, ProgressState state, Integer progress, String text) {
         super(source);
         this.state = state;
         this.progress = progress;
@@ -32,7 +32,7 @@ public class ProgressChangeEvent extends EventObject {
      *
      * @return progress value.
      */
-    public Float getProgress() {
+    public Integer getProgress() {
         return progress;
     }
 
@@ -43,6 +43,28 @@ public class ProgressChangeEvent extends EventObject {
      */
     public String getText() {
         return text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProgressChangeEvent)) return false;
+
+        ProgressChangeEvent that = (ProgressChangeEvent) o;
+
+        if (progress != null ? !progress.equals(that.progress) : that.progress != null) return false;
+        if (state != that.state) return false;
+        if (text != null ? !text.equals(that.text) : that.text != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = state != null ? state.hashCode() : 0;
+        result = 31 * result + (progress != null ? progress.hashCode() : 0);
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        return result;
     }
 
     @Override

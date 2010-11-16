@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author xBlackCat
@@ -15,6 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ProgressController implements IProgressController {
     private static final Log log = LogFactory.getLog(ProgressController.class);
+    private final java.util.Queue<ProgressChangeEvent> waitingEvents = new LinkedBlockingQueue<ProgressChangeEvent>();
+    private boolean processorAimed = false;
 
     private final EventListenerList listenerList = new EventListenerList();
 
@@ -30,12 +33,12 @@ public class ProgressController implements IProgressController {
 
     @Override
     public void fireJobProgressChanged(float progress) {
-        fireProgressChanged(ProgressState.Work, progress, null);
+        fireProgressChanged(ProgressState.Work, (int) (progress * 100), null);
     }
 
     @Override
     public void fireJobProgressChanged(float progress, Messages message, Object... arguments) {
-        fireProgressChanged(ProgressState.Work, progress, message.get(arguments));
+        fireProgressChanged(ProgressState.Work, (int) (progress * 100), message.get(arguments));
     }
 
     @Override
@@ -68,12 +71,39 @@ public class ProgressController implements IProgressController {
         listenerList.remove(IProgressListener.class, listener);
     }
 
-    private void fireProgressChanged(ProgressState state, Float percentage, String logMessage) {
+    private void fireProgressChanged(ProgressState state, Integer percentage, String logMessage) {
         final ProgressChangeEvent event = new ProgressChangeEvent(this, state, percentage, logMessage);
 
         if (EventQueue.isDispatchThread()) {
             processEvent(event);
         } else {
+            synchronized (waitingEvents) {
+                if (processorAimed) {
+                    if (!waitingEvents.contains(event)) {
+                        waitingEvents.offer(event);
+                    }
+                } else {
+                    processorAimed = true;
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            ProgressChangeEvent e;
+                            do {
+                                synchronized (waitingEvents) {
+                                    e = waitingEvents.poll();
+                                    if (e == null) {
+                                        processorAimed = false;
+                                        break;
+                                    }
+                                }
+
+                                processEvent(e);
+                            } while (true);
+                        }
+                    });
+                }
+            }
+
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {

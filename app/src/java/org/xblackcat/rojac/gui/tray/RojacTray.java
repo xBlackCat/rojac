@@ -204,8 +204,8 @@ public class RojacTray {
                         lastText = e.getText();
                     }
                     String progress;
-                    if (e.getProgress() != null) {
-                        progress = "(" + (int) (e.getProgress() * 100) + "%)";
+                    if (e.getProgress() != null && e.getProgress() >= 0) {
+                        progress = "(" + e.getProgress() + "%)";
                     } else {
                         progress = "";
                     }
