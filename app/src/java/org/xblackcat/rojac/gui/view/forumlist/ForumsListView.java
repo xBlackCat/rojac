@@ -15,6 +15,7 @@ import org.xblackcat.rojac.service.datahandler.IForumUpdatePacket;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
@@ -187,7 +188,19 @@ public class ForumsListView extends AView {
                     public void process(IForumUpdatePacket p) {
                         loadForumStatistic(p.getForumIds());
                     }
-                }
+                },
+                new IPacketProcessor<SetPostReadPacket>() {
+                    @Override
+                    public void process(SetPostReadPacket p) {
+                        if (p.isRecursive()) {
+                            // More than one post was changed. Reload stat
+                            loadForumStatistic(p.getForumId());
+                        } else {
+                            // Single post is changed - just increment/decrement stat
+                            adjustUnreadPosts(p.isRead() ? -1 : 1, p.getForumId());
+                        }
+                    }
+                },
         };
     }
 

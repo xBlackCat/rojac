@@ -15,14 +15,6 @@ interface IThreadControl<T extends ITreeItem<T>> {
      */
     void fillModelByItemId(AThreadModel<T> model, int itemId);
 
-    /**
-     * Updates the item information.
-     *
-     * @param model  item container model.
-     * @param itemId item to be updated.
-     */
-    void updateItem(AThreadModel<T> model, int... itemIds);
-
     void markForumRead(AThreadModel<T> model, boolean read);
 
     void markThreadRead(AThreadModel<T> model, int threadRootId, boolean read);

@@ -16,7 +16,6 @@ import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.datahandler.IThreadsUpdatePacket;
 import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
 import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
-import org.xblackcat.rojac.service.datahandler.SetThreadReadPacket;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
@@ -91,19 +90,17 @@ public abstract class AThreadView extends AItemView {
                         }
                     }
                 },
-                new IPacketProcessor<SetThreadReadPacket>() {
-                    @Override
-                    public void process(SetThreadReadPacket p) {
-                        if (p.getForumId() == forumId) {
-                            threadControl.markThreadRead(model, p.getThreadId(), p.isRead());
-                        }
-                    }
-                },
                 new IPacketProcessor<SetPostReadPacket>() {
                     @Override
                     public void process(SetPostReadPacket p) {
                         if (p.getForumId() == forumId) {
-                            threadControl.markPostRead(model, p.getPostId(), p.isRead());
+                            if (p.isRecursive()) {
+                                // Post is a root of marked thread
+                                threadControl.markThreadRead(model, p.getPostId(), p.isRead());
+                            } else {
+                                // Mark as read only the post
+                                threadControl.markPostRead(model, p.getPostId(), p.isRead());
+                            }
                         }
                     }
                 },

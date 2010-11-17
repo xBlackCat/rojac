@@ -2,6 +2,9 @@ package org.xblackcat.rojac.service.datahandler;
 
 import org.xblackcat.rojac.util.RojacUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Util class to handle packets dispatching classes.
  *
@@ -9,29 +12,31 @@ import org.xblackcat.rojac.util.RojacUtils;
  */
 
 public class PacketDispatcher {
-    private final Class<IPacket>[] packetClasses;
-    private final IPacketProcessor<IPacket>[] processors;
+    private final Map<Class<?>, IPacketProcessor<IPacket>> processors = new HashMap<Class<?>, IPacketProcessor<IPacket>>();
 
     @SuppressWarnings({"unchecked"})
     public PacketDispatcher(IPacketProcessor<IPacket>... processors) {
         if (processors == null) {
-            processors = new IPacketProcessor[0];
+            return;
         }
-        this.processors = processors;
-        packetClasses = (Class<IPacket>[]) new Class[processors.length];
 
-        for (int i = 0; i < processors.length; i++) {
-            if (processors[i] != null) {
-                packetClasses[i] = RojacUtils.getGenericClass(processors[i].getClass());
+        for (IPacketProcessor<IPacket> processor : processors) {
+            if (processor != null) {
+                this.processors.put(RojacUtils.getGenericClass(processor.getClass()), processor);
             }
         }
     }
 
     public void dispatch(IPacket p) {
-        for (int i = 0; i < packetClasses.length; i++) {
-            if (packetClasses[i] == p.getClass() ||
-                    packetClasses[i].getClass().isAssignableFrom(p.getClass())) {
-                processors[i].process(p);
+        IPacketProcessor<IPacket> processor = processors.get(p.getClass());
+
+        if (processor != null) {
+            processor.process(p);
+        } else {
+            for (Map.Entry<Class<?>, IPacketProcessor<IPacket>> e : processors.entrySet()) {
+                if (e.getKey().isAssignableFrom(p.getClass())) {
+                    e.getValue().process(p);
+                }
             }
         }
     }
