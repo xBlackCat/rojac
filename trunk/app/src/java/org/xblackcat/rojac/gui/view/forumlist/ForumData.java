@@ -13,10 +13,6 @@ public class ForumData {
     private ForumStatistic stat;
     private boolean subscribed;
 
-    public ForumData(int forumId) {
-        this.forumId = forumId;
-    }
-
     public ForumData(Forum forum) {
         this.forum = forum;
         forumId = forum.getForumId();

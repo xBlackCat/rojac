@@ -29,10 +29,8 @@ public class SetMessageReadFlag extends RojacWorker<Void, Void> {
     @Override
     protected void done() {
         if ((post.isRead() == ReadStatus.Unread) == read) {
-            post.setRead(read);
-            IPacket processPacket = new SetPostReadPacket(read, post.getForumId(), post.getMessageId());
+            IPacket processPacket = new SetPostReadPacket(read, post.getForumId(), post.getMessageId(), false);
             ServiceFactory.getInstance().getDataDispatcher().processPacket(processPacket);
         }
-
     }
 }

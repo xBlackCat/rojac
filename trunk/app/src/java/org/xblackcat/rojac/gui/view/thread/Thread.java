@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
+import org.xblackcat.rojac.util.RojacUtils;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -149,11 +150,8 @@ public class Thread extends Post {
     }
 
     void fillThread(List<MessageData> posts) {
-        if (!filled) {
-            Collections.sort(posts, SORT_BY_PARENTS);
-
-            filled = true;
-        }
+        RojacUtils.checkThread(true, Thread.class);
+        Collections.sort(posts, SORT_BY_PARENTS);
 
         for (MessageData post : posts) {
             Post p = threadPosts.get(post.getMessageId());
@@ -180,6 +178,9 @@ public class Thread extends Post {
 
         // Sorting...
         deepResort();
+        if (!filled) {
+            filled = true;
+        }
     }
 
     public void insertChild(MessageData post) {
