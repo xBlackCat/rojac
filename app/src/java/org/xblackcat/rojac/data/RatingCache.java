@@ -15,10 +15,9 @@ public class RatingCache {
 
     private final EnumMap<Mark, Integer> rating = new EnumMap<Mark, Integer>(Mark.class);
 
-    public RatingCache(Mark[] marks) {
-        for (Mark m : marks) {
-            Integer i = rating.get(m);
-            rating.put(m, i == null ? 1 : i + 1);
+    public RatingCache(MarkStat[] marks) {
+        for (MarkStat m : marks) {
+            rating.put(m.getMark(), m.getAmount());
         }
     }
 

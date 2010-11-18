@@ -3,6 +3,7 @@ package org.xblackcat.rojac.util;
 import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.data.Mark;
+import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -114,7 +115,7 @@ public final class MessageUtils {
         IMessageAH mAH = storage.getMessageAH();
         IRatingAH rAH = storage.getRatingAH();
 
-        Mark[] marks = rAH.getRatingMarksByMessageId(id);
+        MarkStat[] marks = rAH.getMarkStatByMessageId(id);
         RatingCache ratingCache = new RatingCache(marks);
         mAH.updateMessageRatingCache(id, ratingCache.asString());
         return ratingCache;

@@ -116,7 +116,7 @@ public abstract class AThreadView extends AItemView {
 
                         threadControl.updateModel(model, p.getThreadIds());
 
-                        setSelectedPost(curSelection);
+                        selectItem(curSelection);
                     }
                 },
         };

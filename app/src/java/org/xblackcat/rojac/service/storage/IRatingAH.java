@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Mark;
+import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.Rating;
 import ru.rsdn.Janus.JanusRatingInfo;
 
@@ -18,4 +19,6 @@ public interface IRatingAH extends AH {
     Rating[] getAllRatings() throws StorageException;
 
     Mark[] getRatingMarksByMessageId(int messageId) throws StorageException;
+
+    MarkStat[] getMarkStatByMessageId(int messageId) throws StorageException;
 }
