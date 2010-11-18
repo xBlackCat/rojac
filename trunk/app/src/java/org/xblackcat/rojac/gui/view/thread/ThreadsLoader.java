@@ -60,9 +60,13 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
     @Override
     protected void process(List<Thread> chunks) {
-        rootItem.addThread(chunks);
-
-        model.nodeStructureChanged(rootItem);
+        for (Thread t : chunks) {
+            if (rootItem.addThread(t)) {
+                model.nodeWasAdded(rootItem, t);
+            } else {
+                model.nodeChanged(t);
+            }
+        }
     }
 
     @Override

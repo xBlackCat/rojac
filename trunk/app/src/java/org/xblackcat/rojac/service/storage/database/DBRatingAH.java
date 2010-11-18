@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.data.Mark;
+import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -52,4 +53,15 @@ final class DBRatingAH implements IRatingAH {
         );
         return ratings.toArray(new Mark[ratings.size()]);
     }
+
+    public MarkStat[] getMarkStatByMessageId(int messageId) throws StorageException {
+        Collection<MarkStat> ratings = helper.execute(
+                Converters.TO_MARK_STAT,
+                DataQuery.GET_OBJECTS_MARK_STAT_BY_MESSAGE_ID,
+                messageId
+        );
+        return ratings.toArray(new MarkStat[ratings.size()]);
+    }
+
+
 }

@@ -2,8 +2,6 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.data.MessageData;
 
-import java.util.Collection;
-
 /**
  * @author xBlackCat
  */
@@ -19,19 +17,25 @@ public class ForumRoot extends Post {
         throw new UnsupportedOperationException("There is no thread root for forum");
     }
 
-    final void addThread(Collection<Thread> threads) {
-        for (Thread newThread : threads) {
-            if (childrenPosts.contains(newThread)) {
-                int index = childrenPosts.indexOf(newThread);
-                Thread realThread = (Thread) childrenPosts.get(index);
-                if (!realThread.isFilled()) {
-                    childrenPosts.set(index, newThread);
-                }
-            } else {
-                childrenPosts.add(newThread);
+    /**
+     * Adds a thread to forum root.
+     * @param newThread
+     * @return <code>true</code> if thread was added and <code>false</code> if thread was updated.
+     */
+    final boolean addThread(Thread newThread) {
+        if (childrenPosts.contains(newThread)) {
+            int index = childrenPosts.indexOf(newThread);
+            Thread realThread = (Thread) childrenPosts.get(index);
+            if (!realThread.isFilled()) {
+                childrenPosts.set(index, newThread);
+                resort();
             }
+            return false;
+        } else {
+            childrenPosts.add(newThread);
+            resort();
+            return true;
         }
-        resort();
     }
 
     /**

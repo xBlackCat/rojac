@@ -258,6 +258,7 @@ public enum DataQuery implements IPropertiable {
      */
     GET_OBJECTS_RATING_MARK_BY_MESSAGE_ID,
     GET_OBJECTS_NEW_RATING_MARK_BY_MESSAGE_ID,
+    GET_OBJECTS_MARK_STAT_BY_MESSAGE_ID,
 
     // Queries for getting next id value for object primary key
     GET_NEXT_ID_NEW_RATING,
