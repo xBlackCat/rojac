@@ -13,9 +13,9 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.IThreadsUpdatePacket;
 import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
 import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
@@ -104,27 +104,19 @@ public abstract class AThreadView extends AItemView {
                         }
                     }
                 },
-                new IPacketProcessor<IThreadsUpdatePacket>() {
+                new IPacketProcessor<SynchronizationCompletePacket>() {
                     @Override
-                    public void process(IThreadsUpdatePacket p) {
-                        for (int threadId : p.getThreadIds()) {
-                            Post post = model.getRoot().getMessageById(threadId);
-                            if (post != null) {
-                                // Update thread children
-                                Thread t = post.getThreadRoot();
-
-                                if (t.isFilled()) {
-                                    // Thread is already filled - update children
-                                    threadControl.loadChildren(model, t, null);
-                                } else {
-                                    // Thread is not loaded - update statistics.
-                                    // TODO: update statistics
-                                }
-                            } else {
-                                // Thread is a new. Add it to list
-                                // TODO: add the thread to list.
-                            }
+                    public void process(SynchronizationCompletePacket p) {
+                        if (!p.isForumAffected(forumId)) {
+                            // Current forum is not changed - have a rest
+                            return;
                         }
+
+                        Post curSelection = getSelectedItem();
+
+                        threadControl.updateModel(model, p.getThreadIds());
+
+                        setSelectedPost(curSelection);
                     }
                 },
         };
@@ -208,7 +200,7 @@ public abstract class AThreadView extends AItemView {
 
         if (post.getLoadingState() == LoadingState.NotLoaded && post.isRead() == ReadStatus.ReadPartially) {
             // Has unread children but their have not loaded yet.
-            threadControl.loadChildren(model, post, new LoadNextUnread());
+            threadControl.loadThread(model, post, new LoadNextUnread());
             // Change post selection when children are loaded
             return null;
         }
@@ -241,7 +233,7 @@ public abstract class AThreadView extends AItemView {
                             post = p;
                             break;
                         case NotLoaded:
-                            threadControl.loadChildren(model, p, new LoadNextUnread());
+                            threadControl.loadThread(model, p, new LoadNextUnread());
                         case Loading:
                             return null;
                     }
@@ -316,7 +308,7 @@ public abstract class AThreadView extends AItemView {
 
         switch (post.getLoadingState()) {
             case NotLoaded:
-                threadControl.loadChildren(model, post, new LoadPreviousUnread());
+                threadControl.loadThread(model, post, new LoadPreviousUnread());
             case Loading:
                 throw new RuntimeException("Restart search later");
         }
@@ -424,7 +416,7 @@ public abstract class AThreadView extends AItemView {
         protected void done() {
             if (data != null) {
                 final Post root = model.getRoot();
-                threadControl.loadChildren(model, root.getMessageById(data.getTopicId()), new IItemProcessor<Post>() {
+                threadControl.loadThread(model, root.getMessageById(data.getTopicId()), new IItemProcessor<Post>() {
                     @Override
                     public void processItem(Post item) {
                         selectItem(root.getMessageById(messageId));

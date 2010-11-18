@@ -19,8 +19,18 @@ public class ForumRoot extends Post {
         throw new UnsupportedOperationException("There is no thread root for forum");
     }
 
-    final void addThreads(Collection<Thread> threads) {
-        childrenPosts.addAll(threads);
+    final void addThread(Collection<Thread> threads) {
+        for (Thread newThread : threads) {
+            if (childrenPosts.contains(newThread)) {
+                int index = childrenPosts.indexOf(newThread);
+                Thread realThread = (Thread) childrenPosts.get(index);
+                if (!realThread.isFilled()) {
+                    childrenPosts.set(index, newThread);
+                }
+            } else {
+                childrenPosts.add(newThread);
+            }
+        }
         resort();
     }
 
@@ -60,31 +70,6 @@ public class ForumRoot extends Post {
                 -1,
                 false,
                 null);
-    }
-
-    /**
-     * @param data
-     *
-     * @return newly created item
-     */
-    public void insertPost(MessageData data) {
-        int topicId = data.getTopicId();
-
-        if (topicId == 0) {
-            // The message is a new topic
-            Thread newThread = new Thread(data, this);
-
-            insertChild(newThread);
-        } else {
-            for (Post p : childrenPosts) {
-                if (p.getMessageId() == topicId) {
-                    Thread thread = (Thread) p;
-
-                    thread.insertChild(data);
-                    return;
-                }
-            }
-        }
     }
 
     /**

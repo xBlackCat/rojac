@@ -47,7 +47,7 @@ public class TreeThreadView extends AThreadView {
                 Post item = (Post) path.getLastPathComponent();
 
                 if (item.getLoadingState() == LoadingState.NotLoaded) {
-                    threadControl.loadChildren(model, item, null);
+                    threadControl.loadThread(model, item, null);
                 }
 
                 if (item.getLoadingState() == LoadingState.Loaded) {

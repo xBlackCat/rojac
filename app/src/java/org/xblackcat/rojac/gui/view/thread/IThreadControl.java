@@ -22,13 +22,13 @@ interface IThreadControl<T extends ITreeItem<T>> {
     void markPostRead(AThreadModel<T> model, int postId, boolean read);
 
     /**
-     * Initializes a procedure to load children of the item.
+     * Initializes a procedure to load children of the thread. item parameter represents a thread root.
      *
      * @param model
      * @param item
      * @param postProcessor
      */
-    void loadChildren(AThreadModel<T> model, T item, IItemProcessor<T> postProcessor);
+    void loadThread(AThreadModel<T> model, T item, IItemProcessor<T> postProcessor);
 
     /**
      * Returns root item visibility state.
@@ -36,4 +36,11 @@ interface IThreadControl<T extends ITreeItem<T>> {
      * @return <code>true</code> if root item should be visible and <code>false</code> elsewise.
      */
     boolean isRootVisible();
+
+    /**
+     * Updates model according to Synchronization packet.
+     * @param model model to handle
+     * @param threadIds id list of updated threads.
+     */
+    void updateModel(AThreadModel<T> model, int[] threadIds);
 }
