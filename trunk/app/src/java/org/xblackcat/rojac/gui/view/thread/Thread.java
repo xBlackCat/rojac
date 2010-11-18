@@ -144,6 +144,10 @@ public class Thread extends Post {
         return filled ? super.isLeaf() : threadStatData.getReplyAmount() == 0;
     }
 
+    public boolean isFilled() {
+        return filled;
+    }
+
     @Override
     public Post getMessageById(int messageId) {
         return threadPosts.get(messageId);

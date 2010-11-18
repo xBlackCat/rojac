@@ -108,9 +108,22 @@ public abstract class AThreadView extends AItemView {
                     @Override
                     public void process(IThreadsUpdatePacket p) {
                         for (int threadId : p.getThreadIds()) {
-                            Thread t = model.getRoot().getMessageById(threadId).getThreadRoot();
+                            Post post = model.getRoot().getMessageById(threadId);
+                            if (post != null) {
+                                // Update thread children
+                                Thread t = post.getThreadRoot();
 
-                            threadControl.loadChildren(model, t, null);
+                                if (t.isFilled()) {
+                                    // Thread is already filled - update children
+                                    threadControl.loadChildren(model, t, null);
+                                } else {
+                                    // Thread is not loaded - update statistics.
+                                    // TODO: update statistics
+                                }
+                            } else {
+                                // Thread is a new. Add it to list
+                                // TODO: add the thread to list.
+                            }
                         }
                     }
                 },
@@ -164,19 +177,6 @@ public abstract class AThreadView extends AItemView {
     public boolean containsItem(int messageId) {
         return model.getRoot().getMessageById(messageId) != null;
     }
-
-//    private void updateMessages(ProcessPacket ids) {
-//        AffectedMessage[] messageIds = (AffectedMessage[]) ArrayUtils.addAll(
-//                ids.getAffectedMessages(forumId),
-//                ids.getAffectedMessages(AffectedMessage.DEFAULT_FORUM)
-//        );
-//
-//        Post currentPost = getSelectedItem();
-//
-//        threadControl.updateItem(model, messageIds);
-//
-//        selectItem(currentPost);
-//    }
 
     protected abstract void selectItem(Post post);
 
