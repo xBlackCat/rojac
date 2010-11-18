@@ -3,10 +3,8 @@ package org.xblackcat.rojac.service.janus.commands;
 import gnu.trove.TIntHashSet;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.ForumsUpdatePacket;
 import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.PostsUpdatePacket;
-import org.xblackcat.rojac.service.datahandler.ThreadsUpdatePacket;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
@@ -102,8 +100,6 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
     }
 
     protected void setNotifications(IResultHandler<IPacket> handler) {
-        handler.process(new ForumsUpdatePacket(updatedForums.toArray()));
-        handler.process(new ThreadsUpdatePacket(updatedTopics.toArray()));
-        handler.process(new PostsUpdatePacket(updatedMessages.toArray()));
+        handler.process(new SynchronizationCompletePacket(updatedForums.toArray(), updatedTopics.toArray(), updatedMessages.toArray()));
     }
 }
