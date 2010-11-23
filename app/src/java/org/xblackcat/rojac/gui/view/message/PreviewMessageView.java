@@ -14,7 +14,7 @@ public class PreviewMessageView extends MessageView {
     private final JLabel subjectLine = new JLabel();
 
     public PreviewMessageView() {
-        super(null);
+        super(null, null);
 
         controls.setVisible(false);
         subjectLine.setBorder(new EmptyBorder(5, 5, 0, 5));

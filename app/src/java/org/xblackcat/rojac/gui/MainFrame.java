@@ -18,6 +18,7 @@ import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.view.FavoritesView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewHelper;
+import org.xblackcat.rojac.gui.view.ViewIds;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -38,9 +39,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,6 +78,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
             return true;
         }
     };
+    private RootWindow rootWindow;
 
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
@@ -167,7 +167,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         viewMap.addView(FAVORITES_VIEW_ID, viewFavorites);
         viewMap.addView(THREADS_VIEW_ID, threadsView);
 
-        RootWindow rootWindow = new RootWindow(false, viewMap, new SplitWindow(true, 0.25f, new TabWindow(mainViews), threadsView));
+        rootWindow = new RootWindow(false, viewMap, new SplitWindow(true, 0.25f, new TabWindow(mainViews), threadsView));
         rootWindow.getWindowBar(Direction.LEFT).setEnabled(true);
         rootWindow.getWindowBar(Direction.LEFT).addTab(viewForums, 0);
         rootWindow.getWindowBar(Direction.LEFT).addTab(viewFavorites, 1);
@@ -250,7 +250,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         return view;
     }
 
-    private void addTabView(ViewId viewId, String viewName, final IItemView itemView) {
+    private void addTabView(String viewName, final IItemView itemView) {
         final View view = new View(
                 viewName,
                 null,
@@ -279,7 +279,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
             }
         });
 
-        openedViews.put(viewId, view);
+        openedViews.put(itemView.getId(), view);
 
         DockingWindow rootWindow = threadsRootWindow.getWindow();
         if (rootWindow != null) {
@@ -301,21 +301,22 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
     /**
      * Create a forum view layout depending on user settings.
      *
+     * @param id associated id for the forum view.
      * @return a new forum view layout.
      */
-    private IItemView createForumViewWindow() {
+    private IItemView createForumViewWindow(ViewId id) {
 //        return ViewHelper.makeTreeMessageView(this);
-        return ViewHelper.makeTreeTableMessageView(this);
+        return ViewHelper.makeTreeTableMessageView(id, this);
     }
 
-    private IItemView createMessageViewWindow() {
-        return ViewHelper.makeMessageView(this);
+    private IItemView createMessageViewWindow(ViewId id) {
+        return ViewHelper.makeMessageView(id, this);
     }
 
     /**
      * Method for delegating changes to all sub containers.
      *
-     * @param packet
+     * @param packet packet to be dispatched
      */
     @Override
     public void processPacket(IPacket packet) {
@@ -344,17 +345,48 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
             setExtendedState(ROJAC_MAIN_FRAME_STATE.get());
         }
 
-        // TODO: implement
+        File file = RojacUtils.getLayoutFile();
+        if (file.isFile()) {
+            if (log.isInfoEnabled()) {
+                log.info("Load previous layout");
+            }
+            try {
+                ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+                try {
+                    rootWindow.read(in);
+                    threadsRootWindow.read(in);
+                } finally {
+                    in.close();
+                }
+            } catch (IOException e) {
+                log.error("Can not load views layout.", e);
+            }
+        } else {
+            if (log.isInfoEnabled()) {
+                log.info("No previous layout is found - use default.");
+            }
+        }
     }
 
     @Override
-    public void updateSettings() {
-        forumsListView.updateSettings();
-        favoritesView.updateSettings();
+    public void storeSettings() {
+        forumsListView.storeSettings();
+        favoritesView.storeSettings();
 
         storeWindowState();
 
-        // TODO: implement
+        File file = RojacUtils.getLayoutFile();
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+            try {
+                rootWindow.write(out);
+                threadsRootWindow.write(out);
+            } finally {
+                out.close();
+            }
+        } catch (IOException e) {
+            log.error("Can not store views layout.", e);
+        }
     }
 
     public void storeWindowState() {
@@ -369,16 +401,16 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
 
     @Override
     public void openForumTab(int forumId) {
-        ViewId viewId = new ViewId(forumId, null);
+        ViewId viewId = ViewIds.getForumId(forumId);
         View c = openedViews.get(viewId);
         if (c != null) {
             c.makeVisible();
             return;
         }
 
-        IItemView forumView = createForumViewWindow();
+        IItemView forumView = createForumViewWindow(viewId);
 
-        addTabView(viewId, "#" + forumId, forumView);
+        addTabView("#" + forumId, forumView);
         forumView.loadItem(forumId);
 
     }
@@ -438,7 +470,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
     @Override
     public void openMessageTab(int messageId) {
         // Search thought existing data for the message first.
-        final ViewId id = new ViewId(null, messageId);
+        final ViewId id = ViewIds.getMessageId(messageId);
         if (openedViews.containsKey(id)) {
             openedViews.get(id).makeVisible();
             return;
@@ -448,8 +480,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
             @Override
             protected void done() {
                 if (data != null) {
-                    IItemView messageView = createMessageViewWindow();
-                    addTabView(id, "#" + messageId, messageView);
+                    IItemView messageView = createMessageViewWindow(id);
+                    addTabView("#" + messageId, messageView);
                     messageView.loadItem(messageId);
                 } else {
                     extraMessagesDialog(messageId);
@@ -458,14 +490,20 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         }.execute();
     }
 
-    private static class ThreadViewSerializer implements ViewSerializer {
+    private class ThreadViewSerializer implements ViewSerializer {
         @Override
         public void writeView(View view, ObjectOutputStream out) throws IOException {
+            ViewHelper.storeView(out, view);
         }
 
         @Override
         public View readView(ObjectInputStream in) throws IOException {
-            return null;
+            try {
+                return ViewHelper.initializeView(in, MainFrame.this);
+            } catch (ClassNotFoundException e) {
+                log.error("Can not obtain state object.", e);
+                throw new IOException("Can not obtain state object.", e);
+            }
         }
     }
 
@@ -518,7 +556,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
             }
 
             int forumId = message.getForumId();
-            ViewId forumViewId = new ViewId(forumId, null);
+            ViewId forumViewId = ViewIds.getForumId(forumId);
 
             openForumTab(forumId);
             View c = openedViews.get(forumViewId);

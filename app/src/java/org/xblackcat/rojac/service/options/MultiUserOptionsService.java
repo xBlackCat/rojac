@@ -1,11 +1,16 @@
 package org.xblackcat.rojac.service.options;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.util.RojacUtils;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,20 +30,12 @@ public final class MultiUserOptionsService extends AnOptionsService {
             Property.ROJAC_DEBUG_MODE
     ));
 
-    private final String userConfigFileName;
-
     public MultiUserOptionsService() throws OptionsServiceException {
-        String userHome = SystemUtils.USER_HOME;
-
-        if (log.isDebugEnabled()) {
-            log.debug("User home dir is " + userHome);
-        }
-        userConfigFileName = userHome + File.separatorChar + ".rojac" + File.separatorChar + "config.properties";
-        File userConfigFile = new File(userConfigFileName);
+        File userConfigFile = RojacUtils.getSettingsFile();
 
         if (userConfigFile.exists()) {
             if (log.isDebugEnabled()) {
-                log.debug("Use user config file " + userConfigFileName);
+                log.debug("Use user config file " + userConfigFile.getPath());
             }
             try {
                 Properties p = new Properties();
@@ -107,8 +104,6 @@ public final class MultiUserOptionsService extends AnOptionsService {
     public boolean storeSettings() {
         Properties userSetting = new Properties();
 
-        File userConfigFile = new File(userConfigFileName);
-
         for (Property<?> prop : Property.getAllProperties()) {
             String value = getProperty(prop.getName());
             if (!DO_NOT_STORE.contains(prop) && StringUtils.isNotBlank(value)) {
@@ -117,7 +112,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
         }
 
         try {
-            BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(userConfigFile));
+            BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(RojacUtils.getSettingsFile()));
             userSetting.store(os, "Rojac user settings file.");
             os.close();
             return true;

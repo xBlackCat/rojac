@@ -13,5 +13,5 @@ public interface IConfigurable {
     /**
      * Updates settings in IOptionsService (for future saving).
      */
-    void updateSettings();
+    void storeSettings();
 }

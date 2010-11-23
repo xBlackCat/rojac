@@ -51,4 +51,6 @@ public interface IItemView extends IView {
      * @return title of a tab
      */
     String getTabTitle();
+
+    int getVisibleId();
 }

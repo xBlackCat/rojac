@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 
 import javax.swing.*;
@@ -20,8 +21,8 @@ import java.awt.event.MouseEvent;
 public class TreeThreadView extends AThreadView {
     protected final JTree threads = new JTree();
 
-    public TreeThreadView(IRootPane mainFrame, IThreadControl<Post> threadControl) {
-        super(mainFrame, threadControl);
+    public TreeThreadView(ViewId id, IRootPane mainFrame, IThreadControl<Post> threadControl) {
+        super(id, mainFrame, threadControl);
 
         initializeLayout();
     }

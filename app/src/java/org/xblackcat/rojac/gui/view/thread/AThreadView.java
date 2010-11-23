@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.view.MessageChecker;
@@ -43,8 +44,8 @@ public abstract class AThreadView extends AItemView {
     protected Forum forum;
     protected int forumId;
 
-    protected AThreadView(IRootPane mainFrame, IThreadControl<Post> threadControl) {
-        super(mainFrame);
+    protected AThreadView(ViewId id, IRootPane mainFrame, IThreadControl<Post> threadControl) {
+        super(id, mainFrame);
         this.threadControl = threadControl;
     }
 
@@ -76,6 +77,12 @@ public abstract class AThreadView extends AItemView {
         threadControl.fillModelByItemId(model, forumId);
 
         new ForumInfoLoader(forumId).execute();
+    }
+
+    @Override
+    public int getVisibleId() {
+        Post p = getSelectedItem();
+        return p == null ? 0 : p.getMessageId();
     }
 
     @Override

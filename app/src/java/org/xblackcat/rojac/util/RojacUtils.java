@@ -2,6 +2,7 @@ package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
@@ -15,6 +16,7 @@ import org.xblackcat.utils.ResourceUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -295,6 +297,32 @@ public final class RojacUtils {
     public static void showExceptionDialog(Thread t, Throwable e) {
 
         GLOBAL_EXCEPTION_HANDLER.uncaughtException(t, e);
+    }
+
+    public static File getRojacHome() {
+        String userHome = SystemUtils.USER_HOME;
+        if (userHome == null) {
+            log.error("Can not find user home directory");
+            return null;
+        }
+
+        File rojacHome = new File(userHome, ".rojac");
+        // Create home directory if it not exists yet.
+        if (rojacHome.isDirectory() || rojacHome.mkdirs()) {
+            return rojacHome;
+        }
+
+        log.warn("Can not initialize Rojac home directory");
+        return null;
+    }
+
+    public static File getLayoutFile() {
+        return new File(getRojacHome(), "layout.settings");
+    }
+
+
+    public static File getSettingsFile() {
+        return new File(getRojacHome(), "config.properties");
     }
 
     private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {

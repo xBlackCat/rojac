@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.message;
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.view.AView;
 
 /**
@@ -10,8 +11,8 @@ import org.xblackcat.rojac.gui.view.AView;
  */
 
 public abstract class AItemView extends AView implements IItemView {
-    protected AItemView(IRootPane mainFrame) {
-        super(mainFrame);
+    protected AItemView(ViewId id, IRootPane mainFrame) {
+        super(id, mainFrame);
     }
 
     public void addActionListener(IActionListener l) {

@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 
 import javax.swing.*;
@@ -24,8 +25,8 @@ import java.awt.event.MouseEvent;
 public class TreeTableThreadView extends AThreadView {
     protected final JXTreeTable threads = new JXTreeTable();
 
-    public TreeTableThreadView(IRootPane mainFrame, IThreadControl<Post> threadControl) {
-        super(mainFrame, threadControl);
+    public TreeTableThreadView(ViewId id, IRootPane mainFrame, IThreadControl<Post> threadControl) {
+        super(id, mainFrame, threadControl);
 
         initializeLayout();
     }

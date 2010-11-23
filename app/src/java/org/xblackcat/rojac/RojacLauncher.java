@@ -9,7 +9,12 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
-import org.xblackcat.rojac.util.*;
+import org.xblackcat.rojac.util.DialogHelper;
+import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.SynchronizationUtils;
+import org.xblackcat.rojac.util.UIUtils;
+import org.xblackcat.rojac.util.VersionChecker;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -134,7 +139,7 @@ public abstract class RojacLauncher {
                         }
                     }
 
-                    mainFrame.updateSettings();
+                    mainFrame.storeSettings();
 
                     storeSettings();
 

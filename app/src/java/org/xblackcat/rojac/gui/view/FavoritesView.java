@@ -12,7 +12,7 @@ import javax.swing.*;
 
 public class FavoritesView extends AView {
     public FavoritesView(IRootPane rootPane) {
-        super(rootPane);
+        super(null, rootPane);
 
         add(new JScrollPane(new JTable(10, 2)));
     }
