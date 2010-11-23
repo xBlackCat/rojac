@@ -27,7 +27,8 @@ public class ThreadDoubleView extends AItemView {
      * @param mainFrame
      */
     public ThreadDoubleView(IItemView mv, IItemView sv, boolean verticalSplit, IRootPane mainFrame) {
-        super(mainFrame);
+        // Copy master view id
+        super(mv.getId(), mainFrame);
         this.masterView = mv;
         this.slaveView = sv;
 
@@ -88,6 +89,11 @@ public class ThreadDoubleView extends AItemView {
     public void makeVisible(int messageId) {
         masterView.makeVisible(messageId);
         slaveView.makeVisible(messageId);
+    }
+
+    @Override
+    public int getVisibleId() {
+        return slaveView.getVisibleId();
     }
 
     @Override

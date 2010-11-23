@@ -17,4 +17,6 @@ public interface IView extends IConfigurable, IDataHandler {
      * @return a component represented the view.
      */
     JComponent getComponent();
+
+    ViewId getId();
 }

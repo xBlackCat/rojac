@@ -52,7 +52,7 @@ public class ForumsListView extends AView {
     private final JToggleButton unread_only;
 
     public ForumsListView(IRootPane rootPane) {
-        super(rootPane);
+        super(null, rootPane);
         final JTable forums = new JTable(forumsModel);
         forums.setTableHeader(null);
         add(new JScrollPane(forums));

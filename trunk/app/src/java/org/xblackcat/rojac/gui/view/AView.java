@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.IView;
+import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
@@ -18,11 +19,13 @@ import java.awt.*;
 public abstract class AView extends JPanel implements IView {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
     private final PacketDispatcher packetDispatcher;
+    private final ViewId id;
 
     protected final IRootPane mainFrame;
 
-    protected AView(IRootPane rootPane) {
+    protected AView(ViewId id, IRootPane rootPane) {
         super(new BorderLayout());
+        this.id = id;
         this.mainFrame = rootPane;
         packetDispatcher = new PacketDispatcher(getProcessors());
     }
@@ -32,11 +35,16 @@ public abstract class AView extends JPanel implements IView {
     public void applySettings() {
     }
 
-    public void updateSettings() {
+    public void storeSettings() {
     }
 
     public final JComponent getComponent() {
         return this;
+    }
+
+    @Override
+    public ViewId getId() {
+        return id;
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.gui.IInternationazable;
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
@@ -66,8 +67,8 @@ public class MessageView extends AItemView implements IInternationazable {
     protected final JComponent titleBar = createTitleBar();
 
 
-    public MessageView(IRootPane mainFrame) {
-        super(mainFrame);
+    public MessageView(ViewId id, IRootPane mainFrame) {
+        super(id, mainFrame);
 
         initialize();
 
@@ -228,6 +229,11 @@ public class MessageView extends AItemView implements IInternationazable {
         if (messageId != this.messageId) {
             loadItem(messageId);
         }
+    }
+
+    @Override
+    public int getVisibleId() {
+        return messageId;
     }
 
     @Override
