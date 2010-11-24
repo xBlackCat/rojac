@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.service.executor;
 
+import java.util.List;
+
 /**
  * @author xBlackCat
  */
@@ -32,4 +34,8 @@ public interface IExecutor {
      *         set.
      */
     boolean killTimer(String id);
+
+    void shutdown();
+
+    List<Runnable> shutdownNow();
 }

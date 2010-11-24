@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.service.executor;
 
-import ch.lambdaj.function.aggregate.Aggregator;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -100,21 +99,18 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
 
     @Override
     public void shutdown() {
-        forEach(pools.values()).shutdown();
+        for (ExecutorService p : pools.values()) {
+            p.shutdownNow();
+        }
     }
 
     @Override
     public List<Runnable> shutdownNow() {
-        return aggregate(pools.values(), new Aggregator<List<Runnable>>() {
-            @Override
-            public List<Runnable> aggregate(Iterator<? extends List<Runnable>> iterator) {
-                List<Runnable> list = new ArrayList<Runnable>();
-                while (iterator.hasNext()) {
-                    list.addAll(iterator.next());
-                }
-                return list;
-            }
-        }, on(ExecutorService.class).shutdownNow());
+        List<Runnable> list = new ArrayList<Runnable>();
+        for (ExecutorService p : pools.values()) {
+            list.addAll(p.shutdownNow());
+        }
+        return list;
     }
 
     @Override

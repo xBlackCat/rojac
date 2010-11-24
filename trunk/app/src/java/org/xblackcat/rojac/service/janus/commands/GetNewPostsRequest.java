@@ -10,9 +10,6 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.data.NewData;
-import ru.rsdn.Janus.JanusMessageInfo;
-import ru.rsdn.Janus.JanusModerateInfo;
-import ru.rsdn.Janus.JanusRatingInfo;
 import ru.rsdn.Janus.RequestForumInfo;
 
 import java.util.Arrays;
@@ -60,7 +57,8 @@ class GetNewPostsRequest extends ALoadPostsRequest {
         Version moderatesVersion = DataHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
         Version ratingsVersion = DataHelper.getVersion(VersionType.RATING_ROW_VERSION);
 
-        JanusMessageInfo[] messages;
+        int ownUserId = 0;
+        int portionSize = 0;
         do {
             if (ratingsVersion.isEmpty()) {
                 ratingsVersion = moderatesVersion;
@@ -75,15 +73,11 @@ class GetNewPostsRequest extends ALoadPostsRequest {
                     limit
             );
 
-            if (data.getOwnUserId() != 0) {
-                RSDN_USER_ID.set(data.getOwnUserId());
+            if (ownUserId == 0) {
+                ownUserId = data.getOwnUserId();
             }
 
-            messages = data.getMessages();
-            JanusModerateInfo[] moderates = data.getModerates();
-            JanusRatingInfo[] ratings = data.getRatings();
-
-            tracker.addLodMessage(Messages.Synchronize_Message_GotPosts, messages.length, moderates.length, ratings.length);
+            portionSize = data.getMessages().length;
 
             storeNewPosts(tracker, data);
 
@@ -95,9 +89,14 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             DataHelper.setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
             DataHelper.setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
 
-        } while (messages.length == limit);
+        } while (portionSize == limit);
 
-        tracker.addLodMessage(Messages.Synchronize_Message_GotUserId, RSDN_USER_ID.get());
+        if (ownUserId > 0) {
+            RSDN_USER_ID.set(ownUserId);
+            tracker.addLodMessage(Messages.Synchronize_Message_GotUserId, ownUserId);
+        }
+
+        postProcessing(tracker);
 
         setNotifications(handler);
     }

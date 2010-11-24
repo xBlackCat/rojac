@@ -25,20 +25,12 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.DialogHelper;
-import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.SynchronizationUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -302,6 +294,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
      * Create a forum view layout depending on user settings.
      *
      * @param id associated id for the forum view.
+     *
      * @return a new forum view layout.
      */
     private IItemView createForumViewWindow(ViewId id) {
@@ -499,7 +492,10 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         @Override
         public View readView(ObjectInputStream in) throws IOException {
             try {
-                return ViewHelper.initializeView(in, MainFrame.this);
+                View view = ViewHelper.initializeView(in, MainFrame.this);
+                ViewId id = ((IView) view.getComponent()).getId();
+                openedViews.put(id, view);
+                return view;
             } catch (ClassNotFoundException e) {
                 log.error("Can not obtain state object.", e);
                 throw new IOException("Can not obtain state object.", e);

@@ -15,9 +15,10 @@ import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.service.progress.ProgressController;
 import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
-import org.xblackcat.rojac.service.storage.database.connection.PooledConnectionFactoryl;
+import org.xblackcat.rojac.service.storage.database.connection.PooledConnectionFactory;
 import org.xblackcat.utils.ResourceUtils;
 import sun.awt.AppContext;
 
@@ -42,6 +43,16 @@ public final class ServiceFactory {
 
     public static void initialize() throws RojacException {
         INSTANCE = new ServiceFactory();
+    }
+
+
+    public static void shutdown() {
+        INSTANCE.getExecutor().shutdownNow();
+        try {
+            INSTANCE.getStorage().shutdown();
+        } catch (StorageException e) {
+            log.error("Failed to shutdown storage.", e);
+        }
     }
 
     public static void initializeTest(IExecutor executor, IStorage storage, IOptionsService optionsService, IMessageParser messageParser, IProgressController progressController, IDataDispatcher dataDispatcher) {
@@ -154,7 +165,7 @@ public final class ServiceFactory {
 
         String configurationName = DBCONFIG_PACKAGE + mainProperties.getProperty("rojac.database.engine");
 
-        IConnectionFactory connectionFactory = new PooledConnectionFactoryl(configurationName);
+        IConnectionFactory connectionFactory = new PooledConnectionFactory(configurationName);
         DBStorage storage = new DBStorage(configurationName, connectionFactory);
         storage.initialize();
         return storage;
