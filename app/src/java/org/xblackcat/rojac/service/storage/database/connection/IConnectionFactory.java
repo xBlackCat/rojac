@@ -11,4 +11,6 @@ public interface IConnectionFactory {
     Connection getWriteConnection() throws SQLException;
 
     Connection getReadConnection() throws SQLException;
+
+    void shutdown();
 }

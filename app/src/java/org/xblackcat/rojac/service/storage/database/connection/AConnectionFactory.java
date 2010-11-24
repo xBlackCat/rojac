@@ -1,11 +1,14 @@
 package org.xblackcat.rojac.service.storage.database.connection;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -13,18 +16,21 @@ import java.util.Properties;
  */
 
 public abstract class AConnectionFactory implements IConnectionFactory {
-    private static final Log log = LogFactory.getLog(AConnectionFactory.class);
+    protected final Log log;
 
     private static final String DB_STORAGE_JDBC_CLASS = "db.jdbc.driver.class";
     private static final String DB_STORAGE_URL = "db.connection.url.pattern";
+    private static final String DB_SHUTDOWN_URL = "db.shutdown.url.pattern";
     private static final String DB_STORAGE_USER = "db.access.user";
     private static final String DB_STORAGE_PASSWORD = "db.access.password";
 
     final String url;
+    final String shutdownUrl;
     final String userName;
     final String password;
 
     AConnectionFactory(String configurationName) throws StorageInitializationException {
+        log = LogFactory.getLog(getClass());
         if (log.isTraceEnabled()) {
             log.trace("Loading database connection properties.");
         }
@@ -56,6 +62,8 @@ public abstract class AConnectionFactory implements IConnectionFactory {
             throw new StorageInitializationException("The " + DB_STORAGE_URL + " property is not defined.");
         }
 
+        String shutdownUrl = databaseProperties.getProperty(DB_SHUTDOWN_URL);
+
         userName = databaseProperties.getProperty(DB_STORAGE_USER);
         if (userName == null) {
             log.info("The " + DB_STORAGE_USER + " property is not defined. Unrestricted access to database.");
@@ -76,6 +84,26 @@ public abstract class AConnectionFactory implements IConnectionFactory {
             log.trace("Url after replace: " + url);
         }
 
+        if (StringUtils.isNotBlank(shutdownUrl)) {
+            this.shutdownUrl = ResourceUtils.putSystemProperties(shutdownUrl);
+            if (log.isTraceEnabled()) {
+                log.trace("Shutdown url: " + this.shutdownUrl);
+            }
+        } else {
+            this.shutdownUrl = null;
+        }
+
         this.url = url;
+    }
+
+    @Override
+    public void shutdown() {
+        if (shutdownUrl != null) {
+            try {
+                DriverManager.getConnection(shutdownUrl);
+            } catch (SQLException e) {
+                log.error("Can not execute shutdown sequence in DB.", e);
+            }
+        }
     }
 }

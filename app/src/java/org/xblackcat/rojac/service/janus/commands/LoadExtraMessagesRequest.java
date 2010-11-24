@@ -8,11 +8,10 @@ import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
 import org.xblackcat.rojac.service.storage.StorageException;
-import ru.rsdn.Janus.JanusMessageInfo;
-import ru.rsdn.Janus.JanusModerateInfo;
-import ru.rsdn.Janus.JanusRatingInfo;
 
 import java.util.Arrays;
+
+import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
 
 /**
  * Command for loading extra and broken messages.
@@ -21,21 +20,25 @@ import java.util.Arrays;
  */
 
 class LoadExtraMessagesRequest extends ALoadPostsRequest {
-    public void process(IResultHandler<IPacket> handler, IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
         int[] messageIds = miscAH.getExtraMessages();
 
         if (!ArrayUtils.isEmpty(messageIds)) {
-            trac.addLodMessage(Messages.Synchronize_Command_Name_ExtraPosts, Arrays.toString(messageIds));
-            loadTopics(messageIds, janusService, trac);
+            tracker.addLodMessage(Messages.Synchronize_Command_Name_ExtraPosts, Arrays.toString(messageIds));
+            loadTopics(messageIds, janusService, tracker);
 
             miscAH.clearExtraMessages();
         }
 
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
         if (!ArrayUtils.isEmpty(brokenTopicIds)) {
-            trac.addLodMessage(Messages.Synchronize_Command_Name_BrokenTopics, Arrays.toString(brokenTopicIds));
-            loadTopics(brokenTopicIds, janusService, trac);
+            tracker.addLodMessage(Messages.Synchronize_Command_Name_BrokenTopics, Arrays.toString(brokenTopicIds));
+            loadTopics(brokenTopicIds, janusService, tracker);
         }
+
+        tracker.addLodMessage(Messages.Synchronize_Message_GotUserId, RSDN_USER_ID.get());
+
+        postProcessing(tracker);
 
         setNotifications(handler);
     }
@@ -47,11 +50,6 @@ class LoadExtraMessagesRequest extends ALoadPostsRequest {
         } catch (JanusServiceException e) {
             throw new RsdnProcessorException("Can not load extra messages.", e);
         }
-        JanusMessageInfo[] messages = extra.getMessages();
-        JanusModerateInfo[] moderates = extra.getModerates();
-        JanusRatingInfo[] ratings = extra.getRatings();
-
-        tracker.addLodMessage(Messages.Synchronize_Message_GotPosts, messages.length, moderates.length, ratings.length);
 
         storeNewPosts(tracker, extra);
     }

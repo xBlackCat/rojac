@@ -108,6 +108,11 @@ public final class QueryHelper implements IQueryHelper {
     }
 
     @Override
+    public void shutdown() {
+        connectionFactory.shutdown();
+    }
+
+    @Override
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         RojacUtils.checkThread(false, DBStorage.class);
         Collection<T> col = execute(c, sql, parameters);

@@ -288,6 +288,10 @@ public class MessageView extends AItemView implements IInternationazable {
             String messageBody = "";
             try {
                 MessageData messageData = storage.getMessageAH().getMessageData(messageId);
+                if (messageData == null) {
+                    // Somehow message is not found - do not load it
+                    return null;
+                }
                 messageBody = storage.getMessageAH().getMessageBodyById(messageId);
 
                 String parsedText = rsdnToHtml.convert(messageBody);

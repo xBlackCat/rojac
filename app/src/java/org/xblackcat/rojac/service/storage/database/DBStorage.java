@@ -126,6 +126,11 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     @Override
+    public void shutdown() throws StorageException {
+        helper.shutdown();
+    }
+
+    @Override
     public IForumAH getForumAH() {
         return forumAH;
     }

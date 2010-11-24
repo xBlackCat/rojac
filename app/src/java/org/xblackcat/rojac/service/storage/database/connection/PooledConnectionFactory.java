@@ -16,12 +16,12 @@ import java.sql.SQLException;
  * @author xBlackCat
  */
 
-public class PooledConnectionFactoryl extends AConnectionFactory {
-    public PooledConnectionFactoryl(String configurationName) throws StorageInitializationException {
-        super(configurationName);
+public class PooledConnectionFactory extends AConnectionFactory {
+    private final ObjectPool writeConnectionPool = new GenericObjectPool(null, 1);
+    private final ObjectPool readConnectionPool = new GenericObjectPool(null, 10);
 
-        ObjectPool writeConnectionPool = new GenericObjectPool(null, 1);
-        ObjectPool readConnectionPool = new GenericObjectPool(null, 10);
+    public PooledConnectionFactory(String configurationName) throws StorageInitializationException {
+        super(configurationName);
 
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(url, userName, password);
 
@@ -41,18 +41,20 @@ public class PooledConnectionFactoryl extends AConnectionFactory {
                 false,
                 true);
 
-        PoolingDriver driver;
         try {
             Class.forName("org.apache.commons.dbcp.PoolingDriver");
-            driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp:");
         } catch (ClassNotFoundException e) {
             throw new StorageInitializationException("Can not initialize pooling driver", e);
+        }
+
+        try {
+            PoolingDriver driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp:");
+
+            driver.registerPool("rojacdb_write", writeConnectionPool);
+            driver.registerPool("rojacdb_read", readConnectionPool);
         } catch (SQLException e) {
             throw new StorageInitializationException("Can not obtain pooling driver", e);
         }
-
-        driver.registerPool("rojacdb_write", writeConnectionPool);
-        driver.registerPool("rojacdb_read", readConnectionPool);
     }
 
     public Connection getWriteConnection() throws SQLException {
@@ -62,5 +64,17 @@ public class PooledConnectionFactoryl extends AConnectionFactory {
     @Override
     public Connection getReadConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:apache:commons:dbcp:rojacdb_read");
+    }
+
+    @Override
+    public void shutdown() {
+        super.shutdown();
+        try {
+            PoolingDriver driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp:");
+            driver.closePool("rojacdb_write");
+            driver.closePool("rojacdb_read");
+        } catch (SQLException e) {
+            log.error("Can not close pools.", e);
+        }
     }
 }

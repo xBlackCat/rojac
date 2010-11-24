@@ -117,7 +117,9 @@ public final class MessageUtils {
 
         MarkStat[] marks = rAH.getMarkStatByMessageId(id);
         RatingCache ratingCache = new RatingCache(marks);
-        mAH.updateMessageRatingCache(id, ratingCache.asString());
+        if (!ratingCache.isEmpty()) {
+            mAH.updateMessageRatingCache(id, ratingCache.asString());
+        }
         return ratingCache;
     }
 
@@ -158,19 +160,19 @@ public final class MessageUtils {
 
         int width = 0;
         if (rate > 0) {
-            width += 70;
+            width += 90;
         }
         if (ratings.getRating(Mark.Agree) > 0) {
-            width += 45;
+            width += 70;
         }
         if (ratings.getRating(Mark.Disagree) > 0) {
-            width += 45;
+            width += 70;
         }
         if (ratings.getRating(Mark.Smile) > 0) {
-            width += 40;
+            width += 70;
         }
         if (ratings.getRating(Mark.PlusOne) > 0) {
-            width += 45;
+            width += 70;
         }
 
         if (width == 0) {

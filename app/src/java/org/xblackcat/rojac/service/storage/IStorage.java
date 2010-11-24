@@ -29,4 +29,6 @@ public interface IStorage {
     IVersionAH getVersionAH();
 
     IMiscAH getMiscAH();
+
+    void shutdown() throws StorageException;
 }

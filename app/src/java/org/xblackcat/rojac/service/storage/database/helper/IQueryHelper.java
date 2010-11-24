@@ -18,4 +18,6 @@ public interface IQueryHelper {
     int update(String sql, Object... parameters) throws StorageException;
 
     <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, String sql, K... keys) throws StorageException;
+
+    void shutdown();
 }

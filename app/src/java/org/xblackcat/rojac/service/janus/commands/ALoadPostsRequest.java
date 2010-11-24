@@ -28,6 +28,7 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
     private final TIntHashSet updatedTopics = new TIntHashSet();
     private final TIntHashSet updatedForums = new TIntHashSet();
     private final TIntHashSet updatedMessages = new TIntHashSet();
+    private final TIntHashSet ratingCacheUpdate = new TIntHashSet();
 
     public ALoadPostsRequest() {
         storage = ServiceFactory.getInstance().getStorage();
@@ -39,9 +40,13 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
     }
 
     protected void storeNewPosts(IProgressTracker tracker, TopicMessages newPosts) throws StorageException {
-        tracker.addLodMessage(Messages.Synchronize_Message_UpdateDatabase);
+        JanusMessageInfo[] messages = newPosts.getMessages();
+        JanusModerateInfo[] moderates = newPosts.getModerates();
+        JanusRatingInfo[] ratings = newPosts.getRatings();
 
-        TIntHashSet cacheUpdate = new TIntHashSet();
+        tracker.addLodMessage(Messages.Synchronize_Message_GotPosts, messages.length, moderates.length, ratings.length);
+
+        tracker.addLodMessage(Messages.Synchronize_Message_UpdateDatabase);
 
         tracker.addLodMessage(Messages.Synchronize_Message_StoreMessages);
         int count = 0;
@@ -60,8 +65,6 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
             } else {
                 mAH.storeMessage(mes, read);
             }
-
-            cacheUpdate.add(mId);
 
             if (mes.getTopicId() == 0) {
                 updatedTopics.add(mes.getMessageId());
@@ -87,11 +90,13 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
             tracker.updateProgress(count++, newPosts.getRatings().length);
             rAH.storeRating(r);
             updatedMessages.add(r.getMessageId());
-            cacheUpdate.add(r.getMessageId());
+            ratingCacheUpdate.add(r.getMessageId());
         }
+    }
 
-        count = 0;
-        int[] forUpdate = cacheUpdate.toArray();
+    protected void postProcessing(IProgressTracker tracker) throws StorageException {
+        int count = 0;
+        int[] forUpdate = ratingCacheUpdate.toArray();
         tracker.addLodMessage(Messages.Synchronize_Message_UpdateCaches);
         for (int id : forUpdate) {
             tracker.updateProgress(count++, forUpdate.length);
