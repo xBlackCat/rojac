@@ -4,8 +4,15 @@ import gnu.trove.TIntHashSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
+import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacWorker;
+
+import java.util.List;
 
 /**
  * Control class of all threads of the specified forum.
@@ -19,11 +26,12 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     @Override
-    public void fillModelByItemId(final AThreadModel<Post> model, int forumId) {
+    public void fillModelByItemId(final AThreadModel<Post> model, AThreadView id, int forumId) {
         final ForumRoot rootItem = new ForumRoot(forumId);
 
         model.setRoot(rootItem);
 
+        new ForumInfoLoader(model, forumId).execute();
         new ThreadsLoader(forumId, rootItem, model).execute();
     }
 
@@ -102,4 +110,60 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
         // Reload forum threads list.
         new ThreadsLoader(model.getRoot().getForumId(), (ForumRoot) model.getRoot(), model).execute();
     }
+
+    @Override
+    public String getTitle(AThreadModel<Post> model) {
+        // Root is ForumRoot object
+        Post root = model.getRoot();
+        if (root.getMessageData() != null && root.getMessageData().getSubject() != null) {
+            return root.getMessageData().getSubject();
+        } else {
+            return "#" + root.getForumId();
+        }
+    }
+
+    private static class ForumInfoLoader extends RojacWorker<Void, Forum> {
+        private final int forumId;
+        private AThreadModel<Post> model;
+
+        public ForumInfoLoader(AThreadModel<Post> model, int forumId) {
+            this.forumId = forumId;
+            this.model = model;
+        }
+
+        @Override
+        protected Void perform() throws Exception {
+            IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
+
+            try {
+                publish(fah.getForumById(forumId));
+            } catch (StorageException e) {
+                log.error("Can not load forum information for forum id = " + forumId, e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<Forum> chunks) {
+            for (Forum f : chunks) {
+                MessageData fd = new MessageData(
+                        -1,
+                        -1,
+                        -1,
+                        forumId,
+                        -1,
+                        f.getForumName(),
+                        f.getShortForumName(),
+                        -1,
+                        -1,
+                        true,
+                        null
+                );
+                model.getRoot().setMessageData(fd);
+                model.nodeChanged(model.getRoot());
+            }
+        }
+    }
+
 }

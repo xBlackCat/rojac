@@ -25,12 +25,20 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.*;
+import org.xblackcat.rojac.util.DialogHelper;
+import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.SynchronizationUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -291,22 +299,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
     }
 
     /**
-     * Create a forum view layout depending on user settings.
-     *
-     * @param id associated id for the forum view.
-     *
-     * @return a new forum view layout.
-     */
-    private IItemView createForumViewWindow(ViewId id) {
-//        return ViewHelper.makeTreeMessageView(this);
-        return ViewHelper.makeTreeTableMessageView(id, this);
-    }
-
-    private IItemView createMessageViewWindow(ViewId id) {
-        return ViewHelper.makeMessageView(id, this);
-    }
-
-    /**
      * Method for delegating changes to all sub containers.
      *
      * @param packet packet to be dispatched
@@ -401,7 +393,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
             return;
         }
 
-        IItemView forumView = createForumViewWindow(viewId);
+        //        return ViewHelper.makeTreeMessageView(this);
+        IItemView forumView = ViewHelper.constructForumView(viewId, this);
 
         addTabView("#" + forumId, forumView);
         forumView.loadItem(forumId);
@@ -473,7 +466,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
             @Override
             protected void done() {
                 if (data != null) {
-                    IItemView messageView = createMessageViewWindow(id);
+                    IItemView messageView = ViewHelper.makeMessageView(id, MainFrame.this);
                     addTabView("#" + messageId, messageView);
                     messageView.loadItem(messageId);
                 } else {

@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.gui.view;
 
 import net.infonode.docking.View;
-import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
@@ -9,10 +8,7 @@ import org.xblackcat.rojac.gui.IView;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
-import org.xblackcat.rojac.gui.view.thread.SortedForumThreadsControl;
-import org.xblackcat.rojac.gui.view.thread.ThreadDoubleView;
-import org.xblackcat.rojac.gui.view.thread.TreeTableThreadView;
-import org.xblackcat.rojac.gui.view.thread.TreeThreadView;
+import org.xblackcat.rojac.gui.view.thread.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,20 +22,15 @@ import java.io.Serializable;
  */
 
 public final class ViewHelper {
-    /**
-     * Creates a tree-based forum view: list of all the available threads of the forum.
-     *
-     * @param id        associated id
-     * @param mainFrame root component.
-     *
-     * @return a new instance of view
-     */
-    public static IItemView makeForumThreadsView(ViewId id, IRootPane mainFrame) {
-        return new TreeThreadView(id, mainFrame, new SortedForumThreadsControl());
-    }
 
-    public static IItemView makeForumTTThreadsView(ViewId id, IRootPane mainFrame) {
-        return new TreeTableThreadView(id, mainFrame, new SortedForumThreadsControl());
+    public static IItemView constructForumThreadsView(ViewId id, IRootPane mainFrame, boolean singleThread) {
+        IThreadControl<Post> threadControl = singleThread ? new SingleThreadControl() : new SortedForumThreadsControl();
+        boolean useTreeTable = true;
+        if (useTreeTable) {
+            return new TreeTableThreadView(id, mainFrame, threadControl);
+        } else {
+            return new TreeThreadView(id, mainFrame, threadControl);
+        }
     }
 
     /**
@@ -55,19 +46,19 @@ public final class ViewHelper {
     }
 
     /**
-     * Creates a compound view. The view is split in to parts: left part contains a tree-based forum view and the right
-     * part contains a message view.
+     * Creates a compound view. The view is split in to parts: top part contains a tree-table-based forum view and the
+     * bottom part contains a message view.
      *
      * @param id        associated id
      * @param mainFrame root component.
      *
      * @return a new instance of view
      */
-    public static IItemView makeTreeMessageView(ViewId id, IRootPane mainFrame) {
-        IItemView threadView = ViewHelper.makeForumThreadsView(id, mainFrame);
+    public static IItemView constructThreadView(ViewId id, IRootPane mainFrame) {
+        IItemView threadView = ViewHelper.constructForumThreadsView(id, mainFrame, true);
         IItemView messageView = ViewHelper.makeMessageView(null, mainFrame);
 
-        return new ThreadDoubleView(threadView, messageView, false, mainFrame);
+        return new ThreadDoubleView(threadView, messageView, true, mainFrame);
     }
 
     /**
@@ -79,8 +70,8 @@ public final class ViewHelper {
      *
      * @return a new instance of view
      */
-    public static IItemView makeTreeTableMessageView(ViewId id, IRootPane mainFrame) {
-        IItemView threadView = ViewHelper.makeForumTTThreadsView(id, mainFrame);
+    public static IItemView constructForumView(ViewId id, IRootPane mainFrame) {
+        IItemView threadView = ViewHelper.constructForumThreadsView(id, mainFrame, false);
         IItemView messageView = ViewHelper.makeMessageView(null, mainFrame);
 
         return new ThreadDoubleView(threadView, messageView, true, mainFrame);
@@ -99,10 +90,10 @@ public final class ViewHelper {
         Object stateObject;
         switch (type) {
             case Forum:
-                stateObject = new ForumState(((IItemView) v).getVisibleId());
+                stateObject = new ThreadState(((IItemView) v).getVisibleId());
                 break;
             case SingleThread:
-                stateObject = new ThreadState();
+                stateObject = new ThreadState(((IItemView) v).getVisibleId());
                 break;
             case SingleMessage:
                 stateObject = null; // No state
@@ -123,19 +114,29 @@ public final class ViewHelper {
 
         switch (id.getType()) {
             case Forum: {
-                view = makeTreeTableMessageView(id, mainFrame);
+                view = constructForumView(id, mainFrame);
                 view.loadItem(((ItemId) id).getId());
-                ForumState state = (ForumState) in.readObject();
-                if (state.openedMessageId() > 0) {
-                    view.makeVisible(state.openedMessageId());
+                Object o = in.readObject();
+                if (o instanceof ThreadState) {
+                    ThreadState state = (ThreadState) o;
+                    if (state.openedMessageId() > 0) {
+                        view.makeVisible(state.openedMessageId());
+                    }
                 }
                 break;
             }
             case SingleThread: {
-                throw new NotImplementedException();
-//                ThreadState state = (ThreadState) in.readObject();
+                view = constructThreadView(id, mainFrame);
+                view.loadItem(((ItemId) id).getId());
+                Object o = in.readObject();
+                if (o instanceof ThreadState) {
+                    ThreadState state = (ThreadState) o;
+                    if (state.openedMessageId() > 0) {
+                        view.makeVisible(state.openedMessageId());
+                    }
+                }
+                break;
             }
-//            break;
             case SingleMessage: {
                 view = makeMessageView(id, mainFrame);
                 view.loadItem(((ItemId) id).getId());
@@ -149,22 +150,17 @@ public final class ViewHelper {
         return new View(title, null, view.getComponent());
     }
 
-    private static final class ForumState implements Serializable {
+    private static final class ThreadState implements Serializable {
         private static final long serialVersionUID = 1L;
 
         private int openedMessageId;
 
-        public ForumState(int openedMessageId) {
+        public ThreadState(int openedMessageId) {
             this.openedMessageId = openedMessageId;
         }
 
         public int openedMessageId() {
             return openedMessageId;
         }
-    }
-
-    private static final class ThreadState implements Serializable {
-        private static final long serialVersionUID = 1L;
-
     }
 }
