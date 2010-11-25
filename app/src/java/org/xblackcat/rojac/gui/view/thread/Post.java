@@ -227,5 +227,6 @@ public class Post implements ITreeItem<Post> {
 
     public void setMessageData(MessageData messageData) {
         this.messageData = messageData;
+        this.read = messageData.isRead();
     }
 }

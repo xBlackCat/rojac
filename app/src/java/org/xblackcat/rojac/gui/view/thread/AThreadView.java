@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.component.AButtonAction;
@@ -19,9 +18,6 @@ import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IForumAH;
-import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -30,7 +26,6 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 /**
  * @author xBlackCat
@@ -41,8 +36,8 @@ public abstract class AThreadView extends AItemView {
 
     protected final IThreadControl<Post> threadControl;
     protected final AThreadModel<Post> model = new SortedThreadsModel();
-    protected Forum forum;
-    protected int forumId;
+    protected String title;
+    protected int rootItemId;
 
     protected AThreadView(ViewId id, IRootPane mainFrame, IThreadControl<Post> threadControl) {
         super(id, mainFrame);
@@ -73,10 +68,30 @@ public abstract class AThreadView extends AItemView {
 
     @Override
     public void loadItem(int forumId) {
-        this.forumId = forumId;
-        threadControl.fillModelByItemId(model, forumId);
+        this.rootItemId = forumId;
+        model.addTreeModelListener(new TreeModelListener() {
+            @Override
+            public void treeNodesChanged(TreeModelEvent e) {
+                Post root = model.getRoot();
+                if (e.getTreePath().getLastPathComponent() == root) {
+                    fireItemUpdated(root.getForumId(), root.getMessageId());
+                }
+            }
 
-        new ForumInfoLoader(forumId).execute();
+            @Override
+            public void treeNodesInserted(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeNodesRemoved(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeStructureChanged(TreeModelEvent e) {
+            }
+        });
+
+        threadControl.fillModelByItemId(model, this, forumId);
     }
 
     @Override
@@ -92,7 +107,7 @@ public abstract class AThreadView extends AItemView {
                 new IPacketProcessor<SetForumReadPacket>() {
                     @Override
                     public void process(SetForumReadPacket p) {
-                        if (p.getForumId() == forumId) {
+                        if (p.getForumId() == rootItemId) {
                             threadControl.markForumRead(model, p.isRead());
                         }
                     }
@@ -100,7 +115,7 @@ public abstract class AThreadView extends AItemView {
                 new IPacketProcessor<SetPostReadPacket>() {
                     @Override
                     public void process(SetPostReadPacket p) {
-                        if (p.getForumId() == forumId) {
+                        if (p.getForumId() == rootItemId) {
                             if (p.isRecursive()) {
                                 // Post is a root of marked thread
                                 threadControl.markThreadRead(model, p.getPostId(), p.isRead());
@@ -114,7 +129,7 @@ public abstract class AThreadView extends AItemView {
                 new IPacketProcessor<SynchronizationCompletePacket>() {
                     @Override
                     public void process(SynchronizationCompletePacket p) {
-                        if (!p.isForumAffected(forumId)) {
+                        if (!p.isForumAffected(rootItemId)) {
                             // Current forum is not changed - have a rest
                             return;
                         }
@@ -351,7 +366,7 @@ public abstract class AThreadView extends AItemView {
                 SetMessageReadFlag target = new SetMessageReadFlag(true, mi);
                 IExecutor executor = ServiceFactory.getInstance().getExecutor();
                 if (delay > 0) {
-                    executor.setupTimer("Forum_" + forumId, target, delay);
+                    executor.setupTimer("Forum_" + rootItemId, target, delay);
                 } else {
                     executor.execute(target);
                 }
@@ -361,40 +376,7 @@ public abstract class AThreadView extends AItemView {
 
     @Override
     public String getTabTitle() {
-        if (forum == null) {
-            return "#" + forumId;
-        } else {
-            return forum.getForumName();
-        }
-    }
-
-    private class ForumInfoLoader extends RojacWorker<Void, Forum> {
-        private final int forumId;
-
-        public ForumInfoLoader(int forumId) {
-            this.forumId = forumId;
-        }
-
-        @Override
-        protected Void perform() throws Exception {
-            IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
-
-            try {
-                publish(fah.getForumById(forumId));
-            } catch (StorageException e) {
-                log.error("Can not load forum information for forum id = " + forumId, e);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void process(List<Forum> chunks) {
-            for (Forum f : chunks) {
-                forum = f;
-                fireItemUpdated(forumId, null);
-            }
-        }
+        return threadControl.getTitle(model);
     }
 
     private class LoadNextUnread implements IItemProcessor<Post> {
@@ -446,7 +428,7 @@ public abstract class AThreadView extends AItemView {
         }
 
         public void actionPerformed(ActionEvent e) {
-            mainFrame.editMessage(forumId, null);
+            mainFrame.editMessage(rootItemId, null);
         }
     }
 

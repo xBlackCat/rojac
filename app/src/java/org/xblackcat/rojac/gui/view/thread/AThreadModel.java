@@ -94,7 +94,7 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         final T node = (T) path.getLastPathComponent();
         nodeChanged(node);
 
-        for (int i = 0; i < node.getSize(); i++ ){
+        for (int i = 0; i < node.getSize(); i++) {
             subTreeChanged(path.pathByAddingChild(node.getChild(i)));
         }
     }
@@ -102,7 +102,7 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
     /**
      * Invoke this method after you've changed how node is to be represented in the tree.
      *
-     * @param node
+     * @param node changed node. Should belong the model
      */
     public void nodeChanged(T node) {
         if (node != null) {
@@ -111,10 +111,10 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
             if (parent != null) {
                 int anIndex = parent.getIndex(node);
                 if (anIndex != -1) {
-                    int[] cIndexs = new int[1];
+                    int[] cIndexes = new int[1];
 
-                    cIndexs[0] = anIndex;
-                    nodesChanged(parent, cIndexs);
+                    cIndexes[0] = anIndex;
+                    nodesChanged(parent, cIndexes);
                 }
             } else if (node == getRoot()) {
                 nodesChanged(node);
@@ -154,8 +154,11 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
     }
 
     /**
-     * Invoke this method after you've changed how the children identified by childIndicies are to be represented in the
+     * Invoke this method after you've changed how the children identified by childIndexes are to be represented in the
      * tree.
+     *
+     * @param node         root node of changed children
+     * @param childIndexes list of changed child indexes
      */
     public void nodesChanged(T node, int... childIndexes) {
         if (node != null) {
@@ -177,8 +180,10 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
     }
 
     /**
-     * Invoke this method if you've totally changed the children of node and its childrens children...  This will post a
-     * treeStructureChanged event.
+     * Invoke this method if you've totally changed the children of node and its children's children...  This will post
+     * a treeStructureChanged event.
+     *
+     * @param node root node of changed sub-tree
      */
     public void nodeStructureChanged(T node) {
         if (node != null) {
@@ -191,6 +196,8 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
      * returned array. The length of the returned array gives the node's depth in the tree.
      *
      * @param aNode the MessageItem to get the path for
+     *
+     * @return TreePath object with all subsequent nodes to reach the specified node from root.
      */
     public TreePath getPathToRoot(T aNode) {
         return new TreePath(getPathToRoot(aNode, 0));

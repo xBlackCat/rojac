@@ -4,16 +4,17 @@ package org.xblackcat.rojac.gui.view.thread;
  * Interface to avoid sub-classing Thread view class.
  */
 
-interface IThreadControl<T extends ITreeItem<T>> {
+public interface IThreadControl<T extends ITreeItem<T>> {
     /**
      * (Re-)initializes threads model according to type of thread view.
      *
-     * @param model  model to be initialized.
-     * @param itemId item id to identify how to initialize model.
      *
-     * @return forum id the view is belonged to. Used to load forum information.
+     * @param model  model to be initialized.
+     * @param id
+     *@param itemId item id to identify how to initialize model.
+     *  @return forum id the view is belonged to. Used to load forum information.
      */
-    void fillModelByItemId(AThreadModel<T> model, int itemId);
+    void fillModelByItemId(AThreadModel<T> model, AThreadView id, int itemId);
 
     void markForumRead(AThreadModel<T> model, boolean read);
 
@@ -43,4 +44,6 @@ interface IThreadControl<T extends ITreeItem<T>> {
      * @param threadIds id list of updated threads.
      */
     void updateModel(AThreadModel<T> model, int[] threadIds);
+
+    String getTitle(AThreadModel<T> model);
 }
