@@ -46,7 +46,7 @@ public interface IForumAH extends AH {
      *
      * @throws StorageException will be thrown if something wrong.
      */
-    Map<Integer, Integer> getMessagesInForum(int ...forumId) throws StorageException;
+    Map<Integer, Number> getMessagesInForum(int ...forumId) throws StorageException;
 
     /**
      * Returns total amount of unread messages in the specified forum.
@@ -57,7 +57,7 @@ public interface IForumAH extends AH {
      *
      * @throws StorageException will be thrown if something wrong.
      */
-    Map<Integer, Integer> getUnreadMessagesInForum(int ...forumId) throws StorageException;
+    Map<Integer, Number> getUnreadMessagesInForum(int ...forumId) throws StorageException;
 
     /**
      * Returns last message date in the forum or <code>null</code> if forum is empty.
@@ -68,5 +68,5 @@ public interface IForumAH extends AH {
      *
      * @throws StorageException will be thrown if something wrong.
      */
-    Map<Integer, Long> getLastMessageDateInForum(int ...forumId) throws StorageException;
+    Map<Integer, Number> getLastMessageDateInForum(int ...forumId) throws StorageException;
 }

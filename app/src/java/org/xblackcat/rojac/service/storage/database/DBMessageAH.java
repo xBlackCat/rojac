@@ -113,7 +113,7 @@ final class DBMessageAH implements IMessageAH {
 
     @Override
     public int getUnreadReplaysInThread(int threadId) throws StorageException {
-        return helper.executeSingle(Converters.TO_INTEGER, DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_THREAD, threadId);
+        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
     }
 
     @Override
@@ -123,12 +123,12 @@ final class DBMessageAH implements IMessageAH {
 
     @Override
     public int getUnreadMessages() throws StorageException {
-        return helper.executeSingle(Converters.TO_INTEGER, DataQuery.GET_UNREAD_MESSAGES_NUMBER);
+        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_MESSAGES_NUMBER).intValue();
     }
 
     @Override
     public int getUnreadReplies(int userId) throws StorageException {
-        return helper.executeSingle(Converters.TO_INTEGER, DataQuery.GET_UNREAD_REPLIES_NUMBER, userId);
+        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_REPLIES_NUMBER, userId).intValue();
     }
 
     @Override

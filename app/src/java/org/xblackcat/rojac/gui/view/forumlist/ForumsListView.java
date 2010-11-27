@@ -233,16 +233,17 @@ public class ForumsListView extends AView {
         protected Void perform() throws Exception {
             IForumAH fah = storage.getForumAH();
 
-            Map<Integer, Integer> totalMessages = fah.getMessagesInForum(forumIds);
-            Map<Integer, Integer> unreadMessages = fah.getUnreadMessagesInForum(forumIds);
-            Map<Integer, Long> lastPostDate = fah.getLastMessageDateInForum(forumIds);
+            Map<Integer, Number> totalMessages = fah.getMessagesInForum(forumIds);
+            Map<Integer, Number> unreadMessages = fah.getUnreadMessagesInForum(forumIds);
+            Map<Integer, Number> lastPostDate = fah.getLastMessageDateInForum(forumIds);
 
             for (int forumId : forumIds) {
+                Number date = lastPostDate.get(forumId);
                 publish(new ForumStatistic(
                         forumId,
-                        totalMessages.get(forumId),
-                        unreadMessages.get(forumId),
-                        lastPostDate.get(forumId)
+                        totalMessages.get(forumId).intValue(),
+                        unreadMessages.get(forumId).intValue(),
+                        date != null ? date.longValue() : null
                 ));
             }
 

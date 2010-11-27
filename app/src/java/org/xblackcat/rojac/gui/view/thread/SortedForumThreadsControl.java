@@ -136,7 +136,10 @@ public class SortedForumThreadsControl implements IThreadControl<Post> {
             IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
 
             try {
-                publish(fah.getForumById(forumId));
+                Forum forum = fah.getForumById(forumId);
+                if (forum != null) {
+                    publish(forum);
+                }
             } catch (StorageException e) {
                 log.error("Can not load forum information for forum id = " + forumId, e);
             }
