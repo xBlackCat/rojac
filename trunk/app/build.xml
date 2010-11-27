@@ -282,6 +282,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         <cp>../conf</cp>
         <cp>../lib/*.jar</cp>
         <cp>../lib/lnf/*.jar</cp>
+        <cp>../lib/db/*.jar</cp>
     </classPath>
     <jre>
         <minVersion>1.6.0</minVersion>

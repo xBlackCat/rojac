@@ -44,9 +44,9 @@ class GetNewPostsRequest extends ALoadPostsRequest {
         }
 
         Collection<RequestForumInfo> forumInfo = new LinkedList<RequestForumInfo>();
-        Map<Integer, Integer> messagesInForums = forumAH.getMessagesInForum(forumIds);
+        Map<Integer, Number> messagesInForums = forumAH.getMessagesInForum(forumIds);
         for (int forumId : forumIds) {
-            forumInfo.add(new RequestForumInfo(forumId, messagesInForums.get(forumId) == 0));
+            forumInfo.add(new RequestForumInfo(forumId, messagesInForums.get(forumId).intValue() == 0));
         }
 
         Integer limit = SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();

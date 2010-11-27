@@ -69,22 +69,22 @@ final class DBForumAH implements IForumAH {
     }
 
     @Override
-    public Map<Integer, Integer> getMessagesInForum(int... forumIds) throws StorageException {
-        return helper.executeSingleBatch(Converters.TO_INTEGER,
+    public Map<Integer, Number> getMessagesInForum(int... forumIds) throws StorageException {
+        return helper.executeSingleBatch(Converters.TO_NUMBER,
                 DataQuery.GET_MESSAGES_NUMBER_IN_FORUM,
                 ArrayUtils.toObject(forumIds));
     }
 
     @Override
-    public Map<Integer, Integer> getUnreadMessagesInForum(int... forumIds) throws StorageException {
-        return helper.executeSingleBatch(Converters.TO_INTEGER,
+    public Map<Integer, Number> getUnreadMessagesInForum(int... forumIds) throws StorageException {
+        return helper.executeSingleBatch(Converters.TO_NUMBER,
                 DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
                 ArrayUtils.toObject(forumIds));
     }
 
     @Override
-    public Map<Integer, Long> getLastMessageDateInForum(int... forumIds) throws StorageException {
-        return helper.executeSingleBatch(Converters.TO_LONG,
+    public Map<Integer, Number> getLastMessageDateInForum(int... forumIds) throws StorageException {
+        return helper.executeSingleBatch(Converters.TO_NUMBER,
                 DataQuery.GET_LAST_MESSAGE_DATE_IN_FORUM,
                 ArrayUtils.toObject(forumIds));
     }
