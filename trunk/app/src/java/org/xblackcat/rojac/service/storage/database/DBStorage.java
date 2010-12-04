@@ -259,6 +259,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
      * @param propertiesFile
      *
      * @return
+     * @throws java.io.IOException
      */
     private static Map<String, String> loadProperties(String propertiesFile) throws IOException {
         InputStream is;
@@ -285,6 +286,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
         return map;
     }
+
     private Map<SQL, List<SQL>> loadInitializeSQLs(String checkProp, String initProps, String config) throws IOException {
         Map<String, String> check = loadProperties(checkProp);
         Properties init = ResourceUtils.loadProperties(initProps);
@@ -298,10 +300,10 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
             String inits = clue.getProperty(name, "");
             List<SQL> sqls = new ArrayList<SQL>();
-            String[] initNames = inits.trim().split("\\s+,\\s+");
+            String[] initNames = inits.trim().split(",");
             if (!ArrayUtils.isEmpty(initNames)) {
                 for (String initName : initNames) {
-                    String initSql = init.getProperty(initName);
+                    String initSql = init.getProperty(initName.trim());
                     if (StringUtils.isBlank(initSql)) {
                         if (log.isWarnEnabled()) {
                             log.warn(initName + " SQL not defined (Used in " + name + "). Initialization routine can be work improperly.");
