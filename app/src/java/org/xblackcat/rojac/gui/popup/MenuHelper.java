@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
-import org.xblackcat.rojac.gui.view.thread.Post;
+import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
 
@@ -88,7 +88,7 @@ final class MenuHelper {
         return copyToClipboard;
     }
 
-    static JMenuItem markReadUnreadSubmenu(Post message, IRootPane mainFrame) {
+    static JMenuItem markReadUnreadSubmenu(ITreeItem<?> message, IRootPane mainFrame) {
         JMenu menu = new JMenu();
         menu.setText(Messages.Popup_View_ThreadsTree_Mark_Title.get());
 
