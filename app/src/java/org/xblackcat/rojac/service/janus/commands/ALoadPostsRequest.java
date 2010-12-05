@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.service.janus.commands;
 
 import gnu.trove.TIntHashSet;
+import gnu.trove.TIntObjectHashMap;
+import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -24,11 +26,15 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
     protected final IModerateAH modAH;
     protected final IMiscAH miscAH;
     protected final IForumAH forumAH;
+    protected final IUserAH usreAH;
 
     private final TIntHashSet updatedTopics = new TIntHashSet();
     private final TIntHashSet updatedForums = new TIntHashSet();
     private final TIntHashSet updatedMessages = new TIntHashSet();
     private final TIntHashSet ratingCacheUpdate = new TIntHashSet();
+
+    private final TIntObjectHashMap<String> nonExistUsers = new TIntObjectHashMap<String>();
+    private final TIntHashSet existUsers = new TIntHashSet();
 
     public ALoadPostsRequest() {
         storage = ServiceFactory.getInstance().getStorage();
@@ -37,6 +43,7 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
         rAH = storage.getRatingAH();
         miscAH = storage.getMiscAH();
         forumAH = storage.getForumAH();
+        usreAH = storage.getUserAH();
     }
 
     protected void storeNewPosts(IProgressTracker tracker, TopicMessages newPosts) throws StorageException {
@@ -73,6 +80,28 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
             }
 
             updatedForums.add(mes.getForumId());
+
+            int userId = mes.getUserId();
+            // Check user info.
+
+            if (existUsers.contains(userId)) {
+                // The user is already exists in DB.
+                continue;
+            }
+
+            // Do not check DB if user already queued for storing
+            if (nonExistUsers.containsKey(userId)) {
+                continue;
+            }
+
+            // User is not stored in caches - check database
+            User user = usreAH.getUserById(userId);
+            if (user == null) {
+                // User not exists - queue for storing
+                nonExistUsers.put(userId, mes.getUserNick());
+            } else {
+                existUsers.add(userId);
+            }
         }
 
         tracker.addLodMessage(Messages.Synchronize_Message_StoreModerates);
@@ -99,8 +128,18 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
         int[] forUpdate = ratingCacheUpdate.toArray();
         tracker.addLodMessage(Messages.Synchronize_Message_UpdateCaches);
         for (int id : forUpdate) {
-            tracker.updateProgress(count++, forUpdate.length);
             MessageUtils.updateRatingCache(id);
+            tracker.updateProgress(count++, forUpdate.length);
+        }
+
+        count = 0;
+        if (!nonExistUsers.isEmpty()) {
+            int[] userIds = nonExistUsers.keys();
+            tracker.addLodMessage(Messages.Synchronize_Message_StoreUserInfo);
+            for (int userId : userIds) {
+                usreAH.storeUserInfo(userId, nonExistUsers.get(userId));
+                tracker.updateProgress(count++, userIds.length);
+            }
         }
     }
 
@@ -112,5 +151,8 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
         updatedForums.clear();
         updatedMessages.clear();
         ratingCacheUpdate.clear();
+
+        nonExistUsers.clear();
+        existUsers.clear();
     }
 }

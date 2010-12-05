@@ -112,7 +112,7 @@ public enum DataQuery implements IPropertiable {
      * id (int), topic id (int), parent id (int), user id (int), forum id (int), article id (int), user title color
      * (int), user role (int), notify on response (boolean), read (boolean), favorite (int), message date (long), update
      * date (long), moderated date (long), subject (String), message name (String), user nick (String), user title
-     * (String), message (String), recent_child_date(int)
+     * (String), message (String)
      */
     STORE_OBJECT_MESSAGE,
     /**
@@ -245,7 +245,7 @@ public enum DataQuery implements IPropertiable {
      * The query should fetch the message data properties in following order:
      * <p/>
      * id (int), topic id (int), parent id (int), forum id (int), user id (int), subject (String), user nick (String),
-     * message date (long), update date (long), read (boolean)
+     * message date (long), update date (long), read (boolean), ratingCache (string)
      *
      * Parameter: messageId (int)
      */
@@ -300,12 +300,6 @@ public enum DataQuery implements IPropertiable {
      */
     UPDATE_OBJECT_FORUM_SUBSCRIBE,
     /**
-     * The query for updating the last_child_date filed of message object. Set query parameters in following order:
-     * <p/>
-     * last_child_date(long), id(int)
-     */
-    UPDATE_MESSAGE_RECENT_CHILD_DATE,
-    /**
      * The query for updating the read field of message object. Set query parameters in following order:
      * <p/>
      * read(boolean), id(int)
@@ -336,6 +330,13 @@ public enum DataQuery implements IPropertiable {
      * rating cache (string), message id (int)
      */
     UPDATE_MESSAGE_RATING_CACHE,
+    /**
+     * The query for updating the user object. Set the object parameters in following order:
+     * <p/>
+     * name (String), nick (String), real_name (String), email (String), home_page (String), specialization
+     * (String), where_from (String), origin (String), id (int)
+     */
+    UPDATE_OBJECT_USER,
 
     GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
     /**

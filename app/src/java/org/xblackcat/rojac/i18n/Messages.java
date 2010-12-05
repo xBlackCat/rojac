@@ -159,6 +159,7 @@ public enum Messages {
     Synchronize_Message_StoreModerates,
     Synchronize_Message_StoreRatings,
     Synchronize_Message_UpdateCaches,
+    Synchronize_Message_StoreUserInfo,
 
     Synchronize_Message_Portion,
     Synchronize_Message_Start,
