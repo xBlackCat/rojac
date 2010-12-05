@@ -42,24 +42,30 @@ class GetUsersRequest extends ARequest<IPacket> {
             int totalUsersNumber = 0;
 
             UsersList users;
+            int loaded;
             do {
                 if (log.isDebugEnabled()) {
                     log.debug("Load next portion of the new users. Portion limit = " + limit + " (" + totalUsersNumber + " already loaded).");
                 }
                 users = janusService.getNewUsers(localUsersVersion, limit);
-                totalUsersNumber += users.getUsers().length;
+                loaded = users.getUsers().length;
+                totalUsersNumber += loaded;
 
                 int count = 0;
                 for (User user : users.getUsers()) {
-                    tracker.updateProgress(count++, users.getUsers().length);
                     if (log.isTraceEnabled()) {
                         log.trace("Store the " + user + " in the storage.");
                     }
-                    uAH.storeUser(user);
+                    if (uAH.getUserById(user.getId()) == null) {
+                        uAH.storeUser(user);
+                    } else {
+                        uAH.updateUser(user);
+                    }
+                    tracker.updateProgress(count++, loaded);
                 }
                 localUsersVersion = users.getVersion();
                 DataHelper.setVersion(VersionType.USERS_ROW_VERSION, localUsersVersion);
-            } while (users.getUsers().length > 0);
+            } while (loaded > 0);
 
             tracker.addLodMessage(Messages.Synchronize_Message_GotUsers, totalUsersNumber);
             if (log.isDebugEnabled()) {
