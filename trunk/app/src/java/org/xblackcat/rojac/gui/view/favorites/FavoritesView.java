@@ -1,6 +1,7 @@
-package org.xblackcat.rojac.gui.view;
+package org.xblackcat.rojac.gui.view.favorites;
 
 import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 

@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.popup;
 
 import gnu.trove.TIntHashSet;
-import org.xblackcat.rojac.gui.view.thread.Post;
+import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.gui.view.thread.Thread;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -18,16 +18,14 @@ import java.awt.event.ActionListener;
  * @author xBlackCat
  */
 class SetThreadReadMenuItem extends JMenuItem {
-    public SetThreadReadMenuItem(Messages text, final Post post, final boolean read) {
+    public SetThreadReadMenuItem(Messages text, final ITreeItem<?> post, final boolean read) {
         super(text.get());
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Thread threadRoot = post.getThreadRoot();
-
-                if (threadRoot == post) {
+                if (post instanceof Thread) {
                     // Mark whole thread.
-                    new SetThreadReadFlag(read, threadRoot).execute();
+                    new SetThreadReadFlag(read, (Thread) post).execute();
                 } else {
                     // Mark sub-tree as read
                     new SetSubTreeReadFlag(read, post).execute();
@@ -65,7 +63,7 @@ class SetThreadReadMenuItem extends JMenuItem {
         private final int rootId;
         private final TIntHashSet messageIds;
 
-        public SetSubTreeReadFlag(boolean read, Post post) {
+        public SetSubTreeReadFlag(boolean read, ITreeItem<?> post) {
             this.read = read;
             rootId = post.getMessageId();
             forumId = post.getForumId();
@@ -74,11 +72,15 @@ class SetThreadReadMenuItem extends JMenuItem {
             fillMessageIds(post);
         }
 
-        private void fillMessageIds(Post post) {
+        private void fillMessageIds(ITreeItem<?> post) {
             messageIds.add(post.getMessageId());
 
-            for (Post p : post.getChildren()) {
+            int i = 0;
+            int childrenLength = post.getSize();
+            while (i < childrenLength) {
+                ITreeItem<?> p = post.getChild(i);
                 fillMessageIds(p);
+                i++;
             }
         }
 
