@@ -47,6 +47,7 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
 
 public class MessageView extends AItemView implements IInternationazable {
     private static final Log log = LogFactory.getLog(MessageView.class);
+    public static final String MESSAGE_VIEWED_FLAG = "MessageViewed";
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();
 
     private int messageId;
@@ -81,7 +82,34 @@ public class MessageView extends AItemView implements IInternationazable {
         messageTextPane.addHyperlinkListener(new HyperlinkHandler());
 
         add(titleBar, BorderLayout.NORTH);
-        add(new JScrollPane(messageTextPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+        final JScrollPane scrollPane = new JScrollPane(messageTextPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        add(scrollPane, BorderLayout.CENTER);
+
+        // Handle keyboard events to emulate tree navigation in TreeTable
+        getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "spaceScroll");
+
+        getActionMap().put("spaceScroll", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+
+                int oldValue = scrollBar.getValue();
+                if (!scrollBar.isVisible() || oldValue + scrollBar.getHeight() >= scrollBar.getMaximum()) {
+                    MessageView.this.firePropertyChange(MESSAGE_VIEWED_FLAG, null, null);
+                    return;
+                }
+
+                int blockSize = (int) (scrollBar.getHeight() * .95);
+
+                int newValue = oldValue + blockSize;
+
+                if (newValue < oldValue) {
+                    newValue = scrollBar.getMaximum();
+                }
+
+                scrollBar.setValue(newValue);
+            }
+        });
     }
 
     private JComponent createTitleBar() {
