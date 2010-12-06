@@ -144,13 +144,15 @@ public class TreeTableThreadView extends AThreadView {
                 threads.expandPath(parentPath);
             }
             int row = threads.getRowForPath(path);
-            threads.setRowSelectionInterval(row, row);
-            Rectangle bounds = threads.getCellRect(
-                    row,
-                    0, //threads.convertColumnIndexToView(threads.getHierarchicalColumn()), 
-                    true);
-            bounds.setLocation(0, bounds.y);
-            threads.scrollRectToVisible(bounds);
+            if (row >= 0) {
+                threads.setRowSelectionInterval(row, row);
+                Rectangle bounds = threads.getCellRect(
+                        row,
+                        0, //threads.convertColumnIndexToView(threads.getHierarchicalColumn()),
+                        true);
+                bounds.setLocation(0, bounds.y);
+                threads.scrollRectToVisible(bounds);
+            }
             threads.scrollPathToVisible(path);
         } else {
             threads.clearSelection();
