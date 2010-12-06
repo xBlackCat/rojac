@@ -63,6 +63,7 @@ public final class Property<T> {
 
     // Forum view properties.
     public static final Property<Long> VIEW_THREAD_AUTOSET_READ = create("rojac.view.thread.message.read_delay", Long.valueOf(1000));
+    public static final Property<Boolean> VIEW_THREAD_SET_READ_ON_SCROLL = create("rojac.view.thread.message.read_on_scroll", Boolean.TRUE);
 
     // Janus synchronizer properties
     public static final Property<Integer> SYNCHRONIZER_SCHEDULE_PERIOD = create("rojac.synchronizer.schedule.period", Integer.valueOf(0));

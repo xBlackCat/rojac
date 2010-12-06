@@ -5,8 +5,11 @@ import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.RatingCache;
+import org.xblackcat.rojac.gui.view.thread.Post;
+import org.xblackcat.rojac.gui.view.thread.SetMessageReadFlag;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.IStorage;
@@ -218,5 +221,16 @@ public final class MessageUtils {
         }
 
         return width;
+    }
+
+    public static void markForumMessageRead(Post mi, long delay) {
+        SetMessageReadFlag target = new SetMessageReadFlag(true, mi);
+        IExecutor executor = ServiceFactory.getInstance().getExecutor();
+        if (delay > 0) {
+            executor.setupTimer("Forum_" + mi.getForumId(), target, delay);
+        } else {
+            executor.killTimer("Forum_" + mi.getForumId());
+            executor.execute(target);
+        }
     }
 }

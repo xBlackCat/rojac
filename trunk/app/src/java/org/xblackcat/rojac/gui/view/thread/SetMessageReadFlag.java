@@ -11,10 +11,10 @@ import org.xblackcat.rojac.util.RojacWorker;
  * @author xBlackCat
  */
 public class SetMessageReadFlag extends RojacWorker<Void, Void> {
-    private ITreeItem<?> post;
-    protected boolean read;
+    private Post post;
+    private boolean read;
 
-    public SetMessageReadFlag(boolean read, ITreeItem<?> post) {
+    public SetMessageReadFlag(boolean read, Post post) {
         this.post = post;
         this.read = read;
     }
@@ -28,7 +28,9 @@ public class SetMessageReadFlag extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        IPacket processPacket = new SetPostReadPacket(read, post.getForumId(), post.getMessageId(), false);
-        ServiceFactory.getInstance().getDataDispatcher().processPacket(processPacket);
+        if ((post.isRead() == ReadStatus.Unread) == read) {
+            IPacket processPacket = new SetPostReadPacket(read, post.getForumId(), post.getMessageId(), false);
+            ServiceFactory.getInstance().getDataDispatcher().processPacket(processPacket);
+        }
     }
 }

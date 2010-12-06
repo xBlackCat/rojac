@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -11,7 +10,6 @@ import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.util.ShortCutUtils;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -74,17 +72,11 @@ public class ThreadDoubleView extends AItemView {
         slaveView.getComponent().addPropertyChangeListener(MessageView.MESSAGE_VIEWED_FLAG, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                ActionMap actionMap = masterView.getComponent().getActionMap();
-                if (actionMap != null) {
-                    Action action = actionMap.get(ShortCut.NextUnreadMessage);
-                    if (action != null) {
-                        ActionEvent event = new ActionEvent(
-                                ThreadDoubleView.this,
-                                ActionEvent.ACTION_PERFORMED,
-                                ShortCut.NextUnreadMessage.getActionName());
-                        action.actionPerformed(event);
-                    }
-                }
+                masterView.getComponent().firePropertyChange(
+                        MessageView.MESSAGE_VIEWED_FLAG,
+                        ((Integer) evt.getOldValue()).intValue(),
+                        ((Integer) evt.getNewValue()).intValue()
+                );
             }
         });
     }
