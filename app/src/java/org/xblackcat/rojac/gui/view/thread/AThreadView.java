@@ -8,16 +8,16 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.message.AItemView;
+import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
 import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
-import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -26,6 +26,8 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * @author xBlackCat
@@ -64,6 +66,19 @@ public abstract class AThreadView extends AItemView {
                 )
         );
         add(toolbar, BorderLayout.NORTH);
+
+        addPropertyChangeListener(MessageView.MESSAGE_VIEWED_FLAG, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                Post post = model.getRoot().getMessageById((Integer) evt.getNewValue());
+
+                if (Property.VIEW_THREAD_SET_READ_ON_SCROLL.get()) {
+                    MessageUtils.markForumMessageRead(post, 0);
+                }
+
+                selectNextUnread(post);
+            }
+        });
     }
 
     @Override
@@ -363,13 +378,7 @@ public abstract class AThreadView extends AItemView {
         if (mi.isRead() == ReadStatus.Unread) {
             Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
             if (delay != null && delay >= 0) {
-                SetMessageReadFlag target = new SetMessageReadFlag(true, mi);
-                IExecutor executor = ServiceFactory.getInstance().getExecutor();
-                if (delay > 0) {
-                    executor.setupTimer("Forum_" + rootItemId, target, delay);
-                } else {
-                    executor.execute(target);
-                }
+                MessageUtils.markForumMessageRead(mi, delay);
             }
         }
     }

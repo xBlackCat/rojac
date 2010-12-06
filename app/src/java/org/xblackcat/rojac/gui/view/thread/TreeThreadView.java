@@ -118,7 +118,7 @@ public class TreeThreadView extends AThreadView {
                 TreePath path = threads.getPathForLocation(p.x, p.y);
 
                 if (path != null) {
-                    ITreeItem mi = (ITreeItem) path.getLastPathComponent();
+                    Post mi = (Post) path.getLastPathComponent();
 
                     JPopupMenu m = createMenu(mi);
 
@@ -127,7 +127,7 @@ public class TreeThreadView extends AThreadView {
             }
         }
 
-        private JPopupMenu createMenu(ITreeItem mi) {
+        private JPopupMenu createMenu(Post mi) {
             return PopupMenuBuilder.getTreeViewPopup(mi, model, mainFrame);
         }
 

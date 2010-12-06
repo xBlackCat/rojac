@@ -95,7 +95,7 @@ public class MessageView extends AItemView implements IInternationazable {
 
                 int oldValue = scrollBar.getValue();
                 if (!scrollBar.isVisible() || oldValue + scrollBar.getHeight() >= scrollBar.getMaximum()) {
-                    MessageView.this.firePropertyChange(MESSAGE_VIEWED_FLAG, null, null);
+                    MessageView.this.firePropertyChange(MESSAGE_VIEWED_FLAG, 0, messageId);
                     return;
                 }
 

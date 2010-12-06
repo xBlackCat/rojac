@@ -4,7 +4,7 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.forumlist.ForumTableModel;
 import org.xblackcat.rojac.gui.view.thread.AThreadModel;
-import org.xblackcat.rojac.gui.view.thread.ITreeItem;
+import org.xblackcat.rojac.gui.view.thread.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
 
@@ -102,7 +102,7 @@ public class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getTreeViewPopup(ITreeItem message, AThreadModel model, IRootPane mainFrame) {
+    public static JPopupMenu getTreeViewPopup(Post message, AThreadModel model, IRootPane mainFrame) {
         int messageId = message.getMessageId();
         final JPopupMenu menu = new JPopupMenu("#" + messageId);
 
