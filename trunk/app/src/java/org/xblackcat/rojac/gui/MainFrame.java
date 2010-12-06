@@ -118,7 +118,27 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
     }
 
     public void loadData() {
-        // TODO: implement loading data
+        File file = RojacUtils.getLayoutFile();
+        if (file.isFile()) {
+            if (log.isInfoEnabled()) {
+                log.info("Load previous layout");
+            }
+            try {
+                ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+                try {
+                    rootWindow.read(in);
+                    threadsRootWindow.read(in);
+                } finally {
+                    in.close();
+                }
+            } catch (IOException e) {
+                log.error("Can not load views layout.", e);
+            }
+        } else {
+            if (log.isInfoEnabled()) {
+                log.info("No previous layout is found - use default.");
+            }
+        }
     }
 
     private void initialize() {
@@ -329,28 +349,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         if (ROJAC_MAIN_FRAME_STATE.isSet()) {
             setExtendedState(ROJAC_MAIN_FRAME_STATE.get());
         }
-
-        File file = RojacUtils.getLayoutFile();
-        if (file.isFile()) {
-            if (log.isInfoEnabled()) {
-                log.info("Load previous layout");
-            }
-            try {
-                ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
-                try {
-                    rootWindow.read(in);
-                    threadsRootWindow.read(in);
-                } finally {
-                    in.close();
-                }
-            } catch (IOException e) {
-                log.error("Can not load views layout.", e);
-            }
-        } else {
-            if (log.isInfoEnabled()) {
-                log.info("No previous layout is found - use default.");
-            }
-        }
     }
 
     @Override
@@ -388,7 +386,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
     public void openForumTab(int forumId) {
         ViewId viewId = ViewIds.getForumId(forumId);
         View c = openedViews.get(viewId);
-        if (c != null) {
+        if (c != null && c.getParent() != null) {
             c.makeVisible();
             return;
         }
