@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.forumlist;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
+import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
 import org.xblackcat.rojac.i18n.Messages;
 import sun.swing.DefaultLookup;
@@ -15,7 +16,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
 
-class MultiLineForumRenderer extends JPanel
+class MultiLineForumRenderer extends JLightPanel
         implements TableCellRenderer, Serializable {
 
     /**
