@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.dialogs;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.component.AButtonAction;
@@ -191,7 +192,8 @@ public class EditMessageDialog extends JDialog {
                 String messageBody = storage.getMessageAH().getMessageBodyById(messageId);
                 publish(new Message(messageBody, messageData));
             } catch (StorageException e) {
-                throw new RuntimeException("Can't load message #" + messageId, e);
+                log.error("Can't load message #" + messageId, e);
+                throw new RojacException("Can't load message #" + messageId, e);
             }
 
             return null;

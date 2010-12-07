@@ -11,11 +11,7 @@ import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
-import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
@@ -421,6 +417,9 @@ public abstract class AThreadView extends AItemView {
                     }
                 });
             } else {
+                if (sourceStackTrace != null) {
+                    log.error("Can't load message #" + messageId, sourceStackTrace);
+                }
                 JLOptionPane.showMessageDialog(
                         SwingUtilities.windowForComponent(AThreadView.this),
                         Messages.ErrorDialog_MessageNotFound_Message.get(messageId),
