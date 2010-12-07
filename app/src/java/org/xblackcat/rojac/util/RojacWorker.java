@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
+import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
 
@@ -18,6 +19,19 @@ public abstract class RojacWorker<T, V> extends SwingWorker<T, V> implements Run
     private static final Log log = LogFactory.getLog(RojacWorker.class);
 
     /**
+     * Stack trace for debug purposes.
+     */
+    protected final Throwable sourceStackTrace;
+
+    protected RojacWorker() {
+        if (Property.ROJAC_DEBUG_MODE.get()) {
+            sourceStackTrace = new Throwable("Track source");
+        } else {
+            sourceStackTrace = null;
+        }
+    }
+
+    /**
      * Implement action method to handle risen exceptions during command execution.
      *
      * @return return object obtained via {@link #perform()} method.
@@ -30,6 +44,9 @@ public abstract class RojacWorker<T, V> extends SwingWorker<T, V> implements Run
             return perform();
         } catch (Throwable e) {
             log.error("Got exception in working thread.", e);
+            if (sourceStackTrace != null) {
+                log.error("Source tracing.", e);
+            }
             RojacUtils.showExceptionDialog(e);
             if (e instanceof Exception) {
                 throw (Exception) e;

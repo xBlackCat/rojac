@@ -25,20 +25,12 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.DialogHelper;
-import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.SynchronizationUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -277,6 +269,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
                 itemView.getComponent()
         );
 
+        ShortCutUtils.mergeInputMaps(view, itemView.getComponent());
 
         DockingWindowProperties props = view.getWindowProperties();
         props.setMinimizeEnabled(false);
