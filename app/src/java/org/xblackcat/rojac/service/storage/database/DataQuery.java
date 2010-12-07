@@ -327,6 +327,12 @@ public enum DataQuery implements IPropertiable {
     /**
      * Query for updating ratings cache for message.
      *
+     * Category id (int), message id (int)
+     */
+    UPDATE_MESSAGE_CATEGORY,
+    /**
+     * Query for updating ratings cache for message.
+     *
      * rating cache (string), message id (int)
      */
     UPDATE_MESSAGE_RATING_CACHE,
