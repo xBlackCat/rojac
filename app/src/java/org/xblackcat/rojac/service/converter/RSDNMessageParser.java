@@ -57,6 +57,7 @@ public class RSDNMessageParser implements IMessageParser {
                 "</head>" +
                 "<body>" +
                 htmlBody +
+                "<div class='message_footer'>&nbsp;</div>" +
                 "</body>" +
                 "</html>";
     }

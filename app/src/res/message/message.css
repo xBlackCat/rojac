@@ -358,3 +358,10 @@ a.media:visited {
 a.media:hover {
     border-bottom: solid 1px #B0B0B0;
 }
+
+.message_footer {
+    background-color: #E0F0E0;
+    width: 100%;
+    display: block;
+    padding: 0 5px;
+}
