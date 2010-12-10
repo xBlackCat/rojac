@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
+import org.xblackcat.rojac.data.favorite.IFavorite;
+import org.xblackcat.rojac.data.favorite.UnreadTrackingFavorite;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.service.datahandler.IPacket;

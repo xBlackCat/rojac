@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.view.favorites;
+package org.xblackcat.rojac.data.favorite;
 
 import java.util.Random;
 
@@ -6,7 +6,7 @@ import java.util.Random;
  * @author xBlackCat
  */
 
-public class UnreadTrackingFavorite implements IFavorite {
+public class UnreadTrackingFavorite extends AFavorite {
     private final Random random = new Random();
 
     @Override
@@ -39,5 +39,10 @@ public class UnreadTrackingFavorite implements IFavorite {
         int v = random.nextInt(100);
         int t = v + random.nextInt(100);
         return v + " of " + t;
+    }
+
+    @Override
+    protected void setConfig(String configString) {
+
     }
 }
