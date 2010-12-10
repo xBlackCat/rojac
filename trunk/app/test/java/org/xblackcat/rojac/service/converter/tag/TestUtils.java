@@ -69,6 +69,6 @@ public final class TestUtils {
                 ResourceUtils.getFullPathToResource("/message/message.css")
                 + "' rel='stylesheet' type='text/css'/></head><body>" +
                 expected +
-                "</body></html>";
+                "<div class='message_footer'>&nbsp;</div></body></html>";
     }
 }
