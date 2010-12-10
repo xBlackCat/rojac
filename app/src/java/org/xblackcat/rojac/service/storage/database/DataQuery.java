@@ -73,6 +73,12 @@ public enum DataQuery implements IPropertiable {
      * message id(int), topic id(int), user id(int), user rating(int), rate(int), rate date(long)
      */
     GET_OBJECTS_RATING,
+    /**
+     * The query fetches all the favorite objects.
+     *
+     * fields order for the favorites table: id (int), name(string), type(string), config(string)
+     */
+    GET_OBJECTS_FAVORITE,
 
     // All insert object queries
     /**
@@ -146,6 +152,12 @@ public enum DataQuery implements IPropertiable {
      * messageId (int)
      */
     STORE_OBJECT_EXTRA_MESSAGE,
+    /**
+     * The query for storing a new record of favorites object.
+     *
+     * fields order for the favorites table: id (int), name(string), type(string), config(string)
+     */
+    STORE_OBJECT_FAVORITE,
 
     // Get objects by its properties
     /**
@@ -209,6 +221,10 @@ public enum DataQuery implements IPropertiable {
      */
     REMOVE_OBJECTS_MODERATE,
     /**
+     * The query removes favorite object by its id
+     */
+    REMOVE_OBJECT_FAVORITE,
+    /**
      * The query for clearing all the extra messages.
      */
     REMOVE_ALL_OBJECTS_EXTRA_MESSAGE,
@@ -263,6 +279,7 @@ public enum DataQuery implements IPropertiable {
     // Queries for getting next id value for object primary key
     GET_NEXT_ID_NEW_RATING,
     GET_NEXT_ID_NEW_MESSAGE,
+    GET_NEXT_ID_FAVORITE,
 
     // Other queries
     /**

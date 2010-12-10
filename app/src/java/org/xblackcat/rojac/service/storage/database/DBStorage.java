@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.service.storage.database;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.*;
@@ -10,11 +9,12 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
 import org.xblackcat.rojac.service.storage.database.helper.QueryHelper;
-import org.xblackcat.utils.ResourceUtils;
+import org.xblackcat.rojac.util.QueryUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ASUS
@@ -42,12 +42,8 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
     public DBStorage(String propRoot, IConnectionFactory connectionFactory) throws StorageException {
         try {
-            this.queries = loadSQLs('/' + propRoot + "/sql.data.properties", DataQuery.class);
-            this.initializeQueries = loadInitializeSQLs(
-                    '/' + propRoot + "/sql.check.properties",
-                    '/' + propRoot + "/sql.initialize.properties",
-                    '/' + propRoot + "/sql.depends.properties"
-            );
+            this.queries = QueryUtils.loadSQLs(propRoot, DataQuery.class);
+            this.initializeQueries = QueryUtils.loadInitializeSQLs(propRoot);
 
             helper = new QueryHelper(connectionFactory);
         } catch (StorageInitializationException e) {
@@ -224,122 +220,4 @@ public class DBStorage implements IStorage, IQueryExecutor {
         return queries.get(q);
     }
 
-    private <T extends Enum<T> & IPropertiable> Map<T, String> loadSQLs(String name, Class<T> type) throws IOException, StorageInitializationException {
-        Properties queries = ResourceUtils.loadProperties(name);
-
-        Map<T, String> qs = new EnumMap<T, String>(type);
-        for (T q : type.getEnumConstants()) {
-            String sql = (String) queries.remove(q.getPropertyName());
-            if (sql != null) {
-                if (log.isTraceEnabled()) {
-                    log.trace("Property '" + q.getPropertyName() + "' initialized with SQL: " + sql);
-                }
-                qs.put(q, sql);
-            } else {
-                throw new StorageInitializationException(q + " is not initialized.");
-            }
-        }
-
-        if (!queries.isEmpty()) {
-            if (log.isWarnEnabled()) {
-                log.warn("There are unused properties in " + name);
-                for (Map.Entry<Object, Object> entry : queries.entrySet()) {
-                    log.warn("Property: " + entry.getKey() + " = " + entry.getValue());
-                }
-            }
-            throw new StorageInitializationException("There are some excess properties in " + name);
-        }
-
-        return Collections.unmodifiableMap(qs);
-    }
-
-    /**
-     * Loads and returns a new Properties object for given resource or path name.
-     *
-     * @param propertiesFile
-     *
-     * @return
-     * @throws java.io.IOException
-     */
-    private static Map<String, String> loadProperties(String propertiesFile) throws IOException {
-        InputStream is;
-        try {
-            is = ResourceUtils.getResourceAsStream(propertiesFile);
-        } catch (MissingResourceException e) {
-            if (propertiesFile.toLowerCase().endsWith(".properties")) {
-                throw e;
-            } else {
-                is = ResourceUtils.getResourceAsStream(propertiesFile + ".properties");
-            }
-        }
-
-        final Map<String, String> map = new LinkedHashMap<String, String>();
-        // Workaround to load properties in natural order.
-        Properties p = new Properties() {
-            @Override
-            public Object put(Object key, Object value) {
-                map.put(key.toString(), value.toString());
-                return super.put(key, value);
-            }
-        };
-        p.load(is);
-
-        return map;
-    }
-
-    private Map<SQL, List<SQL>> loadInitializeSQLs(String checkProp, String initProps, String config) throws IOException {
-        Map<String, String> check = loadProperties(checkProp);
-        Properties init = ResourceUtils.loadProperties(initProps);
-        Properties clue = ResourceUtils.loadProperties(config);
-
-        Map<SQL, List<SQL>> map = new LinkedHashMap<SQL, List<SQL>>();
-
-        for (Map.Entry<String, String> ce : check.entrySet()) {
-            String name = ce.getKey();
-            String sql = ce.getValue();
-
-            String inits = clue.getProperty(name, "");
-            List<SQL> sqls = new ArrayList<SQL>();
-            String[] initNames = inits.trim().split(",");
-            if (!ArrayUtils.isEmpty(initNames)) {
-                for (String initName : initNames) {
-                    String initSql = init.getProperty(initName.trim());
-                    if (StringUtils.isBlank(initSql)) {
-                        if (log.isWarnEnabled()) {
-                            log.warn(initName + " SQL not defined (Used in " + name + "). Initialization routine can be work improperly.");
-                        }
-                    } else {
-                        sqls.add(new SQL(initName, initSql));
-                    }
-                }
-            }
-
-            map.put(new SQL(name, sql), sqls);
-        }
-
-        return Collections.unmodifiableMap(map);
-    }
-
-    private static class SQL {
-        private final String name;
-        private final String sql;
-
-        private SQL(String name, String sql) {
-            this.name = name;
-            this.sql = sql;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getSql() {
-            return sql;
-        }
-
-        @Override
-        public String toString() {
-            return getName();
-        }
-    }
 }
