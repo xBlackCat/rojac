@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
+import org.xblackcat.rojac.util.QueryUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public abstract class AConnectionFactory implements IConnectionFactory {
         // The properties file should be located in /<propRoot>/database.properties
         Properties databaseProperties;
         try {
-            databaseProperties = ResourceUtils.loadProperties(configurationName + "/database.properties");
+            databaseProperties = ResourceUtils.loadProperties(QueryUtils.DBCONFIG_PACKAGE + configurationName + "/database.properties");
         } catch (IOException e) {
             throw new StorageInitializationException("Can not load config from the database.properties", e);
         }

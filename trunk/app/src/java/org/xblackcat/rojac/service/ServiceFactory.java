@@ -35,7 +35,6 @@ public final class ServiceFactory {
     private static final Log log = LogFactory.getLog(ServiceFactory.class);
 
     private static ServiceFactory INSTANCE = null;
-    private static final String DBCONFIG_PACKAGE = "dbconfig/";
 
     public static ServiceFactory getInstance() {
         return INSTANCE;
@@ -163,7 +162,7 @@ public final class ServiceFactory {
         checkPath(home);
         checkPath(dbHome);
 
-        String configurationName = DBCONFIG_PACKAGE + mainProperties.getProperty("rojac.database.engine");
+        String configurationName = mainProperties.getProperty("rojac.database.engine");
 
         IConnectionFactory connectionFactory = new PooledConnectionFactory(configurationName);
         DBStorage storage = new DBStorage(configurationName, connectionFactory);
