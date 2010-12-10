@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.view.message.AItemView;
+import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
@@ -17,7 +17,7 @@ import java.beans.PropertyChangeListener;
  * @author xBlackCat
  */
 
-public class ThreadDoubleView extends AItemView {
+public class ThreadDoubleView extends AnItemView {
     private final IItemView masterView;
     private final IItemView slaveView;
 
