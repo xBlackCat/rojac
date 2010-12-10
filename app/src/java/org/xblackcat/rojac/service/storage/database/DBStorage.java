@@ -39,6 +39,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
     private final DBNewMessageAH newMessageAH;
     private final DBMessageAH messageAH;
     private final DBMiscAH miscAH;
+    private final DBFavoriteAH favoriteAH;
 
     public DBStorage(String propRoot, IConnectionFactory connectionFactory) throws StorageException {
         try {
@@ -51,7 +52,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
         } catch (IOException e) {
             throw new StorageInitializationException("Can not setup storage factory.", e);
         } catch (Exception e) {
-            throw new StorageInitializationException("Unspecified exception occurs while DB storage initializating.", e);
+            throw new StorageInitializationException("Unspecified exception occurs while DB storage initialization.", e);
         }
 
         // Initialize the object AHs
@@ -66,6 +67,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
         messageAH = new DBMessageAH(this);
         miscAH = new DBMiscAH(this);
         newModerateAH = new DBNewModerateAH(this);
+        favoriteAH = new DBFavoriteAH(this);
     }
 
     /* Initialization routines */
@@ -116,6 +118,10 @@ public class DBStorage implements IStorage, IQueryExecutor {
                     success = Boolean.TRUE.equals(c);
                 } catch (StorageException e) {
                     throw new StorageCheckException("Post check failed for " + check, e);
+                }
+
+                if (!success) {
+                    throw new StorageCheckException("Post check failed for " + check);
                 }
             }
         }
@@ -182,6 +188,11 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     @Override
+    public IFavoriteAH getFavoriteAH() {
+        return favoriteAH;
+    }
+
+    @Override
     public int update(DataQuery sql, Object... params) throws StorageException {
         return helper.update(getQuery(sql), params);
     }
@@ -207,7 +218,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
         int[] ids;
 
         try {
-            // Conver collection of Integer to array of int.
+            // Convert collection of Integer to array of int.
             ids = ArrayUtils.toPrimitive(objIds.toArray(new Integer[objIds.size()]));
         } catch (NullPointerException e) {
             throw new StorageDataException("Got null instead of real value.", e);

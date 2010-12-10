@@ -31,4 +31,6 @@ public interface IStorage {
     IMiscAH getMiscAH();
 
     void shutdown() throws StorageException;
+
+    IFavoriteAH getFavoriteAH();
 }
