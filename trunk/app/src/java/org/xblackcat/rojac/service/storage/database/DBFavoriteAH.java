@@ -10,7 +10,7 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
  * @author xBlackCat
  */
 
-public class DBFavoriteAH implements IFavoriteAH{
+class DBFavoriteAH implements IFavoriteAH{
     private final IQueryExecutor helper;
 
     public DBFavoriteAH(IQueryExecutor helper) {
@@ -19,19 +19,18 @@ public class DBFavoriteAH implements IFavoriteAH{
 
     @Override
     public IFavorite createFavorite(String name, FavoriteType type, String config) throws StorageException {
-        long nextId = helper.executeSingle(
+        int nextId = helper.executeSingle(
                 Converters.TO_NUMBER,
-                DataQuery.GET_NEXT_ID_NEW_MESSAGE
-        ).longValue();
+                DataQuery.GET_NEXT_ID_FAVORITE
+        ).intValue();
         helper.update(
-                DataQuery.STORE_OBJECT_NEW_MESSAGE,
+                DataQuery.STORE_OBJECT_FAVORITE,
                 nextId,
-                nm.getParentId(),
-                nm.getForumId(),
-                nm.getSubject(),
-                nm.getMessage()
+                name,
+                type.name(),
+                config
         );
-        return null;
+        return FavoriteType.restoreFavorite(nextId, name, type.name(), config);
     }
 
     @Override

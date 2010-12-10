@@ -18,7 +18,7 @@ public interface IFavorite {
      */
     String getConfig();
 
-    boolean isMarked();
+    boolean isHighlighted();
 
     String getName();
 

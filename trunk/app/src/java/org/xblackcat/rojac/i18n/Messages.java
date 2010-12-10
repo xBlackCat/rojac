@@ -174,6 +174,13 @@ public enum Messages {
     Synchronize_Message_CompressionNotUsed,
     Synchronize_Message_ProxyUsed,
 
+    // Favorite-related messages
+    Favorite_Name_UnreadTreadPosts,
+    Favorite_Name_UserPosts,
+    Favorite_Name_PostResponses,
+    Favorite_Name_UserResponses,
+    Favorite_Name_Category,
+
     // Mark descriptions
     Description_Mark_Select,
     Description_Mark_PlusOne,

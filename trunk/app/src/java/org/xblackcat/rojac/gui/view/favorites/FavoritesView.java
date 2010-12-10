@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
+import org.xblackcat.rojac.data.favorite.FavoriteType;
 import org.xblackcat.rojac.data.favorite.IFavorite;
-import org.xblackcat.rojac.data.favorite.UnreadTrackingFavorite;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -24,7 +24,10 @@ public class FavoritesView extends AView {
         favoritesList.setDefaultRenderer(IFavorite.class, new FavoriteCellRenderer());
         JScrollPane scrollPane = new JScrollPane(favoritesList);
 
-        dataModel.reload(new UnreadTrackingFavorite(), new UnreadTrackingFavorite());
+        dataModel.reload(
+                FavoriteType.restoreFavorite(1, "Test #1", FavoriteType.UnreadPostResponses.name(), ""),
+                FavoriteType.restoreFavorite(1, "Test #2", FavoriteType.Category.name(), "")
+        );
 
         add(scrollPane);
     }

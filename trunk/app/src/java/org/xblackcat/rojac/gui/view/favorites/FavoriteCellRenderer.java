@@ -194,7 +194,7 @@ class FavoriteCellRenderer  extends JLightPanel
         IFavorite f = (IFavorite) value;
 
 
-        boolean isMarked = f.isMarked();
+        boolean isMarked = f.isHighlighted();
         String titleText = f.getName();
         String statText = f.getStatistic();
         String infoText = f.getFavoriteType().getTypeName();

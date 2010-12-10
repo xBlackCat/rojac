@@ -6,8 +6,12 @@ import java.util.Random;
  * @author xBlackCat
  */
 
-public class UnreadTrackingFavorite extends AFavorite {
+class UnreadPostResponseFavorite extends AFavorite {
     private final Random random = new Random();
+
+    UnreadPostResponseFavorite(Integer id, String name, String config) {
+        super(name, id);
+    }
 
     @Override
     public void updateStatistic(Runnable runnable) {
@@ -15,22 +19,17 @@ public class UnreadTrackingFavorite extends AFavorite {
 
     @Override
     public FavoriteType getFavoriteType() {
-        return FavoriteType.UnreadThreadPosts;
+        return FavoriteType.UnreadPostResponses;
     }
 
     @Override
-    public boolean isMarked() {
+    public boolean isHighlighted() {
         return random.nextBoolean();
     }
 
     @Override
     public String getConfig() {
         return null;
-    }
-
-    @Override
-    public String getName() {
-        return "Test favorite";
     }
 
     @Override
