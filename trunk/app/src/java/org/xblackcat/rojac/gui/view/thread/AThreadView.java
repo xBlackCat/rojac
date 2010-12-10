@@ -6,8 +6,8 @@ import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
+import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
-import org.xblackcat.rojac.gui.view.message.AItemView;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
@@ -29,7 +29,7 @@ import java.beans.PropertyChangeListener;
  * @author xBlackCat
  */
 
-public abstract class AThreadView extends AItemView {
+public abstract class AThreadView extends AnItemView {
     private static final Log log = LogFactory.getLog(TreeThreadView.class);
 
     protected final IThreadControl<Post> threadControl;

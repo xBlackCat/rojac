@@ -12,6 +12,7 @@ import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -45,7 +46,7 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
  * @author xBlackCat
  */
 
-public class MessageView extends AItemView implements IInternationazable {
+public class MessageView extends AnItemView implements IInternationazable {
     private static final Log log = LogFactory.getLog(MessageView.class);
     public static final String MESSAGE_VIEWED_FLAG = "MessageViewed";
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();

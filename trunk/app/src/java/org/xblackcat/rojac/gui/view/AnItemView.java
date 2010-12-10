@@ -1,17 +1,16 @@
-package org.xblackcat.rojac.gui.view.message;
+package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.ViewId;
-import org.xblackcat.rojac.gui.view.AView;
 
 /**
  * @author xBlackCat
  */
 
-public abstract class AItemView extends AView implements IItemView {
-    protected AItemView(ViewId id, IRootPane mainFrame) {
+public abstract class AnItemView extends AView implements IItemView {
+    protected AnItemView(ViewId id, IRootPane mainFrame) {
         super(id, mainFrame);
     }
 
