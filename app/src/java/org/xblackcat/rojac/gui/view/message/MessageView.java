@@ -28,6 +28,7 @@ import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
@@ -125,7 +126,7 @@ public class MessageView extends AnItemView implements IInternationazable {
         userInfoPane.add(userInfoLabel);
 
         JPanel messageInfoPane = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        labelPane.add(messageInfoPane, BorderLayout.EAST);
+        titlePane.add(messageInfoPane, BorderLayout.EAST);
         messageInfoPane.add(dateLabel);
         messageInfoPane.add(messageDateLabel);
 
@@ -140,6 +141,7 @@ public class MessageView extends AnItemView implements IInternationazable {
         marksButton.setOpaque(false);
         marksButton.setRolloverEnabled(true);
         marksButton.setVisible(false);
+        labelPane.add(marksButton, BorderLayout.EAST);
 
         final IconsModel marksModel = new IconsModel(
                 Mark.PlusOne,
@@ -169,8 +171,8 @@ public class MessageView extends AnItemView implements IInternationazable {
 
         controls.add(answer);
         controls.add(marks);
-        controls.add(marksButton);
-        titlePane.add(controls, BorderLayout.SOUTH);
+        controls.setBorder(new EmptyBorder(2, 0, 2, 0));
+        titlePane.add(controls, BorderLayout.WEST);
 
         return titlePane;
     }
