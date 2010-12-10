@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
+import org.xblackcat.rojac.data.favorite.IFavorite;
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
 import sun.swing.DefaultLookup;

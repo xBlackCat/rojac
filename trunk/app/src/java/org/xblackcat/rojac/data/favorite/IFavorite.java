@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.view.favorites;
+package org.xblackcat.rojac.data.favorite;
 
 /**
  * Base interface for hold information about favorite. It contains own renderer.
