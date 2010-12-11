@@ -5,18 +5,14 @@ package org.xblackcat.rojac.data.favorite;
  */
 
 abstract class AFavorite implements IFavorite {
-    protected final String name;
     protected final Integer id;
 
-    protected AFavorite(String name, Integer id) {
-        this.name = name;
+    protected AFavorite(Integer id) {
         this.id = id;
     }
 
-    protected abstract void setConfig(String configString);
-
     @Override
     public String getName() {
-        return name;
+        return getClass().getName();
     }
 }

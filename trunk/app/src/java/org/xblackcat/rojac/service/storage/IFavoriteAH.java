@@ -20,7 +20,6 @@ public interface IFavoriteAH {
     /**
      * Store a new favorite in database and return it.
      *
-     * @param name Favorite name.
      * @param type favorite type
      * @param config
      *
@@ -28,7 +27,7 @@ public interface IFavoriteAH {
      *
      * @throws StorageException
      */
-    IFavorite createFavorite(String name, FavoriteType type, String config) throws StorageException;
+    IFavorite createFavorite(FavoriteType type, String config) throws StorageException;
 
     /**
      * Removes a favorite.

@@ -124,6 +124,8 @@ public class PopupMenuBuilder {
         MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
+        menu.addSeparator();
+        menu.add(MenuHelper.favoritesSubmenu(message, mainFrame));
 
         return menu;
     }

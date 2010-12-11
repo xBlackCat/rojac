@@ -4,37 +4,112 @@ import org.xblackcat.rojac.data.favorite.FavoriteType;
 import org.xblackcat.rojac.data.favorite.IFavorite;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.service.datahandler.FavoriteCategoryUpdatedPacket;
+import org.xblackcat.rojac.service.datahandler.FavoritesUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
 /**
  * @author xBlackCat
  */
 
 public class FavoritesView extends AView {
-    private final FavoritesModel dataModel = new FavoritesModel();
+    private final FavoritesModel favoritesModel = new FavoritesModel();
 
     public FavoritesView(IRootPane rootPane) {
         super(null, rootPane);
 
-        JTable favoritesList = new JTable(dataModel);
+        final JTable favoritesList = new JTable(favoritesModel);
         favoritesList.setTableHeader(null);
         favoritesList.setDefaultRenderer(IFavorite.class, new FavoriteCellRenderer());
         JScrollPane scrollPane = new JScrollPane(favoritesList);
 
-        dataModel.reload(
-                FavoriteType.restoreFavorite(1, "Test #1", FavoriteType.UnreadPostResponses.name(), ""),
-                FavoriteType.restoreFavorite(1, "Test #2", FavoriteType.Category.name(), "")
-        );
-
         add(scrollPane);
+
+        favoritesList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                checkMenu(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                checkMenu(e);
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                checkMenu(e);
+            }
+
+            private void checkMenu(MouseEvent e) {
+                final Point p = e.getPoint();
+
+                int ind = favoritesList.rowAtPoint(p);
+
+                int modelInd = favoritesList.convertRowIndexToModel(ind);
+
+                IFavorite favorite = favoritesModel.getValueAt(modelInd, 0);
+
+                if (e.isPopupTrigger()) {
+//                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, forumsModel, mainFrame);
+//
+//                    menu.show(e.getComponent(), p.x, p.y);
+                } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
+//                    mainFrame.openFavoriteTab(favorite);
+                }
+            }
+        });
+
+        reloadFavorites();
+    }
+
+    private void reloadFavorites() {
+        new RojacWorker<Void, IFavorite>() {
+            @Override
+            protected Void perform() throws Exception {
+                publish(storage.getFavoriteAH().getFavorites());
+
+                return null;
+            }
+
+            @Override
+            protected void process(List<IFavorite> chunks) {
+                favoritesModel.reload(chunks);
+            }
+        }.execute();
     }
 
     @Override
     protected IPacketProcessor<IPacket>[] getProcessors() {
-        return null;
+        return new IPacketProcessor[]{
+                new IPacketProcessor<FavoritesUpdatedPacket>() {
+                    @Override
+                    public void process(FavoritesUpdatedPacket p) {
+                        reloadFavorites();
+                    }
+                },
+                new IPacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
+                        favoritesModel.updateFavoriteData(null);
+                    }
+                },
+                new IPacketProcessor<FavoriteCategoryUpdatedPacket>() {
+                    @Override
+                    public void process(FavoriteCategoryUpdatedPacket p) {
+                        favoritesModel.updateFavoriteData(FavoriteType.Category);
+                    }
+                }
+        };
     }
 
 }

@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.service.storage.database.convert;
 
 import org.xblackcat.rojac.data.*;
+import org.xblackcat.rojac.data.favorite.IFavorite;
 
 /**
  * @author xBlackCat
@@ -25,6 +26,7 @@ public final class Converters {
     public static final IToObjectConverter<MarkStat> TO_MARK_STAT = new ToMarkStatConverter();
     public static final IToObjectConverter<MessageData> TO_MESSAGE_DATA = new ToMessageDataConverter();
     public static final IToObjectConverter<ThreadStatData> TO_THREAD_DATA = new ToThreadDataConverter();
+    public static final IToObjectConverter<IFavorite> TO_FAVORITE = new ToFavoriteConverter();
 
     private Converters() {
     }
