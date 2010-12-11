@@ -6,11 +6,11 @@ import java.util.Random;
  * @author xBlackCat
  */
 
-class UnreadPostResponseFavorite extends AFavorite {
+class UnreadPostResponseFavorite extends AnItemFavorite {
     private final Random random = new Random();
 
-    UnreadPostResponseFavorite(Integer id, String name, String config) {
-        super(name, id);
+    UnreadPostResponseFavorite(Integer id, String config) {
+        super(id, config);
     }
 
     @Override
@@ -28,11 +28,6 @@ class UnreadPostResponseFavorite extends AFavorite {
     }
 
     @Override
-    public String getConfig() {
-        return null;
-    }
-
-    @Override
     public String getStatistic() {
         Random random = this.random;
         int v = random.nextInt(100);
@@ -40,8 +35,4 @@ class UnreadPostResponseFavorite extends AFavorite {
         return v + " of " + t;
     }
 
-    @Override
-    protected void setConfig(String configString) {
-
-    }
 }

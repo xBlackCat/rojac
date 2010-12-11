@@ -5,7 +5,7 @@ import org.xblackcat.rojac.data.favorite.IFavorite;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -46,10 +46,10 @@ public class FavoritesModel extends AbstractTableModel {
         }
     }
 
-    public void reload(IFavorite... favorites) {
+    public void reload(Collection<IFavorite> favorites) {
         this.favorites.clear();
 
-        this.favorites.addAll(Arrays.asList(favorites));
+        this.favorites.addAll(favorites);
         fireTableDataChanged();
 
         updateFavoriteData(null);

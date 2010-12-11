@@ -9,11 +9,13 @@ import java.sql.SQLException;
 
 public interface IToObjectConverter<T> {
     /**
-     * Converts
+     * Converts a current row in ResultSet object to correspond object.
      *
-     * @param rs
+     * @param rs result of query.
      *
-     * @return
+     * @return a new object from ResultSet row fields
+     *
+     * @throws java.sql.SQLException if any database related storage is affected.
      */
     T convert(ResultSet rs) throws SQLException;
 }

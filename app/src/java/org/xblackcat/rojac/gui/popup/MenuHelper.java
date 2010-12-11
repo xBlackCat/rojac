@@ -1,8 +1,10 @@
 package org.xblackcat.rojac.gui.popup;
 
+import org.xblackcat.rojac.data.favorite.FavoriteType;
 import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
+import org.xblackcat.rojac.gui.view.thread.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
 
@@ -89,8 +91,7 @@ final class MenuHelper {
     }
 
     static JMenuItem markReadUnreadSubmenu(ITreeItem<?> message, IRootPane mainFrame) {
-        JMenu menu = new JMenu();
-        menu.setText(Messages.Popup_View_ThreadsTree_Mark_Title.get());
+        JMenu menu = new JMenu(Messages.Popup_View_ThreadsTree_Mark_Title.get());
 
         menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadRead, message, true));
         menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadUnread, message, false));
@@ -107,4 +108,23 @@ final class MenuHelper {
         return menu;
     }
 
+    /**
+     * Creates a submenu to add the
+     * @param post
+     * @param rootPane
+     * @return
+     */
+    public static JMenuItem favoritesSubmenu(Post post, IRootPane rootPane) {
+        JMenu menu = new JMenu("Add to favorite");
+
+        menu.add(new AddToFavoriteMenuItem("Thread", FavoriteType.UnreadPostsInThread, post.getTopicId()));
+        menu.add(new AddToFavoriteMenuItem("Sub-thread", FavoriteType.UnreadPostResponses, post.getMessageId()));
+        menu.addSeparator();
+        menu.add(new AddToFavoriteMenuItem(post.getMessageData().getUserName() + "'s posts", FavoriteType.UnreadUserPosts, post.getMessageData().getUserId()));
+        menu.add(new AddToFavoriteMenuItem("Responses on " + post.getMessageData().getUserName() + "'s posts", FavoriteType.UnreadUserResponses, post.getMessageData().getUserId()));
+//        menu.addSeparator();
+//        menu.add(new AddToFavoriteMenuItem("Add thread to favorites", FavoriteType.Category, post.getMessageData().getCategory()));
+
+        return menu;
+    }
 }
