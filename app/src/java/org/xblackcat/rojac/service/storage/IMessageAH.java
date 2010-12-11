@@ -105,6 +105,8 @@ public interface IMessageAH extends AH {
 
     int getUnreadReplies(int userId) throws StorageException;
 
+    int getUnreadUserPosts(int userId) throws StorageException;
+
     void updateThreadReadFlag(int messageId, boolean read) throws StorageException;
 
     void updateMessageRatingCache(int id, String ratingsCache) throws StorageException;

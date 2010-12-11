@@ -132,6 +132,11 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
+    public int getUnreadUserPosts(int userId) throws StorageException {
+        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_POSTS_NUMBER, userId).intValue();
+    }
+
+    @Override
     public void updateThreadReadFlag(int messageId, boolean read) throws StorageException {
         helper.update(DataQuery.UPDATE_MESSAGE_READ_FLAG,
                 read,

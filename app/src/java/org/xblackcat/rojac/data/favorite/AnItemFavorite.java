@@ -1,11 +1,18 @@
 package org.xblackcat.rojac.data.favorite;
 
+import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacWorker;
+
+import java.util.List;
+
 /**
  * @author xBlackCat
  */
 
-public abstract class AnItemFavorite extends AFavorite {
+abstract class AnItemFavorite extends AFavorite {
     protected final int itemId;
+
+    protected Integer amount = null;
 
     protected AnItemFavorite(Integer id, String config) {
         this(id, Integer.parseInt(config));
@@ -20,5 +27,53 @@ public abstract class AnItemFavorite extends AFavorite {
     @Override
     public String getConfig() {
         return String.valueOf(itemId);
+    }
+
+    @Override
+    public boolean isHighlighted() {
+        return amount != null && amount > 0;
+    }
+
+    @Override
+    public String getStatistic() {
+        if (amount != null) {
+            return String.valueOf(amount);
+        } else {
+            return "...";
+        }
+    }
+
+    @Override
+    public void updateStatistic(Runnable callback) {
+        new ValuesLoader(callback).execute();
+    }
+
+    protected abstract int loadAmount() throws StorageException;
+
+    private class ValuesLoader extends RojacWorker<Void, Void> {
+        private int amount;
+        private final Runnable callback;
+
+        public ValuesLoader(Runnable callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void perform() throws Exception {
+            amount = loadAmount();
+
+            publish();
+            return null;
+        }
+
+        @Override
+        protected void process(List<Void> chunks) {
+            AnItemFavorite.this.amount = amount;
+        }
+
+        @Override
+        protected void done() {
+            callback.run();
+        }
     }
 }
