@@ -392,6 +392,10 @@ public enum DataQuery implements IPropertiable {
      */
     GET_UNREAD_MESSAGES_NUMBER_IN_THREAD,
     /**
+     * Returns unread messages number of a user. Parameter is userId.
+     */
+    GET_UNREAD_USER_POSTS_NUMBER,
+    /**
      * Returns date of last message in forum and amount of replays. Parameter is threadId.
      */
     GET_THREAD_STAT_DATA,

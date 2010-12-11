@@ -1,20 +1,15 @@
 package org.xblackcat.rojac.data.favorite;
 
-import java.util.Random;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
  * @author xBlackCat
  */
 
 class UnreadUserResponseFavorite extends AnItemFavorite {
-    private final Random random = new Random();
-
     UnreadUserResponseFavorite(Integer id, String config) {
         super(id, config);
-    }
-
-    @Override
-    public void updateStatistic(Runnable runnable) {
     }
 
     @Override
@@ -23,15 +18,7 @@ class UnreadUserResponseFavorite extends AnItemFavorite {
     }
 
     @Override
-    public boolean isHighlighted() {
-        return random.nextBoolean();
-    }
-
-    @Override
-    public String getStatistic() {
-        Random random = this.random;
-        int v = random.nextInt(100);
-        int t = v + random.nextInt(100);
-        return v + " of " + t;
+    protected int loadAmount() throws StorageException {
+        return ServiceFactory.getInstance().getStorage().getMessageAH().getUnreadReplies(itemId);
     }
 }
