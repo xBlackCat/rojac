@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.view.favorites;
 
 import org.xblackcat.rojac.data.favorite.FavoriteType;
 import org.xblackcat.rojac.data.favorite.IFavorite;
-import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.service.datahandler.FavoriteCategoryUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.FavoritesUpdatedPacket;
@@ -24,8 +24,8 @@ import java.util.List;
 public class FavoritesView extends AView {
     private final FavoritesModel favoritesModel = new FavoritesModel();
 
-    public FavoritesView(IRootPane rootPane) {
-        super(null, rootPane);
+    public FavoritesView(IAppControl appControl) {
+        super(null, appControl);
 
         final JTable favoritesList = new JTable(favoritesModel);
         favoritesList.setTableHeader(null);

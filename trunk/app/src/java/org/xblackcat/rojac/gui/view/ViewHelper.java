@@ -2,18 +2,13 @@ package org.xblackcat.rojac.gui.view;
 
 import net.infonode.docking.View;
 import org.xblackcat.rojac.RojacDebugException;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IItemView;
-import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.IView;
-import org.xblackcat.rojac.gui.MainFrame;
-import org.xblackcat.rojac.gui.ViewId;
-import org.xblackcat.rojac.gui.view.message.MessageView;
-import org.xblackcat.rojac.gui.view.thread.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 /**
  * Helper class to replace sequence of 'new' operators.
@@ -22,61 +17,14 @@ import java.io.Serializable;
  */
 
 public final class ViewHelper {
-
-    public static IItemView constructForumThreadsView(ViewId id, IRootPane mainFrame, boolean singleThread) {
-        IThreadControl<Post> threadControl = singleThread ? new SingleThreadControl() : new SortedForumThreadsControl();
-        boolean useTreeTable = true;
-        if (useTreeTable) {
-            return new TreeTableThreadView(id, mainFrame, threadControl);
-        } else {
-            return new TreeThreadView(id, mainFrame, threadControl);
-        }
-    }
-
     /**
-     * Creates a message view.
+     * Stores a view state for future restoring docking layout.
      *
-     * @param id        associated id
-     * @param mainFrame root component.
+     * @param out  output stream to store a view state
+     * @param view view to be stored.
      *
-     * @return a new instance of view
+     * @throws IOException exception will be thrown if write can not be performed.
      */
-    public static IItemView makeMessageView(ViewId id, IRootPane mainFrame) {
-        return new MessageView(id, mainFrame);
-    }
-
-    /**
-     * Creates a compound view. The view is split in to parts: top part contains a tree-table-based forum view and the
-     * bottom part contains a message view.
-     *
-     * @param id        associated id
-     * @param mainFrame root component.
-     *
-     * @return a new instance of view
-     */
-    public static IItemView constructThreadView(ViewId id, IRootPane mainFrame) {
-        IItemView threadView = ViewHelper.constructForumThreadsView(id, mainFrame, true);
-        IItemView messageView = ViewHelper.makeMessageView(null, mainFrame);
-
-        return new ThreadDoubleView(threadView, messageView, true, mainFrame);
-    }
-
-    /**
-     * Creates a compound view. The view is split in to parts: top part contains a tree-table-based forum view and the
-     * bottom part contains a message view.
-     *
-     * @param id        associated id
-     * @param mainFrame root component.
-     *
-     * @return a new instance of view
-     */
-    public static IItemView constructForumView(ViewId id, IRootPane mainFrame) {
-        IItemView threadView = ViewHelper.constructForumThreadsView(id, mainFrame, false);
-        IItemView messageView = ViewHelper.makeMessageView(null, mainFrame);
-
-        return new ThreadDoubleView(threadView, messageView, true, mainFrame);
-    }
-
     public static void storeView(ObjectOutputStream out, View view) throws IOException {
         IView v = (IView) view.getComponent();
 
@@ -107,15 +55,25 @@ public final class ViewHelper {
         out.flush();
     }
 
-    public static View initializeView(ObjectInputStream in, MainFrame mainFrame) throws IOException, ClassNotFoundException {
+    /**
+     * Restores a view in previously saved state.
+     *
+     * @param in         input stream with configuration.
+     * @param appControl application global control interface to be used in restored views.
+     *
+     * @return restored and initialized view.
+     *
+     * @throws IOException            will be thrown if read from stream can not be performed.
+     * @throws ClassNotFoundException will be thrown if object from stream can not be identified.
+     */
+    public static View initializeView(ObjectInputStream in, IAppControl appControl) throws IOException, ClassNotFoundException {
         ViewId id = (ViewId) in.readObject();
         String title = (String) in.readObject();
-        IItemView view;
+        IItemView view = makeView(id, appControl);
 
         switch (id.getType()) {
             case Forum: {
-                view = constructForumView(id, mainFrame);
-                view.loadItem(((ItemId) id).getId());
+                view.loadItem(id.getId());
                 Object o = in.readObject();
                 if (o instanceof ThreadState) {
                     ThreadState state = (ThreadState) o;
@@ -126,8 +84,7 @@ public final class ViewHelper {
                 break;
             }
             case SingleThread: {
-                view = constructThreadView(id, mainFrame);
-                view.loadItem(((ItemId) id).getId());
+                view.loadItem(id.getId());
                 Object o = in.readObject();
                 if (o instanceof ThreadState) {
                     ThreadState state = (ThreadState) o;
@@ -138,8 +95,7 @@ public final class ViewHelper {
                 break;
             }
             case SingleMessage: {
-                view = makeMessageView(id, mainFrame);
-                view.loadItem(((ItemId) id).getId());
+                view.loadItem(id.getId());
                 break;
             }
             default:
@@ -150,17 +106,16 @@ public final class ViewHelper {
         return new View(title, null, view.getComponent());
     }
 
-    private static final class ThreadState implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        private int openedMessageId;
-
-        public ThreadState(int openedMessageId) {
-            this.openedMessageId = openedMessageId;
-        }
-
-        public int openedMessageId() {
-            return openedMessageId;
-        }
+    /**
+     * Creates a view by unique viewId.
+     *
+     * @param viewId     target view identifier.
+     * @param appControl application control to be used in a view.
+     *
+     * @return created view.
+     */
+    public static IItemView makeView(ViewId viewId, IAppControl appControl) {
+        return viewId.getType().getFactory().makeView(viewId, appControl);
     }
+
 }

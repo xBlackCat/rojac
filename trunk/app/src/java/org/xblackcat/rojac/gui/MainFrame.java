@@ -10,27 +10,32 @@ import net.infonode.docking.util.WindowMenuUtil;
 import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.dialogs.EditMessageDialog;
-import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewHelper;
-import org.xblackcat.rojac.gui.view.ViewIds;
+import org.xblackcat.rojac.gui.view.ViewId;
+import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.*;
+import org.xblackcat.rojac.util.DialogHelper;
+import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.ShortCutUtils;
+import org.xblackcat.rojac.util.SynchronizationUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +46,7 @@ import static org.xblackcat.rojac.service.options.Property.*;
  * @author xBlackCat
  */
 
-public class MainFrame extends JFrame implements IConfigurable, IRootPane, IDataHandler {
+public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDataHandler {
     private static final Log log = LogFactory.getLog(MainFrame.class);
 
     private IView forumsListView;
@@ -237,16 +242,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         return view;
     }
 
-    private void extraMessagesDialog(Integer id) {
-        LoadMessageDialog lmd = new LoadMessageDialog(this, id);
-        Integer messageId = lmd.readMessageId();
-        if (messageId != null) {
-            boolean loadAtOnce = lmd.isLoadAtOnce();
-
-            new ExtraMessageLoader(messageId, loadAtOnce, this).execute();
-        }
-    }
-
     private static View createView(Messages title, IView comp) {
         final View view = new View(
                 title.get(),
@@ -262,7 +257,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         return view;
     }
 
-    private void addTabView(String viewName, final IItemView itemView) {
+    private View addTabView(String viewName, final IItemView itemView) {
         final View view = new View(
                 viewName,
                 null,
@@ -309,6 +304,8 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         } else {
             threadsRootWindow.setWindow(new TabWindow(view));
         }
+
+        return view;
     }
 
     /**
@@ -376,20 +373,31 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
     }
 
     @Override
-    public void openForumTab(int forumId) {
-        ViewId viewId = ViewIds.getForumId(forumId);
+    public View openTab(ViewId viewId) {
         View c = openedViews.get(viewId);
         if (c != null && c.getParent() != null) {
             c.makeVisible();
-            return;
+            return c;
         }
 
-        //        return ViewHelper.makeTreeMessageView(this);
-        IItemView forumView = ViewHelper.constructForumView(viewId, this);
+        IItemView v = ViewHelper.makeView(viewId, this);
 
-        addTabView("#" + forumId, forumView);
-        forumView.loadItem(forumId);
+        c = addTabView("#" + viewId.getId(), v);
+        v.loadItem(viewId.getId());
 
+        return c;
+    }
+
+    public void closeTab(ViewId viewId) {
+        if (openedViews.containsKey(viewId)) {
+            View v = openedViews.remove(viewId);
+
+            Container parent = v.getParent();
+            if (parent == null) {
+                throw new NullPointerException("View without parent: " + v);
+            }
+            parent.remove(v);
+        }
     }
 
     private TabWindow searchForTabWindow(DockingWindow rootWindow) {
@@ -409,6 +417,11 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         }
 
         return w;
+    }
+
+    @Override
+    public Window getMainFrame() {
+        return this;
     }
 
     @Override
@@ -442,29 +455,6 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         }
 
         new MessageNavigator(messageId).execute();
-    }
-
-    @Override
-    public void openMessageTab(int messageId) {
-        // Search thought existing data for the message first.
-        final ViewId id = ViewIds.getMessageId(messageId);
-        if (openedViews.containsKey(id)) {
-            openedViews.get(id).makeVisible();
-            return;
-        }
-
-        new MessageChecker(messageId) {
-            @Override
-            protected void done() {
-                if (data != null) {
-                    IItemView messageView = ViewHelper.makeMessageView(id, MainFrame.this);
-                    addTabView("#" + messageId, messageView);
-                    messageView.loadItem(messageId);
-                } else {
-                    extraMessagesDialog(messageId);
-                }
-            }
-        }.execute();
     }
 
     private class ThreadViewSerializer implements ViewSerializer {
@@ -507,38 +497,21 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         }
     }
 
-    private class MessageNavigator extends RojacWorker<Void, Void> {
-        private final int messageId;
-        protected MessageData message;
-
+    private class MessageNavigator extends MessageChecker {
         public MessageNavigator(int messageId) {
-            this.messageId = messageId;
-        }
-
-        @Override
-        protected Void perform() throws Exception {
-            // Loads a message info and forum info.
-            IStorage storage = ServiceFactory.getInstance().getStorage();
-            message = storage.getMessageAH().getMessageData(messageId);
-
-            if (message == null) {
-                return null;
-            }
-
-            return null;
+            super(messageId);
         }
 
         @Override
         protected void done() {
-            if (message == null) {
-                extraMessagesDialog(messageId);
+            if (data == null) {
+                DialogHelper.extraMessagesDialog(MainFrame.this, messageId);
                 return;
             }
 
-            int forumId = message.getForumId();
-            ViewId forumViewId = ViewIds.getForumId(forumId);
+            ViewId forumViewId = ViewType.Forum.makeId(data.getForumId());
 
-            openForumTab(forumId);
+            openTab(forumViewId);
             View c = openedViews.get(forumViewId);
             if (c != null) {
                 // Just in case :)
@@ -578,7 +551,7 @@ public class MainFrame extends JFrame implements IConfigurable, IRootPane, IData
         }
 
         public void actionPerformed(ActionEvent e) {
-            extraMessagesDialog(null);
+            DialogHelper.extraMessagesDialog(MainFrame.this, null);
         }
     }
 

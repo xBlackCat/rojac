@@ -8,7 +8,11 @@ import org.xblackcat.rojac.util.PropertyUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Alexey

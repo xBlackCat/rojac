@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.data.favorite.IFavorite;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.forumlist.ForumTableModel;
 import org.xblackcat.rojac.gui.view.thread.AThreadModel;
@@ -27,11 +28,11 @@ public class PopupMenuBuilder {
      * @param url         URL object of the link.
      * @param stringUrl Text representing of the link.
      * @param text        Text associated with the link.
-     * @param mainFrame   back link to main window control.
+     * @param appControl   back link to main window control.
      *
      * @return new popup menu for the specified url.
      */
-    public static JPopupMenu getLinkMenu(URL url, String stringUrl, String text, IRootPane mainFrame) {
+    public static JPopupMenu getLinkMenu(URL url, String stringUrl, String text, IAppControl appControl) {
         if (url == null) {
             // Invalid url. Try to parse it from text.
 
@@ -60,8 +61,8 @@ public class PopupMenuBuilder {
 
         menu.addSeparator();
         if (messageId != null) {
-            menu.add(MenuHelper.openMessage(messageId, mainFrame));
-            menu.add(MenuHelper.openMessageInTab(messageId, mainFrame));
+            menu.add(MenuHelper.openMessage(messageId, appControl));
+            menu.add(MenuHelper.openMessageInTab(messageId, appControl));
             menu.addSeparator();
             MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, stringUrl);
             MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
@@ -78,13 +79,13 @@ public class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getForumViewMenu(ForumData forum, ForumTableModel forumsModel, IRootPane rootPane) {
+    public static JPopupMenu getForumViewMenu(ForumData forum, ForumTableModel forumsModel, IAppControl appControl) {
         JPopupMenu menu = new JPopupMenu(forum.getForum().getForumName());
 
         final boolean subscribed = forum.isSubscribed();
         final int forumId = forum.getForumId();
 
-        menu.add(new OpenForumAction(rootPane, forumId));
+        menu.add(new OpenForumAction(appControl, forumId));
         menu.addSeparator();
 
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_Forums_SetReadAll, forumId, true));
@@ -102,7 +103,7 @@ public class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getTreeViewPopup(Post message, AThreadModel model, IRootPane mainFrame) {
+    public static JPopupMenu getTreeViewMenu(Post message, AThreadModel model, IAppControl appControl) {
         int messageId = message.getMessageId();
         final JPopupMenu menu = new JPopupMenu("#" + messageId);
 
@@ -111,13 +112,13 @@ public class PopupMenuBuilder {
 
         menu.add(item);
 
-        menu.add(MenuHelper.openMessageInTab(messageId, mainFrame));
+        menu.add(MenuHelper.openMessageInTab(messageId, appControl));
         menu.addSeparator();
 
         menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Read, message, true));
         menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Unread, message, false));
 
-        menu.add(MenuHelper.markReadUnreadSubmenu(message, mainFrame));
+        menu.add(MenuHelper.markReadUnreadSubmenu(message, appControl));
 
         menu.addSeparator();
         MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
@@ -125,9 +126,19 @@ public class PopupMenuBuilder {
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
         menu.addSeparator();
-        menu.add(MenuHelper.favoritesSubmenu(message, mainFrame));
+        menu.add(MenuHelper.favoritesSubmenu(message, appControl));
 
         return menu;
     }
 
+    public static JPopupMenu getFavoritesMenu(IFavorite favorite, IAppControl appControl) {
+        final JPopupMenu menu = new JPopupMenu(favorite.getName());
+
+        JMenuItem item = new JMenuItem();
+        menu.add(item);
+        item.setText("Remove favorite");
+
+
+        return menu;
+    }
 }

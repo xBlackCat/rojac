@@ -6,13 +6,13 @@ import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.RatingCache;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IInternationazable;
-import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AnItemView;
+import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -70,8 +70,8 @@ public class MessageView extends AnItemView implements IInternationazable {
     protected final JComponent titleBar = createTitleBar();
 
 
-    public MessageView(ViewId id, IRootPane mainFrame) {
-        super(id, mainFrame);
+    public MessageView(ViewId id, IAppControl appControl) {
+        super(id, appControl);
 
         initialize();
 
@@ -295,7 +295,7 @@ public class MessageView extends AnItemView implements IInternationazable {
                         e.getURL(),
                         e.getDescription(),
                         LinkUtils.getUrlText(e.getSourceElement()),
-                        mainFrame
+                        appControl
                 );
 
                 Point l = MouseInfo.getPointerInfo().getLocation();
@@ -412,7 +412,7 @@ public class MessageView extends AnItemView implements IInternationazable {
         }
 
         public void actionPerformed(ActionEvent e) {
-            mainFrame.editMessage(forumId, messageId);
+            appControl.editMessage(forumId, messageId);
         }
     }
 

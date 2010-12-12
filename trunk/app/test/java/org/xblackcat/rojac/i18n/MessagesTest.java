@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.join;
 
 public class MessagesTest extends TestCase {
     private static final Log log = LogFactory.getLog(MessagesTest.class);

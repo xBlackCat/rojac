@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IActionListener;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IItemView;
-import org.xblackcat.rojac.gui.IRootPane;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -27,11 +27,11 @@ public class ThreadDoubleView extends AnItemView {
      * @param mv
      * @param sv
      * @param verticalSplit
-     * @param mainFrame
+     * @param appControl
      */
-    public ThreadDoubleView(IItemView mv, IItemView sv, boolean verticalSplit, IRootPane mainFrame) {
+    public ThreadDoubleView(IItemView mv, IItemView sv, boolean verticalSplit, IAppControl appControl) {
         // Copy master view id
-        super(mv.getId(), mainFrame);
+        super(mv.getId(), appControl);
         this.masterView = mv;
         this.slaveView = sv;
 

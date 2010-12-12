@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.favorite.FavoriteType;
-import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.thread.ITreeItem;
 import org.xblackcat.rojac.gui.view.thread.Post;
@@ -51,17 +51,17 @@ final class MenuHelper {
         return menu;
     }
 
-    static JMenuItem openMessage(int messageId, IRootPane mainFrame) {
+    static JMenuItem openMessage(int messageId, IAppControl appControl) {
         JMenuItem open = new JMenuItem();
         open.setText(Messages.Popup_View_ThreadsTree_OpenMessage.get());
-        open.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.Default));
+        open.addActionListener(new OpenMessageAction(appControl, messageId, OpenMessageMethod.Default));
         return open;
     }
 
-    static JMenuItem openMessageInTab(int messageId, IRootPane mainFrame) {
+    static JMenuItem openMessageInTab(int messageId, IAppControl appControl) {
         JMenuItem open = new JMenuItem();
         open.setText(Messages.Popup_View_ThreadsTree_OpenMessage_NewTab.get());
-        open.addActionListener(new OpenMessageAction(mainFrame, messageId, OpenMessageMethod.NewTab));
+        open.addActionListener(new OpenMessageAction(appControl, messageId, OpenMessageMethod.NewTab));
         return open;
     }
 
@@ -90,7 +90,7 @@ final class MenuHelper {
         return copyToClipboard;
     }
 
-    static JMenuItem markReadUnreadSubmenu(ITreeItem<?> message, IRootPane mainFrame) {
+    static JMenuItem markReadUnreadSubmenu(ITreeItem<?> message, IAppControl appControl) {
         JMenu menu = new JMenu(Messages.Popup_View_ThreadsTree_Mark_Title.get());
 
         menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadRead, message, true));
@@ -98,7 +98,7 @@ final class MenuHelper {
 
         menu.addSeparator();
 
-//        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, message, mainFrame));
+//        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, message, appControl));
 
         menu.addSeparator();
 
@@ -111,10 +111,10 @@ final class MenuHelper {
     /**
      * Creates a submenu to add the
      * @param post
-     * @param rootPane
+     * @param appControl
      * @return
      */
-    public static JMenuItem favoritesSubmenu(Post post, IRootPane rootPane) {
+    public static JMenuItem favoritesSubmenu(Post post, IAppControl appControl) {
         JMenu menu = new JMenu("Add to favorite");
 
         menu.add(new AddToFavoriteMenuItem("Thread", FavoriteType.UnreadPostsInThread, post.getTopicId()));

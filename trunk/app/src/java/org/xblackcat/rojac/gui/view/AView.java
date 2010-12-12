@@ -1,8 +1,7 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IView;
-import org.xblackcat.rojac.gui.ViewId;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
@@ -21,12 +20,12 @@ public abstract class AView extends JPanel implements IView {
     private final PacketDispatcher packetDispatcher;
     private final ViewId id;
 
-    protected final IRootPane mainFrame;
+    protected final IAppControl appControl;
 
-    protected AView(ViewId id, IRootPane rootPane) {
+    protected AView(ViewId id, IAppControl appControl) {
         super(new BorderLayout());
         this.id = id;
-        this.mainFrame = rootPane;
+        this.appControl = appControl;
         packetDispatcher = new PacketDispatcher(getProcessors());
     }
 

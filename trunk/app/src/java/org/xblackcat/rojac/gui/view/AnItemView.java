@@ -1,17 +1,16 @@
 package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.gui.IActionListener;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IItemView;
-import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.ViewId;
 
 /**
  * @author xBlackCat
  */
 
 public abstract class AnItemView extends AView implements IItemView {
-    protected AnItemView(ViewId id, IRootPane mainFrame) {
-        super(id, mainFrame);
+    protected AnItemView(ViewId id, IAppControl appControl) {
+        super(id, appControl);
     }
 
     public void addActionListener(IActionListener l) {
