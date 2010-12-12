@@ -1,22 +1,22 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.xblackcat.rojac.gui.ViewId;
+import java.io.Serializable;
 
 /**
-* @author xBlackCat
-*/
-class ItemId implements ViewId {
+ * @author xBlackCat
+ */
+
+public class ViewId implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final int id;
     private final ViewType type;
 
-    ItemId(int id, ViewType type) {
+    ViewId(int id, ViewType type) {
         this.id = id;
         this.type = type;
     }
 
-    @Override
     public ViewType getType() {
         return type;
     }
@@ -24,11 +24,11 @@ class ItemId implements ViewId {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemId)) return false;
+        if (!(o instanceof ViewId)) return false;
 
-        ItemId itemId = (ItemId) o;
+        ViewId ViewId = (ViewId) o;
 
-        return id == itemId.id && type == itemId.type;
+        return id == ViewId.id && type == ViewId.type;
 
     }
 

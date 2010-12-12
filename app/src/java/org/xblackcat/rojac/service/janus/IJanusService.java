@@ -4,7 +4,11 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.data.Version;
-import org.xblackcat.rojac.service.janus.data.*;
+import org.xblackcat.rojac.service.janus.data.ForumsList;
+import org.xblackcat.rojac.service.janus.data.NewData;
+import org.xblackcat.rojac.service.janus.data.PostInfo;
+import org.xblackcat.rojac.service.janus.data.TopicMessages;
+import org.xblackcat.rojac.service.janus.data.UsersList;
 import ru.rsdn.Janus.RequestForumInfo;
 
 /**

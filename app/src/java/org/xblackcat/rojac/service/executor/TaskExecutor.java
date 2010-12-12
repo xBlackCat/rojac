@@ -7,7 +7,8 @@ import org.apache.commons.logging.LogFactory;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.min;
+import static ch.lambdaj.Lambda.on;
 
 /**
  * Service for executing tasks in separate thread.

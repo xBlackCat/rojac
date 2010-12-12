@@ -28,10 +28,6 @@ public class LoadMessageDialog extends JDialog {
     private JTextField messageIdText;
     protected JCheckBox loadAtOnce;
 
-    public LoadMessageDialog(Window mainFrame) {
-        this(mainFrame, null);
-    }
-
     public LoadMessageDialog(Window mainFrame, Integer messageId) {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
         this.messageId = messageId;

@@ -4,11 +4,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
-import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.ForumsLoadedPacket;
 import org.xblackcat.rojac.service.datahandler.IForumUpdatePacket;
@@ -51,8 +52,8 @@ public class ForumsListView extends AView {
     private final JToggleButton subscribed_only;
     private final JToggleButton unread_only;
 
-    public ForumsListView(IRootPane rootPane) {
-        super(null, rootPane);
+    public ForumsListView(IAppControl appControl) {
+        super(null, appControl);
         final JTable forums = new JTable(forumsModel);
         forums.setTableHeader(null);
         add(new JScrollPane(forums));
@@ -85,11 +86,12 @@ public class ForumsListView extends AView {
                 ForumData forum = forumsModel.getValueAt(modelInd, 0);
 
                 if (e.isPopupTrigger()) {
-                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, forumsModel, mainFrame);
+                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, forumsModel, ForumsListView.this.appControl);
 
                     menu.show(e.getComponent(), p.x, p.y);
                 } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
-                    mainFrame.openForumTab(forum.getForum().getForumId());
+                    int forumId = forum.getForum().getForumId();
+                    ForumsListView.this.appControl.openTab(ViewType.Forum.makeId(forumId));
                 }
             }
         });

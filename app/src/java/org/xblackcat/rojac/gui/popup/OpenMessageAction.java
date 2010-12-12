@@ -1,7 +1,10 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.gui.IRootPane;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
+import org.xblackcat.rojac.gui.view.MessageChecker;
+import org.xblackcat.rojac.gui.view.ViewType;
+import org.xblackcat.rojac.util.DialogHelper;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,12 +15,12 @@ import java.awt.event.ActionListener;
  * @author xBlackCat
  */
 class OpenMessageAction implements ActionListener {
-    private final IRootPane mainFrame;
+    private final IAppControl appControl;
     private final int messageId;
     protected OpenMessageMethod openMessageMethod;
 
-    public OpenMessageAction(IRootPane mainFrame, int messageId, OpenMessageMethod openMessageMethod) {
-        this.mainFrame = mainFrame;
+    public OpenMessageAction(IAppControl appControl, int messageId, OpenMessageMethod openMessageMethod) {
+        this.appControl = appControl;
         this.messageId = messageId;
         this.openMessageMethod = openMessageMethod;
     }
@@ -26,10 +29,19 @@ class OpenMessageAction implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (openMessageMethod) {
             case Default:
-                mainFrame.openMessage(messageId);
+                appControl.openMessage(messageId);
                 break;
             case NewTab:
-                mainFrame.openMessageTab(messageId);
+                new MessageChecker(messageId) {
+                    @Override
+                    protected void done() {
+                        if (data != null) {
+                            appControl.openTab(ViewType.SingleMessage.makeId(messageId));
+                        } else {
+                            DialogHelper.extraMessagesDialog(appControl.getMainFrame(), messageId);
+                        }
+                    }
+                }.execute();
                 break;
         }
     }

@@ -1,10 +1,17 @@
 package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.dialogs.AboutDialog;
+import org.xblackcat.rojac.gui.dialogs.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialogs.OptionsDialog;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.janus.commands.Request;
+import org.xblackcat.rojac.service.storage.IMiscAH;
+import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -80,6 +87,16 @@ public class DialogHelper {
         return null;
     }
 
+    public static void extraMessagesDialog(Window rootPane, Integer id) {
+        LoadMessageDialog lmd = new LoadMessageDialog(rootPane, id);
+        Integer messageId = lmd.readMessageId();
+        if (messageId != null) {
+            boolean loadAtOnce = lmd.isLoadAtOnce();
+
+            new ExtraMessageLoader(messageId, loadAtOnce, rootPane).execute();
+        }
+    }
+
     /**
      * @author xBlackCat
      */
@@ -145,6 +162,44 @@ public class DialogHelper {
             setContentPane(cp);
 
             pack();
+        }
+    }
+
+    /**
+    * @author xBlackCat
+    */
+    private static class ExtraMessageLoader extends RojacWorker<Void, Void> {
+        private static final Log log = LogFactory.getLog(ExtraMessageLoader.class);
+
+        private final int messageId;
+        private final boolean loadAtOnce;
+        private final Window frame;
+
+        public ExtraMessageLoader(int messageId, boolean loadAtOnce, Window frame) {
+            this.messageId = messageId;
+            this.loadAtOnce = loadAtOnce;
+            this.frame = frame;
+        }
+
+        @Override
+        protected Void perform() throws Exception {
+            try {
+                IMiscAH s = ServiceFactory.getInstance().getStorage().getMiscAH();
+
+                s.storeExtraMessage(messageId);
+            } catch (StorageException e) {
+                log.error("Can not store extra message #" + messageId, e);
+                RojacUtils.showExceptionDialog(e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            if (loadAtOnce) {
+                Request.EXTRA_MESSAGES.process(frame);
+            }
         }
     }
 }

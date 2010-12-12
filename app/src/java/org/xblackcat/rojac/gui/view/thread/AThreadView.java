@@ -2,16 +2,20 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.gui.IRootPane;
-import org.xblackcat.rojac.gui.ViewId;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
+import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
@@ -37,8 +41,8 @@ public abstract class AThreadView extends AnItemView {
     protected String title;
     protected int rootItemId;
 
-    protected AThreadView(ViewId id, IRootPane mainFrame, IThreadControl<Post> threadControl) {
-        super(id, mainFrame);
+    protected AThreadView(ViewId id, IAppControl appControl, IThreadControl<Post> threadControl) {
+        super(id, appControl);
         this.threadControl = threadControl;
     }
 
@@ -436,7 +440,7 @@ public abstract class AThreadView extends AnItemView {
         }
 
         public void actionPerformed(ActionEvent e) {
-            mainFrame.editMessage(rootItemId, null);
+            appControl.editMessage(rootItemId, null);
         }
     }
 
