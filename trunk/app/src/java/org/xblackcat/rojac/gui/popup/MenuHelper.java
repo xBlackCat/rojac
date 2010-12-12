@@ -118,7 +118,7 @@ final class MenuHelper {
         JMenu menu = new JMenu("Add to favorite");
 
         menu.add(new AddToFavoriteMenuItem("Thread", FavoriteType.UnreadPostsInThread, post.getTopicId()));
-        menu.add(new AddToFavoriteMenuItem("Sub-thread", FavoriteType.UnreadPostResponses, post.getMessageId()));
+//        menu.add(new AddToFavoriteMenuItem("Sub-thread", FavoriteType.UnreadPostResponses, post.getMessageId()));
         menu.addSeparator();
         menu.add(new AddToFavoriteMenuItem(post.getMessageData().getUserName() + "'s posts", FavoriteType.UnreadUserPosts, post.getMessageData().getUserId()));
         menu.add(new AddToFavoriteMenuItem("Responses on " + post.getMessageData().getUserName() + "'s posts", FavoriteType.UnreadUserResponses, post.getMessageData().getUserId()));
