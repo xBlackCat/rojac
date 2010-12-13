@@ -61,6 +61,7 @@ public enum Messages {
     View_Thread_Button_NewThread,
     View_Thread_Button_PreviousUnread,
     View_Thread_Button_NextUnread,
+    View_Thread_Button_ToThreadRoot,
 
     // Tray texts
     // Note that the first parameter is always a version string.
