@@ -13,12 +13,17 @@ class CategoryFavorite extends AnItemFavorite {
     }
 
     @Override
-    public FavoriteType getFavoriteType() {
+    public FavoriteType getType() {
         return FavoriteType.Category;
     }
 
     @Override
     protected int loadAmount() throws StorageException {
         return ServiceFactory.getInstance().getStorage().getMessageAH().getUnreadReplaysInThread(itemId);
+    }
+
+    @Override
+    protected String loadName() throws StorageException {
+        return "Category #" + id;
     }
 }

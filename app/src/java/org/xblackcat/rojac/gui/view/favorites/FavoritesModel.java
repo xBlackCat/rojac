@@ -39,7 +39,7 @@ public class FavoritesModel extends AbstractTableModel {
         int i = 0, favoritesSize = favorites.size();
         while (i < favoritesSize) {
             IFavorite f = favorites.get(i);
-            if (type == null || f.getFavoriteType() == type) {
+            if (type == null || f.getType() == type) {
                 f.updateStatistic(new PostUpdateAction(i));
             }
             i++;

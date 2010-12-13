@@ -13,12 +13,17 @@ class UnreadPostsInThreadFavorite extends AnItemFavorite {
     }
 
     @Override
-    public FavoriteType getFavoriteType() {
+    public FavoriteType getType() {
         return FavoriteType.UnreadPostsInThread;
     }
 
     @Override
     protected int loadAmount() throws StorageException {
         return ServiceFactory.getInstance().getStorage().getMessageAH().getUnreadReplaysInThread(itemId);
+    }
+
+    @Override
+    protected String loadName() throws StorageException {
+        return "Unread posts in thread #" + id;
     }
 }

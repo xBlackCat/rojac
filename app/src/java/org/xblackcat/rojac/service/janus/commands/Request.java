@@ -82,7 +82,7 @@ public class Request<T> {
      * @param handler custom handler to process request(s) results.
      */
     public void process(Window frame, IResultHandler<T> handler) {
-        RojacUtils.checkThread(true, Request.class);
+        assert RojacUtils.checkThread(true, Request.class);
 
         if (frame != null) {
             while (!UserHelper.isUserRegistered()) {

@@ -9,7 +9,7 @@ package org.xblackcat.rojac.data.favorite;
 public interface IFavorite {
     void updateStatistic(Runnable runnable);
 
-    FavoriteType getFavoriteType();
+    FavoriteType getType();
 
     /**
      * Returns a favorite-specific config to store in database.

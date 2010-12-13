@@ -50,9 +50,13 @@ abstract class AnItemFavorite extends AFavorite {
 
     protected abstract int loadAmount() throws StorageException;
 
+    protected abstract String loadName() throws StorageException;
+
     private class ValuesLoader extends RojacWorker<Void, Void> {
         private int amount;
+        private String name;
         private final Runnable callback;
+        private final boolean initName = isNameDefault();
 
         public ValuesLoader(Runnable callback) {
             this.callback = callback;
@@ -61,6 +65,7 @@ abstract class AnItemFavorite extends AFavorite {
         @Override
         protected Void perform() throws Exception {
             amount = loadAmount();
+            name = loadName();
 
             publish();
             return null;
@@ -69,6 +74,7 @@ abstract class AnItemFavorite extends AFavorite {
         @Override
         protected void process(List<Void> chunks) {
             AnItemFavorite.this.amount = amount;
+            AnItemFavorite.this.setName(name);
         }
 
         @Override
