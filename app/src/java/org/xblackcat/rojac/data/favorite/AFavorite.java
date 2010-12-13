@@ -7,11 +7,16 @@ import org.xblackcat.rojac.util.RojacUtils;
  */
 
 abstract class AFavorite implements IFavorite {
-    protected final Integer id;
+    protected final int id;
     private String name;
 
     protected AFavorite(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
     }
 
     @Override

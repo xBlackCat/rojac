@@ -23,4 +23,6 @@ public interface IFavorite {
     String getName();
 
     String getStatistic();
+
+    Integer getId();
 }
