@@ -4,11 +4,7 @@ import org.xblackcat.rojac.data.favorite.FavoriteType;
 import org.xblackcat.rojac.data.favorite.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.AView;
-import org.xblackcat.rojac.service.datahandler.FavoriteCategoryUpdatedPacket;
-import org.xblackcat.rojac.service.datahandler.FavoritesUpdatedPacket;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
@@ -88,6 +84,7 @@ public class FavoritesView extends AView {
         }.execute();
     }
 
+    @SuppressWarnings({"unchecked"})
     @Override
     protected IPacketProcessor<IPacket>[] getProcessors() {
         return new IPacketProcessor[]{
