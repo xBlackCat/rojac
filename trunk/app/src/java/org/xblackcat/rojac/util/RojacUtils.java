@@ -15,11 +15,7 @@ import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.net.URL;
@@ -260,8 +256,9 @@ public final class RojacUtils {
      * @param tillClass class object till which a stack trace should be trimmed.
      */
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
-    public static void checkThread(boolean swing, Class<?> tillClass) {
-        if (swing != EventQueue.isDispatchThread()) {
+    public static boolean checkThread(boolean swing, Class<?> tillClass) {
+        boolean wrongThread = swing != EventQueue.isDispatchThread();
+        if (wrongThread) {
             Throwable stack = new Throwable("Stack trace");
             StackTraceElement[] stackTrace = stack.getStackTrace();
 
@@ -288,6 +285,8 @@ public final class RojacUtils {
                 );
             }
         }
+
+        return !wrongThread;
     }
 
     public static void showExceptionDialog(Throwable e) {

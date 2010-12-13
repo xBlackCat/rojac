@@ -13,12 +13,17 @@ class UnreadUserResponseFavorite extends AnItemFavorite {
     }
 
     @Override
-    public FavoriteType getFavoriteType() {
+    public FavoriteType getType() {
         return FavoriteType.UnreadUserResponses;
     }
 
     @Override
     protected int loadAmount() throws StorageException {
         return ServiceFactory.getInstance().getStorage().getMessageAH().getUnreadReplies(itemId);
+    }
+
+    @Override
+    protected String loadName() throws StorageException {
+        return "User #" + id + " responses";
     }
 }

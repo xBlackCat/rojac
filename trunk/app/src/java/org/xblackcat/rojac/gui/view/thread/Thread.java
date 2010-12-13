@@ -154,7 +154,7 @@ public class Thread extends Post {
     }
 
     void fillThread(List<MessageData> posts) {
-        RojacUtils.checkThread(true, Thread.class);
+        assert RojacUtils.checkThread(true, Thread.class);
         Collections.sort(posts, SORT_BY_PARENTS);
 
         for (MessageData post : posts) {

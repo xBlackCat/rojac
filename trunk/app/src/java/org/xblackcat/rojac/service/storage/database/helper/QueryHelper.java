@@ -11,12 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -40,7 +35,7 @@ public final class QueryHelper implements IQueryHelper {
 
     @Override
     public <T> Collection<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
-        RojacUtils.checkThread(false, DBStorage.class);
+        assert RojacUtils.checkThread(false, DBStorage.class);
         try {
             Connection con = connectionFactory.getReadConnection();
             try {
@@ -75,7 +70,7 @@ public final class QueryHelper implements IQueryHelper {
 
     @Override
     public <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, String sql, K... keys) throws StorageException {
-        RojacUtils.checkThread(false, DBStorage.class);
+        assert RojacUtils.checkThread(false, DBStorage.class);
         try {
             Connection con = connectionFactory.getReadConnection();
             try {
@@ -119,7 +114,7 @@ public final class QueryHelper implements IQueryHelper {
 
     @Override
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
-        RojacUtils.checkThread(false, DBStorage.class);
+        assert RojacUtils.checkThread(false, DBStorage.class);
         Collection<T> col = execute(c, sql, parameters);
         if (col.size() > 1) {
             throw new StorageDataException("Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters));
@@ -133,7 +128,7 @@ public final class QueryHelper implements IQueryHelper {
 
     @Override
     public int update(String sql, Object... parameters) throws StorageException {
-        RojacUtils.checkThread(false, DBStorage.class);
+        assert RojacUtils.checkThread(false, DBStorage.class);
         try {
             Connection con = connectionFactory.getWriteConnection();
             try {
