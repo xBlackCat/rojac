@@ -153,7 +153,7 @@ public class RojacTray {
     }
 
     private void checkUnreadMessages() {
-        new UnreadMessagesCount().execute();
+        new UnreadMessagesCountGetter().execute();
     }
 
     public void updateState() {
@@ -163,7 +163,7 @@ public class RojacTray {
         }
     }
 
-    private class UnreadMessagesCount extends RojacWorker<Void, Integer> {
+    private class UnreadMessagesCountGetter extends RojacWorker<Void, Integer> {
         protected int unreadMessages;
         protected int unreadReplies;
 
