@@ -13,6 +13,7 @@ public enum ShortCut {
     // Thread view related
     NextUnreadMessage(KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK),
     PrevUnreadMessage(KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK),
+    ToThreadRoot(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK),
     NewThread(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK),
     // Main frame related
     Synchronization(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, 0),

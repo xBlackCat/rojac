@@ -133,8 +133,9 @@ public class TreeTableThreadView extends AThreadView {
         return threads;
     }
 
+
     @Override
-    protected void selectItem(Post post) {
+    protected void selectItem(Post post, boolean collapseChildren) {
         if (post != null) {
             TreePath path = model.getPathToRoot(post);
 
@@ -154,6 +155,10 @@ public class TreeTableThreadView extends AThreadView {
                 threads.scrollRectToVisible(bounds);
             }
             threads.scrollPathToVisible(path);
+
+            if (collapseChildren) {
+                threads.collapsePath(path);
+            }
         } else {
             threads.clearSelection();
         }

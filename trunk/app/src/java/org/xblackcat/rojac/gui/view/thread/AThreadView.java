@@ -11,11 +11,7 @@ import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
-import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
@@ -53,10 +49,11 @@ public abstract class AThreadView extends AnItemView {
         add(sp, BorderLayout.CENTER);
 
         JButton newThreadButton = WindowsUtils.registerImageButton(this, "new_thread", new NewThreadAction());
+        JButton toRootButton = WindowsUtils.registerImageButton(this, "to_root", new ToThreadRootAction());
         JButton prevUnreadButton = WindowsUtils.registerImageButton(this, "prev_unread", new PreviousUnreadAction());
         JButton nextUnreadButton = WindowsUtils.registerImageButton(this, "next_unread", new NextUnreadAction());
 
-        JToolBar toolbar = WindowsUtils.createToolBar(newThreadButton, null, prevUnreadButton, nextUnreadButton);
+        JToolBar toolbar = WindowsUtils.createToolBar(newThreadButton, null, toRootButton, prevUnreadButton, nextUnreadButton);
 
         threadsContainer.setInputMap(
                 WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
@@ -207,7 +204,11 @@ public abstract class AThreadView extends AnItemView {
         return model.getRoot().getMessageById(messageId) != null;
     }
 
-    protected abstract void selectItem(Post post);
+    protected final void selectItem(Post post) {
+        selectItem(post, false);
+    }
+
+    protected abstract void selectItem(Post post, boolean collapseChildren);
 
     protected abstract Post getSelectedItem();
 
@@ -463,6 +464,20 @@ public abstract class AThreadView extends AnItemView {
         public void actionPerformed(ActionEvent e) {
             Post currentPost = getSelectedItem();
             selectNextUnread(currentPost);
+        }
+    }
+
+    private class ToThreadRootAction extends AButtonAction {
+        private ToThreadRootAction() {
+            super(Messages.View_Thread_Button_ToThreadRoot, ShortCut.ToThreadRoot);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            if (currentPost != null) {
+                selectItem(currentPost.getThreadRoot(), true);
+            }
+
         }
     }
 }

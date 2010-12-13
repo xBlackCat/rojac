@@ -70,7 +70,7 @@ public class TreeThreadView extends AThreadView {
     }
 
     @Override
-    protected void selectItem(Post post) {
+    protected void selectItem(Post post, boolean collapseChildren) {
         if (post != null) {
             TreePath path = model.getPathToRoot(post);
 
@@ -84,6 +84,10 @@ public class TreeThreadView extends AThreadView {
             bounds.setLocation(0, bounds.y);
             threads.scrollRectToVisible(bounds);
             threads.scrollPathToVisible(path);
+
+            if (collapseChildren) {
+                threads.collapsePath(path);
+            }
         } else {
             threads.clearSelection();
         }
