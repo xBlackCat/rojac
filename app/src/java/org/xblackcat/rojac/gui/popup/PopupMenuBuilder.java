@@ -10,6 +10,8 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -25,10 +27,10 @@ public class PopupMenuBuilder {
     /**
      * Constructs a pop-up menu for link in message pane.
      *
-     * @param url         URL object of the link.
-     * @param stringUrl Text representing of the link.
-     * @param text        Text associated with the link.
-     * @param appControl   back link to main window control.
+     * @param url        URL object of the link.
+     * @param stringUrl  Text representing of the link.
+     * @param text       Text associated with the link.
+     * @param appControl back link to main window control.
      *
      * @return new popup menu for the specified url.
      */
@@ -134,11 +136,22 @@ public class PopupMenuBuilder {
     public static JPopupMenu getFavoritesMenu(IFavorite favorite, IAppControl appControl) {
         final JPopupMenu menu = new JPopupMenu(favorite.getName());
 
+        final int favoriteId = favorite.getId();
+        menu.add(new OpenFavoriteAction(appControl, favoriteId));
+        menu.addSeparator();
+
         JMenuItem item = new JMenuItem();
         menu.add(item);
         item.setText("Remove favorite");
+        item.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new FavoriteRemover(favoriteId).execute();
+            }
+        });
 
 
         return menu;
     }
+
 }

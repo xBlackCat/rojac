@@ -10,11 +10,11 @@ import org.xblackcat.rojac.util.RojacWorker;
 /**
  * @author xBlackCat
  */
-public class SetMessageReadFlag extends RojacWorker<Void, Void> {
+public class MessageReadFlagSetter extends RojacWorker<Void, Void> {
     private Post post;
     private boolean read;
 
-    public SetMessageReadFlag(boolean read, Post post) {
+    public MessageReadFlagSetter(boolean read, Post post) {
         this.post = post;
         this.read = read;
     }

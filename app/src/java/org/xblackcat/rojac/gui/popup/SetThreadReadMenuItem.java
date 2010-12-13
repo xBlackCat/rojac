@@ -25,20 +25,20 @@ class SetThreadReadMenuItem extends JMenuItem {
             public void actionPerformed(ActionEvent e) {
                 if (post instanceof Thread) {
                     // Mark whole thread.
-                    new SetThreadReadFlag(read, (Thread) post).execute();
+                    new ThreadReadFlagSetter(read, (Thread) post).execute();
                 } else {
                     // Mark sub-tree as read
-                    new SetSubTreeReadFlag(read, post).execute();
+                    new SubTreeReadFlagSetter(read, post).execute();
                 }
             }
         });
     }
 
-    private class SetThreadReadFlag extends RojacWorker<Void, Void> {
+    private class ThreadReadFlagSetter extends RojacWorker<Void, Void> {
         private final boolean read;
         private final Thread threadRoot;
 
-        public SetThreadReadFlag(boolean read, Thread threadRoot) {
+        public ThreadReadFlagSetter(boolean read, Thread threadRoot) {
             this.read = read;
             this.threadRoot = threadRoot;
         }
@@ -57,13 +57,13 @@ class SetThreadReadMenuItem extends JMenuItem {
         }
     }
 
-    private class SetSubTreeReadFlag extends RojacWorker<Void, Void> {
+    private class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
         private final boolean read;
         private final int forumId;
         private final int rootId;
         private final TIntHashSet messageIds;
 
-        public SetSubTreeReadFlag(boolean read, ITreeItem<?> post) {
+        public SubTreeReadFlagSetter(boolean read, ITreeItem<?> post) {
             this.read = read;
             rootId = post.getMessageId();
             forumId = post.getForumId();
