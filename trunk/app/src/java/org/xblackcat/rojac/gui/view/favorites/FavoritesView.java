@@ -3,7 +3,9 @@ package org.xblackcat.rojac.gui.view.favorites;
 import org.xblackcat.rojac.data.favorite.FavoriteType;
 import org.xblackcat.rojac.data.favorite.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -20,7 +22,7 @@ import java.util.List;
 public class FavoritesView extends AView {
     private final FavoritesModel favoritesModel = new FavoritesModel();
 
-    public FavoritesView(IAppControl appControl) {
+    public FavoritesView(final IAppControl appControl) {
         super(null, appControl);
 
         final JTable favoritesList = new JTable(favoritesModel);
@@ -56,11 +58,11 @@ public class FavoritesView extends AView {
                 IFavorite favorite = favoritesModel.getValueAt(modelInd, 0);
 
                 if (e.isPopupTrigger()) {
-//                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, forumsModel, mainFrame);
+                    JPopupMenu menu = PopupMenuBuilder.getFavoritesMenu(favorite, appControl);
 //
-//                    menu.show(e.getComponent(), p.x, p.y);
+                    menu.show(e.getComponent(), p.x, p.y);
                 } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
-//                    mainFrame.openFavoriteTab(favorite);
+                    appControl.openTab(ViewType.Favorite.makeId(favorite.getId()));
                 }
             }
         });
