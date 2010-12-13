@@ -14,11 +14,11 @@ abstract class AnItemFavorite extends AFavorite {
 
     protected Integer amount = null;
 
-    protected AnItemFavorite(Integer id, String config) {
+    protected AnItemFavorite(int id, String config) {
         this(id, Integer.parseInt(config));
     }
 
-    public AnItemFavorite(Integer id, int itemId) {
+    public AnItemFavorite(int id, int itemId) {
         super(id);
 
         this.itemId = itemId;
@@ -65,7 +65,9 @@ abstract class AnItemFavorite extends AFavorite {
         @Override
         protected Void perform() throws Exception {
             amount = loadAmount();
-            name = loadName();
+            if (initName) {
+                name = loadName();
+            }
 
             publish();
             return null;
@@ -74,7 +76,9 @@ abstract class AnItemFavorite extends AFavorite {
         @Override
         protected void process(List<Void> chunks) {
             AnItemFavorite.this.amount = amount;
-            AnItemFavorite.this.setName(name);
+            if (initName) {
+                AnItemFavorite.this.setName(name);
+            }
         }
 
         @Override

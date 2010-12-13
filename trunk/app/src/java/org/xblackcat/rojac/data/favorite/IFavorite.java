@@ -24,5 +24,5 @@ public interface IFavorite {
 
     String getStatistic();
 
-    Integer getId();
+    int getId();
 }

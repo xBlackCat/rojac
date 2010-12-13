@@ -10,12 +10,12 @@ abstract class AFavorite implements IFavorite {
     protected final int id;
     private String name;
 
-    protected AFavorite(Integer id) {
+    protected AFavorite(int id) {
         this.id = id;
     }
 
     @Override
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
