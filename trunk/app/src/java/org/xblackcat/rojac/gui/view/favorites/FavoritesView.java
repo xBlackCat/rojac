@@ -1,11 +1,11 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
-import org.xblackcat.rojac.data.favorite.FavoriteType;
-import org.xblackcat.rojac.data.favorite.IFavorite;
+import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
+import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacWorker;
 

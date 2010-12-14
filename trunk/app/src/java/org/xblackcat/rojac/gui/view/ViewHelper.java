@@ -44,6 +44,7 @@ public final class ViewHelper {
                 stateObject = new ThreadState(((IItemView) v).getVisibleId());
                 break;
             case SingleMessage:
+            case Favorite:
                 stateObject = null; // No state
                 break;
             default:
@@ -83,6 +84,7 @@ public final class ViewHelper {
                 }
                 break;
             }
+            case Favorite:
             case SingleThread: {
                 view.loadItem(id.getId());
                 Object o = in.readObject();

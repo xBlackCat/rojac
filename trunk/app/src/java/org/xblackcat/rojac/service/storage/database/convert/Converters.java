@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.service.storage.database.convert;
 
 import org.xblackcat.rojac.data.*;
-import org.xblackcat.rojac.data.favorite.IFavorite;
 
 /**
  * @author xBlackCat

@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage.database.convert;
 
-import org.xblackcat.rojac.data.favorite.FavoriteType;
-import org.xblackcat.rojac.data.favorite.IFavorite;
+import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.gui.view.model.FavoriteType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

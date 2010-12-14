@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.gui.popup;
 
 import gnu.trove.TIntHashSet;
-import org.xblackcat.rojac.gui.view.thread.ITreeItem;
-import org.xblackcat.rojac.gui.view.thread.Thread;
+import org.xblackcat.rojac.gui.view.model.ITreeItem;
+import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;

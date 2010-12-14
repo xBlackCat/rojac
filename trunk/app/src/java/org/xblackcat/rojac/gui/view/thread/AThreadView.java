@@ -9,6 +9,7 @@ import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
+import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.*;
@@ -32,14 +33,14 @@ import java.beans.PropertyChangeListener;
 public abstract class AThreadView extends AnItemView {
     private static final Log log = LogFactory.getLog(TreeThreadView.class);
 
-    protected final IThreadControl<Post> threadControl;
+    protected final IModelControl<Post> modelControl;
     protected final AThreadModel<Post> model = new SortedThreadsModel();
     protected String title;
     protected int rootItemId;
 
-    protected AThreadView(ViewId id, IAppControl appControl, IThreadControl<Post> threadControl) {
+    protected AThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl);
-        this.threadControl = threadControl;
+        this.modelControl = modelControl;
     }
 
     protected void initializeLayout() {
@@ -103,7 +104,7 @@ public abstract class AThreadView extends AnItemView {
             }
         });
 
-        threadControl.fillModelByItemId(model, this, forumId);
+        modelControl.fillModelByItemId(model, forumId);
     }
 
     @Override
@@ -120,7 +121,7 @@ public abstract class AThreadView extends AnItemView {
                     @Override
                     public void process(SetForumReadPacket p) {
                         if (p.getForumId() == rootItemId) {
-                            threadControl.markForumRead(model, p.isRead());
+                            modelControl.markForumRead(model, p.isRead());
                         }
                     }
                 },
@@ -130,10 +131,10 @@ public abstract class AThreadView extends AnItemView {
                         if (p.getForumId() == rootItemId) {
                             if (p.isRecursive()) {
                                 // Post is a root of marked thread
-                                threadControl.markThreadRead(model, p.getPostId(), p.isRead());
+                                modelControl.markThreadRead(model, p.getPostId(), p.isRead());
                             } else {
                                 // Mark as read only the post
-                                threadControl.markPostRead(model, p.getPostId(), p.isRead());
+                                modelControl.markPostRead(model, p.getPostId(), p.isRead());
                             }
                         }
                     }
@@ -148,7 +149,7 @@ public abstract class AThreadView extends AnItemView {
 
                         Post curSelection = getSelectedItem();
 
-                        threadControl.updateModel(model, p.getThreadIds());
+                        modelControl.updateModel(model, p.getThreadIds());
 
                         selectItem(curSelection);
                     }
@@ -238,7 +239,7 @@ public abstract class AThreadView extends AnItemView {
 
         if (post.getLoadingState() == LoadingState.NotLoaded && post.isRead() == ReadStatus.ReadPartially) {
             // Has unread children but their have not loaded yet.
-            threadControl.loadThread(model, post, new LoadNextUnread());
+            modelControl.loadThread(model, post, new LoadNextUnread());
             // Change post selection when children are loaded
             return null;
         }
@@ -271,7 +272,7 @@ public abstract class AThreadView extends AnItemView {
                             post = p;
                             break;
                         case NotLoaded:
-                            threadControl.loadThread(model, p, new LoadNextUnread());
+                            modelControl.loadThread(model, p, new LoadNextUnread());
                         case Loading:
                             return null;
                     }
@@ -346,7 +347,7 @@ public abstract class AThreadView extends AnItemView {
 
         switch (post.getLoadingState()) {
             case NotLoaded:
-                threadControl.loadThread(model, post, new LoadPreviousUnread());
+                modelControl.loadThread(model, post, new LoadPreviousUnread());
             case Loading:
                 throw new RuntimeException("Restart search later");
         }
@@ -386,7 +387,7 @@ public abstract class AThreadView extends AnItemView {
 
     @Override
     public String getTabTitle() {
-        return threadControl.getTitle(model);
+        return modelControl.getTitle(model);
     }
 
     private class LoadNextUnread implements IItemProcessor<Post> {
@@ -415,7 +416,8 @@ public abstract class AThreadView extends AnItemView {
         protected void done() {
             if (data != null) {
                 final Post root = model.getRoot();
-                threadControl.loadThread(model, root.getMessageById(data.getTopicId()), new IItemProcessor<Post>() {
+                Post rootMessage = root.getMessageById(data.getThreadRootId());
+                modelControl.loadThread(model, rootMessage, new IItemProcessor<Post>() {
                     @Override
                     public void processItem(Post item) {
                         selectItem(root.getMessageById(messageId));

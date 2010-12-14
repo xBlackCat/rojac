@@ -1,8 +1,11 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IItemView;
+import org.xblackcat.rojac.gui.view.favorites.FavoritesModelControl;
+import org.xblackcat.rojac.gui.view.message.MessageView;
+import org.xblackcat.rojac.gui.view.thread.ThreadDoubleView;
+import org.xblackcat.rojac.gui.view.thread.TreeTableThreadView;
 
 /**
  * @author xBlackCat
@@ -11,6 +14,9 @@ import org.xblackcat.rojac.gui.IItemView;
 class FavoriteViewFactory implements IViewFactory {
     @Override
     public IItemView makeView(ViewId id, IAppControl appControl) {
-        throw new NotImplementedException("Not implemented yet.");
+        IItemView threadView = new TreeTableThreadView(id, appControl, new FavoritesModelControl());
+        IItemView messageView = new MessageView(null, appControl);
+
+        return new ThreadDoubleView(threadView, messageView, true, appControl);
     }
 }

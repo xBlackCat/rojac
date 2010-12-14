@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.data.favorite.FavoriteType;
+import org.xblackcat.rojac.gui.view.model.FavoriteType;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

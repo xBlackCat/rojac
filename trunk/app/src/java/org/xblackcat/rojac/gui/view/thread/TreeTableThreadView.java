@@ -5,12 +5,10 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.ViewId;
+import org.xblackcat.rojac.gui.view.model.*;
 
 import javax.swing.*;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -25,8 +23,8 @@ import java.awt.event.MouseEvent;
 public class TreeTableThreadView extends AThreadView {
     protected final JXTreeTable threads = new JXTreeTable();
 
-    public TreeTableThreadView(ViewId id, IAppControl appControl, IThreadControl<Post> threadControl) {
-        super(id, appControl, threadControl);
+    public TreeTableThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
+        super(id, appControl, modelControl);
 
         initializeLayout();
     }
@@ -43,7 +41,7 @@ public class TreeTableThreadView extends AThreadView {
         threads.setRowSelectionAllowed(true);
         threads.setColumnSelectionAllowed(false);
         threads.setScrollsOnExpand(true);
-        threads.setRootVisible(threadControl.isRootVisible());
+        threads.setRootVisible(modelControl.isRootVisible());
         threads.setToggleClickCount(2);
 
         threads.setDefaultRenderer(APostProxy.class, new PostTableCellRenderer());
@@ -62,7 +60,7 @@ public class TreeTableThreadView extends AThreadView {
                 Post item = (Post) path.getLastPathComponent();
 
                 if (item.getLoadingState() == LoadingState.NotLoaded) {
-                    threadControl.loadThread(model, item, null);
+                    modelControl.loadThread(model, item, null);
                 }
 
                 if (item.getLoadingState() == LoadingState.Loaded) {
@@ -90,6 +88,25 @@ public class TreeTableThreadView extends AThreadView {
             column.setToolTipText(h.getTitle());
             threads.addColumn(column);
         }
+
+        model.addTreeModelListener(new TreeModelListener() {
+            @Override
+            public void treeNodesChanged(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeNodesInserted(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeNodesRemoved(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeStructureChanged(TreeModelEvent e) {
+                threads.setRootVisible(modelControl.isRootVisible());
+            }
+        });
 
         // Handle keyboard events to emulate tree navigation in TreeTable
         threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "prevOrClose");
