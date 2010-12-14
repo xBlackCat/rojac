@@ -2,7 +2,11 @@ package org.xblackcat.rojac.gui.view.favorites;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
-import org.xblackcat.rojac.gui.view.model.*;
+import org.xblackcat.rojac.gui.view.model.AThreadModel;
+import org.xblackcat.rojac.gui.view.model.IModelControl;
+import org.xblackcat.rojac.gui.view.model.MessageListControl;
+import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.model.SingleModelControl;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
@@ -15,7 +19,7 @@ import org.xblackcat.rojac.util.RojacWorker;
 
 public class FavoritesModelControl implements IModelControl<Post> {
     private IModelControl<Post> delegatedControl = null;
-    private IFavorite favorite = null;
+    private String title = null;
 
     @Override
     public void fillModelByItemId(AThreadModel<Post> model, int itemId) {
@@ -78,10 +82,10 @@ public class FavoritesModelControl implements IModelControl<Post> {
     public String getTitle(AThreadModel<Post> model) {
         assert RojacUtils.checkThread(true, getClass());
 
-        if (favorite == null) {
+        if (title == null) {
             return "Favorite";
         } else {
-            return favorite.getName();
+            return title;
         }
     }
 
@@ -93,6 +97,7 @@ public class FavoritesModelControl implements IModelControl<Post> {
         private final int favoriteId;
 
         private IFavorite f;
+        private String name;
         private Post root;
 
         public FavoriteLoader(AThreadModel<Post> model, int favoriteId) {
@@ -107,13 +112,14 @@ public class FavoritesModelControl implements IModelControl<Post> {
             f = fAH.getFavorite(favoriteId);
 
             root = f.getRootNode();
+            name = f.loadName();
 
             return null;
         }
 
         @Override
         protected void done() {
-            favorite = f;
+            title = name;
 
             // Set proper ThreadsControl
             switch (f.getType()) {
@@ -130,6 +136,7 @@ public class FavoritesModelControl implements IModelControl<Post> {
 
             // Fill model with correspond data.
             model.setRoot(root);
+
         }
     }
 

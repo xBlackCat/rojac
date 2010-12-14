@@ -9,10 +9,19 @@ import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
-import org.xblackcat.rojac.gui.view.model.*;
+import org.xblackcat.rojac.gui.view.model.AThreadModel;
+import org.xblackcat.rojac.gui.view.model.IModelControl;
+import org.xblackcat.rojac.gui.view.model.LoadingState;
+import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.model.ReadStatus;
+import org.xblackcat.rojac.gui.view.model.SortedThreadsModel;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
@@ -101,6 +110,11 @@ public abstract class AThreadView extends AnItemView {
 
             @Override
             public void treeStructureChanged(TreeModelEvent e) {
+                Post root = model.getRoot();
+                if (e.getTreePath().getLastPathComponent() == root) {
+                    fireItemUpdated(root.getForumId(), root.getMessageId());
+                    selectItem(root);
+                }
             }
         });
 

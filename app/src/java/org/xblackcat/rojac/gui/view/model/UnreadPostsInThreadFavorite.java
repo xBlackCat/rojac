@@ -30,8 +30,10 @@ class UnreadPostsInThreadFavorite extends AnItemFavorite {
     }
 
     @Override
-    protected String loadName() throws StorageException {
-        return "Unread posts in thread #" + id;
+    public String loadName() throws StorageException {
+        IMessageAH mAH = ServiceFactory.getInstance().getStorage().getMessageAH();
+        MessageData md = mAH.getMessageData(itemId);
+        return "Topic #" + itemId + " " + md.getSubject();
     }
 
     @Override

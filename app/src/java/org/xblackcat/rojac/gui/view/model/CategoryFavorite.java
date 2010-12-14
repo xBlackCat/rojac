@@ -25,7 +25,7 @@ class CategoryFavorite extends AnItemFavorite {
     }
 
     @Override
-    protected String loadName() throws StorageException {
+    public String loadName() throws StorageException {
         return "Category #" + id;
     }
 
