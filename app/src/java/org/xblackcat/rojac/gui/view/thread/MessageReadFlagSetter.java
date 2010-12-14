@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.model.ReadStatus;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;

@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage.database;
 
-import org.xblackcat.rojac.data.favorite.FavoriteType;
-import org.xblackcat.rojac.data.favorite.IFavorite;
+import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
@@ -46,5 +46,10 @@ class DBFavoriteAH implements IFavoriteAH {
     @Override
     public void removeFavorite(int id) throws StorageException {
         helper.update(DataQuery.REMOVE_OBJECT_FAVORITE, id);
+    }
+
+    @Override
+    public IFavorite getFavorite(int favoriteId) throws StorageException {
+        return helper.executeSingle(Converters.TO_FAVORITE, DataQuery.GET_OBJECT_FAVORITE, favoriteId);
     }
 }

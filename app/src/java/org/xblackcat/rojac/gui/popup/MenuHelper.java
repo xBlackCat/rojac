@@ -1,10 +1,10 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.data.favorite.FavoriteType;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
-import org.xblackcat.rojac.gui.view.thread.ITreeItem;
-import org.xblackcat.rojac.gui.view.thread.Post;
+import org.xblackcat.rojac.gui.view.model.FavoriteType;
+import org.xblackcat.rojac.gui.view.model.ITreeItem;
+import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
 

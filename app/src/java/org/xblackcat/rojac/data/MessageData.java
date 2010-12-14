@@ -59,8 +59,22 @@ public class MessageData {
         return updateDate;
     }
 
+    /**
+     * Returns *real* data for the correspond field. Note that thread start posts have the field == 0.
+     *
+     * @return a topic head id or 0 if the message is a topic head.
+     */
     public int getTopicId() {
         return topicId;
+    }
+
+    /**
+     * Returns topic head message id: if {@linkplain #getTopicId()} == 0, the messageId will be returned.
+     *
+     * @return zero-safe version for obtaining topic start message id.
+     */
+    public int getThreadRootId() {
+        return topicId == 0 ? messageId : topicId;
     }
 
     public int getParentId() {

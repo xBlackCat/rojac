@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
+import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import sun.swing.DefaultLookup;
 

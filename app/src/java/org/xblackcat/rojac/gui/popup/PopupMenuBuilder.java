@@ -1,11 +1,11 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.data.favorite.IFavorite;
+import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.forumlist.ForumTableModel;
-import org.xblackcat.rojac.gui.view.thread.AThreadModel;
-import org.xblackcat.rojac.gui.view.thread.Post;
+import org.xblackcat.rojac.gui.view.model.AThreadModel;
+import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
 

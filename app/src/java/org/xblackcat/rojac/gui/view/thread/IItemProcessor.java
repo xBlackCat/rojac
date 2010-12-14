@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.xblackcat.rojac.gui.view.model.ITreeItem;
+
 /**
  * @author xBlackCat
  */

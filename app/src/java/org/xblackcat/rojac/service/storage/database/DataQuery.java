@@ -245,6 +245,7 @@ public enum DataQuery implements IPropertiable {
     GET_OBJECT_FORUM_GROUP,
     GET_OBJECT_MESSAGE,
     GET_OBJECT_USER,
+    GET_OBJECT_FAVORITE,
     /**
      * The query should fetch the new message object properties in following order:
      * <p/>

@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage;
 
-import org.xblackcat.rojac.data.favorite.FavoriteType;
-import org.xblackcat.rojac.data.favorite.IFavorite;
+import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.gui.view.model.FavoriteType;
 
 /**
  * @author xBlackCat
@@ -20,7 +20,7 @@ public interface IFavoriteAH {
     /**
      * Store a new favorite in database and return it.
      *
-     * @param type favorite type
+     * @param type   favorite type
      * @param config
      *
      * @return
@@ -37,4 +37,13 @@ public interface IFavoriteAH {
      * @throws StorageException
      */
     void removeFavorite(int id) throws StorageException;
+
+    /**
+     * Loads a specified favorite by its id
+     *
+     * @param favoriteId
+     *
+     * @return favorite object.
+     */
+    IFavorite getFavorite(int favoriteId) throws StorageException;
 }

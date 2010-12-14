@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.PostIcon;
+import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;

@@ -7,6 +7,7 @@
 
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.xblackcat.rojac.gui.view.model.APostProxy;
 import sun.swing.DefaultLookup;
 
 import javax.swing.*;
