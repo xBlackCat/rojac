@@ -25,8 +25,8 @@ class UnreadUserPostsFavorite extends AnItemFavorite {
     }
 
     @Override
-    protected String loadName() throws StorageException {
-        return "User #" + id + " posts";
+    public String loadName() throws StorageException {
+        return "User #" + itemId + " posts";
     }
 
     @Override

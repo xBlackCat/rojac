@@ -50,8 +50,6 @@ abstract class AnItemFavorite extends AFavorite {
 
     protected abstract int loadAmount() throws StorageException;
 
-    protected abstract String loadName() throws StorageException;
-
     private class ValuesLoader extends RojacWorker<Void, Void> {
         private int amount;
         private String name;
@@ -79,11 +77,11 @@ abstract class AnItemFavorite extends AFavorite {
             if (initName) {
                 AnItemFavorite.this.setName(name);
             }
+            callback.run();
         }
 
         @Override
         protected void done() {
-            callback.run();
         }
     }
 }
