@@ -8,7 +8,7 @@ import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -47,9 +47,9 @@ class ThreadFavorite extends AnItemFavorite {
             throw new StorageDataException("Thread root not found #" + itemId);
         }
 
-        MessageData[] messages = mAH.getMessagesDataByTopicId(itemId, messageData.getForumId());
+        List<MessageData> messages = mAH.getMessagesDataByTopicId(itemId, messageData.getForumId());
         Thread root = new Thread(messageData, null, 0, null);
-        root.fillThread(Arrays.asList(messages));
+        root.fillThread(messages);
         root.setLoadingState(LoadingState.Loaded);
 
         return root;

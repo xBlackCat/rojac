@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Forum;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,7 +36,7 @@ public interface IForumAH extends AH {
      *
      * @throws StorageException
      */
-    Forum[] getAllForums() throws StorageException;
+    List<Forum> getAllForums() throws StorageException;
 
     /**
      * Returns total amount of messages in the specified forum.

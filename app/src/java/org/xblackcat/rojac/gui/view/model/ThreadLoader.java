@@ -34,15 +34,15 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
         int itemId = item.getMessageId();
         int forumId = item.getForumId();
 
-        MessageData[] messages;
         try {
-            messages = storage.getMessageAH().getMessagesDataByTopicId(itemId, forumId);
+            List<MessageData> messages = storage.getMessageAH().getMessagesDataByTopicId(itemId, forumId);
+            for (MessageData md : messages) {
+                publish(md);
+            }
         } catch (StorageException e) {
             log.error("Can not load message children for id = " + itemId + " (forum #" + forumId + ")", e);
             throw e;
         }
-
-        publish(messages);
 
         return null;
     }
@@ -50,6 +50,10 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
     @Override
     protected void process(List<MessageData> chunks) {
         item.fillThread(chunks);
+    }
+
+    @Override
+    protected void done() {
         item.setLoadingState(LoadingState.Loaded);
 
         threadModel.nodeStructureChanged(item);

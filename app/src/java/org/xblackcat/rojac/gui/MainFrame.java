@@ -388,6 +388,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         return c;
     }
 
+    @Override
     public void closeTab(ViewId viewId) {
         if (openedViews.containsKey(viewId)) {
             View v = openedViews.remove(viewId);

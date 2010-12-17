@@ -11,7 +11,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -34,7 +39,7 @@ public final class QueryHelper implements IQueryHelper {
     }
 
     @Override
-    public <T> Collection<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
+    public <T> List<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, DBStorage.class);
         try {
             Connection con = connectionFactory.getReadConnection();
@@ -50,7 +55,7 @@ public final class QueryHelper implements IQueryHelper {
                                 res.add(c.convert(rs));
                             }
 
-                            return Collections.unmodifiableCollection(res);
+                            return Collections.unmodifiableList(res);
                         } finally {
                             rs.close();
                         }

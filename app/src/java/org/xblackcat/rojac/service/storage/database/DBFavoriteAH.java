@@ -6,7 +6,7 @@ import org.xblackcat.rojac.service.storage.IFavoriteAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -35,12 +35,11 @@ class DBFavoriteAH implements IFavoriteAH {
     }
 
     @Override
-    public IFavorite[] getFavorites() throws StorageException {
-        Collection<IFavorite> favorites = helper.execute(
+    public List<IFavorite> getFavorites() throws StorageException {
+        return helper.execute(
                 Converters.TO_FAVORITE,
                 DataQuery.GET_OBJECTS_FAVORITE
         );
-        return favorites.toArray(new IFavorite[favorites.size()]);
     }
 
     @Override

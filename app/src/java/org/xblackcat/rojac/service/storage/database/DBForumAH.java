@@ -6,7 +6,7 @@ import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -90,8 +90,7 @@ final class DBForumAH implements IForumAH {
     }
 
     @Override
-    public Forum[] getAllForums() throws StorageException {
-        Collection<Forum> f = helper.execute(Converters.TO_FORUM, DataQuery.GET_OBJECTS_FORUM);
-        return f.toArray(new Forum[f.size()]);
+    public List<Forum> getAllForums() throws StorageException {
+        return helper.execute(Converters.TO_FORUM, DataQuery.GET_OBJECTS_FORUM);
     }
 }
