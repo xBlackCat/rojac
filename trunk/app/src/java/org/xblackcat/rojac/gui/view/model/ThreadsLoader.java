@@ -32,28 +32,26 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
     @Override
     protected Void perform() throws Exception {
-        MessageData[] threadPosts;
         IMessageAH mAH = storage.getMessageAH();
         try {
-            threadPosts = mAH.getTopicMessagesDataByForumId(forumId);
+            List<MessageData> threadPosts = mAH.getTopicMessagesDataByForumId(forumId);
+
+            for (MessageData threadPost : threadPosts) {
+                int topicId = threadPost.getMessageId();
+
+                try {
+                    int unreadPosts = mAH.getUnreadReplaysInThread(topicId);
+                    ThreadStatData stat = mAH.getThreadStatByThreadId(topicId);
+
+                    publish(new Thread(threadPost, stat, unreadPosts, rootItem));
+                } catch (StorageException e) {
+                    log.error("Can not load statistic for topic #" + topicId, e);
+                }
+            }
         } catch (StorageException e) {
             log.error("Can not load topics for forum #" + forumId, e);
             throw e;
         }
-
-        for (MessageData threadPost : threadPosts) {
-            int topicId = threadPost.getMessageId();
-
-            try {
-                int unreadPosts = mAH.getUnreadReplaysInThread(topicId);
-                ThreadStatData stat = mAH.getThreadStatByThreadId(topicId);
-
-                publish(new Thread(threadPost, stat, unreadPosts, rootItem));
-            } catch (StorageException e) {
-                log.error("Can not load statistic for topic #" + topicId, e);
-            }
-        }
-
 
         return null;
     }

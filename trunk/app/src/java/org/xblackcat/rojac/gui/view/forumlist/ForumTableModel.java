@@ -7,6 +7,7 @@ import org.xblackcat.rojac.service.storage.IStorage;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class ForumTableModel extends AbstractTableModel {
         return ForumData.class;
     }
 
-    void fillForums(Forum... forums) {
+    void fillForums(Collection<Forum> forums) {
         this.forums.clear();
 
         for (Forum forum : forums) {

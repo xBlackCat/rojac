@@ -264,7 +264,9 @@ public class ForumsListView extends AView {
         @Override
         protected Void perform() throws Exception {
             try {
-                publish(storage.getForumAH().getAllForums());
+                for (Forum f : storage.getForumAH().getAllForums()) {
+                    publish(f);
+                }
             } catch (StorageException e) {
                 log.error("Can not load forum list", e);
                 throw e;
@@ -274,8 +276,7 @@ public class ForumsListView extends AView {
         }
 
         @Override
-        protected void process(List<Forum> chunks) {
-            Forum[] forums = chunks.toArray(new Forum[chunks.size()]);
+        protected void process(List<Forum> forums) {
             forumsModel.fillForums(forums);
             for (Forum forum : forums) {
                 loadForumStatistic(forum.getForumId());

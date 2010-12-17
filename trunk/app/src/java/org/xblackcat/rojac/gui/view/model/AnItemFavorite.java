@@ -77,11 +77,11 @@ abstract class AnItemFavorite extends AFavorite {
             if (initName) {
                 AnItemFavorite.this.setName(name);
             }
-            callback.run();
         }
 
         @Override
         protected void done() {
+            callback.run();
         }
     }
 }

@@ -4,6 +4,8 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
 import ru.rsdn.Janus.JanusMessageInfo;
 
+import java.util.List;
+
 /**
  * @author ASUS
  */
@@ -75,6 +77,7 @@ public interface IMessageAH extends AH {
     /**
      * Loads messages of the specified thread.
      *
+     *
      * @param threadId
      * @param forumId
      *
@@ -82,10 +85,11 @@ public interface IMessageAH extends AH {
      *
      * @throws StorageException
      */
-    MessageData[] getMessagesDataByTopicId(int threadId, int forumId) throws StorageException;
+    List<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException;
 
     /**
      * Returns messages data for specified forum id.
+     *
      *
      * @param forumId target forum id
      *
@@ -93,10 +97,11 @@ public interface IMessageAH extends AH {
      *
      * @throws StorageException
      */
-    MessageData[] getTopicMessagesDataByForumId(int forumId) throws StorageException;
+    List<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException;
 
     /**
      * Returns all a user posts.
+     *
      *
      * @param userId user to search.
      *
@@ -104,15 +109,16 @@ public interface IMessageAH extends AH {
      *
      * @throws StorageException
      */
-    MessageData[] getUserPosts(int userId) throws StorageException;
+    List<MessageData> getUserPosts(int userId) throws StorageException;
 
     /**
      * Returns all replies on the user post
+     *
      * @param userId
      * @return
      * @throws StorageException
      */
-    MessageData[] getUserReplies(int userId) throws StorageException;
+    List<MessageData> getUserReplies(int userId) throws StorageException;
 
     ThreadStatData getThreadStatByThreadId(int forumId) throws StorageException;
 

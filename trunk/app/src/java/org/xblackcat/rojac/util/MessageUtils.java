@@ -20,6 +20,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,7 +119,7 @@ public final class MessageUtils {
         IMessageAH mAH = storage.getMessageAH();
         IRatingAH rAH = storage.getRatingAH();
 
-        MarkStat[] marks = rAH.getMarkStatByMessageId(id);
+        List<MarkStat> marks = rAH.getMarkStatByMessageId(id);
         RatingCache ratingCache = new RatingCache(marks);
         if (!ratingCache.isEmpty()) {
             mAH.updateMessageRatingCache(id, ratingCache.asString());

@@ -78,7 +78,9 @@ public class FavoritesView extends AView {
         new RojacWorker<Void, IFavorite>() {
             @Override
             protected Void perform() throws Exception {
-                publish(storage.getFavoriteAH().getFavorites());
+                for (IFavorite f : storage.getFavoriteAH().getFavorites()) {
+                    publish(f);
+                }
 
                 return null;
             }

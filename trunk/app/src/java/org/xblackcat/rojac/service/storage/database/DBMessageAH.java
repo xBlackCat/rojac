@@ -8,7 +8,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import ru.rsdn.Janus.JanusMessageInfo;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * @author ASUS
@@ -88,40 +88,36 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public MessageData[] getMessagesDataByTopicId(int threadId, int forumId) throws StorageException {
-        Collection<MessageData> datas = helper.execute(
+    public List<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException {
+        return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA,
                 threadId,
                 forumId);
-        return datas.toArray(new MessageData[datas.size()]);
     }
 
     @Override
-    public MessageData[] getTopicMessagesDataByForumId(int forumId) throws StorageException {
-        Collection<MessageData> datas = helper.execute(
+    public List<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException {
+        return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
                 forumId);
-        return datas.toArray(new MessageData[datas.size()]);
     }
 
     @Override
-    public MessageData[] getUserPosts(int userId) throws StorageException {
-        Collection<MessageData> datas = helper.execute(
+    public List<MessageData> getUserPosts(int userId) throws StorageException {
+        return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_POSTS,
                 userId);
-        return datas.toArray(new MessageData[datas.size()]);
     }
 
     @Override
-    public MessageData[] getUserReplies(int userId) throws StorageException {
-        Collection<MessageData> datas = helper.execute(
+    public List<MessageData> getUserReplies(int userId) throws StorageException {
+        return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_REPLIES,
                 userId);
-        return datas.toArray(new MessageData[datas.size()]);
     }
 
     @Override
