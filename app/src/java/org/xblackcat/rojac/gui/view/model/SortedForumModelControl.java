@@ -8,6 +8,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -136,6 +137,48 @@ public class SortedForumModelControl implements IModelControl<Post> {
         } else {
             return "#" + root.getForumId();
         }
+    }
+
+    @Override
+    public boolean processPacket(final AThreadModel<Post> model, IPacket p) {
+        final int forumId = model.getRoot().getForumId();
+
+        new PacketDispatcher(
+                new IPacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
+                        if (p.getForumId() == forumId) {
+                            markForumRead(model, p.isRead());
+                        }
+                    }
+                },
+                new IPacketProcessor<SetPostReadPacket>() {
+                    @Override
+                    public void process(SetPostReadPacket p) {
+                        if (p.getForumId() == forumId) {
+                            if (p.isRecursive()) {
+                                // Post is a root of marked thread
+                                markThreadRead(model, p.getPostId(), p.isRead());
+                            } else {
+                                // Mark as read only the post
+                                markPostRead(model, p.getPostId(), p.isRead());
+                            }
+                        }
+                    }
+                },
+                new IPacketProcessor<SynchronizationCompletePacket>() {
+                    @Override
+                    public void process(SynchronizationCompletePacket p) {
+                        if (!p.isForumAffected(forumId)) {
+                            // Current forum is not changed - have a rest
+                            return;
+                        }
+
+                        updateModel(model, p.getThreadIds());
+                    }
+                }
+        ).dispatch(p);
+        return true;
     }
 
     private static class ForumInfoLoader extends RojacWorker<Void, Forum> {

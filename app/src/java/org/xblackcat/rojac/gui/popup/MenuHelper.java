@@ -122,11 +122,11 @@ final class MenuHelper {
             // The post is a thread.
             topicId = post.getMessageId();
         }
-        menu.add(new AddToFavoriteMenuItem("Thread", FavoriteType.UnreadPostsInThread, topicId));
-//        menu.add(new AddToFavoriteMenuItem("Sub-thread", FavoriteType.UnreadPostResponses, post.getMessageId()));
+        menu.add(new AddToFavoriteMenuItem("Thread", FavoriteType.Thread, topicId));
+//        menu.add(new AddToFavoriteMenuItem("Sub-thread", FavoriteType.SubThread, post.getMessageId()));
         menu.addSeparator();
-        menu.add(new AddToFavoriteMenuItem(post.getMessageData().getUserName() + "'s posts", FavoriteType.UnreadUserPosts, post.getMessageData().getUserId()));
-        menu.add(new AddToFavoriteMenuItem("Responses on " + post.getMessageData().getUserName() + "'s posts", FavoriteType.UnreadUserResponses, post.getMessageData().getUserId()));
+        menu.add(new AddToFavoriteMenuItem(post.getMessageData().getUserName() + "'s posts", FavoriteType.UserPosts, post.getMessageData().getUserId()));
+        menu.add(new AddToFavoriteMenuItem("Responses on " + post.getMessageData().getUserName() + "'s posts", FavoriteType.UserResponses, post.getMessageData().getUserId()));
 //        menu.addSeparator();
 //        menu.add(new AddToFavoriteMenuItem("Add thread to favorites", FavoriteType.Category, post.getMessageData().getCategory()));
 

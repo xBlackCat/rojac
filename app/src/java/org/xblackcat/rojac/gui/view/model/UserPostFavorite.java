@@ -9,14 +9,14 @@ import org.xblackcat.rojac.util.RojacUtils;
  * @author xBlackCat
  */
 
-class UnreadUserPostsFavorite extends AnItemFavorite {
-    UnreadUserPostsFavorite(Integer id, String config) {
+class UserPostFavorite extends AnItemFavorite {
+    UserPostFavorite(Integer id, String config) {
         super(id, config);
     }
 
     @Override
     public FavoriteType getType() {
-        return FavoriteType.UnreadUserPosts;
+        return FavoriteType.UserPosts;
     }
 
     @Override

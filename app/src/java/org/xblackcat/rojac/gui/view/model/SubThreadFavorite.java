@@ -9,24 +9,24 @@ import org.xblackcat.rojac.util.RojacUtils;
  * @author xBlackCat
  */
 
-class UnreadUserResponseFavorite extends AnItemFavorite {
-    UnreadUserResponseFavorite(Integer id, String config) {
+class SubThreadFavorite extends AnItemFavorite {
+    SubThreadFavorite(Integer id, String config) {
         super(id, config);
     }
 
     @Override
     public FavoriteType getType() {
-        return FavoriteType.UnreadUserResponses;
+        return FavoriteType.SubThread;
     }
 
     @Override
     protected int loadAmount() throws StorageException {
-        return ServiceFactory.getInstance().getStorage().getMessageAH().getUnreadReplies(itemId);
+        return ServiceFactory.getInstance().getStorage().getMessageAH().getUnreadReplaysInThread(itemId);
     }
 
     @Override
     public String loadName() throws StorageException {
-        return "User #" + itemId + " responses";
+        return "Post #" + itemId + " responses";
     }
 
     @Override

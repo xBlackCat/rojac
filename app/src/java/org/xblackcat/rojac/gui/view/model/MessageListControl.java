@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.util.RojacUtils;
 
 /**
@@ -57,5 +58,11 @@ public class MessageListControl implements IModelControl<Post> {
     @Override
     public String getTitle(AThreadModel<Post> model) {
         throw new NotImplementedException("The method shouldn't be used.");
+    }
+
+    @Override
+    public boolean processPacket(AThreadModel<Post> model, IPacket p) {
+        // TODO: implement
+        return false;
     }
 }

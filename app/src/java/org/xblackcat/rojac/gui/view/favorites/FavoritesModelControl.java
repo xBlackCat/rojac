@@ -2,13 +2,10 @@ package org.xblackcat.rojac.gui.view.favorites;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
-import org.xblackcat.rojac.gui.view.model.AThreadModel;
-import org.xblackcat.rojac.gui.view.model.IModelControl;
-import org.xblackcat.rojac.gui.view.model.MessageListControl;
-import org.xblackcat.rojac.gui.view.model.Post;
-import org.xblackcat.rojac.gui.view.model.SingleModelControl;
+import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -89,6 +86,11 @@ public class FavoritesModelControl implements IModelControl<Post> {
         }
     }
 
+    @Override
+    public boolean processPacket(AThreadModel<Post> model, IPacket p) {
+        return delegatedControl != null && delegatedControl.processPacket(model, p);
+    }
+
     /**
      * Util class to determine favorite type and the control behaviour.
      */
@@ -111,25 +113,32 @@ public class FavoritesModelControl implements IModelControl<Post> {
 
             f = fAH.getFavorite(favoriteId);
 
-            root = f.getRootNode();
-            name = f.loadName();
+            if (f != null) {
+                root = f.getRootNode();
+                name = f.loadName();
+            }
 
             return null;
         }
 
         @Override
         protected void done() {
+            if (f == null) {
+                model.setRoot(null);
+                return;
+            }
+
             title = name;
 
             // Set proper ThreadsControl
             switch (f.getType()) {
-                case UnreadUserResponses:
-                case UnreadUserPosts:
+                case UserResponses:
+                case UserPosts:
                 case Category:
                     delegatedControl = new MessageListControl();
                     break;
-                case UnreadPostResponses:
-                case UnreadPostsInThread:
+                case SubThread:
+                case Thread:
                     delegatedControl = new SingleModelControl();
                     break;
             }
