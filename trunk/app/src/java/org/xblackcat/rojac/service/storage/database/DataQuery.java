@@ -38,7 +38,7 @@ public enum DataQuery implements IPropertiable {
      * <p/>
      * id (int), topic id (int), parent id (int), forum id (int), user id (int), subject (String), user nick (String),
      * message date (long), update date (long), read (boolean), rating (String)
-     *
+     * <p/>
      * Parameter: threadId (int)
      */
     GET_OBJECTS_MESSAGE_DATA,
@@ -75,7 +75,7 @@ public enum DataQuery implements IPropertiable {
     GET_OBJECTS_RATING,
     /**
      * The query fetches all the favorite objects.
-     *
+     * <p/>
      * fields order for the favorites table: id (int), name(string), type(string), config(string)
      */
     GET_OBJECTS_FAVORITE,
@@ -154,11 +154,33 @@ public enum DataQuery implements IPropertiable {
     STORE_OBJECT_EXTRA_MESSAGE,
     /**
      * The query for storing a new record of favorites object.
-     *
+     * <p/>
      * fields order for the favorites table: id (int), name(string), type(string), config(string)
      */
     STORE_OBJECT_FAVORITE,
 
+    /**
+     * Fetches all replies on user posts.
+     * <p/>
+     * The query should fetch the message data properties in following order:
+     * <p/>
+     * id (int), topic id (int), parent id (int), forum id (int), user id (int), subject (String), user nick (String),
+     * message date (long), update date (long), read (boolean), rating (String)
+     * <p/>
+     * Parameter: userId (int)
+     */
+    GET_OBJECTS_MESSAGE_DATA_USER_REPLIES,
+    /**
+     * Fetches all user posts.
+     * <p/>
+     * The query should fetch the message data properties in following order:
+     * <p/>
+     * id (int), topic id (int), parent id (int), forum id (int), user id (int), subject (String), user nick (String),
+     * message date (long), update date (long), read (boolean), rating (String)
+     * <p/>
+     * Parameter: userId (int)
+     */
+    GET_OBJECTS_MESSAGE_DATA_USER_POSTS,
     // Get objects by its properties
     /**
      * The query should fetch the rating object properties in following order:
@@ -263,7 +285,7 @@ public enum DataQuery implements IPropertiable {
      * <p/>
      * id (int), topic id (int), parent id (int), forum id (int), user id (int), subject (String), user nick (String),
      * message date (long), update date (long), read (boolean), ratingCache (string)
-     *
+     * <p/>
      * Parameter: messageId (int)
      */
     GET_OBJECT_MESSAGE_DATA,
@@ -324,7 +346,8 @@ public enum DataQuery implements IPropertiable {
      */
     UPDATE_MESSAGE_READ_FLAG,
     /**
-     * The query for updating the read field of message objects: thread root and all the belongs posts. Set query parameters in following order:
+     * The query for updating the read field of message objects: thread root and all the belongs posts. Set query
+     * parameters in following order:
      * <p/>
      * read(boolean), id(int)
      */
@@ -344,21 +367,21 @@ public enum DataQuery implements IPropertiable {
     UPDATE_OBJECT_NEW_MESSAGE,
     /**
      * Query for updating ratings cache for message.
-     *
+     * <p/>
      * Category id (int), message id (int)
      */
     UPDATE_MESSAGE_CATEGORY,
     /**
      * Query for updating ratings cache for message.
-     *
+     * <p/>
      * rating cache (string), message id (int)
      */
     UPDATE_MESSAGE_RATING_CACHE,
     /**
      * The query for updating the user object. Set the object parameters in following order:
      * <p/>
-     * name (String), nick (String), real_name (String), email (String), home_page (String), specialization
-     * (String), where_from (String), origin (String), id (int)
+     * name (String), nick (String), real_name (String), email (String), home_page (String), specialization (String),
+     * where_from (String), origin (String), id (int)
      */
     UPDATE_OBJECT_USER,
 
@@ -387,7 +410,7 @@ public enum DataQuery implements IPropertiable {
     /**
      * Returns unread replies number. Parameter is targetUserId.
      */
-    GET_UNREAD_REPLIES_NUMBER,
+    GET_UNREAD_USER_REPLIES_NUMBER,
     /**
      * Returns unread messages number in thread. Parameter is threadId.
      */
