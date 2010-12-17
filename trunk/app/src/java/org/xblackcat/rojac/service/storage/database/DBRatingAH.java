@@ -9,7 +9,6 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import ru.rsdn.Janus.JanusRatingInfo;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author ASUS
@@ -55,7 +54,7 @@ final class DBRatingAH implements IRatingAH {
         return ratings.toArray(new Mark[ratings.size()]);
     }
 
-    public List<MarkStat> getMarkStatByMessageId(int messageId) throws StorageException {
+    public Collection<MarkStat> getMarkStatByMessageId(int messageId) throws StorageException {
         return helper.execute(
                 Converters.TO_MARK_STAT,
                 DataQuery.GET_OBJECTS_MARK_STAT_BY_MESSAGE_ID,

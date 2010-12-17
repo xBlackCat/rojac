@@ -9,6 +9,7 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,8 +36,8 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
         int forumId = item.getForumId();
 
         try {
-            List<MessageData> messages = storage.getMessageAH().getMessagesDataByTopicId(itemId, forumId);
-            for (MessageData md : messages) {
+            Collection<MessageData> datas = storage.getMessageAH().getMessagesDataByTopicId(itemId, forumId);
+            for (MessageData md : datas) {
                 publish(md);
             }
         } catch (StorageException e) {

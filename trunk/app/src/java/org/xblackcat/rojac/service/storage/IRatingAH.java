@@ -5,7 +5,7 @@ import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.Rating;
 import ru.rsdn.Janus.JanusRatingInfo;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author ASUS
@@ -22,5 +22,5 @@ public interface IRatingAH extends AH {
 
     Mark[] getRatingMarksByMessageId(int messageId) throws StorageException;
 
-    List<MarkStat> getMarkStatByMessageId(int messageId) throws StorageException;
+    Collection<MarkStat> getMarkStatByMessageId(int messageId) throws StorageException;
 }
