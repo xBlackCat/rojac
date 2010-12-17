@@ -9,19 +9,11 @@ import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
-import org.xblackcat.rojac.gui.view.model.AThreadModel;
-import org.xblackcat.rojac.gui.view.model.IModelControl;
-import org.xblackcat.rojac.gui.view.model.LoadingState;
-import org.xblackcat.rojac.gui.view.model.Post;
-import org.xblackcat.rojac.gui.view.model.ReadStatus;
-import org.xblackcat.rojac.gui.view.model.SortedThreadsModel;
+import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
-import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
@@ -50,6 +42,36 @@ public abstract class AThreadView extends AnItemView {
     protected AThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl);
         this.modelControl = modelControl;
+
+        model.addTreeModelListener(new TreeModelListener() {
+            @Override
+            public void treeNodesChanged(TreeModelEvent e) {
+                Post root = model.getRoot();
+                if (e.getTreePath().getLastPathComponent() == root) {
+                    fireItemUpdated(root.getForumId(), root.getMessageId());
+                }
+            }
+
+            @Override
+            public void treeNodesInserted(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeNodesRemoved(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeStructureChanged(TreeModelEvent e) {
+                Post root = model.getRoot();
+                if (root == null) {
+                    AThreadView.this.appControl.closeTab(getId());
+                } else if (e.getTreePath().getLastPathComponent() == root) {
+                    fireItemUpdated(root.getForumId(), root.getMessageId());
+                    selectItem(root);
+                }
+            }
+        });
+
     }
 
     protected void initializeLayout() {
@@ -91,32 +113,6 @@ public abstract class AThreadView extends AnItemView {
     @Override
     public void loadItem(int forumId) {
         this.rootItemId = forumId;
-        model.addTreeModelListener(new TreeModelListener() {
-            @Override
-            public void treeNodesChanged(TreeModelEvent e) {
-                Post root = model.getRoot();
-                if (e.getTreePath().getLastPathComponent() == root) {
-                    fireItemUpdated(root.getForumId(), root.getMessageId());
-                }
-            }
-
-            @Override
-            public void treeNodesInserted(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeNodesRemoved(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeStructureChanged(TreeModelEvent e) {
-                Post root = model.getRoot();
-                if (e.getTreePath().getLastPathComponent() == root) {
-                    fireItemUpdated(root.getForumId(), root.getMessageId());
-                    selectItem(root);
-                }
-            }
-        });
 
         modelControl.fillModelByItemId(model, forumId);
     }
@@ -131,43 +127,20 @@ public abstract class AThreadView extends AnItemView {
     @SuppressWarnings({"unchecked"})
     protected IPacketProcessor<IPacket>[] getProcessors() {
         return new IPacketProcessor[]{
-                new IPacketProcessor<SetForumReadPacket>() {
+                new IPacketProcessor<IPacket>() {
                     @Override
-                    public void process(SetForumReadPacket p) {
-                        if (p.getForumId() == rootItemId) {
-                            modelControl.markForumRead(model, p.isRead());
-                        }
-                    }
-                },
-                new IPacketProcessor<SetPostReadPacket>() {
-                    @Override
-                    public void process(SetPostReadPacket p) {
-                        if (p.getForumId() == rootItemId) {
-                            if (p.isRecursive()) {
-                                // Post is a root of marked thread
-                                modelControl.markThreadRead(model, p.getPostId(), p.isRead());
-                            } else {
-                                // Mark as read only the post
-                                modelControl.markPostRead(model, p.getPostId(), p.isRead());
+                    public void process(IPacket p) {
+                        // Just in case store a current selection
+                        Post curSelection = getSelectedItem();
+
+                        if (modelControl.processPacket(model, p)) {
+                            if (curSelection != null) {
+                                selectItem(curSelection);
                             }
                         }
                     }
-                },
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        if (!p.isForumAffected(rootItemId)) {
-                            // Current forum is not changed - have a rest
-                            return;
-                        }
 
-                        Post curSelection = getSelectedItem();
-
-                        modelControl.updateModel(model, p.getThreadIds());
-
-                        selectItem(curSelection);
-                    }
-                },
+                }
         };
     }
 
@@ -194,8 +167,12 @@ public abstract class AThreadView extends AnItemView {
 
                     @Override
                     public void treeStructureChanged(TreeModelEvent e) {
-                        model.removeTreeModelListener(this);
-                        expandThread(messageId);
+                        if (model.getRoot() != null) {
+                            model.removeTreeModelListener(this);
+                            expandThread(messageId);
+                        } else {
+                            appControl.closeTab(getId());
+                        }
                     }
                 });
             } else {

@@ -8,28 +8,28 @@ import org.xblackcat.rojac.i18n.Messages;
  */
 
 public enum FavoriteType {
-    UnreadPostsInThread(Messages.Favorite_Name_UnreadTreadPosts) {
+    Thread(Messages.Favorite_Name_UnreadTreadPosts) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
-            return new UnreadPostsInThreadFavorite(id, config);
+            return new ThreadFavorite(id, config);
         }
     },
-    UnreadUserPosts(Messages.Favorite_Name_UserPosts) {
+    UserPosts(Messages.Favorite_Name_UserPosts) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
-            return new UnreadUserPostsFavorite(id, config);
+            return new UserPostFavorite(id, config);
         }
     },
-    UnreadPostResponses(Messages.Favorite_Name_PostResponses) {
+    SubThread(Messages.Favorite_Name_PostResponses) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
-            return new UnreadPostResponseFavorite(id, config);
+            return new SubThreadFavorite(id, config);
         }
     },
-    UnreadUserResponses(Messages.Favorite_Name_UserResponses) {
+    UserResponses(Messages.Favorite_Name_UserResponses) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
-            return new UnreadUserResponseFavorite(id, config);
+            return new UserResponseFavorite(id, config);
         }
     },
     Category(Messages.Favorite_Name_Category) {

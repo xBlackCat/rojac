@@ -40,4 +40,8 @@ public class SynchronizationCompletePacket implements IPacket, IForumUpdatePacke
     public boolean isMessageAffected(int messageId) {
         return ArrayUtils.contains(messageIds, messageId);
     }
+
+    public boolean isTopicAffected(int threadId) {
+        return ArrayUtils.contains(threadIds, threadId);
+    }
 }

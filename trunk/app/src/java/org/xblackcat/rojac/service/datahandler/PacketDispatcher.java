@@ -15,7 +15,7 @@ public class PacketDispatcher {
     private final Map<Class<?>, IPacketProcessor<IPacket>> processors = new HashMap<Class<?>, IPacketProcessor<IPacket>>();
 
     @SuppressWarnings({"unchecked"})
-    public PacketDispatcher(IPacketProcessor<IPacket>... processors) {
+    public PacketDispatcher(IPacketProcessor... processors) {
         if (processors == null) {
             return;
         }

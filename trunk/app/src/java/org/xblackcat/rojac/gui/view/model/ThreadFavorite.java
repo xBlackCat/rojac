@@ -14,14 +14,14 @@ import java.util.Arrays;
  * @author xBlackCat
  */
 
-class UnreadPostsInThreadFavorite extends AnItemFavorite {
-    UnreadPostsInThreadFavorite(Integer id, String config) {
+class ThreadFavorite extends AnItemFavorite {
+    ThreadFavorite(Integer id, String config) {
         super(id, config);
     }
 
     @Override
     public FavoriteType getType() {
-        return FavoriteType.UnreadPostsInThread;
+        return FavoriteType.Thread;
     }
 
     @Override
@@ -33,7 +33,7 @@ class UnreadPostsInThreadFavorite extends AnItemFavorite {
     public String loadName() throws StorageException {
         IMessageAH mAH = ServiceFactory.getInstance().getStorage().getMessageAH();
         MessageData md = mAH.getMessageData(itemId);
-        return "Topic #" + itemId + " " + md.getSubject();
+        return "Topic " + md.getSubject();
     }
 
     @Override

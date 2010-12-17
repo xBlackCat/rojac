@@ -104,7 +104,11 @@ public class TreeTableThreadView extends AThreadView {
 
             @Override
             public void treeStructureChanged(TreeModelEvent e) {
-                threads.setRootVisible(modelControl.isRootVisible());
+                if (model.getRoot() != null) {
+                    threads.setRootVisible(modelControl.isRootVisible());
+                } else {
+                    appControl.closeTab(getId());
+                }
             }
         });
 
