@@ -95,6 +95,25 @@ public interface IMessageAH extends AH {
      */
     MessageData[] getTopicMessagesDataByForumId(int forumId) throws StorageException;
 
+    /**
+     * Returns all a user posts.
+     *
+     * @param userId user to search.
+     *
+     * @return user posts.
+     *
+     * @throws StorageException
+     */
+    MessageData[] getUserPosts(int userId) throws StorageException;
+
+    /**
+     * Returns all replies on the user post
+     * @param userId
+     * @return
+     * @throws StorageException
+     */
+    MessageData[] getUserReplies(int userId) throws StorageException;
+
     ThreadStatData getThreadStatByThreadId(int forumId) throws StorageException;
 
     int getUnreadReplaysInThread(int threadId) throws StorageException;

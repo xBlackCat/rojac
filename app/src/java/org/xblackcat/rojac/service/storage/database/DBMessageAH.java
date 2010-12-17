@@ -107,6 +107,24 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
+    public MessageData[] getUserPosts(int userId) throws StorageException {
+        Collection<MessageData> datas = helper.execute(
+                Converters.TO_MESSAGE_DATA,
+                DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_POSTS,
+                userId);
+        return datas.toArray(new MessageData[datas.size()]);
+    }
+
+    @Override
+    public MessageData[] getUserReplies(int userId) throws StorageException {
+        Collection<MessageData> datas = helper.execute(
+                Converters.TO_MESSAGE_DATA,
+                DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_REPLIES,
+                userId);
+        return datas.toArray(new MessageData[datas.size()]);
+    }
+
+    @Override
     public ThreadStatData getThreadStatByThreadId(int threadId) throws StorageException {
         return helper.executeSingle(Converters.TO_THREAD_DATA, DataQuery.GET_THREAD_STAT_DATA, threadId);
     }
@@ -128,7 +146,7 @@ final class DBMessageAH implements IMessageAH {
 
     @Override
     public int getUnreadReplies(int userId) throws StorageException {
-        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_REPLIES_NUMBER, userId).intValue();
+        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_REPLIES_NUMBER, userId).intValue();
     }
 
     @Override
