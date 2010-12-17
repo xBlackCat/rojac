@@ -7,7 +7,12 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -56,8 +61,8 @@ public class SingleModelControl implements IModelControl<Post> {
     public void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
         assert RojacUtils.checkThread(true, getClass());
 
-        Post post = model.getRoot();
-        if (post.getMessageId() == threadRootId) {
+        Post post = model.getRoot().getMessageById(threadRootId);
+        if (post != null) {
             post.setDeepRead(read);
 
             model.subTreeNodesChanged(post);
