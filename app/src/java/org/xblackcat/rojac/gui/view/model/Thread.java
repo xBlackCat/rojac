@@ -6,6 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -152,7 +154,8 @@ public class Thread extends Post {
         return threadPosts.get(messageId);
     }
 
-    void fillThread(List<MessageData> posts) {
+    void fillThread(Collection<MessageData> po) {
+        List<MessageData> posts = new ArrayList<MessageData>(po);
         Collections.sort(posts, SORT_BY_PARENTS);
 
         for (MessageData post : posts) {

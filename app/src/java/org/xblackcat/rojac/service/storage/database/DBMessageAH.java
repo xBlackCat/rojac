@@ -8,7 +8,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import ru.rsdn.Janus.JanusMessageInfo;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author ASUS
@@ -88,7 +88,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public List<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException {
+    public Collection<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA,
@@ -97,7 +97,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public List<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException {
+    public Collection<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
@@ -105,7 +105,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public List<MessageData> getUserPosts(int userId) throws StorageException {
+    public Collection<MessageData> getUserPosts(int userId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_POSTS,
@@ -113,7 +113,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public List<MessageData> getUserReplies(int userId) throws StorageException {
+    public Collection<MessageData> getUserReplies(int userId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_REPLIES,

@@ -208,7 +208,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     @Override
-    public <T> List<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
+    public <T> Collection<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.execute(c, getQuery(sql), params);
     }
 
