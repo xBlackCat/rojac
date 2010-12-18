@@ -15,7 +15,7 @@ class SingleThreadViewFactory implements IViewFactory {
     @Override
     public IItemView makeView(ViewId id, IAppControl appControl) {
         IItemView threadView = new TreeTableThreadView(id, appControl, new SingleModelControl());
-        IItemView messageView = new MessageView(null, appControl);
+        IItemView messageView = new MessageView(id, appControl);
 
         return new ThreadDoubleView(threadView, messageView, true, appControl);
     }

@@ -8,7 +8,12 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
+import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -57,6 +62,7 @@ public class SortedForumModelControl implements IModelControl<Post> {
         final Post post = model.getRoot().getMessageById(threadRootId);
         post.setDeepRead(read);
 
+        model.pathToNodeChanged(post);
         model.subTreeNodesChanged(post);
     }
 

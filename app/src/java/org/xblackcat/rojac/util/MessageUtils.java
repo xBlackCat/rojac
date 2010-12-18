@@ -4,8 +4,9 @@ import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MarkStat;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.RatingCache;
-import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.thread.MessageReadFlagSetter;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -224,13 +225,25 @@ public final class MessageUtils {
         return width;
     }
 
-    public static void markForumMessageRead(Post mi, long delay) {
-        MessageReadFlagSetter target = new MessageReadFlagSetter(true, mi);
+    /**
+     * Set message read flag instantly (delay = 0) or after some time.
+     *
+     * @param id    view id to associate a new timer with.
+     * @param data  message data to identify message
+     * @param delay period in seconds to be waited before read flag is set. Zero means set the flag instantly. Negative
+     *              value means automatic setting flag is disabled.
+     */
+    public static void markMessageRead(ViewId id, MessageData data, long delay) {
+        if (delay < 0) {
+            // Negative value means "disable"
+        }
+
+        MessageReadFlagSetter target = new MessageReadFlagSetter(true, data);
         IExecutor executor = ServiceFactory.getInstance().getExecutor();
         if (delay > 0) {
-            executor.setupTimer("Forum_" + mi.getForumId(), target, delay);
+            executor.setupTimer(id.getAnchor(), target, delay);
         } else {
-            executor.killTimer("Forum_" + mi.getForumId());
+            executor.killTimer(id.getAnchor());
             executor.execute(target);
         }
     }
