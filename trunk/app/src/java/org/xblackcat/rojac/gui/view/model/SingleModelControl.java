@@ -65,6 +65,7 @@ public class SingleModelControl implements IModelControl<Post> {
         if (post != null) {
             post.setDeepRead(read);
 
+            model.pathToNodeChanged(post);
             model.subTreeNodesChanged(post);
         }
     }

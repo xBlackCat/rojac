@@ -20,6 +20,7 @@ import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.datahandler.IMessageUpdatePacket;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.MessageUtils;
@@ -68,6 +69,7 @@ public class MessageView extends AnItemView implements IInternationazable {
 
     protected final JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
     protected final JComponent titleBar = createTitleBar();
+    protected MessageData messageData;
 
 
     public MessageView(ViewId id, IAppControl appControl) {
@@ -97,6 +99,10 @@ public class MessageView extends AnItemView implements IInternationazable {
 
                 int oldValue = scrollBar.getValue();
                 if (!scrollBar.isVisible() || oldValue + scrollBar.getHeight() >= scrollBar.getMaximum()) {
+                    if (Property.VIEW_THREAD_SET_READ_ON_SCROLL.get()) {
+                        MessageUtils.markMessageRead(getId(), messageData, 0);
+                    }
+
                     MessageView.this.firePropertyChange(MESSAGE_VIEWED_FLAG, 0, messageId);
                     return;
                 }
@@ -339,11 +345,20 @@ public class MessageView extends AnItemView implements IInternationazable {
 
         @Override
         protected void process(List<MessageDataHolder> chunks) {
-            for (MessageDataHolder messageData : chunks) {
-                fillFrame(messageData.getMessage(), messageData.getMessageBody());
-                fillMarksButton(messageData.getMessage().getRating());
-                messageTitle = "#" + messageId + " " + messageData.getMessage().getSubject();
+            for (MessageDataHolder md : chunks) {
+                messageData = md.getMessage();
+                fillFrame(messageData, md.getMessageBody());
+                fillMarksButton(messageData.getRating());
+                messageTitle = "#" + messageId + " " + messageData.getSubject();
                 fireItemUpdated(forumId, messageId);
+
+                if (!messageData.isRead()) {
+                    Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
+                    if (delay != null && delay >= 0) {
+                        MessageUtils.markMessageRead(getId(), messageData, delay);
+                    }
+                }
+
             }
         }
     }

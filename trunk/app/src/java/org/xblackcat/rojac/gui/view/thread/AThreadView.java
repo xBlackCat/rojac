@@ -9,13 +9,16 @@ import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
-import org.xblackcat.rojac.gui.view.model.*;
+import org.xblackcat.rojac.gui.view.model.AThreadModel;
+import org.xblackcat.rojac.gui.view.model.IModelControl;
+import org.xblackcat.rojac.gui.view.model.LoadingState;
+import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.model.ReadStatus;
+import org.xblackcat.rojac.gui.view.model.SortedThreadsModel;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -100,10 +103,6 @@ public abstract class AThreadView extends AnItemView {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 Post post = model.getRoot().getMessageById((Integer) evt.getNewValue());
-
-                if (Property.VIEW_THREAD_SET_READ_ON_SCROLL.get()) {
-                    MessageUtils.markForumMessageRead(post, 0);
-                }
 
                 selectNextUnread(post);
             }
@@ -228,7 +227,7 @@ public abstract class AThreadView extends AnItemView {
             }
         }
 
-        if (post.getLoadingState() == LoadingState.NotLoaded && post.isRead() == ReadStatus.ReadPartially) {
+        if (post.getLoadingState() == LoadingState.NotLoaded && post.isRead() != ReadStatus.Read) {
             // Has unread children but their have not loaded yet.
             modelControl.loadThread(model, post, new LoadNextUnread());
             // Change post selection when children are loaded
@@ -367,13 +366,6 @@ public abstract class AThreadView extends AnItemView {
      */
     protected void setSelectedPost(Post mi) {
         fireMessageGotFocus(mi.getForumId(), mi.getMessageId());
-
-        if (mi.isRead() == ReadStatus.Unread) {
-            Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
-            if (delay != null && delay >= 0) {
-                MessageUtils.markForumMessageRead(mi, delay);
-            }
-        }
     }
 
     @Override
