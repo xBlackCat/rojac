@@ -173,4 +173,9 @@ public class SingleModelControl implements IModelControl<Post> {
         ).dispatch(p);
         return true;
     }
+
+    @Override
+    public Post getTreeRoot(Post post) {
+        return post == null ? null : post.getThreadRoot();
+    }
 }

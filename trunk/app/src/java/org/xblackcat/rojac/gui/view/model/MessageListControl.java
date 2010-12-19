@@ -65,4 +65,10 @@ public class MessageListControl implements IModelControl<Post> {
         // TODO: implement
         return false;
     }
+
+    @Override
+    public Post getTreeRoot(Post post) {
+        // Parent in the case is PostList object.
+        return post;
+    }
 }
