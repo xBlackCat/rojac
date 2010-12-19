@@ -1,15 +1,21 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.lang.NotImplementedException;
+import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
+
+import java.util.Collection;
 
 /**
  * @author xBlackCat
  */
 
 class UserResponseFavorite extends AnItemFavorite {
+    private final IStorage storage = ServiceFactory.getInstance().getStorage();
+
     UserResponseFavorite(Integer id, String config) {
         super(id, config);
     }
@@ -21,18 +27,28 @@ class UserResponseFavorite extends AnItemFavorite {
 
     @Override
     protected int loadAmount() throws StorageException {
-        return ServiceFactory.getInstance().getStorage().getMessageAH().getUnreadReplies(itemId);
+        return storage.getMessageAH().getUnreadReplies(itemId);
     }
 
     @Override
     public String loadName() throws StorageException {
-        return "User #" + itemId + " responses";
+        User user = storage.getUserAH().getUserById(itemId);
+        if (user != null) {
+            return "Replies to " + user.getUserNick();
+        } else {
+            return "Responses to user #" + itemId;
+        }
     }
 
     @Override
-    public Post getRootNode() {
+    public Post getRootNode() throws StorageException {
         assert RojacUtils.checkThread(false, getClass());
 
-        throw new NotImplementedException();
+        FavoritePostList root = new FavoritePostList(this);
+        Collection<MessageData> messages = storage.getMessageAH().getUserReplies(itemId);
+        root.fillList(messages);
+        root.setLoadingState(LoadingState.Loaded);
+
+        return root;
     }
 }

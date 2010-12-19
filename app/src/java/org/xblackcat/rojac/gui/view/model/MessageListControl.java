@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
@@ -48,10 +49,15 @@ public class MessageListControl implements IModelControl<Post> {
         return false;
     }
 
-    private void updateModel(AThreadModel<Post> model, int... threadIds) {
+    private void updateModel(final AThreadModel<Post> model, int... threadIds) {
         assert RojacUtils.checkThread(true, getClass());
 
-       // TODO: implement reloading list information. Make it customizable.
+        // Parent in the case is FavoritePostList object.
+        FavoritePostList root = (FavoritePostList) model.getRoot();
+
+        final IFavorite favorite = root.getFavorite();
+
+        new FavoriteListLoader(favorite, model).execute();
     }
 
     @Override
@@ -92,7 +98,8 @@ public class MessageListControl implements IModelControl<Post> {
 
     @Override
     public Post getTreeRoot(Post post) {
-        // Parent in the case is PostList object.
+        // Post lists have no parents or children.
         return post;
     }
+
 }
