@@ -41,7 +41,7 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
                 int topicId = threadPost.getMessageId();
 
                 try {
-                    int unreadPosts = mAH.getUnreadReplaysInThread(topicId);
+                    int unreadPosts = mAH.getReplaysInThread(topicId).getUnread();
                     ThreadStatData stat = mAH.getThreadStatByThreadId(topicId);
 
                     publish(new Thread(threadPost, stat, unreadPosts, rootItem));

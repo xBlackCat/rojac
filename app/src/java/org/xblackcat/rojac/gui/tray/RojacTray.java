@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.tray;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
@@ -165,7 +166,7 @@ public class RojacTray {
 
     private class UnreadMessagesCountGetter extends RojacWorker<Void, Integer> {
         protected int unreadMessages;
-        protected int unreadReplies;
+        protected FavoriteStatData unreadReplies;
 
         @Override
         protected Void perform() throws Exception {
@@ -174,7 +175,7 @@ public class RojacTray {
             unreadMessages = mAH.getUnreadMessages();
             Integer userId = Property.RSDN_USER_ID.get();
             if (userId != null && userId > 0) {
-                unreadReplies = mAH.getUnreadReplies(userId);
+                unreadReplies = mAH.getUserRepliesStat(userId);
             }
 
             return null;
@@ -183,7 +184,7 @@ public class RojacTray {
         @Override
         protected void done() {
             if (unreadMessages > 0) {
-                setState(RojacState.HaveUnreadMessages, unreadMessages, unreadReplies);
+                setState(RojacState.HaveUnreadMessages, unreadMessages, unreadReplies.asString());
             }
         }
     }

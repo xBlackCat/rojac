@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
 import ru.rsdn.Janus.JanusMessageInfo;
@@ -126,15 +127,15 @@ public interface IMessageAH extends AH {
 
     ThreadStatData getThreadStatByThreadId(int forumId) throws StorageException;
 
-    int getUnreadReplaysInThread(int threadId) throws StorageException;
+    FavoriteStatData getReplaysInThread(int threadId) throws StorageException;
 
     MessageData getMessageData(int messageId) throws StorageException;
 
     int getUnreadMessages() throws StorageException;
 
-    int getUnreadReplies(int userId) throws StorageException;
+    FavoriteStatData getUserRepliesStat(int userId) throws StorageException;
 
-    int getUnreadUserPosts(int userId) throws StorageException;
+    FavoriteStatData getUserPostsStat(int userId) throws StorageException;
 
     void updateThreadReadFlag(int messageId, boolean read) throws StorageException;
 

@@ -440,7 +440,7 @@ public enum DataQuery implements IPropertiable {
      * parent_id(int)
      */
     GET_PARENT_ID_FOR_MESSAGE_ID,
-    GET_BROKEN_TOPIC_IDS;
+    GET_BROKEN_TOPIC_IDS, GET_MESSAGES_NUMBER_IN_THREAD, GET_USER_REPLIES_NUMBER, GET_USER_POSTS_NUMBER;
 
     private final String propertyName = ResourceUtils.constantToProperty(this.name());
 

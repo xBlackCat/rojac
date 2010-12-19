@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.Role;
 import org.xblackcat.rojac.data.ThreadStatData;
@@ -126,8 +127,10 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public int getUnreadReplaysInThread(int threadId) throws StorageException {
-        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
+    public FavoriteStatData getReplaysInThread(int threadId) throws StorageException {
+        int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
+        int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
+        return new FavoriteStatData(unread, total);
     }
 
     @Override
@@ -141,13 +144,17 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public int getUnreadReplies(int userId) throws StorageException {
-        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_REPLIES_NUMBER, userId).intValue();
+    public FavoriteStatData getUserRepliesStat(int userId) throws StorageException {
+        int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_REPLIES_NUMBER, userId).intValue();
+        int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_REPLIES_NUMBER, userId).intValue();
+        return new FavoriteStatData(unread, total);
     }
 
     @Override
-    public int getUnreadUserPosts(int userId) throws StorageException {
-        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_POSTS_NUMBER, userId).intValue();
+    public FavoriteStatData getUserPostsStat(int userId) throws StorageException {
+        int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_POSTS_NUMBER, userId).intValue();
+        int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_POSTS_NUMBER, userId).intValue();
+        return new FavoriteStatData(unread, total);
     }
 
     @Override
