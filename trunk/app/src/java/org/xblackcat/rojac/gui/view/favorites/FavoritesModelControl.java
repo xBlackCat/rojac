@@ -30,33 +30,6 @@ public class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void markForumRead(AThreadModel<Post> model, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
-
-        if (delegatedControl != null) {
-            delegatedControl.markForumRead(model, read);
-        }
-    }
-
-    @Override
-    public void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
-
-        if (delegatedControl != null) {
-            delegatedControl.markThreadRead(model, threadRootId, read);
-        }
-    }
-
-    @Override
-    public void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
-
-        if (delegatedControl != null) {
-            delegatedControl.markPostRead(model, postId, read);
-        }
-    }
-
-    @Override
     public void loadThread(AThreadModel<Post> model, Post item, IItemProcessor<Post> postProcessor) {
         assert RojacUtils.checkThread(true, getClass());
 
@@ -68,15 +41,6 @@ public class FavoritesModelControl implements IModelControl<Post> {
         assert RojacUtils.checkThread(true, getClass());
 
         return delegatedControl != null && delegatedControl.isRootVisible();
-    }
-
-    @Override
-    public void updateModel(AThreadModel<Post> model, int... threadIds) {
-        assert RojacUtils.checkThread(true, getClass());
-
-        if (delegatedControl != null) {
-            delegatedControl.updateModel(model, threadIds);
-        }
     }
 
     @Override
