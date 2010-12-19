@@ -25,7 +25,7 @@ abstract class AFavorite implements IFavorite {
         assert RojacUtils.checkThread(true, getClass());
 
         if (name == null) {
-            return "#" + id + " " + getType().getTypeName();
+            return getType().getTypeName("#" + id);
         } else {
             return name;
         }

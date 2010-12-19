@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.favorites;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
+import org.xblackcat.rojac.i18n.Messages;
 import sun.swing.DefaultLookup;
 
 import javax.swing.*;
@@ -43,6 +44,7 @@ class FavoriteCellRenderer  extends JLightPanel
         add(titleLine, BorderLayout.NORTH);
         add(statLine, BorderLayout.EAST);
         add(infoLine, BorderLayout.WEST);
+        infoLine.setText(Messages.View_Favorites_Statistic_Label.get());
     }
 
     private Border getNoFocusBorder() {
@@ -197,7 +199,6 @@ class FavoriteCellRenderer  extends JLightPanel
         boolean isMarked = f.isHighlighted();
         String titleText = f.getName();
         String statText = f.getStatistic();
-        String infoText = f.getType().getTypeName();
 
         table.setToolTipText(titleText + " " + statText);
 
@@ -208,7 +209,6 @@ class FavoriteCellRenderer  extends JLightPanel
 
         titleLine.setText(titleText);
         statLine.setText(statText);
-        infoLine.setText(infoText);
 
         int newHeight = getPreferredSize().height;
         int oldHeight = table.getRowHeight(row);

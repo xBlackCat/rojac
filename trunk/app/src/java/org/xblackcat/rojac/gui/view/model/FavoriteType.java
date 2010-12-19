@@ -8,31 +8,31 @@ import org.xblackcat.rojac.i18n.Messages;
  */
 
 public enum FavoriteType {
-    Thread(Messages.Favorite_Name_UnreadTreadPosts) {
+    Thread(Messages.Favorite_Thread_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new ThreadFavorite(id, config);
         }
     },
-    UserPosts(Messages.Favorite_Name_UserPosts) {
+    UserPosts(Messages.Favorite_UserPosts_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new UserPostFavorite(id, config);
         }
     },
-    SubThread(Messages.Favorite_Name_PostResponses) {
+    SubThread(Messages.Favorite_SubTree_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new SubThreadFavorite(id, config);
         }
     },
-    UserResponses(Messages.Favorite_Name_UserResponses) {
+    UserResponses(Messages.Favorite_UserReplies_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new UserResponseFavorite(id, config);
         }
     },
-    Category(Messages.Favorite_Name_Category) {
+    Category(Messages.Favorite_Category_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new CategoryFavorite(id, config);
@@ -45,15 +45,14 @@ public enum FavoriteType {
         this.typeName = typeName;
     }
 
-    public String getTypeName() {
-        return typeName.get();
+    public String getTypeName(Object... args) {
+        return typeName.get(args);
     }
 
     protected abstract IFavorite createFavorite(Integer id, String config);
 
     /**
      * Restores a favorite, basing on information
-     *
      *
      * @param id
      * @param type

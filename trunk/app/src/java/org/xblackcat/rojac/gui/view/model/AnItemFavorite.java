@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -12,7 +13,7 @@ import java.util.List;
 abstract class AnItemFavorite extends AFavorite {
     protected final int itemId;
 
-    protected Integer amount = null;
+    protected FavoriteStatData statistic = null;
 
     protected AnItemFavorite(int id, String config) {
         this(id, Integer.parseInt(config));
@@ -31,13 +32,13 @@ abstract class AnItemFavorite extends AFavorite {
 
     @Override
     public boolean isHighlighted() {
-        return amount != null && amount > 0;
+        return statistic != null && statistic.getUnread() > 0;
     }
 
     @Override
     public String getStatistic() {
-        if (amount != null) {
-            return String.valueOf(amount);
+        if (statistic != null) {
+            return statistic.asString();
         } else {
             return "...";
         }
@@ -48,10 +49,10 @@ abstract class AnItemFavorite extends AFavorite {
         new ValuesLoader(callback).execute();
     }
 
-    protected abstract int loadAmount() throws StorageException;
+    protected abstract FavoriteStatData loadStatistic() throws StorageException;
 
     private class ValuesLoader extends RojacWorker<Void, Void> {
-        private int amount;
+        private FavoriteStatData amount;
         private String name;
         private final Runnable callback;
         private final boolean initName = isNameDefault();
@@ -62,7 +63,7 @@ abstract class AnItemFavorite extends AFavorite {
 
         @Override
         protected Void perform() throws Exception {
-            amount = loadAmount();
+            amount = loadStatistic();
             if (initName) {
                 name = loadName();
             }
@@ -73,7 +74,7 @@ abstract class AnItemFavorite extends AFavorite {
 
         @Override
         protected void process(List<Void> chunks) {
-            AnItemFavorite.this.amount = amount;
+            AnItemFavorite.this.statistic = amount;
             if (initName) {
                 AnItemFavorite.this.setName(name);
             }

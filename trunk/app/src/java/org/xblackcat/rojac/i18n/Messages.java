@@ -56,6 +56,8 @@ public enum Messages {
     // Favorites view
     View_Favorites_Title,
     View_Favorites_Tab_Text,
+    View_Favorites_Statistic_Data,
+    View_Favorites_Statistic_Label,
 
     // Threads view
     View_Thread_Button_NewThread,
@@ -176,11 +178,11 @@ public enum Messages {
     Synchronize_Message_ProxyUsed,
 
     // Favorite-related messages
-    Favorite_Name_UnreadTreadPosts,
-    Favorite_Name_UserPosts,
-    Favorite_Name_PostResponses,
-    Favorite_Name_UserResponses,
-    Favorite_Name_Category,
+    Favorite_Thread_Name,
+    Favorite_UserPosts_Name,
+    Favorite_SubTree_Name,
+    Favorite_UserReplies_Name,
+    Favorite_Category_Name,
 
     // Mark descriptions
     Description_Mark_Select,
@@ -240,7 +242,7 @@ public enum Messages {
 
     Popup_View_ThreadsTree_OpenMessage,
     Popup_View_ThreadsTree_OpenMessage_NewTab,
-    Popup_View_ThreadsTree_OpenMessage_CurrentView,;
+    Popup_View_ThreadsTree_OpenMessage_CurrentView;
 
     private static final Log log = LogFactory.getLog(Messages.class);
     // Constants

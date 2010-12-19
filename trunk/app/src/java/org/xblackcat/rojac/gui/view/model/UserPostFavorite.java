@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.User;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -26,18 +28,15 @@ class UserPostFavorite extends AnItemFavorite {
     }
 
     @Override
-    protected int loadAmount() throws StorageException {
-        return storage.getMessageAH().getUnreadUserPosts(itemId);
+    protected FavoriteStatData loadStatistic() throws StorageException {
+        return storage.getMessageAH().getUserPostsStat(itemId);
     }
 
     @Override
     public String loadName() throws StorageException {
         User user = storage.getUserAH().getUserById(itemId);
-        if (user != null) {
-            return user.getUserNick() + "'s posts";
-        } else {
-            return "User #" + itemId + " posts";
-        }
+        String userName = user != null ? user.getUserNick() : "#" + itemId;
+        return Messages.Favorite_UserPosts_Name.get(userName);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageDataException;
@@ -26,14 +28,15 @@ class ThreadFavorite extends AnItemFavorite {
     }
 
     @Override
-    protected int loadAmount() throws StorageException {
-        return messageAH.getUnreadReplaysInThread(itemId);
+    protected FavoriteStatData loadStatistic() throws StorageException {
+        return messageAH.getReplaysInThread(itemId);
     }
 
     @Override
     public String loadName() throws StorageException {
         MessageData md = messageAH.getMessageData(itemId);
-        return "Topic " + md.getSubject();
+        String subject = md != null ? md.getSubject() : "#" + itemId;
+        return Messages.Favorite_Thread_Name.get(subject);
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.xblackcat.rojac.service.datahandler.FavoritesUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
@@ -112,6 +113,12 @@ public class FavoritesView extends AView {
                     @Override
                     public void process(FavoriteCategoryUpdatedPacket p) {
                         favoritesModel.updateFavoriteData(FavoriteType.Category);
+                    }
+                },
+                new IPacketProcessor<SynchronizationCompletePacket>() {
+                    @Override
+                    public void process(SynchronizationCompletePacket p) {
+                        favoritesModel.updateFavoriteData(null);
                     }
                 }
         };
