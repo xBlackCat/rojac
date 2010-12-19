@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -15,6 +15,8 @@ import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacUtils;
 
+import javax.swing.*;
+
 /**
  * Control class of all threads of the specified forum.
  *
@@ -22,8 +24,6 @@ import org.xblackcat.rojac.util.RojacUtils;
  */
 
 public class SingleModelControl implements IModelControl<Post> {
-    private static final Log log = LogFactory.getLog(SingleModelControl.class);
-
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     @Override
@@ -161,5 +161,15 @@ public class SingleModelControl implements IModelControl<Post> {
     @Override
     public Post getTreeRoot(Post post) {
         return post == null ? null : post.getThreadRoot();
+    }
+
+    @Override
+    public JPopupMenu getItemMenu(Post post, IAppControl appControl) {
+        return PopupMenuBuilder.getTreeViewMenu(post, appControl, true, true);
+    }
+
+    @Override
+    public boolean allowSearch() {
+        return true;
     }
 }

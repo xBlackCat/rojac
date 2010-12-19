@@ -4,7 +4,6 @@ import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.forumlist.ForumTableModel;
-import org.xblackcat.rojac.gui.view.model.AThreadModel;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
@@ -105,7 +104,7 @@ public class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getTreeViewMenu(Post message, AThreadModel model, IAppControl appControl) {
+    public static JPopupMenu getTreeViewMenu(Post message, IAppControl appControl, boolean openMessage, boolean addFavorites) {
         int messageId = message.getMessageId();
         final JPopupMenu menu = new JPopupMenu("#" + messageId);
 
@@ -114,6 +113,9 @@ public class PopupMenuBuilder {
 
         menu.add(item);
 
+        if (openMessage) {
+            menu.add(MenuHelper.openMessage(messageId, appControl));
+        }
         menu.add(MenuHelper.openMessageInTab(messageId, appControl));
         menu.addSeparator();
 
@@ -127,8 +129,10 @@ public class PopupMenuBuilder {
         MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
-        menu.addSeparator();
-        menu.add(MenuHelper.favoritesSubmenu(message, appControl));
+        if (addFavorites) {
+            menu.addSeparator();
+            menu.add(MenuHelper.favoritesSubmenu(message, appControl));
+        }
 
         return menu;
     }

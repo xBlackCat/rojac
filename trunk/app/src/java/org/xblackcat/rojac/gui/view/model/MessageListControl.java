@@ -2,6 +2,8 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
@@ -10,6 +12,8 @@ import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
 import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.util.RojacUtils;
+
+import javax.swing.*;
 
 /**
  * @author xBlackCat
@@ -100,6 +104,16 @@ public class MessageListControl implements IModelControl<Post> {
     public Post getTreeRoot(Post post) {
         // Post lists have no parents or children.
         return post;
+    }
+
+    @Override
+    public JPopupMenu getItemMenu(Post post, IAppControl appControl) {
+        return PopupMenuBuilder.getTreeViewMenu(post, appControl, true, false);
+    }
+
+    @Override
+    public boolean allowSearch() {
+        return false;
     }
 
 }

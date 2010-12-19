@@ -1,7 +1,10 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.datahandler.IPacket;
+
+import javax.swing.*;
 
 /**
  * Interface to avoid sub-classing Thread view class.
@@ -54,4 +57,21 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * @return root item for current view type of the specified node.
      */
     T getTreeRoot(T post);
+
+    /**
+     * Builds a popup menu depending on control behavior.
+     *
+     * @param post       selected post. Base of popup menu.
+     * @param appControl link to application control.
+     *
+     * @return constructed popup menu.
+     */
+    JPopupMenu getItemMenu(T post, IAppControl appControl);
+
+    /**
+     * Flag to indicate if a message could be looked in the view or not.
+     *
+     * @return <code>true</code> if message could be searched in the view.
+     */
+    boolean allowSearch();
 }

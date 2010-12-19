@@ -6,6 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -20,6 +22,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -186,6 +189,16 @@ public class SortedForumModelControl implements IModelControl<Post> {
     @Override
     public Post getTreeRoot(Post post) {
         return post == null ? null : post.getThreadRoot();
+    }
+
+    @Override
+    public JPopupMenu getItemMenu(Post post, IAppControl appControl) {
+        return PopupMenuBuilder.getTreeViewMenu(post, appControl, false, true);
+    }
+
+    @Override
+    public boolean allowSearch() {
+        return true;
     }
 
     private static class ForumInfoLoader extends RojacWorker<Void, Forum> {
