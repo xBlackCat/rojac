@@ -55,6 +55,7 @@ public class MessageView extends AnItemView implements IInternationazable {
 
     private int messageId;
     private int forumId;
+    private boolean readFlag;
 
     private final JTextPane messageTextPane = new JTextPane();
 
@@ -100,7 +101,10 @@ public class MessageView extends AnItemView implements IInternationazable {
                 int oldValue = scrollBar.getValue();
                 if (!scrollBar.isVisible() || oldValue + scrollBar.getHeight() >= scrollBar.getMaximum()) {
                     if (Property.VIEW_THREAD_SET_READ_ON_SCROLL.get()) {
-                        MessageUtils.markMessageRead(getId(), messageData, 0);
+                        if (!readFlag) {
+                            MessageUtils.markMessageRead(getId(), messageData, 0);
+                            readFlag = true;
+                        }
                     }
 
                     MessageView.this.firePropertyChange(MESSAGE_VIEWED_FLAG, 0, messageId);
@@ -204,6 +208,7 @@ public class MessageView extends AnItemView implements IInternationazable {
     public void loadItem(final int messageId) {
         this.messageId = messageId;
         messageTitle = "#" + messageId;
+        readFlag = true;
 
         new MessageLoader(messageId).execute();
     }
@@ -347,6 +352,7 @@ public class MessageView extends AnItemView implements IInternationazable {
         protected void process(List<MessageDataHolder> chunks) {
             for (MessageDataHolder md : chunks) {
                 messageData = md.getMessage();
+                readFlag = messageData.isRead();
                 fillFrame(messageData, md.getMessageBody());
                 fillMarksButton(messageData.getRating());
                 messageTitle = "#" + messageId + " " + messageData.getSubject();
