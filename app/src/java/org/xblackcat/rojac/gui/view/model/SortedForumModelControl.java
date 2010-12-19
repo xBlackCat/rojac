@@ -45,8 +45,7 @@ public class SortedForumModelControl implements IModelControl<Post> {
         new ThreadsLoader(forumId, rootItem, model).execute();
     }
 
-    @Override
-    public void markForumRead(AThreadModel<Post> model, boolean read) {
+    private void markForumRead(AThreadModel<Post> model, boolean read) {
         assert RojacUtils.checkThread(true, getClass());
 
         // Root post is ForumRoot object
@@ -55,8 +54,7 @@ public class SortedForumModelControl implements IModelControl<Post> {
         model.subTreeNodesChanged(model.getRoot());
     }
 
-    @Override
-    public void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
+    private void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
         assert RojacUtils.checkThread(true, getClass());
 
         final Post post = model.getRoot().getMessageById(threadRootId);
@@ -66,8 +64,7 @@ public class SortedForumModelControl implements IModelControl<Post> {
         model.subTreeNodesChanged(post);
     }
 
-    @Override
-    public void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
+    private void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
         assert RojacUtils.checkThread(true, getClass());
 
         final Post post = model.getRoot().getMessageById(postId);
@@ -98,8 +95,7 @@ public class SortedForumModelControl implements IModelControl<Post> {
         return false;
     }
 
-    @Override
-    public void updateModel(AThreadModel<Post> model, int... threadIds) {
+    private void updateModel(AThreadModel<Post> model, int... threadIds) {
         assert RojacUtils.checkThread(true, getClass());
 
         TIntHashSet filledThreads = new TIntHashSet();

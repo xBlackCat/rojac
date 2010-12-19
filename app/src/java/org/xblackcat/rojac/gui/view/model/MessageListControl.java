@@ -20,18 +20,7 @@ public class MessageListControl implements IModelControl<Post> {
         throw new NotImplementedException("The method shouldn't be used.");
     }
 
-    @Override
-    public void markForumRead(AThreadModel<Post> model, boolean read) {
-        throw new NotImplementedException("The method shouldn't be used.");
-    }
-
-    @Override
-    public void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
-        throw new NotImplementedException("The method shouldn't be used.");
-    }
-
-    @Override
-    public void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
+    private void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
         assert RojacUtils.checkThread(true, getClass());
 
         Post p = model.getRoot().getMessageById(postId);
@@ -59,8 +48,7 @@ public class MessageListControl implements IModelControl<Post> {
         return false;
     }
 
-    @Override
-    public void updateModel(AThreadModel<Post> model, int... threadIds) {
+    private void updateModel(AThreadModel<Post> model, int... threadIds) {
         assert RojacUtils.checkThread(true, getClass());
 
        // TODO: implement reloading list information. Make it customizable.

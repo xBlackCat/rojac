@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
@@ -47,8 +46,7 @@ public class SingleModelControl implements IModelControl<Post> {
         }.execute();
     }
 
-    @Override
-    public void markForumRead(AThreadModel<Post> model, boolean read) {
+    private void markForumRead(AThreadModel<Post> model, boolean read) {
         assert RojacUtils.checkThread(true, getClass());
 
         // Root post is Thread object
@@ -57,8 +55,7 @@ public class SingleModelControl implements IModelControl<Post> {
         model.subTreeNodesChanged(model.getRoot());
     }
 
-    @Override
-    public void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
+    private void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
         assert RojacUtils.checkThread(true, getClass());
 
         Post post = model.getRoot().getMessageById(threadRootId);
@@ -70,8 +67,7 @@ public class SingleModelControl implements IModelControl<Post> {
         }
     }
 
-    @Override
-    public void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
+    private void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
         assert RojacUtils.checkThread(true, getClass());
 
         final Post post = model.getRoot().getMessageById(postId);
@@ -100,18 +96,6 @@ public class SingleModelControl implements IModelControl<Post> {
         assert RojacUtils.checkThread(true, getClass());
 
         return true;
-    }
-
-    @Override
-    public void updateModel(AThreadModel<Post> model, int... threadIds) {
-        assert RojacUtils.checkThread(true, getClass());
-
-        Post root = model.getRoot();
-
-        if (ArrayUtils.contains(threadIds, root.getMessageId())) {
-            // Thread always filled in.
-            loadThread(model, root, null);
-        }
     }
 
     @Override
