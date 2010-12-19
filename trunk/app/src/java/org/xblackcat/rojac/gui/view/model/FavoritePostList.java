@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.model;
 
 import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.lang.NotImplementedException;
+import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.data.MessageData;
 
 import java.util.Collection;
@@ -14,7 +15,7 @@ import java.util.Comparator;
  * @author xBlackCat
  */
 
-public class PostList extends Post {
+public class FavoritePostList extends Post {
     private static final MessageData FAKE = new MessageData(-1, -1, -1, -1, -1, "", "", -1, -1, true, null);
 
     private TIntObjectHashMap<Post> listPosts = new TIntObjectHashMap<Post>();
@@ -34,8 +35,11 @@ public class PostList extends Post {
      */
     private LoadingState loadingState = LoadingState.NotLoaded;
 
-    public PostList() {
+    private final IFavorite favorite;
+
+    public FavoritePostList(IFavorite favorite) {
         super(FAKE, null, null);
+        this.favorite = favorite;
     }
 
     @Override
@@ -65,6 +69,15 @@ public class PostList extends Post {
     @Override
     public Post getMessageById(int messageId) {
         return listPosts.get(messageId);
+    }
+
+    /**
+     * Returns associated favorite with the list.
+     *
+     * @return associated favorite.
+     */
+    public IFavorite getFavorite() {
+        return favorite;
     }
 
     void fillList(Collection<MessageData> posts) {
