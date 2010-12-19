@@ -59,4 +59,13 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * @return <code>true</code> if packet was processed.
      */
     boolean processPacket(AThreadModel<T> model, IPacket p);
+
+    /**
+     * Returns a root item for the specified node.
+     *
+     * @param post node in model.
+     *
+     * @return root item for current view type of the specified node.
+     */
+    T getTreeRoot(T post);
 }

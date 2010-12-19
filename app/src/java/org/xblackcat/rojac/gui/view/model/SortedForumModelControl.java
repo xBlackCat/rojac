@@ -187,6 +187,11 @@ public class SortedForumModelControl implements IModelControl<Post> {
         return true;
     }
 
+    @Override
+    public Post getTreeRoot(Post post) {
+        return post == null ? null : post.getThreadRoot();
+    }
+
     private static class ForumInfoLoader extends RojacWorker<Void, Forum> {
         private final int forumId;
         private AThreadModel<Post> model;

@@ -460,7 +460,7 @@ public abstract class AThreadView extends AnItemView {
         public void actionPerformed(ActionEvent e) {
             Post currentPost = getSelectedItem();
             if (currentPost != null) {
-                selectItem(currentPost.getThreadRoot(), true);
+                selectItem(modelControl.getTreeRoot(currentPost), true);
             }
 
         }

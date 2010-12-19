@@ -2,7 +2,11 @@ package org.xblackcat.rojac.gui.view.favorites;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
-import org.xblackcat.rojac.gui.view.model.*;
+import org.xblackcat.rojac.gui.view.model.AThreadModel;
+import org.xblackcat.rojac.gui.view.model.IModelControl;
+import org.xblackcat.rojac.gui.view.model.MessageListControl;
+import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.model.SingleModelControl;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -89,6 +93,11 @@ public class FavoritesModelControl implements IModelControl<Post> {
     @Override
     public boolean processPacket(AThreadModel<Post> model, IPacket p) {
         return delegatedControl != null && delegatedControl.processPacket(model, p);
+    }
+
+    @Override
+    public Post getTreeRoot(Post post) {
+        return delegatedControl == null ? null : delegatedControl.getTreeRoot(post);
     }
 
     /**
