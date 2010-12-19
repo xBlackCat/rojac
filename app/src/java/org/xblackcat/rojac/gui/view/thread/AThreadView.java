@@ -192,7 +192,7 @@ public abstract class AThreadView extends AnItemView {
 
     @Override
     public boolean containsItem(int messageId) {
-        return model.getRoot().getMessageById(messageId) != null;
+        return modelControl.allowSearch() && model.getRoot().getMessageById(messageId) != null;
     }
 
     protected final void selectItem(Post post) {

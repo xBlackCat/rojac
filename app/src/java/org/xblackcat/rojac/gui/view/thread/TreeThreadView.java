@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.IModelControl;
 import org.xblackcat.rojac.gui.view.model.ITreeItem;
@@ -9,7 +8,12 @@ import org.xblackcat.rojac.gui.view.model.LoadingState;
 import org.xblackcat.rojac.gui.view.model.Post;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -148,17 +152,14 @@ public class TreeThreadView extends AThreadView {
                 if (path != null) {
                     Post mi = (Post) path.getLastPathComponent();
 
-                    JPopupMenu m = createMenu(mi);
+                    JPopupMenu m = modelControl.getItemMenu(mi, appControl);
 
-                    m.show(e.getComponent(), p.x, p.y);
+                    if (m != null) {
+                        m.show(e.getComponent(), p.x, p.y);
+                    }
                 }
             }
         }
-
-        private JPopupMenu createMenu(Post mi) {
-            return PopupMenuBuilder.getTreeViewMenu(mi, model, appControl);
-        }
-
     }
 
 }
