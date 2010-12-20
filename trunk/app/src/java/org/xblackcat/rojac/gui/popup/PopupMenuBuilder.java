@@ -9,8 +9,6 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -89,8 +87,8 @@ public class PopupMenuBuilder {
         menu.add(new OpenForumAction(appControl, forumId));
         menu.addSeparator();
 
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_Forums_SetReadAll, forumId, true));
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_Forums_SetUnreadAll, forumId, false));
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, forumId, true));
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, forumId, false));
 
         menu.addSeparator();
 
@@ -144,16 +142,7 @@ public class PopupMenuBuilder {
         menu.add(new OpenFavoriteAction(appControl, favoriteId));
         menu.addSeparator();
 
-        JMenuItem item = new JMenuItem();
-        menu.add(item);
-        item.setText("Remove favorite");
-        item.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new FavoriteRemover(favoriteId).execute();
-            }
-        });
-
+        menu.add(new RemoveFavoriteAction(favoriteId));
 
         return menu;
     }

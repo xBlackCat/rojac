@@ -15,7 +15,7 @@ class OpenForumAction extends AbstractAction {
     private final int forumId;
 
     public OpenForumAction(IAppControl appControl, int forumId) {
-        super(Messages.Popup_View_Forums_Open.get());
+        super(Messages.Popup_View_Open.get());
         this.appControl = appControl;
         this.forumId = forumId;
     }

@@ -222,11 +222,14 @@ public enum Messages {
     Popup_Link_Copy_ToClipboard,
     Popup_Link_Open_InBrowser_Message,
     Popup_Link_Open_InBrowser_Thread,
+    // Common popup action names
+    Popup_View_Open,
+    Popup_View_Remove,
+    Popup_View_SetReadAll,
+    Popup_View_SetUnreadAll,
+
     // Menu of forum view
     Popup_View_Forums_Subscribe,
-    Popup_View_Forums_Open,
-    Popup_View_Forums_SetReadAll,
-    Popup_View_Forums_SetUnreadAll,
     // Messages threads view related messages
     Popup_View_ThreadsTree_Mark_Title,
     Popup_View_ThreadsTree_Mark_Read,
@@ -234,6 +237,11 @@ public enum Messages {
     Popup_View_ThreadsTree_Mark_ThreadRead,
     Popup_View_ThreadsTree_Mark_ThreadUnread,
     Popup_View_ThreadsTree_Mark_Extended,
+
+    Popup_Favorites_Add,
+    Popup_Favorites_Add_Thread,
+    Popup_Favorites_Add_UserPosts,
+    Popup_Favorites_Add_ToUserReplies,
 
     Popup_View_ThreadsTree_CopyUrl,
     Popup_View_ThreadsTree_CopyUrl_Message,

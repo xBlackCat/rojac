@@ -15,7 +15,7 @@ class OpenFavoriteAction extends AbstractAction {
     private final int favoriteId;
 
     public OpenFavoriteAction(IAppControl appControl, int favoriteId) {
-        super(Messages.Popup_View_Forums_Open.get());
+        super(Messages.Popup_View_Open.get());
         this.appControl = appControl;
         this.favoriteId = favoriteId;
     }

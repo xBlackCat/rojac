@@ -22,20 +22,12 @@ import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.util.DialogHelper;
-import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.ShortCutUtils;
-import org.xblackcat.rojac.util.SynchronizationUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -394,10 +386,9 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             View v = openedViews.remove(viewId);
 
             Container parent = v.getParent();
-            if (parent == null) {
-                throw new NullPointerException("View without parent: " + v);
+            if (parent != null) {
+                parent.remove(v);
             }
-            parent.remove(v);
         }
     }
 

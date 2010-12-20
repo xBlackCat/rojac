@@ -9,12 +9,7 @@ import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
-import org.xblackcat.rojac.gui.view.model.AThreadModel;
-import org.xblackcat.rojac.gui.view.model.IModelControl;
-import org.xblackcat.rojac.gui.view.model.LoadingState;
-import org.xblackcat.rojac.gui.view.model.Post;
-import org.xblackcat.rojac.gui.view.model.ReadStatus;
-import org.xblackcat.rojac.gui.view.model.SortedThreadsModel;
+import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -400,12 +395,14 @@ public abstract class AThreadView extends AnItemView {
             if (data != null) {
                 final Post root = model.getRoot();
                 Post rootMessage = root.getMessageById(data.getThreadRootId());
-                modelControl.loadThread(model, rootMessage, new IItemProcessor<Post>() {
-                    @Override
-                    public void processItem(Post item) {
-                        selectItem(root.getMessageById(messageId));
-                    }
-                });
+                if (rootMessage != null) {
+                    modelControl.loadThread(model, rootMessage, new IItemProcessor<Post>() {
+                        @Override
+                        public void processItem(Post item) {
+                            selectItem(root.getMessageById(messageId));
+                        }
+                    });
+                }
             } else {
                 if (sourceStackTrace != null) {
                     log.error("Can't load message #" + messageId, sourceStackTrace);

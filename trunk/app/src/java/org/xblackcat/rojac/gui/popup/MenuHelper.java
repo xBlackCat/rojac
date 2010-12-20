@@ -96,14 +96,14 @@ final class MenuHelper {
         menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadRead, message, true));
         menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadUnread, message, false));
 
-        menu.addSeparator();
+//        menu.addSeparator();
 
 //        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, message, appControl));
 
         menu.addSeparator();
 
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_Forums_SetReadAll, message.getForumId(), true));
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_Forums_SetUnreadAll, message.getForumId(), false));
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, message.getForumId(), true));
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, message.getForumId(), false));
 
         return menu;
     }
@@ -115,20 +115,19 @@ final class MenuHelper {
      * @return
      */
     public static JMenuItem favoritesSubmenu(Post post, IAppControl appControl) {
-        JMenu menu = new JMenu("Add to favorite");
+        JMenu menu = new JMenu(Messages.Popup_Favorites_Add.get());
 
-        int topicId = post.getTopicId();
-        if (topicId == 0) {
-            // The post is a thread.
-            topicId = post.getMessageId();
-        }
-        menu.add(new AddToFavoriteMenuItem("Thread", FavoriteType.Thread, topicId));
+        menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_Thread.get(), FavoriteType.Thread, post.getMessageData().getThreadRootId()));
 //        menu.add(new AddToFavoriteMenuItem("Sub-thread", FavoriteType.SubThread, post.getMessageId()));
         menu.addSeparator();
-        menu.add(new AddToFavoriteMenuItem(post.getMessageData().getUserName() + "'s posts", FavoriteType.UserPosts, post.getMessageData().getUserId()));
-        menu.add(new AddToFavoriteMenuItem("Responses on " + post.getMessageData().getUserName() + "'s posts", FavoriteType.UserResponses, post.getMessageData().getUserId()));
+
+        String userName = post.getMessageData().getUserName();
+        int userId = post.getMessageData().getUserId();
+
+        menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_UserPosts.get(userName), FavoriteType.UserPosts, userId));
+        menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_ToUserReplies.get(userName), FavoriteType.UserResponses, userId));
 //        menu.addSeparator();
-//        menu.add(new AddToFavoriteMenuItem("Add thread to favorites", FavoriteType.Category, post.getMessageData().getCategory()));
+//        menu.add(new AddToFavoriteMenuItem("Add category", FavoriteType.Category, post.getMessageData().getCategory()));
 
         return menu;
     }
