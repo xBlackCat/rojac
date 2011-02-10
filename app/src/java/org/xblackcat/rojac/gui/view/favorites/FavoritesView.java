@@ -2,16 +2,12 @@ package org.xblackcat.rojac.gui.view.favorites;
 
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IViewState;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
-import org.xblackcat.rojac.service.datahandler.FavoriteCategoryUpdatedPacket;
-import org.xblackcat.rojac.service.datahandler.FavoritesUpdatedPacket;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
@@ -124,4 +120,12 @@ public class FavoritesView extends AView {
         };
     }
 
+    @Override
+    public IViewState getState() {
+        return null;
+    }
+
+    @Override
+    public void setState(IViewState state) {
+    }
 }

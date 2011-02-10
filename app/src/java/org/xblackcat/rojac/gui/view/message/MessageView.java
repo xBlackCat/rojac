@@ -8,6 +8,7 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IInternationazable;
+import org.xblackcat.rojac.gui.IViewState;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
@@ -274,8 +275,13 @@ public class MessageView extends AnItemView implements IInternationazable {
     }
 
     @Override
-    public int getVisibleId() {
-        return messageId;
+    public IViewState getState() {
+        return null;
+    }
+
+    @Override
+    public void setState(IViewState state) {
+        // No state for the view.
     }
 
     @Override

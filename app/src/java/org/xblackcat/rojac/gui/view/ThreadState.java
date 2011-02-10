@@ -1,11 +1,11 @@
 package org.xblackcat.rojac.gui.view;
 
-import java.io.Serializable;
+import org.xblackcat.rojac.gui.IViewState;
 
 /**
 * @author xBlackCat
 */
-final class ThreadState implements Serializable {
+public final class ThreadState implements IViewState {
     private static final long serialVersionUID = 1L;
 
     private int openedMessageId;

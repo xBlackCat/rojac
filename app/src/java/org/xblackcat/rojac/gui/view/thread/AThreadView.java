@@ -3,10 +3,12 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IViewState;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
+import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.model.*;
@@ -14,6 +16,7 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -36,6 +39,8 @@ public abstract class AThreadView extends AnItemView {
     protected final AThreadModel<Post> model = new SortedThreadsModel();
     protected String title;
     protected int rootItemId;
+
+    protected ThreadState state;
 
     protected AThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl);
@@ -112,9 +117,69 @@ public abstract class AThreadView extends AnItemView {
     }
 
     @Override
-    public int getVisibleId() {
+    public ThreadState getState() {
         Post p = getSelectedItem();
-        return p == null ? 0 : p.getMessageId();
+        int messageId = p == null ? 0 : p.getMessageId();
+
+        return new ThreadState(messageId);
+    }
+
+    @Override
+    public void setState(IViewState state) {
+        assert RojacUtils.checkThread(true, AThreadView.class);
+
+        if (state == null) {
+            return;
+        }
+        if (!(state instanceof ThreadState)) {
+            RojacUtils.fireDebugException("Invalid state object " + state.toString() + " [" + state.getClass() + "]");
+            return;
+        }
+
+        this.state = (ThreadState) state;
+
+        applyState();
+    }
+
+    private void applyState() {
+        assert RojacUtils.checkThread(true, AThreadView.class);
+
+        if (state == null) {
+            return;
+        }
+
+        final int messageId = state.openedMessageId();
+
+        if (!model.isInitialized()) {
+            // Forum not yet loaded.
+            model.addTreeModelListener(new TreeModelListener() {
+                @Override
+                public void treeNodesChanged(TreeModelEvent e) {
+                }
+
+                @Override
+                public void treeNodesInserted(TreeModelEvent e) {
+                }
+
+                @Override
+                public void treeNodesRemoved(TreeModelEvent e) {
+                }
+
+                @Override
+                public void treeStructureChanged(TreeModelEvent e) {
+                    if (model.getRoot() != null) {
+                        if (model.isInitialized()) {
+                            model.removeTreeModelListener(this);
+                            expandThread(messageId);
+                        }
+                    } else {
+                        appControl.closeTab(getId());
+                    }
+                }
+            });
+        } else {
+            expandThread(messageId);
+        }
     }
 
     @Override
@@ -139,40 +204,8 @@ public abstract class AThreadView extends AnItemView {
     }
 
     @Override
-    public void makeVisible(final int messageId) {
-        Post post = model.getRoot().getMessageById(messageId);
-        if (post != null) {
-            selectItem(post);
-        } else {
-            if (!model.isInitialized()) {
-                // Forum not yet loaded.
-                model.addTreeModelListener(new TreeModelListener() {
-                    @Override
-                    public void treeNodesChanged(TreeModelEvent e) {
-                    }
-
-                    @Override
-                    public void treeNodesInserted(TreeModelEvent e) {
-                    }
-
-                    @Override
-                    public void treeNodesRemoved(TreeModelEvent e) {
-                    }
-
-                    @Override
-                    public void treeStructureChanged(TreeModelEvent e) {
-                        if (model.getRoot() != null) {
-                            model.removeTreeModelListener(this);
-                            expandThread(messageId);
-                        } else {
-                            appControl.closeTab(getId());
-                        }
-                    }
-                });
-            } else {
-                expandThread(messageId);
-            }
-        }
+    public void makeVisible(int messageId) {
+        setState(new ThreadState(messageId));
     }
 
     private void expandThread(final int messageId) {
@@ -230,7 +263,7 @@ public abstract class AThreadView extends AnItemView {
         }
 
         if (post.getLoadingState() == LoadingState.Loaded && idx >= post.getSize() || post.isRead() == ReadStatus.Read) {
-            // All items in the subtree are read.
+            // All items in the sub-tree are read.
             // Go to parent and search again
             Post parent = post.getParent();
             if (parent != null) {
@@ -319,9 +352,9 @@ public abstract class AThreadView extends AnItemView {
     /**
      * Searches for the last unread post in the tree thread.
      *
-     * @param post root of subtree.
+     * @param post root of sub-tree.
      *
-     * @return last unread post in subtree or <code>null</code> if no unread post is exist in subtree.
+     * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
      *
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */

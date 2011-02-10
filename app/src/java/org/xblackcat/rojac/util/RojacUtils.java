@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.service.options.CheckUpdatesEnum;
@@ -221,6 +222,7 @@ public final class RojacUtils {
      * Checks if a newer version of rojac is exist on google code server.
      *
      * @return <code>null</code> if no info should be displayed and integer (revision number) if revision is obtained.
+     *
      * @throws RojacException thrown if version can not be obtained.
      */
     public static Integer getLastBuild() throws RojacException {
@@ -319,6 +321,32 @@ public final class RojacUtils {
         return new File(getRojacHome(), "layout.settings");
     }
 
+    /**
+     * Fires a debug exception only if Rojac run in debug mode.
+     *
+     * @param message message of debug exception.
+     */
+    public static void fireDebugException(String message) throws RojacDebugException {
+        if (!Property.ROJAC_DEBUG_MODE.get()) {
+            return;
+        }
+
+        throw new RojacDebugException(message);
+    }
+
+    /**
+     * Fires a debug exception only if Rojac run in debug mode.
+     *
+     * @param message message of debug exception.
+     * @param cause root cause of exception.
+     */
+    public static void fireDebugException(String message, Throwable cause) throws RojacDebugException {
+        if (!Property.ROJAC_DEBUG_MODE.get()) {
+            return;
+        }
+
+        throw new RojacDebugException(message, cause);
+    }
 
     public static File getSettingsFile() {
         return new File(getRojacHome(), "config.properties");

@@ -1,10 +1,10 @@
 package org.xblackcat.rojac.gui.view;
 
 import net.infonode.docking.View;
-import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.IView;
+import org.xblackcat.rojac.gui.IViewState;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,24 +33,7 @@ public final class ViewHelper {
         out.writeObject(id);
         out.writeObject(view.getTitle());
 
-        ViewType type = id.getType();
-
-        Object stateObject;
-        switch (type) {
-            case Forum:
-                stateObject = new ThreadState(((IItemView) v).getVisibleId());
-                break;
-            case SingleThread:
-                stateObject = new ThreadState(((IItemView) v).getVisibleId());
-                break;
-            case SingleMessage:
-            case Favorite:
-                stateObject = null; // No state
-                break;
-            default:
-                // Handle feature expanding views.
-                throw new RojacDebugException("Can not serialize view type " + type);
-        }
+        IViewState stateObject = v.getState();
 
         out.writeObject(stateObject);
         out.flush();
@@ -72,38 +55,13 @@ public final class ViewHelper {
         String title = (String) in.readObject();
         IItemView view = makeView(id, appControl);
 
-        switch (id.getType()) {
-            case Forum: {
-                view.loadItem(id.getId());
-                Object o = in.readObject();
-                if (o instanceof ThreadState) {
-                    ThreadState state = (ThreadState) o;
-                    if (state.openedMessageId() > 0) {
-                        view.makeVisible(state.openedMessageId());
-                    }
-                }
-                break;
-            }
-            case Favorite:
-            case SingleThread: {
-                view.loadItem(id.getId());
-                Object o = in.readObject();
-                if (o instanceof ThreadState) {
-                    ThreadState state = (ThreadState) o;
-                    if (state.openedMessageId() > 0) {
-                        view.makeVisible(state.openedMessageId());
-                    }
-                }
-                break;
-            }
-            case SingleMessage: {
-                view.loadItem(id.getId());
-                break;
-            }
-            default:
-                // Handle feature expanding views.
-                throw new RojacDebugException("Can not un-serialize view type " + id.getType());
+        Object o = in.readObject();
+
+        if (o instanceof IViewState) {
+            view.setState((IViewState) o);
         }
+
+        view.loadItem(id.getId());
 
         return new View(title, null, view.getComponent());
     }
