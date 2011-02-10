@@ -354,7 +354,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         }
     }
 
-    public void storeWindowState() {
+    private void storeWindowState() {
         int state = getExtendedState();
 
         ROJAC_MAIN_FRAME_STATE.set(state);

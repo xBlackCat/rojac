@@ -3,10 +3,14 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.gui.IActionListener;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IItemView;
+import org.xblackcat.rojac.gui.IViewState;
 import org.xblackcat.rojac.gui.view.AnItemView;
+import org.xblackcat.rojac.gui.view.ComplexState;
+import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
 
 import javax.swing.*;
@@ -106,8 +110,31 @@ public class ThreadDoubleView extends AnItemView {
     }
 
     @Override
-    public int getVisibleId() {
-        return slaveView.getVisibleId();
+    public ComplexState getState() {
+        return new ComplexState(masterView.getState(), slaveView.getState());
+    }
+
+    @Override
+    public void setState(IViewState state) {
+        if (state == null) {
+            return;
+        }
+
+        if (!(state instanceof ComplexState) && !(state instanceof ThreadState)) {
+            RojacUtils.fireDebugException("Invalid state object " + state.toString() + " [" + state.getClass() + "]");
+            return;
+        }
+
+        // Old state support
+        if (state instanceof ThreadState) {
+            masterView.setState(state);
+            return;
+        }
+
+        ComplexState s = (ComplexState) state;
+
+        masterView.setState(s.getMasterState());
+        slaveView.setState(s.getSlaveState());
     }
 
     @Override
