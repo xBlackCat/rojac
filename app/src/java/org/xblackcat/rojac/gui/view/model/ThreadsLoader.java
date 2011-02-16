@@ -10,6 +10,7 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -60,16 +61,36 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     @Override
     protected void process(List<Thread> chunks) {
         for (Thread t : chunks) {
-            if (rootItem.addThread(t)) {
-                model.nodeWasAdded(rootItem, t);
-            } else {
-                model.nodeChanged(t);
-            }
+            rootItem.addThread(t);
         }
     }
 
     @Override
     protected void done() {
+        // Get list of changed nodes.
+        updateNodesList(rootItem);
+
         model.markInitialized();
+    }
+
+    protected void updateNodesList(Post root) {
+        List<Post> added = new ArrayList<Post>();
+
+        List<Post> toCheck = new ArrayList<Post>();
+
+        for (Post p : root.getChildren()) {
+            if (p.isNewNode()) {
+                added.add(p);
+                p.resetNewFlag();
+            } else {
+                toCheck.add(p);
+            }
+        }
+
+        model.nodesAdded(rootItem, added.toArray(new Post[added.size()]));
+
+        for (Post p : toCheck) {
+            updateNodesList(p);
+        }
     }
 }

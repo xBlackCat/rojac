@@ -4,18 +4,11 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.ViewId;
-import org.xblackcat.rojac.gui.view.model.APostProxy;
-import org.xblackcat.rojac.gui.view.model.Header;
-import org.xblackcat.rojac.gui.view.model.IModelControl;
-import org.xblackcat.rojac.gui.view.model.ITreeItem;
-import org.xblackcat.rojac.gui.view.model.LoadingState;
-import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.model.*;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -98,29 +91,6 @@ public class TreeTableThreadView extends AThreadView {
             threads.addColumn(column);
         }
 
-        model.addTreeModelListener(new TreeModelListener() {
-            @Override
-            public void treeNodesChanged(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeNodesInserted(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeNodesRemoved(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeStructureChanged(TreeModelEvent e) {
-                if (model.getRoot() != null) {
-                    threads.setRootVisible(modelControl.isRootVisible());
-                } else {
-                    appControl.closeTab(getId());
-                }
-            }
-        });
-
         // Handle keyboard events to emulate tree navigation in TreeTable
         threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "prevOrClose");
         threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "nextOrExpand");
@@ -163,6 +133,10 @@ public class TreeTableThreadView extends AThreadView {
         return threads;
     }
 
+    @Override
+    protected void updateRootVisible() {
+        threads.setRootVisible(modelControl.isRootVisible());
+    }
 
     @Override
     protected void selectItem(Post post, boolean collapseChildren) {

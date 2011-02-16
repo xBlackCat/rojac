@@ -10,8 +10,6 @@ import org.xblackcat.rojac.gui.view.model.Post;
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -39,30 +37,7 @@ public class TreeThreadView extends AThreadView {
         threads.setRowHeight(0);
         threads.setCellRenderer(new MultiLineThreadItemRenderer());
         threads.setShowsRootHandles(true);
-        threads.setRootVisible(modelControl.isRootVisible());
-
-        model.addTreeModelListener(new TreeModelListener() {
-            @Override
-            public void treeNodesChanged(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeNodesInserted(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeNodesRemoved(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeStructureChanged(TreeModelEvent e) {
-                if (model.getRoot() != null) {
-                    threads.setRootVisible(modelControl.isRootVisible());
-                } else {
-                    appControl.closeTab(getId());
-                }
-            }
-        });
+        updateRootVisible();
 
         threads.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
@@ -95,6 +70,11 @@ public class TreeThreadView extends AThreadView {
         threads.addMouseListener(new ItemListener());
 
         return threads;
+    }
+
+    @Override
+    protected void updateRootVisible() {
+        threads.setRootVisible(modelControl.isRootVisible());
     }
 
     @Override

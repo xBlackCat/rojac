@@ -135,7 +135,10 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
     }
 
     public void markInitialized() {
-        initialized = true;
+        if (!initialized) {
+            initialized = true;
+            modelSupport.fireTreeStructureChanged(null);
+        }
     }
 
     public boolean isInitialized() {
@@ -189,6 +192,25 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         if (node != null) {
             modelSupport.fireTreeStructureChanged(getPathToRoot(node));
         }
+    }
+
+    public void nodesAdded(T root, T[] children) {
+        if (root == null) {
+            return;
+        }
+
+        if (ArrayUtils.isEmpty(children)) {
+            return;
+        }
+
+        int[] indices = new int[children.length];
+        int i = 0, childrenLength = children.length;
+        while (i < childrenLength) {
+            indices[i] = root.getIndex(children[i]);
+            i++;
+        }
+
+        modelSupport.fireChildrenAdded(getPathToRoot(root), indices, children);
     }
 
     /**
