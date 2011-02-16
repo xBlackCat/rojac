@@ -68,7 +68,7 @@ public abstract class AThreadView extends AnItemView {
                 Post root = model.getRoot();
                 if (root == null) {
                     AThreadView.this.appControl.closeTab(getId());
-                } else if (e.getTreePath().getLastPathComponent() == root) {
+                } else if (e.getTreePath() != null && e.getTreePath().getLastPathComponent() == root) {
                     fireItemUpdated(root.getForumId(), root.getMessageId());
                     selectItem(root);
                 }
@@ -105,6 +105,30 @@ public abstract class AThreadView extends AnItemView {
                 Post post = model.getRoot().getMessageById((Integer) evt.getNewValue());
 
                 selectNextUnread(post);
+            }
+        });
+
+        // Initialize data integrity checker.
+        model.addTreeModelListener(new TreeModelListener() {
+            @Override
+            public void treeNodesChanged(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeNodesInserted(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeNodesRemoved(TreeModelEvent e) {
+            }
+
+            @Override
+            public void treeStructureChanged(TreeModelEvent e) {
+                if (model.getRoot() != null) {
+                    updateRootVisible();
+                } else {
+                    appControl.closeTab(getId());
+                }
             }
         });
     }
@@ -167,12 +191,15 @@ public abstract class AThreadView extends AnItemView {
 
                 @Override
                 public void treeStructureChanged(TreeModelEvent e) {
-                    if (model.getRoot() != null) {
-                        if (model.isInitialized()) {
-                            model.removeTreeModelListener(this);
+                    if (e.getPath() == null && model.isInitialized()) {
+                        model.removeTreeModelListener(this);
+                        if (messageId != 0) {
                             expandThread(messageId);
                         }
-                    } else {
+                        return;
+                    }
+
+                    if (model.getRoot() == null) {
                         appControl.closeTab(getId());
                     }
                 }
@@ -400,6 +427,8 @@ public abstract class AThreadView extends AnItemView {
     public String getTabTitle() {
         return modelControl.getTitle(model);
     }
+
+    protected abstract void updateRootVisible();
 
     private class LoadNextUnread implements IItemProcessor<Post> {
         @Override

@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.util.RojacUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +23,11 @@ public class Post implements ITreeItem<Post> {
     // Tree-related fields
     protected final Post parent;
     protected final Thread threadRoot;
+
+    /**
+     * Util flag to indicate that a node is newly created. Should be cleared after view is updated.
+     */
+    private boolean newNode = true;
 
     protected List<Post> childrenPosts = new ArrayList<Post>();
 
@@ -227,5 +233,24 @@ public class Post implements ITreeItem<Post> {
     public void setMessageData(MessageData messageData) {
         this.messageData = messageData;
         this.read = messageData.isRead();
+    }
+
+    public boolean isNewNode() {
+        assert RojacUtils.checkThread(true, Post.class);
+
+        return newNode;
+    }
+
+    /**
+     * Recursively clears 'new node' flag
+     */
+    public void resetNewFlag() {
+        assert RojacUtils.checkThread(true, Post.class);
+
+        newNode = false;
+
+        for (Post p : childrenPosts) {
+            p.resetNewFlag();
+        }
     }
 }
