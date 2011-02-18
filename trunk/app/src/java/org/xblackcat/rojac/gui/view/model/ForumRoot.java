@@ -18,27 +18,6 @@ public class ForumRoot extends Post {
     }
 
     /**
-     * Adds a thread to forum root.
-     * @param newThread
-     * @return <code>true</code> if thread was added and <code>false</code> if thread was updated.
-     */
-    final boolean addThread(Thread newThread) {
-        if (childrenPosts.contains(newThread)) {
-            int index = childrenPosts.indexOf(newThread);
-            Thread realThread = (Thread) childrenPosts.get(index);
-            if (!realThread.isFilled()) {
-                childrenPosts.set(index, newThread);
-                resort();
-            }
-            return false;
-        } else {
-            childrenPosts.add(newThread);
-            resort();
-            return true;
-        }
-    }
-
-    /**
      * Searches through all threads for the message Id
      *
      * @param messageId
