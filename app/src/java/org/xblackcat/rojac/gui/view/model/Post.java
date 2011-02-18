@@ -195,7 +195,7 @@ public class Post implements ITreeItem<Post> {
 
     public void insertChild(Post p) {
         childrenPosts.add(p);
-        resort();
+//        resort();
     }
 
     /**

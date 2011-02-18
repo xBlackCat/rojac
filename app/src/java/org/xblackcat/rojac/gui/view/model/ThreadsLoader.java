@@ -15,8 +15,10 @@ import java.util.Collection;
 import java.util.List;
 
 /**
-* @author xBlackCat
-*/
+ * Worker to load collapsed thread - only thread info.
+ *
+ * @author xBlackCat
+ */
 class ThreadsLoader extends RojacWorker<Void, Thread> {
     private static final Log log = LogFactory.getLog(ThreadsLoader.class);
 
@@ -61,7 +63,17 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     @Override
     protected void process(List<Thread> chunks) {
         for (Thread t : chunks) {
-            rootItem.addThread(t);
+            if (rootItem.childrenPosts.contains(t)) {
+                int index = rootItem.childrenPosts.indexOf(t);
+                Thread realThread = (Thread) rootItem.childrenPosts.get(index);
+                if (!realThread.isFilled()) {
+                    rootItem.childrenPosts.set(index, t);
+                }
+                model.nodesAdded(rootItem, new Post[] {t});
+            } else {
+                rootItem.childrenPosts.add(t);
+                model.nodeWasAdded(rootItem, t);
+            }
         }
     }
 

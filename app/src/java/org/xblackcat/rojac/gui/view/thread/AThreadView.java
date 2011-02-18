@@ -68,7 +68,9 @@ public abstract class AThreadView extends AnItemView {
                 Post root = model.getRoot();
                 if (root == null) {
                     AThreadView.this.appControl.closeTab(getId());
-                } else if (e.getTreePath() != null && e.getTreePath().getLastPathComponent() == root) {
+                } else if (e.getTreePath() == null) {
+                    // TODO: Full update of tree with storing expanded/collapsed states.
+                } else if (e.getTreePath().getLastPathComponent() == root) {
                     fireItemUpdated(root.getForumId(), root.getMessageId());
                     selectItem(root);
                 }
