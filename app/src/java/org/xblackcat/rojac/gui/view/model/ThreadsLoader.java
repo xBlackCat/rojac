@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import gnu.trove.TIntArrayList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
@@ -10,8 +11,8 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -62,6 +63,9 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
     @Override
     protected void process(List<Thread> chunks) {
+        TIntArrayList updatedNodes = new TIntArrayList();
+        List<Post> addedNodes = new LinkedList<Post>();
+
         for (Thread t : chunks) {
             if (rootItem.childrenPosts.contains(t)) {
                 int index = rootItem.childrenPosts.indexOf(t);
@@ -69,40 +73,21 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
                 if (!realThread.isFilled()) {
                     rootItem.childrenPosts.set(index, t);
                 }
-                model.nodesAdded(rootItem, new Post[] {t});
+                updatedNodes.add(index);
             } else {
                 rootItem.childrenPosts.add(t);
-                model.nodeWasAdded(rootItem, t);
+                addedNodes.add(t);
             }
         }
+
+        model.nodesChanged(rootItem, updatedNodes.toNativeArray());
+        model.nodesAdded(rootItem, addedNodes.toArray(new Post[addedNodes.size()]));
     }
 
     @Override
     protected void done() {
-        // Get list of changed nodes.
-        updateNodesList(rootItem);
-
         model.markInitialized();
-    }
 
-    protected void updateNodesList(Post root) {
-        List<Post> added = new ArrayList<Post>();
-
-        List<Post> toCheck = new ArrayList<Post>();
-
-        for (Post p : root.getChildren()) {
-            if (p.isNewNode()) {
-                added.add(p);
-                p.resetNewFlag();
-            } else {
-                toCheck.add(p);
-            }
-        }
-
-        model.nodesAdded(rootItem, added.toArray(new Post[added.size()]));
-
-        for (Post p : toCheck) {
-            updateNodesList(p);
-        }
+        model.fireResortModel();
     }
 }

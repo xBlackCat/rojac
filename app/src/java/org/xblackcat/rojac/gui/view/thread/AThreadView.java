@@ -21,10 +21,12 @@ import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
+import javax.swing.event.*;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -69,7 +71,7 @@ public abstract class AThreadView extends AnItemView {
                 if (root == null) {
                     AThreadView.this.appControl.closeTab(getId());
                 } else if (e.getTreePath() == null) {
-                    // TODO: Full update of tree with storing expanded/collapsed states.
+                    completeUpdateModel();
                 } else if (e.getTreePath().getLastPathComponent() == root) {
                     fireItemUpdated(root.getForumId(), root.getMessageId());
                     selectItem(root);
@@ -77,6 +79,22 @@ public abstract class AThreadView extends AnItemView {
             }
         });
 
+    }
+
+    private void completeUpdateModel() {
+        Post selected = getSelectedItem();
+
+//        Post[] expanded = getExpandedThreads();
+
+        modelControl.resortModel(model);
+
+        if (selected != null) {
+            selectItem(selected);
+        }
+
+//        if (expanded.length > 0) {
+//            expandThreads(expand);
+//        }
     }
 
     protected void initializeLayout() {
@@ -382,9 +400,7 @@ public abstract class AThreadView extends AnItemView {
      * Searches for the last unread post in the tree thread.
      *
      * @param post root of sub-tree.
-     *
      * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
-     *
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastUnreadPost(Post post) throws RuntimeException {
@@ -431,6 +447,10 @@ public abstract class AThreadView extends AnItemView {
     }
 
     protected abstract void updateRootVisible();
+
+    protected abstract void expandPath(TreePath parentPath);
+
+    protected abstract TreePath getPathForLocation(Point p);
 
     private class LoadNextUnread implements IItemProcessor<Post> {
         @Override
@@ -526,4 +546,70 @@ public abstract class AThreadView extends AnItemView {
 
         }
     }
+
+    protected class PostSelector implements TreeSelectionListener {
+        public void valueChanged(TreeSelectionEvent e) {
+            Post mi = (Post) e.getPath().getLastPathComponent();
+            selectItem(mi);
+            setSelectedPost(mi);
+        }
+    }
+
+    protected class ThreadExpander implements TreeExpansionListener {
+        public void treeExpanded(TreeExpansionEvent event) {
+            TreePath path = event.getPath();
+            Post item = (Post) path.getLastPathComponent();
+
+            if (item.getLoadingState() == LoadingState.NotLoaded) {
+                modelControl.loadThread(model, item, null);
+            }
+
+            if (item.getLoadingState() == LoadingState.Loaded) {
+                if (item.getSize() == 1) {
+                    ITreeItem child = item.getChild(0);
+
+                    expandPath(path.pathByAddingChild(child));
+                }
+            }
+        }
+
+        public void treeCollapsed(TreeExpansionEvent event) {
+        }
+    }
+
+    protected class ItemListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            checkMenu(e);
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            checkMenu(e);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            checkMenu(e);
+        }
+
+        private void checkMenu(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                Point p = e.getPoint();
+
+                TreePath path = getPathForLocation(p);
+
+                if (path != null) {
+                    Post mi = (Post) path.getLastPathComponent();
+
+                    JPopupMenu m = modelControl.getItemMenu(mi, appControl);
+
+                    if (m != null) {
+                        m.show(e.getComponent(), p.x, p.y);
+                    }
+                }
+            }
+        }
+    }
+
 }

@@ -74,4 +74,6 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * @return <code>true</code> if message could be searched in the view.
      */
     boolean allowSearch();
+
+    void resortModel(AThreadModel<T> model);
 }

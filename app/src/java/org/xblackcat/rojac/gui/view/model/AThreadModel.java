@@ -25,8 +25,7 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
      * Adds a listener for the TreeModelEvent posted after the tree changes.
      *
      * @param l the listener to add
-     *
-     * @see #removeTreeModelListener
+     * @see #removeTreeModelListener(javax.swing.event.TreeModelListener)
      */
     public void addTreeModelListener(TreeModelListener l) {
         modelSupport.addTreeModelListener(l);
@@ -36,8 +35,7 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
      * Removes a listener previously added with <B>addTreeModelListener()</B>.
      *
      * @param l the listener to remove
-     *
-     * @see #addTreeModelListener
+     * @see #addTreeModelListener(javax.swing.event.TreeModelListener)
      */
     public void removeTreeModelListener(TreeModelListener l) {
         modelSupport.removeTreeModelListener(l);
@@ -48,9 +46,8 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
      *
      * @return all of this model's <code>TreeModelListener</code>s or an empty array if no tree model listeners are
      *         currently registered
-     *
-     * @see #addTreeModelListener
-     * @see #removeTreeModelListener
+     * @see #addTreeModelListener(javax.swing.event.TreeModelListener)
+     * @see #removeTreeModelListener(javax.swing.event.TreeModelListener)
      * @since 1.4
      */
     public TreeModelListener[] getTreeModelListeners() {
@@ -72,6 +69,7 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
      */
     public void reload() {
         reload(root);
+        nodeStructureChanged(root);
     }
 
     public void pathToNodeChanged(T node) {
@@ -135,10 +133,7 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
     }
 
     public void markInitialized() {
-        if (!initialized) {
-            initialized = true;
-            modelSupport.fireTreeStructureChanged(null);
-        }
+        initialized = true;
     }
 
     public boolean isInitialized() {
@@ -194,7 +189,7 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         }
     }
 
-    public void nodesAdded(T root, T[] children) {
+    public void nodesAdded(T root, T... children) {
         if (root == null) {
             return;
         }
@@ -214,11 +209,17 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
     }
 
     /**
+     * Syntetic method to indicate view to complete update data.
+     */
+    public void fireResortModel() {
+        modelSupport.fireTreeStructureChanged(null);
+    }
+
+    /**
      * Builds the parents of node up to and including the root node, where the original node is the last element in the
      * returned array. The length of the returned array gives the node's depth in the tree.
      *
      * @param aNode the MessageItem to get the path for
-     *
      * @return TreePath object with all subsequent nodes to reach the specified node from root.
      */
     public TreePath getPathToRoot(T aNode) {
