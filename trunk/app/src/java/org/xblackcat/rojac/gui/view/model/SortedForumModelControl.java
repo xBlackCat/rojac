@@ -6,23 +6,14 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
-import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
-import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
-import javax.swing.*;
 import java.util.List;
 
 /**
@@ -31,7 +22,7 @@ import java.util.List;
  * @author xBlackCat
  */
 
-public class SortedForumModelControl implements IModelControl<Post> {
+public class SortedForumModelControl extends AThreadsModelControl {
     private static final Log log = LogFactory.getLog(SortedForumModelControl.class);
 
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
@@ -55,40 +46,6 @@ public class SortedForumModelControl implements IModelControl<Post> {
         model.getRoot().setRead(read);
 
         model.subTreeNodesChanged(model.getRoot());
-    }
-
-    private void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
-
-        final Post post = model.getRoot().getMessageById(threadRootId);
-        post.setDeepRead(read);
-
-        model.pathToNodeChanged(post);
-        model.subTreeNodesChanged(post);
-    }
-
-    private void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
-
-        final Post post = model.getRoot().getMessageById(postId);
-        if (post != null) {
-            post.setRead(read);
-            model.pathToNodeChanged(post);
-        }
-    }
-
-    @Override
-    public void loadThread(final AThreadModel<Post> threadModel, Post p, IItemProcessor<Post> postProcessor) {
-        assert RojacUtils.checkThread(true, getClass());
-
-        //  In the Sorted model only Thread object could be loaded.
-
-        // Watch out for the line!
-        final Thread item = (Thread) p;
-
-        item.setLoadingState(LoadingState.Loading);
-
-        new ThreadLoader(item, threadModel, postProcessor).execute();
     }
 
     @Override
@@ -183,21 +140,6 @@ public class SortedForumModelControl implements IModelControl<Post> {
                     }
                 }
         ).dispatch(p);
-        return true;
-    }
-
-    @Override
-    public Post getTreeRoot(Post post) {
-        return post == null ? null : post.getThreadRoot();
-    }
-
-    @Override
-    public JPopupMenu getItemMenu(Post post, IAppControl appControl) {
-        return PopupMenuBuilder.getTreeViewMenu(post, appControl, false, true);
-    }
-
-    @Override
-    public boolean allowSearch() {
         return true;
     }
 

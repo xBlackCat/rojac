@@ -3,19 +3,11 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.IModelControl;
-import org.xblackcat.rojac.gui.view.model.ITreeItem;
-import org.xblackcat.rojac.gui.view.model.LoadingState;
 import org.xblackcat.rojac.gui.view.model.Post;
 
 import javax.swing.*;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  * @author xBlackCat
@@ -39,33 +31,8 @@ public class TreeThreadView extends AThreadView {
         threads.setShowsRootHandles(true);
         updateRootVisible();
 
-        threads.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent e) {
-                Post mi = (Post) e.getPath().getLastPathComponent();
-                setSelectedPost(mi);
-            }
-        });
-        threads.addTreeExpansionListener(new TreeExpansionListener() {
-            public void treeExpanded(TreeExpansionEvent event) {
-                TreePath path = event.getPath();
-                Post item = (Post) path.getLastPathComponent();
-
-                if (item.getLoadingState() == LoadingState.NotLoaded) {
-                    modelControl.loadThread(model, item, null);
-                }
-
-                if (item.getLoadingState() == LoadingState.Loaded) {
-                    if (item.getSize() == 1) {
-                        ITreeItem child = item.getChild(0);
-
-                        threads.expandPath(path.pathByAddingChild(child));
-                    }
-                }
-            }
-
-            public void treeCollapsed(TreeExpansionEvent event) {
-            }
-        });
+        threads.getSelectionModel().addTreeSelectionListener(new PostSelector());
+        threads.addTreeExpansionListener(new ThreadExpander());
 
         threads.addMouseListener(new ItemListener());
 
@@ -85,7 +52,7 @@ public class TreeThreadView extends AThreadView {
             TreePath parentPath = path.getParentPath();
 
             if (parentPath != null && threads.isCollapsed(parentPath)) {
-                threads.expandPath(parentPath);
+                expandPath(parentPath);
             }
             threads.setSelectionPath(path);
             Rectangle bounds = threads.getPathBounds(path);
@@ -102,44 +69,17 @@ public class TreeThreadView extends AThreadView {
     }
 
     @Override
+    protected void expandPath(TreePath parentPath) {
+        threads.expandPath(parentPath);
+    }
+
+    @Override
     protected Post getSelectedItem() {
         TreePath path = threads.getSelectionPath();
         return path == null ? null : (Post) path.getLastPathComponent();
     }
 
-    private class ItemListener extends MouseAdapter {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            checkMenu(e);
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            checkMenu(e);
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            checkMenu(e);
-        }
-
-        private void checkMenu(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                Point p = e.getPoint();
-
-                TreePath path = threads.getPathForLocation(p.x, p.y);
-
-                if (path != null) {
-                    Post mi = (Post) path.getLastPathComponent();
-
-                    JPopupMenu m = modelControl.getItemMenu(mi, appControl);
-
-                    if (m != null) {
-                        m.show(e.getComponent(), p.x, p.y);
-                    }
-                }
-            }
-        }
+    protected TreePath getPathForLocation(Point p) {
+        return threads.getPathForLocation(p.x, p.y);
     }
-
 }

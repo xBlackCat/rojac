@@ -5,12 +5,7 @@ import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
-import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
-import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
@@ -116,4 +111,8 @@ public class MessageListControl implements IModelControl<Post> {
         return false;
     }
 
+    @Override
+    public void resortModel(AThreadModel<Post> postAThreadModel) {
+        // Nothing to do
+    }
 }

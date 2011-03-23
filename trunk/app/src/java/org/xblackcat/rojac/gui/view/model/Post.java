@@ -8,7 +8,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.max;
+import static ch.lambdaj.Lambda.on;
 
 /**
  * @author xBlackCat
