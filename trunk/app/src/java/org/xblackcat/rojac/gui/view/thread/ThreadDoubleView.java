@@ -111,11 +111,15 @@ public class ThreadDoubleView extends AnItemView {
 
     @Override
     public ComplexState getState() {
+        assert RojacUtils.checkThread(true, AThreadView.class);
+
         return new ComplexState(masterView.getState(), slaveView.getState());
     }
 
     @Override
     public void setState(IViewState state) {
+        assert RojacUtils.checkThread(true, AThreadView.class);
+
         if (state == null) {
             return;
         }
