@@ -16,6 +16,7 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -29,6 +30,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Enumeration;
 
 /**
  * @author xBlackCat
@@ -84,17 +86,21 @@ public abstract class AThreadView extends AnItemView {
     private void completeUpdateModel() {
         Post selected = getSelectedItem();
 
-//        Post[] expanded = getExpandedThreads();
+        boolean skipSaveState = Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC.get();
+
+        Enumeration<TreePath> expanded = skipSaveState ? null : getExpandedThreads();
 
         modelControl.resortModel(model);
+
+        if (expanded != null) {
+            while (expanded.hasMoreElements()) {
+                expandPath(expanded.nextElement());
+            }
+        }
 
         if (selected != null) {
             selectItem(selected);
         }
-
-//        if (expanded.length > 0) {
-//            expandThreads(expand);
-//        }
     }
 
     protected void initializeLayout() {
@@ -185,6 +191,70 @@ public abstract class AThreadView extends AnItemView {
         applyState();
     }
 
+    @Override
+    @SuppressWarnings({"unchecked"})
+    protected IPacketProcessor<IPacket>[] getProcessors() {
+        return new IPacketProcessor[]{
+                new IPacketProcessor<IPacket>() {
+                    @Override
+                    public void process(IPacket p) {
+                        // Just in case store a current selection
+                        Post curSelection = getSelectedItem();
+
+                        if (modelControl.processPacket(model, p)) {
+                            if (curSelection != null) {
+                                selectItem(curSelection);
+                            }
+                        }
+                    }
+
+                }
+        };
+    }
+
+    @Override
+    public void makeVisible(int messageId) {
+        setState(new ThreadState(messageId));
+    }
+
+    @Override
+    public boolean containsItem(int messageId) {
+        return modelControl.allowSearch() && model.getRoot().getMessageById(messageId) != null;
+    }
+
+    @Override
+    public String getTabTitle() {
+        return modelControl.getTitle(model);
+    }
+
+    protected final void selectItem(Post post) {
+        selectItem(post, false);
+    }
+
+    protected abstract void selectItem(Post post, boolean collapseChildren);
+
+    protected abstract Post getSelectedItem();
+
+    protected abstract JComponent getThreadsContainer();
+
+    protected abstract Enumeration<TreePath> getExpandedThreads();
+
+    /**
+     * Make common tasks for selected post: notify listeners about focus changing and aim a timer to make the post
+     * readable after a specified time period.
+     *
+     * @param mi selected post.
+     */
+    protected void setSelectedPost(Post mi) {
+        fireMessageGotFocus(mi.getForumId(), mi.getMessageId());
+    }
+
+    protected abstract void updateRootVisible();
+
+    protected abstract void expandPath(TreePath parentPath);
+
+    protected abstract TreePath getPathForLocation(Point p);
+
     private void applyState() {
         assert RojacUtils.checkThread(true, AThreadView.class);
 
@@ -228,57 +298,6 @@ public abstract class AThreadView extends AnItemView {
             expandThread(messageId);
         }
     }
-
-    @Override
-    @SuppressWarnings({"unchecked"})
-    protected IPacketProcessor<IPacket>[] getProcessors() {
-        return new IPacketProcessor[]{
-                new IPacketProcessor<IPacket>() {
-                    @Override
-                    public void process(IPacket p) {
-                        // Just in case store a current selection
-                        Post curSelection = getSelectedItem();
-
-                        if (modelControl.processPacket(model, p)) {
-                            if (curSelection != null) {
-                                selectItem(curSelection);
-                            }
-                        }
-                    }
-
-                }
-        };
-    }
-
-    @Override
-    public void makeVisible(int messageId) {
-        setState(new ThreadState(messageId));
-    }
-
-    private void expandThread(final int messageId) {
-        // Check for threads
-        Post post = model.getRoot().getMessageById(messageId);
-        if (post != null) {
-            selectItem(post);
-        } else {
-            new ThreadChecker(messageId).execute();
-        }
-    }
-
-    @Override
-    public boolean containsItem(int messageId) {
-        return modelControl.allowSearch() && model.getRoot().getMessageById(messageId) != null;
-    }
-
-    protected final void selectItem(Post post) {
-        selectItem(post, false);
-    }
-
-    protected abstract void selectItem(Post post, boolean collapseChildren);
-
-    protected abstract Post getSelectedItem();
-
-    protected abstract JComponent getThreadsContainer();
 
     private void selectNextUnread(Post currentPost) {
         Post nextUnread = getNextUnread(currentPost, 0);
@@ -400,7 +419,9 @@ public abstract class AThreadView extends AnItemView {
      * Searches for the last unread post in the tree thread.
      *
      * @param post root of sub-tree.
+     *
      * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
+     *
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastUnreadPost(Post post) throws RuntimeException {
@@ -431,26 +452,15 @@ public abstract class AThreadView extends AnItemView {
         return null;
     }
 
-    /**
-     * Make common tasks for selected post: notify listeners about focus changing and aim a timer to make the post
-     * readable after a specified time period.
-     *
-     * @param mi selected post.
-     */
-    protected void setSelectedPost(Post mi) {
-        fireMessageGotFocus(mi.getForumId(), mi.getMessageId());
+    private void expandThread(final int messageId) {
+        // Check for threads
+        Post post = model.getRoot().getMessageById(messageId);
+        if (post != null) {
+            selectItem(post);
+        } else {
+            new ThreadChecker(messageId).execute();
+        }
     }
-
-    @Override
-    public String getTabTitle() {
-        return modelControl.getTitle(model);
-    }
-
-    protected abstract void updateRootVisible();
-
-    protected abstract void expandPath(TreePath parentPath);
-
-    protected abstract TreePath getPathForLocation(Point p);
 
     private class LoadNextUnread implements IItemProcessor<Post> {
         @Override

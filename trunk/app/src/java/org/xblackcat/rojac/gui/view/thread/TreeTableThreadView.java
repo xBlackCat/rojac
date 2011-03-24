@@ -14,6 +14,7 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Enumeration;
 
 /**
  * @author xBlackCat
@@ -102,6 +103,12 @@ public class TreeTableThreadView extends AThreadView {
         });
 
         return threads;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    @Override
+    protected Enumeration<TreePath> getExpandedThreads() {
+        return (Enumeration<TreePath>) threads.getExpandedDescendants(model.getPathToRoot(model.getRoot()));
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.xblackcat.rojac.gui.view.model.Post;
 import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.util.Enumeration;
 
 /**
  * @author xBlackCat
@@ -37,6 +38,11 @@ public class TreeThreadView extends AThreadView {
         threads.addMouseListener(new ItemListener());
 
         return threads;
+    }
+
+    @Override
+    protected Enumeration<TreePath> getExpandedThreads() {
+        return threads.getExpandedDescendants(model.getPathToRoot(model.getRoot()));
     }
 
     @Override
