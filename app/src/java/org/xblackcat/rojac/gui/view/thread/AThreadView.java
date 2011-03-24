@@ -50,37 +50,7 @@ public abstract class AThreadView extends AnItemView {
         super(id, appControl);
         this.modelControl = modelControl;
 
-        model.addTreeModelListener(new TreeModelListener() {
-            @Override
-            public void treeNodesChanged(TreeModelEvent e) {
-                Post root = model.getRoot();
-                if (e.getTreePath().getLastPathComponent() == root) {
-                    fireItemUpdated(root.getForumId(), root.getMessageId());
-                }
-            }
-
-            @Override
-            public void treeNodesInserted(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeNodesRemoved(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeStructureChanged(TreeModelEvent e) {
-                Post root = model.getRoot();
-                if (root == null) {
-                    AThreadView.this.appControl.closeTab(getId());
-                } else if (e.getTreePath() == null) {
-                    completeUpdateModel();
-                } else if (e.getTreePath().getLastPathComponent() == root) {
-                    fireItemUpdated(root.getForumId(), root.getMessageId());
-                    selectItem(root);
-                }
-            }
-        });
-
+        model.addTreeModelListener(new DataIntegrityMonitor());
     }
 
     private void completeUpdateModel() {
@@ -133,30 +103,6 @@ public abstract class AThreadView extends AnItemView {
                 selectNextUnread(post);
             }
         });
-
-        // Initialize data integrity checker.
-        model.addTreeModelListener(new TreeModelListener() {
-            @Override
-            public void treeNodesChanged(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeNodesInserted(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeNodesRemoved(TreeModelEvent e) {
-            }
-
-            @Override
-            public void treeStructureChanged(TreeModelEvent e) {
-                if (model.getRoot() != null) {
-                    updateRootVisible();
-                } else {
-                    appControl.closeTab(getId());
-                }
-            }
-        });
     }
 
     @Override
@@ -168,6 +114,8 @@ public abstract class AThreadView extends AnItemView {
 
     @Override
     public ThreadState getState() {
+        assert RojacUtils.checkThread(true, AThreadView.class);
+
         Post p = getSelectedItem();
         int messageId = p == null ? 0 : p.getMessageId();
 
@@ -239,16 +187,6 @@ public abstract class AThreadView extends AnItemView {
 
     protected abstract Enumeration<TreePath> getExpandedThreads();
 
-    /**
-     * Make common tasks for selected post: notify listeners about focus changing and aim a timer to make the post
-     * readable after a specified time period.
-     *
-     * @param mi selected post.
-     */
-    protected void setSelectedPost(Post mi) {
-        fireMessageGotFocus(mi.getForumId(), mi.getMessageId());
-    }
-
     protected abstract void updateRootVisible();
 
     protected abstract void expandPath(TreePath parentPath);
@@ -266,34 +204,7 @@ public abstract class AThreadView extends AnItemView {
 
         if (!model.isInitialized()) {
             // Forum not yet loaded.
-            model.addTreeModelListener(new TreeModelListener() {
-                @Override
-                public void treeNodesChanged(TreeModelEvent e) {
-                }
-
-                @Override
-                public void treeNodesInserted(TreeModelEvent e) {
-                }
-
-                @Override
-                public void treeNodesRemoved(TreeModelEvent e) {
-                }
-
-                @Override
-                public void treeStructureChanged(TreeModelEvent e) {
-                    if (e.getPath() == null && model.isInitialized()) {
-                        model.removeTreeModelListener(this);
-                        if (messageId != 0) {
-                            expandThread(messageId);
-                        }
-                        return;
-                    }
-
-                    if (model.getRoot() == null) {
-                        appControl.closeTab(getId());
-                    }
-                }
-            });
+            model.addTreeModelListener(new ForumLoadWaiter(messageId));
         } else {
             expandThread(messageId);
         }
@@ -419,9 +330,7 @@ public abstract class AThreadView extends AnItemView {
      * Searches for the last unread post in the tree thread.
      *
      * @param post root of sub-tree.
-     *
      * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
-     *
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastUnreadPost(Post post) throws RuntimeException {
@@ -557,11 +466,47 @@ public abstract class AThreadView extends AnItemView {
         }
     }
 
+    private class DataIntegrityMonitor implements TreeModelListener {
+        @Override
+        public void treeNodesChanged(TreeModelEvent e) {
+            Post root = model.getRoot();
+            if (e.getTreePath().getLastPathComponent() == root) {
+                fireItemUpdated(root.getForumId(), root.getMessageId());
+            }
+        }
+
+        @Override
+        public void treeNodesInserted(TreeModelEvent e) {
+        }
+
+        @Override
+        public void treeNodesRemoved(TreeModelEvent e) {
+        }
+
+        @Override
+        public void treeStructureChanged(TreeModelEvent e) {
+            Post root = model.getRoot();
+            if (root == null) {
+                AThreadView.this.appControl.closeTab(getId());
+            } else {
+                updateRootVisible();
+
+                if (e.getTreePath() == null) {
+                    completeUpdateModel();
+                } else if (e.getTreePath().getLastPathComponent() == root) {
+                    fireItemUpdated(root.getForumId(), root.getMessageId());
+                    selectItem(root);
+                }
+            }
+        }
+    }
+
     protected class PostSelector implements TreeSelectionListener {
         public void valueChanged(TreeSelectionEvent e) {
             Post mi = (Post) e.getPath().getLastPathComponent();
             selectItem(mi);
-            setSelectedPost(mi);
+
+            fireMessageGotFocus(mi.getForumId(), mi.getMessageId());
         }
     }
 
@@ -622,4 +567,41 @@ public abstract class AThreadView extends AnItemView {
         }
     }
 
+    /**
+     * Util class: waits until forum will be loaded and then select specified message in thread view
+     */
+    private class ForumLoadWaiter implements TreeModelListener {
+        private final int messageId;
+
+        public ForumLoadWaiter(int messageId) {
+            this.messageId = messageId;
+        }
+
+        @Override
+        public void treeNodesChanged(TreeModelEvent e) {
+        }
+
+        @Override
+        public void treeNodesInserted(TreeModelEvent e) {
+        }
+
+        @Override
+        public void treeNodesRemoved(TreeModelEvent e) {
+        }
+
+        @Override
+        public void treeStructureChanged(TreeModelEvent e) {
+            if (e.getPath() == null && model.isInitialized()) {
+                model.removeTreeModelListener(this);
+                if (messageId != 0) {
+                    expandThread(messageId);
+                }
+                return;
+            }
+
+            if (model.getRoot() == null) {
+                appControl.closeTab(getId());
+            }
+        }
+    }
 }
