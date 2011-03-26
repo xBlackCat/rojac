@@ -20,13 +20,11 @@ public abstract class APostProxy {
         switch (post.isRead()) {
             default:
             case Read:
+            case ReadPartially:
                 style = Font.PLAIN;
                 break;
-            case ReadPartially:
-                style = Font.ITALIC;
-                break;
             case Unread:
-                style = Font.BOLD | Font.ITALIC;
+                style = Font.BOLD;
                 break;
         }
 

@@ -29,11 +29,11 @@ class PostTreeCellRenderer extends DefaultTreeCellRenderer {
                 icon = PostIcon.Read;
                 break;
             case ReadPartially:
-                style = Font.ITALIC;
+                style = Font.PLAIN;
                 icon = PostIcon.ReadPartially;
                 break;
             case Unread:
-                style = Font.BOLD | Font.ITALIC;
+                style = Font.BOLD;
                 icon = PostIcon.Unread;
                 break;
         }
@@ -42,7 +42,7 @@ class PostTreeCellRenderer extends DefaultTreeCellRenderer {
             // Own message - own icon.
             icon = PostIcon.OwnPost;
 
-            if (post.getSize() > 0) {
+            if (post.getRepliesAmount() > 0) {
                 icon = PostIcon.HasResponse;
             }
         }
