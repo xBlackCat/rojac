@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.options;
 
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.gui.theme.IconPack;
+import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.gui.view.forumlist.ForumFilterState;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.util.UIUtils;
@@ -65,6 +66,10 @@ public final class Property<T> {
     public static final Property<Long> VIEW_THREAD_AUTOSET_READ = create("rojac.view.thread.message.read_delay", Long.valueOf(1000));
     public static final Property<Boolean> VIEW_THREAD_SET_READ_ON_SCROLL = create("rojac.view.thread.message.read_on_scroll", Boolean.TRUE);
     public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC = create("rojac.view.thread.message.collapse_threads_after_sync", Boolean.FALSE);
+
+    public static final Property<TextStyle> VIEW_THREAD_STYLE_UNREAD_POST = create("rojac.view.thread.styles.font.unread_post", TextStyle.DEFAULT);
+    public static final Property<TextStyle> VIEW_THREAD_STYLE_READ_POST = create("rojac.view.thread.styles.font.read_post", TextStyle.DEFAULT);
+    public static final Property<TextStyle> VIEW_THREAD_STYLE_PARTIAL_READ_POST = create("rojac.view.thread.styles.font.partial_read_post", TextStyle.DEFAULT);
 
     // Janus synchronizer properties
     public static final Property<Integer> SYNCHRONIZER_SCHEDULE_PERIOD = create("rojac.synchronizer.schedule.period", Integer.valueOf(0));

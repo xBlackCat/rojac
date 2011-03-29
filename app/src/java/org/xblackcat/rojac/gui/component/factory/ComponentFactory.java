@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.component.factory;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.dialogs.PropertyNode;
+import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.service.options.IValueChecker;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
@@ -92,6 +93,15 @@ public final class ComponentFactory {
 
             field.setColumns(TEXT_FIELD_WIDTH);
             field.setText(String.valueOf(pass.getPassword()));
+
+            return new PropertyCellEditor(field);
+        }
+
+        if (p.getType() == TextStyle.class) {
+            TextStyle ts = (TextStyle) currentValue;
+            TextStyleEditor field = new TextStyleEditor();
+
+            field.setValue(ts);
 
             return new PropertyCellEditor(field);
         }
