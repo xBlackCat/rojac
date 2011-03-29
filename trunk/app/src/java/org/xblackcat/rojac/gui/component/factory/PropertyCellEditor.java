@@ -9,11 +9,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.TreeCellEditor;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.Serializable;
 import java.util.EventObject;
 
@@ -44,6 +40,36 @@ public class PropertyCellEditor extends AbstractCellEditor implements TableCellE
 //  Constructors
 //
 
+    /**
+     * Constructs a <code>PropertyCellEditor</code> that uses a text field.
+     *
+     * @param component a <code>JTextField</code> object
+     */
+    public PropertyCellEditor(final AComplexEditor component) {
+        editorComponent = component;
+        this.clickCountToStart = 2;
+        delegate = new EditorDelegate() {
+            public void setValue(Object value) {
+                component.setValue(value);
+            }
+
+            public Object getCellEditorValue() {
+                return component.getValue();
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getActionCommand() == AComplexEditor.ACTION_DONE) {
+                    fireEditingStopped();
+                } else if (e.getActionCommand() == AComplexEditor.ACTION_CANCEL) {
+                    fireEditingCanceled();
+                } else {
+                    super.actionPerformed(e);
+                }
+            }
+        };
+        component.addActionListener(delegate);
+    }
     /**
      * Constructs a <code>PropertyCellEditor</code> that uses a text field.
      *
