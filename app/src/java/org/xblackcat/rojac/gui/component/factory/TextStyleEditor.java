@@ -5,6 +5,7 @@ import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -19,55 +20,67 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
     private final JCheckBox overrideFont = new JCheckBox("Override font");
     private final JCheckBox overrideForeground = new JCheckBox("Override foreground");
     private final JCheckBox overrideBackground = new JCheckBox("Override background");
-    private final JButton font = new JButton();
-    private final JButton foreground = new JButton();
-    private final JButton background = new JButton();
+    private final JButton selectFontButton = new JButton("...");
+    private final JButton selectForegroundButton = new JButton("...");
+    private final JButton selectBackgroundButton = new JButton("...");
+
+    private final JComboBox fontSelector;
+    private final JComboBox fontSizeSelector;
+    private final JToggleButton fontBold = new JToggleButton("B");
+    private final JToggleButton fontItalic = new JToggleButton("I");
+
+    private final JPanel previewForeground = new JPanel();
+    private final JPanel previewBackground = new JPanel();
 
     private Font selectedFont = null;
     private Color selectedForeground = null;
     private Color selectedBackground = null;
 
-    private final JTextArea example = new JTextArea("Quick brown fox jumps over lazy dog\n0123456789");
+    private final JTextArea example = new JTextArea("The quick brown fox jumps the over lazy dog\n0123456789");
 
     protected TextStyleEditor() {
         super(new BorderLayout(5, 5));
 
-        JPanel defaultMarks = new JPanel(new GridLayout(0, 1));
-        defaultMarks.add(overrideFont);
-        defaultMarks.add(overrideForeground);
-        defaultMarks.add(overrideBackground);
+        fontSelector = new JComboBox();
+        fontSizeSelector = new JComboBox();
 
-        trackEnabling(overrideFont, font);
-        trackEnabling(overrideForeground, foreground);
-        trackEnabling(overrideBackground, background);
+        fontBold.setFont(fontBold.getFont().deriveFont(Font.BOLD));
+        fontItalic.setFont(fontItalic.getFont().deriveFont(Font.ITALIC));
 
-        JPanel selectors = new JPanel(new GridLayout(0, 1));
-        selectors.add(font);
-        selectors.add(foreground);
-        selectors.add(background);
+        // Initialize layout
+        JPanel defaultMarks = WindowsUtils.createColumn(overrideFont, overrideForeground, overrideBackground);
 
-        // TODO: add select font dialog
+        trackEnabling(overrideFont, selectFontButton);
+        trackEnabling(overrideForeground, selectForegroundButton);
+        trackEnabling(overrideBackground, selectBackgroundButton);
 
-        foreground.addActionListener(new ActionListener() {
+
+        JPanel selectors = WindowsUtils.createColumn(
+                createFontSelector(),
+                createColorPreview(previewForeground, selectForegroundButton),
+                createColorPreview(previewBackground, selectBackgroundButton)
+        );
+
+        selectForegroundButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Color newColor = JColorChooser.showDialog(TextStyleEditor.this, "Select foreground", selectedForeground);
 
                 if (newColor != null) {
-                    foreground.setBackground(newColor);
+                    selectForegroundButton.setBackground(newColor);
                     selectedForeground = newColor;
                     updateExample();
                 }
             }
         });
 
-        background.addActionListener(new ActionListener() {
+        selectBackgroundButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Color newColor = JColorChooser.showDialog(TextStyleEditor.this, "Select background", selectedBackground);
 
                 if (newColor != null) {
-                    background.setBackground(newColor);
+                    selectBackgroundButton.setBackground(newColor);
                     selectedBackground = newColor;
                     updateExample();
                 }
@@ -136,34 +149,34 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
     public void setValue(TextStyle v) {
         if (v.getFont() == null) {
             overrideFont.setSelected(false);
-            font.setEnabled(false);
+            selectFontButton.setEnabled(false);
         } else {
             overrideFont.setSelected(true);
-            font.setEnabled(true);
+            selectFontButton.setEnabled(true);
             selectedFont = v.getFont();
-            font.setText(v.getFont().toString());
+            selectFontButton.setText(v.getFont().toString());
         }
 
         if (v.getForeground() == null) {
             overrideForeground.setSelected(false);
-            foreground.setEnabled(false);
+            selectForegroundButton.setEnabled(false);
         } else {
             overrideForeground.setSelected(true);
-            foreground.setEnabled(true);
+            selectForegroundButton.setEnabled(true);
 
             selectedForeground = v.getForeground();
-            foreground.setBackground(v.getForeground());
+            selectForegroundButton.setBackground(v.getForeground());
         }
 
         if (v.getBackground() == null) {
             overrideBackground.setSelected(false);
-            background.setEnabled(false);
+            selectBackgroundButton.setEnabled(false);
         } else {
             overrideBackground.setSelected(true);
-            background.setEnabled(true);
+            selectBackgroundButton.setEnabled(true);
 
             selectedBackground = v.getBackground();
-            background.setBackground(v.getBackground());
+            selectBackgroundButton.setBackground(v.getBackground());
         }
 
         updateExample();
@@ -187,5 +200,24 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
         }
 
         master.addChangeListener(new Tracker());
+    }
+
+    private static JPanel createColorPreview(JPanel previewPane, JButton selectorButton) {
+        JPanel colorSelector = new JPanel(new BorderLayout(5, 5));
+
+        colorSelector.add(previewPane, BorderLayout.CENTER);
+        colorSelector.add(selectorButton, BorderLayout.EAST);
+
+        previewPane.setBorder(new LineBorder(Color.black, 1));
+
+        return colorSelector;
+    }
+
+    private JPanel createFontSelector() {
+        JPanel fontSelector = new JPanel(new BorderLayout(5, 5));
+
+        fontSelector.add(new JLabel("Here will be font"));
+
+        return fontSelector;
     }
 }
