@@ -66,15 +66,12 @@ public class LoginDialog extends JDialog {
         fieldPassword = new JPasswordField(20);
         fieldSavePassword = new JCheckBox(Messages.Dialog_Login_SavePassword.get(), RSDN_USER_PASSWORD_SAVE.get());
 
-        JPanel fields = new JPanel(new GridLayout(0, 1));
-        fields.add(fieldLogin);
-        fields.add(fieldPassword);
+        pane.add(WindowsUtils.createColumn(fieldLogin, fieldPassword), BorderLayout.CENTER);
 
-        pane.add(fields, BorderLayout.CENTER);
-
-        JPanel labels = new JPanel(new GridLayout(0, 1));
-        labels.add(new JLabel(Messages.Dialog_Login_UserName.get()));
-        labels.add(new JLabel(Messages.Dialog_Login_Password.get()));
+        JPanel labels = WindowsUtils.createColumn(
+                new JLabel(Messages.Dialog_Login_UserName.get()),
+                new JLabel(Messages.Dialog_Login_Password.get())
+        );
 
         pane.add(labels, BorderLayout.WEST);
 

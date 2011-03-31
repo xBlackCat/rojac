@@ -347,4 +347,30 @@ public final class WindowsUtils {
             comp.getActionMap().put(sc, action);
         }
     }
+
+    public static JPanel createColumn(JComponent... components) {
+        return createColumn(0, 0, components);
+    }
+
+    public static JPanel createRow(JComponent... components) {
+        return createRow(0, 0, components);
+    }
+
+    public static JPanel createColumn(int hgap, int vgap, JComponent... components) {
+        return createGrid(true, hgap, vgap, components);
+    }
+
+    public static JPanel createRow(int hgap, int vgap, JComponent... components) {
+        return createGrid(false, hgap, vgap, components);
+    }
+
+    private static JPanel createGrid(boolean vertical, int hgap, int vgap, JComponent... components) {
+        JPanel panel = new JPanel(new GridLayout(vertical ? 0 : 1, vertical ? 1 : 0, hgap, vgap));
+
+        for (JComponent c : components) {
+            panel.add(c);
+        }
+
+        return panel;
+    }
 }
