@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.theme;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**

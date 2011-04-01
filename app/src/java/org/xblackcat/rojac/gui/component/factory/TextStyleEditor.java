@@ -1,16 +1,26 @@
 package org.xblackcat.rojac.gui.component.factory;
 
+import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.xblackcat.rojac.gui.theme.TextStyle;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.UIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author xBlackCat
@@ -20,7 +30,6 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
     private final JCheckBox overrideFont = new JCheckBox("Override font");
     private final JCheckBox overrideForeground = new JCheckBox("Override foreground");
     private final JCheckBox overrideBackground = new JCheckBox("Override background");
-    private final JButton selectFontButton = new JButton("...");
     private final JButton selectForegroundButton = new JButton("...");
     private final JButton selectBackgroundButton = new JButton("...");
 
@@ -37,12 +46,22 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
     private Color selectedBackground = null;
 
     private final JTextArea example = new JTextArea("The quick brown fox jumps the over lazy dog\n0123456789");
+    private final ListComboBoxModel<String> fontModel;
+    private final ListComboBoxModel<Integer> fontSizeModel;
 
     protected TextStyleEditor() {
         super(new BorderLayout(5, 5));
 
-        fontSelector = new JComboBox();
-        fontSizeSelector = new JComboBox();
+        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        String[] fontNames = environment.getAvailableFontFamilyNames(Locale.ROOT);
+
+        fontModel = new ListComboBoxModel<String>(Arrays.asList(fontNames));
+
+        List<Integer> sizes = Arrays.asList(6, 7, 8, 9, 10, 12, 14, 16, 18, 22, 26, 32, 48, 72);
+        fontSizeModel = new ListComboBoxModel<Integer>(sizes);
+
+        fontSelector = new JComboBox(fontModel);
+        fontSizeSelector = new JComboBox(fontSizeModel);
 
         fontBold.setFont(fontBold.getFont().deriveFont(Font.BOLD));
         fontItalic.setFont(fontItalic.getFont().deriveFont(Font.ITALIC));
@@ -50,9 +69,31 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
         // Initialize layout
         JPanel defaultMarks = WindowsUtils.createColumn(overrideFont, overrideForeground, overrideBackground);
 
-        trackEnabling(overrideFont, selectFontButton);
-        trackEnabling(overrideForeground, selectForegroundButton);
-        trackEnabling(overrideBackground, selectBackgroundButton);
+        overrideFont.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                boolean enable = overrideFont.isSelected();
+                fontSelector.setEnabled(enable);
+                fontSizeSelector.setEnabled(enable);
+                fontBold.setEnabled(enable);
+                fontItalic.setEnabled(enable);
+                updateExample();
+            }
+        });
+        overrideForeground.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                selectForegroundButton.setEnabled(overrideForeground.isSelected());
+                updateExample();
+            }
+        });
+        overrideBackground.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                selectBackgroundButton.setEnabled(overrideBackground.isSelected());
+                updateExample();
+            }
+        });
 
 
         JPanel selectors = WindowsUtils.createColumn(
@@ -67,7 +108,7 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
                 Color newColor = JColorChooser.showDialog(TextStyleEditor.this, "Select foreground", selectedForeground);
 
                 if (newColor != null) {
-                    selectForegroundButton.setBackground(newColor);
+                    previewForeground.setBackground(newColor);
                     selectedForeground = newColor;
                     updateExample();
                 }
@@ -80,7 +121,7 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
                 Color newColor = JColorChooser.showDialog(TextStyleEditor.this, "Select background", selectedBackground);
 
                 if (newColor != null) {
-                    selectBackgroundButton.setBackground(newColor);
+                    previewBackground.setBackground(newColor);
                     selectedBackground = newColor;
                     updateExample();
                 }
@@ -149,12 +190,21 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
     public void setValue(TextStyle v) {
         if (v.getFont() == null) {
             overrideFont.setSelected(false);
-            selectFontButton.setEnabled(false);
+            fontSelector.setEnabled(false);
+            fontSizeSelector.setEnabled(false);
+            fontBold.setEnabled(false);
+            fontItalic.setEnabled(false);
         } else {
             overrideFont.setSelected(true);
-            selectFontButton.setEnabled(true);
+            fontSelector.setEnabled(true);
+            fontSizeSelector.setEnabled(true);
+            fontBold.setEnabled(true);
+            fontItalic.setEnabled(true);
             selectedFont = v.getFont();
-            selectFontButton.setText(v.getFont().toString());
+            fontSelector.setSelectedItem(selectedFont.getFamily(Locale.ROOT));
+            fontItalic.setSelected(selectedFont.isItalic());
+            fontBold.setSelected(selectedFont.isBold());
+            fontSizeSelector.setSelectedItem(selectedFont.getSize());
         }
 
         if (v.getForeground() == null) {
@@ -190,18 +240,6 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
         example.setBackground(ts.getBackground());
     }
 
-    private void trackEnabling(final JCheckBox master, final JButton slave) {
-        class Tracker implements ChangeListener {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                slave.setEnabled(master.isSelected());
-                updateExample();
-            }
-        }
-
-        master.addChangeListener(new Tracker());
-    }
-
     private static JPanel createColorPreview(JPanel previewPane, JButton selectorButton) {
         JPanel colorSelector = new JPanel(new BorderLayout(5, 5));
 
@@ -214,10 +252,91 @@ public class TextStyleEditor extends AComplexEditor<TextStyle> {
     }
 
     private JPanel createFontSelector() {
-        JPanel fontSelector = new JPanel(new BorderLayout(5, 5));
+        JPanel fontSelectorPane = new JPanel(new BorderLayout());
+        fontSelectorPane.add(fontSelector, BorderLayout.WEST);
+        fontSelectorPane.add(fontSizeSelector, BorderLayout.CENTER);
+        fontSelectorPane.add(WindowsUtils.createRow(fontBold, fontItalic), BorderLayout.EAST);
 
-        fontSelector.add(new JLabel("Here will be font"));
+        fontSizeSelector.setEditable(true);
+        fontSizeSelector.setEditor(new FontSizeEditor());
 
-        return fontSelector;
+        ActionListener fontChanged = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fontChanged();
+            }
+        };
+        fontSelector.addActionListener(fontChanged);
+        fontSizeSelector.addActionListener(fontChanged);
+        fontBold.addActionListener(fontChanged);
+        fontItalic.addActionListener(fontChanged);
+
+        return fontSelectorPane;
+    }
+
+    private void fontChanged() {
+        int style = Font.PLAIN;
+        if (fontBold.isSelected()) {
+            style |= Font.BOLD;
+        }
+        if (fontItalic.isSelected()) {
+            style |= Font.ITALIC;
+        }
+
+        Integer size = fontSizeModel.getSelectedItem();
+
+        int plainSize = size == null ? 10 : size;
+
+        String fontName = fontModel.getSelectedItem();
+
+        if (fontName != null) {
+            selectedFont = new Font(fontName, style, plainSize);
+            updateExample();
+        }
+    }
+
+    private class FontSizeEditor implements ComboBoxEditor {
+        private final JTextField editor;
+
+        private FontSizeEditor() {
+            NumberFormat instance = NumberFormat.getIntegerInstance(Locale.ROOT);
+            editor = new JFormattedTextField(instance) {
+                public void setBorder(Border b) {
+                    if (!(b instanceof UIResource)) {
+                        super.setBorder(b);
+                    }
+                }
+            };
+            editor.setBorder(new EmptyBorder(0, 3, 0, 3));
+        }
+
+        @Override
+        public Component getEditorComponent() {
+            return editor;
+        }
+
+        @Override
+        public void setItem(Object anObject) {
+            editor.setText(String.valueOf(anObject));
+        }
+
+        @Override
+        public Object getItem() {
+            return Integer.valueOf(editor.getText());
+        }
+
+        @Override
+        public void selectAll() {
+            editor.selectAll();
+            editor.requestFocus();
+        }
+
+        public void addActionListener(ActionListener l) {
+            editor.addActionListener(l);
+        }
+
+        public void removeActionListener(ActionListener l) {
+            editor.removeActionListener(l);
+        }
     }
 }
