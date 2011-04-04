@@ -151,18 +151,14 @@ public class ForumsListView extends AView {
         updateButtonsState();
 
         add(toolBar, BorderLayout.NORTH);
+
+        new ForumLoader().execute();
     }
 
     private void updateButtonsState() {
         filled_only.setSelected(forumsRowFilter.is(ForumFilterState.NotEmpty));
         subscribed_only.setSelected(forumsRowFilter.is(ForumFilterState.Subscribed));
         unread_only.setSelected(forumsRowFilter.is(ForumFilterState.Unread));
-    }
-
-    public void applySettings() {
-        super.applySettings();
-
-        new ForumLoader().execute();
     }
 
     @Override

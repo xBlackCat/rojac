@@ -11,7 +11,7 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-public interface IView extends IConfigurable, IDataHandler {
+public interface IView extends IDataHandler {
     /**
      * Returns a component represented the view.
      *
@@ -35,4 +35,8 @@ public interface IView extends IConfigurable, IDataHandler {
      * @param state correspond view
      */
     void setState(IViewState state);
+
+    void addStateChangeListener(IStateListener l);
+
+    void removeStateChangeListener(IStateListener l);
 }

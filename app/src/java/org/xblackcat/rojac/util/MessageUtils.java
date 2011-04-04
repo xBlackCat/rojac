@@ -236,6 +236,7 @@ public final class MessageUtils {
     public static void markMessageRead(ViewId id, MessageData data, long delay) {
         if (delay < 0) {
             // Negative value means "disable"
+            return;
         }
 
         MessageReadFlagSetter target = new MessageReadFlagSetter(true, data);

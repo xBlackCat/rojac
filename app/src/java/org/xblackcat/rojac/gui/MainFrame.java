@@ -317,9 +317,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     @Override
     public void applySettings() {
-        forumsListView.applySettings();
-        favoritesView.applySettings();
-
         if (ROJAC_MAIN_FRAME_POSITION.isSet()) {
             setLocation(ROJAC_MAIN_FRAME_POSITION.get());
         }
@@ -335,9 +332,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     @Override
     public void storeSettings() {
-        forumsListView.storeSettings();
-        favoritesView.storeSettings();
-
         storeWindowState();
 
         File file = RojacUtils.getLayoutFile();
