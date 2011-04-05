@@ -17,4 +17,20 @@ public final class ThreadState implements IViewState {
     public int openedMessageId() {
         return openedMessageId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ThreadState that = (ThreadState) o;
+
+        return openedMessageId == that.openedMessageId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return openedMessageId;
+    }
 }
