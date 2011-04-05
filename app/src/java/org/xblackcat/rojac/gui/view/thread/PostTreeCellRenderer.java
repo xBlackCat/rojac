@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.PostIcon;
 import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.model.ReadStatus;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
@@ -10,8 +11,8 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class PostTreeCellRenderer extends DefaultTreeCellRenderer {
     private final IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
 
@@ -21,31 +22,20 @@ class PostTreeCellRenderer extends DefaultTreeCellRenderer {
 
         Post post = (Post) value;
         int style;
-        PostIcon icon;
         switch (post.isRead()) {
             default:
             case Read:
                 style = Font.PLAIN;
-                icon = PostIcon.Read;
                 break;
             case ReadPartially:
                 style = Font.PLAIN;
-                icon = PostIcon.ReadPartially;
                 break;
             case Unread:
                 style = Font.BOLD;
-                icon = PostIcon.Unread;
                 break;
         }
 
-        if (post.getMessageData().getUserId() == Property.RSDN_USER_ID.get()) {
-            // Own message - own icon.
-            icon = PostIcon.OwnPost;
-
-            if (post.getRepliesAmount() > 0) {
-                icon = PostIcon.HasResponse;
-            }
-        }
+        PostIcon icon = getPostIcon(post);
 
         Font font = getFont().deriveFont(style);
         setFont(font);
@@ -55,5 +45,36 @@ class PostTreeCellRenderer extends DefaultTreeCellRenderer {
         setText(post.getMessageData().getSubject());
 
         return this;
+    }
+
+    private static PostIcon getPostIcon(Post p) {
+        boolean isOwnPost = p.getMessageData().getUserId() == Property.RSDN_USER_ID.get();
+        boolean isResponse = p.getParent() != null && p.getParent().getMessageData().getUserId() == Property.RSDN_USER_ID.get();
+        boolean hasResponse = p.getRepliesAmount() > 0;
+
+        ReadStatus s = p.isRead();
+
+        if (isOwnPost) {
+            if (hasResponse) {
+                return s == ReadStatus.Unread ? PostIcon.HasResponseUnread : PostIcon.HasResponse;
+            } else {
+                return s == ReadStatus.Unread ? PostIcon.OwnPostUnread : PostIcon.OwnPost;
+            }
+        }
+
+        if (isResponse) {
+            return s == ReadStatus.Unread ? PostIcon.UnreadResponse : PostIcon.Response;
+        }
+
+        switch (s) {
+            case Read:
+                return PostIcon.Read;
+            case ReadPartially:
+                return PostIcon.ReadPartially;
+            case Unread:
+                return PostIcon.Unread;
+        }
+
+        return PostIcon.Unread;
     }
 }
