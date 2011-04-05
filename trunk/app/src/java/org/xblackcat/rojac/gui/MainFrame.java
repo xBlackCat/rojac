@@ -67,7 +67,21 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             return true;
         }
     };
+
+    protected final NavigationHistoryTracker history = new NavigationHistoryTracker();
+    protected final IStateListener navigationListener = new IStateListener() {
+        @Override
+        public void stateChanged(IView source, IViewState newState) {
+            history.addHistoryItem(new NavigationHistoryItem(source.getId(), newState));
+
+            // Update navigation buttons.
+            updateNavigationButtons();
+        }
+    };
+
     private RootWindow rootWindow;
+    private JButton navigationBackButton;
+    private JButton navigationForwardButton;
 
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
@@ -200,12 +214,18 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         JPanel threadsPane = new JPanel(new BorderLayout(0, 0));
 
         // Setup toolbar
+        navigationBackButton = WindowsUtils.registerImageButton(threadsPane, "nav_back", new GoBackAction());
+        navigationForwardButton = WindowsUtils.registerImageButton(threadsPane, "nav_forward", new GoForwardAction());
+
         JButton updateButton = WindowsUtils.registerImageButton(threadsPane, "update", new SynchronizationAction());
         JButton loadMessageButton = WindowsUtils.registerImageButton(threadsPane, "extramessage", new LoadExtraMessagesAction());
         JButton settingsButton = WindowsUtils.registerImageButton(threadsPane, "settings", new SettingsAction());
         JButton aboutButton = WindowsUtils.registerImageButton(threadsPane, "about", new AboutAction());
 
         JToolBar toolBar = WindowsUtils.createToolBar(
+                navigationBackButton,
+                navigationForwardButton,
+                null,
                 updateButton,
                 loadMessageButton,
                 null,
@@ -231,10 +251,12 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         view.addListener(new CloseViewTabListener());
 
+        updateNavigationButtons();
+
         return view;
     }
 
-    private static View createView(Messages title, IView comp) {
+    private View createView(Messages title, IView comp) {
         final View view = new View(
                 title.get(),
                 null,
@@ -255,6 +277,8 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 null,
                 itemView.getComponent()
         );
+
+        itemView.addStateChangeListener(navigationListener);
 
         ShortCutUtils.mergeInputMaps(view, itemView.getComponent());
 
@@ -443,6 +467,19 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         new MessageNavigator(messageId).execute();
     }
 
+    private void goToView(ViewId id, IViewState state) {
+        View v = openTab(id);
+
+        if (state != null) {
+            ((IView) v.getComponent()).setState(state);
+        }
+    }
+
+    private void updateNavigationButtons() {
+        navigationBackButton.setEnabled(history.canGoBack());
+        navigationForwardButton.setEnabled(history.canGoForward());
+    }
+
     private class ThreadViewSerializer implements ViewSerializer {
         @Override
         public void writeView(View view, ObjectOutputStream out) throws IOException {
@@ -453,7 +490,10 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         public View readView(ObjectInputStream in) throws IOException {
             try {
                 View view = ViewHelper.initializeView(in, MainFrame.this);
-                ViewId id = ((IView) view.getComponent()).getId();
+                IView v = (IView) view.getComponent();
+                v.addStateChangeListener(navigationListener);
+
+                ViewId id = v.getId();
                 openedViews.put(id, view);
                 return view;
             } catch (ClassNotFoundException e) {
@@ -548,6 +588,38 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         public void actionPerformed(ActionEvent e) {
             SynchronizationUtils.startSynchronization(MainFrame.this);
+        }
+    }
+
+    private class GoBackAction extends AButtonAction {
+        private GoBackAction() {
+            super(Messages.MainFrame_Button_GoBack, ShortCut.GoBack);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (history.canGoBack()) {
+                NavigationHistoryItem i = history.goBack();
+
+                goToView(i.getViewId(), i.getState());
+                updateNavigationButtons();
+            }
+        }
+    }
+
+    private class GoForwardAction extends AButtonAction {
+        private GoForwardAction() {
+            super(Messages.MainFrame_Button_GoForward, ShortCut.GoForward);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (history.canGoForward()) {
+                NavigationHistoryItem i = history.goForward();
+
+                goToView(i.getViewId(), i.getState());
+                updateNavigationButtons();
+            }
         }
     }
 }

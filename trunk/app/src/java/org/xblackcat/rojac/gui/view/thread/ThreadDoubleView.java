@@ -1,9 +1,6 @@
 package org.xblackcat.rojac.gui.view.thread;
 
-import org.xblackcat.rojac.gui.IActionListener;
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.IItemView;
-import org.xblackcat.rojac.gui.IViewState;
+import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.ComplexState;
 import org.xblackcat.rojac.gui.view.ThreadState;
@@ -59,6 +56,13 @@ public class ThreadDoubleView extends AnItemView {
             }
 
             public void itemUpdated(Integer forumId, Integer messageId) {
+            }
+        });
+
+        masterView.addStateChangeListener(new IStateListener() {
+            @Override
+            public void stateChanged(IView source, IViewState newState) {
+                fireViewStateChanged();
             }
         });
 

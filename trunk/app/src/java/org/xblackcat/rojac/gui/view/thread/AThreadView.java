@@ -507,6 +507,7 @@ public abstract class AThreadView extends AnItemView {
             selectItem(mi);
 
             fireMessageGotFocus(mi.getForumId(), mi.getMessageId());
+            fireViewStateChanged();
         }
     }
 
