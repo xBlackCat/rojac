@@ -1,7 +1,6 @@
-package org.xblackcat.rojac.gui.component.factory;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.service.options.IValueChecker;
 import org.xblackcat.rojac.service.options.Password;
@@ -18,7 +17,7 @@ import java.util.Map;
  * @author xBlackCat
  */
 
-public final class ComponentFactory {
+final class ComponentFactory {
     private static final Map<Class, ListCellRenderer> LIST_RENDERERS = new HashMap<Class, ListCellRenderer>();
     private static final Map<Class, TreeCellRenderer> TREE_RENDERERS = new HashMap<Class, TreeCellRenderer>();
     private static final DefaultTreeCellRenderer DEFAULT_TREE_CELL_RENDERER = new DefaultTreeCellRenderer();

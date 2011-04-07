@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.dialogs;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.xblackcat.rojac.service.options.Property;
 

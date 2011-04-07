@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.dialogs;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.xblackcat.rojac.service.options.IValueChecker;
@@ -10,7 +10,7 @@ import javax.swing.tree.TreePath;
 /**
  * @author xBlackCat
  */
-public class PropertiesModel implements TreeModel {
+class PropertiesModel implements TreeModel {
     private final PropertyNode root;
     private final TreeModelSupport modelSupport = new TreeModelSupport(this);
 

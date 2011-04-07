@@ -2,7 +2,7 @@ package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.xblackcat.rojac.gui.dialogs.PropertyNode;
+import org.xblackcat.rojac.gui.dialog.options.PropertyNode;
 import org.xblackcat.rojac.service.options.Property;
 
 import java.lang.reflect.Field;
@@ -13,7 +13,10 @@ import java.util.Iterator;
  * @author xBlackCat
  */
 
-public class PropertyUtils {
+public final class PropertyUtils {
+    private PropertyUtils() {
+    }
+
     public static <T extends Enum<T>> T toEnum(Class<T> enumClass, String val) {
         if (val != null) {
             return Enum.valueOf(enumClass, val);

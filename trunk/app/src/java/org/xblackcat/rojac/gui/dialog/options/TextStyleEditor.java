@@ -1,8 +1,7 @@
-package org.xblackcat.rojac.gui.component.factory;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.xblackcat.rojac.gui.theme.TextStyle;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -17,7 +16,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -26,7 +24,7 @@ import java.util.Locale;
  * @author xBlackCat
  */
 
-public class TextStyleEditor extends AComplexEditor<TextStyle> {
+class TextStyleEditor extends AComplexEditor<TextStyle> {
     private final JCheckBox overrideFont = new JCheckBox("Override font");
     private final JCheckBox overrideForeground = new JCheckBox("Override foreground");
     private final JCheckBox overrideBackground = new JCheckBox("Override background");

@@ -1,6 +1,5 @@
-package org.xblackcat.rojac.gui.component.factory;
+package org.xblackcat.rojac.gui.dialog.options;
 
-import org.xblackcat.rojac.gui.dialogs.PropertyNode;
 import org.xblackcat.rojac.service.options.IValueChecker;
 import org.xblackcat.rojac.service.options.Property;
 

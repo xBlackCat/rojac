@@ -1,6 +1,4 @@
-package org.xblackcat.rojac.gui.component.factory;
-
-import org.xblackcat.rojac.gui.dialogs.PropertyNode;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -16,7 +14,7 @@ import java.util.EventObject;
 /**
  * @author xBlackCat
  */
-public class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, TreeCellEditor {
+class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, TreeCellEditor {
 
 //
 //  Instance Variables

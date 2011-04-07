@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.janus.commands;
 
-import org.xblackcat.rojac.gui.dialogs.LoginDialog;
+import org.xblackcat.rojac.gui.dialog.LoginDialog;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.datahandler.IPacket;
