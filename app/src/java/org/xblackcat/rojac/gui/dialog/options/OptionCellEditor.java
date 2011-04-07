@@ -1,7 +1,4 @@
-package org.xblackcat.rojac.gui.dialogs;
-
-import org.xblackcat.rojac.gui.component.factory.ComponentFactory;
-import org.xblackcat.rojac.gui.component.factory.PropertyCellEditor;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;

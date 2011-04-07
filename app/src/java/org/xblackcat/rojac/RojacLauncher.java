@@ -3,7 +3,7 @@ package org.xblackcat.rojac;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
-import org.xblackcat.rojac.gui.dialogs.ProgressTrackerDialog;
+import org.xblackcat.rojac.gui.dialog.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.tray.RojacTray;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;

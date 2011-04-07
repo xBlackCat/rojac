@@ -1,6 +1,4 @@
-package org.xblackcat.rojac.gui.dialogs;
-
-import org.xblackcat.rojac.gui.component.factory.ComponentFactory;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;

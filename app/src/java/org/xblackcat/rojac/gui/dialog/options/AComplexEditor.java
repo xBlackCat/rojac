@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.component.factory;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.xblackcat.rojac.gui.component.JLightPanel;
 

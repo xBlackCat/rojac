@@ -1,9 +1,10 @@
-package org.xblackcat.rojac.gui.dialogs;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.dialog.LoginDialog;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.PropertyUtils;

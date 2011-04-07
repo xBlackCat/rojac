@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.dialogs;
+package org.xblackcat.rojac.gui.dialog;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;

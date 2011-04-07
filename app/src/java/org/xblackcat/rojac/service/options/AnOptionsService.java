@@ -3,8 +3,8 @@ package org.xblackcat.rojac.service.options;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.service.options.converter.IConverter;
 import org.xblackcat.rojac.util.PropertyUtils;
+import org.xblackcat.rojac.service.options.converter.IConverter;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;

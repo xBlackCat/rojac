@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.dialogs;
+package org.xblackcat.rojac.gui.dialog;
 
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Messages;

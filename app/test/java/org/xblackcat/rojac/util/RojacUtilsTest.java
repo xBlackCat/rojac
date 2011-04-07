@@ -3,7 +3,7 @@ package org.xblackcat.rojac.util;
 import junit.framework.TestCase;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.NewRating;
-import org.xblackcat.rojac.gui.dialogs.PropertyNode;
+import org.xblackcat.rojac.gui.dialog.options.PropertyNode;
 import org.xblackcat.rojac.service.options.Property;
 import ru.rsdn.Janus.PostRatingInfo;
 
