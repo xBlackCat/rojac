@@ -59,7 +59,9 @@ public class SortedForumModelControl extends AThreadsModelControl {
         assert RojacUtils.checkThread(true, getClass());
 
         TIntHashSet filledThreads = new TIntHashSet();
-        for (Post post : model.getRoot().getChildren()) {
+        Post root = model.getRoot();
+
+        for (Post post : root.getChildren()) {
             if (post.getThreadRoot().isFilled()) {
                 filledThreads.add(post.getThreadRoot().getMessageId());
             }
@@ -70,7 +72,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
 
         // Reload filled threads.
         for (int threadId : filledThreads.toArray()) {
-            Post post = model.getRoot().getMessageById(threadId);
+            Post post = root.getMessageById(threadId);
             if (post != null) {
                 // Update thread children
                 Thread t = post.getThreadRoot();
@@ -87,7 +89,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
         }
 
         // Reload forum threads list.
-        new ThreadsLoader(model.getRoot().getForumId(), (ForumRoot) model.getRoot(), model).execute();
+        new ThreadsLoader(root.getForumId(), (ForumRoot) root, model).execute();
     }
 
     @Override
