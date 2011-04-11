@@ -7,7 +7,6 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.IInternationazable;
 import org.xblackcat.rojac.gui.IViewState;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
@@ -49,7 +48,7 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
  * @author xBlackCat
  */
 
-public class MessageView extends AnItemView implements IInternationazable {
+public class MessageView extends AnItemView {
     private static final Log log = LogFactory.getLog(MessageView.class);
     public static final String MESSAGE_VIEWED_FLAG = "MessageViewed";
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();
@@ -79,7 +78,9 @@ public class MessageView extends AnItemView implements IInternationazable {
 
         initialize();
 
-        loadLabels();
+        answer.setToolTipText(Messages.Button_Reply_ToolTip.get());
+        userLabel.setText(Messages.Panel_Message_Label_User.get());
+        dateLabel.setText(Messages.Panel_Message_Label_Date.get());
     }
 
     private void initialize() {

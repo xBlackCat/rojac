@@ -127,6 +127,18 @@ public enum Messages {
     ErrorDialog_MessageNotFound_Title,
     Message_Response_Header,
 
+    // Extended mark messages dialgo related
+    Dialog_ExtMark_Title,
+    Dialog_ExtMark_TopLine,
+    Dialog_ExtMark_As,
+    Dialog_ExtMark_State_Read,
+    Dialog_ExtMark_State_Unread,
+    Dialog_ExtMark_DateDirection_Before,
+    Dialog_ExtMark_DateDirection_After,
+    Dialog_ExtMark_Scope_All,
+    Dialog_ExtMark_Scope_Forum,
+    Dialog_ExtMark_Scope_Thread,
+
     // Updater dialog mesages
     /**
      * Has one int parameter last version number.
