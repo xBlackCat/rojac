@@ -16,6 +16,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,13 +30,13 @@ import java.util.Locale;
  */
 
 public class ExtendedMarkDialog extends JDialog {
-    private static final DescribableListRenderer DESCRIBABLE_LIST_RENDERER = new DescribableListRenderer();
     private final JDateChooser chooser = new JDateChooser(new JSpinnerDateEditor());
     private boolean selected = false;
 
     private NewState readStatus;
     private DateDirection dateDirection;
     private Scope scope;
+    private Scope maxScope;
     private Date selectedDate = null;
 
     private final EnumComboBoxModel<DateDirection> dateRangeModel = new EnumComboBoxModel<DateDirection>(DateDirection.class);
@@ -48,11 +51,46 @@ public class ExtendedMarkDialog extends JDialog {
     }
 
     private void initialize() {
+        JComboBox scopeSelector = new JComboBox(scopeModel);
+        JComboBox dateRangeSelector = new JComboBox(dateRangeModel);
+        JComboBox readStateSelector = new JComboBox(readStateModel);
+
+        scopeSelector.setRenderer(new DescribableListRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                if (maxScope != null) {
+                    Scope s = (Scope) value;
+                    setEnabled(s.ordinal() <= maxScope.ordinal());
+                }
+
+                return this;
+            }
+        });
+        dateRangeSelector.setRenderer(new DescribableListRenderer());
+        readStateSelector.setRenderer(new DescribableListRenderer());
+
+        scopeSelector.addActionListener(new ActionListener() {
+            private Scope curr = scopeModel.getSelectedItem();
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Scope s = scopeModel.getSelectedItem();
+                if (maxScope != null && s.ordinal() > maxScope.ordinal()) {
+                    scopeModel.setSelectedItem(curr);
+                } else {
+                    curr = s;
+                }
+            }
+        });
+
         JPanel p = new JPanel(new BorderLayout(5, 5));
 
         final JPanel topMessage = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topMessage.add(new JLabel(Messages.Dialog_ExtMark_TopLine.get()));
-        topMessage.add(makeEnumComboBox(scopeModel));
+
+        topMessage.add(scopeSelector);
 
         p.add(topMessage, BorderLayout.NORTH);
         JPanel center = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -73,11 +111,12 @@ public class ExtendedMarkDialog extends JDialog {
         JSpinner spinner = new JSpinner(timeModel);
         spinner.setEditor(new JSpinner.DateEditor(spinner, timePattern));
 
-        center.add(makeEnumComboBox(dateRangeModel));
+        center.add(dateRangeSelector);
         center.add(spinner);
         center.add(chooser);
         center.add(new JLabel(Messages.Dialog_ExtMark_As.get()));
-        center.add(makeEnumComboBox(readStateModel));
+
+        center.add(readStateSelector);
 
         p.add(WindowsUtils.createButtonsBar(
                 this,
@@ -113,13 +152,6 @@ public class ExtendedMarkDialog extends JDialog {
         p.setBorder(new EmptyBorder(5, 5, 5, 5));
     }
 
-    private static JComboBox makeEnumComboBox(ComboBoxModel model) {
-        JComboBox cb = new JComboBox(model);
-        cb.setRenderer(DESCRIBABLE_LIST_RENDERER);
-
-        return cb;
-    }
-
     /**
      * @param messageDate
      * @param scope
@@ -131,6 +163,7 @@ public class ExtendedMarkDialog extends JDialog {
             chooser.setDate(new Date(messageDate));
         }
         scopeModel.setSelectedItem(scope);
+        maxScope = scope;
 
         pack();
         WindowsUtils.center(this, getOwner());
@@ -167,7 +200,7 @@ public class ExtendedMarkDialog extends JDialog {
 
         ExtendedMarkDialog d = new ExtendedMarkDialog(null);
         WindowsUtils.centerOnScreen(d);
-        d.selectDate(null, Scope.Thread);
+        d.selectDate(null, Scope.Forum);
 
         System.exit(0);
     }
