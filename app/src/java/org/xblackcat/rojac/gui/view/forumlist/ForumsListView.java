@@ -180,9 +180,9 @@ public class ForumsListView extends AView {
                         forumsModel.setRead(p.isRead(), p.getForumId());
                     }
                 },
-                new IPacketProcessor<ForumsLoadedPacket>() {
+                new IPacketProcessor<ForumsUpdated>() {
                     @Override
-                    public void process(ForumsLoadedPacket p) {
+                    public void process(ForumsUpdated p) {
                         new ForumLoader().execute();
                     }
                 },

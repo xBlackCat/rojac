@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.component.ACancelAction;
+import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.ClipboardUtils;
 import org.xblackcat.rojac.util.LinkUtils;
@@ -49,7 +51,7 @@ public class LoadMessageDialog extends JDialog {
         add(WindowsUtils.createButtonsBar(
                 this,
                 Messages.Button_Ok,
-                new AButtonAction(Messages.Button_Ok) {
+                new AnOkAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String id = messageIdText.getText();
@@ -75,7 +77,7 @@ public class LoadMessageDialog extends JDialog {
                         setVisible(false);
                     }
                 },
-                new AButtonAction(Messages.Button_Cancel) {
+                new ACancelAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         messageId = null;

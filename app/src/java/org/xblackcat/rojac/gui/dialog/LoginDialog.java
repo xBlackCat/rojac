@@ -3,6 +3,8 @@ package org.xblackcat.rojac.gui.dialog;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.component.ACancelAction;
+import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.UserHelper;
@@ -47,7 +49,7 @@ public class LoginDialog extends JDialog {
                 this,
                 Messages.Button_Ok,
                 new CheckCredentialsAction(),
-                new AButtonAction(Messages.Button_Cancel) {
+                new ACancelAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         canceled = true;
@@ -100,11 +102,7 @@ public class LoginDialog extends JDialog {
         return canceled;
     }
 
-    private class CheckCredentialsAction extends AButtonAction {
-        public CheckCredentialsAction() {
-            super(Messages.Button_Ok);
-        }
-
+    private class CheckCredentialsAction extends AnOkAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (StringUtils.isEmpty(fieldLogin.getText())) {

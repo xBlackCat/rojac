@@ -6,7 +6,7 @@ import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.ForumsLoadedPacket;
+import org.xblackcat.rojac.service.datahandler.ForumsUpdated;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
@@ -65,6 +65,6 @@ class GetForumListRequest extends ARequest<IPacket> {
             throw new RsdnProcessorException("Can not update forum list", e);
         }
 
-        handler.process(new ForumsLoadedPacket());
+        handler.process(new ForumsUpdated());
     }
 }
