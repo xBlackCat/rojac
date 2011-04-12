@@ -6,6 +6,8 @@ import com.toedter.calendar.JSpinnerDateEditor;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.component.ACancelAction;
+import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
@@ -17,8 +19,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -122,7 +122,7 @@ public class ExtendedMarkDialog extends JDialog {
                 this,
                 Messages.Button_Ok,
                 FlowLayout.RIGHT,
-                new AButtonAction(Messages.Button_Ok) {
+                new AnOkAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         selected = true;
@@ -140,7 +140,7 @@ public class ExtendedMarkDialog extends JDialog {
                         setVisible(false);
                     }
                 },
-                new AButtonAction(Messages.Button_Cancel) {
+                new ACancelAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         setVisible(false);

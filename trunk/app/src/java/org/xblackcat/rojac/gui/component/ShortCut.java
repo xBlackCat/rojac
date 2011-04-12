@@ -22,6 +22,7 @@ public enum ShortCut {
     About(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F1, 0),
     GoBack(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK),
     GoForward(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK),
+    ForumManage(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F, KeyEvent.ALT_DOWN_MASK),
     // Forum list view related
     ShowOnlyNotEmpty(KeyEvent.VK_1, KeyEvent.CTRL_DOWN_MASK),
     ShowOnlySubscribed(KeyEvent.VK_2, KeyEvent.CTRL_DOWN_MASK),

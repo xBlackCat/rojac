@@ -46,6 +46,7 @@ public enum Messages {
     MainFrame_Button_About,
     MainFrame_Button_GoBack,
     MainFrame_Button_GoForward,
+    MainFrame_Button_ForumManage,
 
     // Forum list view
     View_Forums_Title,

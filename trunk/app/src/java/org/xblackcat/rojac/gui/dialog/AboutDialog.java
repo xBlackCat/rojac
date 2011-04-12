@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.dialog;
 
-import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
@@ -23,7 +23,7 @@ public class AboutDialog extends JDialog {
     }
 
     private void initializeLayout() {
-        Component buttonsBar = WindowsUtils.createButtonsBar(this, Messages.Button_Ok, new AButtonAction(Messages.Button_Ok) {
+        Component buttonsBar = WindowsUtils.createButtonsBar(this, Messages.Button_Ok, new AnOkAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();

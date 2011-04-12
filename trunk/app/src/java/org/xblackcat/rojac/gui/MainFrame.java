@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
+import org.xblackcat.rojac.gui.dialog.subscribtion.SubscribtionDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.gui.view.ViewId;
@@ -20,6 +21,8 @@ import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.ForumsUpdated;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.util.*;
@@ -219,6 +222,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         JButton updateButton = WindowsUtils.registerImageButton(threadsPane, "update", new SynchronizationAction());
         JButton loadMessageButton = WindowsUtils.registerImageButton(threadsPane, "extramessage", new LoadExtraMessagesAction());
+        JButton subscribeButton = WindowsUtils.registerImageButton(threadsPane, "forum_manage", new SubscribeForum());
         JButton settingsButton = WindowsUtils.registerImageButton(threadsPane, "settings", new SettingsAction());
         JButton aboutButton = WindowsUtils.registerImageButton(threadsPane, "about", new AboutAction());
 
@@ -229,6 +233,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 updateButton,
                 loadMessageButton,
                 null,
+                subscribeButton,
                 settingsButton,
                 null,
                 aboutButton
@@ -620,6 +625,22 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 goToView(i.getViewId(), i.getState());
                 updateNavigationButtons();
             }
+        }
+    }
+
+    private class SubscribeForum extends AButtonAction {
+        public SubscribeForum() {
+            super(Messages.MainFrame_Button_ForumManage, ShortCut.ForumManage);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SubscribtionDialog dlg = new SubscribtionDialog(MainFrame.this);
+
+            WindowsUtils.center(dlg, MainFrame.this);
+            dlg.setVisible(true);
+
+            ServiceFactory.getInstance().getDataDispatcher().processPacket(new ForumsUpdated());
         }
     }
 }

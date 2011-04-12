@@ -4,6 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.component.ACancelAction;
+import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.dialog.LoginDialog;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
@@ -68,7 +70,7 @@ public class OptionsDialog extends JDialog {
                         ld.showLoginDialog();
                     }
                 },
-                new AButtonAction(Messages.Button_Ok) {
+                new AnOkAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         applySettings();
@@ -82,7 +84,7 @@ public class OptionsDialog extends JDialog {
                         applySettings();
                     }
                 },
-                new AButtonAction(Messages.Button_Cancel) {
+                new ACancelAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         setVisible(false);
@@ -127,7 +129,6 @@ public class OptionsDialog extends JDialog {
      * Builds options dialog model from the list of properties.
      *
      * @return constructed and filled model of properties for property tree.
-     *
      * @throws RojacException is thrown if tree can not be constructed.
      */
     private PropertiesModel createModel() throws RojacException {
