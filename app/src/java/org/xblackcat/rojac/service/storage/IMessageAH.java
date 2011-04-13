@@ -78,8 +78,6 @@ public interface IMessageAH extends AH {
     /**
      * Loads messages of the specified thread.
      *
-     *
-     *
      * @param threadId
      * @param forumId
      *
@@ -92,8 +90,6 @@ public interface IMessageAH extends AH {
     /**
      * Returns messages data for specified forum id.
      *
-     *
-     *
      * @param forumId target forum id
      *
      * @return array of topic messages data.
@@ -104,8 +100,6 @@ public interface IMessageAH extends AH {
 
     /**
      * Returns all a user posts.
-     *
-     *
      *
      * @param userId user to search.
      *
@@ -118,26 +112,80 @@ public interface IMessageAH extends AH {
     /**
      * Returns all replies on the user post
      *
-     *
      * @param userId
+     *
      * @return
+     *
      * @throws StorageException
      */
     Collection<MessageData> getUserReplies(int userId) throws StorageException;
 
-    ThreadStatData getThreadStatByThreadId(int forumId) throws StorageException;
+    /**
+     * Loads a brief thread statistic (amount of replies, non-read messages, etc.)
+     *
+     * @param threadId target threads id
+     *
+     * @return brief thread statistic.
+     *
+     * @throws StorageException
+     * @see ThreadStatData
+     */
+    ThreadStatData getThreadStatByThreadId(int threadId) throws StorageException;
 
+    /**
+     * Returns number of replies in specified thread (total/non-read)
+     *
+     * @param threadId target thread id.
+     *
+     * @return brief stat data.
+     *
+     * @throws StorageException
+     */
     FavoriteStatData getReplaysInThread(int threadId) throws StorageException;
 
     MessageData getMessageData(int messageId) throws StorageException;
 
     int getUnreadMessages() throws StorageException;
 
+    /**
+     * Returns number of replies to specified user.
+     *
+     * @param userId target user id.
+     *
+     * @return brief stat data.
+     *
+     * @throws StorageException
+     */
     FavoriteStatData getUserRepliesStat(int userId) throws StorageException;
 
+    /**
+     * Returns number of posts of specified user.
+     *
+     * @param userId target user id.
+     *
+     * @return brief stat data.
+     *
+     * @throws StorageException
+     */
     FavoriteStatData getUserPostsStat(int userId) throws StorageException;
 
-    void updateThreadReadFlag(int messageId, boolean read) throws StorageException;
+    /**
+     * Mark the whole thread as read/unread.
+     *
+     * @param topicId target topic id.
+     * @param read    new read state.
+     *
+     * @throws StorageException
+     */
+    void updateThreadReadFlag(int topicId, boolean read) throws StorageException;
 
+    /**
+     * Updates specified message rating cache. See {@linkplain org.xblackcat.rojac.data.RatingCache} for details.
+     *
+     * @param id target message id
+     * @param ratingsCache new cached ratings string.
+     *
+     * @throws StorageException
+     */
     void updateMessageRatingCache(int id, String ratingsCache) throws StorageException;
 }
