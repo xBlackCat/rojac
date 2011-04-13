@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 */
 public enum Header {
     ID(PostId.class, Messages.Panel_Thread_Header_Id, 70),
-    SUBJECT(Post.class, Messages.Panel_Thread_Header_Subject, 0),
+    SUBJECT(Post.class, Messages.Panel_Thread_Header_Subject, 600),
     USER(PostUser.class, Messages.Panel_Thread_Header_User, 100),
     REPLIES(PostReplies.class, Messages.Panel_Thread_Header_Replies, 30),
     RATING(PostRating.class, Messages.Panel_Thread_Header_Rating, 70),

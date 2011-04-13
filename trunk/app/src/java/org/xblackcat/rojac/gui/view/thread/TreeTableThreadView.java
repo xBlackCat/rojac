@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.APostProxy;
 import org.xblackcat.rojac.gui.view.model.Header;
@@ -10,6 +11,8 @@ import org.xblackcat.rojac.gui.view.model.IModelControl;
 import org.xblackcat.rojac.gui.view.model.Post;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -51,13 +54,14 @@ public class TreeTableThreadView extends AThreadView {
         threads.addTreeExpansionListener(new ThreadExpander());
         threads.addMouseListener(new ItemListener());
 
-        threads.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+        threads.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         for (Header h : Header.values()) {
             TableColumnExt column = new TableColumnExt(h.ordinal());
             if (h.getWidth() > 0) {
                 column.setPreferredWidth(h.getWidth());
                 column.setMaxWidth(h.getWidth() << 2);
                 column.setMinWidth(0);
+                column.setIdentifier(h);
             }
             column.setToolTipText(h.getTitle());
             threads.addColumn(column);
@@ -103,6 +107,41 @@ public class TreeTableThreadView extends AThreadView {
         });
 
         return threads;
+    }
+
+    @Override
+    public TableThreadViewLayout storeLayout() {
+        TableColumnModel cm = threads.getColumnModel();
+
+        TableThreadViewLayout.Column[] columns = new TableThreadViewLayout.Column[Header.values().length];
+        int i = 0;
+
+        for (Header h : Header.values()) {
+            TableColumn c = cm.getColumn(h.ordinal());
+
+            int width = c.getWidth();
+            int columnIndex = cm.getColumnIndex(h);
+
+            columns[i++] = new TableThreadViewLayout.Column(h, columnIndex, width);
+        }
+
+        return new TableThreadViewLayout(super.storeLayout(), columns);
+    }
+
+    @Override
+    public void setupLayout(IViewLayout o) {
+        super.setupLayout(o);
+
+        if (o instanceof TableThreadViewLayout) {
+            TableColumnModel cm = threads.getColumnModel();
+
+            for (TableThreadViewLayout.Column c : ((TableThreadViewLayout) o).getColumns()) {
+                int idx = cm.getColumnIndex(c.getAnchor());
+
+                cm.getColumn(idx).setWidth(c.getWidth());
+                cm.moveColumn(idx, c.getIndex());
+            }
+        }
     }
 
     @SuppressWarnings({"unchecked"})

@@ -182,7 +182,7 @@ public abstract class AThreadView extends AnItemView {
     }
 
     @Override
-    public IViewLayout storeLayout() {
+    public ThreadViewLayout storeLayout() {
         return new ThreadViewLayout(
                 getToolbarPlacement(),
                 toolbar.getOrientation()
