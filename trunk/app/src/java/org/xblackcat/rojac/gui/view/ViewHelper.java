@@ -1,10 +1,7 @@
 package org.xblackcat.rojac.gui.view;
 
 import net.infonode.docking.View;
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.IItemView;
-import org.xblackcat.rojac.gui.IView;
-import org.xblackcat.rojac.gui.IViewState;
+import org.xblackcat.rojac.gui.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,8 +30,11 @@ public final class ViewHelper {
         out.writeObject(id);
         out.writeObject(view.getTitle());
 
+        IViewLayout layout = v.storeLayout();
+
         IViewState stateObject = v.getState();
 
+        out.writeObject(layout);
         out.writeObject(stateObject);
         out.flush();
     }
@@ -56,6 +56,11 @@ public final class ViewHelper {
         IItemView view = makeView(id, appControl);
 
         Object o = in.readObject();
+
+        if (o instanceof IViewLayout) {
+            view.setupLayout((IViewLayout) o);
+            o = in.readObject();
+        }
 
         if (o instanceof IViewState) {
             view.setState((IViewState) o);

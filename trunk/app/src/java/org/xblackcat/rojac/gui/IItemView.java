@@ -33,7 +33,6 @@ public interface IItemView extends IView {
      * elsewise.
      *
      * @param messageId
-     *
      * @return found item or <code>null</code> if item is not exists in the view.
      */
     boolean containsItem(int messageId);

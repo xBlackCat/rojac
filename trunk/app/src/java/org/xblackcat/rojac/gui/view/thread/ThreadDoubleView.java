@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.view.AnItemView;
-import org.xblackcat.rojac.gui.view.ComplexState;
 import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -25,9 +24,9 @@ public class ThreadDoubleView extends AnItemView {
     /**
      * Create combined forum thread view. Contains from master (upper component) and slave (lover component).
      *
-     * @param mv
-     * @param sv
-     * @param verticalSplit
+     * @param mv left/top view (master view)
+     * @param sv right/bottom view (slave view)
+     * @param verticalSplit split orientation (true - vertical, false - horizontal)
      * @param appControl
      */
     public ThreadDoubleView(IItemView mv, IItemView sv, boolean verticalSplit, IAppControl appControl) {
@@ -143,6 +142,21 @@ public class ThreadDoubleView extends AnItemView {
 
         masterView.setState(s.getMasterState());
         slaveView.setState(s.getSlaveState());
+    }
+
+    @Override
+    public void setupLayout(IViewLayout o) {
+        if (o instanceof ComplexLayout) {
+            ComplexLayout l = (ComplexLayout) o;
+
+            masterView.setupLayout(l.getMasterLayout());
+            slaveView.setupLayout(l.getSlaveLayout());
+        }
+    }
+
+    @Override
+    public IViewLayout storeLayout() {
+        return new ComplexLayout(masterView.storeLayout(), slaveView.storeLayout());
     }
 
     @Override
