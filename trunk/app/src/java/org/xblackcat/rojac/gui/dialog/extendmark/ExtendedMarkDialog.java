@@ -191,19 +191,4 @@ public class ExtendedMarkDialog extends JDialog {
     public Scope getScope() {
         return scope;
     }
-
-    public static void main(String[] args) throws UnsupportedLookAndFeelException, RojacException {
-        ServiceFactory.initialize();
-
-        Property.ROJAC_GUI_LOCALE.set(new Locale("ru", "RU"));
-        Property.ROJAC_GUI_LOCALE.setCache(new Locale("ru", "RU"));
-
-        UIUtils.setLookAndFeel(new LiquidLookAndFeel());
-
-        ExtendedMarkDialog d = new ExtendedMarkDialog(null);
-        WindowsUtils.centerOnScreen(d);
-        d.selectDate(null, Scope.Forum);
-
-        System.exit(0);
-    }
 }

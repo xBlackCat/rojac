@@ -158,13 +158,13 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public void updateThreadReadFlag(int messageId, boolean read) throws StorageException {
+    public void updateThreadReadFlag(int topicId, boolean read) throws StorageException {
         helper.update(DataQuery.UPDATE_MESSAGE_READ_FLAG,
                 read,
-                messageId);
+                topicId);
         helper.update(DataQuery.UPDATE_THREAD_READ_FLAG,
                 read,
-                messageId);
+                topicId);
     }
 
     @Override
