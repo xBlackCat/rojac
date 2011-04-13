@@ -46,6 +46,8 @@ public class ExtendedMarkDialog extends JDialog {
     public ExtendedMarkDialog(Window owner) {
         super(owner, ModalityType.DOCUMENT_MODAL);
 
+        setTitle(Messages.Dialog_ExtMark_Title.get());
+
         initialize();
         setResizable(false);
     }
