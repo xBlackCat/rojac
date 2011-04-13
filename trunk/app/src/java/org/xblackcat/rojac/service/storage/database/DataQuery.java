@@ -360,6 +360,90 @@ public enum DataQuery implements IPropertiable {
      */
     UPDATE_FORUM_MESSAGES_READ_FLAG,
     /**
+     * The query for updating the read field of messages before specified date. Set query parameters in following
+     * order:
+     * <p/>
+     * read(boolean), dateline(long)
+     */
+    UPDATE_MESSAGES_READ_FLAG_BEFORE,
+    /**
+     * The query for updating the read field of messages after specified date. Set query parameters in following
+     * order:
+     * <p/>
+     * read(boolean), dateline(long)
+     */
+    UPDATE_MESSAGES_READ_FLAG_AFTER,
+    /**
+     * The query for updating the read field of messages in the specified forum before specified date.
+     * Set query parameters in following order:
+     * <p/>
+     * read(boolean), dateline(long), forum_id(int)
+     */
+    UPDATE_FORUM_MESSAGES_READ_FLAG_BEFORE,
+    /**
+     * The query for updating the read field of messages in the specified forum after specified date.
+     * Set query parameters in following order:
+     * <p/>
+     * read(boolean), dateline(long), forum_id(int)
+     */
+    UPDATE_FORUM_MESSAGES_READ_FLAG_AFTER,
+    /**
+     * The query for updating the read field of messages in the specified topic before specified date.
+     * Set query parameters in following order:
+     * <p/>
+     * read(boolean), dateline(long), forum_id(int), topic_id(int), topic_id(int)
+     */
+    UPDATE_TOPIC_MESSAGES_READ_FLAG_BEFORE,
+    /**
+     * The query for updating the read field of messages in the specified topic after specified date.
+     * Set query parameters in following order:
+     * <p/>
+     * read(boolean), dateline(long), forum_id(int), topic_id(int), topic_id(int)
+     */
+    UPDATE_TOPIC_MESSAGES_READ_FLAG_AFTER,
+    /**
+     * The query for getting messages will be affected by correspond update query.
+     * order:
+     * <p/>
+     * read(boolean), dateline(long)
+     */
+    GET_MESSAGES_READ_FLAG_BEFORE,
+    /**
+     * The query for getting messages will be affected by correspond update query
+     * order:
+     * <p/>
+     * read(boolean), dateline(long)
+     */
+    GET_MESSAGES_READ_FLAG_AFTER,
+    /**
+     * The query for getting messages will be affected by correspond update query.
+     * Set query parameters in following order:
+     * <p/>
+     * read(boolean), dateline(long), forum_id(int)
+     */
+    GET_FORUM_MESSAGES_READ_FLAG_BEFORE,
+    /**
+     * The query for getting messages will be affected by correspond update query.
+     * Set query parameters in following order:
+     * <p/>
+     * read(boolean), dateline(long), forum_id(int)
+     */
+    GET_FORUM_MESSAGES_READ_FLAG_AFTER,
+    /**
+     * The query for getting messages will be affected by correspond update query.
+     * Set query parameters in following order:
+     * <p/>
+     * read(boolean), dateline(long), forum_id(int), topic_id(int), topic_id(int)
+     */
+    GET_TOPIC_MESSAGES_READ_FLAG_BEFORE,
+    /**
+     * The query for getting messages will be affected by correspond update query.
+     * Set query parameters in following order:
+     * <p/>
+     * read(boolean), dateline(long), forum_id(int), topic_id(int), topic_id(int)
+     */
+    GET_TOPIC_MESSAGES_READ_FLAG_AFTER,
+    /**
      * The query for updating a new message object. Set the object parameters in following order:
      * <p/>
      * parent id(int), forum id(int), subject(String), message(String), id (int)

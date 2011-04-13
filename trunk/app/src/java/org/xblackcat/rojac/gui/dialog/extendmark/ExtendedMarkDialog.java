@@ -131,8 +131,14 @@ public class ExtendedMarkDialog extends JDialog {
                         Calendar date = Calendar.getInstance();
                         Calendar time = Calendar.getInstance();
 
-                        date.setTime(selectedDate);
+                        date.setTime(chooser.getDate());
                         time.setTime(timeModel.getDate());
+
+                        date.clear(Calendar.MILLISECOND);
+                        date.clear(Calendar.SECOND);
+
+                        date.set(Calendar.HOUR, time.get(Calendar.HOUR));
+                        date.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
 
                         selectedDate = date.getTime();
                         readStatus = readStateModel.getSelectedItem();

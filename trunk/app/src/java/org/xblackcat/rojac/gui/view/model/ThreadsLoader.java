@@ -39,7 +39,7 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     protected Void perform() throws Exception {
         IMessageAH mAH = storage.getMessageAH();
         try {
-            Collection<MessageData> threadPosts = mAH.getTopicMessagesDataByForumId(forumId);
+            Iterable<MessageData> threadPosts = mAH.getTopicMessagesDataByForumId(forumId);
 
             for (MessageData threadPost : threadPosts) {
                 int topicId = threadPost.getMessageId();

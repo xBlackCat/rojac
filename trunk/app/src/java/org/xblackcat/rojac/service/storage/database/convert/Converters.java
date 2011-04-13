@@ -26,6 +26,7 @@ public final class Converters {
     public static final IToObjectConverter<MessageData> TO_MESSAGE_DATA = new ToMessageDataConverter();
     public static final IToObjectConverter<ThreadStatData> TO_THREAD_DATA = new ToThreadDataConverter();
     public static final IToObjectConverter<IFavorite> TO_FAVORITE = new ToFavoriteConverter();
+    public static final IToObjectConverter<AffectedMessage> TO_AFFECTED_MESSAGE_CONVERTER = new ToAffectedMessageConverter();
 
     private Converters() {
     }

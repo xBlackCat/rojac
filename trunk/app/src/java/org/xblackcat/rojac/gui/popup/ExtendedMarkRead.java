@@ -53,7 +53,7 @@ class ExtendedMarkRead extends JMenuItem {
                         emd.getSelectedDate(),
                         forumId,
                         topicId,
-                        scope
+                        emd.getScope()
                 ).execute();
             }
         });

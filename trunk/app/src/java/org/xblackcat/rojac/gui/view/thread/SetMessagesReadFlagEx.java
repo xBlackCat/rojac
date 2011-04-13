@@ -4,14 +4,17 @@ import org.xblackcat.rojac.gui.dialog.extendmark.DateDirection;
 import org.xblackcat.rojac.gui.dialog.extendmark.NewState;
 import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.util.RojacWorker;
+
+import java.util.List;
 
 
 /**
  * @author xBlackCat
  */
-public class SetMessagesReadFlagEx extends RojacWorker<Void, Void> {
+public class SetMessagesReadFlagEx extends RojacWorker<Void, SynchronizationCompletePacket> {
     private final long dateline;
     private final int forumId;
     private final int threadId;
@@ -30,22 +33,47 @@ public class SetMessagesReadFlagEx extends RojacWorker<Void, Void> {
 
     @Override
     protected Void perform() throws Exception {
-        IStorage storage = ServiceFactory.getInstance().getStorage();
-        switch (scope) {
-            case All:
+        final IMessageAH mAH = ServiceFactory.getInstance().getStorage().getMessageAH();
+        SynchronizationCompletePacket result = null;
+
+        switch (dateDirection) {
+            case After:
+                switch (scope) {
+                    case All:
+                        result = mAH.setReadAfterDate(dateline, read);
+                        break;
+                    case Forum:
+                        result = mAH.setForumReadAfterDate(dateline, read, forumId);
+                        break;
+                    case Thread:
+                        result = mAH.setThreadReadAfterDate(dateline, read, forumId, threadId);
+                        break;
+                }
                 break;
-            case Forum:
-//                storage.getMessageAH().updateMessagesReadFlagEx(dateline, read, forumId);
-                break;
-            case Thread:
-//                storage.getMessageAH().updateMessagesReadFlagEx(dateline, read, forumId, threadId);
+            case Before:
+                switch (scope) {
+                    case All:
+                        result = mAH.setReadBeforeDate(dateline, read);
+                        break;
+                    case Forum:
+                        result = mAH.setForumReadBeforeDate(dateline, read, forumId);
+                        break;
+                    case Thread:
+                        result = mAH.setThreadReadBeforeDate(dateline, read, forumId, threadId);
+                        break;
+                }
                 break;
         }
+
+        publish(result);
+
         return null;
     }
 
     @Override
-    protected void done() {
+    protected void process(List<SynchronizationCompletePacket> chunks) {
+        for (SynchronizationCompletePacket p : chunks) {
+            ServiceFactory.getInstance().getDataDispatcher().processPacket(p);
+        }
     }
-
 }

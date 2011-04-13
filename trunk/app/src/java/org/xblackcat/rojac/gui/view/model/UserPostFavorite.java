@@ -44,7 +44,7 @@ class UserPostFavorite extends AnItemFavorite {
         assert RojacUtils.checkThread(false, getClass());
 
         FavoritePostList root = new FavoritePostList(this);
-        Collection<MessageData> messages = storage.getMessageAH().getUserPosts(itemId);
+        Iterable<MessageData> messages = storage.getMessageAH().getUserPosts(itemId);
         root.fillList(messages);
         root.setLoadingState(LoadingState.Loaded);
 

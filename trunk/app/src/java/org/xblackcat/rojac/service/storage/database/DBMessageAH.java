@@ -1,9 +1,7 @@
 package org.xblackcat.rojac.service.storage.database;
 
-import org.xblackcat.rojac.data.FavoriteStatData;
-import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.data.Role;
-import org.xblackcat.rojac.data.ThreadStatData;
+import org.xblackcat.rojac.data.*;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
@@ -98,7 +96,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public Collection<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException {
+    public Iterable<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
@@ -106,7 +104,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public Collection<MessageData> getUserPosts(int userId) throws StorageException {
+    public Iterable<MessageData> getUserPosts(int userId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_POSTS,
@@ -174,4 +172,101 @@ final class DBMessageAH implements IMessageAH {
                 id);
     }
 
+
+    public SynchronizationCompletePacket setThreadReadBeforeDate(long dateline, boolean read, int forumId, int threadId) throws StorageException {
+        Iterable<AffectedMessage> toUpdate = helper.execute(
+                Converters.TO_AFFECTED_MESSAGE_CONVERTER,
+                DataQuery.GET_TOPIC_MESSAGES_READ_FLAG_BEFORE,
+                read,
+                dateline,
+                forumId,
+                threadId,
+                threadId
+        );
+        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+
+        helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_READ_FLAG_BEFORE, read, dateline, forumId, threadId, threadId);
+
+        return result;
+    }
+
+    @Override
+    public SynchronizationCompletePacket setThreadReadAfterDate(long dateline, boolean read, int forumId, int threadId) throws StorageException {
+        Iterable<AffectedMessage> toUpdate = helper.execute(
+                Converters.TO_AFFECTED_MESSAGE_CONVERTER,
+                DataQuery.GET_TOPIC_MESSAGES_READ_FLAG_AFTER,
+                read,
+                dateline,
+                forumId,
+                threadId,
+                threadId
+        );
+        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+
+        helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_READ_FLAG_AFTER, read, dateline, forumId, threadId, threadId);
+
+        return result;
+    }
+
+    @Override
+    public SynchronizationCompletePacket setForumReadBeforeDate(long dateline, boolean read, int forumId) throws StorageException {
+        Iterable<AffectedMessage> toUpdate = helper.execute(
+                Converters.TO_AFFECTED_MESSAGE_CONVERTER,
+                DataQuery.GET_FORUM_MESSAGES_READ_FLAG_BEFORE,
+                read,
+                dateline,
+                forumId
+        );
+        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+
+        helper.update(DataQuery.UPDATE_FORUM_MESSAGES_READ_FLAG_BEFORE, read, dateline, forumId);
+
+        return result;
+    }
+
+    @Override
+    public SynchronizationCompletePacket setForumReadAfterDate(long dateline, boolean read, int forumId) throws StorageException {
+        Iterable<AffectedMessage> toUpdate = helper.execute(
+                Converters.TO_AFFECTED_MESSAGE_CONVERTER,
+                DataQuery.GET_FORUM_MESSAGES_READ_FLAG_AFTER,
+                read,
+                dateline,
+                forumId
+        );
+        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+
+        helper.update(DataQuery.UPDATE_FORUM_MESSAGES_READ_FLAG_AFTER, read, dateline, forumId);
+
+        return result;
+    }
+
+    @Override
+    public SynchronizationCompletePacket setReadBeforeDate(long dateline, boolean read) throws StorageException {
+        Iterable<AffectedMessage> toUpdate = helper.execute(
+                Converters.TO_AFFECTED_MESSAGE_CONVERTER,
+                DataQuery.GET_MESSAGES_READ_FLAG_BEFORE,
+                read,
+                dateline
+        );
+        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+
+        helper.update(DataQuery.UPDATE_MESSAGES_READ_FLAG_BEFORE, read, dateline);
+
+        return result;
+    }
+
+    @Override
+    public SynchronizationCompletePacket setReadAfterDate(long dateline, boolean read) throws StorageException {
+        Iterable<AffectedMessage> toUpdate = helper.execute(
+                Converters.TO_AFFECTED_MESSAGE_CONVERTER,
+                DataQuery.GET_MESSAGES_READ_FLAG_AFTER,
+                read,
+                dateline
+        );
+        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+
+        helper.update(DataQuery.UPDATE_MESSAGES_READ_FLAG_AFTER, read, dateline);
+
+        return result;
+    }
 }
