@@ -90,6 +90,8 @@ public class PopupMenuBuilder {
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, forumId, true));
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, forumId, false));
 
+        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl));
+
         menu.addSeparator();
 
         {

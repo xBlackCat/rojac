@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.popup;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
-import org.xblackcat.rojac.gui.view.model.ITreeItem;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
@@ -90,20 +89,20 @@ final class MenuHelper {
         return copyToClipboard;
     }
 
-    static JMenuItem markReadUnreadSubmenu(ITreeItem<?> message, IAppControl appControl) {
+    static JMenuItem markReadUnreadSubmenu(Post message, IAppControl appControl) {
         JMenu menu = new JMenu(Messages.Popup_View_ThreadsTree_Mark_Title.get());
 
         menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadRead, message, true));
         menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadUnread, message, false));
 
-//        menu.addSeparator();
-
-//        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, message, appControl));
-
         menu.addSeparator();
 
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, message.getForumId(), true));
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, message.getForumId(), false));
+
+        menu.addSeparator();
+
+        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, message, appControl));
 
         return menu;
     }
