@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.IViewState;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
@@ -168,6 +169,15 @@ public class ForumsListView extends AView {
 
     @Override
     public void setState(IViewState state) {
+    }
+
+    @Override
+    public IViewLayout storeLayout() {
+        return null;
+    }
+
+    @Override
+    public void setupLayout(IViewLayout o) {
     }
 
     @Override

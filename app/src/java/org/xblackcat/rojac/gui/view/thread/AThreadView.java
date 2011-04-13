@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.IViewState;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
@@ -45,6 +46,7 @@ public abstract class AThreadView extends AnItemView {
     protected int rootItemId;
 
     protected ThreadState state;
+    private JToolBar toolbar;
 
     protected AThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl);
@@ -84,7 +86,7 @@ public abstract class AThreadView extends AnItemView {
         JButton prevUnreadButton = WindowsUtils.registerImageButton(this, "prev_unread", new PreviousUnreadAction());
         JButton nextUnreadButton = WindowsUtils.registerImageButton(this, "next_unread", new NextUnreadAction());
 
-        JToolBar toolbar = WindowsUtils.createToolBar(newThreadButton, null, toRootButton, prevUnreadButton, nextUnreadButton);
+        toolbar = WindowsUtils.createToolBar(newThreadButton, null, toRootButton, prevUnreadButton, nextUnreadButton);
 
         threadsContainer.setInputMap(
                 WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
@@ -173,6 +175,29 @@ public abstract class AThreadView extends AnItemView {
     @Override
     public String getTabTitle() {
         return modelControl.getTitle(model);
+    }
+
+    protected Object getToolbarPlacement() {
+        return ((BorderLayout) getLayout()).getConstraints(toolbar);
+    }
+
+    @Override
+    public IViewLayout storeLayout() {
+        return new ThreadViewLayout(
+                getToolbarPlacement(),
+                toolbar.getOrientation()
+        );
+    }
+
+    @Override
+    public void setupLayout(IViewLayout o) {
+        if (o instanceof ThreadViewLayout) {
+            ThreadViewLayout l = (ThreadViewLayout) o;
+
+            remove(toolbar);
+            toolbar.setOrientation(l.getToolbarOrientation());
+            add(toolbar, l.getToolbarPosition());
+        }
     }
 
     protected final void selectItem(Post post) {

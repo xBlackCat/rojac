@@ -7,6 +7,7 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.IViewState;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
@@ -288,6 +289,16 @@ public class MessageView extends AnItemView {
     @Override
     public boolean containsItem(int messageId) {
         return messageId == this.messageId;
+    }
+
+    @Override
+    public IViewLayout storeLayout() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setupLayout(IViewLayout o) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private void fillMarksButton(RatingCache ratings) {

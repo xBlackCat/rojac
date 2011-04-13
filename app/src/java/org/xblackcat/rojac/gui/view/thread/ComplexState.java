@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.view;
+package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IViewState;
 
@@ -6,7 +6,7 @@ import org.xblackcat.rojac.gui.IViewState;
  * @author xBlackCat
  */
 
-public final class ComplexState implements IViewState {
+final class ComplexState implements IViewState {
     private static final long serialVersionUID = 1L;
 
     private IViewState masterState;

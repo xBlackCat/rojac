@@ -39,4 +39,18 @@ public interface IView extends IDataHandler {
     void addStateChangeListener(IStateListener l);
 
     void removeStateChangeListener(IStateListener l);
+
+    /**
+     * Returns an object with current layout informaion.
+     *
+     * @return layout config object.
+     */
+    IViewLayout storeLayout();
+
+    /**
+     * Restores the view layout by data stored in the layout object.
+     *
+     * @param o layout config object.
+     */
+    void setupLayout(IViewLayout o);
 }
