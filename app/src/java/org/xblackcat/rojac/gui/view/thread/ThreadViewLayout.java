@@ -5,7 +5,7 @@ import org.xblackcat.rojac.gui.IViewLayout;
 /**
  * @author xBlackCat
  */
-public class ThreadViewLayout implements IViewLayout {
+class ThreadViewLayout implements IViewLayout {
     private static final long serialVersionUID = 1L;
 
     private Object toolbarPosition;
