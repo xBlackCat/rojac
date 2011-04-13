@@ -144,7 +144,7 @@ abstract class ALoadPostsRequest extends ARequest<IPacket> {
     }
 
     protected void setNotifications(IResultHandler<IPacket> handler) {
-        handler.process(new SynchronizationCompletePacket(updatedForums.toArray(), updatedTopics.toArray(), updatedMessages.toArray()));
+        handler.process(new SynchronizationCompletePacket(updatedForums, updatedTopics, updatedMessages));
 
         // Clean up counters
         updatedTopics.clear();

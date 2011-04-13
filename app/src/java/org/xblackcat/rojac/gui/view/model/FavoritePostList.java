@@ -80,7 +80,7 @@ public class FavoritePostList extends Post {
         return favorite;
     }
 
-    void fillList(Collection<MessageData> posts) {
+    void fillList(Iterable<MessageData> posts) {
         for (MessageData post : posts) {
             Post p = listPosts.get(post.getMessageId());
 

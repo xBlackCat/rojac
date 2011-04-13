@@ -3,6 +3,7 @@ package org.xblackcat.rojac.service.storage;
 import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import ru.rsdn.Janus.JanusMessageInfo;
 
 import java.util.Collection;
@@ -96,7 +97,7 @@ public interface IMessageAH extends AH {
      *
      * @throws StorageException
      */
-    Collection<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException;
+    Iterable<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException;
 
     /**
      * Returns all a user posts.
@@ -107,7 +108,7 @@ public interface IMessageAH extends AH {
      *
      * @throws StorageException
      */
-    Collection<MessageData> getUserPosts(int userId) throws StorageException;
+    Iterable<MessageData> getUserPosts(int userId) throws StorageException;
 
     /**
      * Returns all replies on the user post
@@ -188,4 +189,16 @@ public interface IMessageAH extends AH {
      * @throws StorageException
      */
     void updateMessageRatingCache(int id, String ratingsCache) throws StorageException;
+
+    SynchronizationCompletePacket setThreadReadBeforeDate(long dateline, boolean read, int forumId, int threadId) throws StorageException;
+
+    SynchronizationCompletePacket setThreadReadAfterDate(long dateline, boolean read, int forumId, int threadId) throws StorageException;
+
+    SynchronizationCompletePacket setForumReadBeforeDate(long dateline, boolean read, int forumId) throws StorageException;
+
+    SynchronizationCompletePacket setForumReadAfterDate(long dateline, boolean read, int forumId) throws StorageException;
+
+    SynchronizationCompletePacket setReadBeforeDate(long dateline, boolean read) throws StorageException;
+
+    SynchronizationCompletePacket setReadAfterDate(long dateline, boolean read) throws StorageException;
 }
