@@ -154,6 +154,10 @@ public class Thread extends Post {
         return threadPosts.get(messageId);
     }
 
+    void setUnreadPosts(int unreadPosts) {
+        this.unreadPosts = unreadPosts;
+    }
+
     void fillThread(Collection<MessageData> po) {
         List<MessageData> posts = new ArrayList<MessageData>(po);
         Collections.sort(posts, SORT_BY_PARENTS);

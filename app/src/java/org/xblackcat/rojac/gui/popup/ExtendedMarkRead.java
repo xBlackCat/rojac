@@ -16,11 +16,8 @@ import java.awt.event.ActionListener;
  * @author xBlackCat
  */
 class ExtendedMarkRead extends JMenuItem {
-    private final IAppControl appControl;
-    private final Scope scope = Scope.Thread;
-
     public ExtendedMarkRead(Messages title, Post post, IAppControl appControl) {
-        this(title, appControl, Scope.Thread, post.getMessageData().getMessageDate(), post.getForumId(), post.getTopicId());
+        this(title, appControl, Scope.Thread, post.getMessageData().getMessageDate(), post.getForumId(), post.getThreadRoot().getMessageId());
     }
 
     public ExtendedMarkRead(Messages title, Forum forum, IAppControl appControl) {
@@ -30,13 +27,12 @@ class ExtendedMarkRead extends JMenuItem {
     private ExtendedMarkRead(
             Messages title,
             final IAppControl appControl,
-            final Scope thread,
+            final Scope scope,
             final Long messageDate,
             final int forumId,
             final int topicId
     ) {
         super(title.get());
-        this.appControl = appControl;
 
         addActionListener(new ActionListener() {
             @Override
