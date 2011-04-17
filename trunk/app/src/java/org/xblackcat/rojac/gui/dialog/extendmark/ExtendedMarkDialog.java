@@ -1,17 +1,12 @@
 package org.xblackcat.rojac.gui.dialog.extendmark;
 
-import com.birosoft.liquid.LiquidLookAndFeel;
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JSpinnerDateEditor;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
-import org.xblackcat.rojac.RojacException;
-import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -42,6 +37,7 @@ public class ExtendedMarkDialog extends JDialog {
     private final EnumComboBoxModel<DateDirection> dateRangeModel = new EnumComboBoxModel<DateDirection>(DateDirection.class);
     private final EnumComboBoxModel<NewState> readStateModel = new EnumComboBoxModel<NewState>(NewState.class);
     private final EnumComboBoxModel<Scope> scopeModel = new EnumComboBoxModel<Scope>(Scope.class);
+    private SpinnerDateModel timeModel;
 
     public ExtendedMarkDialog(Window owner) {
         super(owner, ModalityType.DOCUMENT_MODAL);
@@ -109,7 +105,7 @@ public class ExtendedMarkDialog extends JDialog {
         chooser.setDateFormatString(datePattern);
         chooser.setLocale(locale);
 
-        final SpinnerDateModel timeModel = new SpinnerDateModel(now, null, null, Calendar.MINUTE);
+        timeModel = new SpinnerDateModel(now, null, null, Calendar.MINUTE);
         JSpinner spinner = new JSpinner(timeModel);
         spinner.setEditor(new JSpinner.DateEditor(spinner, timePattern));
 
@@ -168,7 +164,9 @@ public class ExtendedMarkDialog extends JDialog {
      */
     public boolean selectDate(Long messageDate, Scope scope) {
         if (messageDate != null) {
-            chooser.setDate(new Date(messageDate));
+            Date date = new Date(messageDate);
+            chooser.setDate(date);
+            timeModel.setValue(date);
         }
         scopeModel.setSelectedItem(scope);
         maxScope = scope;

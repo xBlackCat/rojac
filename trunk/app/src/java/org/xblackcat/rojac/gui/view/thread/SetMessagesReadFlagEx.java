@@ -4,7 +4,7 @@ import org.xblackcat.rojac.gui.dialog.extendmark.DateDirection;
 import org.xblackcat.rojac.gui.dialog.extendmark.NewState;
 import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author xBlackCat
  */
-public class SetMessagesReadFlagEx extends RojacWorker<Void, SynchronizationCompletePacket> {
+public class SetMessagesReadFlagEx extends RojacWorker<Void, SetReadExPacket> {
     private final long dateline;
     private final int forumId;
     private final int threadId;
@@ -34,7 +34,7 @@ public class SetMessagesReadFlagEx extends RojacWorker<Void, SynchronizationComp
     @Override
     protected Void perform() throws Exception {
         final IMessageAH mAH = ServiceFactory.getInstance().getStorage().getMessageAH();
-        SynchronizationCompletePacket result = null;
+        SetReadExPacket result = null;
 
         switch (dateDirection) {
             case After:
@@ -71,8 +71,8 @@ public class SetMessagesReadFlagEx extends RojacWorker<Void, SynchronizationComp
     }
 
     @Override
-    protected void process(List<SynchronizationCompletePacket> chunks) {
-        for (SynchronizationCompletePacket p : chunks) {
+    protected void process(List<SetReadExPacket> chunks) {
+        for (SetReadExPacket p : chunks) {
             ServiceFactory.getInstance().getDataDispatcher().processPacket(p);
         }
     }

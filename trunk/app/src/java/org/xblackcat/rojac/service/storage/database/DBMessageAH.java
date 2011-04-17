@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.data.*;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
@@ -173,7 +173,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
 
-    public SynchronizationCompletePacket setThreadReadBeforeDate(long dateline, boolean read, int forumId, int threadId) throws StorageException {
+    public SetReadExPacket setThreadReadBeforeDate(long dateline, boolean read, int forumId, int threadId) throws StorageException {
         Iterable<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_TOPIC_MESSAGES_READ_FLAG_BEFORE,
@@ -183,7 +183,7 @@ final class DBMessageAH implements IMessageAH {
                 threadId,
                 threadId
         );
-        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
 
         helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_READ_FLAG_BEFORE, read, dateline, forumId, threadId, threadId);
 
@@ -191,7 +191,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public SynchronizationCompletePacket setThreadReadAfterDate(long dateline, boolean read, int forumId, int threadId) throws StorageException {
+    public SetReadExPacket setThreadReadAfterDate(long dateline, boolean read, int forumId, int threadId) throws StorageException {
         Iterable<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_TOPIC_MESSAGES_READ_FLAG_AFTER,
@@ -201,7 +201,7 @@ final class DBMessageAH implements IMessageAH {
                 threadId,
                 threadId
         );
-        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
 
         helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_READ_FLAG_AFTER, read, dateline, forumId, threadId, threadId);
 
@@ -209,7 +209,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public SynchronizationCompletePacket setForumReadBeforeDate(long dateline, boolean read, int forumId) throws StorageException {
+    public SetReadExPacket setForumReadBeforeDate(long dateline, boolean read, int forumId) throws StorageException {
         Iterable<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_FORUM_MESSAGES_READ_FLAG_BEFORE,
@@ -217,7 +217,7 @@ final class DBMessageAH implements IMessageAH {
                 dateline,
                 forumId
         );
-        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
 
         helper.update(DataQuery.UPDATE_FORUM_MESSAGES_READ_FLAG_BEFORE, read, dateline, forumId);
 
@@ -225,7 +225,7 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public SynchronizationCompletePacket setForumReadAfterDate(long dateline, boolean read, int forumId) throws StorageException {
+    public SetReadExPacket setForumReadAfterDate(long dateline, boolean read, int forumId) throws StorageException {
         Iterable<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_FORUM_MESSAGES_READ_FLAG_AFTER,
@@ -233,7 +233,7 @@ final class DBMessageAH implements IMessageAH {
                 dateline,
                 forumId
         );
-        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
 
         helper.update(DataQuery.UPDATE_FORUM_MESSAGES_READ_FLAG_AFTER, read, dateline, forumId);
 
@@ -241,14 +241,14 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public SynchronizationCompletePacket setReadBeforeDate(long dateline, boolean read) throws StorageException {
+    public SetReadExPacket setReadBeforeDate(long dateline, boolean read) throws StorageException {
         Iterable<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_MESSAGES_READ_FLAG_BEFORE,
                 read,
                 dateline
         );
-        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
 
         helper.update(DataQuery.UPDATE_MESSAGES_READ_FLAG_BEFORE, read, dateline);
 
@@ -256,14 +256,14 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public SynchronizationCompletePacket setReadAfterDate(long dateline, boolean read) throws StorageException {
+    public SetReadExPacket setReadAfterDate(long dateline, boolean read) throws StorageException {
         Iterable<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_MESSAGES_READ_FLAG_AFTER,
                 read,
                 dateline
         );
-        SynchronizationCompletePacket result = new SynchronizationCompletePacket(toUpdate);
+        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
 
         helper.update(DataQuery.UPDATE_MESSAGES_READ_FLAG_AFTER, read, dateline);
 

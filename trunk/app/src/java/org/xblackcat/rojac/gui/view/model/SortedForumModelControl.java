@@ -130,6 +130,47 @@ public class SortedForumModelControl extends AThreadsModelControl {
                         }
                     }
                 },
+                new IPacketProcessor<SetReadExPacket>() {
+                    @Override
+                    public void process(SetReadExPacket p) {
+                        if (!p.isForumAffected(forumId)) {
+                            // Current forum is not changed - have a rest
+                            return;
+                        }
+
+                        boolean newReadState = p.isRead();
+                        Post root = model.getRoot();
+
+                        // First, queue for update a not loaded threads.
+                        for (int topicId : p.getThreadIds()) {
+                            Post post = root.getMessageById(topicId);
+
+                            if (post == null) {
+                                // Topic from another forum - skip.
+                                continue;
+                            }
+
+                            assert post instanceof Thread : post;
+                            assert post.getThreadRoot() == post : post;
+                            Thread topic = (Thread) post;
+
+                            if (!topic.isFilled()) {
+                                // Queue updatestat data.
+                                new ThreadUnreadPostsLoader(topic, model).execute();
+                            }
+                        }
+
+                        // Second - update already loaded posts.
+                        for (int postId : p.getMessageIds()) {
+                            Post post = root.getMessageById(postId);
+
+                            if (post != null) {
+                                post.setRead(newReadState);
+                                model.pathToNodeChanged(post);
+                            }
+                        }
+                    }
+                },
                 new IPacketProcessor<SynchronizationCompletePacket>() {
                     @Override
                     public void process(SynchronizationCompletePacket p) {

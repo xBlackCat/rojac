@@ -72,6 +72,11 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         nodeStructureChanged(root);
     }
 
+    /**
+     * Notifies model that all nodes in path to current node (inclusive) was changed.
+     *
+     * @param node node to identifya path.
+     */
     public void pathToNodeChanged(T node) {
         if (node != null) {
             TreePath toRoot = getPathToRoot(node);
