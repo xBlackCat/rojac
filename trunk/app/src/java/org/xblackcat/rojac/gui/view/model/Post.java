@@ -237,7 +237,7 @@ public class Post implements ITreeItem<Post> {
     }
 
     public boolean isNewNode() {
-        assert RojacUtils.checkThread(true, Post.class);
+        assert RojacUtils.checkThread(true);
 
         return newNode;
     }
@@ -246,7 +246,7 @@ public class Post implements ITreeItem<Post> {
      * Recursively clears 'new node' flag
      */
     public void resetNewFlag() {
-        assert RojacUtils.checkThread(true, Post.class);
+        assert RojacUtils.checkThread(true);
 
         newNode = false;
 

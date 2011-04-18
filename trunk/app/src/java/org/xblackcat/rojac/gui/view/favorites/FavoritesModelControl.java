@@ -23,28 +23,28 @@ public class FavoritesModelControl implements IModelControl<Post> {
 
     @Override
     public void fillModelByItemId(AThreadModel<Post> model, int itemId) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         new FavoriteLoader(model, itemId).execute();
     }
 
     @Override
     public void loadThread(AThreadModel<Post> model, Post item, IItemProcessor<Post> postProcessor) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         throw new NotImplementedException("The method shouldn't be invoked.");
     }
 
     @Override
     public boolean isRootVisible() {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         return delegatedControl != null && delegatedControl.isRootVisible();
     }
 
     @Override
     public String getTitle(AThreadModel<Post> model) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         if (title == null) {
             return "Favorite";

@@ -33,7 +33,7 @@ public abstract class AThreadsModelControl implements IModelControl<Post> {
     }
 
     protected void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         Post post = model.getRoot().getMessageById(threadRootId);
         if (post != null) {
@@ -45,7 +45,7 @@ public abstract class AThreadsModelControl implements IModelControl<Post> {
     }
 
     protected void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         final Post post = model.getRoot().getMessageById(postId);
         if (post != null) {
@@ -56,7 +56,7 @@ public abstract class AThreadsModelControl implements IModelControl<Post> {
 
     @Override
     public void loadThread(final AThreadModel<Post> threadModel, Post p, IItemProcessor<Post> postProcessor) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         //  In the Sorted model only Thread object could be loaded.
 

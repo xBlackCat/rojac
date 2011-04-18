@@ -116,7 +116,7 @@ public abstract class AThreadView extends AnItemView {
 
     @Override
     public ThreadState getState() {
-        assert RojacUtils.checkThread(true, AThreadView.class);
+        assert RojacUtils.checkThread(true);
 
         Post p = getSelectedItem();
         int messageId = p == null ? 0 : p.getMessageId();
@@ -126,7 +126,7 @@ public abstract class AThreadView extends AnItemView {
 
     @Override
     public void setState(IViewState state) {
-        assert RojacUtils.checkThread(true, AThreadView.class);
+        assert RojacUtils.checkThread(true);
 
         if (state == null) {
             return;
@@ -219,7 +219,7 @@ public abstract class AThreadView extends AnItemView {
     protected abstract TreePath getPathForLocation(Point p);
 
     private void applyState() {
-        assert RojacUtils.checkThread(true, AThreadView.class);
+        assert RojacUtils.checkThread(true);
 
         if (state == null) {
             return;

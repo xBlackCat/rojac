@@ -39,7 +39,7 @@ class SubThreadFavorite extends AnItemFavorite {
 
     @Override
     public Post getRootNode() {
-        assert RojacUtils.checkThread(false, getClass());
+        assert RojacUtils.checkThread(false);
 
         throw new NotImplementedException();
     }

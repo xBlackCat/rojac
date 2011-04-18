@@ -29,7 +29,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
 
     @Override
     public void fillModelByItemId(final AThreadModel<Post> model, int forumId) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         final ForumRoot rootItem = new ForumRoot(forumId);
 
@@ -40,7 +40,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
     }
 
     private void markForumRead(AThreadModel<Post> model, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         // Root post is ForumRoot object
         model.getRoot().setRead(read);
@@ -50,13 +50,13 @@ public class SortedForumModelControl extends AThreadsModelControl {
 
     @Override
     public boolean isRootVisible() {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         return false;
     }
 
     private void updateModel(AThreadModel<Post> model, int... threadIds) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         TIntHashSet filledThreads = new TIntHashSet();
         Post root = model.getRoot();

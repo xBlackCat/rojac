@@ -58,7 +58,7 @@ public class DialogHelper {
     }
 
     public static void showExceptionDialog(Thread thread, Throwable t, boolean canBeIgnored) {
-        assert RojacUtils.checkThread(true, null);
+        assert RojacUtils.checkThread(true);
 
         Window w = getMainWindow();
         ExceptionDialog dialog = new ExceptionDialog(w);

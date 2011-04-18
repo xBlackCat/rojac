@@ -12,21 +12,21 @@ public class DataDispatcher implements IDataDispatcher {
 
     @Override
     public void addDataHandler(IDataHandler handler) {
-        assert RojacUtils.checkThread(true, DataDispatcher.class);
+        assert RojacUtils.checkThread(true);
 
         handlers = (IDataHandler[]) ArrayUtils.add(this.handlers, handler);
     }
 
     @Override
     public void removeDataHandler(IDataHandler handler) {
-        assert RojacUtils.checkThread(true, DataDispatcher.class);
+        assert RojacUtils.checkThread(true);
 
         handlers = (IDataHandler[]) ArrayUtils.removeElement(this.handlers, handler);
     }
 
     @Override
     public void processPacket(IPacket packet) {
-        assert RojacUtils.checkThread(true, DataDispatcher.class);
+        assert RojacUtils.checkThread(true);
 
         for (IDataHandler h : handlers) {
             h.processPacket(packet);
