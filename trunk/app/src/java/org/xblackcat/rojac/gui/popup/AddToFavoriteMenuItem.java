@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
  * @author xBlackCat
  */
 
-public class AddToFavoriteMenuItem extends JMenuItem {
+class AddToFavoriteMenuItem extends JMenuItem {
     public AddToFavoriteMenuItem(String text, final FavoriteType type, final int itemId) {
         super(text);
 
