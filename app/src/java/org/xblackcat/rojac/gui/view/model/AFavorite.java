@@ -22,7 +22,7 @@ abstract class AFavorite implements IFavorite {
 
     @Override
     public String getName() {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         if (name == null) {
             return getType().getTypeName("#" + id);
@@ -36,7 +36,7 @@ abstract class AFavorite implements IFavorite {
     }
 
     protected void setName(String name) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
         this.name = name;
     }
 }

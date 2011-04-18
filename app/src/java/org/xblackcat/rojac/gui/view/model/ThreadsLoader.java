@@ -9,6 +9,7 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import java.util.Collection;
@@ -30,6 +31,8 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     private final AThreadModel<Post> model;
 
     public ThreadsLoader(int forumId, ForumRoot rootItem, AThreadModel<Post> model) {
+        assert RojacUtils.checkThread(true);
+
         this.forumId = forumId;
         this.rootItem = rootItem;
         this.model = model;
@@ -64,24 +67,25 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     @Override
     protected void process(List<Thread> chunks) {
         TIntArrayList updatedNodes = new TIntArrayList();
-        List<Post> addedNodes = new LinkedList<Post>();
+//        List<Post> addedNodes = new LinkedList<Post>();
+        List<Post> threads = rootItem.childrenPosts;
 
         for (Thread t : chunks) {
-            if (rootItem.childrenPosts.contains(t)) {
-                int index = rootItem.childrenPosts.indexOf(t);
-                Thread realThread = (Thread) rootItem.childrenPosts.get(index);
+            if (threads.contains(t)) {
+                int index = threads.indexOf(t);
+                Thread realThread = (Thread) threads.get(index);
                 if (!realThread.isFilled()) {
-                    rootItem.childrenPosts.set(index, t);
+                    threads.set(index, t);
                 }
                 updatedNodes.add(index);
             } else {
-                rootItem.childrenPosts.add(t);
-                addedNodes.add(t);
+                threads.add(t);
+//                addedNodes.add(t);
             }
         }
 
-        model.nodesChanged(rootItem, updatedNodes.toNativeArray());
-        model.nodesAdded(rootItem, addedNodes.toArray(new Post[addedNodes.size()]));
+//        model.nodesChanged(rootItem, updatedNodes.toNativeArray());
+//        model.nodesAdded(rootItem, addedNodes.toArray(new Post[addedNodes.size()]));
     }
 
     @Override

@@ -252,6 +252,17 @@ public final class RojacUtils {
     /**
      * Util class for checking if the method executed in SwingThread or not.
      *
+     * @param swing control flag. If set to <code>true</code> the current method will check if it is executing in the
+     *              EventDispatching thread. If set to <code>false</code> - in the non-EventDispatching thread. If
+     *              condition is failed a message will be added into logs.
+     */
+    public static boolean checkThread(boolean swing) {
+        return checkThread(swing, RojacUtils.class);
+    }
+
+    /**
+     * Util class for checking if the method executed in SwingThread or not.
+     *
      * @param swing     control flag. If set to <code>true</code> the current method will check if it is executing in
      *                  the EventDispatching thread. If set to <code>false</code> - in the non-EventDispatching thread.
      *                  If condition is failed a message will be added into logs.
@@ -275,7 +286,7 @@ public final class RojacUtils {
                 }
 
                 if (shift != stackTrace.length) {
-                    stack.setStackTrace((StackTraceElement[]) ArrayUtils.subarray(stackTrace, shift, stackTrace.length - shift - 1));
+                    stack.setStackTrace((StackTraceElement[]) ArrayUtils.subarray(stackTrace, shift, stackTrace.length - shift));
                 }
             }
 
@@ -338,7 +349,7 @@ public final class RojacUtils {
      * Fires a debug exception only if Rojac run in debug mode.
      *
      * @param message message of debug exception.
-     * @param cause root cause of exception.
+     * @param cause   root cause of exception.
      */
     public static void fireDebugException(String message, Throwable cause) throws RojacDebugException {
         if (!Property.ROJAC_DEBUG_MODE.get()) {

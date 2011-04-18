@@ -21,7 +21,7 @@ public class MessageListControl implements IModelControl<Post> {
     }
 
     private void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         Post p = model.getRoot().getMessageById(postId);
 
@@ -43,13 +43,13 @@ public class MessageListControl implements IModelControl<Post> {
 
     @Override
     public boolean isRootVisible() {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         return false;
     }
 
     private void updateModel(final AThreadModel<Post> model, int... threadIds) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         // Parent in the case is FavoritePostList object.
         FavoritePostList root = (FavoritePostList) model.getRoot();

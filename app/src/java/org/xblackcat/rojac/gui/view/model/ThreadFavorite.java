@@ -41,7 +41,7 @@ class ThreadFavorite extends AnItemFavorite {
 
     @Override
     public Post getRootNode() throws StorageException {
-        assert RojacUtils.checkThread(false, getClass());
+        assert RojacUtils.checkThread(false);
 
         MessageData messageData = messageAH.getMessageData(itemId);
         if (messageData == null) {

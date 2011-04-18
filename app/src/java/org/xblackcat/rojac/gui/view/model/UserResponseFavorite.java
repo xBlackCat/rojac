@@ -41,7 +41,7 @@ class UserResponseFavorite extends AnItemFavorite {
 
     @Override
     public Post getRootNode() throws StorageException {
-        assert RojacUtils.checkThread(false, getClass());
+        assert RojacUtils.checkThread(false);
 
         FavoritePostList root = new FavoritePostList(this);
         Collection<MessageData> messages = storage.getMessageAH().getUserReplies(itemId);

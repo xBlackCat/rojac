@@ -18,7 +18,7 @@ public class SingleModelControl extends AThreadsModelControl {
 
     @Override
     public void fillModelByItemId(final AThreadModel<Post> model, int threadId) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         MessageData fakeMessageData = new MessageData(threadId, 0, 0, 0, 0, null, "Loading...", 0L, 0L, false, null);
         final Thread rootItem = new Thread(fakeMessageData, null);
@@ -37,7 +37,7 @@ public class SingleModelControl extends AThreadsModelControl {
     }
 
     private void markForumRead(AThreadModel<Post> model, boolean read) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         // Root post is Thread object
         model.getRoot().setDeepRead(read);
@@ -48,14 +48,14 @@ public class SingleModelControl extends AThreadsModelControl {
 
     @Override
     public boolean isRootVisible() {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         return true;
     }
 
     @Override
     public String getTitle(AThreadModel<Post> model) {
-        assert RojacUtils.checkThread(true, getClass());
+        assert RojacUtils.checkThread(true);
 
         // Root is Thread object
         Post root = model.getRoot();
