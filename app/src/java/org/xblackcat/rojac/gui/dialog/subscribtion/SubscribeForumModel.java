@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.dialog.subscribtion;
 
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.SubscriptionChanged;
 
 import javax.swing.table.AbstractTableModel;
@@ -29,11 +30,11 @@ class SubscribeForumModel extends AbstractTableModel {
     public String getColumnName(int column) {
         switch (column) {
             case 0:
-                return "";
+                return Messages.Dialog_Subscription_Header_Subscription.get();
             case 1:
-                return "Forum";
+                return Messages.Dialog_Subscription_Header_ShortForumName.get();
             case 2:
-                return "Long name";
+                return Messages.Dialog_Subscription_Header_FullForumName.get();
         }
 
         return "";

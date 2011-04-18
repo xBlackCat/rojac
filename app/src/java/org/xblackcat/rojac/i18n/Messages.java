@@ -110,6 +110,12 @@ public enum Messages {
     Dialog_Login_InvalidUserName,
     Dialog_Login_InvalidUserName_Title,
 
+    // Subscription manager dialog related
+    Dialog_Subscription_Title,
+    Dialog_Subscription_Header_Subscription,
+    Dialog_Subscription_Header_ShortForumName,
+    Dialog_Subscription_Header_FullForumName,
+
     // Load extra messages dialog texts
     Dialog_LoadMessage_Title,
     Dialog_LoadMessage_Label,
