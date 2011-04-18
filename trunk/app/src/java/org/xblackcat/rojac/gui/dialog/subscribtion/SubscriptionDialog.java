@@ -27,7 +27,7 @@ public class SubscriptionDialog extends JDialog {
     private SubscribeForumModel model = new SubscribeForumModel();
 
     public SubscriptionDialog(Window owner) {
-        super(owner);
+        super(owner, Messages.Dialog_Subscription_Title.get(),  ModalityType.TOOLKIT_MODAL);
 
         initializeLayout();
 

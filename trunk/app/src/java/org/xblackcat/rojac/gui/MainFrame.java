@@ -639,8 +639,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
             WindowsUtils.center(dlg, MainFrame.this);
             dlg.setVisible(true);
-
-            ServiceFactory.getInstance().getDataDispatcher().processPacket(new ForumsUpdated());
         }
     }
 }
