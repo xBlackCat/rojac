@@ -56,14 +56,38 @@ class PostTreeCellRenderer extends DefaultTreeCellRenderer {
 
         if (isOwnPost) {
             if (hasResponse) {
-                return s == ReadStatus.Unread ? PostIcon.HasResponseUnread : PostIcon.HasResponse;
+                switch (s) {
+                    case Unread:
+                        return PostIcon.HasResponseUnread;
+                    case ReadPartially:
+                        return PostIcon.HasResponseReadPartially;
+                    case Read:
+                    default:
+                        return PostIcon.HasResponseRead;
+                }
             } else {
-                return s == ReadStatus.Unread ? PostIcon.OwnPostUnread : PostIcon.OwnPost;
+                switch (s) {
+                    case Unread:
+                        return PostIcon.OwnPostUnread;
+                    case ReadPartially:
+                        return PostIcon.OwnPostReadPartially;
+                    case Read:
+                    default:
+                        return PostIcon.OwnPostRead;
+                }
             }
         }
 
         if (isResponse) {
-            return s == ReadStatus.Unread ? PostIcon.UnreadResponse : PostIcon.Response;
+            switch (s) {
+                case Unread:
+                    return PostIcon.ResponseUnread;
+                default:
+                case Read:
+                    return PostIcon.ResponseRead;
+                case ReadPartially:
+                    return PostIcon.ResponseReadPartially;
+            }
         }
 
         switch (s) {
