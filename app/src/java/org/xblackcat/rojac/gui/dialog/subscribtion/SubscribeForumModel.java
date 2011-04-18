@@ -1,14 +1,17 @@
 package org.xblackcat.rojac.gui.dialog.subscribtion;
 
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.service.datahandler.SubscriptionChanged;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class SubscribeForumModel extends AbstractTableModel {
     private final List<ForumInfo> data = new ArrayList<ForumInfo>();
 
@@ -19,19 +22,40 @@ class SubscribeForumModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return 3;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        switch (column) {
+            case 0:
+                return "";
+            case 1:
+                return "Forum";
+            case 2:
+                return "Long name";
+        }
+
+        return "";
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return columnIndex == 0 ? Boolean.class : ForumInfo.class;
+        return columnIndex == 0 ? Boolean.class : String.class;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         ForumInfo fi = data.get(rowIndex);
 
-        return columnIndex == 0 ? fi.isSubscribed() : fi.getForum();
+        switch (columnIndex) {
+            case 0:
+                return fi.isSubscribed();
+            case 1:
+                return fi.getForum().getShortForumName();
+            default:
+                return fi.getForum().getForumName();
+        }
     }
 
     @Override
@@ -52,5 +76,25 @@ class SubscribeForumModel extends AbstractTableModel {
         }
 
         fireTableDataChanged();
+    }
+
+    public void getChanged() {
+    }
+
+    /**
+     * Returns a packet with filled new subscription state for forums.
+     *
+     * @return a filled packet or <code>null</code> if no subscription states are changed.
+     */
+    public SubscriptionChanged getSubscription() {
+        Collection<SubscriptionChanged.Subscription> subscriptions = new LinkedList<SubscriptionChanged.Subscription>();
+
+        for (ForumInfo fi : data) {
+            if (fi.getSubscribeStatus() != null) {
+                subscriptions.add(new SubscriptionChanged.Subscription(fi.getForum().getForumId(), fi.isSubscribed()));
+            }
+        }
+
+        return new SubscriptionChanged(subscriptions);
     }
 }

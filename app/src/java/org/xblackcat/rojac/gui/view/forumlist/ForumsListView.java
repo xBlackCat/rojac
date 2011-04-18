@@ -214,6 +214,14 @@ public class ForumsListView extends AView {
                         }
                     }
                 },
+                new IPacketProcessor<SubscriptionChanged>() {
+                    @Override
+                    public void process(SubscriptionChanged p) {
+                        for (SubscriptionChanged.Subscription s : p.getNewSubscriptions()) {
+                            forumsModel.setSubscribed(s.getForumId(), s.isSubscribed());
+                        }
+                    }
+                }
         };
     }
 

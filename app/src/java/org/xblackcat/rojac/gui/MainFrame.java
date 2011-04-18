@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
-import org.xblackcat.rojac.gui.dialog.subscribtion.SubscribtionDialog;
+import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewHelper;
 import org.xblackcat.rojac.gui.view.ViewId;
@@ -635,7 +635,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SubscribtionDialog dlg = new SubscribtionDialog(MainFrame.this);
+            SubscriptionDialog dlg = new SubscriptionDialog(MainFrame.this);
 
             WindowsUtils.center(dlg, MainFrame.this);
             dlg.setVisible(true);
