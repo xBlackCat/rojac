@@ -16,11 +16,11 @@ import java.sql.SQLException;
  * @author xBlackCat
  */
 
-public class PooledConnectionFactory extends AConnectionFactory {
+public class RWPooledConnectionFactory extends AConnectionFactory {
     private final ObjectPool writeConnectionPool = new GenericObjectPool(null, 1);
-    private final ObjectPool readConnectionPool = new GenericObjectPool(null, 10);
+    private final ObjectPool readConnectionPool = new GenericObjectPool(null, 20);
 
-    public PooledConnectionFactory(String configurationName) throws StorageInitializationException {
+    public RWPooledConnectionFactory(String configurationName) throws StorageInitializationException {
         super(configurationName);
 
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(url, userName, password);

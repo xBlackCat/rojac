@@ -16,15 +16,17 @@ import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.service.progress.ProgressController;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
-import org.xblackcat.rojac.service.storage.database.connection.PooledConnectionFactory;
 import org.xblackcat.utils.ResourceUtils;
 import sun.awt.AppContext;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 /**
@@ -132,14 +134,14 @@ public final class ServiceFactory {
         try {
             mainProperties = ResourceUtils.loadProperties("/rojac.config");
         } catch (IOException e) {
-            throw new RojacException("rojac.config was not found in class path", e);
+            throw new StorageInitializationException("rojac.config was not found in class path", e);
         }
 
         String home = System.getProperty("rojac.home");
         if (StringUtils.isBlank(home)) {
             String userHome = mainProperties.getProperty("rojac.home");
             if (StringUtils.isBlank(userHome)) {
-                throw new RojacException("{$rojac.home} is not defined either property in file or system property.");
+                throw new StorageInitializationException("{$rojac.home} is not defined either property in file or system property.");
             }
 
             home = ResourceUtils.putSystemProperties(userHome);
@@ -164,10 +166,47 @@ public final class ServiceFactory {
 
         String configurationName = mainProperties.getProperty("rojac.database.engine");
 
-        IConnectionFactory connectionFactory = new PooledConnectionFactory(configurationName);
+        String connectionFactoryName = mainProperties.getProperty("rojac.database.connection_factory");
+
+        IConnectionFactory connectionFactory = createConnectionFactory(connectionFactoryName, configurationName);
+
         DBStorage storage = new DBStorage(configurationName, connectionFactory);
         storage.initialize();
         return storage;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private static IConnectionFactory createConnectionFactory(String connectionFactoryName, String configurationName) throws StorageInitializationException {
+        Class<?> connectionFactoryClass;
+        try {
+            connectionFactoryClass = Class.forName("org.xblackcat.rojac.service.storage.database.connection." + connectionFactoryName + "ConnectionFactory");
+        } catch (ClassNotFoundException e) {
+            try {
+                connectionFactoryClass = Class.forName(connectionFactoryName);
+            } catch (ClassNotFoundException e1) {
+                throw new StorageInitializationException("Connection factory " + connectionFactoryName + " is not found", e1);
+            }
+        }
+
+        IConnectionFactory connectionFactory = null;
+        try {
+            if (!IConnectionFactory.class.isAssignableFrom(connectionFactoryClass)) {
+                throw new StorageInitializationException("Connection factory should implements IConnectionFactory interface.");
+            }
+            Constructor<IConnectionFactory> connectionFactoryConstructor =
+                    ((Class<IConnectionFactory>) connectionFactoryClass).getConstructor(String.class);
+
+            connectionFactory = connectionFactoryConstructor.newInstance(configurationName);
+        } catch (NoSuchMethodException e) {
+            throw new StorageInitializationException("Connection factory have no necessary constructor", e);
+        } catch (InstantiationException e) {
+            throw new StorageInitializationException("Can not initialize connection factory", e);
+        } catch (IllegalAccessException e) {
+            throw new StorageInitializationException("Can not initialize connection factory", e);
+        } catch (InvocationTargetException e) {
+            throw new StorageInitializationException("Can not initialize connection factory", e);
+        }
+        return connectionFactory;
     }
 
     private static void checkPath(String target) throws RojacException {
