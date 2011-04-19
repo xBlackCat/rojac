@@ -26,13 +26,14 @@
   * Implement navigation between messages by links in message body. _(done)_
   * Add tray icon. _(done)_
 == Alpha 3 ==
-  * Make theads view info load more lazy _*(in progress)*_
-  * Add keyboard shortcuts. _*(in progress)*_
+  * Make theads view info load more lazy _(done)_
+  * Add keyboard shortcuts. _(done)_
   * Add keyboard shortcuts manager. _*(in progress)*_
-  * Allow to DnD links to create a new tab with thread/message.
-  * Add favorites (messages, topics, you posts, responses)
-  * Add filter to forum view (by users, by date, by marks)
+  * Add favorites (messages, topics, you posts, responses) _(done)_
+  * Make navigation pane instead of forum/favorites views _*(in progress)*_
 == Alpha 4 ==
+  * Add filter to forum view (by users, by date, by marks)
+  * Allow to DnD links to create a new tab with thread/message.
   * Implement GUI: List based forum view. (??)
   * GUI changes: redesign (options dialog, etc).
 
