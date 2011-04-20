@@ -1,11 +1,14 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacUtils;
+
+import javax.swing.*;
 
 /**
  * Control class of all threads of the specified forum.
@@ -111,5 +114,15 @@ public class SingleModelControl extends AThreadsModelControl {
                 }
         ).dispatch(p);
         return true;
+    }
+
+    @Override
+    public Icon getTitleIcon(AThreadModel<Post> postAThreadModel) {
+        return null;
+    }
+
+    @Override
+    public JPopupMenu getTitlePopup(AThreadModel<Post> postAThreadModel, IAppControl appControl) {
+        return null;
     }
 }

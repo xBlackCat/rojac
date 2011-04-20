@@ -396,6 +396,16 @@ public abstract class AThreadView extends AnItemView {
         }
     }
 
+    @Override
+    public JPopupMenu getTabTitleMenu() {
+        return modelControl.getTitlePopup(model, appControl);
+    }
+
+    @Override
+    public Icon getTabTitleIcon() {
+        return modelControl.getTitleIcon(model);
+    }
+
     private class LoadNextUnread implements IItemProcessor<Post> {
         @Override
         public void processItem(Post item) {

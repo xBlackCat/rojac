@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.dialog.subscribtion;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.SubscriptionChanged;
+import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -87,15 +87,15 @@ class SubscribeForumModel extends AbstractTableModel {
      *
      * @return a filled packet or <code>null</code> if no subscription states are changed.
      */
-    public SubscriptionChanged getSubscription() {
-        Collection<SubscriptionChanged.Subscription> subscriptions = new LinkedList<SubscriptionChanged.Subscription>();
+    public SubscriptionChangedPacket getSubscription() {
+        Collection<SubscriptionChangedPacket.Subscription> subscriptions = new LinkedList<SubscriptionChangedPacket.Subscription>();
 
         for (ForumInfo fi : data) {
             if (fi.getSubscribeStatus() != null) {
-                subscriptions.add(new SubscriptionChanged.Subscription(fi.getForum().getForumId(), fi.isSubscribed()));
+                subscriptions.add(new SubscriptionChangedPacket.Subscription(fi.getForum().getForumId(), fi.isSubscribed()));
             }
         }
 
-        return new SubscriptionChanged(subscriptions);
+        return new SubscriptionChangedPacket(subscriptions);
     }
 }

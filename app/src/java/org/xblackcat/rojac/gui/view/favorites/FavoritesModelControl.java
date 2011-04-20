@@ -137,4 +137,14 @@ public class FavoritesModelControl implements IModelControl<Post> {
             delegatedControl.resortModel(model);
         }
     }
+
+    @Override
+    public Icon getTitleIcon(AThreadModel<Post> postAThreadModel) {
+        return null;
+    }
+
+    @Override
+    public JPopupMenu getTitlePopup(AThreadModel<Post> postAThreadModel, IAppControl appControl) {
+        return null;
+    }
 }

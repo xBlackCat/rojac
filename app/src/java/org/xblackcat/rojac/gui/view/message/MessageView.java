@@ -317,6 +317,16 @@ public class MessageView extends AnItemView {
         revalidate();
     }
 
+    @Override
+    public JPopupMenu getTabTitleMenu() {
+        return null;
+    }
+
+    @Override
+    public Icon getTabTitleIcon() {
+        return null;
+    }
+
     private class HyperlinkHandler implements HyperlinkListener {
         public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {

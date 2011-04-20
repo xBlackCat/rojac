@@ -4,17 +4,17 @@ import gnu.trove.TIntHashSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
-import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.data.ForumMessageData;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
-import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.RojacWorker;
 
-import java.util.List;
+import javax.swing.*;
 
 /**
  * Control class of all threads of the specified forum.
@@ -181,56 +181,47 @@ public class SortedForumModelControl extends AThreadsModelControl {
 
                         updateModel(model, p.getThreadIds());
                     }
+                },
+                new IPacketProcessor<SubscriptionChangedPacket>() {
+                    @Override
+                    public void process(SubscriptionChangedPacket p) {
+                        final Post root = model.getRoot();
+                        final MessageData data = root.getMessageData();
+
+                        if (data instanceof ForumMessageData) {
+                            ForumData f = ((ForumMessageData) data).getForum();
+
+                            for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
+                                if (s.getForumId() == f.getForumId()) {
+                                    f.setSubscribed(s.isSubscribed());
+
+                                    model.nodeChanged(root);
+                                    return;
+                                }
+                            }
+                        }
+                    }
                 }
         ).dispatch(p);
         return true;
     }
 
-    private static class ForumInfoLoader extends RojacWorker<Void, Forum> {
-        private final int forumId;
-        private AThreadModel<Post> model;
+    @Override
+    public Icon getTitleIcon(AThreadModel<Post> model) {
+        return null;
+    }
 
-        public ForumInfoLoader(AThreadModel<Post> model, int forumId) {
-            this.forumId = forumId;
-            this.model = model;
+    @Override
+    public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
+        final MessageData data = model.getRoot().getMessageData();
+
+        if (data instanceof ForumMessageData) {
+            ForumData f = ((ForumMessageData) data).getForum();
+
+            return PopupMenuBuilder.getForumViewMenu(f, false, appControl);
         }
 
-        @Override
-        protected Void perform() throws Exception {
-            IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
-
-            try {
-                Forum forum = fah.getForumById(forumId);
-                if (forum != null) {
-                    publish(forum);
-                }
-            } catch (StorageException e) {
-                log.error("Can not load forum information for forum id = " + forumId, e);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void process(List<Forum> chunks) {
-            for (Forum f : chunks) {
-                MessageData fd = new MessageData(
-                        -1,
-                        -1,
-                        -1,
-                        forumId,
-                        -1,
-                        f.getForumName(),
-                        f.getShortForumName(),
-                        -1,
-                        -1,
-                        true,
-                        null
-                );
-                model.getRoot().setMessageData(fd);
-                model.nodeChanged(model.getRoot());
-            }
-        }
+        return null;
     }
 
 }

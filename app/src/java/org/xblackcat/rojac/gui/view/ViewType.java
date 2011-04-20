@@ -12,7 +12,7 @@ public enum ViewType {
 
     private final IViewFactory factory;
 
-    ViewType(IViewFactory factory) {
+    private ViewType(IViewFactory factory) {
         this.factory = factory;
     }
 

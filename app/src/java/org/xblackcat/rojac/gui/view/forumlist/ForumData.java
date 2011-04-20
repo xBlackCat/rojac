@@ -39,7 +39,7 @@ public class ForumData {
         return subscribed;
     }
 
-    void setSubscribed(boolean subscribed) {
+    public void setSubscribed(boolean subscribed) {
         this.subscribed = subscribed;
     }
 
