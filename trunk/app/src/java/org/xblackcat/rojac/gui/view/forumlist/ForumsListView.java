@@ -83,7 +83,7 @@ public class ForumsListView extends AView {
                 ForumData forum = forumsModel.getValueAt(modelInd, 0);
 
                 if (e.isPopupTrigger()) {
-                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, ForumsListView.this.appControl);
+                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, true, ForumsListView.this.appControl);
 
                     menu.show(e.getComponent(), p.x, p.y);
                 } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
@@ -214,10 +214,10 @@ public class ForumsListView extends AView {
                         }
                     }
                 },
-                new IPacketProcessor<SubscriptionChanged>() {
+                new IPacketProcessor<SubscriptionChangedPacket>() {
                     @Override
-                    public void process(SubscriptionChanged p) {
-                        for (SubscriptionChanged.Subscription s : p.getNewSubscriptions()) {
+                    public void process(SubscriptionChangedPacket p) {
+                        for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
                             forumsModel.setSubscribed(s.getForumId(), s.isSubscribed());
                         }
                     }

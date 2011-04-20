@@ -1,24 +1,21 @@
 package org.xblackcat.rojac.gui.dialog.subscribtion;
 
-import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.SubscriptionChanged;
+import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * @author xBlackCat
@@ -71,7 +68,7 @@ public class SubscriptionDialog extends JDialog {
                 new AnOkAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        final SubscriptionChanged packet = model.getSubscription();
+                        final SubscriptionChangedPacket packet = model.getSubscription();
                         if (packet.isNotEmpty()) {
                             new ForumSubscriber(packet).execute();
                         }
@@ -90,16 +87,16 @@ public class SubscriptionDialog extends JDialog {
     }
 
     private class ForumSubscriber extends RojacWorker<Void, Void> {
-        private final SubscriptionChanged packet;
+        private final SubscriptionChangedPacket packet;
 
-        public ForumSubscriber(SubscriptionChanged packet) {
+        public ForumSubscriber(SubscriptionChangedPacket packet) {
             this.packet = packet;
         }
 
         @Override
         protected Void perform() throws Exception {
             IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
-            for (SubscriptionChanged.Subscription s : packet.getNewSubscriptions()) {
+            for (SubscriptionChangedPacket.Subscription s : packet.getNewSubscriptions()) {
                 fah.setSubscribeForum(s.getForumId(), s.isSubscribed());
             }
             return null;

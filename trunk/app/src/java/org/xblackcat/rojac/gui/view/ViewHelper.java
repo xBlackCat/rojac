@@ -28,7 +28,6 @@ public final class ViewHelper {
         ViewId id = v.getId();
         // Store view id for future identification.
         out.writeObject(id);
-        out.writeObject(view.getTitle());
 
         IViewLayout layout = v.storeLayout();
 
@@ -50,9 +49,8 @@ public final class ViewHelper {
      * @throws IOException            will be thrown if read from stream can not be performed.
      * @throws ClassNotFoundException will be thrown if object from stream can not be identified.
      */
-    public static View initializeView(ObjectInputStream in, IAppControl appControl) throws IOException, ClassNotFoundException {
+    public static IItemView initializeView(ObjectInputStream in, IAppControl appControl) throws IOException, ClassNotFoundException {
         ViewId id = (ViewId) in.readObject();
-        String title = (String) in.readObject();
         IItemView view = makeView(id, appControl);
 
         Object o = in.readObject();
@@ -68,7 +66,7 @@ public final class ViewHelper {
 
         view.loadItem(id.getId());
 
-        return new View(title, null, view.getComponent());
+        return view;
     }
 
     /**

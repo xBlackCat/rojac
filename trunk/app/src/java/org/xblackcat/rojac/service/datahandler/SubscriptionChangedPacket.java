@@ -6,10 +6,10 @@ import java.util.Collection;
  * @author xBlackCat
  */
 
-public class SubscriptionChanged implements IPacket {
+public class SubscriptionChangedPacket implements IPacket {
     private final Collection<Subscription> newSubscriptions;
 
-    public SubscriptionChanged(Collection<Subscription> newSubscriptions) {
+    public SubscriptionChangedPacket(Collection<Subscription> newSubscriptions) {
         this.newSubscriptions = newSubscriptions;
     }
 

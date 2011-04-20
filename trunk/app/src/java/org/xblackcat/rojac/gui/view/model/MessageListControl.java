@@ -115,4 +115,14 @@ public class MessageListControl implements IModelControl<Post> {
     public void resortModel(AThreadModel<Post> postAThreadModel) {
         // Nothing to do
     }
+
+    @Override
+    public JPopupMenu getTitlePopup(AThreadModel<Post> postAThreadModel, IAppControl appControl) {
+        return null;
+    }
+
+    @Override
+    public Icon getTitleIcon(AThreadModel<Post> postAThreadModel) {
+        return null;
+    }
 }

@@ -21,8 +21,6 @@ import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.ForumsUpdated;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.util.*;
@@ -276,10 +274,10 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         return view;
     }
 
-    private View addTabView(String viewName, final IItemView itemView) {
+    private View makeViewWindow(IItemView itemView) {
         final View view = new View(
-                viewName,
-                null,
+                "#" + itemView.getId().getAnchor(), // Default view name
+                itemView.getTabTitleIcon(),
                 itemView.getComponent()
         );
 
@@ -292,40 +290,11 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         props.setTitleProvider(SimpleDockingWindowTitleProvider.INSTANCE);
         props.setUndockEnabled(false);
 
-        itemView.addActionListener(new IActionListener() {
-            @Override
-            public void itemGotFocus(Integer forumId, Integer messageId) {
-            }
+        itemView.addActionListener(new TitleChangeTracker(itemView, view));
 
-            @Override
-            public void itemLostFocus(Integer forumId, Integer messageId) {
-            }
-
-            @Override
-            public void itemUpdated(Integer forumId, Integer messageId) {
-                String title = itemView.getTabTitle();
-                view.getViewProperties().setTitle(title);
-            }
-        });
+        view.setPopupMenuFactory(new ItemViewPopupFactory(itemView));
 
         openedViews.put(itemView.getId(), view);
-
-        DockingWindow rootWindow = threadsRootWindow.getWindow();
-        if (rootWindow != null) {
-            if (rootWindow instanceof TabWindow) {
-                ((TabWindow) rootWindow).addTab(view);
-            } else {
-                TabWindow tw = searchForTabWindow(rootWindow);
-                if (tw != null) {
-                    tw.addTab(view);
-                } else {
-                    rootWindow.split(view, Direction.RIGHT, 0.5f);
-                }
-            }
-        } else {
-            threadsRootWindow.setWindow(new TabWindow(view));
-        }
-
         return view;
     }
 
@@ -397,10 +366,27 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         IItemView v = ViewHelper.makeView(viewId, this);
 
-        c = addTabView("#" + viewId.getId(), v);
         v.loadItem(viewId.getId());
 
-        return c;
+        final View view = makeViewWindow(v);
+
+        DockingWindow rootWindow = threadsRootWindow.getWindow();
+        if (rootWindow != null) {
+            if (rootWindow instanceof TabWindow) {
+                ((TabWindow) rootWindow).addTab(view);
+            } else {
+                TabWindow tw = searchForTabWindow(rootWindow);
+                if (tw != null) {
+                    tw.addTab(view);
+                } else {
+                    rootWindow.split(view, Direction.RIGHT, 0.5f);
+                }
+            }
+        } else {
+            threadsRootWindow.setWindow(new TabWindow(view));
+        }
+
+        return view;
     }
 
     @Override
@@ -494,13 +480,9 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         @Override
         public View readView(ObjectInputStream in) throws IOException {
             try {
-                View view = ViewHelper.initializeView(in, MainFrame.this);
-                IView v = (IView) view.getComponent();
-                v.addStateChangeListener(navigationListener);
+                IItemView v = ViewHelper.initializeView(in, MainFrame.this);
 
-                ViewId id = v.getId();
-                openedViews.put(id, view);
-                return view;
+                return makeViewWindow(v);
             } catch (ClassNotFoundException e) {
                 log.error("Can not obtain state object.", e);
                 throw new IOException("Can not obtain state object.", e);

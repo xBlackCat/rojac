@@ -76,4 +76,23 @@ public interface IModelControl<T extends ITreeItem<T>> {
     boolean allowSearch();
 
     void resortModel(AThreadModel<T> model);
+
+    /**
+     * Returns an icon to be shown in view title (usually - in tab title)
+     *
+     * @param model threads model to provide state data.
+     *
+     * @return an icon or <code>null</code> if no icon is provided.
+     */
+    Icon getTitleIcon(AThreadModel<T> model);
+
+    /**
+     * Returns a popup menu for view title.
+     *
+     * @param model      threads model to provide state data.
+     * @param appControl application control provider.
+     *
+     * @return popup menu or <code>null</code> if no popup is provided.
+     */
+    JPopupMenu getTitlePopup(AThreadModel<T> model, IAppControl appControl);
 }

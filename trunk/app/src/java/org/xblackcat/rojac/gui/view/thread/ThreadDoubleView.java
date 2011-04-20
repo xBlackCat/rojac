@@ -180,4 +180,14 @@ public class ThreadDoubleView extends AnItemView {
     public String getTabTitle() {
         return masterView.getTabTitle();
     }
+
+    @Override
+    public JPopupMenu getTabTitleMenu() {
+        return masterView.getTabTitleMenu();
+    }
+
+    @Override
+    public Icon getTabTitleIcon() {
+        return masterView.getTabTitleIcon();
+    }
 }

@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui;
 
+import javax.swing.*;
+
 /**
  * Main class of item-related views like message pane or threads view.
  *
@@ -50,4 +52,18 @@ public interface IItemView extends IView {
      * @return title of a tab
      */
     String getTabTitle();
+
+    /**
+     * Returns an icon to be shown in view title (usually - in tab title)
+     *
+     * @return an icon or <code>null</code> if no icon is provided.
+     */
+    Icon getTabTitleIcon();
+
+    /**
+     * Returns a popup menu for view title.
+     *
+     * @return popup menu or <code>null</code> if no popup is provided.
+     */
+    JPopupMenu getTabTitleMenu();
 }

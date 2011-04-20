@@ -77,14 +77,16 @@ public class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getForumViewMenu(ForumData forum, IAppControl appControl) {
+    public static JPopupMenu getForumViewMenu(ForumData forum, boolean hasOpenForumAction, IAppControl appControl) {
         JPopupMenu menu = new JPopupMenu(forum.getForum().getForumName());
 
         final boolean subscribed = forum.isSubscribed();
         final int forumId = forum.getForumId();
 
-        menu.add(new OpenForumAction(appControl, forumId));
-        menu.addSeparator();
+        if (hasOpenForumAction) {
+            menu.add(new OpenForumAction(appControl, forumId));
+            menu.addSeparator();
+        }
 
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, forumId, true));
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, forumId, false));
