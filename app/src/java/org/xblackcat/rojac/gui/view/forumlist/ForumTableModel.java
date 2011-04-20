@@ -14,7 +14,7 @@ import java.util.List;
  * @author xBlackCat
  */
 
-public class ForumTableModel extends AbstractTableModel {
+class ForumTableModel extends AbstractTableModel {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     private List<ForumData> forums = new ArrayList<ForumData>();

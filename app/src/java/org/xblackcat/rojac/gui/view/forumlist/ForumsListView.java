@@ -83,7 +83,7 @@ public class ForumsListView extends AView {
                 ForumData forum = forumsModel.getValueAt(modelInd, 0);
 
                 if (e.isPopupTrigger()) {
-                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, forumsModel, ForumsListView.this.appControl);
+                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, ForumsListView.this.appControl);
 
                     menu.show(e.getComponent(), p.x, p.y);
                 } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {

@@ -47,6 +47,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
         editorComponent = component;
         this.clickCountToStart = 2;
         delegate = new EditorDelegate() {
+            @SuppressWarnings({"unchecked"})
             public void setValue(Object value) {
                 component.setValue(value);
             }
