@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.popup;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
-import org.xblackcat.rojac.gui.view.forumlist.ForumTableModel;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.LinkUtils;
@@ -78,7 +77,7 @@ public class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getForumViewMenu(ForumData forum, ForumTableModel forumsModel, IAppControl appControl) {
+    public static JPopupMenu getForumViewMenu(ForumData forum, IAppControl appControl) {
         JPopupMenu menu = new JPopupMenu(forum.getForum().getForumName());
 
         final boolean subscribed = forum.isSubscribed();
@@ -96,7 +95,7 @@ public class PopupMenuBuilder {
 
         {
             JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.Popup_View_Forums_Subscribe.get(), subscribed);
-            mi.addActionListener(new SubscribeChangeListener(forumId, forumsModel, subscribed));
+            mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
             menu.add(mi);
         }
 
