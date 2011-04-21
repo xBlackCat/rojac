@@ -7,14 +7,15 @@ import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.IViewState;
+import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
+import org.xblackcat.rojac.gui.component.UpdateForumListAction;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.*;
-import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -27,7 +28,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -57,39 +57,31 @@ public class ForumsListView extends AView {
 
         forums.setDefaultRenderer(ForumData.class, new MultiLineForumRenderer());
 //        forums.setDefaultRenderer(ForumData.class, new ForumCellRenderer());
-        forums.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                checkMenu(e);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                checkMenu(e);
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                checkMenu(e);
-            }
-
-            private void checkMenu(MouseEvent e) {
-                final Point p = e.getPoint();
-
-                int ind = forums.rowAtPoint(p);
+        forums.addMouseListener(new PopupMouseAdapter() {
+            private ForumData getForumData(MouseEvent e) {
+                int ind = forums.rowAtPoint(e.getPoint());
 
                 int modelInd = forums.convertRowIndexToModel(ind);
 
-                ForumData forum = forumsModel.getValueAt(modelInd, 0);
+                return forumsModel.getValueAt(modelInd, 0);
+            }
 
-                if (e.isPopupTrigger()) {
-                    JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(forum, true, ForumsListView.this.appControl);
+            @Override
+            protected void triggerDoubleClick(MouseEvent e) {
+                int forumId = getForumData(e).getForumId();
+                ForumsListView.this.appControl.openTab(ViewType.Forum.makeId(forumId));
+            }
 
-                    menu.show(e.getComponent(), p.x, p.y);
-                } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
-                    int forumId = forum.getForum().getForumId();
-                    ForumsListView.this.appControl.openTab(ViewType.Forum.makeId(forumId));
-                }
+            @Override
+            protected void triggerPopup(MouseEvent e) {
+                JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(
+                        getForumData(e),
+                        true,
+                        ForumsListView.this.appControl
+                );
+
+                final Point p = e.getPoint();
+                menu.show(e.getComponent(), p.x, p.y);
             }
         });
 
@@ -138,7 +130,7 @@ public class ForumsListView extends AView {
                 )
         );
 
-        JButton updateListButton = WindowsUtils.setupImageButton("update", new UpdateForumListAction());
+        JButton updateListButton = WindowsUtils.setupImageButton("update", new UpdateForumListAction(appControl.getMainFrame()));
 
         JToolBar toolBar = WindowsUtils.createToolBar(
                 updateListButton,
@@ -301,16 +293,6 @@ public class ForumsListView extends AView {
                 loadForumStatistic(forum.getForumId());
             }
 
-        }
-    }
-
-    private class UpdateForumListAction extends AButtonAction {
-        public UpdateForumListAction() {
-            super(Messages.View_Forums_Button_Update);
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Request.GET_FORUMS_LIST.process(SwingUtilities.windowForComponent(ForumsListView.this));
         }
     }
 

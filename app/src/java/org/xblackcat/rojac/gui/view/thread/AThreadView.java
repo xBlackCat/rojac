@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.IViewState;
+import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.view.AnItemView;
@@ -568,36 +569,24 @@ public abstract class AThreadView extends AnItemView {
         }
     }
 
-    protected class ItemListener extends MouseAdapter {
+    protected class ItemListener extends PopupMouseAdapter {
         @Override
-        public void mouseClicked(MouseEvent e) {
-            checkMenu(e);
+        protected void triggerDoubleClick(MouseEvent e) {
         }
 
         @Override
-        public void mousePressed(MouseEvent e) {
-            checkMenu(e);
-        }
+        protected void triggerPopup(MouseEvent e) {
+            Point p = e.getPoint();
 
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            checkMenu(e);
-        }
+            TreePath path = getPathForLocation(p);
 
-        private void checkMenu(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                Point p = e.getPoint();
+            if (path != null) {
+                Post mi = (Post) path.getLastPathComponent();
 
-                TreePath path = getPathForLocation(p);
+                JPopupMenu m = modelControl.getItemMenu(mi, appControl);
 
-                if (path != null) {
-                    Post mi = (Post) path.getLastPathComponent();
-
-                    JPopupMenu m = modelControl.getItemMenu(mi, appControl);
-
-                    if (m != null) {
-                        m.show(e.getComponent(), p.x, p.y);
-                    }
+                if (m != null) {
+                    m.show(e.getComponent(), p.x, p.y);
                 }
             }
         }

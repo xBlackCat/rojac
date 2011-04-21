@@ -4,6 +4,7 @@ import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.IViewState;
+import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
@@ -34,38 +35,26 @@ public class FavoritesView extends AView {
 
         add(scrollPane);
 
-        favoritesList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                checkMenu(e);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                checkMenu(e);
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                checkMenu(e);
-            }
-
-            private void checkMenu(MouseEvent e) {
-                final Point p = e.getPoint();
-
-                int ind = favoritesList.rowAtPoint(p);
+        favoritesList.addMouseListener(new PopupMouseAdapter() {
+            private IFavorite getFavorite(MouseEvent e) {
+                int ind = favoritesList.rowAtPoint(e.getPoint());
 
                 int modelInd = favoritesList.convertRowIndexToModel(ind);
 
-                IFavorite favorite = favoritesModel.getValueAt(modelInd, 0);
+                return favoritesModel.getValueAt(modelInd, 0);
+            }
 
-                if (e.isPopupTrigger()) {
-                    JPopupMenu menu = PopupMenuBuilder.getFavoritesMenu(favorite, appControl);
-//
-                    menu.show(e.getComponent(), p.x, p.y);
-                } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
-                    appControl.openTab(ViewType.Favorite.makeId(favorite.getId()));
-                }
+            @Override
+            protected void triggerDoubleClick(MouseEvent e) {
+                appControl.openTab(ViewType.Favorite.makeId(getFavorite(e).getId()));
+            }
+
+            @Override
+            protected void triggerPopup(MouseEvent e) {
+                JPopupMenu menu = PopupMenuBuilder.getFavoritesMenu(getFavorite(e), appControl);
+
+                Point p = e.getPoint();
+                menu.show(e.getComponent(), p.x, p.y);
             }
         });
 
