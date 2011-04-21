@@ -41,4 +41,9 @@ class ForumLoader extends RojacWorker<Void, Forum> {
     protected void process(java.util.List<Forum> forums) {
         model.addForums(forums);
     }
+
+    @Override
+    protected void done() {
+        model.fireTableDataChanged();
+    }
 }

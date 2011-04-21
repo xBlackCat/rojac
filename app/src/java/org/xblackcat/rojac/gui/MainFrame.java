@@ -620,7 +620,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             SubscriptionDialog dlg = new SubscriptionDialog(MainFrame.this);
 
             WindowsUtils.center(dlg, MainFrame.this);
-            dlg.setVisible(true);
+            dlg.showDialog(MainFrame.this);
         }
     }
 }

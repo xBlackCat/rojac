@@ -1,15 +1,19 @@
 package org.xblackcat.rojac.gui.dialog.subscribtion;
 
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
+import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -23,13 +27,37 @@ import java.util.Arrays;
 public class SubscriptionDialog extends JDialog {
     private SubscribeForumModel model = new SubscribeForumModel();
 
-    public SubscriptionDialog(Window owner) {
-        super(owner, Messages.Dialog_Subscription_Title.get(),  ModalityType.TOOLKIT_MODAL);
+    public SubscriptionDialog(final Window owner) {
+        super(owner, Messages.Dialog_Subscription_Title.get());
 
         initializeLayout();
 
         pack();
         setSize(400, 500);
+
+        model.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                // Handle event 'forums loaded'
+                if (e.getFirstRow() == 0 &&
+                        e.getLastRow() == Integer.MAX_VALUE &&
+                        e.getColumn() == TableModelEvent.ALL_COLUMNS &&
+                        e.getType() == TableModelEvent.UPDATE) {
+                    if (model.getRowCount() == 0) {
+                        // No forums exists. Ask for load them
+                        int res = JOptionPane.showConfirmDialog(
+                                SubscriptionDialog.this,
+                                "No forums exists. Do you want to load them now?",
+                                "No forums",
+                                JOptionPane.YES_NO_OPTION);
+
+                        if (res == JOptionPane.YES_OPTION) {
+                            Request.GET_FORUMS_LIST.process(owner);
+                        }
+                    }
+                }
+            }
+        });
 
         new ForumLoader(model).execute();
     }
@@ -84,6 +112,24 @@ public class SubscriptionDialog extends JDialog {
         ), BorderLayout.SOUTH);
 
         setContentPane(content);
+    }
+
+    public void showDialog(IAppControl appControl) {
+        final IDataDispatcher dispatcher = ServiceFactory.getInstance().getDataDispatcher();
+
+        final IDataHandler handler = new IDataHandler() {
+            @Override
+            public void processPacket(IPacket packet) {
+                if (packet instanceof ForumsUpdated) {
+                    new ForumLoader(model).execute();
+                }
+            }
+        };
+
+        dispatcher.addDataHandler(handler);
+        setModalityType(ModalityType.DOCUMENT_MODAL);
+        setVisible(true);
+        dispatcher.removeDataHandler(handler);
     }
 
     private class ForumSubscriber extends RojacWorker<Void, Void> {
