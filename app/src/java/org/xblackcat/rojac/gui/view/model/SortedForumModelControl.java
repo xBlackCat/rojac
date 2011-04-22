@@ -28,15 +28,23 @@ public class SortedForumModelControl extends AThreadsModelControl {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     @Override
-    public void fillModelByItemId(final AThreadModel<Post> model, int forumId) {
+    public void fillModelByItemId(final AThreadModel<Post> model, final int forumId) {
         assert RojacUtils.checkThread(true);
 
         final ForumRoot rootItem = new ForumRoot(forumId);
 
         model.setRoot(rootItem);
 
-        new ForumInfoLoader(model, forumId).execute();
-        new ThreadsLoader(forumId, rootItem, model).execute();
+        final ForumInfoLoader infoLoader = new ForumInfoLoader(model, forumId) {
+            @Override
+            protected void done() {
+                super.done();
+                if (model.getRoot() != null) {
+                    new ThreadsLoader(forumId, rootItem, model).execute();
+                }
+            }
+        };
+        infoLoader.execute();
     }
 
     private void markForumRead(AThreadModel<Post> model, boolean read) {

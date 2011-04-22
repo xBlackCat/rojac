@@ -48,8 +48,10 @@ class PostTreeCellRenderer extends DefaultTreeCellRenderer {
     }
 
     private static PostIcon getPostIcon(Post p) {
-        boolean isOwnPost = p.getMessageData().getUserId() == Property.RSDN_USER_ID.get();
-        boolean isResponse = p.getParent() != null && p.getParent().getMessageData().getUserId() == Property.RSDN_USER_ID.get();
+        final int userId = Property.RSDN_USER_ID.get(-1);
+
+        boolean isOwnPost = p.getMessageData().getUserId() == userId;
+        boolean isResponse = p.getParent() != null && p.getParent().getMessageData().getUserId() == userId;
         boolean hasResponse = p.getRepliesAmount() > 0;
 
         ReadStatus s = p.isRead();

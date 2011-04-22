@@ -64,8 +64,6 @@ public final class ViewHelper {
             view.setState((IViewState) o);
         }
 
-        view.loadItem(id.getId());
-
         return view;
     }
 
