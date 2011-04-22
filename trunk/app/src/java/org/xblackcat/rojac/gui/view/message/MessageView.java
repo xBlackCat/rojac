@@ -14,13 +14,12 @@ import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.ViewId;
+import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
-import org.xblackcat.rojac.service.datahandler.IMessageUpdatePacket;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.LinkUtils;
@@ -258,8 +257,21 @@ public class MessageView extends AnItemView {
                             loadItem(messageId);
                         }
                     }
-                }
-
+                },
+                new IPacketProcessor<SetPostReadPacket>() {
+                    @Override
+                    public void process(SetPostReadPacket p) {
+                        if (p.isRecursive()) {
+                            if (p.getPostId() == messageData.getThreadRootId()) {
+                                loadItem(messageId);
+                            }
+                        } else {
+                            if (p.getPostId() == messageId) {
+                               loadItem(messageId);
+                            }
+                        }
+                    }
+                },
         };
     }
 
@@ -319,12 +331,12 @@ public class MessageView extends AnItemView {
 
     @Override
     public JPopupMenu getTabTitleMenu() {
-        return null;
+        return PopupMenuBuilder.getMessageTabMenu(messageData, appControl);
     }
 
     @Override
     public Icon getTabTitleIcon() {
-        return null;
+        return messageData == null ? null : MessageUtils.getPostIcon(messageData);
     }
 
     private class HyperlinkHandler implements HyperlinkListener {

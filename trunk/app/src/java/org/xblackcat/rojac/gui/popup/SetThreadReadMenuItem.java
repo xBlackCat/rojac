@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.gui.popup;
 
 import gnu.trove.TIntHashSet;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.view.model.ITreeItem;
+import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -18,14 +20,14 @@ import java.awt.event.ActionListener;
  * @author xBlackCat
  */
 class SetThreadReadMenuItem extends JMenuItem {
-    public SetThreadReadMenuItem(Messages text, final ITreeItem<?> post, final boolean read) {
+    public SetThreadReadMenuItem(Messages text, final Post post, final boolean read) {
         super(text.get());
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (post instanceof Thread) {
                     // Mark whole thread.
-                    new ThreadReadFlagSetter(read, (Thread) post).execute();
+                    new ThreadReadFlagSetter(read, post.getMessageData()).execute();
                 } else {
                     // Mark sub-tree as read
                     new SubTreeReadFlagSetter(read, post).execute();
@@ -36,11 +38,11 @@ class SetThreadReadMenuItem extends JMenuItem {
 
     private class ThreadReadFlagSetter extends RojacWorker<Void, Void> {
         private final boolean read;
-        private final Thread threadRoot;
+        private final MessageData threadRoot;
 
-        public ThreadReadFlagSetter(boolean read, Thread threadRoot) {
+        public ThreadReadFlagSetter(boolean read, MessageData messageData) {
             this.read = read;
-            this.threadRoot = threadRoot;
+            this.threadRoot = messageData;
         }
 
         @Override

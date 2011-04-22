@@ -12,5 +12,7 @@ public enum OpenMessageMethod {
     /**
      * Open a new tab with message view and show the message there.
      */
-    NewTab
+    NewTab,
+    InThread,
+    InForum,
 }

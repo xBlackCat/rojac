@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.component.InvokeExtMarkDialog;
 import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
@@ -13,8 +14,15 @@ import javax.swing.*;
  * @author xBlackCat
  */
 class ExtendedMarkRead extends JMenuItem {
-    public ExtendedMarkRead(Messages title, Post post, IAppControl appControl) {
-        this(title, appControl, Scope.Thread, post.getMessageData().getMessageDate(), post.getForumId(), post.getThreadRoot().getMessageId());
+    public ExtendedMarkRead(Messages title, MessageData messageData, IAppControl appControl) {
+        this(
+                title,
+                appControl,
+                Scope.Thread,
+                messageData.getMessageDate(),
+                messageData.getForumId(),
+                messageData.getThreadRootId()
+        );
     }
 
     public ExtendedMarkRead(Messages title, Forum forum, IAppControl appControl) {
