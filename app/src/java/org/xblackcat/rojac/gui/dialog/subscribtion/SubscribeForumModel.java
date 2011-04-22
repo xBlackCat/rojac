@@ -98,4 +98,13 @@ class SubscribeForumModel extends AbstractTableModel {
 
         return new SubscriptionChangedPacket(subscriptions);
     }
+
+    public void clear() {
+        int rows = data.size();
+        if (rows > 0) {
+            data.clear();
+
+            fireTableRowsDeleted(0, rows - 1);
+        }
+    }
 }

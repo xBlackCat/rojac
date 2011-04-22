@@ -2,15 +2,12 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.dialog.extendmark.ExtendedMarkDialog;
+import org.xblackcat.rojac.gui.component.InvokeExtMarkDialog;
 import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
 import org.xblackcat.rojac.gui.view.model.Post;
-import org.xblackcat.rojac.gui.view.thread.SetMessagesReadFlagEx;
 import org.xblackcat.rojac.i18n.Messages;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author xBlackCat
@@ -34,24 +31,7 @@ class ExtendedMarkRead extends JMenuItem {
     ) {
         super(title.get());
 
-        addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ExtendedMarkDialog emd = new ExtendedMarkDialog(appControl.getMainFrame());
-
-                if (!emd.selectDate(messageDate, scope)) {
-                    return;
-                }
-
-                new SetMessagesReadFlagEx(
-                        emd.getReadStatus(),
-                        emd.getDateDirection(),
-                        emd.getSelectedDate(),
-                        forumId,
-                        topicId,
-                        emd.getScope()
-                ).execute();
-            }
-        });
+        addActionListener(new InvokeExtMarkDialog(messageDate, scope, forumId, topicId, appControl.getMainFrame()));
     }
+
 }
