@@ -103,7 +103,7 @@ public class MessageListControl implements IModelControl<Post> {
 
     @Override
     public JPopupMenu getItemMenu(Post post, IAppControl appControl) {
-        return PopupMenuBuilder.getTreeViewMenu(post, appControl, true, false);
+        return PopupMenuBuilder.getTreeViewMenu(post, appControl, false);
     }
 
     @Override

@@ -17,17 +17,28 @@ import java.awt.event.ActionListener;
 class OpenMessageAction implements ActionListener {
     private final IAppControl appControl;
     private final int messageId;
-    protected OpenMessageMethod openMessageMethod;
+    private final int rootId;
+    private final OpenMessageMethod openMessageMethod;
 
-    public OpenMessageAction(IAppControl appControl, int messageId, OpenMessageMethod openMessageMethod) {
+    public OpenMessageAction(int messageId, int rootId, IAppControl appControl, OpenMessageMethod openMessageMethod) {
         this.appControl = appControl;
         this.messageId = messageId;
         this.openMessageMethod = openMessageMethod;
+        this.rootId = rootId;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // TODO: combine openTab and openMessage into openMessageInTab
         switch (openMessageMethod) {
+            case InThread:
+                appControl.openTab(ViewType.SingleThread.makeId(rootId));
+                appControl.openMessage(messageId);
+                break;
+            case InForum:
+                appControl.openTab(ViewType.Forum.makeId(rootId));
+                appControl.openMessage(messageId);
+                break;
             case Default:
                 appControl.openMessage(messageId);
                 break;

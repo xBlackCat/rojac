@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.popup;
 
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
@@ -50,20 +51,6 @@ final class MenuHelper {
         return menu;
     }
 
-    static JMenuItem openMessage(int messageId, IAppControl appControl) {
-        JMenuItem open = new JMenuItem();
-        open.setText(Messages.Popup_View_ThreadsTree_OpenMessage.get());
-        open.addActionListener(new OpenMessageAction(appControl, messageId, OpenMessageMethod.Default));
-        return open;
-    }
-
-    static JMenuItem openMessageInTab(int messageId, IAppControl appControl) {
-        JMenuItem open = new JMenuItem();
-        open.setText(Messages.Popup_View_ThreadsTree_OpenMessage_NewTab.get());
-        open.addActionListener(new OpenMessageAction(appControl, messageId, OpenMessageMethod.NewTab));
-        return open;
-    }
-
     /**
      * Adds to an menu a 'open in browser' action if it supported by current OS.
      *
@@ -97,37 +84,41 @@ final class MenuHelper {
 
         menu.addSeparator();
 
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, message.getForumId(), true));
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, message.getForumId(), false));
+        final MessageData messageData = message.getMessageData();
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, messageData.getForumId(), true));
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, messageData.getForumId(), false));
 
         menu.addSeparator();
 
-        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, message, appControl));
+        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, messageData, appControl));
 
         return menu;
     }
 
     /**
      * Creates a submenu to add the
-     * @param post
+     *
+     * @param messageData
      * @param appControl
+     *
      * @return
      */
-    public static JMenuItem favoritesSubmenu(Post post, IAppControl appControl) {
+    static JMenuItem favoritesSubmenu(MessageData messageData, IAppControl appControl) {
         JMenu menu = new JMenu(Messages.Popup_Favorites_Add.get());
 
-        menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_Thread.get(), FavoriteType.Thread, post.getMessageData().getThreadRootId()));
+        menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_Thread.get(), FavoriteType.Thread, messageData.getThreadRootId()));
 //        menu.add(new AddToFavoriteMenuItem("Sub-thread", FavoriteType.SubThread, post.getMessageId()));
         menu.addSeparator();
 
-        String userName = post.getMessageData().getUserName();
-        int userId = post.getMessageData().getUserId();
+        String userName = messageData.getUserName();
+        int userId = messageData.getUserId();
 
         menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_UserPosts.get(userName), FavoriteType.UserPosts, userId));
         menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_ToUserReplies.get(userName), FavoriteType.UserResponses, userId));
 //        menu.addSeparator();
-//        menu.add(new AddToFavoriteMenuItem("Add category", FavoriteType.Category, post.getMessageData().getCategory()));
+//        menu.add(new AddToFavoriteMenuItem("Add category", FavoriteType.Category, messageData.getCategory()));
 
         return menu;
     }
+
 }

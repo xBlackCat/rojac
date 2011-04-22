@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
@@ -59,8 +61,8 @@ public class PopupMenuBuilder {
 
         menu.addSeparator();
         if (messageId != null) {
-            menu.add(MenuHelper.openMessage(messageId, appControl));
-            menu.add(MenuHelper.openMessageInTab(messageId, appControl));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage, OpenMessageMethod.Default));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
             menu.addSeparator();
             MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, stringUrl);
             MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
@@ -105,7 +107,7 @@ public class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getTreeViewMenu(Post message, IAppControl appControl, boolean openMessage, boolean addFavorites) {
+    public static JPopupMenu getTreeViewMenu(Post message, IAppControl appControl, boolean addFavorites) {
         int messageId = message.getMessageId();
         final JPopupMenu menu = new JPopupMenu("#" + messageId);
 
@@ -114,14 +116,13 @@ public class PopupMenuBuilder {
 
         menu.add(item);
 
-        if (openMessage) {
-            menu.add(MenuHelper.openMessage(messageId, appControl));
-        }
-        menu.add(MenuHelper.openMessageInTab(messageId, appControl));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage, OpenMessageMethod.Default));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
+
         menu.addSeparator();
 
-        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Read, message, true));
-        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Unread, message, false));
+        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Read, message.getMessageData(), true));
+        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Unread, message.getMessageData(), false));
 
         menu.add(MenuHelper.markReadUnreadSubmenu(message, appControl));
 
@@ -132,8 +133,36 @@ public class PopupMenuBuilder {
 
         if (addFavorites) {
             menu.addSeparator();
-            menu.add(MenuHelper.favoritesSubmenu(message, appControl));
+            menu.add(MenuHelper.favoritesSubmenu(message.getMessageData(), appControl));
         }
+
+        return menu;
+    }
+
+    public static JPopupMenu getMessageTabMenu(MessageData message, IAppControl appControl) {
+        int messageId = message.getMessageId();
+        final JPopupMenu menu = new JPopupMenu("#" + messageId);
+
+        JMenuItem item = new JMenuItem("#" + messageId);
+        item.setEnabled(false);
+
+        menu.add(item);
+
+        menu.add(new OpenMessageMenuItem(messageId, message.getThreadRootId(), appControl, Messages.Popup_View_ThreadsTree_OpenMessage, OpenMessageMethod.InThread));
+        menu.add(new OpenMessageMenuItem(messageId, message.getForumId(), appControl, Messages.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.InForum));
+
+        menu.addSeparator();
+
+        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Read, message, true));
+        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Unread, message, false));
+
+        menu.addSeparator();
+        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
+        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+        menu.add(MenuHelper.copyLinkSubmenu(messageId));
+
+        menu.addSeparator();
+        menu.add(MenuHelper.favoritesSubmenu(message, appControl));
 
         return menu;
     }
@@ -149,5 +178,4 @@ public class PopupMenuBuilder {
 
         return menu;
     }
-
 }
