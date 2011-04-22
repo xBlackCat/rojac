@@ -116,6 +116,9 @@ public enum Messages {
     Dialog_Subscription_Header_ShortForumName,
     Dialog_Subscription_Header_FullForumName,
 
+    WarnDialog_NoForums_Title,
+    WarnDialog_NoForums_Question,
+
     // Load extra messages dialog texts
     Dialog_LoadMessage_Title,
     Dialog_LoadMessage_Label,
@@ -132,6 +135,7 @@ public enum Messages {
     // Edit message dialog related texts
     ErrorDialog_MessageNotFound_Message,
     ErrorDialog_MessageNotFound_Title,
+
     Message_Response_Header,
 
     // Extended mark messages dialgo related

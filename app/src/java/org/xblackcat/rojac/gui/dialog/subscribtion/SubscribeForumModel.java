@@ -79,9 +79,6 @@ class SubscribeForumModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public void getChanged() {
-    }
-
     /**
      * Returns a packet with filled new subscription state for forums.
      *

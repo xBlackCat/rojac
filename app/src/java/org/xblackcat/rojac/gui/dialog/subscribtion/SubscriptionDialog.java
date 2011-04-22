@@ -4,6 +4,7 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.component.*;
 import org.xblackcat.rojac.gui.dialog.extendmark.ExtendedMarkDialog;
 import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
+import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
@@ -55,10 +56,10 @@ public class SubscriptionDialog extends JDialog {
                         e.getType() == TableModelEvent.UPDATE) {
                     if (model.getRowCount() == 0) {
                         // No forums exists. Ask for load them
-                        int res = JOptionPane.showConfirmDialog(
+                        int res = JLOptionPane.showConfirmDialog(
                                 SubscriptionDialog.this,
-                                "No forums exists. Do you want to load them now?",
-                                "No forums",
+                                Messages.WarnDialog_NoForums_Question.get(),
+                                Messages.WarnDialog_NoForums_Title.get(),
                                 JOptionPane.YES_NO_OPTION);
 
                         if (res == JOptionPane.YES_OPTION) {
