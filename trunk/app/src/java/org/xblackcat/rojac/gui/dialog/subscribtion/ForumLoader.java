@@ -21,6 +21,7 @@ class ForumLoader extends RojacWorker<Void, Forum> {
 
     public ForumLoader(SubscribeForumModel model) {
         this.model = model;
+        model.clear();
     }
 
     @Override

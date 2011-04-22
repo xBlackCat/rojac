@@ -1,8 +1,9 @@
 package org.xblackcat.rojac.gui.dialog.subscribtion;
 
 import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.component.ACancelAction;
-import org.xblackcat.rojac.gui.component.AnOkAction;
+import org.xblackcat.rojac.gui.component.*;
+import org.xblackcat.rojac.gui.dialog.extendmark.ExtendedMarkDialog;
+import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
@@ -61,7 +62,7 @@ public class SubscriptionDialog extends JDialog {
                                 JOptionPane.YES_NO_OPTION);
 
                         if (res == JOptionPane.YES_OPTION) {
-                            Request.GET_FORUMS_LIST.process(owner);
+                            Request.GET_FORUMS_LIST.process(SubscriptionDialog.this);
                         }
                     }
                 }
@@ -99,6 +100,12 @@ public class SubscriptionDialog extends JDialog {
         sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(2, SortOrder.ASCENDING), new RowSorter.SortKey(1, SortOrder.ASCENDING)));
 
         forumList.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+
+        content.add(WindowsUtils.createToolBar(
+                WindowsUtils.setupImageButton("update", new UpdateForumListAction(SubscriptionDialog.this)),
+                null,
+                WindowsUtils.setupImageButton("extented_read", new InvokeExtMarkDialog(this))
+        ), BorderLayout.NORTH);
 
         content.add(new JScrollPane(forumList), BorderLayout.CENTER);
         content.add(WindowsUtils.createButtonsBar(
