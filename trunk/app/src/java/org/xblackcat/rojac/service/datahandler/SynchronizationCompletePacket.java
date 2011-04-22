@@ -25,9 +25,9 @@ public class SynchronizationCompletePacket implements IPacket, IForumUpdatePacke
     }
 
     public SynchronizationCompletePacket(TIntHashSet forumIds, TIntHashSet threadIds, TIntHashSet messageIds) {
-        this.forumIds = forumIds;
-        this.messageIds = messageIds;
-        this.threadIds = threadIds;
+        this.forumIds = (TIntHashSet) forumIds.clone();
+        this.messageIds = (TIntHashSet) messageIds.clone();
+        this.threadIds = (TIntHashSet) threadIds.clone();
     }
 
     @Override
