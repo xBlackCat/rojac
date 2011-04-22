@@ -10,16 +10,15 @@ import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
-import java.util.List;
-
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ForumInfoLoader extends RojacWorker<Void, Forum> {
     private static final Log log = LogFactory.getLog(ForumInfoLoader.class);
 
     private final int forumId;
     private AThreadModel<Post> model;
+    private Forum forum;
 
     public ForumInfoLoader(AThreadModel<Post> model, int forumId) {
         this.forumId = forumId;
@@ -31,10 +30,7 @@ class ForumInfoLoader extends RojacWorker<Void, Forum> {
         IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
 
         try {
-            Forum forum = fah.getForumById(forumId);
-            if (forum != null) {
-                publish(forum);
-            }
+            forum = fah.getForumById(forumId);
         } catch (StorageException e) {
             log.error("Can not load forum information for forum id = " + forumId, e);
         }
@@ -43,11 +39,13 @@ class ForumInfoLoader extends RojacWorker<Void, Forum> {
     }
 
     @Override
-    protected void process(List<Forum> chunks) {
-        for (Forum f : chunks) {
-            MessageData fd = new ForumMessageData(f);
+    protected void done() {
+        if (forum != null) {
+            MessageData fd = new ForumMessageData(forum);
             model.getRoot().setMessageData(fd);
             model.nodeChanged(model.getRoot());
+        } else {
+            model.setRoot(null);
         }
     }
 }

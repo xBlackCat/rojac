@@ -44,4 +44,9 @@ public class ViewId implements Serializable {
     public String getAnchor() {
         return type.name() + "_" + id;
     }
+
+    @Override
+    public String toString() {
+        return "ViewId[" + type.name() + ":" + id + "]";
+    }
 }

@@ -616,16 +616,11 @@ public abstract class AThreadView extends AnItemView {
 
         @Override
         public void treeStructureChanged(TreeModelEvent e) {
-            if (e.getPath() == null && model.isInitialized()) {
+            if (e.getPath() == null && model.isInitialized() && model.getRoot() != null) {
                 model.removeTreeModelListener(this);
                 if (messageId != 0) {
                     expandThread(messageId);
                 }
-                return;
-            }
-
-            if (model.getRoot() == null) {
-                appControl.closeTab(getId());
             }
         }
     }

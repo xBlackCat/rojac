@@ -26,9 +26,18 @@ import java.util.Arrays;
  */
 public class SubscriptionDialog extends JDialog {
     private SubscribeForumModel model = new SubscribeForumModel();
+    private final IDataHandler handler = new IDataHandler() {
+        @Override
+        public void processPacket(IPacket packet) {
+            if (packet instanceof ForumsUpdated) {
+                new ForumLoader(model).execute();
+            }
+        }
+    };
+    private final IDataDispatcher dispatcher = ServiceFactory.getInstance().getDataDispatcher();
 
     public SubscriptionDialog(final Window owner) {
-        super(owner, Messages.Dialog_Subscription_Title.get());
+        super(owner, Messages.Dialog_Subscription_Title.get(), ModalityType.MODELESS);
 
         initializeLayout();
 
@@ -58,6 +67,8 @@ public class SubscriptionDialog extends JDialog {
                 }
             }
         });
+
+        dispatcher.addDataHandler(handler);
 
         new ForumLoader(model).execute();
     }
@@ -100,36 +111,21 @@ public class SubscriptionDialog extends JDialog {
                         if (packet.isNotEmpty()) {
                             new ForumSubscriber(packet).execute();
                         }
+
+                        dispatcher.removeDataHandler(handler);
                         dispose();
                     }
                 },
                 new ACancelAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        dispatcher.removeDataHandler(handler);
                         dispose();
                     }
                 }
         ), BorderLayout.SOUTH);
 
         setContentPane(content);
-    }
-
-    public void showDialog(IAppControl appControl) {
-        final IDataDispatcher dispatcher = ServiceFactory.getInstance().getDataDispatcher();
-
-        final IDataHandler handler = new IDataHandler() {
-            @Override
-            public void processPacket(IPacket packet) {
-                if (packet instanceof ForumsUpdated) {
-                    new ForumLoader(model).execute();
-                }
-            }
-        };
-
-        dispatcher.addDataHandler(handler);
-        setModalityType(ModalityType.DOCUMENT_MODAL);
-        setVisible(true);
-        dispatcher.removeDataHandler(handler);
     }
 
     private class ForumSubscriber extends RojacWorker<Void, Void> {

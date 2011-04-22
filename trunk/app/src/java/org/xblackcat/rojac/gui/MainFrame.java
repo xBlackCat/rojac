@@ -366,8 +366,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         IItemView v = ViewHelper.makeView(viewId, this);
 
-        v.loadItem(viewId.getId());
-
         final View view = makeViewWindow(v);
 
         DockingWindow rootWindow = threadsRootWindow.getWindow();
@@ -386,18 +384,15 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             threadsRootWindow.setWindow(new TabWindow(view));
         }
 
+        v.loadItem(viewId.getId());
+
         return view;
     }
 
     @Override
     public void closeTab(ViewId viewId) {
         if (openedViews.containsKey(viewId)) {
-            View v = openedViews.remove(viewId);
-
-            Container parent = v.getParent();
-            if (parent != null) {
-                parent.remove(v);
-            }
+            openedViews.remove(viewId).close();
         }
     }
 
@@ -482,7 +477,11 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             try {
                 IItemView v = ViewHelper.initializeView(in, MainFrame.this);
 
-                return makeViewWindow(v);
+                View view = makeViewWindow(v);
+
+                v.loadItem(v.getId().getId());
+
+                return view;
             } catch (ClassNotFoundException e) {
                 log.error("Can not obtain state object.", e);
                 throw new IOException("Can not obtain state object.", e);
@@ -620,7 +619,8 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             SubscriptionDialog dlg = new SubscriptionDialog(MainFrame.this);
 
             WindowsUtils.center(dlg, MainFrame.this);
-            dlg.showDialog(MainFrame.this);
+
+            dlg.setVisible(true);
         }
     }
 }
