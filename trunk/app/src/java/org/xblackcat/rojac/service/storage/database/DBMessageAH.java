@@ -96,6 +96,15 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
+    public Collection<MessageData> getLatestTopics(int limit) throws StorageException {
+        return helper.execute(
+                Converters.TO_MESSAGE_DATA,
+                DataQuery.GET_LATEST_TOPIC_LIST,
+                limit
+        );
+    }
+
+    @Override
     public Iterable<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,

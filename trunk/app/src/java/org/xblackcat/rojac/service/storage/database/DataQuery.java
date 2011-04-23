@@ -43,6 +43,15 @@ public enum DataQuery implements IPropertiable {
      */
     GET_OBJECTS_MESSAGE_DATA,
     /**
+     * The query should fetch the message data properties in following order:
+     * <p/>
+     * id (int), topic id (int), parent id (int), forum id (int), user id (int), subject (String), user nick (String),
+     * message date (long), update date (long), read (boolean), rating (String)
+     * <p/>
+     * Parameter: limit (int)
+     */
+    GET_LATEST_TOPIC_LIST,
+    /**
      * The query should fetch the moderate object properties in following order:
      * <p/>
      * message id(int), user id(int), forum id(int), creation time(long)
