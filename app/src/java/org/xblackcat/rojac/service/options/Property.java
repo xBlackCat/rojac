@@ -72,6 +72,8 @@ public final class Property<T> {
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_READ_POST = create("rojac.view.styles.read_post", TextStyle.DEFAULT);
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_PARTIAL_READ_POST = create("rojac.view.styles.partial_read_post", TextStyle.DEFAULT);
 
+    public static final Property<Integer> VIEW_LATEST_POSTS_SIZE = create("rojac.view.latest_posts.list_size", 20);
+
     // Janus synchronizer properties
     public static final Property<Integer> SYNCHRONIZER_SCHEDULE_PERIOD = create("rojac.synchronizer.schedule.period", Integer.valueOf(0));
     public static final Property<Boolean> SYNCHRONIZER_SCHEDULE_AT_START = create("rojac.synchronizer.schedule.at_start", Boolean.FALSE);

@@ -89,6 +89,17 @@ public interface IMessageAH extends AH {
     Collection<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException;
 
     /**
+     * Loads latest N topics.
+     *
+     * @param limit
+     *
+     * @return array of messages data.
+     *
+     * @throws StorageException
+     */
+    Collection<MessageData> getLatestTopics(int limit) throws StorageException;
+
+    /**
      * Returns messages data for specified forum id.
      *
      * @param forumId target forum id

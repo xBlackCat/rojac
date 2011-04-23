@@ -12,7 +12,7 @@ import java.util.List;
  * @author xBlackCat
  */
 
-public class FavoritesModel extends AbstractTableModel {
+class FavoritesModel extends AbstractTableModel {
     private final List<IFavorite> favorites = new ArrayList<IFavorite>();
 
     @Override
