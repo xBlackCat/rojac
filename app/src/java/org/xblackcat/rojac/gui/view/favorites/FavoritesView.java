@@ -1,10 +1,7 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
 import org.xblackcat.rojac.data.IFavorite;
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.IViewLayout;
-import org.xblackcat.rojac.gui.IViewState;
-import org.xblackcat.rojac.gui.PopupMouseAdapter;
+import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
@@ -121,7 +118,7 @@ public class FavoritesView extends AView {
 
     @Override
     public IViewLayout storeLayout() {
-        return null;
+        return new NoViewLayout();
     }
 
     @Override

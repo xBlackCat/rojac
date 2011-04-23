@@ -34,7 +34,17 @@ public class SingleModelControl extends AThreadsModelControl {
                 rootItem.setMessageData(data);
                 model.nodeChanged(rootItem);
 
-                loadThread(model, rootItem, null);
+
+                rootItem.setLoadingState(LoadingState.Loading);
+
+                new ThreadLoader(rootItem, model, null) {
+                    @Override
+                    protected void done() {
+                        super.done();
+
+                        model.fireResortModel();
+                    }
+                }.execute();
             }
         }.execute();
     }

@@ -4,10 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.IViewLayout;
-import org.xblackcat.rojac.gui.IViewState;
-import org.xblackcat.rojac.gui.PopupMouseAdapter;
+import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.component.UpdateForumListAction;
@@ -165,7 +162,7 @@ public class ForumsListView extends AView {
 
     @Override
     public IViewLayout storeLayout() {
-        return null;
+        return new NoViewLayout();
     }
 
     @Override

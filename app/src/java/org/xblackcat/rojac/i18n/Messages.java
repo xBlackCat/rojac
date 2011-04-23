@@ -263,6 +263,9 @@ public enum Messages {
     Popup_View_ThreadsTree_Mark_ThreadUnread,
     Popup_View_ThreadsTree_Mark_Extended,
 
+    Popup_MessageTab_OpenMessageInThread,
+    Popup_MessageTab_OpenMessageInForum,
+
     Popup_Favorites_Add,
     Popup_Favorites_Add_Thread,
     Popup_Favorites_Add_UserPosts,
