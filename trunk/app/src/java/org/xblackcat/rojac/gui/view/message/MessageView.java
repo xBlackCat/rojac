@@ -9,6 +9,7 @@ import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.IViewState;
+import org.xblackcat.rojac.gui.NoViewLayout;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
@@ -305,12 +306,11 @@ public class MessageView extends AnItemView {
 
     @Override
     public IViewLayout storeLayout() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new NoViewLayout();
     }
 
     @Override
     public void setupLayout(IViewLayout o) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private void fillMarksButton(RatingCache ratings) {

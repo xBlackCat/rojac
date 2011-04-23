@@ -274,7 +274,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         return view;
     }
 
-    private View makeViewWindow(IItemView itemView) {
+    private View makeViewWindow(final IItemView itemView) {
         final View view = new View(
                 "#" + itemView.getId().getAnchor(), // Default view name
                 itemView.getTabTitleIcon(),
@@ -523,8 +523,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
             ViewId forumViewId = ViewType.Forum.makeId(data.getForumId());
 
-            openTab(forumViewId);
-            View c = openedViews.get(forumViewId);
+            View c = openTab(forumViewId);
             if (c != null) {
                 // Just in case :)
                 c.makeVisible();

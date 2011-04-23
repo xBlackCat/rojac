@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.gui.popup;
 
+import net.infonode.docking.View;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewType;
@@ -29,15 +31,15 @@ class OpenMessageAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO: combine openTab and openMessage into openMessageInTab
+        View view;
         switch (openMessageMethod) {
             case InThread:
-                appControl.openTab(ViewType.SingleThread.makeId(rootId));
-                appControl.openMessage(messageId);
+                view = appControl.openTab(ViewType.SingleThread.makeId(rootId));
+                ((IItemView) view.getComponent()).makeVisible(messageId);
                 break;
             case InForum:
-                appControl.openTab(ViewType.Forum.makeId(rootId));
-                appControl.openMessage(messageId);
+                view = appControl.openTab(ViewType.Forum.makeId(rootId));
+                ((IItemView) view.getComponent()).makeVisible(messageId);
                 break;
             case Default:
                 appControl.openMessage(messageId);
