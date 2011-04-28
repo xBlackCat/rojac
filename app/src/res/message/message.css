@@ -258,6 +258,9 @@ div.mod {
 
 .lineQuote {
     color: #338822;
+    font-size: 8px;
+    font-family: "Verdana";
+    line-height: 90%;
 }
 
 .tagline {

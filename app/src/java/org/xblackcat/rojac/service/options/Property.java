@@ -98,6 +98,8 @@ public final class Property<T> {
 
     public static final Property<Boolean> MESSAGE_PANE_SHOW_MARKS = create("rojac.viewer.show_marks_pane", Boolean.FALSE);
 
+    public static final Property<Boolean> TRAY_NOTIFICATION_SYNC_COMPLETE = create("rojac.tray.notification.", Boolean.TRUE);
+
     // Forum list view state properties.
     public static final Property<EnumSet<ForumFilterState>> VIEW_FORUM_LIST_FILTER = createPrivate("rojac.view.forum_list.filter", EnumSet.noneOf(ForumFilterState.class));
 
