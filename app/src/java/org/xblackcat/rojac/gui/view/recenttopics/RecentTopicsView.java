@@ -1,16 +1,16 @@
 package org.xblackcat.rojac.gui.view.recenttopics;
 
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.IViewLayout;
-import org.xblackcat.rojac.gui.IViewState;
+import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewId;
+import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 /**
  * @author xBlackCat
@@ -51,6 +51,24 @@ public class RecentTopicsView extends AView {
                 setText(text);
 
                 return this;
+            }
+        });
+
+        lastPostList.addMouseListener(new PopupMouseAdapter() {
+            private LastPostInfo getTopicInfo(MouseEvent e) {
+                int ind = lastPostList.locationToIndex(e.getPoint());
+
+                return model.getElementAt(ind);
+            }
+
+            @Override
+            protected void triggerDoubleClick(MouseEvent e) {
+                final LastPostInfo info = getTopicInfo(e);
+                appControl.openMessage(info.getTopicRoot().getMessageId(), OpenMessageMethod.Default);
+            }
+
+            @Override
+            protected void triggerPopup(MouseEvent e) {
             }
         });
     }
