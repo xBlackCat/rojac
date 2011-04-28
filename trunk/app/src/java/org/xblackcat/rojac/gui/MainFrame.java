@@ -445,7 +445,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     @Override
     public void openMessage(int messageId, OpenMessageMethod openMessageMethod) {
-        if (openMessageMethod == OpenMessageMethod.Default) {
+        if (openMessageMethod == null) {
             // Default method first searches trough existing views for the message
             for (View v : openedViews.values()) {
                 if (v.getComponent() instanceof IItemView) {
@@ -551,9 +551,14 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         }
 
         private ViewId getViewId(MessageData md) {
-            switch (openMessageMethod) {
+            OpenMessageMethod method = openMessageMethod;
+
+            if (method == null) {
+                method = OPEN_MESSAGE_BEHAVIOUR_GENERAL.get();
+            }
+
+            switch (method) {
                 case InForum:
-                case Default:
                     return ViewType.Forum.makeId(md.getForumId());
                 case NewTab:
                     return ViewType.SingleMessage.makeId(md.getMessageId());

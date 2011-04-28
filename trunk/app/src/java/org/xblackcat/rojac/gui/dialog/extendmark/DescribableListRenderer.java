@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.dialog.extendmark;
 
+import org.xblackcat.rojac.i18n.IDescribable;
+
 import javax.swing.*;
 import java.awt.*;
 

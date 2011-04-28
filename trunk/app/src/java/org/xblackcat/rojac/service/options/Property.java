@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.service.options;
 
 import org.apache.commons.lang.StringUtils;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.theme.IconPack;
-import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.gui.view.forumlist.ForumFilterState;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.util.UIUtils;
@@ -55,8 +55,12 @@ public final class Property<T> {
     public static final Property<Integer> RSDN_USER_ID = createPrivate("rojac.rsdn.user.id", Integer.class);
     public static final Property<Boolean> RSDN_USER_PASSWORD_SAVE = createPrivate("rojac.rsdn.user.password.save", Boolean.FALSE);
 
-    public static final Property<CheckUpdatesEnum> UPDATER_PERIOD = create("rojac.updater.period", CheckUpdatesEnum.EveryWeek, new CheckUpdatesEnumChecker());
+    public static final Property<CheckUpdatesEnum> UPDATER_PERIOD = create("rojac.updater.period", CheckUpdatesEnum.EveryWeek);
     public static final Property<Long> UPDATER_LAST_CHECK = createPrivate("rojac.updater.last_check", Long.class);
+
+    // Behaviour in opening message in tab
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_GENERAL = create("rojac.behaviour.open_message.general", OpenMessageMethod.InForum);
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_RECENT_TOPICS = create("rojac.behaviour.open_message.from_recent_topics", OpenMessageMethod.InThread);
 
     // Progress dialog properties
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.dialog.progress.autoshow", Boolean.TRUE);
@@ -122,7 +126,13 @@ public final class Property<T> {
         return create(true, name, type, defaultValue, checker);
     }
 
+    @SuppressWarnings({"unchecked"})
     static <V> Property<V> create(boolean isPublic, String name, Class<V> type, V defaultValue, IValueChecker<V> checker) {
+        if (type.isEnum() && checker == null) {
+            // Use default enum checker
+            checker = new GeneralEnumChecker(type);
+        }
+
         Property<V> prop = new Property<V>(isPublic, name, type, defaultValue, checker);
         ALL_PROPERTIES.add(prop);
         return prop;

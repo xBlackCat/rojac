@@ -353,7 +353,7 @@ public class MessageView extends AnItemView {
                 SwingUtilities.convertPointFromScreen(l, messageTextPane);
                 menu.show(messageTextPane, l.x, l.y);
             } else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED) {
-
+                // TODO: show popup with message info
             }
         }
     }
