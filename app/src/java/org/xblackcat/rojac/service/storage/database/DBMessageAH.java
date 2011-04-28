@@ -96,9 +96,8 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public Collection<MessageData> getLatestTopics(int limit) throws StorageException {
-        return helper.execute(
-                Converters.TO_MESSAGE_DATA,
+    public int[] getLatestTopics(int limit) throws StorageException {
+        return helper.getIds(
                 DataQuery.GET_LATEST_TOPIC_LIST,
                 limit
         );

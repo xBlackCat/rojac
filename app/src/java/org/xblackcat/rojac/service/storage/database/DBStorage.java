@@ -214,12 +214,16 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
     @Override
     public int[] getIds(DataQuery sql, Object... params) throws StorageException {
-        Collection<Integer> objIds = execute(Converters.TO_INTEGER, sql, params);
+        Collection<Number> objIds = execute(Converters.TO_NUMBER, sql, params);
         int[] ids;
 
         try {
-            // Convert collection of Integer to array of int.
-            ids = ArrayUtils.toPrimitive(objIds.toArray(new Integer[objIds.size()]));
+            ids = new int[objIds.size()];
+
+            int i = 0;
+            for (Number id : objIds) {
+                ids[i++] = id.intValue();
+            }
         } catch (NullPointerException e) {
             throw new StorageDataException("Got null instead of real value.", e);
         }

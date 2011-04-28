@@ -29,23 +29,31 @@ class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
         final IStorage storage = ServiceFactory.getInstance().getStorage();
 
         // TODO: optimize loading latest topics
-        Collection<MessageData> latestTopics = storage.getMessageAH().getLatestTopics(listSize);
+        int[] latestTopics = storage.getMessageAH().getLatestTopics(listSize);
 
         TIntObjectHashMap<Forum> forums = new TIntObjectHashMap<Forum>();
 
-        for (MessageData topic : latestTopics) {
-            Forum f = forums.get(topic.getForumId());
+        for (int lastPostId : latestTopics) {
+            final MessageData lastPost = storage.getMessageAH().getMessageData(lastPostId);
+
+            Forum f = forums.get(lastPost.getForumId());
             if (f == null) {
-                f = storage.getForumAH().getForumById(topic.getForumId());
+                f = storage.getForumAH().getForumById(lastPost.getForumId());
                 forums.put(f.getForumId(), f);
             }
 
             // TODO: implement loading last post in thread.
-            MessageData lastPost = topic;
+            MessageData lastThread;
+            if (lastPost.getTopicId() == 0) {
+                // Message is topic
+                lastThread = lastPost;
+            } else {
+                lastThread = storage.getMessageAH().getMessageData(lastPost.getTopicId());
+            }
 
             publish(new LastPostInfo(
                     f,
-                    topic,
+                    lastThread,
                     lastPost
             ));
         }

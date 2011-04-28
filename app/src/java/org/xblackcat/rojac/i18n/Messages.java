@@ -56,6 +56,9 @@ public enum Messages {
     View_Forums_Button_Filled,
     View_Forums_Button_HasUnread,
 
+    // Recent topics view
+    View_RecentTopics_Title,
+
     // Favorites view
     View_Favorites_Title,
     View_Favorites_Tab_Text,

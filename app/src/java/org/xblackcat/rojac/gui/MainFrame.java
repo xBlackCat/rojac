@@ -20,7 +20,9 @@ import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
+import org.xblackcat.rojac.gui.view.recenttopics.RecentTopicsView;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.util.*;
@@ -42,15 +44,13 @@ import static org.xblackcat.rojac.service.options.Property.*;
 public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDataHandler {
     private static final Log log = LogFactory.getLog(MainFrame.class);
 
-    private IView forumsListView;
-    private IView favoritesView;
-
     // Data tracking
     private Map<ViewId, View> openedViews = new HashMap<ViewId, View>();
     protected RootWindow threadsRootWindow;
 
     private static final String FORUMS_VIEW_ID = "forums_view";
     private static final String FAVORITES_VIEW_ID = "favorites_view";
+    private static final String RECENT_TOPICS_VIEW_ID = "lastPosts_view";
     private static final String THREADS_VIEW_ID = "threads_view_id";
 
     protected final DropFilter noAuxViewsFilter = new DropFilter() {
@@ -88,9 +88,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         super(RojacUtils.VERSION_STRING);
 
         setIconImage(ResourceUtils.loadImage("images/rojac-icon.png"));
-
-        forumsListView = new ForumsListView(this);
-        favoritesView = new FavoritesView(this);
 
         initialize();
 
@@ -146,6 +143,10 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     }
 
     private void initialize() {
+        final ForumsListView forumsListView = new ForumsListView(this);
+        final FavoritesView favoritesView = new FavoritesView(this);
+        final RecentTopicsView recentTopicsView = new RecentTopicsView(this);
+
         JPanel cp = new JPanel(new BorderLayout());
         setContentPane(cp);
 
@@ -161,6 +162,10 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 favoritesView
         );
 
+        View viewRecentTopics = createView(
+                Messages.View_RecentTopics_Title,
+                recentTopicsView
+        );
 
         // Set up main tabbed window for forum views
         TabWindow threads = new TabWindow();
@@ -184,11 +189,14 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         View threadsView = createThreadsView(threadsRootWindow);
         View[] mainViews = new View[]{
                 viewForums,
-                viewFavorites
+                viewFavorites,
+                viewRecentTopics
         };
+
         StringViewMap viewMap = new StringViewMap();
         viewMap.addView(FORUMS_VIEW_ID, viewForums);
         viewMap.addView(FAVORITES_VIEW_ID, viewFavorites);
+        viewMap.addView(RECENT_TOPICS_VIEW_ID, viewRecentTopics);
         viewMap.addView(THREADS_VIEW_ID, threadsView);
 
         rootWindow = new RootWindow(false, viewMap, new SplitWindow(true, 0.25f, new TabWindow(mainViews), threadsView));
@@ -197,6 +205,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         rootWindow.getWindowBar(Direction.LEFT).addTab(viewFavorites, 1);
         rootWindow.getWindowBar(Direction.LEFT).getWindowBarProperties().setMinimumWidth(5);
         rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
+        rootWindow.getWindowBar(Direction.RIGHT).addTab(viewRecentTopics, 0);
         rootWindow.getWindowBar(Direction.RIGHT).getWindowBarProperties().setMinimumWidth(5);
         rootWindow.getWindowBar(Direction.DOWN).setEnabled(true);
         rootWindow.getWindowBar(Direction.DOWN).getWindowBarProperties().setMinimumWidth(5);
@@ -259,11 +268,13 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         return view;
     }
 
-    private View createView(Messages title, IView comp) {
+    private View createView(Messages title, IView itemView) {
+        ServiceFactory.getInstance().getDataDispatcher().addDataHandler(itemView);
+
         final View view = new View(
                 title.get(),
                 null,
-                comp.getComponent()
+                itemView.getComponent()
         );
 
         DockingWindowProperties props = view.getWindowProperties();
@@ -305,9 +316,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
      */
     @Override
     public void processPacket(IPacket packet) {
-        forumsListView.processPacket(packet);
-        favoritesView.processPacket(packet);
-
         for (View v : openedViews.values()) {
             ((IView) v.getComponent()).processPacket(packet);
         }
