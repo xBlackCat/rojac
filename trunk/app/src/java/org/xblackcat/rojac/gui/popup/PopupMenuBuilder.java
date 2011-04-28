@@ -63,6 +63,8 @@ public class PopupMenuBuilder {
         if (messageId != null) {
             menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage, OpenMessageMethod.Default));
             menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
+
             menu.addSeparator();
             MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, stringUrl);
             MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
@@ -118,6 +120,7 @@ public class PopupMenuBuilder {
 
         menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage, OpenMessageMethod.Default));
         menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
 
         menu.addSeparator();
 
@@ -148,8 +151,8 @@ public class PopupMenuBuilder {
 
         menu.add(item);
 
-        menu.add(new OpenMessageMenuItem(messageId, message.getThreadRootId(), appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
-        menu.add(new OpenMessageMenuItem(messageId, message.getForumId(), appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
 

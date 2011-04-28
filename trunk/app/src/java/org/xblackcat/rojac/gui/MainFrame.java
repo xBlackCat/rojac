@@ -10,6 +10,8 @@ import net.infonode.docking.util.WindowMenuUtil;
 import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacDebugException;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
@@ -442,23 +444,25 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     }
 
     @Override
-    public void openMessage(int messageId) {
-        // Search thought existing data for the message first.
-        for (View v : openedViews.values()) {
-            if (v.getComponent() instanceof IItemView) {
-                IItemView itemView = (IItemView) v.getComponent();
+    public void openMessage(int messageId, OpenMessageMethod openMessageMethod) {
+        if (openMessageMethod == OpenMessageMethod.Default) {
+            // Default method first searches trough existing views for the message
+            for (View v : openedViews.values()) {
+                if (v.getComponent() instanceof IItemView) {
+                    IItemView itemView = (IItemView) v.getComponent();
 
-                if (itemView.containsItem(messageId)) {
-                    // Item found in the view.
-                    // Make the view visible and open it.
-                    v.makeVisible();
-                    itemView.makeVisible(messageId);
-                    return;
+                    if (itemView.containsItem(messageId)) {
+                        // Item found in the view.
+                        // Make the view visible and open it.
+                        v.makeVisible();
+                        itemView.makeVisible(messageId);
+                        return;
+                    }
                 }
             }
         }
 
-        new MessageNavigator(messageId).execute();
+        new MessageNavigator(messageId, openMessageMethod).execute();
     }
 
     private void goToView(ViewId id, IViewState state) {
@@ -518,8 +522,12 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     }
 
     private class MessageNavigator extends MessageChecker {
-        public MessageNavigator(int messageId) {
+        private final OpenMessageMethod openMessageMethod;
+
+        public MessageNavigator(int messageId, OpenMessageMethod openMessageMethod) {
             super(messageId);
+
+            this.openMessageMethod = openMessageMethod;
         }
 
         @Override
@@ -529,9 +537,9 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 return;
             }
 
-            ViewId forumViewId = ViewType.Forum.makeId(data.getForumId());
+            ViewId viewId = getViewId(data);
 
-            View c = openTab(forumViewId);
+            View c = openTab(viewId);
             if (c != null) {
                 // Just in case :)
                 c.makeVisible();
@@ -540,6 +548,20 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             } else {
                 DialogHelper.showExceptionDialog(new RuntimeException("F*cka-morgana! Forum view is not loaded!"));
             }
+        }
+
+        private ViewId getViewId(MessageData md) {
+            switch (openMessageMethod) {
+                case InForum:
+                case Default:
+                    return ViewType.Forum.makeId(md.getForumId());
+                case NewTab:
+                    return ViewType.SingleMessage.makeId(md.getMessageId());
+                case InThread:
+                    return ViewType.SingleThread.makeId(md.getThreadRootId());
+            }
+
+            throw new RojacDebugException("Invalid open message type: " + openMessageMethod);
         }
     }
 

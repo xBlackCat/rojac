@@ -32,8 +32,9 @@ public interface IAppControl {
      * Opens a message by id
      *
      * @param messageId target message id.
+     * @param openMessageMethod
      */
-    void openMessage(int messageId);
+    void openMessage(int messageId, OpenMessageMethod openMessageMethod);
 
     /**
      * Adds (or make visible if already added) a tab with the type and root content id.
