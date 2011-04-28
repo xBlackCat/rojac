@@ -26,9 +26,13 @@ class RecentThreadsModel extends AbstractListModel {
     }
 
     public void clear() {
+        int lastIndex = getSize() - 1;
+
         lastPosts = EMPTY_LIST;
 
-        fireIntervalRemoved(this, 0, getSize() - 1);
+        if (lastIndex >= 0) {
+            fireIntervalRemoved(this, 0, lastIndex);
+        }
     }
 
     public void addLatestPosts(Collection<LastPostInfo> posts) {
