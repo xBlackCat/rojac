@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
+import org.xblackcat.rojac.i18n.IDescribable;
 import org.xblackcat.rojac.i18n.Messages;
 
 import java.util.Calendar;
@@ -8,7 +9,7 @@ import java.util.Calendar;
  * @author xBlackCat
  */
 
-public enum CheckUpdatesEnum {
+public enum CheckUpdatesEnum implements IDescribable {
     None(Messages.Description_UpdatePeriod_None, 0, 0),
     EveryRun(Messages.Description_UpdatePeriod_EveryRun, 0, 0),
     EveryDay(Messages.Description_UpdatePeriod_EveryDay, Calendar.DAY_OF_MONTH, 1),
@@ -23,10 +24,6 @@ public enum CheckUpdatesEnum {
         this.description = description;
         this.field = field;
         this.amount = amount;
-    }
-
-    public String description() {
-        return description.get();
     }
 
     public boolean shouldCheck(Long lastCheckTime) {
@@ -44,5 +41,10 @@ public enum CheckUpdatesEnum {
         c.add(field, -amount);
 
         return c.getTimeInMillis() > lastCheckTime;
+    }
+
+    @Override
+    public Messages getLabel() {
+        return description;
     }
 }

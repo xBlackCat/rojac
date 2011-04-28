@@ -7,6 +7,7 @@ import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
 import java.awt.*;
@@ -63,8 +64,11 @@ public class RecentTopicsView extends AView {
 
             @Override
             protected void triggerDoubleClick(MouseEvent e) {
-                final LastPostInfo info = getTopicInfo(e);
-                appControl.openMessage(info.getTopicRoot().getMessageId(), OpenMessageMethod.Default);
+                LastPostInfo info = getTopicInfo(e);
+                OpenMessageMethod method = Property.OPEN_MESSAGE_BEHAVIOUR_RECENT_TOPICS.get();
+                int messageId = info.getTopicRoot().getMessageId();
+
+                appControl.openMessage(messageId, method);
             }
 
             @Override

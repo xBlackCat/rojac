@@ -31,8 +31,9 @@ public interface IAppControl {
     /**
      * Opens a message by id
      *
-     * @param messageId target message id.
-     * @param openMessageMethod
+     * @param messageId         target message id.
+     * @param openMessageMethod open message method. Specifing <code>null</code> means search the message though all
+     *                          opened view before use default open method.
      */
     void openMessage(int messageId, OpenMessageMethod openMessageMethod);
 

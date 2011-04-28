@@ -61,7 +61,7 @@ public class PopupMenuBuilder {
 
         menu.addSeparator();
         if (messageId != null) {
-            menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage, OpenMessageMethod.Default));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage, null));
             menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
             menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
 
@@ -118,9 +118,9 @@ public class PopupMenuBuilder {
 
         menu.add(item);
 
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage, OpenMessageMethod.Default));
         menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
         menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
 
