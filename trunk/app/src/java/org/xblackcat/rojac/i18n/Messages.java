@@ -87,6 +87,11 @@ public enum Messages {
     Tray_Popup_Item_About,
     Tray_Popup_Item_Exit,
 
+    // Tray notifications
+    Tray_Balloon_SynchronizationComplete_Title,
+    // 1. Forums affected, 2. topics affected, 3. Messages affected.
+    Tray_Balloon_SynchronizationComplete_Text,
+
     //
     // Dialog texts
     //
