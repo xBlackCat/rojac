@@ -2,8 +2,6 @@ package org.xblackcat.rojac.gui.view.recenttopics;
 
 import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.view.AView;
-import org.xblackcat.rojac.gui.view.ViewId;
-import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
@@ -15,7 +13,7 @@ import java.awt.event.MouseEvent;
 
 /**
  * @author xBlackCat
- */
+*/
 
 public class RecentTopicsView extends AView {
     private final RecentThreadsModel model = new RecentThreadsModel();
@@ -37,29 +35,17 @@ public class RecentTopicsView extends AView {
 
 
     private void initializeLayout() {
-        final JList lastPostList = new JList(model);
+        final JTable lastPostList = new JTable(model);
+        lastPostList.setTableHeader(null);
         add(new JScrollPane(lastPostList));
 
-        lastPostList.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-                LastPostInfo lpi = (LastPostInfo) value;
-
-                String text = "<html><body><p>Post: by " + lpi.getLastPost().getUserName() + "</p><p>Thread: " + lpi.getTopicRoot().getSubject() + "</p><p>Forum: " + lpi.getForum().getForumName() + "</p>";
-
-                setText(text);
-
-                return this;
-            }
-        });
+        lastPostList.setDefaultRenderer(LastPostInfo.class, new TopicCellRenderer());
 
         lastPostList.addMouseListener(new PopupMouseAdapter() {
             private LastPostInfo getTopicInfo(MouseEvent e) {
-                int ind = lastPostList.locationToIndex(e.getPoint());
+                int ind = lastPostList.rowAtPoint(e.getPoint());
 
-                return model.getElementAt(ind);
+                return model.getValueAt(ind, 0);
             }
 
             @Override

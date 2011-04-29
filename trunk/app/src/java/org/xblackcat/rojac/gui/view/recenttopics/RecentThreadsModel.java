@@ -4,35 +4,42 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import java.util.Collection;
 
 /**
  * @author xBlackCat
  */
 
-class RecentThreadsModel extends AbstractListModel {
+class RecentThreadsModel extends AbstractTableModel {
     public static final LastPostInfo[] EMPTY_LIST = new LastPostInfo[0];
 
     private LastPostInfo[] lastPosts = EMPTY_LIST;
 
     @Override
-    public int getSize() {
+    public int getRowCount() {
         return lastPosts.length;
     }
 
     @Override
-    public LastPostInfo getElementAt(int index) {
-        return lastPosts[index];
+    public int getColumnCount() {
+        return 1;
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return LastPostInfo.class;
+    }
+
+    @Override
+    public LastPostInfo getValueAt(int rowIndex, int columnIndex) {
+        return lastPosts[rowIndex];
     }
 
     public void clear() {
-        int lastIndex = getSize() - 1;
-
         lastPosts = EMPTY_LIST;
 
-        if (lastIndex >= 0) {
-            fireIntervalRemoved(this, 0, lastIndex);
-        }
+        fireTableDataChanged();
     }
 
     public void addLatestPosts(Collection<LastPostInfo> posts) {
@@ -48,8 +55,7 @@ class RecentThreadsModel extends AbstractListModel {
             }
 
             lastPosts = newList;
-            fireIntervalAdded(this, firstRow, lastPosts.length - 1);
+            fireTableRowsInserted(firstRow, lastPosts.length - 1);
         }
-
     }
 }
