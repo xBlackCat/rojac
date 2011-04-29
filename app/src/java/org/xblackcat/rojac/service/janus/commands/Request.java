@@ -65,7 +65,7 @@ public class Request<T> {
      * @param frame parent frame for Login dialog if it should be displayed.
      */
     public void process(Window frame) {
-        process(frame, defaultHandler);
+        process(frame, null);
     }
 
     /**
@@ -81,7 +81,7 @@ public class Request<T> {
      * @param frame   parent frame for Login dialog if it should be displayed.
      * @param handler custom handler to process request(s) results.
      */
-    public void process(Window frame, IResultHandler<T> handler) {
+    public void process(Window frame, final IResultHandler<T> handler) {
         assert RojacUtils.checkThread(true);
 
         if (frame != null) {
@@ -94,7 +94,16 @@ public class Request<T> {
             }
         }
 
-        new RequestProcessor<T>(handler, requests).execute();
+        new RequestProcessor<T>(new IResultHandler<T>() {
+            @Override
+            public void process(T data) {
+                defaultHandler.process(data);
+                if (handler != null) {
+                    handler.process(data);
+                }
+            }
+        }, requests).execute();
     }
+
 
 }
