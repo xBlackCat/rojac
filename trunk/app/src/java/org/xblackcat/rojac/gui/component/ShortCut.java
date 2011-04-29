@@ -18,6 +18,7 @@ public enum ShortCut {
     // Main frame related
     Synchronization(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, 0),
     LoadExtraMessages(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, KeyEvent.SHIFT_DOWN_MASK),
+    GoToMessage(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK),
     Settings(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK),
     About(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F1, 0),
     GoBack(JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK),

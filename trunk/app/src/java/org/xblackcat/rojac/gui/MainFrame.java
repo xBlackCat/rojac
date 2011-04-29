@@ -15,6 +15,7 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
+import org.xblackcat.rojac.gui.dialog.OpenMessageDialog;
 import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewHelper;
@@ -229,6 +230,8 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         navigationBackButton = WindowsUtils.registerImageButton(threadsPane, "nav_back", new GoBackAction());
         navigationForwardButton = WindowsUtils.registerImageButton(threadsPane, "nav_forward", new GoForwardAction());
 
+        JButton goToMessageButton = WindowsUtils.registerImageButton(threadsPane, "goto_message", new GoToMessageAction());
+
         JButton updateButton = WindowsUtils.registerImageButton(threadsPane, "update", new SynchronizationAction());
         JButton loadMessageButton = WindowsUtils.registerImageButton(threadsPane, "extramessage", new LoadExtraMessagesAction());
         JButton subscribeButton = WindowsUtils.registerImageButton(threadsPane, "forum_manage", new SubscribeForum());
@@ -238,6 +241,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         JToolBar toolBar = WindowsUtils.createToolBar(
                 navigationBackButton,
                 navigationForwardButton,
+                goToMessageButton,
                 null,
                 updateButton,
                 loadMessageButton,
@@ -598,6 +602,21 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         public void actionPerformed(ActionEvent e) {
             DialogHelper.extraMessagesDialog(MainFrame.this, null);
+        }
+    }
+    private class GoToMessageAction extends AButtonAction {
+        public GoToMessageAction() {
+            super(Messages.MainFrame_Button_GoToMessage, ShortCut.GoToMessage);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            OpenMessageDialog omd = new OpenMessageDialog(MainFrame.this);
+            Integer messageId = omd.readMessageId();
+            if (messageId != null) {
+                OpenMessageMethod loadAtOnce = omd.getOpenMethod();
+
+                openMessage(messageId, omd.getOpenMethod());
+            }
         }
     }
 

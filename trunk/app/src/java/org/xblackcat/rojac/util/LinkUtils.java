@@ -72,6 +72,10 @@ public final class LinkUtils {
      * @return message id or <code>null</code> if id cannot be extracted from link.
      */
     private static Integer checkLink(String link, Pattern[] patterns) {
+        if (link == null) {
+            return null;
+        }
+
         for (Pattern p : patterns) {
             Matcher matcher = p.matcher(link);
             if (matcher.matches()) {

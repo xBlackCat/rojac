@@ -5,6 +5,7 @@ import com.toedter.calendar.JSpinnerDateEditor;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
+import org.xblackcat.rojac.gui.component.DescribableListRenderer;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.WindowsUtils;
