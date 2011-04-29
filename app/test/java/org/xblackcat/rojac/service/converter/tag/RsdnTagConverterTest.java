@@ -10,8 +10,8 @@ import org.xblackcat.rojac.service.converter.ITag;
 
 public class RsdnTagConverterTest extends TestCase {
     public void testSimpleTagConverter() {
-        ITag boldTag = RsdnTagList.Bold;
-        ITag italicTag = RsdnTagList.Italic;
+        ITag boldTag = RsdnTagList.Bold.getTag();
+        ITag italicTag = RsdnTagList.Italic.getTag();
 
         {
             String rsdnMessage = "This is a [b]test[/b] for [b]simple[/b] bold tag.";
@@ -38,11 +38,10 @@ public class RsdnTagConverterTest extends TestCase {
     }
 
     public void testListsSimpleTagConverter() {
-        ITag listTag = RsdnTagList.List;
-        ITag numListTag = RsdnTagList.ListNumeric;
-        ITag alphListTag = RsdnTagList.ListAlphabetic;
-        ITag listItemTag = RsdnTagList.ListItem;
-
+        ITag listTag = RsdnTagList.List.getTag();
+        ITag numListTag = RsdnTagList.ListNumeric.getTag();
+        ITag alphListTag = RsdnTagList.ListAlphabetic.getTag();
+        ITag listItemTag = RsdnTagList.ListItem.getTag();
         {
             String rsdnMessage = "This is a test for [list][*]item[*]item[/list]tags.";
             String htmlMessage = "This is a test for <ul style='margin-top:0; margin-bottom:0;'><li/>item<li/>item</ul>tags.";
@@ -66,7 +65,7 @@ public class RsdnTagConverterTest extends TestCase {
     }
 
     public void testUrlTagConverter() {
-        ITag urlTag = RsdnTagList.Url;
+        ITag urlTag = RsdnTagList.Url.getTag();
 
         {
             String rsdnMessage = "This is a [URL=http://some.place/url]link[/url] tag.";
@@ -77,7 +76,7 @@ public class RsdnTagConverterTest extends TestCase {
     }
 
     public void testImageTagConverter() {
-        ITag urlTag = RsdnTagList.Image;
+        ITag urlTag = RsdnTagList.Image.getTag();
 
         {
             String rsdnMessage = "This is an image [Img]http://i.ru-board.com/avatars/BlackCat.gif[/IMG] tag.";
@@ -88,7 +87,7 @@ public class RsdnTagConverterTest extends TestCase {
     }
 
     public void testQuoteTagConverter() {
-        ITag urlTag = RsdnTagList.Quote;
+        ITag urlTag = RsdnTagList.Quote.getTag();
 
         {
             String rsdnMessage = "This is a [q]quote[/q] tag.";
@@ -99,7 +98,7 @@ public class RsdnTagConverterTest extends TestCase {
     }
 
     public void testLineTagConverter() {
-        ITag hrTag = RsdnTagList.HorizontalLine;
+        ITag hrTag = RsdnTagList.HorizontalLine.getTag();
 
         {
             String rsdnMessage = "This is a [hr] horizontal line tag.";
@@ -110,7 +109,7 @@ public class RsdnTagConverterTest extends TestCase {
     }
 
     public void testEmailTagConverter() {
-        ITag emailTag = RsdnTagList.Email;
+        ITag emailTag = RsdnTagList.Email.getTag();
 
         {
             String rsdnMessage = "This is an email [email]support@rsdn.ru[/email] tag.";
@@ -128,9 +127,9 @@ public class RsdnTagConverterTest extends TestCase {
     }
 
     public void testTableConverter() {
-        ITag tableTag = RsdnTagList.Table;
-        ITag trTag = RsdnTagList.TableRow;
-        ITag tdTag = RsdnTagList.TableCell;
+        ITag tableTag = RsdnTagList.Table.getTag();
+        ITag trTag = RsdnTagList.TableRow.getTag();
+        ITag tdTag = RsdnTagList.TableCell.getTag();
 
         {
             String rsdnMessage = "This is a table: [T][tr][td]1[/td][td]2[/td][/tr][/T]";
@@ -141,7 +140,7 @@ public class RsdnTagConverterTest extends TestCase {
     }
 
     public void testMsdnConverter() {
-        ITag msdnConverter = RsdnTagList.Msdn;
+        ITag msdnConverter = RsdnTagList.Msdn.getTag();
 
         {
             String rsdnMessage = "This is a msdn search link [msdn]Поиск в MSDN[/MSDN]";

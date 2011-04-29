@@ -8,7 +8,7 @@ import org.xblackcat.rojac.service.converter.ITagInfo;
  * @author xBlackCat
  */
 
-public enum RsdnTagList implements ITag<RsdnTagList> {
+public enum RsdnTagList {
     Bold(new SimpleTag("b")),
     Italic(new SimpleTag("i")),
     List(new SimpleTag("[list]", "[/list]", "<ul style='margin-top:0; margin-bottom:0;'>", "</ul>")),
@@ -93,7 +93,7 @@ public enum RsdnTagList implements ITag<RsdnTagList> {
         this.tag = tag;
     }
 
-    public ITagInfo find(String text, String lower) {
-        return tag.find(text, lower);
+    public ITag getTag() {
+        return tag;
     }
 }

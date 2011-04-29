@@ -31,8 +31,8 @@ public class SingleTag extends SimpleTag {
         return new SingleTagInfo(startPos, lower, text);
     }
 
-    protected class SinlgeTagData extends SimpleTagData {
-        public SinlgeTagData(int startPos, String text) {
+    protected class SingleTagData extends SimpleTagData {
+        public SingleTagData(int startPos, String text) {
             super(startPos, startPos, text);
         }
 
@@ -51,7 +51,7 @@ public class SingleTag extends SimpleTag {
         }
 
         public ITagData process() {
-            return new SinlgeTagData(startPos, text);
+            return new SingleTagData(startPos, text);
         }
     }
 

@@ -21,14 +21,8 @@ public class RSDNMessageParser implements IMessageParser {
     private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+)[\\.,!:]?$", Pattern.MULTILINE);
 
     private static final String HYPERLINKS_REPLACEMENT = "$1[url=$2]$2[/url]";
-    private static final ITagInfo[] EMPTY_TAG_INFO = new ITagInfo[0];
 
     private final Map<ITag, ITag[]> availableSubTags;
-    private static final Comparator<ITagInfo> TAG_INFO_COMPARATOR = new Comparator<ITagInfo>() {
-        public int compare(ITagInfo o1, ITagInfo o2) {
-            return new Integer(o1.start()).compareTo(o2.start());
-        }
-    };
     private static final Comparator<ITagInfo> TAG_COMPARATOR = new Comparator<ITagInfo>() {
         @SuppressWarnings({"unchecked"})
         public int compare(ITagInfo o1, ITagInfo o2) {
@@ -48,7 +42,7 @@ public class RSDNMessageParser implements IMessageParser {
     public String convert(String rsdn) {
         String preHtml = preProcessText(rsdn);
         String htmlBody = processText(preHtml, mergeAvailableTags(null));
-        htmlBody = processText(htmlBody, RsdnTagList.Original);
+        htmlBody = processText(htmlBody, RsdnTagList.Original.getTag());
         return "<html>" +
                 "<head>" +
                 "<link href='" +
@@ -97,9 +91,7 @@ public class RSDNMessageParser implements IMessageParser {
     }
 
     private String processText(String text, ITag... availableTags) {
-        final ITagInfo[] tags = getFoundTags(text, availableTags);
-
-        Arrays.sort(tags, TAG_INFO_COMPARATOR);
+        final Collection<ITagInfo> tags = getFoundTags(text, availableTags);
 
         ITagData tagData = null;
         ITag[] t = null;
@@ -135,9 +127,9 @@ public class RSDNMessageParser implements IMessageParser {
         }
     }
 
-    private ITagInfo[] getFoundTags(String text, ITag... availableTags) {
+    private Collection<ITagInfo> getFoundTags(String text, ITag... availableTags) {
         if (!ArrayUtils.isEmpty(availableTags)) {
-            Collection<ITagInfo> tags = new LinkedList<ITagInfo>();
+            List<ITagInfo> tags = new LinkedList<ITagInfo>();
 
             String lowedText = text.toLowerCase();
             for (ITag t : availableTags) {
@@ -147,14 +139,27 @@ public class RSDNMessageParser implements IMessageParser {
                 }
             }
 
-            ITagInfo[] tagInfos = tags.toArray(new ITagInfo[tags.size()]);
+            if (tags.size() > 0) {
+                Collections.sort(tags, TAG_COMPARATOR);
 
-            Arrays.sort(tagInfos, TAG_COMPARATOR);
+/*
+                // Remove inner tags from list.
+                Iterator<ITagInfo> tagIterator = tags.iterator();
+                ITagInfo lastTi = tagIterator.next();
 
-            return tagInfos;
-        } else {
-            return EMPTY_TAG_INFO;
+                while (tagIterator.hasNext()) {
+                    ITagInfo ti = tagIterator.next();
+
+                    if (lastTi.contains(ti)) {
+                        tagIterator.remove();
+                    }
+                }
+
+*/
+                return tags;
+            }
         }
+        return Collections.emptyList();
     }
 
     /**
