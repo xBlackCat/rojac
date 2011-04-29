@@ -142,20 +142,6 @@ public class RSDNMessageParser implements IMessageParser {
             if (tags.size() > 0) {
                 Collections.sort(tags, TAG_COMPARATOR);
 
-/*
-                // Remove inner tags from list.
-                Iterator<ITagInfo> tagIterator = tags.iterator();
-                ITagInfo lastTi = tagIterator.next();
-
-                while (tagIterator.hasNext()) {
-                    ITagInfo ti = tagIterator.next();
-
-                    if (lastTi.contains(ti)) {
-                        tagIterator.remove();
-                    }
-                }
-
-*/
                 return tags;
             }
         }

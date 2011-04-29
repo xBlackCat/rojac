@@ -42,6 +42,7 @@ public enum Messages {
     // Main window view
     MainFrame_Button_Update,
     MainFrame_Button_LoadMessage,
+    MainFrame_Button_GoToMessage,
     MainFrame_Button_Settings,
     MainFrame_Button_About,
     MainFrame_Button_GoBack,
@@ -126,6 +127,10 @@ public enum Messages {
 
     WarnDialog_NoForums_Title,
     WarnDialog_NoForums_Question,
+
+    // Load extra messages dialog texts
+    Dialog_OpenMessage_Title,
+    Dialog_OpenMessage_Label,
 
     // Load extra messages dialog texts
     Dialog_LoadMessage_Title,
