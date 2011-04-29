@@ -15,6 +15,7 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
+import org.xblackcat.rojac.gui.dialog.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialog.OpenMessageDialog;
 import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
@@ -28,6 +29,10 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.janus.commands.ASwingThreadedHandler;
+import org.xblackcat.rojac.service.janus.commands.Request;
+import org.xblackcat.rojac.service.storage.IMiscAH;
+import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -119,6 +124,45 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 storeWindowState();
             }
         });
+    }
+
+    private void extraMessagesDialog(Integer id, final OpenMessageMethod method) {
+        LoadMessageDialog lmd = new LoadMessageDialog(this, id);
+        final Integer messageId = lmd.readMessageId();
+
+        if (messageId != null) {
+            final boolean loadAtOnce = lmd.isLoadAtOnce();
+
+            new RojacWorker<Void, Void>() {
+                @Override
+                protected Void perform() throws Exception {
+                    try {
+                        IMiscAH s = ServiceFactory.getInstance().getStorage().getMiscAH();
+
+                        s.storeExtraMessage(messageId);
+                    } catch (StorageException e) {
+                        log.error("Can not store extra message #" + messageId, e);
+                        RojacUtils.showExceptionDialog(e);
+                    }
+
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    if (loadAtOnce) {
+                        Request.EXTRA_MESSAGES.process(MainFrame.this, new ASwingThreadedHandler<IPacket>() {
+                            @Override
+                            protected void execute(IPacket data) {
+                                if (method != null) {
+                                    openMessage(messageId, method);
+                                }
+                            }
+                        });
+                    }
+                }
+            }.execute();
+        }
     }
 
     public void loadData() {
@@ -537,7 +581,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         @Override
         protected void done() {
             if (data == null) {
-                DialogHelper.extraMessagesDialog(MainFrame.this, messageId);
+                extraMessagesDialog(messageId, openMessageMethod);
                 return;
             }
 
@@ -601,7 +645,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         }
 
         public void actionPerformed(ActionEvent e) {
-            DialogHelper.extraMessagesDialog(MainFrame.this, null);
+            extraMessagesDialog(null, null);
         }
     }
     private class GoToMessageAction extends AButtonAction {
