@@ -4,6 +4,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.converter.tag.RsdnTagList;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.IOException;
@@ -114,7 +115,7 @@ public final class RSDNMessageParserFactory {
                 // # at line start - means enum value.
                 tag = loadFromMethod(pClassName);
             } else {
-                tag = loadObject(pClassName);
+                tag = loadTag(pClassName);
             }
             if (tag != null) {
                 allTagsMap.put(pName, tag);
@@ -171,13 +172,15 @@ public final class RSDNMessageParserFactory {
         return tag;
     }
 
-    private ITag loadObject(String pClassName) {
+    private ITag loadTag(String pClassName) {
         ITag tag = null;
 
         try {
             Object o = ResourceUtils.loadObjectOrEnum(pClassName);
             if (o instanceof ITag) {
                 tag = (ITag) o;
+            } else if (o instanceof RsdnTagList) {
+                tag = ((RsdnTagList) o).getTag();
             }
         } catch (ClassNotFoundException e) {
             if (log.isWarnEnabled()) {
