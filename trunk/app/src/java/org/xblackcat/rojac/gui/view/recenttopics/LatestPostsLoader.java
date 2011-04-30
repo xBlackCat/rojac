@@ -8,7 +8,6 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
 
     @Override
     protected Void perform() throws Exception {
-        final Integer listSize = Property.VIEW_LATEST_POSTS_SIZE.get();
+        final Integer listSize = Property.VIEW_RECENT_TOPIC_LIST_SIZE.get();
 
         final IStorage storage = ServiceFactory.getInstance().getStorage();
 

@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.service.options;
 
 import org.apache.commons.lang.StringUtils;
+import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.view.forumlist.ForumFilterState;
@@ -10,10 +11,7 @@ import org.xblackcat.rojac.util.UIUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.ref.SoftReference;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Class for holding application properties names.
@@ -29,7 +27,7 @@ public final class Property<T> {
     /**
      * Complete map of properties names to its objects.
      */
-    private static final Collection<Property<?>> ALL_PROPERTIES = new LinkedList<Property<?>>();
+    private static final Set<Property<?>> ALL_PROPERTIES = new HashSet<Property<?>>();
     // Global development properties
 
     public static final Property<Boolean> ROJAC_DEBUG_MODE = createPrivate("rojac.global.debug.mode", Boolean.FALSE);
@@ -71,12 +69,13 @@ public final class Property<T> {
     public static final Property<Long> VIEW_THREAD_AUTOSET_READ = create("rojac.view.thread.message.read_delay", Long.valueOf(1000));
     public static final Property<Boolean> VIEW_THREAD_SET_READ_ON_SCROLL = create("rojac.view.thread.message.read_on_scroll", Boolean.TRUE);
     public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC = create("rojac.view.thread.message.collapse_threads_after_sync", Boolean.FALSE);
+    public static final Property<Integer> VIEW_THREAD_TAB_TITLE_LIMIT = create("rojac.view.thread.tab_title_limit", Integer.valueOf(0));
 
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_UNREAD_POST = create("rojac.view.styles.unread_post", TextStyle.DEFAULT);
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_READ_POST = create("rojac.view.styles.read_post", TextStyle.DEFAULT);
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_PARTIAL_READ_POST = create("rojac.view.styles.partial_read_post", TextStyle.DEFAULT);
 
-    public static final Property<Integer> VIEW_LATEST_POSTS_SIZE = create("rojac.view.latest_posts.list_size", 20);
+    public static final Property<Integer> VIEW_RECENT_TOPIC_LIST_SIZE = create("rojac.view.recent_topics.list_size", 20);
 
     // Janus synchronizer properties
     public static final Property<Integer> SYNCHRONIZER_SCHEDULE_PERIOD = create("rojac.synchronizer.schedule.period", Integer.valueOf(0));
@@ -134,6 +133,10 @@ public final class Property<T> {
         }
 
         Property<V> prop = new Property<V>(isPublic, name, type, defaultValue, checker);
+        if (ALL_PROPERTIES.contains(prop)) {
+            throw new RojacDebugException("Property '" + name + "' already defined.");
+        }
+
         ALL_PROPERTIES.add(prop);
         return prop;
     }
@@ -144,7 +147,6 @@ public final class Property<T> {
      * @param name property name
      * @param type class representing property value type.
      * @param <E>  property value type
-     *
      * @return newly generated property object.
      */
     static <E> Property<E> create(String name, Class<E> type) {
@@ -157,7 +159,6 @@ public final class Property<T> {
      * @param name property name
      * @param type class representing property value type.
      * @param <E>  property value type
-     *
      * @return newly generated property object.
      */
     static <E> Property<E> createPrivate(String name, Class<E> type) {
@@ -271,7 +272,6 @@ public final class Property<T> {
      * Returns a current value of the property or specified value if the property is not set.
      *
      * @param defValue value to be treated as default.
-     *
      * @return value of the property.
      */
     public T get(T defValue) {
@@ -299,7 +299,6 @@ public final class Property<T> {
      * Sets a new value to the property.
      *
      * @param val a new value.
-     *
      * @return previous value of the property or <code>null</code> if property was empty.
      */
     public T set(T val) {
@@ -326,11 +325,11 @@ public final class Property<T> {
 
         Property property = (Property) o;
 
-        return type.equals(property.type) && name.equals(property.name);
+        return name.equals(property.name);
     }
 
     public int hashCode() {
-        return 31 * name.hashCode() + type.hashCode();
+        return name.hashCode();
     }
 
     public String toString() {

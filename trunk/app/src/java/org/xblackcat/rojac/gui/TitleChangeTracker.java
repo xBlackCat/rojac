@@ -34,5 +34,6 @@ class TitleChangeTracker implements IActionListener {
 
         viewProperties.setTitle(title);
         viewProperties.setIcon(icon);
+        view.getWindowProperties().getTabProperties().getTitledTabProperties().getNormalProperties().setToolTipText(title);
     }
 }

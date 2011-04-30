@@ -8,6 +8,8 @@ import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.dialog.LoginDialog;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.PropertyUtils;
 import org.xblackcat.rojac.util.SynchronizationUtils;
@@ -18,7 +20,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Locale;
 
 import static org.xblackcat.rojac.service.options.Property.*;
 
@@ -99,15 +100,11 @@ public class OptionsDialog extends JDialog {
     }
 
     private void applySettings() {
-        LookAndFeel oldLAF = ROJAC_GUI_LOOK_AND_FEEL.get();
-        Locale oldLocale = ROJAC_GUI_LOCALE.get();
-        int schedulePeriod = SYNCHRONIZER_SCHEDULE_PERIOD.getDefault();
-
-        model.applySettings();
+        OptionsUpdatedPacket packet = new OptionsUpdatedPacket(model.applySettings());
 
         // Load changed properties.
-        LookAndFeel laf = ROJAC_GUI_LOOK_AND_FEEL.get();
-        if (!laf.getName().equals(oldLAF.getName())) {
+        if (packet.isPropertyAffected(ROJAC_GUI_LOOK_AND_FEEL)) {
+            LookAndFeel laf = ROJAC_GUI_LOOK_AND_FEEL.get();
             try {
                 UIUtils.setLookAndFeel(laf);
             } catch (UnsupportedLookAndFeelException e) {
@@ -115,14 +112,15 @@ public class OptionsDialog extends JDialog {
             }
         }
 
-        Locale locale = ROJAC_GUI_LOCALE.get();
-        if (!locale.equals(oldLocale)) {
-            Messages.setLocale(locale);
+        if (packet.isPropertyAffected(ROJAC_GUI_LOCALE)) {
+            Messages.setLocale(ROJAC_GUI_LOCALE.get());
         }
 
-        if (schedulePeriod != SYNCHRONIZER_SCHEDULE_PERIOD.get()) {
+        if (packet.isPropertyAffected(SYNCHRONIZER_SCHEDULE_PERIOD)) {
             SynchronizationUtils.setScheduleSynchronizer(this.getOwner());
         }
+
+        ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
     }
 
     /**

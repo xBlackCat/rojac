@@ -29,11 +29,17 @@ public class TreeTableThreadView extends AThreadView {
     public TreeTableThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl, modelControl);
 
+        initializeContainer();
+
         initializeLayout();
     }
 
     @Override
     protected JComponent getThreadsContainer() {
+        return threads;
+    }
+
+    private void initializeContainer() {
         threads.setEditable(false);
         threads.setAutoCreateColumnsFromModel(false);
         threads.setTreeTableModel(model);
@@ -105,8 +111,6 @@ public class TreeTableThreadView extends AThreadView {
                 }
             }
         });
-
-        return threads;
     }
 
     @Override

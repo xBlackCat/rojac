@@ -4,6 +4,7 @@ import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.options.Property;
 
@@ -71,6 +72,14 @@ public class RecentTopicsView extends AView {
                     @Override
                     public void process(SynchronizationCompletePacket p) {
                         reloadLastPosts();
+                    }
+                },
+                new IPacketProcessor<OptionsUpdatedPacket>() {
+                    @Override
+                    public void process(OptionsUpdatedPacket p) {
+                        if (p.isPropertyAffected(Property.VIEW_RECENT_TOPIC_LIST_SIZE)) {
+                            reloadLastPosts();
+                        }
                     }
                 }
         };
