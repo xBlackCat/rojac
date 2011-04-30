@@ -2,10 +2,13 @@ package org.xblackcat.rojac.gui.dialog.options;
 
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.xblackcat.rojac.service.options.IValueChecker;
+import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * @author xBlackCat
@@ -74,36 +77,47 @@ class PropertiesModel implements TreeModel {
     /**
      * Store all new values in system properties.
      */
-    public void applySettings() {
-        affect(root, false);
+    public Collection<Property<?>> applySettings() {
+        Collection<Property<?>> changedProperties = new LinkedList<Property<?>>();
+        affect(changedProperties, root, false);
+
+        return changedProperties;
     }
 
-    public void revertSettings() {
-        affect(root, true);
+    public Collection<Property<?>> revertSettings() {
+        Collection<Property<?>> changedProperties = new LinkedList<Property<?>>();
+        affect(changedProperties, root, true);
+
+        return changedProperties;
     }
 
     /**
      * Apply or revert properties recoursivly.
      *
+     * @param changedProperties
      * @param n node to recoursivly affect.
      * @param revert <code>true</code> - revert value; <code>false</code> - apply value
      */
-    private void affect(PropertyNode n, boolean revert) {
+    private void affect(Collection<Property<?>> changedProperties, PropertyNode n, boolean revert) {
         if (n == null) {
             return;
         }
 
-        if (revert) {
-            n.revert();
-            modelSupport.firePathChanged(n.getPath());
-        } else {
-            n.apply();
+        if (n.isChanged()) {
+            changedProperties.add(n.getProperty());
+
+            if (revert) {
+                n.revert();
+                modelSupport.firePathChanged(n.getPath());
+            } else {
+                n.apply();
+            }
         }
 
         int count = n.childrenCount();
 
         for (int i = 0; i < count; i++) {
-            affect(n.getChild(i), revert);
+            affect(changedProperties, n.getChild(i), revert);
         }
     }
 }

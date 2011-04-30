@@ -4,6 +4,9 @@ import net.infonode.docking.*;
 import net.infonode.docking.drop.DropFilter;
 import net.infonode.docking.drop.DropInfo;
 import net.infonode.docking.properties.DockingWindowProperties;
+import net.infonode.docking.properties.RootWindowProperties;
+import net.infonode.docking.properties.TabWindowProperties;
+import net.infonode.docking.title.DockingWindowTitleProvider;
 import net.infonode.docking.title.SimpleDockingWindowTitleProvider;
 import net.infonode.docking.util.StringViewMap;
 import net.infonode.docking.util.WindowMenuUtil;
@@ -14,6 +17,7 @@ import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
+import org.xblackcat.rojac.gui.component.TrimingDockingWindowTitleProvider;
 import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialog.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialog.OpenMessageDialog;
@@ -27,10 +31,10 @@ import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.gui.view.recenttopics.RecentTopicsView;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.IDataHandler;
-import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.janus.commands.ASwingThreadedHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.*;
@@ -91,6 +95,30 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     private RootWindow rootWindow;
     private JButton navigationBackButton;
     private JButton navigationForwardButton;
+
+    private final PacketDispatcher mainDispatcher = new PacketDispatcher(
+            new IPacketProcessor<OptionsUpdatedPacket>() {
+                @Override
+                public void process(OptionsUpdatedPacket p) {
+                    if (p.isPropertyAffected(Property.VIEW_THREAD_TAB_TITLE_LIMIT)) {
+                        // Update title providers for all message tabs
+
+                        DockingWindowTitleProvider newTitleProvider = getTabTitleProvider();
+
+                        updateTitleProvider(newTitleProvider, threadsRootWindow);
+                    }
+                }
+
+                private void updateTitleProvider(DockingWindowTitleProvider newTitleProvider, DockingWindow view) {
+                    view.getWindowProperties().setTitleProvider(newTitleProvider);
+
+                    int i = 0;
+                    while (i < view.getChildWindowCount()) {
+                        updateTitleProvider(newTitleProvider, view.getChildWindow(i++));
+                    }
+                }
+            }
+    );
 
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
@@ -220,18 +248,24 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         threads.getWindowProperties().setMinimizeEnabled(false);
 
         threadsRootWindow = new RootWindow(false, new ThreadViewSerializer(), threads);
-        threadsRootWindow.getRootWindowProperties().setDragRectangleBorderWidth(2);
-        threadsRootWindow.getRootWindowProperties().setRecursiveTabsEnabled(false);
         threadsRootWindow.addListener(new CloseViewTabListener());
 
-        threadsRootWindow
-                .getRootWindowProperties()
+        RootWindowProperties rootWindowProperties = threadsRootWindow.getRootWindowProperties();
+        rootWindowProperties.setDragRectangleBorderWidth(2);
+        rootWindowProperties.setRecursiveTabsEnabled(false);
+
+        rootWindowProperties
                 .getDockingWindowProperties()
                 .getDropFilterProperties()
                 .setInsertTabDropFilter(noAuxViewsFilter)
                 .setInteriorDropFilter(noAuxViewsFilter)
                 .setChildDropFilter(noAuxViewsFilter)
                 .setSplitDropFilter(noAuxViewsFilter);
+
+        TabWindowProperties threadsTabWindowProperties = rootWindowProperties.getTabWindowProperties();
+        threadsTabWindowProperties.getUndockButtonProperties().setVisible(false);
+        threadsTabWindowProperties.getMinimizeButtonProperties().setVisible(false);
+
 
         View threadsView = createThreadsView(threadsRootWindow);
         View[] mainViews = new View[]{
@@ -259,6 +293,14 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         rootWindow.getRootWindowProperties().setDragRectangleBorderWidth(2);
         rootWindow.getRootWindowProperties().setRecursiveTabsEnabled(false);
+
+        rootWindow.getWindowProperties().setCloseEnabled(false);
+        rootWindow.getWindowProperties().setMaximizeEnabled(false);
+
+        TabWindowProperties tabWindowProperties = rootWindow.getRootWindowProperties().getTabWindowProperties();
+        tabWindowProperties.getMaximizeButtonProperties().setVisible(false);
+        tabWindowProperties.getCloseButtonProperties().setVisible(false);
+        tabWindowProperties.getUndockButtonProperties().setVisible(false);
 
         viewForums.restore();
 
@@ -348,8 +390,8 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         DockingWindowProperties props = view.getWindowProperties();
         props.setMinimizeEnabled(false);
-        props.setTitleProvider(SimpleDockingWindowTitleProvider.INSTANCE);
         props.setUndockEnabled(false);
+        props.setTitleProvider(getTabTitleProvider());
 
         itemView.addActionListener(new TitleChangeTracker(itemView, view));
 
@@ -359,6 +401,16 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         return view;
     }
 
+    private DockingWindowTitleProvider getTabTitleProvider() {
+        int tabTitleLimit = Property.VIEW_THREAD_TAB_TITLE_LIMIT.get(0);
+
+        if (tabTitleLimit > 0) {
+            return new TrimingDockingWindowTitleProvider(tabTitleLimit);
+        } else {
+            return SimpleDockingWindowTitleProvider.INSTANCE;
+        }
+    }
+
     /**
      * Method for delegating changes to all sub containers.
      *
@@ -366,6 +418,8 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
      */
     @Override
     public void processPacket(IPacket packet) {
+        mainDispatcher.dispatch(packet);
+
         for (View v : openedViews.values()) {
             ((IView) v.getComponent()).processPacket(packet);
         }
@@ -648,6 +702,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             extraMessagesDialog(null, null);
         }
     }
+
     private class GoToMessageAction extends AButtonAction {
         public GoToMessageAction() {
             super(Messages.MainFrame_Button_GoToMessage, ShortCut.GoToMessage);
@@ -657,8 +712,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             OpenMessageDialog omd = new OpenMessageDialog(MainFrame.this);
             Integer messageId = omd.readMessageId();
             if (messageId != null) {
-                OpenMessageMethod loadAtOnce = omd.getOpenMethod();
-
                 openMessage(messageId, omd.getOpenMethod());
             }
         }

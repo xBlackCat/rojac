@@ -20,11 +20,17 @@ public class TreeThreadView extends AThreadView {
     public TreeThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl, modelControl);
 
+        initializeContainer();
+
         initializeLayout();
     }
 
     @Override
     protected JComponent getThreadsContainer() {
+        return threads;
+    }
+
+    private void initializeContainer() {
         threads.setEditable(false);
         threads.setModel(model);
         threads.setRowHeight(0);
@@ -36,8 +42,6 @@ public class TreeThreadView extends AThreadView {
         threads.addTreeExpansionListener(new ThreadExpander());
 
         threads.addMouseListener(new ItemListener());
-
-        return threads;
     }
 
     @Override

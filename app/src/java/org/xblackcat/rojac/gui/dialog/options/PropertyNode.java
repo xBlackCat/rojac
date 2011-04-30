@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 public class PropertyNode<T> {
     private final Property<T> property;
     private final String name;
@@ -75,6 +75,16 @@ public class PropertyNode<T> {
 
     public T getValue() {
         return value;
+    }
+
+    public boolean isChanged() {
+        if (property == null) {
+            return false;
+        }
+
+        T curValue = property.get();
+
+        return value != null ? !value.equals(curValue) : curValue != null;
     }
 
     public void setValue(T value) {
