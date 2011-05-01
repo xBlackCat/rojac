@@ -12,18 +12,6 @@ public class SynchronizationCompletePacket implements IPacket, IForumUpdatePacke
     private final TIntHashSet threadIds;
     private final TIntHashSet messageIds;
 
-    public SynchronizationCompletePacket(Iterable<AffectedMessage> messages) {
-        forumIds = new TIntHashSet();
-        threadIds = new TIntHashSet();
-        messageIds = new TIntHashSet();
-
-        for (AffectedMessage m : messages) {
-            forumIds.add(m.getForumId());
-            threadIds.add(m.getTopicId());
-            messageIds.add(m.getMessageId());
-        }
-    }
-
     public SynchronizationCompletePacket(TIntHashSet forumIds, TIntHashSet threadIds, TIntHashSet messageIds) {
         this.forumIds = (TIntHashSet) forumIds.clone();
         this.messageIds = (TIntHashSet) messageIds.clone();

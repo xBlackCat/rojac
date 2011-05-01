@@ -6,10 +6,6 @@ import org.xblackcat.rojac.i18n.Messages;
  * @author xBlackCat
  */
 public abstract class ACancelAction extends AButtonAction {
-    protected ACancelAction(ShortCut shortCut) {
-        super(Messages.Button_Cancel, shortCut);
-    }
-
     protected ACancelAction() {
         super(Messages.Button_Cancel);
     }

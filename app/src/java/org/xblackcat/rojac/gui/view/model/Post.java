@@ -25,11 +25,6 @@ public class Post implements ITreeItem<Post> {
     protected final Post parent;
     protected final Thread threadRoot;
 
-    /**
-     * Util flag to indicate that a node is newly created. Should be cleared after view is updated.
-     */
-    private boolean newNode = true;
-
     protected List<Post> childrenPosts = new ArrayList<Post>();
 
     public Post(MessageData messageData, Post parent) {
@@ -194,21 +189,6 @@ public class Post implements ITreeItem<Post> {
         return messageData;
     }
 
-    public void insertChild(Post p) {
-        childrenPosts.add(p);
-//        resort();
-    }
-
-    /**
-     * Recursively resort whole path till the node.
-     */
-    protected void resort() {
-        Collections.sort(childrenPosts);
-        if (parent != null) {
-            parent.resort();
-        }
-    }
-
     public void setRead(boolean read) {
         this.read = read;
     }
@@ -234,24 +214,5 @@ public class Post implements ITreeItem<Post> {
     public void setMessageData(MessageData messageData) {
         this.messageData = messageData;
         this.read = messageData.isRead();
-    }
-
-    public boolean isNewNode() {
-        assert RojacUtils.checkThread(true);
-
-        return newNode;
-    }
-
-    /**
-     * Recursively clears 'new node' flag
-     */
-    public void resetNewFlag() {
-        assert RojacUtils.checkThread(true);
-
-        newNode = false;
-
-        for (Post p : childrenPosts) {
-            p.resetNewFlag();
-        }
     }
 }

@@ -26,11 +26,6 @@ abstract class AnItemFavorite extends AFavorite {
     }
 
     @Override
-    public String getConfig() {
-        return String.valueOf(itemId);
-    }
-
-    @Override
     public boolean isHighlighted() {
         return statistic != null && statistic.getUnread() > 0;
     }

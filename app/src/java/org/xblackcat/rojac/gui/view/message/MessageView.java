@@ -279,12 +279,6 @@ public class MessageView extends AView implements IItemView {
         };
     }
 
-    public void loadLabels() {
-        answer.setToolTipText(Messages.Button_Reply_ToolTip.get());
-        userLabel.setText(Messages.Panel_Message_Label_User.get());
-        dateLabel.setText(Messages.Panel_Message_Label_Date.get());
-    }
-
     @Override
     public void makeVisible(int messageId) {
         if (messageId != this.messageId) {
@@ -460,7 +454,7 @@ public class MessageView extends AView implements IItemView {
                 JLOptionPane.showMessageDialog(
                         MessageView.this,
                         Messages.ErrorDialog_SetMark_Message.get(mark),
-                        Messages.ErrorDialog_SetMark_Message.get(),
+                        Messages.ErrorDialog_SetMark_Title.get(),
                         JOptionPane.DEFAULT_OPTION
                 );
                 if (log.isWarnEnabled()) {
@@ -472,7 +466,7 @@ public class MessageView extends AView implements IItemView {
 
     private class ReplyAction extends AButtonAction {
         public ReplyAction() {
-            super(Messages.Button_Reply_ToolTip, ShortCut.ReplyOnMessage);
+            super(ShortCut.ReplyOnMessage);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -482,7 +476,7 @@ public class MessageView extends AView implements IItemView {
 
     private class ShowMarksAction extends AButtonAction {
         public ShowMarksAction() {
-            super(Messages.Description_Mark_Select, ShortCut.ShowMessageMarks);
+            super(ShortCut.ShowMessageMarks);
         }
 
         @Override
@@ -495,7 +489,7 @@ public class MessageView extends AView implements IItemView {
 
     private class ShowMarkSelectorAction extends AButtonAction {
         public ShowMarkSelectorAction() {
-            super(Messages.Description_Mark_Select, ShortCut.SetMarkOnMessage);
+            super(ShortCut.SetMarkOnMessage);
         }
 
         @Override

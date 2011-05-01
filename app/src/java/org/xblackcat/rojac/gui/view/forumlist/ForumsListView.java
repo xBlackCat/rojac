@@ -104,29 +104,17 @@ public class ForumsListView extends AView {
         filled_only = WindowsUtils.registerToggleButton(
                 this,
                 "filled_only",
-                new FilterSetAction(
-                        Messages.View_Forums_Button_Filled,
-                        ShortCut.ShowOnlyNotEmpty,
-                        ForumFilterState.NotEmpty
-                )
+                new FilterSetAction(ShortCut.ShowOnlyNotEmpty, ForumFilterState.NotEmpty)
         );
         subscribed_only = WindowsUtils.registerToggleButton(
                 this,
                 "subscribed_only",
-                new FilterSetAction(
-                        Messages.View_Forums_Button_Subscribed,
-                        ShortCut.ShowOnlySubscribed,
-                        ForumFilterState.Subscribed
-                )
+                new FilterSetAction(ShortCut.ShowOnlySubscribed, ForumFilterState.Subscribed)
         );
         unread_only = WindowsUtils.registerToggleButton(
                 this,
                 "unread_only",
-                new FilterSetAction(
-                        Messages.View_Forums_Button_HasUnread,
-                        ShortCut.ShowOnlyUnread,
-                        ForumFilterState.Unread
-                )
+                new FilterSetAction(ShortCut.ShowOnlyUnread, ForumFilterState.Unread)
         );
 
         JButton updateListButton = WindowsUtils.setupImageButton("update", new UpdateForumListAction(appControl.getMainFrame()));
@@ -314,8 +302,8 @@ public class ForumsListView extends AView {
     private class FilterSetAction extends AButtonAction {
         protected final ForumFilterState option;
 
-        public FilterSetAction(Messages message, ShortCut showOnlyNotEmpty, ForumFilterState option) {
-            super(message, showOnlyNotEmpty);
+        public FilterSetAction(ShortCut shortCut, ForumFilterState option) {
+            super(shortCut);
             this.option = option;
         }
 

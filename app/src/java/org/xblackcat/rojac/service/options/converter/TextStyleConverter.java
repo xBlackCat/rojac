@@ -13,8 +13,6 @@ import java.util.Locale;
  */
 
 public class TextStyleConverter implements IConverter<TextStyle> {
-    private static final Log log = LogFactory.getLog(TextStyleConverter.class);
-
     @Override
     public TextStyle convert(String s) {
         if (StringUtils.isBlank(s)) {

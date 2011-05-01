@@ -17,8 +17,6 @@ import java.util.List;
  */
 
 public class Thread extends Post {
-    private static final Log log = LogFactory.getLog(Thread.class);
-
     private TIntObjectHashMap<Post> threadPosts = new TIntObjectHashMap<Post>();
     private final static Comparator<MessageData> SORT_BY_PARENTS = new Comparator<MessageData>() {
         @Override
