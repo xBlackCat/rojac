@@ -531,7 +531,6 @@ public abstract class AThreadView extends AnItemView {
                     completeUpdateModel();
                 } else if (e.getTreePath().getLastPathComponent() == root) {
                     fireItemUpdated(root.getForumId(), root.getMessageId());
-                    selectItem(root);
                 }
             }
         }

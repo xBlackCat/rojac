@@ -68,6 +68,10 @@ public final class IconPack {
     }
 
     public Icon getIcon(AnIcon icon) {
+        if (icon == null) {
+            return null;
+        }
+
         if (iconsCache.containsKey(icon)) {
             return iconsCache.get(icon);
         }
