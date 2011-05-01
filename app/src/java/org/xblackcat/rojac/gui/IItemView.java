@@ -17,20 +17,6 @@ public interface IItemView extends IView {
     void loadItem(int itemId);
 
     /**
-     * Registers a new action listener for the message View to subscribe to events like selected message was changed.
-     *
-     * @param l a new action listener
-     */
-    void addActionListener(IActionListener l);
-
-    /**
-     * Removes an action listener.
-     *
-     * @param l a listener to remove.
-     */
-    void removeActionListener(IActionListener l);
-
-    /**
      * Searches for item by complex key (forumId, messageId). Returns an item if it found and <code>null</code>
      * elsewise.
      *

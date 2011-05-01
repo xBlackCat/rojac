@@ -395,7 +395,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         props.setUndockEnabled(false);
         props.setTitleProvider(getTabTitleProvider());
 
-        itemView.addActionListener(new TitleChangeTracker(itemView, view));
+        itemView.addInfoChangeListener(new TitleChangeTracker(itemView, view));
 
         view.setPopupMenuFactory(new ItemViewPopupFactory(itemView));
 

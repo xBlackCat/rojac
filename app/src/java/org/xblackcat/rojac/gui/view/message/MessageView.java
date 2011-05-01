@@ -6,16 +6,12 @@ import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.RatingCache;
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.IViewLayout;
-import org.xblackcat.rojac.gui.IViewState;
-import org.xblackcat.rojac.gui.NoViewLayout;
+import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.view.AnItemView;
+import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewId;
-import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -49,7 +45,7 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
  * @author xBlackCat
  */
 
-public class MessageView extends AnItemView {
+public class MessageView extends AView implements IItemView {
     private static final Log log = LogFactory.getLog(MessageView.class);
     public static final String MESSAGE_VIEWED_FLAG = "MessageViewed";
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();
@@ -403,7 +399,7 @@ public class MessageView extends AnItemView {
                 fillFrame(messageData, md.getMessageBody());
                 fillMarksButton(messageData.getRating());
                 messageTitle = messageData.getSubject();
-                fireItemUpdated(forumId, messageId);
+                fireInfoChanged();
 
                 if (!messageData.isRead()) {
                     Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
