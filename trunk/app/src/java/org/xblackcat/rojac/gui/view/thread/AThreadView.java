@@ -2,16 +2,10 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.IViewLayout;
-import org.xblackcat.rojac.gui.IViewState;
-import org.xblackcat.rojac.gui.PopupMouseAdapter;
+import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
-import org.xblackcat.rojac.gui.view.AnItemView;
-import org.xblackcat.rojac.gui.view.MessageChecker;
-import org.xblackcat.rojac.gui.view.ThreadState;
-import org.xblackcat.rojac.gui.view.ViewId;
+import org.xblackcat.rojac.gui.view.*;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.i18n.JLOptionPane;
@@ -28,7 +22,6 @@ import javax.swing.event.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -38,7 +31,7 @@ import java.util.Enumeration;
  * @author xBlackCat
  */
 
-public abstract class AThreadView extends AnItemView {
+public abstract class AThreadView extends AView implements IItemView {
     private static final Log log = LogFactory.getLog(TreeThreadView.class);
 
     protected final IModelControl<Post> modelControl;
@@ -507,7 +500,7 @@ public abstract class AThreadView extends AnItemView {
         public void treeNodesChanged(TreeModelEvent e) {
             Post root = model.getRoot();
             if (e.getTreePath().getLastPathComponent() == root) {
-                fireItemUpdated(root.getForumId(), root.getMessageId());
+                fireInfoChanged();
             }
         }
 
@@ -529,9 +522,9 @@ public abstract class AThreadView extends AnItemView {
 
                 if (e.getTreePath() == null) {
                     completeUpdateModel();
-                } else if (e.getTreePath().getLastPathComponent() == root) {
-                    fireItemUpdated(root.getForumId(), root.getMessageId());
                 }
+
+                fireInfoChanged();
             }
         }
     }
@@ -541,7 +534,6 @@ public abstract class AThreadView extends AnItemView {
             Post mi = (Post) e.getPath().getLastPathComponent();
             selectItem(mi);
 
-            fireMessageGotFocus(mi.getForumId(), mi.getMessageId());
             fireViewStateChanged();
         }
     }

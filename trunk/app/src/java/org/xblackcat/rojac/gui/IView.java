@@ -74,4 +74,8 @@ public interface IView extends IDataHandler {
      * @return popup menu or <code>null</code> if no popup is provided.
      */
     JPopupMenu getTabTitleMenu();
+
+    void addInfoChangeListener(IInfoChangeListener l);
+
+    void removeInfoChangeListener(IInfoChangeListener l);
 }

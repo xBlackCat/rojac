@@ -1,9 +1,6 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.xblackcat.rojac.gui.IActionListener;
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.IStateListener;
-import org.xblackcat.rojac.gui.IView;
+import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
@@ -53,6 +50,25 @@ public abstract class AView extends JPanel implements IView {
 
     public void removeStateChangeListener(IStateListener l) {
         listenerList.remove(IStateListener.class, l);
+    }
+
+    @Override
+    public void addInfoChangeListener(IInfoChangeListener l) {
+        listenerList.add(IInfoChangeListener.class, l);
+    }
+
+    @Override
+    public void removeInfoChangeListener(IInfoChangeListener l) {
+        listenerList.remove(IInfoChangeListener.class, l);
+    }
+
+    protected void fireInfoChanged() {
+        Object[] listeners = listenerList.getListenerList();
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == IInfoChangeListener.class) {
+                ((IInfoChangeListener) listeners[i + 1]).infoChanged();
+            }
+        }
     }
 
     protected void fireViewStateChanged() {
