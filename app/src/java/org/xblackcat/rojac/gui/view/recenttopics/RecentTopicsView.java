@@ -1,7 +1,11 @@
 package org.xblackcat.rojac.gui.view.recenttopics;
 
 import org.xblackcat.rojac.gui.*;
+import org.xblackcat.rojac.gui.theme.IconPack;
+import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
@@ -101,5 +105,21 @@ public class RecentTopicsView extends AView {
 
     @Override
     public void setupLayout(IViewLayout o) {
+    }
+
+    @Override
+    public String getTabTitle() {
+        return Messages.View_RecentTopics_Title.get();
+    }
+
+    @Override
+    public Icon getTabTitleIcon() {
+        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
+        return imagePack.getIcon(ViewIcon.RecentTopics);
+    }
+
+    @Override
+    public JPopupMenu getTabTitleMenu() {
+        return null;
     }
 }

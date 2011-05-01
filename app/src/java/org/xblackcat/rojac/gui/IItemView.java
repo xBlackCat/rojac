@@ -46,24 +46,4 @@ public interface IItemView extends IView {
      */
     void makeVisible(int messageId);
 
-    /**
-     * Returns a title of the item tab depending on its state.
-     *
-     * @return title of a tab
-     */
-    String getTabTitle();
-
-    /**
-     * Returns an icon to be shown in view title (usually - in tab title)
-     *
-     * @return an icon or <code>null</code> if no icon is provided.
-     */
-    Icon getTabTitleIcon();
-
-    /**
-     * Returns a popup menu for view title.
-     *
-     * @return popup menu or <code>null</code> if no popup is provided.
-     */
-    JPopupMenu getTabTitleMenu();
 }

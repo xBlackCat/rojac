@@ -9,6 +9,8 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.component.UpdateForumListAction;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.theme.IconPack;
+import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.i18n.Messages;
@@ -167,6 +169,22 @@ public class ForumsListView extends AView {
 
     @Override
     public void setupLayout(IViewLayout o) {
+    }
+
+    @Override
+    public String getTabTitle() {
+        return Messages.View_Forums_Title.get();
+    }
+
+    @Override
+    public Icon getTabTitleIcon() {
+        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
+        return imagePack.getIcon(ViewIcon.ForumList);
+    }
+
+    @Override
+    public JPopupMenu getTabTitleMenu() {
+        return null;
     }
 
     @Override

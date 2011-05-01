@@ -9,10 +9,10 @@ import javax.swing.*;
 * @author xBlackCat
 */
 class TitleChangeTracker implements IActionListener {
-    private final IItemView itemView;
+    private final IView itemView;
     private final View view;
 
-    public TitleChangeTracker(IItemView itemView, View view) {
+    public TitleChangeTracker(IView itemView, View view) {
         this.itemView = itemView;
         this.view = view;
     }

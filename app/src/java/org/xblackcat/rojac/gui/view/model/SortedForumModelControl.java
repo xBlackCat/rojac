@@ -104,11 +104,16 @@ public class SortedForumModelControl extends AThreadsModelControl {
     public String getTitle(AThreadModel<Post> model) {
         // Root is ForumRoot object
         Post root = model.getRoot();
-        if (root.getMessageData() != null && root.getMessageData().getSubject() != null) {
-            return root.getMessageData().getSubject();
-        } else {
+        if (root != null) {
+            if (root.getMessageData() != null) {
+                if (root.getMessageData().getSubject() != null) {
+                    return root.getMessageData().getSubject();
+                }
+            }
             return "#" + root.getForumId();
         }
+
+        return "#";
     }
 
     @Override
