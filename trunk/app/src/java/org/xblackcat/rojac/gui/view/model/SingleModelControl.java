@@ -72,11 +72,16 @@ public class SingleModelControl extends AThreadsModelControl {
 
         // Root is Thread object
         Post root = model.getRoot();
-        if (root.getMessageData() != null && root.getMessageData().getSubject() != null) {
-            return root.getMessageData().getSubject();
-        } else {
+        if (root != null) {
+            if (root.getMessageData() != null) {
+                if (root.getMessageData().getSubject() != null) {
+                    return root.getMessageData().getSubject();
+                }
+            }
             return "#" + root.getMessageId();
         }
+
+        return "#";
     }
 
     @Override

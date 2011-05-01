@@ -9,9 +9,9 @@ import javax.swing.*;
 * @author xBlackCat
 */
 class ItemViewPopupFactory implements WindowPopupMenuFactory {
-    private final IItemView itemView;
+    private final IView itemView;
 
-    public ItemViewPopupFactory(IItemView itemView) {
+    public ItemViewPopupFactory(IView itemView) {
         this.itemView = itemView;
     }
 

@@ -226,26 +226,18 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         setContentPane(cp);
 
         // Setup forums view
-        View viewForums = createView(
-                Messages.View_Forums_Title,
-                forumsListView
-        );
+        View viewForums = createView(forumsListView);
 
         // Setup favorites view
-        View viewFavorites = createView(
-                Messages.View_Favorites_Title,
-                favoritesView
-        );
+        View viewFavorites = createView(favoritesView);
 
-        View viewRecentTopics = createView(
-                Messages.View_RecentTopics_Title,
-                recentTopicsView
-        );
+        View viewRecentTopics = createView(recentTopicsView);
 
         // Set up main tabbed window for forum views
         TabWindow threads = new TabWindow();
         threads.getWindowProperties().setUndockEnabled(false);
         threads.getWindowProperties().setMinimizeEnabled(false);
+        threads.getWindowProperties().getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(3);
 
         threadsRootWindow = new RootWindow(false, new ThreadViewSerializer(), threads);
         threadsRootWindow.addListener(new CloseViewTabListener());
@@ -281,6 +273,21 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         viewMap.addView(THREADS_VIEW_ID, threadsView);
 
         rootWindow = new RootWindow(false, viewMap, new SplitWindow(true, 0.25f, new TabWindow(mainViews), threadsView));
+
+        rootWindow.getWindowProperties().setCloseEnabled(false);
+        rootWindow.getWindowProperties().setMaximizeEnabled(false);
+        rootWindow.getWindowProperties().setUndockEnabled(false);
+
+        RootWindowProperties properties = rootWindow.getRootWindowProperties();
+
+        properties.getDockingWindowProperties().setUndockEnabled(false);
+        properties.getDockingWindowProperties().setCloseEnabled(false);
+
+        TabWindowProperties tabWindowProperties = properties.getTabWindowProperties();
+        tabWindowProperties.getMaximizeButtonProperties().setVisible(false);
+        tabWindowProperties.getCloseButtonProperties().setVisible(false);
+        tabWindowProperties.getUndockButtonProperties().setVisible(false);
+
         rootWindow.getWindowBar(Direction.LEFT).setEnabled(true);
         rootWindow.getWindowBar(Direction.LEFT).addTab(viewForums, 0);
         rootWindow.getWindowBar(Direction.LEFT).addTab(viewFavorites, 1);
@@ -291,16 +298,8 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         rootWindow.getWindowBar(Direction.DOWN).setEnabled(true);
         rootWindow.getWindowBar(Direction.DOWN).getWindowBarProperties().setMinimumWidth(5);
 
-        rootWindow.getRootWindowProperties().setDragRectangleBorderWidth(2);
-        rootWindow.getRootWindowProperties().setRecursiveTabsEnabled(false);
-
-        rootWindow.getWindowProperties().setCloseEnabled(false);
-        rootWindow.getWindowProperties().setMaximizeEnabled(false);
-
-        TabWindowProperties tabWindowProperties = rootWindow.getRootWindowProperties().getTabWindowProperties();
-        tabWindowProperties.getMaximizeButtonProperties().setVisible(false);
-        tabWindowProperties.getCloseButtonProperties().setVisible(false);
-        tabWindowProperties.getUndockButtonProperties().setVisible(false);
+        properties.setDragRectangleBorderWidth(2);
+        properties.setRecursiveTabsEnabled(false);
 
         viewForums.restore();
 
@@ -360,26 +359,29 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         return view;
     }
 
-    private View createView(Messages title, IView itemView) {
+    private View createView(IView itemView) {
         ServiceFactory.getInstance().getDataDispatcher().addDataHandler(itemView);
 
         final View view = new View(
-                title.get(),
-                null,
+                itemView.getTabTitle(),
+                itemView.getTabTitleIcon(),
                 itemView.getComponent()
         );
 
         DockingWindowProperties props = view.getWindowProperties();
+        props.getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(3);
         props.setCloseEnabled(false);
         props.setMaximizeEnabled(false);
         props.setUndockEnabled(false);
+
+        view.setPopupMenuFactory(new ItemViewPopupFactory(itemView));
 
         return view;
     }
 
     private View makeViewWindow(final IItemView itemView) {
         final View view = new View(
-                "#" + itemView.getId().getAnchor(), // Default view name
+                itemView.getTabTitle(),
                 itemView.getTabTitleIcon(),
                 itemView.getComponent()
         );

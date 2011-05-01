@@ -67,7 +67,7 @@ public class MessageView extends AnItemView {
     private JLabel dateLabel = new JLabel();
     private JButton answer;
     private JComboBox marks;
-    private String messageTitle = "#";
+    private String messageTitle;
 
     protected final JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
     protected final JComponent titleBar = createTitleBar();
@@ -76,6 +76,8 @@ public class MessageView extends AnItemView {
 
     public MessageView(ViewId id, IAppControl appControl) {
         super(id, appControl);
+
+        messageTitle = "#" + id.getId();
 
         initialize();
 
@@ -395,7 +397,7 @@ public class MessageView extends AnItemView {
                 readFlag = messageData.isRead();
                 fillFrame(messageData, md.getMessageBody());
                 fillMarksButton(messageData.getRating());
-                messageTitle = "#" + messageId + " " + messageData.getSubject();
+                messageTitle = messageData.getSubject();
                 fireItemUpdated(forumId, messageId);
 
                 if (!messageData.isRead()) {

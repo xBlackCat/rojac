@@ -25,6 +25,8 @@ public class FavoritesModelControl implements IModelControl<Post> {
     public void fillModelByItemId(AThreadModel<Post> model, int itemId) {
         assert RojacUtils.checkThread(true);
 
+        title = "Favorite #" + itemId;
+
         new FavoriteLoader(model, itemId).execute();
     }
 
