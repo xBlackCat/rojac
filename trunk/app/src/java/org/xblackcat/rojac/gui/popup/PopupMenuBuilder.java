@@ -18,8 +18,8 @@ import java.net.URL;
  *
  * @author xBlackCat
  */
-public class PopupMenuBuilder {
-    public PopupMenuBuilder() {
+public final class PopupMenuBuilder {
+    private PopupMenuBuilder() {
     }
 
     /**
@@ -29,7 +29,6 @@ public class PopupMenuBuilder {
      * @param stringUrl  Text representing of the link.
      * @param text       Text associated with the link.
      * @param appControl back link to main window control.
-     *
      * @return new popup menu for the specified url.
      */
     public static JPopupMenu getLinkMenu(URL url, String stringUrl, String text, IAppControl appControl) {

@@ -36,7 +36,6 @@ public abstract class AThreadView extends AView implements IItemView {
 
     protected final IModelControl<Post> modelControl;
     protected final AThreadModel<Post> model = new SortedThreadsModel();
-    protected String title;
     protected int rootItemId;
 
     protected ThreadState state;
@@ -451,7 +450,7 @@ public abstract class AThreadView extends AView implements IItemView {
 
     private class NewThreadAction extends AButtonAction {
         public NewThreadAction() {
-            super(Messages.View_Thread_Button_NewThread, ShortCut.NewThread);
+            super(ShortCut.NewThread);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -461,7 +460,7 @@ public abstract class AThreadView extends AView implements IItemView {
 
     private class PreviousUnreadAction extends AButtonAction {
         private PreviousUnreadAction() {
-            super(Messages.View_Thread_Button_PreviousUnread, ShortCut.PrevUnreadMessage);
+            super(ShortCut.PrevUnreadMessage);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -472,7 +471,7 @@ public abstract class AThreadView extends AView implements IItemView {
 
     private class NextUnreadAction extends AButtonAction {
         private NextUnreadAction() {
-            super(Messages.View_Thread_Button_NextUnread, ShortCut.NextUnreadMessage);
+            super(ShortCut.NextUnreadMessage);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -483,7 +482,7 @@ public abstract class AThreadView extends AView implements IItemView {
 
     private class ToThreadRootAction extends AButtonAction {
         private ToThreadRootAction() {
-            super(Messages.View_Thread_Button_ToThreadRoot, ShortCut.ToThreadRoot);
+            super(ShortCut.ToThreadRoot);
         }
 
         public void actionPerformed(ActionEvent e) {

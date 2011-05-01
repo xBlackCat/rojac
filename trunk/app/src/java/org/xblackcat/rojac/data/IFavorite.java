@@ -16,13 +16,6 @@ public interface IFavorite {
 
     FavoriteType getType();
 
-    /**
-     * Returns a favorite-specific config to store in database.
-     *
-     * @return parsable config string.
-     */
-    String getConfig();
-
     boolean isHighlighted();
 
     String getName();

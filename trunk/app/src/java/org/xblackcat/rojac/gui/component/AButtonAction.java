@@ -13,11 +13,12 @@ public abstract class AButtonAction extends AbstractAction {
     private final ShortCut shortCut;
 
     public AButtonAction(Messages message) {
-        this(message, null);
+        this.message = message;
+        shortCut = null;
     }
 
-    public AButtonAction(Messages message, ShortCut shortCut) {
-        this.message = message;
+    public AButtonAction(ShortCut shortCut) {
+        this.message = shortCut.getDescription();
         this.shortCut = shortCut;
     }
 

@@ -676,7 +676,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     private class AboutAction extends AButtonAction {
         public AboutAction() {
-            super(Messages.MainFrame_Button_About, ShortCut.About);
+            super(ShortCut.About);
         }
 
         @Override
@@ -687,7 +687,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     private class SettingsAction extends AButtonAction {
         public SettingsAction() {
-            super(Messages.MainFrame_Button_Settings, ShortCut.Settings);
+            super(ShortCut.Settings);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -697,7 +697,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     private class LoadExtraMessagesAction extends AButtonAction {
         public LoadExtraMessagesAction() {
-            super(Messages.MainFrame_Button_LoadMessage, ShortCut.LoadExtraMessages);
+            super(ShortCut.LoadExtraMessages);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -707,7 +707,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     private class GoToMessageAction extends AButtonAction {
         public GoToMessageAction() {
-            super(Messages.MainFrame_Button_GoToMessage, ShortCut.GoToMessage);
+            super(ShortCut.GoToMessage);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -721,7 +721,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     private class SynchronizationAction extends AButtonAction {
         public SynchronizationAction() {
-            super(Messages.MainFrame_Button_Update, ShortCut.Synchronization);
+            super(ShortCut.Synchronization);
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -731,7 +731,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     private class GoBackAction extends AButtonAction {
         private GoBackAction() {
-            super(Messages.MainFrame_Button_GoBack, ShortCut.GoBack);
+            super(ShortCut.GoBack);
         }
 
         @Override
@@ -747,7 +747,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     private class GoForwardAction extends AButtonAction {
         private GoForwardAction() {
-            super(Messages.MainFrame_Button_GoForward, ShortCut.GoForward);
+            super(ShortCut.GoForward);
         }
 
         @Override
@@ -763,7 +763,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
     private class SubscribeForum extends AButtonAction {
         public SubscribeForum() {
-            super(Messages.MainFrame_Button_ForumManage, ShortCut.ForumManage);
+            super(ShortCut.ForumManage);
         }
 
         @Override
