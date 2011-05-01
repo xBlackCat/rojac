@@ -95,7 +95,7 @@ public class PopupMenuBuilder {
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, forumId, true));
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, forumId, false));
 
-        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl));
+        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl.getMainFrame()));
 
         menu.addSeparator();
 
@@ -127,7 +127,7 @@ public class PopupMenuBuilder {
         menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Read, message.getMessageData(), true));
         menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Unread, message.getMessageData(), false));
 
-        menu.add(MenuHelper.markReadUnreadSubmenu(message, appControl));
+        menu.add(MenuHelper.markReadUnreadSubmenu(message, appControl.getMainFrame()));
 
         menu.addSeparator();
         MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));

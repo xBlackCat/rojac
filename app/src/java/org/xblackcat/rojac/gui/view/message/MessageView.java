@@ -269,7 +269,8 @@ public class MessageView extends AnItemView {
                     @Override
                     public void process(SetPostReadPacket p) {
                         if (p.isRecursive()) {
-                            if (p.getPostId() == messageData.getThreadRootId()) {
+                            if (messageData != null &&
+                                    p.getPostId() == messageData.getThreadRootId()) {
                                 loadItem(messageId);
                             }
                         } else {

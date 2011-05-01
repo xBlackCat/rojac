@@ -2,9 +2,13 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.theme.IconPack;
+import org.xblackcat.rojac.gui.theme.ThreadIcon;
+import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -132,12 +136,54 @@ public class SingleModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public Icon getTitleIcon(AThreadModel<Post> postAThreadModel) {
-        return null;
+    public Icon getTitleIcon(AThreadModel<Post> model) {
+        ThreadIcon threadIcon = null;
+
+        Post root = model.getRoot();
+
+        if (root != null) {
+            switch (root.isRead()) {
+                case Read:
+                    threadIcon = ThreadIcon.Read;
+                    break;
+                case ReadPartially:
+                    threadIcon = ThreadIcon.ReadPartially;
+                    break;
+                case Unread:
+                    threadIcon = ThreadIcon.Unread;
+                    break;
+            }
+
+            if (threadIcon != ThreadIcon.Read) {
+                // Check for non-read replies.
+
+                int userId = Property.RSDN_USER_ID.get(0);
+                if (userId > 0 && hasUnreadReplies(userId, root)) {
+                    threadIcon = ThreadIcon.HasResponseUnread;
+                }
+            }
+        }
+
+        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
+        return imagePack.getIcon(threadIcon);
     }
 
     @Override
     public JPopupMenu getTitlePopup(AThreadModel<Post> postAThreadModel, IAppControl appControl) {
         return null;
+    }
+
+    private boolean hasUnreadReplies(int userId, Post post) {
+        if (post.getMessageData().getUserId() == userId && post.isRead() != ReadStatus.Unread) {
+            return true;
+        }
+
+        for (Post p : post.getChildren()) {
+            if (hasUnreadReplies(userId, p)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

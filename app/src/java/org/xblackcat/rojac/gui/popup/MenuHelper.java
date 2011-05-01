@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
@@ -76,7 +75,7 @@ final class MenuHelper {
         return copyToClipboard;
     }
 
-    static JMenuItem markReadUnreadSubmenu(Post message, IAppControl appControl) {
+    static JMenuItem markReadUnreadSubmenu(Post message, Window owner) {
         JMenu menu = new JMenu(Messages.Popup_View_ThreadsTree_Mark_Title.get());
 
         menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadRead, message, true));
@@ -90,7 +89,7 @@ final class MenuHelper {
 
         menu.addSeparator();
 
-        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, messageData, appControl));
+        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, messageData, owner));
 
         return menu;
     }
