@@ -77,7 +77,11 @@ public class MessageView extends AnItemView {
     public MessageView(ViewId id, IAppControl appControl) {
         super(id, appControl);
 
-        messageTitle = "#" + id.getId();
+        if (id != null) {
+            messageTitle = "#" + id.getId();
+        } else {
+            messageTitle = "#";
+        }
 
         initialize();
 
