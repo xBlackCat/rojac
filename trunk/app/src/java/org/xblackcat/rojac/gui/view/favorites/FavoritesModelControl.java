@@ -102,8 +102,8 @@ public class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public JPopupMenu getTitlePopup(AThreadModel<Post> postAThreadModel, IAppControl appControl) {
-        return null;
+    public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
+        return delegatedControl == null ? null : delegatedControl.getTitlePopup(model, appControl);
     }
 
     /**
