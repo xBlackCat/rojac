@@ -180,4 +180,10 @@ public final class PopupMenuBuilder {
 
         return menu;
     }
+
+    public static JPopupMenu getThreadMenu(MessageData messageData, IAppControl appControl) {
+
+
+        return null;
+    }
 }

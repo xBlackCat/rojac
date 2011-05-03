@@ -2,9 +2,9 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ThreadIcon;
-import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
@@ -169,7 +169,13 @@ public class SingleModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public JPopupMenu getTitlePopup(AThreadModel<Post> postAThreadModel, IAppControl appControl) {
+    public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
+        Post data = model.getRoot();
+
+        if (data != null) {
+            return PopupMenuBuilder.getThreadMenu(data.getMessageData(), appControl);
+        }
+
         return null;
     }
 
