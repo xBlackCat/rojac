@@ -3,15 +3,21 @@ package org.xblackcat.rojac.gui.view.favorites;
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.theme.FavoritesIcon;
+import org.xblackcat.rojac.gui.theme.IconPack;
+import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * @author xBlackCat
@@ -20,6 +26,8 @@ import javax.swing.*;
 public class FavoritesModelControl implements IModelControl<Post> {
     private IModelControl<Post> delegatedControl = null;
     private String title = null;
+
+    private Map<ReadStatus, FavoritesIcon> statusIcons = new EnumMap<ReadStatus, FavoritesIcon>(ReadStatus.class);
 
     @Override
     public void fillModelByItemId(AThreadModel<Post> model, int itemId) {
@@ -75,6 +83,29 @@ public class FavoritesModelControl implements IModelControl<Post> {
         return false;
     }
 
+    @Override
+    public void resortModel(AThreadModel<Post> model) {
+        if (delegatedControl != null) {
+            delegatedControl.resortModel(model);
+        }
+    }
+
+    @Override
+    public Icon getTitleIcon(AThreadModel<Post> model) {
+        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
+        if (model.getRoot() == null) {
+            return imagePack.getIcon(ViewIcon.Favorites);
+        }
+
+        FavoritesIcon icon = statusIcons.get(model.getRoot().isRead());
+        return imagePack.getIcon(icon);
+    }
+
+    @Override
+    public JPopupMenu getTitlePopup(AThreadModel<Post> postAThreadModel, IAppControl appControl) {
+        return null;
+    }
+
     /**
      * Util class to determine favorite type and the control behaviour.
      */
@@ -120,10 +151,16 @@ public class FavoritesModelControl implements IModelControl<Post> {
                 case UserPosts:
                 case Category:
                     delegatedControl = new MessageListControl();
+                    statusIcons.put(ReadStatus.Read, FavoritesIcon.UserPostsRead);
+                    statusIcons.put(ReadStatus.ReadPartially, FavoritesIcon.UserPostsReadPartially);
+                    statusIcons.put(ReadStatus.Unread, FavoritesIcon.UserPostsUnread);
                     break;
                 case SubThread:
                 case Thread:
                     delegatedControl = new SingleModelControl();
+                    statusIcons.put(ReadStatus.Read, FavoritesIcon.ThreadRead);
+                    statusIcons.put(ReadStatus.ReadPartially, FavoritesIcon.ThreadReadPartially);
+                    statusIcons.put(ReadStatus.Unread, FavoritesIcon.ThreadUnread);
                     break;
             }
 
@@ -131,22 +168,5 @@ public class FavoritesModelControl implements IModelControl<Post> {
             model.setRoot(root);
 
         }
-    }
-
-    @Override
-    public void resortModel(AThreadModel<Post> model) {
-        if (delegatedControl != null) {
-            delegatedControl.resortModel(model);
-        }
-    }
-
-    @Override
-    public Icon getTitleIcon(AThreadModel<Post> postAThreadModel) {
-        return null;
-    }
-
-    @Override
-    public JPopupMenu getTitlePopup(AThreadModel<Post> postAThreadModel, IAppControl appControl) {
-        return null;
     }
 }
