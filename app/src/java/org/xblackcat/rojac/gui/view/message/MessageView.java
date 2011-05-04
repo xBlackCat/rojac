@@ -331,7 +331,7 @@ public class MessageView extends AView implements IItemView {
 
     @Override
     public JPopupMenu getTabTitleMenu() {
-        return PopupMenuBuilder.getMessageTabMenu(messageData, appControl);
+        return PopupMenuBuilder.getMessageViewTabMenu(messageData, appControl);
     }
 
     @Override

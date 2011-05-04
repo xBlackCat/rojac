@@ -29,6 +29,7 @@ public final class PopupMenuBuilder {
      * @param stringUrl  Text representing of the link.
      * @param text       Text associated with the link.
      * @param appControl back link to main window control.
+     *
      * @return new popup menu for the specified url.
      */
     public static JPopupMenu getLinkMenu(URL url, String stringUrl, String text, IAppControl appControl) {
@@ -80,16 +81,14 @@ public final class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getForumViewMenu(ForumData forum, boolean hasOpenForumAction, IAppControl appControl) {
+    public static JPopupMenu getForumViewMenu(ForumData forum, IAppControl appControl) {
         JPopupMenu menu = new JPopupMenu(forum.getForum().getForumName());
 
         final boolean subscribed = forum.isSubscribed();
         final int forumId = forum.getForumId();
 
-        if (hasOpenForumAction) {
-            menu.add(new OpenForumAction(appControl, forumId));
-            menu.addSeparator();
-        }
+        menu.add(new OpenForumAction(appControl, forumId));
+        menu.addSeparator();
 
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, forumId, true));
         menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, forumId, false));
@@ -98,11 +97,9 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
 
-        {
-            JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.Popup_View_Forums_Subscribe.get(), subscribed);
-            mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
-            menu.add(mi);
-        }
+        JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.Popup_View_Forums_Subscribe.get(), subscribed);
+        mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
+        menu.add(mi);
 
 
         return menu;
@@ -141,7 +138,54 @@ public final class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getMessageTabMenu(MessageData message, IAppControl appControl) {
+    public static JPopupMenu getFavoritesMenu(IFavorite favorite, IAppControl appControl) {
+        final JPopupMenu menu = new JPopupMenu(favorite.getName());
+
+        final int favoriteId = favorite.getId();
+        menu.add(new OpenFavoriteAction(appControl, favoriteId));
+        menu.addSeparator();
+
+        menu.add(new RemoveFavoriteAction(favoriteId));
+
+        return menu;
+    }
+
+    public static JPopupMenu getForumViewTabMenu(ForumData forum, IAppControl appControl) {
+        JPopupMenu menu = new JPopupMenu(forum.getForum().getForumName());
+
+        final boolean subscribed = forum.isSubscribed();
+        final int forumId = forum.getForumId();
+
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, forumId, true));
+        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, forumId, false));
+
+        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl.getMainFrame()));
+
+        menu.addSeparator();
+
+        JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.Popup_View_Forums_Subscribe.get(), subscribed);
+        mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
+        menu.add(mi);
+
+        return menu;
+    }
+
+    public static JPopupMenu getThreadViewTabMenu(Post post, IAppControl appControl) {
+        JPopupMenu menu = new JPopupMenu("#" + post.getMessageId());
+
+        menu.add(new OpenMessageMenuItem(post.getMessageId(), appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+
+        menu.addSeparator();
+
+        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_SetReadAll, post, true));
+        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_SetUnreadAll, post, false));
+
+        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, post.getMessageData(), appControl.getMainFrame()));
+
+        return menu;
+    }
+
+    public static JPopupMenu getMessageViewTabMenu(MessageData message, IAppControl appControl) {
         int messageId = message.getMessageId();
         final JPopupMenu menu = new JPopupMenu("#" + messageId);
 
@@ -167,23 +211,5 @@ public final class PopupMenuBuilder {
         menu.add(MenuHelper.favoritesSubmenu(message, appControl));
 
         return menu;
-    }
-
-    public static JPopupMenu getFavoritesMenu(IFavorite favorite, IAppControl appControl) {
-        final JPopupMenu menu = new JPopupMenu(favorite.getName());
-
-        final int favoriteId = favorite.getId();
-        menu.add(new OpenFavoriteAction(appControl, favoriteId));
-        menu.addSeparator();
-
-        menu.add(new RemoveFavoriteAction(favoriteId));
-
-        return menu;
-    }
-
-    public static JPopupMenu getThreadMenu(MessageData messageData, IAppControl appControl) {
-
-
-        return null;
     }
 }

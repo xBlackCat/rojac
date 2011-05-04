@@ -170,10 +170,10 @@ public class SingleModelControl extends AThreadsModelControl {
 
     @Override
     public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
-        Post data = model.getRoot();
+        Post root = model.getRoot();
 
-        if (data != null) {
-            return PopupMenuBuilder.getThreadMenu(data.getMessageData(), appControl);
+        if (root != null) {
+            return PopupMenuBuilder.getThreadViewTabMenu(root, appControl);
         }
 
         return null;
