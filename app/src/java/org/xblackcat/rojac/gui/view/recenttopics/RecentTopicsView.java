@@ -33,9 +33,11 @@ public class RecentTopicsView extends AView {
     }
 
     private void reloadLastPosts() {
-        model.clear();
+        if (!model.isLoading()) {
+            model.clear();
 
-        new LatestPostsLoader(model).execute();
+            new LatestPostsLoader(model).execute();
+        }
     }
 
 
