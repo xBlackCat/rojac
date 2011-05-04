@@ -29,7 +29,9 @@ public class PacketDispatcher {
 
     public void dispatch(IPacket p) {
         for (Map.Entry<Class<?>, IPacketProcessor<IPacket>> e : processors.entrySet()) {
-            if (e.getKey().isAssignableFrom(p.getClass())) {
+            Class<?> processablePacket = e.getKey();
+            if (processablePacket.equals(p.getClass()) ||
+                    processablePacket.isInterface() && processablePacket.isAssignableFrom(p.getClass())) {
                 e.getValue().process(p);
             }
         }
