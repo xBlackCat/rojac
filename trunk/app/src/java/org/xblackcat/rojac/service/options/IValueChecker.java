@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.service.options;
 
+import java.util.List;
+
 /**
  * Interface for all possible values accessor of property.
  *
@@ -12,7 +14,7 @@ public interface IValueChecker<T> {
      *
      * @return an array of possible values for a property.
      */
-    T[] getPossibleValues();
+    List<T> getPossibleValues();
 
     /**
      * Returns a string representation of the value.
