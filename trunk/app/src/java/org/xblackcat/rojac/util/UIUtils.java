@@ -63,4 +63,40 @@ public final class UIUtils {
 
         return laf;
     }
+
+    /**
+     * Creates a new <code>Color</code> that is a brighter version of this <code>Color</code>.
+     * <p/>
+     * This method applies an arbitrary scale factor to each of the three RGB components of this <code>Color</code> to
+     * create a brighter version of this <code>Color</code>. Although <code>brighter</code> and <code>darker</code> are
+     * inverse operations, the results of a series of invocations of these two methods might be inconsistent because of
+     * rounding errors.
+     *
+     * @return a new <code>Color</code> object that is a brighter version of this <code>Color</code>.
+     *
+     * @see java.awt.Color#darker
+     * @since JDK1.0
+     */
+    public static Color brighter(Color c, double factor) {
+        int r = c.getRed();
+        int g = c.getGreen();
+        int b = c.getBlue();
+
+        /* From 2D group:
+         * 1. black.brighter() should return grey
+         * 2. applying brighter to blue will always return blue, brighter
+         * 3. non pure color (non zero rgb) will eventually return white
+         */
+        int i = (int) (1.0 / (1.0 - factor));
+        if (r == 0 && g == 0 && b == 0) {
+            return new Color(i, i, i);
+        }
+        if (r > 0 && r < i) r = i;
+        if (g > 0 && g < i) g = i;
+        if (b > 0 && b < i) b = i;
+
+        return new Color(Math.min((int) (r / factor), 255),
+                Math.min((int) (g / factor), 255),
+                Math.min((int) (b / factor), 255));
+    }
 }
