@@ -27,6 +27,10 @@ class ExtendedMarkRead extends JMenuItem {
         this(title, Scope.Forum, null, forum.getForumId(), 0, owner);
     }
 
+    public ExtendedMarkRead(Messages title, Window owner) {
+        this(title, Scope.All, null, 0, 0, owner);
+    }
+
     private ExtendedMarkRead(
             Messages title,
             Scope scope,

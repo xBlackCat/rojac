@@ -36,6 +36,17 @@ class SetThreadReadMenuItem extends JMenuItem {
         });
     }
 
+    public SetThreadReadMenuItem(Messages text, final MessageData data, final boolean read) {
+        super(text.get());
+        this.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Mark whole thread.
+                new ThreadReadFlagSetter(read, data).execute();
+            }
+        });
+    }
+
     private class ThreadReadFlagSetter extends RojacWorker<Void, Void> {
         private final boolean read;
         private final MessageData threadRoot;
