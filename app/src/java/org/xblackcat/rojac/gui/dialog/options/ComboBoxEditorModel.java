@@ -24,7 +24,7 @@ class ComboBoxEditorModel extends AbstractListModel implements ComboBoxModel {
 
     @Override
     public int getSize() {
-        return checker.getPossibleValues().length;
+        return checker.getPossibleValues().size();
     }
 
     @Override
@@ -38,7 +38,7 @@ class ComboBoxEditorModel extends AbstractListModel implements ComboBoxModel {
 
     @Override
     public Object getElementAt(int index) {
-        return checker.getPossibleValues()[index];
+        return checker.getPossibleValues().get(index);
     }
 
     @Override

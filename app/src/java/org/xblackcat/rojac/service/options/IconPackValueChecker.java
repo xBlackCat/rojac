@@ -2,6 +2,9 @@ package org.xblackcat.rojac.service.options;
 
 import org.xblackcat.rojac.gui.theme.IconPack;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author xBlackCat
  */
@@ -9,12 +12,12 @@ import org.xblackcat.rojac.gui.theme.IconPack;
 public class IconPackValueChecker implements IValueChecker<IconPack> {
     public static final IconPack DEFAULT_ICON_PACK = new IconPack("Default pack", "images", "png");
 
-    private static final IconPack[] ICON_PACKS = new IconPack[]{
+    private static final List<IconPack> ICON_PACKS = Arrays.asList(
             DEFAULT_ICON_PACK
-    };
+    );
 
     @Override
-    public IconPack[] getPossibleValues() {
+    public List<IconPack> getPossibleValues() {
         return ICON_PACKS;
     }
 

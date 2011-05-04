@@ -4,10 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.util.RojacUtils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * @author xBlackCat
@@ -41,8 +38,8 @@ final class LocaleValueChecker implements IValueChecker<Locale> {
     }
 
     @Override
-    public Locale[] getPossibleValues() {
-        return locales.toArray(new Locale[locales.size()]);
+    public List<Locale> getPossibleValues() {
+        return new ArrayList<Locale>(locales);
     }
 
     @Override

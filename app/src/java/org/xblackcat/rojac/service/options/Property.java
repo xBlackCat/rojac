@@ -58,7 +58,8 @@ public final class Property<T> {
 
     // Behaviour in opening message in tab
     public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_GENERAL = create("rojac.behaviour.open_message.general", OpenMessageMethod.InForum);
-    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_RECENT_TOPICS = create("rojac.behaviour.open_message.from_recent_topics", OpenMessageMethod.InThread);
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_RECENT_TOPICS = create("rojac.behaviour.open_message.from_recent_topics", OpenMessageMethod.InThread,
+            new GeneralEnumChecker<OpenMessageMethod>(OpenMessageMethod.InThread, OpenMessageMethod.InForum));
 
     // Progress dialog properties
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.dialog.progress.autoshow", Boolean.TRUE);

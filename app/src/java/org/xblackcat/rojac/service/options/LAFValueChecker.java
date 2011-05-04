@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
+import net.infonode.util.collection.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.utils.ResourceUtils;
@@ -7,6 +8,7 @@ import org.xblackcat.utils.ResourceUtils;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +22,12 @@ final class LAFValueChecker implements IValueChecker<LookAndFeel> {
     private static final String LAF_LIST = "/laf.config";
 
     private static final Pattern KEY_PATTERN = Pattern.compile("rojac\\.laf\\.(\\w+)\\.(class|description)");
+    private static final Comparator<LookAndFeel> LOOK_AND_FEEL_COMPARATOR = new Comparator<LookAndFeel>() {
+        @Override
+        public int compare(LookAndFeel o1, LookAndFeel o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
 
     private final Map<LNFContainer, String> availableLAFs;
 
@@ -81,22 +89,16 @@ final class LAFValueChecker implements IValueChecker<LookAndFeel> {
     }
 
     @Override
-    public LookAndFeel[] getPossibleValues() {
+    public List<LookAndFeel> getPossibleValues() {
         Collection<LNFContainer> lafs = availableLAFs.keySet();
 
-        LookAndFeel[] lafClasses = new LookAndFeel[lafs.size()];
+        List<LookAndFeel> lafClasses = new ArrayList<LookAndFeel>(lafs.size());
 
-        int i = 0;
         for (LNFContainer c : lafs) {
-            lafClasses[i++] = c.getLnf();
+            lafClasses.add(c.getLnf());
         }
 
-        Arrays.sort(lafClasses, new Comparator<LookAndFeel>() {
-            @Override
-            public int compare(LookAndFeel o1, LookAndFeel o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        Collections.sort(lafClasses, LOOK_AND_FEEL_COMPARATOR);
 
         return lafClasses;
     }

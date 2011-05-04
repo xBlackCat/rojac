@@ -2,19 +2,28 @@ package org.xblackcat.rojac.service.options;
 
 import org.xblackcat.rojac.i18n.IDescribable;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author xBlackCat
  */
 class GeneralEnumChecker<T extends Enum<T>> implements IValueChecker<T> {
-    private final Class<T> enumClass;
+    private final Set<T> allowedValues;
 
     public GeneralEnumChecker(Class<T> enumClass) {
-        this.enumClass = enumClass;
+        allowedValues = EnumSet.allOf(enumClass);
+    }
+
+    public GeneralEnumChecker(T value, T... rest) {
+        allowedValues = EnumSet.of(value, rest);
     }
 
     @Override
-    public T[] getPossibleValues() {
-        return enumClass.getEnumConstants();
+    public List<T> getPossibleValues() {
+        return new ArrayList<T>(allowedValues);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.service.options.IValueChecker;
@@ -39,7 +40,7 @@ final class ComponentFactory {
         Object currentValue = propertyNode.getValue();
 
         if (valueChecker != null) {
-            if (!ArrayUtils.isEmpty(valueChecker.getPossibleValues())) {
+            if (!CollectionUtils.isEmpty(valueChecker.getPossibleValues())) {
                 // Return combo box based editor
                 ComboBoxModel model = new ComboBoxEditorModel(
                         valueChecker,
