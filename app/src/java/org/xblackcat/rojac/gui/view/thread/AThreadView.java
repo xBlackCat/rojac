@@ -5,7 +5,10 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
-import org.xblackcat.rojac.gui.view.*;
+import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.gui.view.MessageChecker;
+import org.xblackcat.rojac.gui.view.ThreadState;
+import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.i18n.JLOptionPane;
@@ -41,36 +44,21 @@ public abstract class AThreadView extends AView implements IItemView {
     protected ThreadState state;
     private JToolBar toolbar;
 
-    protected AThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
+    public AThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl);
         this.modelControl = modelControl;
 
         model.addTreeModelListener(new DataIntegrityMonitor());
+
+        initializeLayout();
     }
 
-    private void completeUpdateModel() {
-        Post selected = getSelectedItem();
-
-        boolean skipSaveState = Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC.get();
-
-        Enumeration<TreePath> expanded = skipSaveState ? null : getExpandedThreads();
-
-        modelControl.resortModel(model);
-
-        if (expanded != null) {
-            while (expanded.hasMoreElements()) {
-                expandPath(expanded.nextElement());
-            }
-        }
-
-        if (selected != null) {
-            selectItem(selected);
-        }
-    }
-
-    protected void initializeLayout() {
-        // Initialize tree
+    /**
+     * Initializes a common layout part. Do not forget
+     */
+    private void initializeLayout() {
         JComponent threadsContainer = getThreadsContainer();
+        // Initialize tree
         JScrollPane sp = new JScrollPane(threadsContainer);
         add(sp, BorderLayout.CENTER);
 
@@ -168,6 +156,16 @@ public abstract class AThreadView extends AView implements IItemView {
     @Override
     public String getTabTitle() {
         return modelControl.getTitle(model);
+    }
+
+    @Override
+    public JPopupMenu getTabTitleMenu() {
+        return modelControl.getTitlePopup(model, appControl);
+    }
+
+    @Override
+    public Icon getTabTitleIcon() {
+        return modelControl.getTitleIcon(model);
     }
 
     protected Object getToolbarPlacement() {
@@ -348,7 +346,9 @@ public abstract class AThreadView extends AView implements IItemView {
      * Searches for the last unread post in the tree thread.
      *
      * @param post root of sub-tree.
+     *
      * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
+     *
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastUnreadPost(Post post) throws RuntimeException {
@@ -389,14 +389,24 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    @Override
-    public JPopupMenu getTabTitleMenu() {
-        return modelControl.getTitlePopup(model, appControl);
-    }
+    private void completeUpdateModel() {
+        Post selected = getSelectedItem();
 
-    @Override
-    public Icon getTabTitleIcon() {
-        return modelControl.getTitleIcon(model);
+        boolean skipSaveState = Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC.get();
+
+        Enumeration<TreePath> expanded = skipSaveState ? null : getExpandedThreads();
+
+        modelControl.resortModel(model);
+
+        if (expanded != null) {
+            while (expanded.hasMoreElements()) {
+                expandPath(expanded.nextElement());
+            }
+        }
+
+        if (selected != null) {
+            selectItem(selected);
+        }
     }
 
     private class LoadNextUnread implements IItemProcessor<Post> {

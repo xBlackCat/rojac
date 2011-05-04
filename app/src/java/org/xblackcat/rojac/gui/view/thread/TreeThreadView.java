@@ -15,24 +15,16 @@ import java.util.Enumeration;
  */
 
 public class TreeThreadView extends AThreadView {
-    protected final JTree threads = new JTree();
+    protected JTree threads;
 
     public TreeThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl, modelControl);
-
-        initializeContainer();
-
-        initializeLayout();
     }
 
     @Override
     protected JComponent getThreadsContainer() {
-        return threads;
-    }
-
-    private void initializeContainer() {
+        threads = new JTree(model);
         threads.setEditable(false);
-        threads.setModel(model);
         threads.setRowHeight(0);
         threads.setCellRenderer(new MultiLineThreadItemRenderer());
         threads.setShowsRootHandles(true);
@@ -42,6 +34,7 @@ public class TreeThreadView extends AThreadView {
         threads.addTreeExpansionListener(new ThreadExpander());
 
         threads.addMouseListener(new ItemListener());
+        return threads;
     }
 
     @Override
