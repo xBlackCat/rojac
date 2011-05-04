@@ -39,15 +39,7 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
 
         setContentPane(cp);
 
-        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                logArea.setText(null);
-                logProgress.setValue(0);
-            }
-        });
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         setSize(500, 350);
     }
@@ -55,8 +47,13 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
     @Override
     public void progressChanged(ProgressChangeEvent e) {
         // Track state
-        if (e.getState() == ProgressState.Start && DIALOGS_PROGRESS_AUTOSHOW.get()) {
-            setVisible(true);
+        if (e.getState() == ProgressState.Start) {
+            logArea.setText(null);
+            logProgress.setValue(0);
+
+            if (DIALOGS_PROGRESS_AUTOSHOW.get()) {
+                setVisible(true);
+            }
         }
 
         if (e.getState() == ProgressState.Stop && DIALOGS_PROGRESS_AUTOHIDE.get()) {

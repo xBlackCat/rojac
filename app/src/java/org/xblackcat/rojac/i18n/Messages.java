@@ -32,6 +32,8 @@ public enum Messages {
 
     Button_Reply_ToolTip,
 
+    UserName_Anonymous,
+
     Panel_Thread_Header_Id,
     Panel_Thread_Header_Subject,
     Panel_Thread_Header_User,

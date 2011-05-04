@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.message;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Mark;
@@ -19,10 +20,7 @@ import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.LinkUtils;
-import org.xblackcat.rojac.util.MessageUtils;
-import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -237,7 +235,12 @@ public class MessageView extends AView implements IItemView {
 
         messageTextPane.setText(parsedText);
         messageTextPane.setCaretPosition(0);
-        userInfoLabel.setText(mes.getUserName());
+        final String userName = mes.getUserName();
+        if (StringUtils.isNotEmpty(userName)) {
+            userInfoLabel.setText(userName);
+        } else {
+            userInfoLabel.setText(Messages.UserName_Anonymous.get());
+        }
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
         messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
         answer.setEnabled(true);
