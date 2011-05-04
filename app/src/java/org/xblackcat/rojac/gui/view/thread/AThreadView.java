@@ -540,9 +540,6 @@ public abstract class AThreadView extends AView implements IItemView {
 
     protected class PostSelector implements TreeSelectionListener {
         public void valueChanged(TreeSelectionEvent e) {
-            Post mi = (Post) e.getPath().getLastPathComponent();
-            selectItem(mi);
-
             fireViewStateChanged();
         }
     }
