@@ -68,8 +68,12 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
      * notify all of its listeners that the model has changed.
      */
     public void reload() {
-        reload(root);
-        nodeStructureChanged(root);
+        if (root != null) {
+            TreePath toRoot = getPathToRoot(root);
+
+            modelSupport.firePathChanged(toRoot);
+            modelSupport.fireTreeStructureChanged(toRoot);
+        }
     }
 
     /**
