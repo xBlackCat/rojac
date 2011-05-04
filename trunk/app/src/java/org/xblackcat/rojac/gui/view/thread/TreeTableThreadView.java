@@ -24,25 +24,17 @@ import java.util.Enumeration;
  */
 
 public class TreeTableThreadView extends AThreadView {
-    protected final JXTreeTable threads = new JXTreeTable();
+    protected JXTreeTable threads;
 
     public TreeTableThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl, modelControl);
-
-        initializeContainer();
-
-        initializeLayout();
     }
 
     @Override
     protected JComponent getThreadsContainer() {
-        return threads;
-    }
-
-    private void initializeContainer() {
+        threads = new JXTreeTable(model);
         threads.setEditable(false);
         threads.setAutoCreateColumnsFromModel(false);
-        threads.setTreeTableModel(model);
         threads.setShowsRootHandles(true);
         threads.setEditable(false);
         threads.setSortable(false);
@@ -111,6 +103,7 @@ public class TreeTableThreadView extends AThreadView {
                 }
             }
         });
+        return threads;
     }
 
     @Override
