@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.recenttopics;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -15,6 +16,7 @@ class RecentThreadsModel extends AbstractTableModel {
     public static final LastPostInfo[] EMPTY_LIST = new LastPostInfo[0];
 
     private LastPostInfo[] lastPosts = EMPTY_LIST;
+    private boolean loading = false;
 
     @Override
     public int getRowCount() {
@@ -37,9 +39,24 @@ class RecentThreadsModel extends AbstractTableModel {
     }
 
     public void clear() {
+        assert RojacUtils.checkThread(true);
+
         lastPosts = EMPTY_LIST;
+        loading = true;
 
         fireTableDataChanged();
+    }
+
+    public boolean isLoading() {
+        assert RojacUtils.checkThread(true);
+
+        return loading;
+    }
+
+    public void markAsLoaded() {
+        assert RojacUtils.checkThread(true);
+
+        loading = false;
     }
 
     public void addLatestPosts(Collection<LastPostInfo> posts) {

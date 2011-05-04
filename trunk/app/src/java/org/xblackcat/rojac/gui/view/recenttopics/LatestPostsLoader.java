@@ -64,4 +64,9 @@ class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
     protected void process(List<LastPostInfo> chunks) {
         model.addLatestPosts(chunks);
     }
+
+    @Override
+    protected void done() {
+        model.markAsLoaded();
+    }
 }
