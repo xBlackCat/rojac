@@ -32,11 +32,11 @@ public class TreeTableThreadView extends AThreadView {
 
     @Override
     protected JComponent getThreadsContainer() {
-        threads = new JXTreeTable(model);
-        threads.setEditable(false);
+        threads = new JXTreeTable();
         threads.setAutoCreateColumnsFromModel(false);
-        threads.setShowsRootHandles(true);
+        threads.setTreeTableModel(model);
         threads.setEditable(false);
+        threads.setShowsRootHandles(true);
         threads.setSortable(false);
         threads.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         threads.setRowSelectionAllowed(true);
