@@ -28,15 +28,9 @@ public class PacketDispatcher {
     }
 
     public void dispatch(IPacket p) {
-        IPacketProcessor<IPacket> processor = processors.get(p.getClass());
-
-        if (processor != null) {
-            processor.process(p);
-        } else {
-            for (Map.Entry<Class<?>, IPacketProcessor<IPacket>> e : processors.entrySet()) {
-                if (e.getKey().isAssignableFrom(p.getClass())) {
-                    e.getValue().process(p);
-                }
+        for (Map.Entry<Class<?>, IPacketProcessor<IPacket>> e : processors.entrySet()) {
+            if (e.getKey().isAssignableFrom(p.getClass())) {
+                e.getValue().process(p);
             }
         }
     }
