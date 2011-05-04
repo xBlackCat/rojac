@@ -5,8 +5,10 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
+import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;
@@ -120,8 +122,8 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
 
-        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Read, message.getMessageData(), true));
-        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Unread, message.getMessageData(), false));
+        menu.add(new SetMessageReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Read, message.getMessageData(), true));
+        menu.add(new SetMessageReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Unread, message.getMessageData(), false));
 
         menu.add(MenuHelper.markReadUnreadSubmenu(message, appControl.getMainFrame()));
 
@@ -171,9 +173,10 @@ public final class PopupMenuBuilder {
     }
 
     public static JPopupMenu getThreadViewTabMenu(Post post, IAppControl appControl) {
-        JPopupMenu menu = new JPopupMenu("#" + post.getMessageId());
+        int messageId = post.getMessageId();
+        JPopupMenu menu = new JPopupMenu("#" + messageId);
 
-        menu.add(new OpenMessageMenuItem(post.getMessageId(), appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
 
@@ -181,6 +184,14 @@ public final class PopupMenuBuilder {
         menu.add(new SetThreadReadMenuItem(Messages.Popup_View_SetUnreadAll, post, false));
 
         menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, post.getMessageData(), appControl.getMainFrame()));
+
+        menu.addSeparator();
+        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+        menu.add(MenuHelper.copyLinkSubmenu(messageId));
+
+        menu.addSeparator();
+        String text = Messages.Popup_Favorites_Add.get(Messages.Popup_Favorites_Add_Thread.get().toLowerCase(Property.ROJAC_GUI_LOCALE.get()));
+        menu.add(new AddToFavoriteMenuItem(text, FavoriteType.Thread, post.getMessageData().getThreadRootId()));
 
         return menu;
     }
@@ -198,17 +209,48 @@ public final class PopupMenuBuilder {
         menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
-
-        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Read, message, true));
-        menu.add(new SetItemReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Unread, message, false));
-
-        menu.addSeparator();
         MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
         MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
+        return menu;
+    }
+
+    public static JPopupMenu getRecentPostsMenu(MessageData threadRoot, IAppControl appControl) {
+        int messageId = threadRoot.getMessageId();
+        final JPopupMenu menu = new JPopupMenu("#" + messageId);
+
+        JMenuItem item = new JMenuItem("#" + messageId);
+        item.setEnabled(false);
+
+        menu.add(item);
+
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+
         menu.addSeparator();
-        menu.add(MenuHelper.favoritesSubmenu(message, appControl));
+
+        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_SetReadAll, threadRoot, true));
+        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_SetUnreadAll, threadRoot, false));
+
+        menu.addSeparator();
+        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+        menu.add(MenuHelper.copyLinkSubmenu(messageId));
+
+        menu.addSeparator();
+        String text = Messages.Popup_Favorites_Add.get(Messages.Popup_Favorites_Add_Thread.get().toLowerCase(Property.ROJAC_GUI_LOCALE.get()));
+        menu.add(new AddToFavoriteMenuItem(text, FavoriteType.Thread, threadRoot.getThreadRootId()));
+
+        return menu;
+    }
+
+    public static JPopupMenu getMessagesListTabMenu(Post post, IAppControl appControl) {
+        JPopupMenu menu = new JPopupMenu("#");
+
+        menu.add(new SetMessageListReadMenuItem(Messages.Popup_View_SetReadAll, post, true));
+        menu.add(new SetMessageListReadMenuItem(Messages.Popup_View_SetUnreadAll, post, false));
+
+        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, appControl.getMainFrame()));
 
         return menu;
     }

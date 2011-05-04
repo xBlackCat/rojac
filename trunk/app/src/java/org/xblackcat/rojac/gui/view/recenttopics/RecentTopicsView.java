@@ -1,10 +1,10 @@
 package org.xblackcat.rojac.gui.view.recenttopics;
 
 import org.xblackcat.rojac.gui.*;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
-import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
@@ -66,6 +66,13 @@ public class RecentTopicsView extends AView {
 
             @Override
             protected void triggerPopup(MouseEvent e) {
+                LastPostInfo info = getTopicInfo(e);
+
+                JPopupMenu menu = PopupMenuBuilder.getRecentPostsMenu(info.getTopicRoot(), appControl);
+
+                final Point p = e.getPoint();
+                menu.show(e.getComponent(), p.x, p.y);
+
             }
         });
     }

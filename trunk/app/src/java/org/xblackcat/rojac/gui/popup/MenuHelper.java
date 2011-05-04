@@ -103,7 +103,7 @@ final class MenuHelper {
      * @return
      */
     static JMenuItem favoritesSubmenu(MessageData messageData, IAppControl appControl) {
-        JMenu menu = new JMenu(Messages.Popup_Favorites_Add.get());
+        JMenu menu = new JMenu(Messages.Popup_Favorites_Add.get("..."));
 
         menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_Thread.get(), FavoriteType.Thread, messageData.getThreadRootId()));
 //        menu.add(new AddToFavoriteMenuItem("Sub-thread", FavoriteType.SubThread, post.getMessageId()));

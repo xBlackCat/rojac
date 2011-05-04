@@ -48,7 +48,7 @@ public class MessageListControl implements IModelControl<Post> {
         return false;
     }
 
-    private void updateModel(final AThreadModel<Post> model, int... threadIds) {
+    private void updateModel(final AThreadModel<Post> model) {
         assert RojacUtils.checkThread(true);
 
         // Parent in the case is FavoritePostList object.
@@ -112,17 +112,19 @@ public class MessageListControl implements IModelControl<Post> {
     }
 
     @Override
-    public void resortModel(AThreadModel<Post> postAThreadModel) {
+    public void resortModel(AThreadModel<Post> model) {
         // Nothing to do
     }
 
     @Override
-    public JPopupMenu getTitlePopup(AThreadModel<Post> postAThreadModel, IAppControl appControl) {
-        return null;
+    public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
+        Post root = model.getRoot();
+
+        return PopupMenuBuilder.getMessagesListTabMenu(root, appControl);
     }
 
     @Override
-    public Icon getTitleIcon(AThreadModel<Post> postAThreadModel) {
+    public Icon getTitleIcon(AThreadModel<Post> model) {
         return null;
     }
 }
