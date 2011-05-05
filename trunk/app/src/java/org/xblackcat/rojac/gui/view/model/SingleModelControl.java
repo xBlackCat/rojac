@@ -180,12 +180,11 @@ public class SingleModelControl extends AThreadsModelControl {
     }
 
     private boolean hasUnreadReplies(int userId, Post post) {
-        if (post.getMessageData().getUserId() == userId && post.isRead() != ReadStatus.Unread) {
-            return true;
-        }
-
-        for (Post p : post.getChildren()) {
-            if (hasUnreadReplies(userId, p)) {
+        boolean ownPost = post.getMessageData().getUserId() == userId;
+        for (Post p : post.childrenPosts) {
+            if (ownPost  && !p.read) {
+                return true;
+            } else if (hasUnreadReplies(userId, p)) {
                 return true;
             }
         }
