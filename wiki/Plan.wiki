@@ -30,8 +30,12 @@
   * Add keyboard shortcuts. _(done)_
   * Add keyboard shortcuts manager. _*(in progress)*_
   * Add favorites (messages, topics, you posts, responses) _(done)_
-  * Make navigation pane instead of forum/favorites views _*(in progress)*_
+  * Add separate forum subscribtion manager. _(done)_
+  * Add recent topics view. _(done)_
+  * State icons for view tabs. _(done)_
+  * Pop-up menus for message/thread/etc. view tabs. _(done)_
 == Alpha 4 ==
+  * Make navigation pane instead of forum/favorites views _*(in progress)*_
   * Add filter to forum view (by users, by date, by marks)
   * Allow to DnD links to create a new tab with thread/message.
   * Implement GUI: List based forum view. (??)
