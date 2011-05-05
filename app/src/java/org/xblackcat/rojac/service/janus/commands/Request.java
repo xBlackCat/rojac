@@ -23,22 +23,13 @@ public class Request<T> {
             ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
         }
     };
-    /**
-     * Common handler to prevent invoking requests without associated handler.
-     */
-    private static final IResultHandler NO_HANDLER = new IResultHandler() {
-        @Override
-        public void process(Object data) {
-            throw new RuntimeException("No result handler defined for the request!");
-        }
-    };
 
     public static final Request<IPacket> EXTRA_MESSAGES = new Request<IPacket>(PACKET_HANDLER, new LoadExtraMessagesRequest());
     public static final Request<IPacket> GET_NEW_POSTS = new Request<IPacket>(PACKET_HANDLER, new GetNewPostsRequest());
     public static final Request<IPacket> POST_CHANGES = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest());
     public static final Request<IPacket> GET_USERS = new Request<IPacket>(PACKET_HANDLER, new GetUsersRequest());
     public static final Request<IPacket> GET_FORUMS_LIST = new Request<IPacket>(PACKET_HANDLER, new GetForumListRequest());
-    public static final Request<Integer> GET_USER_ID = new Request<Integer>(NO_HANDLER, new TestRequest());
+    public static final Request<Integer> GET_USER_ID = new Request<Integer>(null, new TestRequest());
     public static final Request<IPacket> SYNCHRONIZE = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
     public static final Request<IPacket> SYNCHRONIZE_WITH_USERS = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetUsersRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
 
@@ -97,13 +88,13 @@ public class Request<T> {
         new RequestProcessor<T>(new IResultHandler<T>() {
             @Override
             public void process(T data) {
-                defaultHandler.process(data);
+                if (defaultHandler != null) {
+                    defaultHandler.process(data);
+                }
                 if (handler != null) {
                     handler.process(data);
                 }
             }
         }, requests).execute();
     }
-
-
 }
