@@ -72,8 +72,9 @@ public final class UIUtils {
      * inverse operations, the results of a series of invocations of these two methods might be inconsistent because of
      * rounding errors.
      *
+     * @param c      initial color
+     * @param factor brightness factor
      * @return a new <code>Color</code> object that is a brighter version of this <code>Color</code>.
-     *
      * @see java.awt.Color#darker
      * @since JDK1.0
      */

@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.recenttopics;
 
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
+import org.xblackcat.rojac.util.UIUtils;
 import sun.swing.DefaultLookup;
 
 import javax.swing.*;
@@ -88,7 +89,7 @@ class TopicCellRenderer extends JLightPanel
         if (forumLine != null) {
             topicLine.setForeground(fg);
             infoLine.setForeground(fg);
-            forumLine.setForeground(fg == null ? null : fg.brighter().brighter());
+            forumLine.setForeground(fg == null ? null : UIUtils.brighter(fg, 0.33));
         }
     }
 
