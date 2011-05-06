@@ -67,9 +67,14 @@ public class SortedForumModelControl extends AThreadsModelControl {
         assert RojacUtils.checkThread(true);
 
         TIntHashSet filledThreads = new TIntHashSet();
-        Post root = model.getRoot();
 
-        for (Post post : root.getChildren()) {
+        Post root = model.getRoot();
+        // Should be ForumRoot object
+        assert root instanceof ForumRoot;
+
+        for (Post post : root.childrenPosts) {
+            assert post instanceof Thread;
+
             if (post.getThreadRoot().isFilled()) {
                 filledThreads.add(post.getThreadRoot().getMessageId());
             }

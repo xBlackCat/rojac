@@ -1,12 +1,9 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.util.RojacUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static ch.lambdaj.Lambda.max;
 import static ch.lambdaj.Lambda.on;
@@ -119,14 +116,24 @@ public class Post implements ITreeItem<Post> {
      *
      * @return array of all the post children.
      */
-    public Collection<Post> getChildren() {
-        Collection<Post> subPosts = new ArrayList<Post>();
-        subPosts.addAll(childrenPosts);
-        for (Post p : childrenPosts) {
-            subPosts.addAll(p.getChildren());
-        }
+    public Collection<Post> getSubTreeFlatten() {
+        Collection<Post> subPosts = new LinkedList<Post>();
+
+        fillCollection(subPosts, this);
 
         return subPosts;
+    }
+
+    private static void fillCollection(Collection<Post> list, Post root) {
+        if (CollectionUtils.isEmpty(root.childrenPosts)) {
+            return;
+        }
+
+        list.addAll(root.childrenPosts);
+
+        for (Post p : root.childrenPosts) {
+            fillCollection(list, p);
+        }
     }
 
     // State related methods
