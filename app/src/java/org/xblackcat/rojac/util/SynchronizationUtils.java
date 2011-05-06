@@ -5,6 +5,7 @@ import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
 
+import javax.swing.*;
 import java.awt.*;
 
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_USERS;
@@ -53,7 +54,11 @@ public final class SynchronizationUtils {
 
         @Override
         public void run() {
-            startSynchronization(mainFrame);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    startSynchronization(mainFrame);
+                }
+            });
         }
     }
 }
