@@ -9,7 +9,9 @@ import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
+import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.NewData;
+import org.xblackcat.rojac.service.storage.StorageException;
 import ru.rsdn.Janus.RequestForumInfo;
 
 import java.util.Arrays;
@@ -24,10 +26,10 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MES
  * @author xBlackCat
  */
 
-class GetNewPostsRequest extends ALoadPostsRequest {
+class GetNewPostsRequest extends LoadExtraMessagesRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
-    public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
+    protected int loadData(IProgressTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
         int[] forumIds = forumAH.getSubscribedForumIds();
 
         String idsList = Arrays.toString(forumIds);
@@ -36,7 +38,7 @@ class GetNewPostsRequest extends ALoadPostsRequest {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
             }
-            return;
+            return 0;
         }
 
         if (log.isDebugEnabled()) {
@@ -64,14 +66,19 @@ class GetNewPostsRequest extends ALoadPostsRequest {
                 ratingsVersion = moderatesVersion;
             }
 
-            NewData data = janusService.getNewData(
-                    forumInfo.toArray(new RequestForumInfo[forumInfo.size()]), ratingsVersion,
-                    messagesVersion,
-                    moderatesVersion,
-                    ArrayUtils.EMPTY_INT_ARRAY,
-                    ArrayUtils.EMPTY_INT_ARRAY,
-                    limit
-            );
+            NewData data = null;
+            try {
+                data = janusService.getNewData(
+                        forumInfo.toArray(new RequestForumInfo[forumInfo.size()]), ratingsVersion,
+                        messagesVersion,
+                        moderatesVersion,
+                        ArrayUtils.EMPTY_INT_ARRAY,
+                        ArrayUtils.EMPTY_INT_ARRAY,
+                        limit
+                );
+            } catch (JanusServiceException e) {
+                throw new RsdnProcessorException("Can not load new portion of data", e);
+            }
 
             if (ownUserId == 0) {
                 ownUserId = data.getOwnUserId();
@@ -91,14 +98,8 @@ class GetNewPostsRequest extends ALoadPostsRequest {
 
         } while (portionSize == limit);
 
-        if (ownUserId > 0) {
-            RSDN_USER_ID.set(ownUserId);
-            tracker.addLodMessage(Messages.Synchronize_Message_GotUserId, ownUserId);
-        }
+        super.loadData(tracker, janusService);
 
-        postProcessing(tracker);
-
-        setNotifications(handler);
+        return ownUserId;
     }
-
 }
