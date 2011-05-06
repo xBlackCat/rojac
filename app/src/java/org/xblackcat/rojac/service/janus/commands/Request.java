@@ -30,8 +30,8 @@ public class Request<T> {
     public static final Request<IPacket> GET_USERS = new Request<IPacket>(PACKET_HANDLER, new GetUsersRequest());
     public static final Request<IPacket> GET_FORUMS_LIST = new Request<IPacket>(PACKET_HANDLER, new GetForumListRequest());
     public static final Request<Integer> GET_USER_ID = new Request<Integer>(null, new TestRequest());
-    public static final Request<IPacket> SYNCHRONIZE = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
-    public static final Request<IPacket> SYNCHRONIZE_WITH_USERS = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetUsersRequest(), new GetNewPostsRequest(), new LoadExtraMessagesRequest());
+    public static final Request<IPacket> SYNCHRONIZE = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetNewPostsRequest());
+    public static final Request<IPacket> SYNCHRONIZE_WITH_USERS = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetUsersRequest(), new GetNewPostsRequest());
 
     private final IResultHandler<T> defaultHandler;
     private final IRequest<T>[] requests;
