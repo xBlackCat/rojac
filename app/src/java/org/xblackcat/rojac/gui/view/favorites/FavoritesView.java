@@ -15,7 +15,6 @@ import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
@@ -25,6 +24,32 @@ import java.util.List;
 
 public class FavoritesView extends AView {
     private final FavoritesModel favoritesModel = new FavoritesModel();
+    private final PacketDispatcher packetDispatcher = new PacketDispatcher(
+            new IPacketProcessor<FavoritesUpdatedPacket>() {
+                @Override
+                public void process(FavoritesUpdatedPacket p) {
+                    reloadFavorites();
+                }
+            },
+            new IPacketProcessor<SetForumReadPacket>() {
+                @Override
+                public void process(SetForumReadPacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            },
+            new IPacketProcessor<FavoriteCategoryUpdatedPacket>() {
+                @Override
+                public void process(FavoriteCategoryUpdatedPacket p) {
+                    favoritesModel.updateFavoriteData(FavoriteType.Category);
+                }
+            },
+            new IPacketProcessor<SynchronizationCompletePacket>() {
+                @Override
+                public void process(SynchronizationCompletePacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            }
+    );
 
     public FavoritesView(final IAppControl appControl) {
         super(null, appControl);
@@ -80,37 +105,6 @@ public class FavoritesView extends AView {
         }.execute();
     }
 
-    @SuppressWarnings({"unchecked"})
-    @Override
-    protected IPacketProcessor<IPacket>[] getProcessors() {
-        return new IPacketProcessor[]{
-                new IPacketProcessor<FavoritesUpdatedPacket>() {
-                    @Override
-                    public void process(FavoritesUpdatedPacket p) {
-                        reloadFavorites();
-                    }
-                },
-                new IPacketProcessor<SetForumReadPacket>() {
-                    @Override
-                    public void process(SetForumReadPacket p) {
-                        favoritesModel.updateFavoriteData(null);
-                    }
-                },
-                new IPacketProcessor<FavoriteCategoryUpdatedPacket>() {
-                    @Override
-                    public void process(FavoriteCategoryUpdatedPacket p) {
-                        favoritesModel.updateFavoriteData(FavoriteType.Category);
-                    }
-                },
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        favoritesModel.updateFavoriteData(null);
-                    }
-                }
-        };
-    }
-
     @Override
     public IViewState getState() {
         return null;
@@ -143,5 +137,10 @@ public class FavoritesView extends AView {
     @Override
     public JPopupMenu getTabTitleMenu() {
         return null;
+    }
+
+    @Override
+    public final void processPacket(IPacket packet) {
+        packetDispatcher.dispatch(packet);
     }
 }
