@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.view.model.Post;
-import org.xblackcat.rojac.gui.view.thread.MessageReadFlagSetter;
 import org.xblackcat.rojac.gui.view.thread.MessagesReadFlagSetter;
 import org.xblackcat.rojac.i18n.Messages;
 
@@ -23,7 +22,7 @@ class SetMessageListReadMenuItem extends JMenuItem {
             public void actionPerformed(ActionEvent e) {
                 Collection<MessageData> datas = new LinkedList<MessageData>();
 
-                for (Post p : root.getChildren()) {
+                for (Post p : root.getSubTreeFlatten()) {
                     datas.add(p.getMessageData());
                 }
 
