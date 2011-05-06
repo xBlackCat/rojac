@@ -233,6 +233,12 @@ public class RojacTray {
                             );
                         }
                     }
+                },
+                new IPacketProcessor<IPacket>() {
+                    @Override
+                    public void process(IPacket p) {
+                        checkUnreadMessages();
+                    }
                 }
         );
 
