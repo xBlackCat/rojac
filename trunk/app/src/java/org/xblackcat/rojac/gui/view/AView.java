@@ -16,7 +16,6 @@ import java.awt.*;
 
 public abstract class AView extends JPanel implements IView {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-    private final PacketDispatcher packetDispatcher;
     private final ViewId id;
 
     protected final IAppControl appControl;
@@ -25,10 +24,7 @@ public abstract class AView extends JPanel implements IView {
         super(new BorderLayout());
         this.id = id;
         this.appControl = appControl;
-        packetDispatcher = new PacketDispatcher(getProcessors());
     }
-
-    protected abstract IPacketProcessor<IPacket>[] getProcessors();
 
     public final JComponent getComponent() {
         return this;
@@ -37,11 +33,6 @@ public abstract class AView extends JPanel implements IView {
     @Override
     public ViewId getId() {
         return id;
-    }
-
-    @Override
-    public final void processPacket(IPacket packet) {
-        packetDispatcher.dispatch(packet);
     }
 
     public void addStateChangeListener(IStateListener l) {

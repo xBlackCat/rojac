@@ -14,7 +14,6 @@ import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
@@ -120,27 +119,6 @@ public abstract class AThreadView extends AView implements IItemView {
         this.state = (ThreadState) state;
 
         applyState();
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked"})
-    protected IPacketProcessor<IPacket>[] getProcessors() {
-        return new IPacketProcessor[]{
-                new IPacketProcessor<IPacket>() {
-                    @Override
-                    public void process(IPacket p) {
-                        // Just in case store a current selection
-                        Post curSelection = getSelectedItem();
-
-                        if (modelControl.processPacket(model, p)) {
-                            if (curSelection != null) {
-                                selectItem(curSelection);
-                            }
-                        }
-                    }
-
-                }
-        };
     }
 
     @Override
@@ -406,6 +384,18 @@ public abstract class AThreadView extends AView implements IItemView {
 
         if (selected != null) {
             selectItem(selected);
+        }
+    }
+
+    @Override
+    public final void processPacket(IPacket packet) {
+        // Just in case store a current selection
+        Post curSelection = getSelectedItem();
+
+        if (AThreadView.this.modelControl.processPacket(model, packet)) {
+            if (curSelection != null) {
+                selectItem(curSelection);
+            }
         }
     }
 

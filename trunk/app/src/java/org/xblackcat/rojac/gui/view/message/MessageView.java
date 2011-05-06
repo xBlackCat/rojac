@@ -20,7 +20,10 @@ import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.*;
+import org.xblackcat.rojac.util.LinkUtils;
+import org.xblackcat.rojac.util.MessageUtils;
+import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -67,6 +70,32 @@ public class MessageView extends AView implements IItemView {
     protected final JComponent titleBar = createTitleBar();
     protected MessageData messageData;
 
+    private final PacketDispatcher packetDispatcher = new PacketDispatcher(
+            new IPacketProcessor<IMessageUpdatePacket>() {
+                @Override
+                public void process(IMessageUpdatePacket p) {
+                    if (p.isMessageAffected(messageId)) {
+                        loadItem(messageId);
+                    }
+                }
+            },
+            new IPacketProcessor<SetPostReadPacket>() {
+                @Override
+                public void process(SetPostReadPacket p) {
+                    if (p.isRecursive()) {
+                        if (messageData != null &&
+                                p.getPostId() == messageData.getThreadRootId()) {
+                            loadItem(messageId);
+                        }
+                    } else {
+                        if (p.getPostId() == messageId) {
+                            loadItem(messageId);
+                        }
+                    }
+                }
+            }
+    );
+
 
     public MessageView(ViewId id, IAppControl appControl) {
         super(id, appControl);
@@ -82,6 +111,7 @@ public class MessageView extends AView implements IItemView {
         answer.setToolTipText(Messages.Button_Reply_ToolTip.get());
         userLabel.setText(Messages.Panel_Message_Label_User.get());
         dateLabel.setText(Messages.Panel_Message_Label_Date.get());
+
     }
 
     private void initialize() {
@@ -253,36 +283,6 @@ public class MessageView extends AView implements IItemView {
     }
 
     @Override
-    @SuppressWarnings({"unchecked"})
-    protected IPacketProcessor<IPacket>[] getProcessors() {
-        return new IPacketProcessor[]{
-                new IPacketProcessor<IMessageUpdatePacket>() {
-                    @Override
-                    public void process(IMessageUpdatePacket p) {
-                        if (p.isMessageAffected(messageId)) {
-                            loadItem(messageId);
-                        }
-                    }
-                },
-                new IPacketProcessor<SetPostReadPacket>() {
-                    @Override
-                    public void process(SetPostReadPacket p) {
-                        if (p.isRecursive()) {
-                            if (messageData != null &&
-                                    p.getPostId() == messageData.getThreadRootId()) {
-                                loadItem(messageId);
-                            }
-                        } else {
-                            if (p.getPostId() == messageId) {
-                               loadItem(messageId);
-                            }
-                        }
-                    }
-                },
-        };
-    }
-
-    @Override
     public void makeVisible(int messageId) {
         if (messageId != this.messageId) {
             loadItem(messageId);
@@ -337,6 +337,11 @@ public class MessageView extends AView implements IItemView {
     @Override
     public Icon getTabTitleIcon() {
         return messageData == null ? null : MessageUtils.getPostIcon(messageData);
+    }
+
+    @Override
+    public final void processPacket(IPacket packet) {
+        packetDispatcher.dispatch(packet);
     }
 
     private class HyperlinkHandler implements HyperlinkListener {

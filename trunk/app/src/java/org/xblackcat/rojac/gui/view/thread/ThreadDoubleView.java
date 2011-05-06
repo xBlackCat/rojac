@@ -6,6 +6,7 @@ import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
 
@@ -82,20 +83,6 @@ public class ThreadDoubleView extends AView implements IItemView {
     }
 
     @Override
-    @SuppressWarnings({"unchecked"})
-    protected IPacketProcessor<IPacket>[] getProcessors() {
-        return new IPacketProcessor[]{
-                new IPacketProcessor<IPacket>() {
-                    @Override
-                    public void process(IPacket p) {
-                        masterView.processPacket(p);
-                        slaveView.processPacket(p);
-                    }
-                }
-        };
-    }
-
-    @Override
     public void makeVisible(int messageId) {
         masterView.makeVisible(messageId);
         slaveView.makeVisible(messageId);
@@ -166,5 +153,11 @@ public class ThreadDoubleView extends AView implements IItemView {
     @Override
     public Icon getTabTitleIcon() {
         return masterView.getTabTitleIcon();
+    }
+
+    @Override
+    public final void processPacket(IPacket packet) {
+        masterView.processPacket(packet);
+        slaveView.processPacket(packet);
     }
 }

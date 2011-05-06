@@ -48,6 +48,47 @@ public class ForumsListView extends AView {
     private final JToggleButton subscribed_only;
     private final JToggleButton unread_only;
 
+    private final PacketDispatcher packetDispatcher = new PacketDispatcher(
+            new IPacketProcessor<SetForumReadPacket>() {
+                @Override
+                public void process(SetForumReadPacket p) {
+                    forumsModel.setRead(p.isRead(), p.getForumId());
+                }
+            },
+            new IPacketProcessor<ForumsUpdated>() {
+                @Override
+                public void process(ForumsUpdated p) {
+                    new ForumLoader().execute();
+                }
+            },
+            new IPacketProcessor<IForumUpdatePacket>() {
+                @Override
+                public void process(IForumUpdatePacket p) {
+                    loadForumStatistic(p.getForumIds());
+                }
+            },
+            new IPacketProcessor<SetPostReadPacket>() {
+                @Override
+                public void process(SetPostReadPacket p) {
+                    if (p.isRecursive()) {
+                        // More than one post was changed. Reload stat
+                        loadForumStatistic(p.getForumId());
+                    } else {
+                        // Single post is changed - just increment/decrement stat
+                        adjustUnreadPosts(p.isRead() ? -1 : 1, p.getForumId());
+                    }
+                }
+            },
+            new IPacketProcessor<SubscriptionChangedPacket>() {
+                @Override
+                public void process(SubscriptionChangedPacket p) {
+                    for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
+                        forumsModel.setSubscribed(s.getForumId(), s.isSubscribed());
+                    }
+                }
+            }
+    );
+
     public ForumsListView(IAppControl appControl) {
         super(null, appControl);
         final JTable forums = new JTable(forumsModel);
@@ -174,51 +215,6 @@ public class ForumsListView extends AView {
         return null;
     }
 
-    @Override
-    @SuppressWarnings({"unchecked"})
-    protected IPacketProcessor<IPacket>[] getProcessors() {
-        return new IPacketProcessor[]{
-                new IPacketProcessor<SetForumReadPacket>() {
-                    @Override
-                    public void process(SetForumReadPacket p) {
-                        forumsModel.setRead(p.isRead(), p.getForumId());
-                    }
-                },
-                new IPacketProcessor<ForumsUpdated>() {
-                    @Override
-                    public void process(ForumsUpdated p) {
-                        new ForumLoader().execute();
-                    }
-                },
-                new IPacketProcessor<IForumUpdatePacket>() {
-                    @Override
-                    public void process(IForumUpdatePacket p) {
-                        loadForumStatistic(p.getForumIds());
-                    }
-                },
-                new IPacketProcessor<SetPostReadPacket>() {
-                    @Override
-                    public void process(SetPostReadPacket p) {
-                        if (p.isRecursive()) {
-                            // More than one post was changed. Reload stat
-                            loadForumStatistic(p.getForumId());
-                        } else {
-                            // Single post is changed - just increment/decrement stat
-                            adjustUnreadPosts(p.isRead() ? -1 : 1, p.getForumId());
-                        }
-                    }
-                },
-                new IPacketProcessor<SubscriptionChangedPacket>() {
-                    @Override
-                    public void process(SubscriptionChangedPacket p) {
-                        for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
-                            forumsModel.setSubscribed(s.getForumId(), s.isSubscribed());
-                        }
-                    }
-                }
-        };
-    }
-
     private void adjustUnreadPosts(int amount, int forumId) {
         ForumData data = forumsModel.getForumData(forumId);
         ForumStatistic oldStatistic = data.getStat();
@@ -235,6 +231,11 @@ public class ForumsListView extends AView {
 
     private void loadForumStatistic(int... forumId) {
         new ForumUpdater(forumId).execute();
+    }
+
+    @Override
+    public final void processPacket(IPacket packet) {
+        packetDispatcher.dispatch(packet);
     }
 
     private class ForumUpdater extends RojacWorker<Void, ForumStatistic> {

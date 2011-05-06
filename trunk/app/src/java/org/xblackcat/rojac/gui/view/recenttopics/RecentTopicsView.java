@@ -6,10 +6,7 @@ import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
@@ -18,10 +15,26 @@ import java.awt.event.MouseEvent;
 
 /**
  * @author xBlackCat
-*/
+ */
 
 public class RecentTopicsView extends AView {
     private final RecentThreadsModel model = new RecentThreadsModel();
+    private final PacketDispatcher packetDispatcher = new PacketDispatcher(
+            new IPacketProcessor<SynchronizationCompletePacket>() {
+                @Override
+                public void process(SynchronizationCompletePacket p) {
+                    reloadLastPosts();
+                }
+            },
+            new IPacketProcessor<OptionsUpdatedPacket>() {
+                @Override
+                public void process(OptionsUpdatedPacket p) {
+                    if (p.isPropertyAffected(Property.VIEW_RECENT_TOPIC_LIST_SIZE)) {
+                        reloadLastPosts();
+                    }
+                }
+            }
+    );
 
     public RecentTopicsView(IAppControl appControl) {
         super(null, appControl);
@@ -77,27 +90,6 @@ public class RecentTopicsView extends AView {
         });
     }
 
-    @SuppressWarnings({"unchecked"})
-    @Override
-    protected IPacketProcessor<IPacket>[] getProcessors() {
-        return (IPacketProcessor<IPacket>[]) new IPacketProcessor[] {
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        reloadLastPosts();
-                    }
-                },
-                new IPacketProcessor<OptionsUpdatedPacket>() {
-                    @Override
-                    public void process(OptionsUpdatedPacket p) {
-                        if (p.isPropertyAffected(Property.VIEW_RECENT_TOPIC_LIST_SIZE)) {
-                            reloadLastPosts();
-                        }
-                    }
-                }
-        };
-    }
-
     @Override
     public IViewState getState() {
         return null;
@@ -130,5 +122,10 @@ public class RecentTopicsView extends AView {
     @Override
     public JPopupMenu getTabTitleMenu() {
         return null;
+    }
+
+    @Override
+    public final void processPacket(IPacket packet) {
+        packetDispatcher.dispatch(packet);
     }
 }
