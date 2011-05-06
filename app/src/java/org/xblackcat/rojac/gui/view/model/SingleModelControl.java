@@ -53,7 +53,7 @@ public class SingleModelControl extends AThreadsModelControl {
         }.execute();
     }
 
-    private void markForumRead(AThreadModel<Post> model, boolean read) {
+    private void markThreadRead(AThreadModel<Post> model, boolean read) {
         assert RojacUtils.checkThread(true);
 
         // Root post is Thread object
@@ -98,7 +98,7 @@ public class SingleModelControl extends AThreadsModelControl {
                     @Override
                     public void process(SetForumReadPacket p) {
                         if (p.getForumId() == forumId) {
-                            markForumRead(model, p.isRead());
+                            markThreadRead(model, p.isRead());
                         }
                     }
                 },
@@ -112,6 +112,32 @@ public class SingleModelControl extends AThreadsModelControl {
                             } else {
                                 // Mark as read only the post
                                 markPostRead(model, p.getPostId(), p.isRead());
+                            }
+                        }
+                    }
+                },
+                new IPacketProcessor<SetReadExPacket>() {
+                    @Override
+                    public void process(SetReadExPacket p) {
+                        if (!p.isForumAffected(forumId)) {
+                            // Current forum is not changed - have a rest
+                            return;
+                        }
+
+                        if (!p.isTopicAffected(threadId)) {
+                            // Current forum is not changed - have a rest
+                            return;
+                        }
+
+                        Post root = model.getRoot();
+
+                        // Second - update already loaded posts.
+                        for (int postId : p.getMessageIds()) {
+                            Post post = root.getMessageById(postId);
+
+                            if (post != null) {
+                                post.setRead(p.isRead());
+                                model.pathToNodeChanged(post);
                             }
                         }
                     }

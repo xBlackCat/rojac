@@ -85,6 +85,22 @@ public class MessageListControl implements IModelControl<Post> {
                         }
                     }
                 },
+                new IPacketProcessor<SetReadExPacket>() {
+                    @Override
+                    public void process(SetReadExPacket p) {
+                        Post root = model.getRoot();
+
+                        // Second - update already loaded posts.
+                        for (int postId : p.getMessageIds()) {
+                            Post post = root.getMessageById(postId);
+
+                            if (post != null) {
+                                post.setRead(p.isRead());
+                                model.pathToNodeChanged(post);
+                            }
+                        }
+                    }
+                },
                 new IPacketProcessor<SynchronizationCompletePacket>() {
                     @Override
                     public void process(SynchronizationCompletePacket p) {
