@@ -9,6 +9,7 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -72,14 +73,10 @@ class SetThreadReadMenuItem extends JMenuItem {
 
     private class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
         private final boolean read;
-        private final int forumId;
-        private final int rootId;
         private final TIntHashSet messageIds;
 
         public SubTreeReadFlagSetter(boolean read, ITreeItem<?> post) {
             this.read = read;
-            rootId = post.getMessageId();
-            forumId = post.getForumId();
             messageIds = new TIntHashSet();
 
             fillMessageIds(post);
@@ -108,7 +105,7 @@ class SetThreadReadMenuItem extends JMenuItem {
 
         @Override
         protected void done() {
-            IPacket packet = new SetPostReadPacket(read, forumId, rootId, true);
+            IPacket packet = new SetReadExPacket(read, messageIds);
             ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
         }
     }

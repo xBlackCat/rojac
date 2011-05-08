@@ -119,14 +119,16 @@ public class SingleModelControl extends AThreadsModelControl {
                 new IPacketProcessor<SetReadExPacket>() {
                     @Override
                     public void process(SetReadExPacket p) {
-                        if (!p.isForumAffected(forumId)) {
-                            // Current forum is not changed - have a rest
-                            return;
-                        }
+                        if (!p.haveOnlyMessageIds()) {
+                            if (!p.isForumAffected(forumId)) {
+                                // Current forum is not changed - have a rest
+                                return;
+                            }
 
-                        if (!p.isTopicAffected(threadId)) {
-                            // Current forum is not changed - have a rest
-                            return;
+                            if (!p.isTopicAffected(threadId)) {
+                                // Current forum is not changed - have a rest
+                                return;
+                            }
                         }
 
                         Post root = model.getRoot();
@@ -208,7 +210,7 @@ public class SingleModelControl extends AThreadsModelControl {
     private boolean hasUnreadReplies(int userId, Post post) {
         boolean ownPost = post.getMessageData().getUserId() == userId;
         for (Post p : post.childrenPosts) {
-            if (ownPost  && !p.read) {
+            if (ownPost  && !p.messageData.isRead()) {
                 return true;
             } else if (hasUnreadReplies(userId, p)) {
                 return true;
