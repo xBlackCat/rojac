@@ -127,7 +127,7 @@ public class Thread extends Post {
     public ReadStatus isRead() {
         if (filled) {
             return super.isRead();
-        } else if (read) {
+        } else if (getMessageData().isRead()) {
             if (unreadPosts > 0) {
                 return ReadStatus.ReadPartially;
             } else {

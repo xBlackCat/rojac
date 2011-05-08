@@ -31,6 +31,20 @@ public class MessageData {
         this.rating = new RatingCache(rating);
     }
 
+    private MessageData(int messageId, int topicId, int parentId, int forumId, int userId, String subject, String userName, long messageDate, long updateDate, boolean read, RatingCache rating) {
+        this.messageId = messageId;
+        this.topicId = topicId;
+        this.parentId = parentId;
+        this.forumId = forumId;
+        this.userId = userId;
+        this.subject = subject;
+        this.userName = userName;
+        this.messageDate = messageDate;
+        this.updateDate = updateDate;
+        this.read = read;
+        this.rating = rating;
+    }
+
     public int getMessageId() {
         return messageId;
     }
@@ -104,5 +118,31 @@ public class MessageData {
         sb.append(", updateDate=").append(updateDate);
         sb.append('}');
         return sb.toString();
+    }
+
+    /**
+     * Create a new MessageData (if necessary) with new state of read flag.
+     *
+     * @param read new read state
+     * @return MessageData object with specified read state.
+     */
+    public MessageData setRead(boolean read) {
+        if (read == this.read) {
+            return this;
+        }
+
+        return new MessageData(
+                messageId,
+                topicId,
+                parentId,
+                forumId,
+                userId,
+                subject,
+                userName,
+                messageDate,
+                updateDate,
+                read, // Not a field
+                rating
+        );
     }
 }

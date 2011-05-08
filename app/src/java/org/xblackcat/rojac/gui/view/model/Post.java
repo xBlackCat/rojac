@@ -15,9 +15,6 @@ import static ch.lambdaj.Lambda.on;
 public class Post implements ITreeItem<Post> {
     protected MessageData messageData;
 
-    // Data-related fields (RW)
-    protected boolean read;
-
     // Tree-related fields
     protected final Post parent;
     protected final Thread threadRoot;
@@ -31,7 +28,6 @@ public class Post implements ITreeItem<Post> {
     public Post(MessageData messageData, Post parent, Thread threadRoot) {
         this.messageData = messageData;
         this.parent = parent;
-        this.read = messageData.isRead();
 
         if (threadRoot == null) {
             this.threadRoot = parent != null ? parent.threadRoot : null;
@@ -175,7 +171,7 @@ public class Post implements ITreeItem<Post> {
     }
 
     public ReadStatus isRead() {
-        if (!read) {
+        if (!messageData.isRead()) {
             return ReadStatus.Unread;
         }
 
@@ -197,7 +193,7 @@ public class Post implements ITreeItem<Post> {
     }
 
     public void setRead(boolean read) {
-        this.read = read;
+        messageData = messageData.setRead(read);
     }
 
     protected void setDeepRead(boolean read) {
@@ -220,6 +216,5 @@ public class Post implements ITreeItem<Post> {
 
     public void setMessageData(MessageData messageData) {
         this.messageData = messageData;
-        this.read = messageData.isRead();
     }
 }

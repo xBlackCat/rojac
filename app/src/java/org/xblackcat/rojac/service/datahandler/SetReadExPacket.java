@@ -33,6 +33,13 @@ public class SetReadExPacket implements IPacket, IForumUpdatePacket, IMessageUpd
         this.read = read;
     }
 
+    public SetReadExPacket(boolean read, TIntHashSet messageIds) {
+        this.forumIds = new TIntHashSet();
+        this.threadIds = new TIntHashSet();
+        this.messageIds = messageIds;
+        this.read = read;
+    }
+
     @Override
     public int[] getForumIds() {
         return forumIds.toArray();
@@ -55,6 +62,10 @@ public class SetReadExPacket implements IPacket, IForumUpdatePacket, IMessageUpd
     @Override
     public boolean isMessageAffected(int messageId) {
         return messageIds.contains(messageId);
+    }
+
+    public boolean haveOnlyMessageIds() {
+        return forumIds.isEmpty() && threadIds.isEmpty();
     }
 
     public boolean isTopicAffected(int threadId) {

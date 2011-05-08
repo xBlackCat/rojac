@@ -9,7 +9,6 @@ import org.xblackcat.rojac.data.MessageData;
 public class ForumRoot extends Post {
     public ForumRoot(int forumId) {
         super(constructDummyMessageItem(forumId), null);
-        read = true;
     }
 
     @Override
@@ -51,7 +50,7 @@ public class ForumRoot extends Post {
                 null,
                 -1,
                 -1,
-                false,
+                true,
                 null);
     }
 

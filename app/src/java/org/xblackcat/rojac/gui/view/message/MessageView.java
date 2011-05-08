@@ -53,7 +53,6 @@ public class MessageView extends AView implements IItemView {
 
     private int messageId;
     private int forumId;
-    private boolean readFlag;
 
     private final JTextPane messageTextPane = new JTextPane();
 
@@ -75,7 +74,11 @@ public class MessageView extends AView implements IItemView {
                 @Override
                 public void process(IMessageUpdatePacket p) {
                     if (p.isMessageAffected(messageId)) {
-                        loadItem(messageId);
+                        if (p instanceof SetReadExPacket) {
+                            updateReadState(((SetReadExPacket) p).isRead());
+                        } else {
+                            loadItem(messageId);
+                        }
                     }
                 }
             },
@@ -85,16 +88,21 @@ public class MessageView extends AView implements IItemView {
                     if (p.isRecursive()) {
                         if (messageData != null &&
                                 p.getPostId() == messageData.getThreadRootId()) {
-                            loadItem(messageId);
+                            updateReadState(p.isRead());
                         }
                     } else {
                         if (p.getPostId() == messageId) {
-                            loadItem(messageId);
+                            updateReadState(p.isRead());
                         }
                     }
                 }
             }
     );
+
+    private void updateReadState(boolean read) {
+        messageData = messageData.setRead(read);
+        fireInfoChanged();
+    }
 
 
     public MessageView(ViewId id, IAppControl appControl) {
@@ -134,9 +142,9 @@ public class MessageView extends AView implements IItemView {
                 int oldValue = scrollBar.getValue();
                 if (!scrollBar.isVisible() || oldValue + scrollBar.getHeight() >= scrollBar.getMaximum()) {
                     if (Property.VIEW_THREAD_SET_READ_ON_SCROLL.get()) {
-                        if (!readFlag) {
+                        if (!messageData.isRead()) {
                             MessageUtils.markMessageRead(getId(), messageData, 0);
-                            readFlag = true;
+                            messageData = messageData.setRead(true);
                         }
                     }
 
@@ -241,7 +249,6 @@ public class MessageView extends AView implements IItemView {
     public void loadItem(final int messageId) {
         this.messageId = messageId;
         messageTitle = "#" + messageId;
-        readFlag = true;
 
         new MessageLoader(messageId).execute();
     }
@@ -397,7 +404,6 @@ public class MessageView extends AView implements IItemView {
         protected void process(List<MessageDataHolder> chunks) {
             for (MessageDataHolder md : chunks) {
                 messageData = md.getMessage();
-                readFlag = messageData.isRead();
                 fillFrame(messageData, md.getMessageBody());
                 fillMarksButton(messageData.getRating());
                 messageTitle = messageData.getSubject();
