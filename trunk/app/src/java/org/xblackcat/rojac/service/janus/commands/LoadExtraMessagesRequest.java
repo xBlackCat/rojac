@@ -66,18 +66,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
 
         postProcessing(tracker);
 
-        final SynchronizationCompletePacket data = new SynchronizationCompletePacket(updatedForums, updatedTopics, updatedMessages);
-
-        // Clean up counters
-        updatedTopics.clear();
-        updatedForums.clear();
-        updatedMessages.clear();
-        ratingCacheUpdate.clear();
-
-        nonExistUsers.clear();
-        existUsers.clear();
-
-        handler.process(data);
+        handler.process(new SynchronizationCompletePacket(updatedForums, updatedTopics, updatedMessages));
     }
 
     protected int loadData(IProgressTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
