@@ -62,8 +62,9 @@ public final class Property<T> {
             new GeneralEnumChecker<OpenMessageMethod>(OpenMessageMethod.InThread, OpenMessageMethod.InForum));
 
     // Progress dialog properties
-    public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.dialog.progress.autoshow", Boolean.TRUE);
-    public static final Property<Boolean> DIALOGS_PROGRESS_AUTOHIDE = create("rojac.dialog.progress.autohide", Boolean.FALSE);
+    public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.synchronizer.progress.autoshow", Boolean.TRUE);
+    public static final Property<Boolean> DIALOGS_PROGRESS_AUTOHIDE = create("rojac.synchronizer.progress.autohide", Boolean.FALSE);
+    public static final Property<Boolean> DIALOGS_PROGRESS_SHOW_ON_EXCEPTION = create("rojac.synchronizer.progress.show_on_exception", Boolean.TRUE);
 
     // Forum view properties.
     public static final Property<Integer> VIEW_NAVIGATION_HISTORY_SIZE = create("rojac.view.history_size", 20);

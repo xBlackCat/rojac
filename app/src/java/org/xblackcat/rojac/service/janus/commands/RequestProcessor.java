@@ -36,7 +36,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
 
         @Override
         public void postException(Throwable t) {
-            progressController.fireIdle(Messages.Synchronize_Message_Exception, ExceptionUtils.getFullStackTrace(t));
+            progressController.fireException(Messages.Synchronize_Message_Exception, ExceptionUtils.getFullStackTrace(t));
         }
 
         @Override

@@ -11,11 +11,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
-import static org.xblackcat.rojac.service.options.Property.DIALOGS_PROGRESS_AUTOHIDE;
-import static org.xblackcat.rojac.service.options.Property.DIALOGS_PROGRESS_AUTOSHOW;
+import static org.xblackcat.rojac.service.options.Property.*;
 
 /**
  * @author xBlackCat
@@ -46,6 +43,16 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
 
     @Override
     public void progressChanged(ProgressChangeEvent e) {
+        if (e.getState() == ProgressState.Exception) {
+            logProgress.setValue(0);
+            logProgress.setIndeterminate(true);
+
+            if (DIALOGS_PROGRESS_SHOW_ON_EXCEPTION.get()) {
+                getOwner().setVisible(true);
+                setVisible(true);
+            }
+        }
+
         // Track state
         if (e.getState() == ProgressState.Start) {
             logArea.setText(null);
