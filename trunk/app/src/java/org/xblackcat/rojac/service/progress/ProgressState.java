@@ -8,5 +8,6 @@ public enum ProgressState {
     Idle,
     Start,
     Work,
-    Stop
+    Stop,
+    Exception
 }

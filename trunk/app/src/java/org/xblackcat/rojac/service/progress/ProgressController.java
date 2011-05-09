@@ -71,6 +71,11 @@ public class ProgressController implements IProgressController {
         listenerList.remove(IProgressListener.class, listener);
     }
 
+    @Override
+    public void fireException(Messages message, Object... arguments) {
+        fireProgressChanged(ProgressState.Exception, null, message.get(arguments));
+    }
+
     private void fireProgressChanged(ProgressState state, Integer percentage, String logMessage) {
         final ProgressChangeEvent event = new ProgressChangeEvent(this, state, percentage, logMessage);
 

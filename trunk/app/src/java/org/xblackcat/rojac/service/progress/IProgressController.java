@@ -77,4 +77,6 @@ public interface IProgressController {
      * @param l listener to remove.
      */
     void removeProgressListener(IProgressListener l);
+
+    void fireException(Messages message, Object... arguments);
 }
