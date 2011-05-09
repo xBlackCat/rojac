@@ -17,27 +17,22 @@ import java.awt.*;
 
 @SuppressWarnings({"unchecked"})
 public class Request<T> {
-    private static final IResultHandler<IPacket> PACKET_HANDLER = new ASwingThreadedHandler<IPacket>() {
+    public static final IResultHandler<IPacket> PACKET_HANDLER = new ASwingThreadedHandler<IPacket>() {
         @Override
         public void execute(IPacket packet) {
             ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
         }
     };
 
-    public static final Request<IPacket> EXTRA_MESSAGES = new Request<IPacket>(PACKET_HANDLER, new LoadExtraMessagesRequest());
-    public static final Request<IPacket> GET_NEW_POSTS = new Request<IPacket>(PACKET_HANDLER, new GetNewPostsRequest());
-    public static final Request<IPacket> POST_CHANGES = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest());
-    public static final Request<IPacket> GET_USERS = new Request<IPacket>(PACKET_HANDLER, new GetUsersRequest());
-    public static final Request<IPacket> GET_FORUMS_LIST = new Request<IPacket>(PACKET_HANDLER, new GetForumListRequest());
-    public static final Request<Integer> GET_USER_ID = new Request<Integer>(null, new TestRequest());
-    public static final Request<IPacket> SYNCHRONIZE = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetNewPostsRequest());
-    public static final Request<IPacket> SYNCHRONIZE_WITH_USERS = new Request<IPacket>(PACKET_HANDLER, new PostChangesRequest(), new GetUsersRequest(), new GetNewPostsRequest());
+    public static final Request<IPacket> EXTRA_MESSAGES = new Request<IPacket>(LoadExtraMessagesRequest.class);
+    public static final Request<IPacket> GET_FORUMS_LIST = new Request<IPacket>(GetForumListRequest.class);
+    public static final Request<Integer> GET_USER_ID = new Request<Integer>(TestRequest.class);
+    public static final Request<IPacket> SYNCHRONIZE = new Request<IPacket>(PostChangesRequest.class, GetNewPostsRequest.class);
+    public static final Request<IPacket> SYNCHRONIZE_WITH_USERS = new Request<IPacket>(PostChangesRequest.class, GetUsersRequest.class, GetNewPostsRequest.class);
 
-    private final IResultHandler<T> defaultHandler;
-    private final IRequest<T>[] requests;
+    private final Class<? extends IRequest<T>>[] requests;
 
-    private Request(IResultHandler<T> defaultHandler, IRequest<T>... requests) {
-        this.defaultHandler = defaultHandler;
+    private Request(Class<? extends IRequest<T>>... requests) {
         this.requests = requests;
     }
 
@@ -46,7 +41,7 @@ public class Request<T> {
      *
      * @param handler custom handler to process request(s) results.
      */
-    public void process(IResultHandler<T> handler) {
+    public void process(IResultHandler<T>... handler) {
         process(null, handler);
     }
 
@@ -56,7 +51,7 @@ public class Request<T> {
      * @param frame parent frame for Login dialog if it should be displayed.
      */
     public void process(Window frame) {
-        process(frame, null);
+        process(frame, new IResultHandler[]{PACKET_HANDLER});
     }
 
     /**
@@ -69,10 +64,10 @@ public class Request<T> {
     /**
      * Process request(s) with user registration check and custom result handler.
      *
-     * @param frame   parent frame for Login dialog if it should be displayed.
-     * @param handler custom handler to process request(s) results.
+     * @param frame    parent frame for Login dialog if it should be displayed.
+     * @param handlers custom handler to process request(s) results.
      */
-    public void process(Window frame, final IResultHandler<T> handler) {
+    public void process(Window frame, final IResultHandler<T>... handlers) {
         assert RojacUtils.checkThread(true);
 
         if (frame != null) {
@@ -88,11 +83,8 @@ public class Request<T> {
         new RequestProcessor<T>(new IResultHandler<T>() {
             @Override
             public void process(T data) {
-                if (defaultHandler != null) {
-                    defaultHandler.process(data);
-                }
-                if (handler != null) {
-                    handler.process(data);
+                for (IResultHandler<T> h : handlers) {
+                    h.process(data);
                 }
             }
         }, requests).execute();

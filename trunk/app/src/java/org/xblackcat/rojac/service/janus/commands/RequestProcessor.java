@@ -24,7 +24,7 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_USE_GZIP
 public class RequestProcessor<T> extends RojacWorker<Void, Void> {
     private static final Log log = LogFactory.getLog(RequestProcessor.class);
 
-    private final IRequest<T>[] requests;
+    private final Class<? extends IRequest<T>>[] requests;
     private final IResultHandler<T> handler;
 
     private final IProgressController progressController = ServiceFactory.getInstance().getProgressControl();
@@ -45,7 +45,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
         }
     };
 
-    public RequestProcessor(IResultHandler<T> handler, IRequest<T>... requests) {
+    public RequestProcessor(IResultHandler<T> handler, Class<? extends IRequest<T>>[] requests) {
         this.handler = handler;
         this.requests = requests;
     }
@@ -70,12 +70,12 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
         try {
             janusService.testConnection();
 
-            for (IRequest<T> r : requests) {
+            for (Class<? extends IRequest<T>> r : requests) {
                 if (log.isDebugEnabled()) {
                     log.debug("Process request: " + r.getName());
                 }
 
-                r.process(handler, tracker, janusService);
+                r.newInstance().process(handler, tracker, janusService);
             }
         } catch (Exception e) {
             // Just in case

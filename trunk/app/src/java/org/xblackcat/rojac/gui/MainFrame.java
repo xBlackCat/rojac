@@ -29,7 +29,6 @@ import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.gui.view.recenttopics.RecentTopicsView;
-import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.janus.commands.ASwingThreadedHandler;
@@ -179,14 +178,16 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 @Override
                 protected void done() {
                     if (loadAtOnce) {
-                        Request.EXTRA_MESSAGES.process(MainFrame.this, new ASwingThreadedHandler<IPacket>() {
-                            @Override
-                            protected void execute(IPacket data) {
-                                if (method != null) {
-                                    openMessage(messageId, method);
-                                }
-                            }
-                        });
+                        Request.EXTRA_MESSAGES.process(MainFrame.this,
+                                Request.PACKET_HANDLER,
+                                new ASwingThreadedHandler<IPacket>() {
+                                    @Override
+                                    protected void execute(IPacket data) {
+                                        if (method != null) {
+                                            openMessage(messageId, method);
+                                        }
+                                    }
+                                });
                     }
                 }
             }.execute();
