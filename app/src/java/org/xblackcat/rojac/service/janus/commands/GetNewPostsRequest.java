@@ -60,13 +60,13 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
         Version ratingsVersion = DataHelper.getVersion(VersionType.RATING_ROW_VERSION);
 
         int ownUserId = 0;
-        int portionSize = 0;
+        int portionSize;
         do {
             if (ratingsVersion.isEmpty()) {
                 ratingsVersion = moderatesVersion;
             }
 
-            NewData data = null;
+            NewData data;
             try {
                 data = janusService.getNewData(
                         forumInfo.toArray(new RequestForumInfo[forumInfo.size()]), ratingsVersion,
