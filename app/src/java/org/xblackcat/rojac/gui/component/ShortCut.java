@@ -69,6 +69,10 @@ public enum ShortCut {
         return keyStroke == null ? defKeystroke : keyStroke;
     }
 
+    public void setKeyStroke(KeyStroke keyStroke) {
+        this.keyStroke = keyStroke;
+    }
+
     public void setShortCut(int keyCode, int modifier) {
         keyStroke = KeyStroke.getKeyStroke(keyCode, modifier);
     }
