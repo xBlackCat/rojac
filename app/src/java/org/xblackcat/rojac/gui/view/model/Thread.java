@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.model;
 import gnu.trove.TIntObjectHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
 
@@ -168,7 +169,9 @@ public class Thread extends Post {
                 Post parent = threadPosts.get(post.getParentId());
 
                 if (parent == null) {
-                    throw new RuntimeException("No parent for post #" + post.getMessageId() + " in thread #" + getMessageId());
+                    // TODO: Update full tree after moving/extract thread while synchronization.
+//                    throw new RojacDebugException("No parent for post #" + post.getMessageId() + " in thread #" + getMessageId());
+                    continue;
                 }
 
                 Post newPost = new Post(post, parent, this);
