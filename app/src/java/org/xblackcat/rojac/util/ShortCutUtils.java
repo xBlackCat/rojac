@@ -1,15 +1,11 @@
 package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.WordUtils;
 import org.xblackcat.rojac.gui.component.ShortCut;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,56 +78,17 @@ public class ShortCutUtils {
         }
     }
 
-    public static String keyStrokeHint(KeyStroke keyStroke) {
-        int modifiers = keyStroke.getModifiers();
-
-        StringBuffer buf = new StringBuffer();
-
-        if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
-            buf.append("Shift+");
+    public static String keyStrokeHint(KeyStroke stroke) {
+        StringBuilder str = new StringBuilder();
+        if (stroke.getModifiers() > 0) {
+            str.append(KeyEvent.getModifiersExText(stroke.getModifiers()));
+            str.append("+");
         }
-        if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
-            buf.append("Ctrl+");
-        }
-        if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
-            buf.append("Meta+");
-        }
-        if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
-            buf.append("Alt+");
-        }
-        if ((modifiers & InputEvent.ALT_GRAPH_DOWN_MASK) != 0) {
-            buf.append("AltGr+");
+        if (stroke.getKeyCode()  > 0) {
+            str.append(KeyEvent.getKeyText(stroke.getKeyCode()));
         }
 
-        buf.append(WordUtils.capitalizeFully(getVKText(keyStroke.getKeyCode())));
-
-        return buf.toString();
-    }
-
-    public static String getVKText(int key) {
-        String name = vkCollect.findName(key);
-        if (name != null) {
-            return name.substring(3);
-        }
-        int expected_modifiers =
-                (Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL);
-
-        Field[] fields = KeyEvent.class.getDeclaredFields();
-        for (Field field : fields) {
-            try {
-                if (field.getModifiers() == expected_modifiers
-                        && field.getType() == Integer.TYPE
-                        && field.getName().startsWith("VK_")
-                        && field.getInt(KeyEvent.class) == key) {
-                    name = field.getName();
-                    vkCollect.put(name, key);
-                    return name.substring(3);
-                }
-            } catch (IllegalAccessException e) {
-                assert (false);
-            }
-        }
-        return "UNKNOWN";
+        return str.toString();
     }
 
     public static void updateShortCuts(Component component) {
