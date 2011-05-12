@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
+import org.xblackcat.rojac.gui.component.AComplexEditor;
 import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
@@ -126,7 +127,6 @@ class TextStyleEditor extends AComplexEditor<TextStyle> {
             }
         });
 
-        JPanel buttonsPane = new JPanel(new GridLayout(0, 1));
         JButton confirm = new JButton(ResourceUtils.loadIcon("/images/icons/button-confirm.png"));
         JButton cancel = new JButton(ResourceUtils.loadIcon("/images/icons/button-cancel.png"));
 
@@ -144,8 +144,10 @@ class TextStyleEditor extends AComplexEditor<TextStyle> {
             }
         });
 
-        buttonsPane.add(confirm);
-        buttonsPane.add(cancel);
+        JPanel buttonsPane = WindowsUtils.createColumn(
+                confirm,
+                cancel
+        );
 
         add(defaultMarks, BorderLayout.WEST);
         add(selectors, BorderLayout.CENTER);
@@ -185,8 +187,8 @@ class TextStyleEditor extends AComplexEditor<TextStyle> {
     }
 
     @Override
-    public void setValue(TextStyle v) {
-        if (v.getFont() == null) {
+    public void setValue(TextStyle stroke) {
+        if (stroke.getFont() == null) {
             overrideFont.setSelected(false);
             fontSelector.setEnabled(false);
             fontSizeSelector.setEnabled(false);
@@ -198,33 +200,33 @@ class TextStyleEditor extends AComplexEditor<TextStyle> {
             fontSizeSelector.setEnabled(true);
             fontBold.setEnabled(true);
             fontItalic.setEnabled(true);
-            selectedFont = v.getFont();
+            selectedFont = stroke.getFont();
             fontSelector.setSelectedItem(selectedFont.getFamily(Locale.ROOT));
             fontItalic.setSelected(selectedFont.isItalic());
             fontBold.setSelected(selectedFont.isBold());
             fontSizeSelector.setSelectedItem(selectedFont.getSize());
         }
 
-        if (v.getForeground() == null) {
+        if (stroke.getForeground() == null) {
             overrideForeground.setSelected(false);
             selectForegroundButton.setEnabled(false);
         } else {
             overrideForeground.setSelected(true);
             selectForegroundButton.setEnabled(true);
 
-            selectedForeground = v.getForeground();
-            selectForegroundButton.setBackground(v.getForeground());
+            selectedForeground = stroke.getForeground();
+            selectForegroundButton.setBackground(stroke.getForeground());
         }
 
-        if (v.getBackground() == null) {
+        if (stroke.getBackground() == null) {
             overrideBackground.setSelected(false);
             selectBackgroundButton.setEnabled(false);
         } else {
             overrideBackground.setSelected(true);
             selectBackgroundButton.setEnabled(true);
 
-            selectedBackground = v.getBackground();
-            selectBackgroundButton.setBackground(v.getBackground());
+            selectedBackground = stroke.getBackground();
+            selectBackgroundButton.setBackground(stroke.getBackground());
         }
 
         updateExample();
