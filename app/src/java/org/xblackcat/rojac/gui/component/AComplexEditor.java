@@ -1,6 +1,4 @@
-package org.xblackcat.rojac.gui.dialog.options;
-
-import org.xblackcat.rojac.gui.component.JLightPanel;
+package org.xblackcat.rojac.gui.component;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +9,7 @@ import java.awt.event.InputEvent;
  * @author xBlackCat
  */
 
-abstract class AComplexEditor<T> extends JLightPanel {
+public abstract class AComplexEditor<T> extends JLightPanel {
     public static final String ACTION_DONE = "edit_done";
     public static final String ACTION_CANCEL = "edit_cancel";
 

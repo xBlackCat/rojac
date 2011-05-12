@@ -99,7 +99,10 @@ public class RojacTray {
         MenuItem showHideItem = new MenuItem();
         Messages message = mainFrame.isVisible() ? Messages.Tray_Popup_Item_HideMainframe : Messages.Tray_Popup_Item_ShowMainframe;
         showHideItem.setLabel(message.get());
-        showHideItem.setFont(menu.getFont().deriveFont(Font.BOLD));
+        final Font font = menu.getFont();
+        if (font != null) {
+            showHideItem.setFont(font.deriveFont(Font.BOLD));
+        }
         showHideItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

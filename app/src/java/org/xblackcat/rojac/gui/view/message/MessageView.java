@@ -152,7 +152,7 @@ public class MessageView extends AView implements IItemView {
                     return;
                 }
 
-                int blockSize = (int) (scrollBar.getHeight() * .95);
+                int blockSize = (int) (scrollBar.getHeight() * .8);
 
                 int newValue = oldValue + blockSize;
 

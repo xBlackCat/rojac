@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
+import org.xblackcat.rojac.gui.component.AComplexEditor;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
