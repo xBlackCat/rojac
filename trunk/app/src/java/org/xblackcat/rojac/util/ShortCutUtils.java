@@ -6,16 +6,12 @@ import org.xblackcat.rojac.gui.component.ShortCut;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author xBlackCat
  */
 
 public class ShortCutUtils {
-    public static final VKCollection vkCollect = new VKCollection();
-
     /**
      * Merge to InputMaps into a new InputMap with the rule: actions of <code>target</code> will be extended or replaced
      * with <code>base</code> actions. For example:
@@ -132,30 +128,10 @@ public class ShortCutUtils {
         updateInputMap(map.getParent());
     }
 
-    private static class VKCollection {
-        private Map<Integer, String> code2name;
-        private Map<String, Integer> name2code;
-
-        VKCollection() {
-            code2name = new HashMap<Integer, String>();
-            name2code = new HashMap<String, Integer>();
-        }
-
-        synchronized void put(String name, int code) {
-            assert (name != null);
-            assert (findName(code) == null);
-            assert (findCode(name) == null);
-            code2name.put(code, name);
-            name2code.put(name, code);
-        }
-
-        synchronized Integer findCode(String name) {
-            assert (name != null);
-            return name2code.get(name);
-        }
-
-        synchronized String findName(int code) {
-            return code2name.get(code);
+    public static void registerShortCuts(JComponent component) {
+        final InputMap inputMap = component.getInputMap();
+        for (ShortCut sc : ShortCut.values()) {
+            inputMap.put(sc.getKeyStroke(), sc);
         }
     }
 }

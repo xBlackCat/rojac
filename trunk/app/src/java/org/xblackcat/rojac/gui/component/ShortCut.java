@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.component;
 
 import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.util.ShortCutUtils;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -13,6 +14,8 @@ import java.awt.event.KeyEvent;
 
 public enum ShortCut {
     // Thread view related
+    NextMessage(Messages.View_Thread_Button_Next, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK),
+    PrevMessage(Messages.View_Thread_Button_Previous, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK),
     NextUnreadMessage(Messages.View_Thread_Button_NextUnread, KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK),
     PrevUnreadMessage(Messages.View_Thread_Button_PreviousUnread, KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK),
     ToThreadRoot(Messages.View_Thread_Button_ToThreadRoot, KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK),
@@ -87,7 +90,16 @@ public enum ShortCut {
 
     @Override
     public String toString() {
-        return getActionName();
+        final StringBuilder toString = new StringBuilder();
+        toString.append(getActionName());
+        toString.append(" (");
+        toString.append(ShortCutUtils.keyStrokeHint(defKeystroke));
+        if (keyStroke != null) {
+            toString.append("/");
+            toString.append(ShortCutUtils.keyStrokeHint(keyStroke));
+        }
+        toString.append(")");
+        return toString.toString();
     }
 
     public Messages getDescription() {

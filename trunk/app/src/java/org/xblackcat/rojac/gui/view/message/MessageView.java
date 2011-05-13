@@ -20,10 +20,7 @@ import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.LinkUtils;
-import org.xblackcat.rojac.util.MessageUtils;
-import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -130,6 +127,8 @@ public class MessageView extends AView implements IItemView {
         add(titleBar, BorderLayout.NORTH);
         final JScrollPane scrollPane = new JScrollPane(messageTextPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane, BorderLayout.CENTER);
+
+        ShortCutUtils.registerShortCuts(messageTextPane);
 
         // Handle keyboard events to emulate tree navigation in TreeTable
         getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "spaceScroll");
@@ -415,8 +414,12 @@ public class MessageView extends AView implements IItemView {
                         MessageUtils.markMessageRead(getId(), messageData, delay);
                     }
                 }
-
             }
+        }
+
+        @Override
+        protected void done() {
+            messageTextPane.requestFocus();
         }
     }
 
