@@ -6,6 +6,7 @@ import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -26,6 +27,7 @@ class KeyStrokeEditor extends AComplexEditor<KeyStroke> {
 
         confirm.setBorder(null);
         cancel.setBorder(null);
+        setBorder(new EmptyBorder(0, 5, 0, 5));
 
         confirm.addActionListener(new ActionListener() {
             @Override

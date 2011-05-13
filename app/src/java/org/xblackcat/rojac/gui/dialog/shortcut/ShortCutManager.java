@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.gui.dialog.shortcut;
 
-import org.xblackcat.rojac.gui.component.AButtonAction;
-import org.xblackcat.rojac.gui.component.ACancelAction;
-import org.xblackcat.rojac.gui.component.AnOkAction;
+import org.xblackcat.rojac.gui.component.*;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -33,6 +31,9 @@ public class ShortCutManager extends JDialog {
         JTable table = new JTable(shortCutsModel);
         table.setTableHeader(null);
         table.setDefaultEditor(KeyStroke.class, new KeyStrokeCellEditor());
+
+        table.setDefaultRenderer(Messages.class, new MessagesCellRenderer());
+        table.setDefaultRenderer(KeyStroke.class, new KeyStrokeCellRenderer());
 
         contentPane.add(new JScrollPane(table));
 
@@ -71,4 +72,5 @@ public class ShortCutManager extends JDialog {
 
         ShortCutUtils.updateShortCuts(getOwner());
     }
+
 }
