@@ -1,17 +1,23 @@
 package org.xblackcat.rojac.util;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.component.ShortCut;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.*;
+import java.util.Properties;
 
 /**
  * @author xBlackCat
  */
 
 public class ShortCutUtils {
+    private static final Log log = LogFactory.getLog(ShortCutUtils.class);
+
     /**
      * Merge to InputMaps into a new InputMap with the rule: actions of <code>target</code> will be extended or replaced
      * with <code>base</code> actions. For example:
@@ -21,7 +27,6 @@ public class ShortCutUtils {
      *
      * @param base   master input map.
      * @param target slave input map.
-     *
      * @return a new merged input map
      */
     public static InputMap mergeInputMaps(InputMap base, InputMap target) {
@@ -44,7 +49,9 @@ public class ShortCutUtils {
             }
         }
 
-        copy.setParent(target.getParent());
+        if (target != null) {
+            copy.setParent(target.getParent());
+        }
 
         return copy;
     }
@@ -52,9 +59,8 @@ public class ShortCutUtils {
     /**
      * Copy InputMap and add proxy to actions to target component.
      *
-     * @param base
+     * @param holder
      * @param target
-     *
      * @return
      */
     public static void mergeInputMaps(JComponent holder, final JComponent target) {
@@ -80,7 +86,7 @@ public class ShortCutUtils {
             str.append(KeyEvent.getModifiersExText(stroke.getModifiers()));
             str.append("+");
         }
-        if (stroke.getKeyCode()  > 0) {
+        if (stroke.getKeyCode() > 0) {
             str.append(KeyEvent.getKeyText(stroke.getKeyCode()));
         }
 
@@ -132,6 +138,77 @@ public class ShortCutUtils {
         final InputMap inputMap = component.getInputMap();
         for (ShortCut sc : ShortCut.values()) {
             inputMap.put(sc.getKeyStroke(), sc);
+        }
+    }
+
+    public static void loadShortCuts() {
+        File keyMapFile = RojacUtils.getKeyMapFile();
+        if (!keyMapFile.exists()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Default keymap is used.");
+            }
+            return;
+        }
+
+        Properties keyBinding = new Properties();
+        try {
+            BufferedInputStream is = new BufferedInputStream(new FileInputStream(keyMapFile));
+            try {
+                keyBinding.load(is);
+            } finally {
+                is.close();
+            }
+        } catch (IOException e) {
+            log.error("Can not load stored keymap", e);
+            return;
+        }
+
+        for (String action : keyBinding.stringPropertyNames()) {
+            String keys = keyBinding.getProperty(action);
+
+            if (log.isTraceEnabled()) {
+                log.trace("Loading shortcut for " + action + ": [" + keys + "]");
+            }
+
+            try {
+                KeyStroke keyStroke = KeyStroke.getKeyStroke(keys);
+
+                if (keyStroke == null) {
+                    throw new IllegalArgumentException("Invalid keystroke: " + keys);
+                }
+
+                ShortCut.valueOf(action).setKeyStroke(keyStroke);
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid action: " + action + "/" + keys, e);
+            }
+        }
+    }
+
+    public static void storeShortCuts() {
+        Properties keyBinding = new Properties();
+
+        for (ShortCut sc : ShortCut.values()) {
+            if (sc.isCustom()) {
+                keyBinding.setProperty(sc.name(), sc.getKeyStroke().toString());
+            }
+        }
+
+        if (keyBinding.isEmpty()) {
+            return;
+        }
+
+        File keyMapFile = RojacUtils.getKeyMapFile();
+        
+        try {
+            BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(keyMapFile));
+            try {
+                keyBinding.store(os, "Rojac key binding config file.");
+            } finally {
+                os.close();
+            }
+        } catch (IOException e) {
+            log.error("Can not store user keymap", e);
+            return;
         }
     }
 }

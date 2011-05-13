@@ -76,10 +76,6 @@ public enum ShortCut {
         this.keyStroke = keyStroke;
     }
 
-    public void setShortCut(int keyCode, int modifier) {
-        keyStroke = KeyStroke.getKeyStroke(keyCode, modifier);
-    }
-
     public int getCondition() {
         return condition;
     }
@@ -104,5 +100,9 @@ public enum ShortCut {
 
     public Messages getDescription() {
         return description;
+    }
+
+    public boolean isCustom() {
+        return keyStroke != null && !defKeystroke.equals(keyStroke);
     }
 }
