@@ -363,6 +363,10 @@ public final class RojacUtils {
         return new File(getRojacHome(), "config.properties");
     }
 
+    public static File getKeyMapFile() {
+        return new File(getRojacHome(), "keymap.properties");
+    }
+
     private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
         @Override
         public void uncaughtException(final Thread t, final Throwable e) {

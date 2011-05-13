@@ -5,12 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.util.RojacUtils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,8 +35,11 @@ public final class MultiUserOptionsService extends AnOptionsService {
             try {
                 Properties p = new Properties();
                 BufferedInputStream is = new BufferedInputStream(new FileInputStream(userConfigFile));
-                p.load(is);
-                is.close();
+                try {
+                    p.load(is);
+                } finally {
+                    is.close();
+                }
                 loadFromResource(p);
             } catch (IOException e) {
                 throw new OptionsServiceException("Can not load content of user config file.", e);
@@ -113,8 +111,11 @@ public final class MultiUserOptionsService extends AnOptionsService {
 
         try {
             BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(RojacUtils.getSettingsFile()));
-            userSetting.store(os, "Rojac user settings file.");
-            os.close();
+            try {
+                userSetting.store(os, "Rojac user settings file.");
+            } finally {
+                os.close();
+            }
             return true;
         } catch (IOException e) {
             log.error("Can not store user settings.", e);

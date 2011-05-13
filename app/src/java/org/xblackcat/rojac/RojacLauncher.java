@@ -62,10 +62,14 @@ public final class RojacLauncher {
 
         Messages.setLocale(ROJAC_GUI_LOCALE.get());
 
+        ShortCutUtils.loadShortCuts();
+
         SwingUtilities.invokeLater(new SwingPartInitializer());
     }
 
     private static void storeSettings() {
+        ShortCutUtils.storeShortCuts();
+
         if (!RSDN_USER_PASSWORD_SAVE.get()) {
             RSDN_USER_PASSWORD.clear();
         }
