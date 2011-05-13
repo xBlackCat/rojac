@@ -70,6 +70,8 @@ public enum Messages {
 
     // Threads view
     View_Thread_Button_NewThread,
+    View_Thread_Button_Previous,
+    View_Thread_Button_Next,
     View_Thread_Button_PreviousUnread,
     View_Thread_Button_NextUnread,
     View_Thread_Button_ToThreadRoot,
