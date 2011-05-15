@@ -6,6 +6,8 @@ import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.ShortCutUtils;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 /**
@@ -26,6 +28,23 @@ class ShortCutManagerPage extends APage {
 
         table.setDefaultRenderer(Messages.class, new MessagesCellRenderer());
         table.setDefaultRenderer(KeyStroke.class, new KeyStrokeCellRenderer());
+
+        ActionMap actionMap = table.getActionMap();
+        while (actionMap != null) {
+            actionMap.remove("cancel");
+            actionMap = actionMap.getParent();
+        }
+
+        final ListSelectionModel columnSelectionModel = table.getColumnModel().getSelectionModel();
+        columnSelectionModel.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    columnSelectionModel.setSelectionInterval(2, 2);
+                }
+            }
+        }
+        );
 
         table.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
 
