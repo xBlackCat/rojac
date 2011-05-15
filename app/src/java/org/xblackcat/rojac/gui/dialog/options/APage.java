@@ -19,4 +19,6 @@ abstract class APage extends JPanel {
     protected abstract void applySettings(Window mainFrame);
 
     public abstract Messages getTitle();
+
+    public abstract void placeFocus();
 }

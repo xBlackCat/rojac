@@ -13,13 +13,14 @@ import java.awt.*;
  */
 class ShortCutManagerPage extends APage {
     private ShortCutsTableModel shortCutsModel = new ShortCutsTableModel();
+    private JTable table;
 
     public ShortCutManagerPage() {
         super();
 
         add(new JLabel(Messages.Dialog_Options_Description_Keymap.get()), BorderLayout.NORTH);
 
-        JTable table = new JTable(shortCutsModel);
+        table = new JTable(shortCutsModel);
         table.setTableHeader(null);
         table.setDefaultEditor(KeyStroke.class, new KeyStrokeCellEditor());
 
@@ -27,8 +28,6 @@ class ShortCutManagerPage extends APage {
         table.setDefaultRenderer(KeyStroke.class, new KeyStrokeCellRenderer());
 
         table.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
-
-
 
         add(new JScrollPane(table));
     }
@@ -42,5 +41,10 @@ class ShortCutManagerPage extends APage {
     @Override
     public Messages getTitle() {
         return Messages.Dialog_Options_Title_Keymap;
+    }
+
+    @Override
+    public void placeFocus() {
+        table.requestFocus();
     }
 }
