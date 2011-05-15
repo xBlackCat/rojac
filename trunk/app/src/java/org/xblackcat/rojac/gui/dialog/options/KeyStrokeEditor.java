@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.dialog.shortcut;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.xblackcat.rojac.gui.component.AComplexEditor;
 import org.xblackcat.rojac.util.ShortCutUtils;
