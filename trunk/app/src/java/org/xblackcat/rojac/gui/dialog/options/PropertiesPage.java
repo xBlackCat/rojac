@@ -22,6 +22,7 @@ class PropertiesPage extends APage {
     private static final Log log = LogFactory.getLog(PropertiesPage.class);
 
     protected PropertiesModel model = createModel();
+    private JComponent propertiesTree;
 
     protected PropertiesPage() {
         initializeLayout();
@@ -30,20 +31,24 @@ class PropertiesPage extends APage {
     protected void initializeLayout() {
         add(new JLabel(Messages.Dialog_Options_Description_General.get()), BorderLayout.NORTH);
 
-        JComponent centerComp;
         if (model != null) {
             JComponent tree = setupTree();
 
-            centerComp = new JScrollPane(tree);
+            propertiesTree = new JScrollPane(tree);
         } else {
-            centerComp = new JLabel("Can not initialize model");
+            propertiesTree = new JLabel("Can not initialize model");
         }
-        add(centerComp, BorderLayout.CENTER);
+        add(propertiesTree, BorderLayout.CENTER);
     }
 
     @Override
     public Messages getTitle() {
         return Messages.Dialog_Options_Title_General;
+    }
+
+    @Override
+    public void placeFocus() {
+        propertiesTree.requestFocus();
     }
 
     @Override

@@ -10,6 +10,8 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -40,10 +42,20 @@ public class OptionsDialog extends JDialog {
         JPanel cp = new JPanel(new BorderLayout(5, 10));
         cp.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        JTabbedPane centerComp = new JTabbedPane();
+        final JTabbedPane centerComp = new JTabbedPane();
 
         for (APage p : pages) {
             centerComp.addTab(p.getTitle().get(), p);
+            centerComp.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    int selected = centerComp.getSelectedIndex();
+
+                    if (selected >= 0) {
+                        pages[selected].placeFocus();
+                    }
+                }
+            });
         }
 
         cp.add(centerComp, BorderLayout.CENTER);
