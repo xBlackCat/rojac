@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author xBlackCat
  */
-public class PropertyNode<T> {
+class PropertyNode<T> {
     private final Property<T> property;
     private final String name;
     private PropertyNode<?> parent;

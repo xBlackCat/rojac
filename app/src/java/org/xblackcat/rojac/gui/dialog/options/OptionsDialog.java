@@ -1,27 +1,17 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.dialog.LoginDialog;
 import org.xblackcat.rojac.i18n.Messages;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
-import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.util.PropertyUtils;
-import org.xblackcat.rojac.util.SynchronizationUtils;
-import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
-import static org.xblackcat.rojac.service.options.Property.*;
 
 /**
  * Shows a dialog to configure the application.
@@ -30,12 +20,13 @@ import static org.xblackcat.rojac.service.options.Property.*;
  */
 
 public class OptionsDialog extends JDialog {
-    private static final Log log = LogFactory.getLog(OptionsDialog.class);
-    protected PropertiesModel model;
+    private final APage[] pages = new APage[]{
+            new PropertiesPage(),
+            new ShortCutManagerPage()
+    };
 
     public OptionsDialog(Window mainFrame) throws RojacException {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
-        model = createModel();
 
         setTitle(Messages.Dialog_Options_Title.get());
 
@@ -49,16 +40,12 @@ public class OptionsDialog extends JDialog {
         JPanel cp = new JPanel(new BorderLayout(5, 10));
         cp.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        cp.add(new JLabel(Messages.Dialog_Options_Description.get()), BorderLayout.NORTH);
+        JTabbedPane centerComp = new JTabbedPane();
 
-        JComponent centerComp;
-        if (model != null) {
-            JComponent tree = setupTree();
-
-            centerComp = new JScrollPane(tree);
-        } else {
-            centerComp = new JLabel("Can not initialize model");
+        for (APage p : pages) {
+            centerComp.addTab(p.getTitle().get(), p);
         }
+
         cp.add(centerComp, BorderLayout.CENTER);
 
         cp.add(WindowsUtils.createButtonsBar(
@@ -92,7 +79,6 @@ public class OptionsDialog extends JDialog {
                         dispose();
                     }
                 }
-
         ), BorderLayout.SOUTH);
 
         setContentPane(cp);
@@ -100,78 +86,8 @@ public class OptionsDialog extends JDialog {
     }
 
     private void applySettings() {
-        OptionsUpdatedPacket packet = new OptionsUpdatedPacket(model.applySettings());
-
-        // Load changed properties.
-        if (packet.isPropertyAffected(ROJAC_GUI_LOOK_AND_FEEL)) {
-            LookAndFeel laf = ROJAC_GUI_LOOK_AND_FEEL.get();
-            try {
-                UIUtils.setLookAndFeel(laf);
-            } catch (UnsupportedLookAndFeelException e) {
-                log.warn("Can not initialize " + laf.getName() + " L&F.", e);
-            }
+        for (APage p : pages) {
+            p.applySettings(getOwner());
         }
-
-        if (packet.isPropertyAffected(ROJAC_GUI_LOCALE)) {
-            Messages.setLocale(ROJAC_GUI_LOCALE.get());
-        }
-
-        if (packet.isPropertyAffected(SYNCHRONIZER_SCHEDULE_PERIOD)) {
-            SynchronizationUtils.setScheduleSynchronizer(this.getOwner());
-        }
-
-        ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
-    }
-
-    /**
-     * Builds options dialog model from the list of properties.
-     *
-     * @return constructed and filled model of properties for property tree.
-     * @throws RojacException is thrown if tree can not be constructed.
-     */
-    private PropertiesModel createModel() throws RojacException {
-        PropertyNode root = null;
-
-        for (Property<?> p : Property.getAllProperties()) {
-            if (!p.isPublic()) {
-                if (log.isTraceEnabled()) {
-                    log.trace(p + " is in not public - skipping.");
-                }
-                continue;
-            }
-
-            if (root == null) {
-                root = PropertyUtils.propertyPath(p);
-
-                if (root == null) {
-                    if (log.isTraceEnabled()) {
-                        log.trace(p + " should be initializes a root but it is not.");
-                    }
-                }
-            } else {
-                if (!PropertyUtils.addProperty(root, p)) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Can not add " + p + " to a root " + root.getName());
-                    }
-                }
-            }
-        }
-
-        if (root == null) {
-            throw new RojacException("Can not initialize properties model. See TRACE-level logs for detail");
-        }
-
-        return new PropertiesModel(root);
-    }
-
-    private JComponent setupTree() {
-        JTree tree = new JTree(model);
-
-        tree.setEditable(true);
-
-        tree.setCellRenderer(new OptionTreeCellRenderer());
-        tree.setCellEditor(new OptionCellEditor());
-
-        return tree;
     }
 }

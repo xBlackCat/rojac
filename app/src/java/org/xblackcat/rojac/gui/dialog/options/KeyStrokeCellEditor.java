@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.dialog.shortcut;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.xblackcat.rojac.gui.component.AComplexEditor;
 
@@ -32,16 +32,12 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
 //  Constructors
 //
 
-    /**
-     * Constructs a <code>DefaultCellEditor</code> that uses a text field.
-     *
-     * @param textField a <code>JTextField</code> object
-     */
     public KeyStrokeCellEditor() {
         editorComponent = new KeyStrokeEditor();
         this.clickCountToStart = 2;
 
         editorComponent.addActionListener(new ActionListener() {
+            @SuppressWarnings({"StringEquality"})
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getActionCommand() == AComplexEditor.ACTION_CANCEL) {
@@ -53,39 +49,6 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
         });
     }
 
-    /**
-     * Returns a reference to the editor component.
-     *
-     * @return the editor <code>Component</code>
-     */
-    public Component getComponent() {
-        return editorComponent;
-    }
-
-//
-//  Modifying
-//
-
-    /**
-     * Specifies the number of clicks needed to start editing.
-     *
-     * @param count an int specifying the number of clicks needed to start editing
-     *
-     * @see #getClickCountToStart
-     */
-    public void setClickCountToStart(int count) {
-        clickCountToStart = count;
-    }
-
-    /**
-     * Returns the number of clicks needed to start editing.
-     *
-     * @return the number of clicks needed to start editing
-     */
-    public int getClickCountToStart() {
-        return clickCountToStart;
-    }
-
 //
 //  Override the implementations of the superclass, forwarding all methods
 //  from the CellEditor interface to our delegate.
@@ -93,17 +56,13 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
 
     /**
      * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
-     *
-     * @see EditorDelegate#getCellEditorValue
-     */
+          */
     public Object getCellEditorValue() {
         return editorComponent.getValue();
     }
 
     /**
      * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
-     *
-     * @see EditorDelegate#isCellEditable(java.util.EventObject)
      */
     public boolean isCellEditable(EventObject anEvent) {
         return !(anEvent instanceof MouseEvent) || ((MouseEvent) anEvent).getClickCount() >= clickCountToStart;
@@ -111,8 +70,6 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
 
     /**
      * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
-     *
-     * @see EditorDelegate#shouldSelectCell(java.util.EventObject)
      */
     public boolean shouldSelectCell(EventObject anEvent) {
         return true;
@@ -120,18 +77,13 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
 
     /**
      * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
-     *
-     * @see EditorDelegate#stopCellEditing
      */
     public boolean stopCellEditing() {
-        fireEditingStopped();
-        return true;
+        return false;
     }
 
     /**
      * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
-     *
-     * @see EditorDelegate#cancelCellEditing
      */
     public void cancelCellEditing() {
         fireEditingCanceled();

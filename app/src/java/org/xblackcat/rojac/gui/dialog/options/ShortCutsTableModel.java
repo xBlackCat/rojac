@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.dialog.shortcut;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.i18n.Messages;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author xBlackCat
  */
-public class ShortCutsTableModel extends AbstractTableModel {
+class ShortCutsTableModel extends AbstractTableModel {
     private final Map<ShortCut, KeyStroke> values = new EnumMap<ShortCut, KeyStroke>(ShortCut.class);
 
     public ShortCutsTableModel() {

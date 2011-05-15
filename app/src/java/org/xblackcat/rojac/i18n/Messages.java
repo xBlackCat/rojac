@@ -147,7 +147,10 @@ public enum Messages {
 
     // Options dialog texts
     Dialog_Options_Title,
-    Dialog_Options_Description,
+    Dialog_Options_Title_General,
+    Dialog_Options_Title_Keymap,
+    Dialog_Options_Description_General,
+    Dialog_Options_Description_Keymap,
 
     // Edit message dialog related texts
     ErrorDialog_MessageNotFound_Message,

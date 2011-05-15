@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.service.options.IValueChecker;
 import org.xblackcat.rojac.service.options.Password;
@@ -10,6 +9,9 @@ import org.xblackcat.rojac.service.options.Property;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,8 +49,25 @@ final class ComponentFactory {
                         currentValue
                 );
 
-                JComboBox combo = new JComboBox(model);
+                final JComboBox combo = new JComboBox(model);
                 combo.setRenderer(new PropertyListCellRenderer(valueChecker));
+                combo.addFocusListener(new FocusListener() {
+                    @Override
+                    public void focusGained(FocusEvent e) {
+                        Component focusOwner = KeyboardFocusManager.
+                                getCurrentKeyboardFocusManager().getFocusOwner();
+
+                        if (combo.isDisplayable() && e.getID() == FocusEvent.FOCUS_GAINED
+                                && focusOwner == combo && !combo.isPopupVisible()) {
+                            combo.showPopup();
+                        }
+                    }
+
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        //To change body of implemented methods use File | Settings | File Templates.
+                    }
+                });
 
                 return new PropertyCellEditor(combo);
             }

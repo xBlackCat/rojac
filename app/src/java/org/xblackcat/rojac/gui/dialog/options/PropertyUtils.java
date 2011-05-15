@@ -1,8 +1,7 @@
-package org.xblackcat.rojac.util;
+package org.xblackcat.rojac.gui.dialog.options;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.xblackcat.rojac.gui.dialog.options.PropertyNode;
 import org.xblackcat.rojac.service.options.Property;
 
 import java.lang.reflect.Field;
