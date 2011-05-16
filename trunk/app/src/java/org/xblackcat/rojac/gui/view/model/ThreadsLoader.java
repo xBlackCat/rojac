@@ -26,14 +26,20 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
     private final int forumId;
     private final ForumRoot rootItem;
-    private final AThreadModel<Post> model;
 
-    public ThreadsLoader(int forumId, ForumRoot rootItem, AThreadModel<Post> model) {
+    public ThreadsLoader(final AThreadModel<Post> model, int forumId) {
+        super(new Runnable() {
+            @Override
+            public void run() {
+                model.markInitialized();
+
+                model.fireResortModel();
+            }
+        });
         assert RojacUtils.checkThread(true);
 
         this.forumId = forumId;
-        this.rootItem = rootItem;
-        this.model = model;
+        this.rootItem = (ForumRoot) model.getRoot();
     }
 
     @Override
@@ -84,12 +90,5 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
 //        model.nodesChanged(rootItem, updatedNodes.toNativeArray());
 //        model.nodesAdded(rootItem, addedNodes.toArray(new Post[addedNodes.size()]));
-    }
-
-    @Override
-    protected void done() {
-        model.markInitialized();
-
-        model.fireResortModel();
     }
 }

@@ -40,7 +40,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
             protected void done() {
                 super.done();
                 if (model.getRoot() != null) {
-                    new ThreadsLoader(forumId, rootItem, model).execute();
+                    new ThreadsLoader(model, forumId).execute();
                 }
             }
         };
@@ -102,7 +102,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
         }
 
         // Reload forum threads list.
-        new ThreadsLoader(root.getForumId(), (ForumRoot) root, model).execute();
+        new ThreadsLoader(model, root.getForumId()).execute();
     }
 
     @Override
