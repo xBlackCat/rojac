@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.view.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -21,13 +20,10 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     private final Thread item;
-    private final AThreadModel<Post> model;
-    private final IItemProcessor<Post> postProcessor;
 
-    public ThreadLoader(Thread item, AThreadModel<Post> model, IItemProcessor<Post> postProcessor) {
+    public ThreadLoader(Thread item, Runnable postProcessor) {
+        super(postProcessor);
         this.item = item;
-        this.model = model;
-        this.postProcessor = postProcessor;
     }
 
     @Override
@@ -51,17 +47,5 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
     @Override
     protected void process(List<MessageData> chunks) {
         item.fillThread(chunks);
-    }
-
-    @Override
-    protected void done() {
-        model.markInitialized();
-        item.setLoadingState(LoadingState.Loaded);
-
-        model.nodeStructureChanged(item);
-
-        if (postProcessor != null) {
-            postProcessor.processItem(item);
-        }
     }
 }

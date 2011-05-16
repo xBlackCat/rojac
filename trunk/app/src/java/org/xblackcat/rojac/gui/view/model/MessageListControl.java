@@ -4,7 +4,6 @@ import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -37,7 +36,7 @@ public class MessageListControl implements IModelControl<Post> {
     }
 
     @Override
-    public void loadThread(AThreadModel<Post> model, Post item, IItemProcessor<Post> postProcessor) {
+    public void loadThread(AThreadModel<Post> model, Post item, Runnable postProcessor) {
         throw new NotImplementedException("The method shouldn't be used.");
     }
 

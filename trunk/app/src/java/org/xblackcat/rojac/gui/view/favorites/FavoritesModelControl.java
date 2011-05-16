@@ -7,7 +7,6 @@ import org.xblackcat.rojac.gui.theme.FavoritesIcon;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.model.*;
-import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.options.Property;
@@ -39,7 +38,7 @@ public class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void loadThread(AThreadModel<Post> model, Post item, IItemProcessor<Post> postProcessor) {
+    public void loadThread(AThreadModel<Post> model, Post item, Runnable postProcessor) {
         assert RojacUtils.checkThread(true);
 
         throw new NotImplementedException("The method shouldn't be invoked.");
