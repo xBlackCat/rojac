@@ -122,7 +122,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public boolean processPacket(final AThreadModel<Post> model, IPacket p) {
+    public void processPacket(final AThreadModel<Post> model, IPacket p, Runnable postProcessor) {
         final int forumId = model.getRoot().getForumId();
 
         new PacketDispatcher(
@@ -221,7 +221,6 @@ public class SortedForumModelControl extends AThreadsModelControl {
                     }
                 }
         ).dispatch(p);
-        return true;
     }
 
     @Override

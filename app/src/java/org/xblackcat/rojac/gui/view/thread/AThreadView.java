@@ -384,7 +384,7 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    private void completeUpdateModel() {
+    private void resortAndReloadModel() {
         Post selected = getSelectedItem();
 
         boolean skipSaveState = Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC.get();
@@ -407,13 +407,17 @@ public abstract class AThreadView extends AView implements IItemView {
     @Override
     public final void processPacket(IPacket packet) {
         // Just in case store a current selection
-        Post curSelection = getSelectedItem();
-
-        if (AThreadView.this.modelControl.processPacket(model, packet)) {
-            if (curSelection != null) {
-                selectItem(curSelection);
+        final Post curSelection = getSelectedItem();
+        Runnable postProcessor = new Runnable() {
+            public void run() {
+                if (curSelection != null &&
+                        !curSelection.equals(getSelectedItem())) {
+                    selectItem(curSelection);
+                }
             }
-        }
+        };
+
+        modelControl.processPacket(model, packet, postProcessor);
     }
 
     private class LoadNextPost implements IItemProcessor<Post> {
@@ -571,7 +575,8 @@ public abstract class AThreadView extends AView implements IItemView {
                 updateRootVisible();
 
                 if (e.getTreePath() == null) {
-                    completeUpdateModel();
+                    // Resort model nodes
+                    resortAndReloadModel();
                 }
 
                 fireInfoChanged();

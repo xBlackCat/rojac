@@ -59,19 +59,29 @@ public class TreeTableThreadView extends AThreadView {
         threads.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                if (e.getType() == TableModelEvent.UPDATE) {
+                if (e.getType() == TableModelEvent.UPDATE &&
+                        !(e.getColumn() == TableModelEvent.ALL_COLUMNS &&
+                        e.getFirstRow() == TableModelEvent.HEADER_ROW &&
+                        e.getLastRow() == TableModelEvent.HEADER_ROW)) {
                     return;
                 }
 
                 ThreadState s = getState();
-                final Post post = model.getRoot().getMessageById(s.openedMessageId());
-                if (post != null) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            selectItem(post);
-                        }
-                    });
+                if (s.openedMessageId() == 0) {
+                    return;
                 }
+
+                Post post = model.getRoot().getMessageById(s.openedMessageId());
+                if (post == null) {
+                    return;
+                }
+
+                final TreePath pathToRoot = model.getPathToRoot(post);
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        markRowSelected(pathToRoot);
+                    }
+                });
             }
         });
 
@@ -185,17 +195,7 @@ public class TreeTableThreadView extends AThreadView {
             if (parentPath != null && threads.isCollapsed(parentPath)) {
                 expandPath(parentPath);
             }
-            int row = threads.getRowForPath(path);
-            if (row >= 0) {
-                threads.setRowSelectionInterval(row, row);
-                Rectangle bounds = threads.getCellRect(
-                        row,
-                        0, //threads.convertColumnIndexToView(threads.getHierarchicalColumn()),
-                        true);
-                bounds.setLocation(0, bounds.y);
-                threads.scrollRectToVisible(bounds);
-            }
-            threads.scrollPathToVisible(path);
+            markRowSelected(path);
 
             if (collapseChildren) {
                 threads.collapsePath(path);
@@ -203,6 +203,19 @@ public class TreeTableThreadView extends AThreadView {
         } else {
             threads.clearSelection();
         }
+    }
+
+    private void markRowSelected(TreePath path) {
+        int row = threads.getRowForPath(path);
+        if (row >= 0) {
+            threads.setRowSelectionInterval(row, row);
+            Rectangle bounds = threads.getCellRect(
+                    row,
+                    threads.convertColumnIndexToView(threads.getHierarchicalColumn()),
+                    true);
+            threads.scrollRectToVisible(bounds);
+        }
+        threads.scrollPathToVisible(path);
     }
 
     protected void expandPath(TreePath parentPath) {

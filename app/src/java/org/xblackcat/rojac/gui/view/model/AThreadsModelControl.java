@@ -24,7 +24,7 @@ public abstract class AThreadsModelControl implements IModelControl<Post> {
     @Override
     public void resortModel(AThreadModel<Post> model) {
         model.root.deepResort();
-        model.reload();
+        model.modelSupport.fireNewRoot();
     }
 
     @Override

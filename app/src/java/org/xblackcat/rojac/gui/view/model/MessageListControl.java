@@ -65,7 +65,7 @@ public class MessageListControl implements IModelControl<Post> {
     }
 
     @Override
-    public boolean processPacket(final AThreadModel<Post> model, IPacket p) {
+    public void processPacket(final AThreadModel<Post> model, IPacket p, Runnable postProcessor) {
         new PacketDispatcher(
                 new IPacketProcessor<SetForumReadPacket>() {
                     @Override
@@ -108,7 +108,6 @@ public class MessageListControl implements IModelControl<Post> {
                     }
                 }
         ).dispatch(p);
-        return true;
     }
 
     @Override
