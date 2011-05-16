@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
@@ -55,7 +54,7 @@ public abstract class AThreadsModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void loadThread(final AThreadModel<Post> threadModel, Post p, IItemProcessor<Post> postProcessor) {
+    public void loadThread(final AThreadModel<Post> threadModel, Post p, Runnable postProcessor) {
         assert RojacUtils.checkThread(true);
 
         //  In the Sorted model only Thread object could be loaded.
@@ -65,6 +64,6 @@ public abstract class AThreadsModelControl implements IModelControl<Post> {
 
         item.setLoadingState(LoadingState.Loading);
 
-        new ThreadLoader(item, threadModel, postProcessor).execute();
+        new ThreadLoader(item, postProcessor).execute();
     }
 }

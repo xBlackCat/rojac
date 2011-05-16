@@ -6,7 +6,6 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ThreadIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
-import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
@@ -80,7 +79,7 @@ public class SingleModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public void processPacket(final AThreadModel<Post> model, IPacket p, Runnable postProcessor) {
+    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
         final int forumId = model.getRoot().getForumId();
         final int threadId = model.getRoot().getMessageId();
 
@@ -153,8 +152,20 @@ public class SingleModelControl extends AThreadsModelControl {
     }
 
     private void reloadThread(final AThreadModel<Post> model) {
+        final Thread root = (Thread) model.getRoot();
+
+        root.setLoadingState(LoadingState.Loading);
+
         // Thread always filled in.
-        new SingleThreadLoader(model).execute();
+        new ThreadLoader(root, new Runnable() {
+            @Override
+            public void run() {
+                model.markInitialized();
+                root.setLoadingState(LoadingState.Loaded);
+
+                model.fireResortModel();
+            }
+        }).execute();
     }
 
     @Override
@@ -212,18 +223,5 @@ public class SingleModelControl extends AThreadsModelControl {
         }
 
         return false;
-    }
-
-    private static class SingleThreadLoader extends ThreadLoader {
-        public SingleThreadLoader(final AThreadModel<Post> model) {
-            super((Thread) model.getRoot(), model, new IItemProcessor<Post>() {
-                @Override
-                public void processItem(Post item) {
-                    model.fireResortModel();
-                }
-            });
-
-            ((Thread) model.getRoot()).setLoadingState(LoadingState.Loading);
-        }
     }
 }

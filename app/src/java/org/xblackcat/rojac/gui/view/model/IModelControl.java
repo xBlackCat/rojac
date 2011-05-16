@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.view.thread.IItemProcessor;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 
 import javax.swing.*;
@@ -28,7 +27,7 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * @param item
      * @param postProcessor
      */
-    void loadThread(AThreadModel<T> model, T item, IItemProcessor<T> postProcessor);
+    void loadThread(AThreadModel<Post> model, Post item, Runnable postProcessor);
 
     /**
      * Returns root item visibility state.

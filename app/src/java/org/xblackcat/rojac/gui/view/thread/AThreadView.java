@@ -232,7 +232,7 @@ public abstract class AThreadView extends AView implements IItemView {
         if (post.getLoadingState() == LoadingState.NotLoaded) {
             if (!unread || post.isRead() != ReadStatus.Read) {
                 // Has unread children but their have not loaded yet.
-                modelControl.loadThread(model, post, new LoadNextPost(unread));
+                modelControl.loadThread(model, post, new LoadNextPost(post, unread));
                 // Change post selection when children are loaded
                 return null;
             }
@@ -271,7 +271,7 @@ public abstract class AThreadView extends AView implements IItemView {
                             post = p;
                             break;
                         case NotLoaded:
-                            modelControl.loadThread(model, p, new LoadNextPost(unread));
+                            modelControl.loadThread(model, p, new LoadNextPost(post, unread));
                         case Loading:
                             return null;
                     }
@@ -353,7 +353,7 @@ public abstract class AThreadView extends AView implements IItemView {
 
         switch (post.getLoadingState()) {
             case NotLoaded:
-                modelControl.loadThread(model, post, new LoadPreviousPost(unread));
+                modelControl.loadThread(model, post, new LoadPreviousPost(post, unread));
             case Loading:
                 throw new RojacDebugException("Restart search later");
         }
@@ -420,28 +420,32 @@ public abstract class AThreadView extends AView implements IItemView {
         modelControl.processPacket(model, packet, postProcessor);
     }
 
-    private class LoadNextPost implements IItemProcessor<Post> {
+    private class LoadNextPost implements Runnable {
+        private final Post item;
         private final boolean unread;
 
-        public LoadNextPost(boolean unread) {
+        public LoadNextPost(Post item, boolean unread) {
+            this.item = item;
             this.unread = unread;
         }
 
         @Override
-        public void processItem(Post item) {
+        public void run() {
             selectNextPost(item, unread);
         }
     }
 
-    private class LoadPreviousPost implements IItemProcessor<Post> {
+    private class LoadPreviousPost implements Runnable {
+        private final Post item;
         private final boolean unread;
 
-        public LoadPreviousPost(boolean unread) {
+        public LoadPreviousPost(Post item, boolean unread) {
+            this.item = item;
             this.unread = unread;
         }
 
         @Override
-        public void processItem(Post item) {
+        public void run() {
             Post prevUnread = findLastPost(item, unread);
             if (prevUnread != null) {
                 selectItem(prevUnread);
@@ -460,9 +464,9 @@ public abstract class AThreadView extends AView implements IItemView {
                 final Post root = model.getRoot();
                 Post rootMessage = root.getMessageById(data.getThreadRootId());
                 if (rootMessage != null) {
-                    modelControl.loadThread(model, rootMessage, new IItemProcessor<Post>() {
+                    modelControl.loadThread(model, rootMessage, new Runnable() {
                         @Override
-                        public void processItem(Post item) {
+                        public void run() {
                             selectItem(root.getMessageById(messageId));
                         }
                     });
