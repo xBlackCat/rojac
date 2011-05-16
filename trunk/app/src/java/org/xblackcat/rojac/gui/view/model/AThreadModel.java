@@ -41,19 +41,6 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         modelSupport.removeTreeModelListener(l);
     }
 
-    /**
-     * Returns an array of all the tree model listeners registered on this model.
-     *
-     * @return all of this model's <code>TreeModelListener</code>s or an empty array if no tree model listeners are
-     *         currently registered
-     * @see #addTreeModelListener(javax.swing.event.TreeModelListener)
-     * @see #removeTreeModelListener(javax.swing.event.TreeModelListener)
-     * @since 1.4
-     */
-    public TreeModelListener[] getTreeModelListeners() {
-        return modelSupport.getTreeModelListeners();
-    }
-
     public T getRoot() {
         return root;
     }
@@ -61,19 +48,6 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
     public void setRoot(T root) {
         this.root = root;
         modelSupport.fireNewRoot();
-    }
-
-    /**
-     * Invoke this method if you've modified the {@code MessageItem}s upon which this model depends. The model will
-     * notify all of its listeners that the model has changed.
-     */
-    public void reload() {
-        if (root != null) {
-            TreePath toRoot = getPathToRoot(root);
-
-            modelSupport.firePathChanged(toRoot);
-            modelSupport.fireTreeStructureChanged(toRoot);
-        }
     }
 
     /**
@@ -129,35 +103,12 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         }
     }
 
-    /**
-     * Invoke this method if you've modified the {@code MessageItem}s upon which this model depends. The model will
-     * notify all of its listeners that the model has changed below the given node.
-     *
-     * @param node the node below which the model has changed
-     */
-    public void reload(T node) {
-        if (node != null) {
-            modelSupport.firePathChanged(getPathToRoot(node));
-        }
-    }
-
     public void markInitialized() {
         initialized = true;
     }
 
     public boolean isInitialized() {
         return initialized;
-    }
-
-    public void nodeWasAdded(T node, T child) {
-        if (node != null) {
-            int cIndex = node.getIndex(child);
-
-            if (cIndex != -1) {
-                TreePath path = getPathToRoot(node);
-                modelSupport.fireChildAdded(path, cIndex, child);
-            }
-        }
     }
 
     /**
@@ -196,25 +147,6 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         if (node != null) {
             modelSupport.fireTreeStructureChanged(getPathToRoot(node));
         }
-    }
-
-    public void nodesAdded(T root, T... children) {
-        if (root == null) {
-            return;
-        }
-
-        if (ArrayUtils.isEmpty(children)) {
-            return;
-        }
-
-        int[] indices = new int[children.length];
-        int i = 0, childrenLength = children.length;
-        while (i < childrenLength) {
-            indices[i] = root.getIndex(children[i]);
-            i++;
-        }
-
-        modelSupport.fireChildrenAdded(getPathToRoot(root), indices, children);
     }
 
     /**

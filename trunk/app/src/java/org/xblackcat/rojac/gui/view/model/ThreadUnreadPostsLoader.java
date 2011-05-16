@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import gnu.trove.TIntArrayList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -9,7 +8,6 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**

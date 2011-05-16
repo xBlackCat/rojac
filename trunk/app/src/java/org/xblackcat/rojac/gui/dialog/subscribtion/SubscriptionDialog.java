@@ -1,9 +1,9 @@
 package org.xblackcat.rojac.gui.dialog.subscribtion;
 
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.component.*;
-import org.xblackcat.rojac.gui.dialog.extendmark.ExtendedMarkDialog;
-import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
+import org.xblackcat.rojac.gui.component.ACancelAction;
+import org.xblackcat.rojac.gui.component.AnOkAction;
+import org.xblackcat.rojac.gui.component.InvokeExtMarkDialog;
+import org.xblackcat.rojac.gui.component.UpdateForumListAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;

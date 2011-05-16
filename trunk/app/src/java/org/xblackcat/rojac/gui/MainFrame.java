@@ -610,18 +610,23 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         @Override
         public void windowClosed(DockingWindow window) {
             unregisterWindow(window);
-            int views = window.getChildWindowCount();
-
-            for (int i = 0; i < views; i++) {
-                DockingWindow dw = window.getChildWindow(i);
-
-                unregisterWindow(dw);
-            }
         }
 
         private void unregisterWindow(DockingWindow dw) {
+            if (dw == null) {
+                return;
+            }
+
             if (openedViews.containsValue(dw)) {
                 openedViews.values().remove(dw);
+            }
+
+            int views = dw.getChildWindowCount();
+
+            for (int i = 0; i < views; i++) {
+                DockingWindow w = dw.getChildWindow(i);
+
+                unregisterWindow(w);
             }
         }
     }

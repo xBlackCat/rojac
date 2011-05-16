@@ -42,12 +42,15 @@ public interface IModelControl<T extends ITreeItem<T>> {
     /**
      * Process packet with correspond behaviour.
      *
+     *
+     *
      * @param model data model to be affected by a packet.
      * @param p     packet to process.
      *
+     * @param postProcessor
      * @return <code>true</code> if packet was processed.
      */
-    boolean processPacket(AThreadModel<T> model, IPacket p);
+    void processPacket(AThreadModel<T> model, IPacket p, Runnable postProcessor);
 
     /**
      * Returns a root item for the specified node.

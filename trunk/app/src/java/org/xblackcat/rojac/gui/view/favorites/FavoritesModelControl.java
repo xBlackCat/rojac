@@ -64,8 +64,8 @@ public class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public boolean processPacket(AThreadModel<Post> model, IPacket p) {
-        return delegatedControl != null && delegatedControl.processPacket(model, p);
+    public void processPacket(AThreadModel<Post> model, IPacket p, Runnable postProcessor) {
+        delegatedControl.processPacket(model, p, postProcessor);
     }
 
     @Override

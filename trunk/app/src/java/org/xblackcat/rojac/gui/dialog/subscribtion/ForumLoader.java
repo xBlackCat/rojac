@@ -8,8 +8,6 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
-import java.util.logging.Logger;
-
 /**
 * @author xBlackCat
 */
