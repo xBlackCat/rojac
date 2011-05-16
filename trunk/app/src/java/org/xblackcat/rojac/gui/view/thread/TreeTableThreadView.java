@@ -4,6 +4,7 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
+import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.APostProxy;
 import org.xblackcat.rojac.gui.view.model.Header;
@@ -11,6 +12,8 @@ import org.xblackcat.rojac.gui.view.model.IModelControl;
 import org.xblackcat.rojac.gui.view.model.Post;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
@@ -51,6 +54,22 @@ public class TreeTableThreadView extends AThreadView {
         threads.addTreeSelectionListener(new PostSelector());
         threads.addTreeExpansionListener(new ThreadExpander());
         threads.addMouseListener(new ItemListener());
+
+        // Restore selection on any table data changing.
+        threads.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                ThreadState s = getState();
+                final Post post = model.getRoot().getMessageById(s.openedMessageId());
+                if (post != null) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            selectItem(post);
+                        }
+                    });
+                }
+            }
+        });
 
         threads.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         for (Header h : Header.values()) {
