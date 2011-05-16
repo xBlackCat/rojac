@@ -59,6 +59,10 @@ public class TreeTableThreadView extends AThreadView {
         threads.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    return;
+                }
+
                 ThreadState s = getState();
                 final Post post = model.getRoot().getMessageById(s.openedMessageId());
                 if (post != null) {
