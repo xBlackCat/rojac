@@ -26,7 +26,9 @@ public abstract class PopupMouseAdapter extends MouseAdapter {
     private void checkMenu(MouseEvent e) {
         if (e.isPopupTrigger()) {
             triggerPopup(e);
-        } else if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
+        } else if (e.getID() == MouseEvent.MOUSE_CLICKED &&
+                e.getClickCount() == 2 &&
+                e.getButton() == MouseEvent.BUTTON1) {
             triggerDoubleClick(e);
         }
     }
