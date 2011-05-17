@@ -20,10 +20,12 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     private final Thread item;
+    private AThreadModel<Post> model;
 
-    public ThreadLoader(Thread item, Runnable postProcessor) {
+    public ThreadLoader(AThreadModel<Post> model, Thread item, Runnable postProcessor) {
         super(postProcessor);
         this.item = item;
+        this.model = model;
     }
 
     @Override
@@ -47,5 +49,13 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
     @Override
     protected void process(List<MessageData> chunks) {
         item.fillThread(chunks);
+    }
+
+    @Override
+    protected void done() {
+        item.setLoadingState(LoadingState.Loaded);
+        model.nodeStructureChanged(item);
+
+        super.done();
     }
 }

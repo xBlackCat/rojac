@@ -157,12 +157,10 @@ public class SingleModelControl extends AThreadsModelControl {
         root.setLoadingState(LoadingState.Loading);
 
         // Thread always filled in.
-        new ThreadLoader(root, new Runnable() {
+        new ThreadLoader(model, root, new Runnable() {
             @Override
             public void run() {
                 model.markInitialized();
-                root.setLoadingState(LoadingState.Loaded);
-
                 model.fireResortModel();
             }
         }).execute();

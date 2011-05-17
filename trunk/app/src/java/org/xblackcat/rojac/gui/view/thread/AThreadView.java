@@ -12,7 +12,6 @@ import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.model.*;
-import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -272,7 +271,7 @@ public abstract class AThreadView extends AView implements IItemView {
                             post = p;
                             break;
                         case NotLoaded:
-                            modelControl.loadThread(model, p, new LoadNextPost(post, unread));
+                            modelControl.loadThread(model, p, new LoadNextPost(p, unread));
                         case Loading:
                             return null;
                     }
@@ -605,15 +604,6 @@ public abstract class AThreadView extends AView implements IItemView {
                 modelControl.loadThread(model, item, new Runnable() {
                     @Override
                     public void run() {
-                        // Only threads could be loaded.
-                        assert path.getLastPathComponent() instanceof Thread;
-
-                        Thread item = (Thread) path.getLastPathComponent();
-
-                        item.setLoadingState(LoadingState.Loaded);
-
-                        model.nodeStructureChanged(item);
-
                         expandPath(path);
                     }
                 });
