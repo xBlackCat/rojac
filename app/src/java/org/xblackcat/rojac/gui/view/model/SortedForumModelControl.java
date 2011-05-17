@@ -63,7 +63,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
         return false;
     }
 
-    private void updateModel(AThreadModel<Post> model, int... threadIds) {
+    private void updateModel(final AThreadModel<Post> model, int... threadIds) {
         assert RojacUtils.checkThread(true);
 
         TIntHashSet filledThreads = new TIntHashSet();
@@ -88,11 +88,16 @@ public class SortedForumModelControl extends AThreadsModelControl {
             Post post = root.getMessageById(threadId);
             if (post != null) {
                 // Update thread children
-                Thread t = post.getThreadRoot();
+                final Thread t = post.getThreadRoot();
 
                 if (t.isFilled()) {
                     // Thread is already filled - update children
-                    loadThread(model, t, null);
+                    loadThread(model, t, new Runnable() {
+                        @Override
+                        public void run() {
+                            model.nodeStructureChanged(t);
+                        }
+                    });
                 } else {
                     throw new RojacDebugException("Expected filled thread #" + threadId);
                 }
