@@ -64,6 +64,6 @@ public abstract class AThreadsModelControl implements IModelControl<Post> {
 
         item.setLoadingState(LoadingState.Loading);
 
-        new ThreadLoader(item, postProcessor).execute();
+        new ThreadLoader(threadModel, item, postProcessor).execute();
     }
 }
