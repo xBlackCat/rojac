@@ -12,6 +12,7 @@ import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.model.*;
+import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -596,11 +597,26 @@ public abstract class AThreadView extends AView implements IItemView {
 
     protected class ThreadExpander implements TreeExpansionListener {
         public void treeExpanded(TreeExpansionEvent event) {
-            TreePath path = event.getPath();
+            final TreePath path = event.getPath();
+
             Post item = (Post) path.getLastPathComponent();
 
             if (item.getLoadingState() == LoadingState.NotLoaded) {
-                modelControl.loadThread(model, item, null);
+                modelControl.loadThread(model, item, new Runnable() {
+                    @Override
+                    public void run() {
+                        // Only threads could be loaded.
+                        assert path.getLastPathComponent() instanceof Thread;
+
+                        Thread item = (Thread) path.getLastPathComponent();
+
+                        item.setLoadingState(LoadingState.Loaded);
+
+                        model.nodeStructureChanged(item);
+
+                        expandPath(path);
+                    }
+                });
             }
 
             if (item.getLoadingState() == LoadingState.Loaded) {
