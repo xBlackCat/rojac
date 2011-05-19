@@ -40,7 +40,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
             protected void done() {
                 super.done();
                 if (model.getRoot() != null) {
-                    new ThreadsLoader(model, forumId).execute();
+                    new ThreadsLoader(postProcessor, model, forumId).execute();
                 }
             }
         };
@@ -63,7 +63,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
         return false;
     }
 
-    private void updateModel(final AThreadModel<Post> model, int... threadIds) {
+    private void updateModel(final Runnable postProcessor, final AThreadModel<Post> model, int... threadIds) {
         assert RojacUtils.checkThread(true);
 
         TIntHashSet filledThreads = new TIntHashSet();
@@ -96,6 +96,9 @@ public class SortedForumModelControl extends AThreadsModelControl {
                         @Override
                         public void run() {
                             model.nodeStructureChanged(t);
+                            if (postProcessor != null) {
+                                postProcessor.run();
+                            }
                         }
                     });
                 } else {
@@ -107,7 +110,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
         }
 
         // Reload forum threads list.
-        new ThreadsLoader(model, root.getForumId()).execute();
+        new ThreadsLoader(postProcessor, model, root.getForumId()).execute();
     }
 
     @Override
@@ -127,7 +130,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public void processPacket(final AThreadModel<Post> model, IPacket p, Runnable postProcessor) {
+    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
         final int forumId = model.getRoot().getForumId();
 
         new PacketDispatcher(
@@ -202,7 +205,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
                             return;
                         }
 
-                        updateModel(model, p.getThreadIds());
+                        updateModel(postProcessor, model, p.getThreadIds());
                     }
                 },
                 new IPacketProcessor<SubscriptionChangedPacket>() {

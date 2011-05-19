@@ -38,7 +38,7 @@ public class SingleModelControl extends AThreadsModelControl {
                 rootItem.setMessageData(data);
                 model.nodeChanged(rootItem);
 
-                reloadThread(model);
+                reloadThread(model, postProcessor);
             }
         }.execute();
     }
@@ -145,13 +145,13 @@ public class SingleModelControl extends AThreadsModelControl {
                             return;
                         }
 
-                        reloadThread(model);
+                        reloadThread(model, postProcessor);
                     }
                 }
         ).dispatch(p);
     }
 
-    private void reloadThread(final AThreadModel<Post> model) {
+    private void reloadThread(final AThreadModel<Post> model, final Runnable postProcessor) {
         final Thread root = (Thread) model.getRoot();
 
         root.setLoadingState(LoadingState.Loading);
@@ -162,6 +162,10 @@ public class SingleModelControl extends AThreadsModelControl {
             public void run() {
                 model.markInitialized();
                 model.fireResortModel();
+
+                if (postProcessor != null) {
+                    postProcessor.run();
+                }
             }
         }).execute();
     }

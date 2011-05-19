@@ -166,8 +166,6 @@ public final class RojacLauncher {
 
             mainFrame.setVisible(mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported());
 
-            tray.updateState();
-
             WindowsUtils.center(ptd, mainFrame);
 
             mainFrame.loadData();

@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.FavoriteStatData;
+import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
@@ -16,7 +17,10 @@ import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 /**
@@ -61,12 +65,20 @@ public class RojacTray {
         ServiceFactory.getInstance().getProgressControl().addProgressListener(new TrayProgressListener());
         ServiceFactory.getInstance().getDataDispatcher().addDataHandler(new TrayDataDispatcher());
 
-        trayIcon.addMouseListener(new MouseAdapter() {
+        trayIcon.addMouseListener(new PopupMouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1) {
-                    toggleFrameVisibility();
-                }
+            protected void triggerDoubleClick(MouseEvent e) {
+                toggleFrameVisibility();
+            }
+
+            @Override
+            protected void triggerPopup(MouseEvent e) {
+                Point p = e.getPoint();
+
+                JPopupMenu m = getPopupMenu();
+                m.setLocation(p);
+                m.setInvoker(m);
+                m.setVisible(true);
             }
         });
     }
@@ -80,25 +92,21 @@ public class RojacTray {
             mainFrame.setState(Frame.NORMAL);
             mainFrame.toFront();
         }
-        updateState();
     }
 
     protected void setState(RojacState state, Object... arguments) {
         if (this.state != state) {
             this.state = state;
             trayIcon.setImage(state.getImage());
-            updatePopUpMenu(state);
         }
         trayIcon.setToolTip(state.getToolTip(arguments));
     }
 
-    private void updatePopUpMenu(final RojacState state) {
-        PopupMenu menu = new PopupMenu();
-        menu.setFont(UIManager.getFont("Label.font"));
+    private JPopupMenu getPopupMenu() {
+        JPopupMenu menu = new JPopupMenu();
 
-        MenuItem showHideItem = new MenuItem();
         Messages message = mainFrame.isVisible() ? Messages.Tray_Popup_Item_HideMainframe : Messages.Tray_Popup_Item_ShowMainframe;
-        showHideItem.setLabel(message.get());
+        JMenuItem showHideItem = new JMenuItem(message.get());
         final Font font = menu.getFont();
         if (font != null) {
             showHideItem.setFont(font.deriveFont(Font.BOLD));
@@ -113,7 +121,7 @@ public class RojacTray {
 
         menu.addSeparator();
 
-        MenuItem optionsItem = new MenuItem(Messages.Tray_Popup_Item_Options.get());
+        JMenuItem optionsItem = new JMenuItem(Messages.Tray_Popup_Item_Options.get());
         optionsItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -122,7 +130,7 @@ public class RojacTray {
         });
         menu.add(optionsItem);
 
-        MenuItem aboutItem = new MenuItem(Messages.Tray_Popup_Item_About.get());
+        JMenuItem aboutItem = new JMenuItem(Messages.Tray_Popup_Item_About.get());
         aboutItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -133,7 +141,7 @@ public class RojacTray {
 
         menu.addSeparator();
 
-        MenuItem exitItem = new MenuItem(Messages.Tray_Popup_Item_Exit.get());
+        JMenuItem exitItem = new JMenuItem(Messages.Tray_Popup_Item_Exit.get());
         exitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -144,7 +152,7 @@ public class RojacTray {
         });
         menu.add(exitItem);
 
-        trayIcon.setPopupMenu(menu);
+        return menu;
     }
 
     public boolean isSupported() {
@@ -153,13 +161,6 @@ public class RojacTray {
 
     private void checkUnreadMessages() {
         new UnreadMessagesCountGetter().execute();
-    }
-
-    public void updateState() {
-        if (supported) {
-            // Recheck update menu.
-            updatePopUpMenu(state);
-        }
     }
 
     private class UnreadMessagesCountGetter extends RojacWorker<Void, Integer> {
