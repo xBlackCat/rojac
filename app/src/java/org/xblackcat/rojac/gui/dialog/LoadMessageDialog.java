@@ -144,7 +144,7 @@ public class LoadMessageDialog extends JDialog {
 
         if (!wasSet) {
             // Check if the clipboard contains URL to message or topic
-            Integer mId = LinkUtils.getMessageId(cl);
+            Integer mId = LinkUtils.getMessageIdFromUrl(cl);
             if (mId != null && mId >= 0) {
                 messageIdText.setText(String.valueOf(mId));
                 wasSet = true;

@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.util;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,7 +34,20 @@ public final class LinkUtils {
             Pattern.compile(URL_PREFIX + "forum/message.aspx\\?mid=(\\d+)(&all=1)?", Pattern.CASE_INSENSITIVE)
     };
 
+    private static Pattern[] rsdnLinkAllPatterns = (Pattern[]) ArrayUtils.addAll(rsdnMessageLinkPatterns, rsdnThreadLinkPatterns);
+
     private LinkUtils() {
+    }
+
+    /**
+     * Extracts message id either from to-message or to-thread url
+     *
+     * @param link link to check
+     *
+     * @return extracted id or <code>null</code> if url is invalid.
+     */
+    public static Integer getMessageIdFromUrl(String link) {
+        return checkLink(link, rsdnLinkAllPatterns);
     }
 
     public static Integer getMessageId(String link) {
@@ -71,7 +85,7 @@ public final class LinkUtils {
      *
      * @return message id or <code>null</code> if id cannot be extracted from link.
      */
-    private static Integer checkLink(String link, Pattern[] patterns) {
+    private static Integer checkLink(String link, Pattern... patterns) {
         if (link == null) {
             return null;
         }

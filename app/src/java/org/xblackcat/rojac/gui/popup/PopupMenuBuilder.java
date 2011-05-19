@@ -48,9 +48,9 @@ public final class PopupMenuBuilder {
             }
         }
 
-        Integer messageId = LinkUtils.getMessageId(stringUrl);
+        Integer messageId = LinkUtils.getMessageIdFromUrl(stringUrl);
         if (messageId == null) {
-            messageId = LinkUtils.getMessageId(text);
+            messageId = LinkUtils.getMessageIdFromUrl(text);
         }
 
         // Build menu
