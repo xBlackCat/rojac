@@ -12,7 +12,8 @@ class FavoriteListLoader extends RojacWorker<Void, Post> {
     private final IFavorite favorite;
     private final AThreadModel<Post> model;
 
-    public FavoriteListLoader(IFavorite favorite, AThreadModel<Post> model) {
+    public FavoriteListLoader(Runnable postProcessor, IFavorite favorite, AThreadModel<Post> model) {
+        super(postProcessor);
         this.favorite = favorite;
         this.model = model;
     }

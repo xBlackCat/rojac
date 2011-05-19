@@ -27,13 +27,17 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     private final int forumId;
     private final ForumRoot rootItem;
 
-    public ThreadsLoader(final AThreadModel<Post> model, int forumId) {
+    public ThreadsLoader(final Runnable postProcessor, final AThreadModel<Post> model, int forumId) {
         super(new Runnable() {
             @Override
             public void run() {
                 model.markInitialized();
 
                 model.fireResortModel();
+
+                if (postProcessor != null) {
+                    postProcessor.run();
+                }
             }
         });
         assert RojacUtils.checkThread(true);

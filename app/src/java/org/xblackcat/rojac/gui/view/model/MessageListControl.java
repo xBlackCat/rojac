@@ -47,7 +47,7 @@ public class MessageListControl implements IModelControl<Post> {
         return false;
     }
 
-    private void updateModel(final AThreadModel<Post> model) {
+    private void updateModel(final AThreadModel<Post> model, Runnable postProcessor) {
         assert RojacUtils.checkThread(true);
 
         // Parent in the case is FavoritePostList object.
@@ -55,7 +55,7 @@ public class MessageListControl implements IModelControl<Post> {
 
         final IFavorite favorite = root.getFavorite();
 
-        new FavoriteListLoader(favorite, model).execute();
+        new FavoriteListLoader(postProcessor, favorite, model).execute();
     }
 
     @Override
@@ -64,12 +64,12 @@ public class MessageListControl implements IModelControl<Post> {
     }
 
     @Override
-    public void processPacket(final AThreadModel<Post> model, IPacket p, Runnable postProcessor) {
+    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
                 new IPacketProcessor<SetForumReadPacket>() {
                     @Override
                     public void process(SetForumReadPacket p) {
-                        updateModel(model);
+                        updateModel(model, postProcessor);
                     }
                 },
                 new IPacketProcessor<SetPostReadPacket>() {
@@ -77,7 +77,7 @@ public class MessageListControl implements IModelControl<Post> {
                     public void process(SetPostReadPacket p) {
                         if (p.isRecursive()) {
                             // Post is a root of marked thread
-                            updateModel(model);
+                            updateModel(model, postProcessor);
                         } else {
                             // Mark as read only the post
                             markPostRead(model, p.getPostId(), p.isRead());
@@ -103,7 +103,7 @@ public class MessageListControl implements IModelControl<Post> {
                 new IPacketProcessor<SynchronizationCompletePacket>() {
                     @Override
                     public void process(SynchronizationCompletePacket p) {
-                        updateModel(model);
+                        updateModel(model, postProcessor);
                     }
                 }
         ).dispatch(p);
