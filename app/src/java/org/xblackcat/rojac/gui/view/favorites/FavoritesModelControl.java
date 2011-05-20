@@ -7,6 +7,7 @@ import org.xblackcat.rojac.gui.theme.FavoritesIcon;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.model.*;
+import org.xblackcat.rojac.gui.view.thread.AThreadView;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.options.Property;
@@ -103,6 +104,11 @@ public class FavoritesModelControl implements IModelControl<Post> {
     @Override
     public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
         return delegatedControl == null ? null : delegatedControl.getTitlePopup(model, appControl);
+    }
+
+    @Override
+    public JToolBar getToolbar(AThreadView threadView) {
+        return delegatedControl == null ? null : delegatedControl.getToolbar(threadView);
     }
 
     /**

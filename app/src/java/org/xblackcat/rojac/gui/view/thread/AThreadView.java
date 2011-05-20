@@ -18,7 +18,6 @@ import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -43,6 +42,7 @@ public abstract class AThreadView extends AView implements IItemView {
 
     protected ThreadState state;
     private JToolBar toolbar;
+    protected ThreadViewLayout layout;
 
     public AThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
         super(id, appControl);
@@ -62,14 +62,7 @@ public abstract class AThreadView extends AView implements IItemView {
         JScrollPane sp = new JScrollPane(threadsContainer);
         add(sp, BorderLayout.CENTER);
 
-        JButton newThreadButton = WindowsUtils.registerImageButton(this, "new_thread", new NewThreadAction());
-        JButton toRootButton = WindowsUtils.registerImageButton(this, "to_root", new ToThreadRootAction());
-        JButton prevButton = WindowsUtils.registerImageButton(this, "prev", new PreviousAction());
-        JButton nextButton = WindowsUtils.registerImageButton(this, "next", new NextAction());
-        JButton prevUnreadButton = WindowsUtils.registerImageButton(this, "prev_unread", new PreviousUnreadAction());
-        JButton nextUnreadButton = WindowsUtils.registerImageButton(this, "next_unread", new NextUnreadAction());
-
-        toolbar = WindowsUtils.createToolBar(newThreadButton, null, toRootButton, prevButton, nextButton, prevUnreadButton, nextUnreadButton);
+        toolbar = modelControl.getToolbar(this);
 
         threadsContainer.setInputMap(
                 WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
@@ -78,7 +71,32 @@ public abstract class AThreadView extends AView implements IItemView {
                         threadsContainer.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                 )
         );
-        add(toolbar, BorderLayout.NORTH);
+        if (toolbar != null) {
+            add(toolbar, BorderLayout.NORTH);
+        } else {
+            // Tool bar will be created lately
+            IInfoChangeListener toolBarTracker = new IInfoChangeListener() {
+                @Override
+                public void infoChanged() {
+                    toolbar = modelControl.getToolbar(AThreadView.this);
+
+                    if (toolbar == null) {
+                        // Still waiting for toolbar
+                        return;
+                    }
+
+                    removeInfoChangeListener(this);
+
+                    if (layout != null) {
+                        toolbar.setOrientation(layout.getToolbarOrientation());
+                        add(toolbar, layout.getToolbarPosition());
+                    } else {
+                        add(toolbar, BorderLayout.NORTH);
+                    }
+                }
+            };
+            addInfoChangeListener(toolBarTracker);
+        }
 
         addPropertyChangeListener(MessageView.MESSAGE_VIEWED_FLAG, new PropertyChangeListener() {
             @Override
@@ -150,25 +168,27 @@ public abstract class AThreadView extends AView implements IItemView {
     }
 
     protected Object getToolbarPlacement() {
-        return ((BorderLayout) getLayout()).getConstraints(toolbar);
+        return toolbar == null ? 0 : ((BorderLayout) getLayout()).getConstraints(toolbar);
     }
 
     @Override
     public ThreadViewLayout storeLayout() {
         return new ThreadViewLayout(
                 getToolbarPlacement(),
-                toolbar.getOrientation()
+                toolbar == null ? 0 : toolbar.getOrientation()
         );
     }
 
     @Override
     public void setupLayout(IViewLayout o) {
         if (o instanceof ThreadViewLayout) {
-            ThreadViewLayout l = (ThreadViewLayout) o;
+            layout = (ThreadViewLayout) o;
 
-            remove(toolbar);
-            toolbar.setOrientation(l.getToolbarOrientation());
-            add(toolbar, l.getToolbarPosition());
+            if (toolbar != null) {
+                remove(toolbar);
+                toolbar.setOrientation(layout.getToolbarOrientation());
+                add(toolbar, layout.getToolbarPosition());
+            }
         }
     }
 
@@ -420,6 +440,77 @@ public abstract class AThreadView extends AView implements IItemView {
         modelControl.processPacket(model, packet, postProcessor);
     }
 
+    // Toolbar possible actions
+    public class NewThreadAction extends AButtonAction {
+        public NewThreadAction() {
+            super(ShortCut.NewThread);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            appControl.editMessage(rootItemId, null);
+        }
+    }
+
+    public class PreviousUnreadAction extends AButtonAction {
+        public PreviousUnreadAction() {
+            super(ShortCut.PrevUnreadMessage);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            selectPrevPost(currentPost, true);
+        }
+    }
+
+    public class NextUnreadAction extends AButtonAction {
+        public NextUnreadAction() {
+            super(ShortCut.NextUnreadMessage);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            selectNextPost(currentPost, true);
+        }
+    }
+
+    public class PreviousAction extends AButtonAction {
+        public PreviousAction() {
+            super(ShortCut.PrevMessage);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            selectPrevPost(currentPost, false);
+        }
+    }
+
+    public class NextAction extends AButtonAction {
+        public NextAction() {
+            super(ShortCut.NextMessage);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            selectNextPost(currentPost, false);
+        }
+    }
+
+    public class ToThreadRootAction extends AButtonAction {
+        public ToThreadRootAction() {
+            super(ShortCut.ToThreadRoot);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            Post currentPost = getSelectedItem();
+            if (currentPost != null) {
+                selectItem(modelControl.getTreeRoot(currentPost), true);
+            }
+
+        }
+    }
+
+    // Util classes
+
     private class LoadNextPost implements Runnable {
         private final Post item;
         private final boolean unread;
@@ -482,74 +573,6 @@ public abstract class AThreadView extends AView implements IItemView {
                         JOptionPane.WARNING_MESSAGE
                 );
             }
-        }
-    }
-
-    private class NewThreadAction extends AButtonAction {
-        public NewThreadAction() {
-            super(ShortCut.NewThread);
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            appControl.editMessage(rootItemId, null);
-        }
-    }
-
-    private class PreviousUnreadAction extends AButtonAction {
-        private PreviousUnreadAction() {
-            super(ShortCut.PrevUnreadMessage);
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
-            selectPrevPost(currentPost, true);
-        }
-    }
-
-    private class NextUnreadAction extends AButtonAction {
-        private NextUnreadAction() {
-            super(ShortCut.NextUnreadMessage);
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
-            selectNextPost(currentPost, true);
-        }
-    }
-
-    private class PreviousAction extends AButtonAction {
-        private PreviousAction() {
-            super(ShortCut.PrevMessage);
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
-            selectPrevPost(currentPost, false);
-        }
-    }
-
-    private class NextAction extends AButtonAction {
-        private NextAction() {
-            super(ShortCut.NextMessage);
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
-            selectNextPost(currentPost, false);
-        }
-    }
-
-    private class ToThreadRootAction extends AButtonAction {
-        private ToThreadRootAction() {
-            super(ShortCut.ToThreadRoot);
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
-            if (currentPost != null) {
-                selectItem(modelControl.getTreeRoot(currentPost), true);
-            }
-
         }
     }
 

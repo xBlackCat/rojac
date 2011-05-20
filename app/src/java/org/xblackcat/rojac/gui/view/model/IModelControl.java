@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.view.thread.AThreadView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 
 import javax.swing.*;
@@ -97,4 +98,6 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * @return popup menu or <code>null</code> if no popup is provided.
      */
     JPopupMenu getTitlePopup(AThreadModel<T> model, IAppControl appControl);
+
+    JToolBar getToolbar(AThreadView threadView);
 }
