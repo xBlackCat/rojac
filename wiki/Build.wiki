@@ -1,0 +1,18 @@
+#summary How to build Rojac from sources.
+#labels Featured,Phase-Deploy
+
+= Build from sources=
+
+For whom do not want to wait downloadable distributive.
+
+== Requirements ==
+ # [http://www.oracle.com/technetwork/java/javase/downloads/index.html JDK 1.6]
+ # [http://ant.apache.org/bindownload.cgi Ant 1.7 or higher]
+ # Command-line [http://subversion.apache.org/packages.html subversion] client
+
+== Instruction ==
+
+ * Check out latest sources from SVN repository into a new empty folder: {{{svn co http://rojac.googlecode.com/svn/trunk/app/ c:\rojac}}} 
+ * Go into the folder (c:\rojac) and execute command {{{ant make-product}}}
+ * After successful building you can found generated distributive in a created dist folder.
+ * Enjoy.
