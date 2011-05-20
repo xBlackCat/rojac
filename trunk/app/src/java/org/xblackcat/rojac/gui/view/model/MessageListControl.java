@@ -4,8 +4,10 @@ import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.view.thread.AThreadView;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 
@@ -136,6 +138,17 @@ public class MessageListControl implements IModelControl<Post> {
 
         return PopupMenuBuilder.getMessagesListTabMenu(root, appControl);
     }
+
+    @Override
+    public JToolBar getToolbar(AThreadView view) {
+        JButton prevButton = WindowsUtils.registerImageButton(view, "prev", view.new PreviousAction());
+        JButton nextButton = WindowsUtils.registerImageButton(view, "next", view.new NextAction());
+        JButton prevUnreadButton = WindowsUtils.registerImageButton(view, "prev_unread", view.new PreviousUnreadAction());
+        JButton nextUnreadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new NextUnreadAction());
+
+        return WindowsUtils.createToolBar(prevButton, nextButton, prevUnreadButton, nextUnreadButton);
+    }
+
 
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
