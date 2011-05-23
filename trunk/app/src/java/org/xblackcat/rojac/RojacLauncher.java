@@ -3,7 +3,6 @@ package org.xblackcat.rojac;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
-import org.xblackcat.rojac.gui.dialog.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.tray.RojacTray;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
@@ -155,18 +154,10 @@ public final class RojacLauncher {
 
             mainFrame.applySettings();
 
-            // Setup progress dialog.
-            ProgressTrackerDialog ptd = new ProgressTrackerDialog(mainFrame);
-            ServiceFactory.getInstance()
-                    .getProgressControl()
-                    .addProgressListener(ptd);
-
             // Setup scheduled synchronizer
             SynchronizationUtils.setScheduleSynchronizer(mainFrame);
 
             mainFrame.setVisible(mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported());
-
-            WindowsUtils.center(ptd, mainFrame);
 
             mainFrame.loadData();
 

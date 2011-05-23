@@ -21,6 +21,7 @@ import org.xblackcat.rojac.gui.component.TrimingDockingWindowTitleProvider;
 import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialog.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialog.OpenMessageDialog;
+import org.xblackcat.rojac.gui.dialog.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewHelper;
@@ -29,19 +30,27 @@ import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.gui.view.recenttopics.RecentTopicsView;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.janus.commands.ASwingThreadedHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.progress.IProgressController;
+import org.xblackcat.rojac.service.progress.IProgressListener;
+import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
+import org.xblackcat.rojac.service.progress.ProgressState;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,6 +103,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     private RootWindow rootWindow;
     private JButton navigationBackButton;
     private JButton navigationForwardButton;
+    private ProgressComponent progressInToolbar;
 
     private final PacketDispatcher mainDispatcher = new PacketDispatcher(
             new IPacketProcessor<OptionsUpdatedPacket>() {
@@ -124,7 +134,17 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         setIconImage(ResourceUtils.loadImage("images/rojac-icon.png"));
 
+        ProgressTrackerDialog progressTrackerDialog = new ProgressTrackerDialog(this);
+        progressInToolbar = new ProgressComponent(progressTrackerDialog);
+
         initialize();
+
+        // Setup progress dialog.
+        final IProgressController progressControl = ServiceFactory.getInstance().getProgressControl();
+        progressControl.addProgressListener(progressTrackerDialog);
+        progressControl.addProgressListener(progressInToolbar);
+        WindowsUtils.center(progressTrackerDialog, this);
+
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
@@ -184,9 +204,11 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                                 new ASwingThreadedHandler<IPacket>() {
                                     @Override
                                     protected void execute(IPacket data) {
-                                        if (method != null) {
-                                            openMessage(messageId, method);
-                                        }
+                                        SwingUtilities.invokeLater(new Runnable() {
+                                            public void run() {
+                                                openMessage(messageId, method);
+                                            }
+                                        });
                                     }
                                 });
                     }
@@ -325,19 +347,27 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         JButton settingsButton = WindowsUtils.registerImageButton(threadsPane, "settings", new SettingsAction());
         JButton aboutButton = WindowsUtils.registerImageButton(threadsPane, "about", new AboutAction());
 
-        JToolBar toolBar = WindowsUtils.createToolBar(
+        final JToolBar toolBar = WindowsUtils.createToolBar(
                 navigationBackButton,
                 navigationForwardButton,
                 goToMessageButton,
                 null,
-                updateButton,
                 loadMessageButton,
+                updateButton,
+                progressInToolbar,
                 null,
                 subscribeButton,
                 settingsButton,
                 null,
                 aboutButton
         );
+
+        toolBar.addPropertyChangeListener("orientation", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                progressInToolbar.setOrientation(toolBar.getOrientation());
+            }
+        });
 
         threadsPane.add(toolBar, BorderLayout.NORTH);
         threadsPane.add(threads, BorderLayout.CENTER);
@@ -780,6 +810,100 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             WindowsUtils.center(dlg, MainFrame.this);
 
             dlg.setVisible(true);
+        }
+    }
+
+    private class ProgressComponent extends JPanel implements IProgressListener {
+        private final Component trackerDialog;
+        private final JProgressBar bar = new JProgressBar(0, 100);
+        private ProgressState lastState;
+
+        public ProgressComponent(Component dialog) {
+            super(new BorderLayout(5, 0));
+
+            setBorder(new EmptyBorder(2, 2, 2, 2));
+
+            bar.setStringPainted(true);
+
+            add(bar, BorderLayout.CENTER);
+            setVisible(false);
+
+            setMaximumSize(new Dimension(60, 60));
+
+            this.trackerDialog = dialog;
+
+            dialog.addComponentListener(new ComponentListener() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentMoved(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentShown(ComponentEvent e) {
+                    setVisible(false);
+                }
+
+                @Override
+                public void componentHidden(ComponentEvent e) {
+                    if (lastState == ProgressState.Start ||
+                            lastState == ProgressState.Work) {
+                        setVisible(true);
+                    }
+                }
+            });
+            bar.addMouseListener(new PopupMouseAdapter() {
+                @Override
+                protected void triggerDoubleClick(MouseEvent e) {
+                    trackerDialog.setVisible(true);
+                }
+
+                @Override
+                protected void triggerPopup(MouseEvent e) {
+
+                }
+            });
+        }
+
+        @Override
+        public void progressChanged(ProgressChangeEvent e) {
+            lastState = e.getState();
+            if (lastState == ProgressState.Exception) {
+                setVisible(false);
+            }
+
+            // Track state
+            if (e.getState() == ProgressState.Start) {
+                bar.setValue(0);
+                if (!trackerDialog.isVisible()) {
+                    setVisible(true);
+                }
+            }
+
+            if (e.getState() == ProgressState.Stop) {
+                setVisible(false);
+            }
+
+            if (e.getProgress() != null) {
+                if (e.isPercents()) {
+                    bar.setValue(e.getProgress());
+                    bar.setIndeterminate(false);
+                    bar.setString(null);
+                } else {
+                    bar.setIndeterminate(true);
+                    bar.setString(Messages.ProgressControl_AffectedBytes.get(e.getProgress(), ""));
+                }
+            }
+
+            if (e.getText() != null) {
+                bar.setToolTipText(e.getText());
+            }
+        }
+
+        public void setOrientation(int orientation) {
+            bar.setOrientation(orientation);
         }
     }
 }
