@@ -7,9 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static ch.lambdaj.Lambda.min;
-import static ch.lambdaj.Lambda.on;
-
 /**
  * Service for executing tasks in separate thread.
  *
@@ -116,12 +113,24 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
 
     @Override
     public boolean isShutdown() {
-        return min(pools.values(), on(ExecutorService.class).isShutdown());
+        for (ExecutorService e : pools.values()) {
+            if (!e.isShutdown()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public boolean isTerminated() {
-        return min(pools.values(), on(ExecutorService.class).isShutdown());
+        for (ExecutorService e : pools.values()) {
+            if (!e.isTerminated()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

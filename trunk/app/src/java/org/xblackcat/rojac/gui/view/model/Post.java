@@ -5,8 +5,6 @@ import org.xblackcat.rojac.data.MessageData;
 
 import java.util.*;
 
-import static ch.lambdaj.Lambda.max;
-import static ch.lambdaj.Lambda.on;
 
 /**
  * @author xBlackCat
@@ -156,7 +154,12 @@ public class Post implements ITreeItem<Post> {
         } else if (childrenPosts.size() == 1) {
             return childrenPosts.get(0).getLastPostDate();
         } else {
-            return max(childrenPosts, on(ITreeItem.class).getLastPostDate());
+            long lastPostDate = 0;
+            for (Post p : childrenPosts) {
+                lastPostDate = Math.max(p.getLastPostDate(), lastPostDate);
+            }
+
+            return lastPostDate;
         }
     }
 
