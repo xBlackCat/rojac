@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui;
 
-import javax.swing.*;
-
 /**
  * Main class of item-related views like message pane or threads view.
  *

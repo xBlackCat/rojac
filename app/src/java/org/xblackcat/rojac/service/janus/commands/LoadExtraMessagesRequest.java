@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.janus.commands;
 
-import gnu.trove.TIntHashSet;
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.hash.TIntHashSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.User;

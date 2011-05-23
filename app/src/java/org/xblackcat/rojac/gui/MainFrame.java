@@ -175,6 +175,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                     return null;
                 }
 
+                @SuppressWarnings({"unchecked"})
                 @Override
                 protected void done() {
                     if (loadAtOnce) {

@@ -1,10 +1,8 @@
 package org.xblackcat.rojac.gui.view.recenttopics;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.util.RojacUtils;
 
-import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.Collection;
 

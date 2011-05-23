@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.recenttopics;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.ServiceFactory;

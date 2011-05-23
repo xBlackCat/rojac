@@ -9,8 +9,6 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 
-import java.util.Collection;
-
 /**
  * @author xBlackCat
  */

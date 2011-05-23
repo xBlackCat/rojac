@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.service.storage.database;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.*;

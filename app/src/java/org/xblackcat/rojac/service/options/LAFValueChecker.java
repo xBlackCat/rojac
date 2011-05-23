@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.service.options;
 
-import net.infonode.util.collection.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.utils.ResourceUtils;
@@ -8,7 +7,6 @@ import org.xblackcat.utils.ResourceUtils;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
-import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

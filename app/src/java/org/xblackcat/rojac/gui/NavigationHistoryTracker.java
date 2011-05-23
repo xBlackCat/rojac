@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.service.options.Property;
-
 import java.util.Deque;
 import java.util.LinkedList;
 
