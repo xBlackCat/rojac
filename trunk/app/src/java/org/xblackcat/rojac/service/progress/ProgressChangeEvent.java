@@ -7,15 +7,21 @@ import java.util.EventObject;
  */
 
 public class ProgressChangeEvent extends EventObject {
+    private boolean percents;
     private ProgressState state;
     private Integer progress;
     private String text;
 
     public ProgressChangeEvent(Object source, ProgressState state, Integer progress, String text) {
+        this(source, state, progress, text, true);
+    }
+
+    public ProgressChangeEvent(Object source, ProgressState state, Integer progress, String text, boolean percents) {
         super(source);
         this.state = state;
         this.progress = progress;
         this.text = text;
+        this.percents = percents;
     }
 
     /**
@@ -76,5 +82,9 @@ public class ProgressChangeEvent extends EventObject {
         sb.append(", text='").append(text).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    public boolean isPercents() {
+        return percents;
     }
 }

@@ -170,7 +170,7 @@ public enum Messages {
     Dialog_ExtMark_Scope_Forum,
     Dialog_ExtMark_Scope_Thread,
 
-    // Updater dialog mesages
+    // Updater dialog messages
     /**
      * Has one int parameter last version number.
      */
@@ -178,6 +178,9 @@ public enum Messages {
     Dialog_Updater_UpdateExists_Title,
     Dialog_Updater_NoUpdate,
     Dialog_Updater_NoUpdate_Title,
+
+    // Progress control related
+    ProgressControl_AffectedBytes,
 
     /**
      * Parameters are: 1. Mark description

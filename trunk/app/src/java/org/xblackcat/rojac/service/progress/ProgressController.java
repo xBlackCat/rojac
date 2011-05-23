@@ -23,42 +23,47 @@ public class ProgressController implements IProgressController {
 
     @Override
     public void fireJobStart() {
-        fireProgressChanged(ProgressState.Start, null, null);
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Start, null, null));
     }
 
     @Override
     public void fireJobStart(Messages message, Object... arguments) {
-        fireProgressChanged(ProgressState.Start, null, message.get(arguments));
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Start, null, message.get(arguments)));
     }
 
     @Override
-    public void fireJobProgressChanged(float progress) {
-        fireProgressChanged(ProgressState.Work, (int) (progress * 100), null);
+    public void fireJobProgressChanged(long progress, long total) {
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Work, (int) (progress * 100. / total), null));
+    }
+
+    @Override
+    public void fireJobProgressChanged(long amount) {
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Work, (int) amount, null, false));
     }
 
     @Override
     public void fireJobProgressChanged(float progress, Messages message, Object... arguments) {
-        fireProgressChanged(ProgressState.Work, (int) (progress * 100), message.get(arguments));
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Work, (int) (progress * 100), message.get(arguments)));
     }
 
     @Override
     public void fireJobStop() {
-        fireProgressChanged(ProgressState.Stop, null, null);
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Stop, null, null));
     }
 
     @Override
     public void fireJobStop(Messages message, Object... arguments) {
-        fireProgressChanged(ProgressState.Stop, null, message.get(arguments));
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Stop, null, message.get(arguments)));
     }
 
     @Override
     public void fireIdle(Messages message, Object... arguments) {
-        fireProgressChanged(ProgressState.Idle, null, message.get(arguments));
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Idle, null, message.get(arguments)));
     }
 
     @Override
     public void fireIdle() {
-        fireProgressChanged(ProgressState.Idle, null, null);
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Idle, null, null));
     }
 
     @Override
@@ -73,11 +78,10 @@ public class ProgressController implements IProgressController {
 
     @Override
     public void fireException(Messages message, Object... arguments) {
-        fireProgressChanged(ProgressState.Exception, null, message.get(arguments));
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Exception, null, message.get(arguments)));
     }
 
-    private void fireProgressChanged(ProgressState state, Integer percentage, String logMessage) {
-        final ProgressChangeEvent event = new ProgressChangeEvent(this, state, percentage, logMessage);
+    private void fireProgressChanged(final ProgressChangeEvent event) {
 
         if (EventQueue.isDispatchThread()) {
             processEvent(event);
