@@ -12,6 +12,7 @@ import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.model.*;
+import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -361,9 +362,7 @@ public abstract class AThreadView extends AView implements IItemView {
      *
      * @param post   root of sub-tree.
      * @param unread
-     *
      * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
-     *
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastPost(Post post, boolean unread) throws RuntimeException {
@@ -492,6 +491,46 @@ public abstract class AThreadView extends AView implements IItemView {
         public void actionPerformed(ActionEvent e) {
             Post currentPost = getSelectedItem();
             selectNextPost(currentPost, false);
+        }
+    }
+
+    public class MarkSubTreeReadAction extends AButtonAction {
+        public MarkSubTreeReadAction() {
+            super(ShortCut.MarkSubTreeRead);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Post post = getSelectedItem();
+            if (post == null) {
+                return;
+            }
+
+            if (post instanceof Thread) {
+                // Mark whole thread.
+                new ThreadReadFlagSetter(true, post.getMessageData()).execute();
+            } else {
+                // Mark sub-tree as read
+                new SubTreeReadFlagSetter(true, post).execute();
+            }
+
+        }
+    }
+
+    public class MarkWholeThreadReadAction extends AButtonAction {
+        public MarkWholeThreadReadAction() {
+            super(ShortCut.MarkWholeThreadRead);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Post post = getSelectedItem();
+            if (post == null) {
+                return;
+            }
+
+            // Mark whole thread.
+            new ThreadReadFlagSetter(true, post.getThreadRoot().getMessageData()).execute();
         }
     }
 

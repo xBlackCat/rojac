@@ -225,7 +225,19 @@ public class SingleModelControl extends AThreadsModelControl {
         JButton prevUnreadButton = WindowsUtils.registerImageButton(view, "prev_unread", view.new PreviousUnreadAction());
         JButton nextUnreadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new NextUnreadAction());
 
-        return WindowsUtils.createToolBar(toRootButton, prevButton, nextButton, prevUnreadButton, nextUnreadButton);
+        JButton markThreadReadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new MarkWholeThreadReadAction());
+        JButton markSubTreeReadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new MarkSubTreeReadAction());
+
+        return WindowsUtils.createToolBar(
+                toRootButton,
+                prevButton,
+                nextButton,
+                prevUnreadButton,
+                nextUnreadButton,
+                null,
+                markThreadReadButton,
+                markSubTreeReadButton
+        );
     }
 
 

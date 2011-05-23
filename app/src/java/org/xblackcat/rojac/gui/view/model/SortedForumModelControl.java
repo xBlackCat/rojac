@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import gnu.trove.set.hash.TIntHashSet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.data.ForumMessageData;
 import org.xblackcat.rojac.data.MessageData;
@@ -25,8 +23,6 @@ import javax.swing.*;
  */
 
 public class SortedForumModelControl extends AThreadsModelControl {
-    private static final Log log = LogFactory.getLog(SortedForumModelControl.class);
-
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     @Override
@@ -161,7 +157,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
                 new IPacketProcessor<SetReadExPacket>() {
                     @Override
                     public void process(SetReadExPacket p) {
-                        if (!p.isForumAffected(forumId)) {
+                        if (!p.haveOnlyMessageIds() && !p.isForumAffected(forumId)) {
                             // Current forum is not changed - have a rest
                             return;
                         }
@@ -261,6 +257,20 @@ public class SortedForumModelControl extends AThreadsModelControl {
         JButton prevUnreadButton = WindowsUtils.registerImageButton(view, "prev_unread", view.new PreviousUnreadAction());
         JButton nextUnreadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new NextUnreadAction());
 
-        return WindowsUtils.createToolBar(newThreadButton, null, toRootButton, prevButton, nextButton, prevUnreadButton, nextUnreadButton);
+        JButton markThreadReadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new MarkWholeThreadReadAction());
+        JButton markSubTreeReadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new MarkSubTreeReadAction());
+
+        return WindowsUtils.createToolBar(
+                newThreadButton,
+                null,
+                toRootButton,
+                prevButton,
+                nextButton,
+                prevUnreadButton,
+                nextUnreadButton,
+                null,
+                markThreadReadButton,
+                markSubTreeReadButton
+        );
     }
 }

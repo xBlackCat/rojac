@@ -282,6 +282,7 @@ public enum Messages {
     Popup_View_ThreadsTree_Mark_ThreadRead,
     Popup_View_ThreadsTree_Mark_ThreadUnread,
     Popup_View_ThreadsTree_Mark_Extended,
+    Popup_View_ThreadsTree_Mark_WholeThreadRead,
 
     Popup_MessageTab_OpenMessageInThread,
     Popup_MessageTab_OpenMessageInForum,
