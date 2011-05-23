@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import static ch.lambdaj.Lambda.join;
 
 public class MessagesTest extends TestCase {
     private static final Log log = LogFactory.getLog(MessagesTest.class);
@@ -33,7 +32,7 @@ public class MessagesTest extends TestCase {
         Collection<Locale> locales = Arrays.asList(RojacUtils.localesForBundle(Messages.LOCALIZATION_BUNDLE_NAME, false));
 
         if (log.isInfoEnabled()) {
-            log.info("Found " + locales.size() + " locales to test: " + join(locales));
+            log.info("Found " + locales.size() + " locales to test: " + locales);
         }
 
         boolean noErrors = true;

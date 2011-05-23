@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.gui.view.thread;
 
-import ch.lambdaj.Lambda;
 import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.gui.component.JComponentDelegate;
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
 import org.xblackcat.rojac.gui.view.model.Post;
@@ -165,7 +165,7 @@ class MultiLineThreadItemRenderer extends JLightPanel implements TreeCellRendere
         titlePane.setOpaque(true);
 
         List<? extends JComponent> list = Arrays.asList(titleLine, userLine, dateLine, iconLine, titlePane);
-        components = Lambda.forEach(list);
+        components = new JComponentDelegate(list);
         setName("Tree.cellRenderer");
     }
 
