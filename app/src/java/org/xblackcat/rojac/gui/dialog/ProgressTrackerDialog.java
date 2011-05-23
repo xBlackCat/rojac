@@ -2,10 +2,10 @@ package org.xblackcat.rojac.gui.dialog;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
+import org.xblackcat.rojac.util.SynchronizationUtils;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -75,7 +75,7 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
                 logProgress.setString(null);
             } else {
                 logProgress.setIndeterminate(true);
-                logProgress.setString(Messages.ProgressControl_AffectedBytes.get(e.getProgress(), ""));
+                logProgress.setString(SynchronizationUtils.makeSizeString(e));
             }
         }
 
@@ -90,4 +90,5 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
             }
         }
     }
+
 }
