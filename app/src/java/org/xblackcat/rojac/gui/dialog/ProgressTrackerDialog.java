@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.dialog;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
@@ -68,11 +69,14 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
         }
 
         if (e.getProgress() != null) {
-            int progress = e.getProgress();
-            if (progress >= 0) {
-                logProgress.setValue(progress);
+            if (e.isPercents()) {
+                logProgress.setValue(e.getProgress());
+                logProgress.setIndeterminate(false);
+                logProgress.setString(null);
+            } else {
+                logProgress.setIndeterminate(true);
+                logProgress.setString(Messages.ProgressControl_AffectedBytes.get(e.getProgress(), ""));
             }
-            logProgress.setIndeterminate(progress < 0);
         }
 
         if (e.getText() != null) {

@@ -863,7 +863,7 @@ class JanusHTTPSender extends BasicHandler {
 
     private class LogOutputStream extends FilterOutputStream {
         private long amount = 0;
-        private final float total;
+        private final long total;
 
         public LogOutputStream(OutputStream out, long contentLength) {
             super(out);
@@ -878,13 +878,13 @@ class JanusHTTPSender extends BasicHandler {
 
         private void logByte() {
             amount++;
-            progressController.fireJobProgressChanged(amount / total);
+            progressController.fireJobProgressChanged(amount, total);
         }
     }
 
     private class AutoCloseInputStream extends FilterInputStream {
         private final HttpMethodBase method;
-        protected final float total;
+        protected final long total;
         private long amount = 0;
 
         public AutoCloseInputStream(HttpMethodBase method) throws IOException {
@@ -892,7 +892,7 @@ class JanusHTTPSender extends BasicHandler {
             this.method = method;
             total = method.getResponseContentLength();
             if (total < 0) {
-                progressController.fireJobProgressChanged(-1);
+                progressController.fireJobProgressChanged(0, 1);
             }
         }
 
@@ -915,7 +915,9 @@ class JanusHTTPSender extends BasicHandler {
             if (a > 0) {
                 amount += a;
                 if (total > 0) {
-                    progressController.fireJobProgressChanged(amount / total);
+                    progressController.fireJobProgressChanged(amount, total);
+                } else {
+                    progressController.fireJobProgressChanged(amount);
                 }
             }
         }

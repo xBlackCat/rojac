@@ -26,8 +26,9 @@ public interface IProgressController {
      * Notify listeners about changing jobs progress (completeness) state.
      *
      * @param progress new value of progress.
+     * @param total
      */
-    void fireJobProgressChanged(float progress);
+    void fireJobProgressChanged(long progress, long total);
 
     /**
      * Notify listeners about changing jobs progress (completeness) state and provide a message for logging.
@@ -79,4 +80,6 @@ public interface IProgressController {
     void removeProgressListener(IProgressListener l);
 
     void fireException(Messages message, Object... arguments);
+
+    void fireJobProgressChanged(long amount);
 }
