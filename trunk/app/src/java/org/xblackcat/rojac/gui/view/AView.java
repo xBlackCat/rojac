@@ -1,10 +1,10 @@
 package org.xblackcat.rojac.gui.view;
 
-import org.xblackcat.rojac.gui.*;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IInfoChangeListener;
+import org.xblackcat.rojac.gui.IStateListener;
+import org.xblackcat.rojac.gui.IView;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
 import org.xblackcat.rojac.service.storage.IStorage;
 
 import javax.swing.*;

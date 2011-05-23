@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.service.datahandler;
 
-import gnu.trove.TIntHashSet;
-import org.xblackcat.rojac.data.AffectedMessage;
+import gnu.trove.set.hash.TIntHashSet;
 
 /**
  * @author xBlackCat

@@ -11,7 +11,10 @@ import org.xblackcat.rojac.util.UIUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.ref.SoftReference;
-import java.util.*;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Class for holding application properties names.

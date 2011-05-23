@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.dialog;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
@@ -103,6 +102,7 @@ public class LoginDialog extends JDialog {
     }
 
     private class CheckCredentialsAction extends AnOkAction {
+        @SuppressWarnings({"unchecked"})
         @Override
         public void actionPerformed(ActionEvent e) {
             if (StringUtils.isEmpty(fieldLogin.getText())) {

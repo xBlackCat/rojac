@@ -5,8 +5,6 @@ import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
-import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
 

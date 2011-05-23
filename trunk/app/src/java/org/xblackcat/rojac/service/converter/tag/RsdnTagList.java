@@ -2,7 +2,6 @@ package org.xblackcat.rojac.service.converter.tag;
 
 import org.xblackcat.rojac.data.Smile;
 import org.xblackcat.rojac.service.converter.ITag;
-import org.xblackcat.rojac.service.converter.ITagInfo;
 
 /**
  * @author xBlackCat

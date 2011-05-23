@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.view.thread.MessageReadFlagSetter;
-import org.xblackcat.rojac.gui.view.thread.MessagesReadFlagSetter;
 import org.xblackcat.rojac.i18n.Messages;
 
 import javax.swing.*;

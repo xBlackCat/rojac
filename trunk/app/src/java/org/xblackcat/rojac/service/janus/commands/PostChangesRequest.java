@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.janus.commands;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,11 +14,7 @@ import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.PostException;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
-import org.xblackcat.rojac.service.storage.INewMessageAH;
-import org.xblackcat.rojac.service.storage.INewModerateAH;
-import org.xblackcat.rojac.service.storage.INewRatingAH;
-import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.*;
 
 /**
  * @author xBlackCat

@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.popup;
 
-import gnu.trove.TIntHashSet;
+import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.view.model.ITreeItem;
 import org.xblackcat.rojac.gui.view.model.Post;
