@@ -37,7 +37,7 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
 
         setContentPane(cp);
 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
         setSize(500, 350);
     }
