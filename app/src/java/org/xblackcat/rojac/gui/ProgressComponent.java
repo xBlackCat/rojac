@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui;
 
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
@@ -79,7 +80,7 @@ class ProgressComponent extends JPanel implements IProgressListener {
         // Track state
         if (e.getState() == ProgressState.Start) {
             bar.setValue(0);
-            if (!trackerDialog.isVisible()) {
+            if (!trackerDialog.isVisible() && !Property.DIALOGS_PROGRESS_AUTOSHOW.get()) {
                 setVisible(true);
             }
         }
