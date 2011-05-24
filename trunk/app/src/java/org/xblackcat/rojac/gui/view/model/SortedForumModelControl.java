@@ -7,12 +7,11 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
-import org.xblackcat.rojac.gui.view.thread.AThreadView;
+import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 
@@ -23,6 +22,18 @@ import javax.swing.*;
  */
 
 public class SortedForumModelControl extends AThreadsModelControl {
+    private static final ThreadToolbarActions[] TOOLBAR_CONFIG = new ThreadToolbarActions[]{
+            ThreadToolbarActions.NewThread,
+            null,
+            ThreadToolbarActions.ToThreadRoot,
+            ThreadToolbarActions.PreviousPost,
+            ThreadToolbarActions.NextPost,
+            ThreadToolbarActions.PreviousUnread,
+            ThreadToolbarActions.NextUnread,
+            null,
+            ThreadToolbarActions.MarkSubTreeRead,
+            ThreadToolbarActions.MarkThreadRead
+    };
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     @Override
@@ -249,28 +260,7 @@ public class SortedForumModelControl extends AThreadsModelControl {
 
 
     @Override
-    public JToolBar getToolbar(AThreadView view) {
-        JButton newThreadButton = WindowsUtils.registerImageButton(view, "new_thread", view.new NewThreadAction());
-        JButton toRootButton = WindowsUtils.registerImageButton(view, "to_root", view.new ToThreadRootAction());
-        JButton prevButton = WindowsUtils.registerImageButton(view, "prev", view.new PreviousAction());
-        JButton nextButton = WindowsUtils.registerImageButton(view, "next", view.new NextAction());
-        JButton prevUnreadButton = WindowsUtils.registerImageButton(view, "prev_unread", view.new PreviousUnreadAction());
-        JButton nextUnreadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new NextUnreadAction());
-
-        JButton markThreadReadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new MarkWholeThreadReadAction());
-        JButton markSubTreeReadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new MarkSubTreeReadAction());
-
-        return WindowsUtils.createToolBar(
-                newThreadButton,
-                null,
-                toRootButton,
-                prevButton,
-                nextButton,
-                prevUnreadButton,
-                nextUnreadButton,
-                null,
-                markThreadReadButton,
-                markSubTreeReadButton
-        );
+    public ThreadToolbarActions[] getToolbar() {
+        return TOOLBAR_CONFIG;
     }
 }

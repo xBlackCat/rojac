@@ -105,7 +105,7 @@ public class SubscriptionDialog extends JDialog {
         content.add(WindowsUtils.createToolBar(
                 WindowsUtils.setupImageButton("update", new UpdateForumListAction(SubscriptionDialog.this)),
                 null,
-                WindowsUtils.setupImageButton("extented_read", new InvokeExtMarkDialog(this))
+                WindowsUtils.setupImageButton("mark_read_extented", new InvokeExtMarkDialog(this))
         ), BorderLayout.NORTH);
 
         content.add(new JScrollPane(forumList), BorderLayout.CENTER);

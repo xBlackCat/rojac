@@ -4,10 +4,9 @@ import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.view.thread.AThreadView;
+import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 
@@ -16,6 +15,13 @@ import javax.swing.*;
  */
 
 public class MessageListControl implements IModelControl<Post> {
+    private static final ThreadToolbarActions[] TOOLBAR_CONFIG = new ThreadToolbarActions[]{
+            ThreadToolbarActions.PreviousPost,
+            ThreadToolbarActions.NextPost,
+            ThreadToolbarActions.PreviousUnread,
+            ThreadToolbarActions.NextUnread,
+    };
+
     @Override
     public void fillModelByItemId(AThreadModel<Post> model, int itemId) {
         throw new NotImplementedException("The method shouldn't be used.");
@@ -140,13 +146,8 @@ public class MessageListControl implements IModelControl<Post> {
     }
 
     @Override
-    public JToolBar getToolbar(AThreadView view) {
-        JButton prevButton = WindowsUtils.registerImageButton(view, "prev", view.new PreviousAction());
-        JButton nextButton = WindowsUtils.registerImageButton(view, "next", view.new NextAction());
-        JButton prevUnreadButton = WindowsUtils.registerImageButton(view, "prev_unread", view.new PreviousUnreadAction());
-        JButton nextUnreadButton = WindowsUtils.registerImageButton(view, "next_unread", view.new NextUnreadAction());
-
-        return WindowsUtils.createToolBar(prevButton, nextButton, prevUnreadButton, nextUnreadButton);
+    public ThreadToolbarActions[] getToolbar() {
+        return TOOLBAR_CONFIG;
     }
 
 

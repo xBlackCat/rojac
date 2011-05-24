@@ -63,7 +63,7 @@ public abstract class AThreadView extends AView implements IItemView {
         JScrollPane sp = new JScrollPane(threadsContainer);
         add(sp, BorderLayout.CENTER);
 
-        toolbar = modelControl.getToolbar(this);
+        toolbar = createToolBar();
 
         threadsContainer.setInputMap(
                 WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
@@ -79,7 +79,7 @@ public abstract class AThreadView extends AView implements IItemView {
             IInfoChangeListener toolBarTracker = new IInfoChangeListener() {
                 @Override
                 public void infoChanged() {
-                    toolbar = modelControl.getToolbar(AThreadView.this);
+                    toolbar = createToolBar();
 
                     if (toolbar == null) {
                         // Still waiting for toolbar
@@ -107,6 +107,26 @@ public abstract class AThreadView extends AView implements IItemView {
                 selectNextPost(post, true);
             }
         });
+    }
+
+    private JToolBar createToolBar() {
+        ThreadToolbarActions[] actions = modelControl.getToolbar();
+
+        if (actions == null) {
+            return null;
+        }
+
+        JToolBar toolBar = new JToolBar();
+
+        for (ThreadToolbarActions c : actions) {
+            if (c != null) {
+                toolBar.add(c.makeButton(this));
+            } else {
+                toolBar.addSeparator();
+            }
+        }
+
+        return toolBar;
     }
 
     @Override
@@ -361,7 +381,7 @@ public abstract class AThreadView extends AView implements IItemView {
      * Searches for the last unread post in the tree thread.
      *
      * @param post   root of sub-tree.
-     * @param unread
+     * @param unread if set to true - unread post will be searched.
      * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
@@ -440,7 +460,7 @@ public abstract class AThreadView extends AView implements IItemView {
     }
 
     // Toolbar possible actions
-    public class NewThreadAction extends AButtonAction {
+    class NewThreadAction extends AButtonAction {
         public NewThreadAction() {
             super(ShortCut.NewThread);
         }
@@ -450,7 +470,7 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    public class PreviousUnreadAction extends AButtonAction {
+    class PreviousUnreadAction extends AButtonAction {
         public PreviousUnreadAction() {
             super(ShortCut.PrevUnreadMessage);
         }
@@ -461,7 +481,7 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    public class NextUnreadAction extends AButtonAction {
+    class NextUnreadAction extends AButtonAction {
         public NextUnreadAction() {
             super(ShortCut.NextUnreadMessage);
         }
@@ -472,7 +492,7 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    public class PreviousAction extends AButtonAction {
+    class PreviousAction extends AButtonAction {
         public PreviousAction() {
             super(ShortCut.PrevMessage);
         }
@@ -483,7 +503,7 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    public class NextAction extends AButtonAction {
+    class NextAction extends AButtonAction {
         public NextAction() {
             super(ShortCut.NextMessage);
         }
@@ -494,7 +514,7 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    public class MarkSubTreeReadAction extends AButtonAction {
+    class MarkSubTreeReadAction extends AButtonAction {
         public MarkSubTreeReadAction() {
             super(ShortCut.MarkSubTreeRead);
         }
@@ -517,7 +537,7 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    public class MarkWholeThreadReadAction extends AButtonAction {
+    class MarkWholeThreadReadAction extends AButtonAction {
         public MarkWholeThreadReadAction() {
             super(ShortCut.MarkWholeThreadRead);
         }
@@ -534,7 +554,7 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    public class ToThreadRootAction extends AButtonAction {
+    class ToThreadRootAction extends AButtonAction {
         public ToThreadRootAction() {
             super(ShortCut.ToThreadRoot);
         }
