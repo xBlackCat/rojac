@@ -298,6 +298,13 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
             </classpath>
         </taskdef>
         <launch4j configFile="${rojac-application.basedir}/classes/sender.launch4j.xml"/>
+
+        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.l4j.ini"><![CDATA[# Rojac JVM options
+-Xms16M
+-Xmx64M
+]]>
+        </echo>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.l4j.ini" eol="dos"/>
     </target>
 
     <target name="make.name" unless="svn.entry(revision)">
