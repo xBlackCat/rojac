@@ -37,6 +37,18 @@ public class FavoritesView extends AView {
                     favoritesModel.updateFavoriteData(null);
                 }
             },
+            new IPacketProcessor<SetPostReadPacket>() {
+                @Override
+                public void process(SetPostReadPacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            },
+            new IPacketProcessor<SetReadExPacket>() {
+                @Override
+                public void process(SetReadExPacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            },
             new IPacketProcessor<FavoriteCategoryUpdatedPacket>() {
                 @Override
                 public void process(FavoriteCategoryUpdatedPacket p) {
