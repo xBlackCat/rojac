@@ -14,13 +14,17 @@ import java.util.Map;
 class ShortCutsTableModel extends AbstractTableModel {
     private final Map<ShortCut, KeyStroke> values = new EnumMap<ShortCut, KeyStroke>(ShortCut.class);
 
-    public ShortCutsTableModel() {
-        reset();
-    }
-
-    public void reset() {
+    ShortCutsTableModel() {
         for (ShortCut sc : ShortCut.values()) {
             values.put(sc, sc.getKeyStroke());
+        }
+
+        fireTableDataChanged();
+    }
+
+    void setInitial() {
+        for (ShortCut sc : ShortCut.values()) {
+            values.put(sc, sc.getDefaultKeyStroke());
         }
 
         fireTableDataChanged();

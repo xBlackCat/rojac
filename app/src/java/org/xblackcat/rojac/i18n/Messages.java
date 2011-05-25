@@ -25,7 +25,7 @@ public enum Messages {
     Button_Apply,
     Button_Save,
     Button_Preview,
-    Button_Ignore,
+    Button_Default,
     Button_Yes,
     Button_No,
     Button_ChangePassword,
