@@ -57,12 +57,12 @@ public enum ShortCut {
 
     private final Messages description;
     private final int condition;
-    private final KeyStroke defKeystroke;
+    private final KeyStroke defaultKeyStroke;
     private KeyStroke keyStroke;
 
     ShortCut(Messages description, int condition, int keyCode, int modifier) {
         this.condition = condition;
-        this.defKeystroke = KeyStroke.getKeyStroke(keyCode, modifier);
+        this.defaultKeyStroke = KeyStroke.getKeyStroke(keyCode, modifier);
         this.description = description;
     }
 
@@ -71,7 +71,11 @@ public enum ShortCut {
     }
 
     public KeyStroke getKeyStroke() {
-        return keyStroke == null ? defKeystroke : keyStroke;
+        return keyStroke == null ? defaultKeyStroke : keyStroke;
+    }
+
+    public KeyStroke getDefaultKeyStroke() {
+        return defaultKeyStroke;
     }
 
     public void setKeyStroke(KeyStroke keyStroke) {
@@ -91,7 +95,7 @@ public enum ShortCut {
         final StringBuilder toString = new StringBuilder();
         toString.append(getActionName());
         toString.append(" (");
-        toString.append(ShortCutUtils.keyStrokeHint(defKeystroke));
+        toString.append(ShortCutUtils.keyStrokeHint(defaultKeyStroke));
         if (keyStroke != null) {
             toString.append("/");
             toString.append(ShortCutUtils.keyStrokeHint(keyStroke));
@@ -105,6 +109,6 @@ public enum ShortCut {
     }
 
     public boolean isCustom() {
-        return keyStroke != null && !defKeystroke.equals(keyStroke);
+        return keyStroke != null && !defaultKeyStroke.equals(keyStroke);
     }
 }

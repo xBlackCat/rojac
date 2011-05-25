@@ -76,28 +76,6 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
     }
 
     /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
-     */
-    public boolean stopCellEditing() {
-        return false;
-    }
-
-    /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
-     */
-    public void cancelCellEditing() {
-        fireEditingCanceled();
-    }
-
-//
-//  Implementing the TreeCellEditor Interface
-//
-
-//
-//  Implementing the CellEditor Interface
-//
-
-    /**
      * Implements the <code>TableCellEditor</code> interface.
      */
     public Component getTableCellEditorComponent(JTable table, Object value,

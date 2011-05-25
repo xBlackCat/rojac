@@ -4,11 +4,13 @@ import org.xblackcat.rojac.gui.component.KeyStrokeCellRenderer;
 import org.xblackcat.rojac.gui.component.MessagesCellRenderer;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.util.ShortCutUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 /**
  * @author xBlackCat
@@ -48,7 +50,21 @@ class ShortCutManagerPage extends APage {
 
         table.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
 
-        add(new JScrollPane(table));
+        add(new JScrollPane(table), BorderLayout.CENTER);
+
+        add(
+                WindowsUtils.coverComponent(
+                        new JButton(new AbstractAction(Messages.Button_Default.get()) {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                shortCutsModel.setInitial();
+                            }
+                        }),
+                        FlowLayout.RIGHT,
+                        getBackground()
+                ),
+                BorderLayout.SOUTH
+        );
     }
 
     protected void applySettings(Window mainFrame) {
