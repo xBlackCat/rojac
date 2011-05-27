@@ -33,7 +33,7 @@ public final class RojacUtils {
     private static final Log log = LogFactory.getLog(RojacUtils.class);
 
     public static final String VERSION = "0.1";
-    public static final String VERSION_MODIFIER = "alpha";
+    public static final String VERSION_MODIFIER = "";
     public static final String VERSION_STRING;
     public static final Integer REVISION_NUMBER;
     public static final GlobalExceptionHandler GLOBAL_EXCEPTION_HANDLER = new GlobalExceptionHandler();
@@ -74,18 +74,29 @@ public final class RojacUtils {
             } else if ("branches".equals(branch)) {
                 // Read branch name
                 pos = nextPos + 1;
+                versionString.append(" [");
+
                 nextPos = file.indexOf('/', pos);
 
-                versionString.append(" [");
-                versionString.append(file.substring(pos, nextPos));
+                if (nextPos >= 0) {
+                    versionString.append(file.substring(pos, nextPos));
+                } else {
+                    versionString.append(file.substring(pos));
+                }
+
                 versionString.append(']');
             } else if ("tags".equals(branch)) {
                 // Read branch name
                 pos = nextPos + 1;
+                versionString.append(" <");
+
                 nextPos = file.indexOf('/', pos);
 
-                versionString.append(" <");
-                versionString.append(file.substring(pos, nextPos));
+                if (nextPos >= 0) {
+                    versionString.append(file.substring(pos, nextPos));
+                } else {
+                    versionString.append(file.substring(pos));
+                }
                 versionString.append('>');
             }
 
