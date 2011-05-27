@@ -35,107 +35,109 @@ public class TreeTableThreadView extends AThreadView {
 
     @Override
     protected JComponent getThreadsContainer() {
-        threads = new JXTreeTable();
-        threads.setAutoCreateColumnsFromModel(false);
-        threads.setTreeTableModel(model);
-        threads.setEditable(false);
-        threads.setShowsRootHandles(true);
-        threads.setSortable(false);
-        threads.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        threads.setRowSelectionAllowed(true);
-        threads.setColumnSelectionAllowed(false);
-        threads.setScrollsOnExpand(true);
-        threads.setRootVisible(modelControl.isRootVisible());
-        threads.setToggleClickCount(2);
+        if (threads == null) {
+            threads = new JXTreeTable();
+            threads.setAutoCreateColumnsFromModel(false);
+            threads.setTreeTableModel(model);
+            threads.setEditable(false);
+            threads.setShowsRootHandles(true);
+            threads.setSortable(false);
+            threads.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            threads.setRowSelectionAllowed(true);
+            threads.setColumnSelectionAllowed(false);
+            threads.setScrollsOnExpand(true);
+            threads.setRootVisible(modelControl.isRootVisible());
+            threads.setToggleClickCount(2);
 
-        threads.setDefaultRenderer(APostProxy.class, new PostTableCellRenderer());
-        threads.setTreeCellRenderer(new PostTreeCellRenderer());
+            threads.setDefaultRenderer(APostProxy.class, new PostTableCellRenderer());
+            threads.setTreeCellRenderer(new PostTreeCellRenderer());
 
-        threads.addTreeSelectionListener(new PostSelector());
-        threads.addTreeExpansionListener(new ThreadExpander());
-        threads.addMouseListener(new ItemListener());
+            threads.addTreeSelectionListener(new PostSelector());
+            threads.addTreeExpansionListener(new ThreadExpander());
+            threads.addMouseListener(new ItemListener());
 
-        // Restore selection on any table data changing.
-        threads.getModel().addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                if (e.getType() == TableModelEvent.UPDATE &&
-                        !(e.getColumn() == TableModelEvent.ALL_COLUMNS &&
-                        e.getFirstRow() == TableModelEvent.HEADER_ROW &&
-                        e.getLastRow() == TableModelEvent.HEADER_ROW)) {
-                    return;
-                }
-
-                ThreadState s = getState();
-                if (s.openedMessageId() == 0) {
-                    return;
-                }
-
-                Post post = model.getRoot().getMessageById(s.openedMessageId());
-                if (post == null) {
-                    return;
-                }
-
-                final TreePath pathToRoot = model.getPathToRoot(post);
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        markRowSelected(pathToRoot);
+            // Restore selection on any table data changing.
+            threads.getModel().addTableModelListener(new TableModelListener() {
+                @Override
+                public void tableChanged(TableModelEvent e) {
+                    if (e.getType() == TableModelEvent.UPDATE &&
+                            !(e.getColumn() == TableModelEvent.ALL_COLUMNS &&
+                                    e.getFirstRow() == TableModelEvent.HEADER_ROW &&
+                                    e.getLastRow() == TableModelEvent.HEADER_ROW)) {
+                        return;
                     }
-                });
-            }
-        });
 
-        threads.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        for (Header h : Header.values()) {
-            TableColumnExt column = new TableColumnExt(h.ordinal());
-            if (h.getWidth() > 0) {
-                column.setPreferredWidth(h.getWidth());
-                column.setMaxWidth(h.getWidth() << 2);
-                column.setMinWidth(0);
-                column.setIdentifier(h);
+                    ThreadState s = getState();
+                    if (s.openedMessageId() == 0) {
+                        return;
+                    }
+
+                    Post post = model.getRoot().getMessageById(s.openedMessageId());
+                    if (post == null) {
+                        return;
+                    }
+
+                    final TreePath pathToRoot = model.getPathToRoot(post);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            markRowSelected(pathToRoot);
+                        }
+                    });
+                }
+            });
+
+            threads.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            for (Header h : Header.values()) {
+                TableColumnExt column = new TableColumnExt(h.ordinal());
+                if (h.getWidth() > 0) {
+                    column.setPreferredWidth(h.getWidth());
+                    column.setMaxWidth(h.getWidth() << 2);
+                    column.setMinWidth(0);
+                    column.setIdentifier(h);
+                }
+                column.setToolTipText(h.getTitle());
+                threads.addColumn(column);
             }
-            column.setToolTipText(h.getTitle());
-            threads.addColumn(column);
+
+            // Handle keyboard events to emulate tree navigation in TreeTable
+            threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "prevOrClose");
+            threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "nextOrExpand");
+
+            threads.getActionMap().put("prevOrClose", new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int row = threads.getSelectedRow();
+                    if (row == -1) {
+                        return;
+                    }
+
+                    if (threads.isExpanded(row)) {
+                        threads.collapseRow(row);
+                        threads.scrollRowToVisible(row);
+                    } else if (row > 0) {
+                        threads.setRowSelectionInterval(row - 1, row - 1);
+                        threads.scrollRowToVisible(row - 1);
+                    }
+                }
+            });
+            threads.getActionMap().put("nextOrExpand", new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int row = threads.getSelectedRow();
+                    if (row == -1) {
+                        return;
+                    }
+
+                    if (!threads.isExpanded(row) && !model.isLeaf(threads.getPathForRow(row).getLastPathComponent())) {
+                        threads.expandRow(row);
+                        threads.scrollRowToVisible(row);
+                    } else if (row < threads.getRowCount() - 1) {
+                        threads.scrollRowToVisible(row + 1);
+                        threads.setRowSelectionInterval(row + 1, row + 1);
+                    }
+                }
+            });
         }
-
-        // Handle keyboard events to emulate tree navigation in TreeTable
-        threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "prevOrClose");
-        threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "nextOrExpand");
-
-        threads.getActionMap().put("prevOrClose", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = threads.getSelectedRow();
-                if (row == -1) {
-                    return;
-                }
-
-                if (threads.isExpanded(row)) {
-                    threads.collapseRow(row);
-                    threads.scrollRowToVisible(row);
-                } else if (row > 0) {
-                    threads.setRowSelectionInterval(row - 1, row - 1);
-                    threads.scrollRowToVisible(row - 1);
-                }
-            }
-        });
-        threads.getActionMap().put("nextOrExpand", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = threads.getSelectedRow();
-                if (row == -1) {
-                    return;
-                }
-
-                if (!threads.isExpanded(row) && !model.isLeaf(threads.getPathForRow(row).getLastPathComponent())) {
-                    threads.expandRow(row);
-                    threads.scrollRowToVisible(row);
-                } else if (row < threads.getRowCount() - 1) {
-                    threads.scrollRowToVisible(row + 1);
-                    threads.setRowSelectionInterval(row + 1, row + 1);
-                }
-            }
-        });
         return threads;
     }
 

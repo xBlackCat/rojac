@@ -74,6 +74,12 @@ public class ThreadDoubleView extends AView implements IItemView {
                 );
             }
         });
+        slaveView.getComponent().addPropertyChangeListener(MessageView.MESSAGE_LOADED, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                masterView.getComponent().firePropertyChange(MessageView.MESSAGE_LOADED, 0, 1);
+            }
+        });
     }
 
     public void loadItem(int itemId) {

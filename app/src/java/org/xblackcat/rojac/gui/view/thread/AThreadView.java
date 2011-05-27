@@ -107,6 +107,12 @@ public abstract class AThreadView extends AView implements IItemView {
                 selectNextPost(post, true);
             }
         });
+        addPropertyChangeListener(MessageView.MESSAGE_LOADED, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                getThreadsContainer().requestFocus();
+            }
+        });
     }
 
     private JToolBar createToolBar() {
@@ -382,7 +388,9 @@ public abstract class AThreadView extends AView implements IItemView {
      *
      * @param post   root of sub-tree.
      * @param unread if set to true - unread post will be searched.
+     *
      * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
+     *
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastPost(Post post, boolean unread) throws RuntimeException {
