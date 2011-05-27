@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.util;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -21,7 +20,7 @@ public final class LinkUtils {
     /**
      * Set of rsdn link to message patterns.
      */
-    private static Pattern[] rsdnMessageLinkPatterns = new Pattern[]{
+    private final static Pattern[] rsdnMessageLinkPatterns = new Pattern[]{
             Pattern.compile(URL_PREFIX + "forum/[\\w\\.]+/(\\d+)\\.(1\\.)?aspx", Pattern.CASE_INSENSITIVE),
             Pattern.compile(URL_PREFIX + "forum/message.aspx\\?mid=(\\d+)&only=1", Pattern.CASE_INSENSITIVE)
     };
@@ -29,12 +28,15 @@ public final class LinkUtils {
     /**
      * Set of rsdn link to messages thread patterns.
      */
-    private static Pattern[] rsdnThreadLinkPatterns = new Pattern[]{
-            Pattern.compile(URL_PREFIX + "forum/[\\w\\.]+/(\\d+)\\.flat\\.(\\d+\\.)?aspx", Pattern.CASE_INSENSITIVE),
+    private final static Pattern[] rsdnThreadLinkPatterns = new Pattern[]{
+            Pattern.compile(URL_PREFIX + "forum/[\\w\\.]+/(\\d+)\\.(flat|all)\\.(\\d+\\.)?aspx", Pattern.CASE_INSENSITIVE),
             Pattern.compile(URL_PREFIX + "forum/message.aspx\\?mid=(\\d+)(&all=1)?", Pattern.CASE_INSENSITIVE)
     };
 
-    private static Pattern[] rsdnLinkAllPatterns = (Pattern[]) ArrayUtils.addAll(rsdnMessageLinkPatterns, rsdnThreadLinkPatterns);
+    private static Pattern[] rsdnLinkAllPatterns = new Pattern[]{
+            Pattern.compile(URL_PREFIX + "forum/[\\w\\.]+/(\\d+)\\.(.+\\.)?aspx", Pattern.CASE_INSENSITIVE),
+            Pattern.compile(URL_PREFIX + "forum/message.aspx\\?mid=(\\d+).*?", Pattern.CASE_INSENSITIVE)
+    };
 
     private LinkUtils() {
     }
