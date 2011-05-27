@@ -23,17 +23,19 @@ public class TreeThreadView extends AThreadView {
 
     @Override
     protected JComponent getThreadsContainer() {
-        threads = new JTree(model);
-        threads.setEditable(false);
-        threads.setRowHeight(0);
-        threads.setCellRenderer(new MultiLineThreadItemRenderer());
-        threads.setShowsRootHandles(true);
-        updateRootVisible();
+        if (threads == null) {
+            threads = new JTree(model);
+            threads.setEditable(false);
+            threads.setRowHeight(0);
+            threads.setCellRenderer(new MultiLineThreadItemRenderer());
+            threads.setShowsRootHandles(true);
+            updateRootVisible();
 
-        threads.getSelectionModel().addTreeSelectionListener(new PostSelector());
-        threads.addTreeExpansionListener(new ThreadExpander());
+            threads.getSelectionModel().addTreeSelectionListener(new PostSelector());
+            threads.addTreeExpansionListener(new ThreadExpander());
 
-        threads.addMouseListener(new ItemListener());
+            threads.addMouseListener(new ItemListener());
+        }
         return threads;
     }
 

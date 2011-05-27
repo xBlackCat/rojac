@@ -46,6 +46,7 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
 public class MessageView extends AView implements IItemView {
     private static final Log log = LogFactory.getLog(MessageView.class);
     public static final String MESSAGE_VIEWED_FLAG = "MessageViewed";
+    public static final String MESSAGE_LOADED = "MessageLoaded";
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();
 
     private int messageId;
@@ -419,7 +420,7 @@ public class MessageView extends AView implements IItemView {
 
         @Override
         protected void done() {
-            messageTextPane.requestFocus();
+            MessageView.this.firePropertyChange(MESSAGE_LOADED, null, null);
         }
     }
 
@@ -498,6 +499,10 @@ public class MessageView extends AView implements IItemView {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (!marksButton.isVisible()) {
+                // No button - no marks.
+                return;
+            }
             RatingDialog rd = new RatingDialog(SwingUtilities.windowForComponent(MessageView.this), messageId);
             WindowsUtils.center(rd, marksButton);
             rd.setVisible(true);
