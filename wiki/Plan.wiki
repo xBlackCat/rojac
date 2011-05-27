@@ -2,7 +2,7 @@
 #labels Featured,Phase-Design
 
 = Main plan =
-== Alpha 1 ==
+== Alpha 1 [http://code.google.com/images/check-35x28.gif]==
   * Implement client for [http://projects.rsdn.ru/Janus/wiki/JanusAT JanusAT WS] (Axis 1) _(done)_
   * Implement core services: Message formatter service _(done)_
   * Implement core services: options service _(done)_
@@ -19,16 +19,16 @@
   * Implement GUI: implement progress tracker dialog _(done)_
   * Implement GUI: create icons for the application. _(partially done: a [http://www.pinvoke.com/ Fugue] icons pack from pinvoke)_
   * ~~Core: optimize database~~
-== Alpha 2 ==
+== Alpha 2 [http://code.google.com/images/check-35x28.gif]==
   * Implement GUI: TreeTable forum view _(done)_
   * Database: include full support for HSQL ~~and SQLite~~. _(done)_
   * Add scheduled synchronizer. _(done)_
   * Implement navigation between messages by links in message body. _(done)_
   * Add tray icon. _(done)_
-== Alpha 3 ==
+== Alpha 3 [http://code.google.com/images/check-35x28.gif]==
   * Make theads view info load more lazy _(done)_
   * Add keyboard shortcuts. _(done)_
-  * Add keyboard shortcuts manager. _*(in progress)*_
+  * Add keyboard shortcuts manager. _(done)_
   * Add favorites (messages, topics, you posts, responses) _(done)_
   * Add separate forum subscribtion manager. _(done)_
   * Add recent topics view. _(done)_
