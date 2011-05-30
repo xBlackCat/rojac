@@ -41,7 +41,7 @@ public class EditMessageDialog extends JDialog {
     private int forumId = 0;
 
     public EditMessageDialog(Window owner) {
-        super(owner, DEFAULT_MODALITY_TYPE);
+        super(owner, ModalityType.MODELESS);
 
         panelPreview = new PreviewMessageView();
         panelEdit = new EditMessagePane(panelPreview);
