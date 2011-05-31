@@ -539,7 +539,7 @@ class JanusHTTPSender extends BasicHandler {
             // Transfer MIME headers of SOAPMessage to HTTP headers.
             MimeHeaders mimeHeaders = msg.getMimeHeaders();
             if (mimeHeaders != null) {
-                for (Iterator i = mimeHeaders.getAllHeaders(); i.hasNext();) {
+                for (Iterator i = mimeHeaders.getAllHeaders(); i.hasNext(); ) {
                     MimeHeader mimeHeader = (MimeHeader) i.next();
                     //HEADER_CONTENT_TYPE and HEADER_SOAP_ACTION are already set.
                     //Let's not duplicate them.
@@ -864,10 +864,15 @@ class JanusHTTPSender extends BasicHandler {
     private class LogOutputStream extends FilterOutputStream {
         private long amount = 0;
         private final long total;
+        private final long chunkSize;
+
+        private long chunkRemain = 0;
 
         public LogOutputStream(OutputStream out, long contentLength) {
             super(out);
             total = contentLength;
+
+            chunkSize = Math.max(contentLength / 100, 1);
         }
 
         @Override
@@ -878,7 +883,11 @@ class JanusHTTPSender extends BasicHandler {
 
         private void logByte() {
             amount++;
-            progressController.fireJobProgressChanged(amount, total);
+            if (chunkSize == 1 || chunkRemain == 0) {
+                progressController.fireJobProgressChanged(amount, total);
+                chunkRemain = chunkSize;
+            }
+            chunkRemain--;
         }
     }
 
