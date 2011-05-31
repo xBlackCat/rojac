@@ -93,7 +93,9 @@ public class SortedForumModelControl extends AThreadsModelControl {
         filledThreads.retainAll(threadIds);
 
         // Reload filled threads.
-        for (int threadId : filledThreads.toArray()) {
+        final int[] filledThreadIds = filledThreads.toArray();
+
+        for (int threadId : filledThreadIds) {
             Post post = root.getMessageById(threadId);
             if (post != null) {
                 // Update thread children
