@@ -292,6 +292,9 @@ public abstract class AThreadView extends AView implements IItemView {
             Post parent = post.getParent();
             if (parent != null) {
                 int nextIdx = parent.getIndex(post) + 1;
+                if (Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT.get()) {
+                    collapsePath(model.getPathToRoot(parent));
+                }
                 return findNextPost(parent, nextIdx, unread);
             } else {
                 return null;
@@ -466,6 +469,8 @@ public abstract class AThreadView extends AView implements IItemView {
 
         modelControl.processPacket(model, packet, postProcessor);
     }
+
+    protected abstract void collapsePath(TreePath path);
 
     // Toolbar possible actions
     class NewThreadAction extends AButtonAction {

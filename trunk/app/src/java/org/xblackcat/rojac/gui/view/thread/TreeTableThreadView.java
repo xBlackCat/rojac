@@ -224,6 +224,10 @@ public class TreeTableThreadView extends AThreadView {
         threads.expandPath(parentPath);
     }
 
+    protected void collapsePath(TreePath path) {
+        threads.collapsePath(path);
+    }
+
     @Override
     protected Post getSelectedItem() {
         TreePath path = threads.getPathForRow(threads.getSelectedRow());

@@ -155,6 +155,8 @@ public enum Messages {
     // Edit message dialog related texts
     ErrorDialog_MessageNotFound_Message,
     ErrorDialog_MessageNotFound_Title,
+    ErrorDialog_MessageEmptySubject_Message,
+    ErrorDialog_MessageEmptySubject_Title,
 
     Message_Response_Header,
 

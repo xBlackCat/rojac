@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.dialog;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
@@ -94,11 +95,24 @@ public class EditMessageDialog extends JDialog {
 
         body = MessageUtils.addOwnTagLine(body);
 
+        final String subject = panelEdit.getSubject();
+
+        if (StringUtils.isBlank(subject)) {
+            JLOptionPane.showMessageDialog(
+                    EditMessageDialog.this,
+                    Messages.ErrorDialog_MessageEmptySubject_Message.get(),
+                    Messages.ErrorDialog_MessageEmptySubject_Title.get(),
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            return;
+        }
+
         final NewMessage nm = new NewMessage(
                 newMessageId,
                 parentMessageId,
                 forumId,
-                panelEdit.getSubject(),
+                subject,
                 body
         );
 

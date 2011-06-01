@@ -79,6 +79,11 @@ public class TreeThreadView extends AThreadView {
     }
 
     @Override
+    protected void collapsePath(TreePath path) {
+        threads.collapsePath(path);
+    }
+
+    @Override
     protected Post getSelectedItem() {
         TreePath path = threads.getSelectionPath();
         return path == null ? null : (Post) path.getLastPathComponent();
