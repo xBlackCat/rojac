@@ -293,9 +293,7 @@ public abstract class AThreadView extends AView implements IItemView {
             if (parent != null) {
                 int nextIdx = parent.getIndex(post) + 1;
                 if (Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT.get()) {
-                    if (modelControl.isRootVisible() || !model.getRoot().equals(parent)) {
-                        collapsePath(model.getPathToRoot(parent));
-                    }
+                    collapsePath(model.getPathToRoot(post));
                 }
                 return findNextPost(parent, nextIdx, unread);
             } else {
