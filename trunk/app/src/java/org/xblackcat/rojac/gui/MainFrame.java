@@ -10,6 +10,7 @@ import net.infonode.docking.title.DockingWindowTitleProvider;
 import net.infonode.docking.title.SimpleDockingWindowTitleProvider;
 import net.infonode.docking.util.StringViewMap;
 import net.infonode.docking.util.WindowMenuUtil;
+import net.infonode.gui.UIManagerUtil;
 import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -261,9 +262,12 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         threadsRootWindow = new RootWindow(false, new ThreadViewSerializer(), threads);
         threadsRootWindow.addListener(new CloseViewTabListener());
 
+        Color backgroundColor = UIManagerUtil.getColor("Panel.background", "control");
+
         RootWindowProperties rootWindowProperties = threadsRootWindow.getRootWindowProperties();
         rootWindowProperties.setDragRectangleBorderWidth(2);
         rootWindowProperties.setRecursiveTabsEnabled(false);
+        rootWindowProperties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
 
         rootWindowProperties
                 .getDockingWindowProperties()
@@ -301,6 +305,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         properties.getDockingWindowProperties().setUndockEnabled(false);
         properties.getDockingWindowProperties().setCloseEnabled(false);
+        properties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
 
         TabWindowProperties tabWindowProperties = properties.getTabWindowProperties();
         tabWindowProperties.getMaximizeButtonProperties().setVisible(false);
