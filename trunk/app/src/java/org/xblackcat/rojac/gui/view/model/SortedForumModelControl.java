@@ -265,4 +265,12 @@ public class SortedForumModelControl extends AThreadsModelControl {
     public ThreadToolbarActions[] getToolbar() {
         return TOOLBAR_CONFIG;
     }
+
+    @Override
+    public void unloadThread(AThreadModel<Post> model, Post item) {
+        Thread thread = (Thread) item;
+
+        thread.clearThread();
+        model.nodeStructureChanged(thread);
+    }
 }

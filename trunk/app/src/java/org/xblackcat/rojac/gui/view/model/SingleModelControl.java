@@ -245,4 +245,9 @@ public class SingleModelControl extends AThreadsModelControl {
 
         return false;
     }
+
+    @Override
+    public void unloadThread(AThreadModel<Post> model, Post item) {
+        // Single-thread views shouldn't clean the thread info.
+    }
 }
