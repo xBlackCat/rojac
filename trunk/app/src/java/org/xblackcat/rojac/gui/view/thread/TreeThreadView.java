@@ -60,10 +60,7 @@ public class TreeThreadView extends AThreadView {
                 expandPath(parentPath);
             }
             threads.setSelectionPath(path);
-            Rectangle bounds = threads.getPathBounds(path);
-            bounds.setLocation(0, bounds.y);
-            threads.scrollRectToVisible(bounds);
-            threads.scrollPathToVisible(path);
+            scrollPathToVisible(path);
 
             if (collapseChildren) {
                 threads.collapsePath(path);
@@ -71,6 +68,13 @@ public class TreeThreadView extends AThreadView {
         } else {
             threads.clearSelection();
         }
+    }
+
+    protected void scrollPathToVisible(TreePath path) {
+        Rectangle bounds = threads.getPathBounds(path);
+        bounds.setLocation(0, bounds.y);
+        threads.scrollRectToVisible(bounds);
+        threads.scrollPathToVisible(path);
     }
 
     @Override

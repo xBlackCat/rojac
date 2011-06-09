@@ -28,7 +28,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.LinkedList;
 
 /**
  * @author xBlackCat
@@ -237,6 +239,8 @@ public abstract class AThreadView extends AView implements IItemView {
 
     protected abstract TreePath getPathForLocation(Point p);
 
+    protected abstract void scrollPathToVisible(TreePath treePath);
+
     private void applyState() {
         assert RojacUtils.checkThread(true);
 
@@ -255,9 +259,18 @@ public abstract class AThreadView extends AView implements IItemView {
     }
 
     private void selectNextPost(Post currentPost, boolean unread) {
-        Post next = findNextPost(currentPost, 0, unread);
+        LinkedList<Post> toCollapse = new LinkedList<Post>();
+        Post next = findNextPost(currentPost, 0, unread, toCollapse);
         if (next != null) {
             selectItem(next);
+
+            if (!toCollapse.isEmpty()) {
+                for (Post post : toCollapse) {
+                    collapsePath(model.getPathToRoot(post));
+                }
+
+                scrollPathToVisible(model.getPathToRoot(next));
+            }
         }
     }
 
@@ -268,7 +281,7 @@ public abstract class AThreadView extends AView implements IItemView {
         }
     }
 
-    private Post findNextPost(Post post, int idx, boolean unread) {
+    private Post findNextPost(Post post, int idx, boolean unread, Collection<Post> toCollapse) {
         if (post == null) {
             post = model.getRoot();
             if (post.getSize() == 0) {
@@ -293,9 +306,9 @@ public abstract class AThreadView extends AView implements IItemView {
             if (parent != null) {
                 int nextIdx = parent.getIndex(post) + 1;
                 if (Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT.get()) {
-                    collapsePath(model.getPathToRoot(post));
+                    toCollapse.add(post);
                 }
-                return findNextPost(parent, nextIdx, unread);
+                return findNextPost(parent, nextIdx, unread, toCollapse);
             } else {
                 return null;
             }
@@ -335,7 +348,7 @@ public abstract class AThreadView extends AView implements IItemView {
         Post parent = post.getParent();
         if (unread && parent != null) {
             int nextIdx = parent.getIndex(post) + 1;
-            return findNextPost(parent, nextIdx, unread);
+            return findNextPost(parent, nextIdx, unread, toCollapse);
         } else {
             return null;
         }
