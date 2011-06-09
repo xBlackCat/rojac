@@ -150,6 +150,25 @@ public class Thread extends Post {
         this.unreadPosts = unreadPosts;
     }
 
+    void clearThread() {
+        long lastPostDate = getLastPostDate();
+        int repliesAmount = getRepliesAmount();
+
+        unreadPosts = 0;
+        for (Post p : threadPosts.valueCollection()) {
+            if (p != this && !p.messageData.isRead()) {
+                unreadPosts++;
+            }
+        }
+
+        threadStatData = new ThreadStatData(lastPostDate, repliesAmount);
+        childrenPosts.clear();
+        threadPosts.clear();
+        threadPosts.put(getMessageId(), this);
+        setLoadingState(LoadingState.NotLoaded);
+        filled = false;
+    }
+
     void fillThread(Collection<MessageData> po) {
         List<MessageData> posts = new ArrayList<MessageData>(po);
         Collections.sort(posts, SORT_BY_PARENTS);

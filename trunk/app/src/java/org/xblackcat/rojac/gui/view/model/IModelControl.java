@@ -42,12 +42,10 @@ public interface IModelControl<T extends ITreeItem<T>> {
     /**
      * Process packet with correspond behaviour.
      *
-     *
-     *
-     * @param model data model to be affected by a packet.
-     * @param p     packet to process.
-     *
+     * @param model         data model to be affected by a packet.
+     * @param p             packet to process.
      * @param postProcessor
+     *
      * @return <code>true</code> if packet was processed.
      */
     void processPacket(AThreadModel<T> model, IPacket p, Runnable postProcessor);
@@ -100,4 +98,6 @@ public interface IModelControl<T extends ITreeItem<T>> {
     JPopupMenu getTitlePopup(AThreadModel<T> model, IAppControl appControl);
 
     ThreadToolbarActions[] getToolbar();
+
+    void unloadThread(AThreadModel<T> model, T item);
 }

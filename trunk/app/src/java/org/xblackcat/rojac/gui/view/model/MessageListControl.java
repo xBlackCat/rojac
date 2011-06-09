@@ -150,6 +150,11 @@ public class MessageListControl implements IModelControl<Post> {
         return TOOLBAR_CONFIG;
     }
 
+    @Override
+    public void unloadThread(AThreadModel<Post> postAThreadModel, Post item) {
+        // Nothing to do
+    }
+
 
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
