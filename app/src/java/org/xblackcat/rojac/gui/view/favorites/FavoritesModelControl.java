@@ -113,6 +113,13 @@ public class FavoritesModelControl implements IModelControl<Post> {
         return delegatedControl == null ? null : delegatedControl.getToolbar();
     }
 
+    @Override
+    public void unloadThread(AThreadModel<Post> model, Post item) {
+        if (delegatedControl != null) {
+            delegatedControl.unloadThread(model, item);
+        }
+    }
+
     /**
      * Util class to determine favorite type and the control behaviour.
      */

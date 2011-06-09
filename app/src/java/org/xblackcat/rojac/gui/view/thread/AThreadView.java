@@ -727,6 +727,17 @@ public abstract class AThreadView extends AView implements IItemView {
         }
 
         public void treeCollapsed(TreeExpansionEvent event) {
+            final TreePath path = event.getPath();
+
+            Post item = (Post) path.getLastPathComponent();
+
+            if (item.getLoadingState() == LoadingState.Loaded) {
+                if (item.getThreadRoot() == item) {
+                    // Remove thread content after collapse.
+
+                    modelControl.unloadThread(model, item);
+                }
+            }
         }
     }
 
