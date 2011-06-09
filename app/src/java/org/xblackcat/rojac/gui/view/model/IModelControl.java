@@ -99,5 +99,11 @@ public interface IModelControl<T extends ITreeItem<T>> {
 
     ThreadToolbarActions[] getToolbar();
 
+    /**
+     * Remove detailed info for collapsed threads. If supported.
+     *
+     * @param model model to act.
+     * @param item  target thread to clean up.
+     */
     void unloadThread(AThreadModel<T> model, T item);
 }

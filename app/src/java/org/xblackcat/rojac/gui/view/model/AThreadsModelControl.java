@@ -27,14 +27,6 @@ public abstract class AThreadsModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void unloadThread(AThreadModel<Post> model, Post item) {
-        Thread thread = (Thread) item;
-
-        thread.clearThread();
-        model.nodeStructureChanged(thread);
-    }
-
-    @Override
     public boolean allowSearch() {
         return true;
     }
