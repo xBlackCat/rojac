@@ -259,16 +259,18 @@ public abstract class AThreadView extends AView implements IItemView {
     }
 
     private void selectNextPost(Post currentPost, boolean unread) {
-        LinkedList<Post> toCollapse = new LinkedList<Post>();
+        Collection<Post> toCollapse = new LinkedList<Post>();
         Post next = findNextPost(currentPost, 0, unread, toCollapse);
         if (next != null) {
             selectItem(next);
+        }
 
-            if (!toCollapse.isEmpty()) {
-                for (Post post : toCollapse) {
-                    collapsePath(model.getPathToRoot(post));
-                }
+        if (!toCollapse.isEmpty()) {
+            for (Post post : toCollapse) {
+                collapsePath(model.getPathToRoot(post));
+            }
 
+            if (next != null) {
                 scrollPathToVisible(model.getPathToRoot(next));
             }
         }
