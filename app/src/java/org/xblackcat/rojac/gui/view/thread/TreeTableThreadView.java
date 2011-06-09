@@ -80,7 +80,7 @@ public class TreeTableThreadView extends AThreadView {
                     final TreePath pathToRoot = model.getPathToRoot(post);
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            markRowSelected(pathToRoot);
+                            scrollPathToVisible(pathToRoot);
                         }
                     });
                 }
@@ -197,7 +197,7 @@ public class TreeTableThreadView extends AThreadView {
             if (parentPath != null && threads.isCollapsed(parentPath)) {
                 expandPath(parentPath);
             }
-            markRowSelected(path);
+            scrollPathToVisible(path);
 
             if (collapseChildren) {
                 threads.collapsePath(path);
@@ -207,7 +207,7 @@ public class TreeTableThreadView extends AThreadView {
         }
     }
 
-    private void markRowSelected(TreePath path) {
+    protected void scrollPathToVisible(TreePath path) {
         int row = threads.getRowForPath(path);
         if (row >= 0) {
             threads.setRowSelectionInterval(row, row);
