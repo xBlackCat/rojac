@@ -137,6 +137,10 @@ public class MessageView extends AView implements IItemView {
         getActionMap().put("spaceScroll", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (messageData == null) {
+                    return;
+                }
+
                 JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
 
                 int oldValue = scrollBar.getValue();
