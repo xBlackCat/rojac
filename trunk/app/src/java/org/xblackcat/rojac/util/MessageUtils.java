@@ -94,6 +94,10 @@ public final class MessageUtils {
     }
 
     static String abbreviateUserName(String userName) {
+        if (StringUtils.isEmpty(userName)) {
+            return "A";
+        }
+
         StringBuilder res = new StringBuilder();
 
         char[] chars = userName.toCharArray();
