@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.view.favorites;
+package org.xblackcat.rojac.gui.view.model;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
@@ -6,7 +6,6 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.theme.FavoritesIcon;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
-import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -23,7 +22,7 @@ import java.util.Map;
  * @author xBlackCat
  */
 
-public class FavoritesModelControl implements IModelControl<Post> {
+class FavoritesModelControl implements IModelControl<Post> {
     private IModelControl<Post> delegatedControl = null;
     private String title = null;
 
@@ -164,14 +163,14 @@ public class FavoritesModelControl implements IModelControl<Post> {
                 case UserResponses:
                 case UserPosts:
                 case Category:
-                    delegatedControl = new MessageListControl();
+                    delegatedControl = ModelControls.FAVORITES_MESSAGES;
                     statusIcons.put(ReadStatus.Read, FavoritesIcon.UserPostsRead);
                     statusIcons.put(ReadStatus.ReadPartially, FavoritesIcon.UserPostsReadPartially);
                     statusIcons.put(ReadStatus.Unread, FavoritesIcon.UserPostsUnread);
                     break;
                 case SubThread:
                 case Thread:
-                    delegatedControl = new SingleModelControl();
+                    delegatedControl = ModelControls.SINGLE_THREAD;
                     statusIcons.put(ReadStatus.Read, FavoritesIcon.ThreadRead);
                     statusIcons.put(ReadStatus.ReadPartially, FavoritesIcon.ThreadReadPartially);
                     statusIcons.put(ReadStatus.Unread, FavoritesIcon.ThreadUnread);

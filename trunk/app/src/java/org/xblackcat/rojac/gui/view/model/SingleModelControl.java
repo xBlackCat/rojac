@@ -21,7 +21,7 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-public class SingleModelControl extends AThreadsModelControl {
+class SingleModelControl extends AThreadsModelControl {
     private static final ThreadToolbarActions[] TOOLBAR_CONFIG = new ThreadToolbarActions[]{
             ThreadToolbarActions.ToThreadRoot,
             ThreadToolbarActions.PreviousPost,

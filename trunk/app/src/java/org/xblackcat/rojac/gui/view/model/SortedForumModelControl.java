@@ -21,7 +21,7 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-public class SortedForumModelControl extends AThreadsModelControl {
+class SortedForumModelControl extends AThreadsModelControl {
     private static final ThreadToolbarActions[] TOOLBAR_CONFIG = new ThreadToolbarActions[]{
             ThreadToolbarActions.NewThread,
             null,

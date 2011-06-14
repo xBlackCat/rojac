@@ -11,10 +11,10 @@ import org.xblackcat.rojac.gui.view.thread.TreeTableThreadView;
  * @author xBlackCat
  */
 
-class ForumThreadViewFactory implements IViewFactory {
+class UserReplyListFactory implements IViewFactory {
     @Override
     public IItemView makeView(ViewId id, IAppControl appControl) {
-        IItemView threadView = new TreeTableThreadView(id, appControl, ModelControls.FORUM_THREADS);
+        IItemView threadView = new TreeTableThreadView(id, appControl, ModelControls.USER_REPLIES);
         IItemView messageView = new MessageView(id, appControl);
 
         return new ThreadDoubleView(threadView, messageView, true, appControl);

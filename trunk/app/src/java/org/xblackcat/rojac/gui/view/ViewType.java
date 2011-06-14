@@ -8,7 +8,10 @@ public enum ViewType {
     Forum(new ForumThreadViewFactory()),
     SingleThread(new SingleThreadViewFactory()),
     SingleMessage(new MessageViewFactory()),
-    Favorite(new FavoriteViewFactory());
+    Favorite(new FavoriteViewFactory()),
+    PostList(new UserPostListFactory()),
+    ReplyList(new UserReplyListFactory()),
+    ;
 
     private final IViewFactory factory;
 
