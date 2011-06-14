@@ -9,7 +9,7 @@ import javax.swing.*;
 /**
  * Handle common thread-model behaviour
  */
-public abstract class AThreadsModelControl implements IModelControl<Post> {
+abstract class AThreadsModelControl implements IModelControl<Post> {
     @Override
     public Post getTreeRoot(Post post) {
         return post == null ? null : post.getThreadRoot();
