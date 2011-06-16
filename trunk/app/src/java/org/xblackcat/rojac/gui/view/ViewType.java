@@ -5,22 +5,15 @@ package org.xblackcat.rojac.gui.view;
  */
 
 public enum ViewType {
-    Forum(new ForumThreadViewFactory()),
-    SingleThread(new SingleThreadViewFactory()),
-    SingleMessage(new MessageViewFactory()),
-    Favorite(new FavoriteViewFactory()),
-    PostList(new UserPostListFactory()),
-    ReplyList(new UserReplyListFactory()),
+    Forum,
+    SingleThread,
+    SingleMessage,
+    Favorite,
+    PostList,
+    ReplyList,
     ;
 
-    private final IViewFactory factory;
-
-    private ViewType(IViewFactory factory) {
-        this.factory = factory;
-    }
-
-    IViewFactory getFactory() {
-        return factory;
+    private ViewType() {
     }
 
     public ViewId makeId(int itemId) {
