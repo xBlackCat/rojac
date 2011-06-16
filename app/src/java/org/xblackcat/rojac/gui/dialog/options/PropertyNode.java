@@ -10,7 +10,7 @@ import java.util.List;
  * @author xBlackCat
  */
 class PropertyNode<T> {
-    private final Property<T> property;
+    private Property<T> property;
     private final String name;
     private PropertyNode<?> parent;
 
@@ -18,15 +18,15 @@ class PropertyNode<T> {
 
     private final List<PropertyNode<?>> children = new ArrayList<PropertyNode<?>>();
 
-    public PropertyNode(String name) {
+    PropertyNode(String name) {
         this(name, null);
     }
 
-    public PropertyNode(String name, PropertyNode<?> parent) {
+    PropertyNode(String name, PropertyNode<?> parent) {
         this(name, parent, null);
     }
 
-    public PropertyNode(String name, PropertyNode<?> parent, Property<T> property) {
+    PropertyNode(String name, PropertyNode<?> parent, Property<T> property) {
         this.property = property;
         this.name = name;
         this.parent = parent;
@@ -36,48 +36,48 @@ class PropertyNode<T> {
         }
     }
 
-    public Property<T> getProperty() {
+    Property<T> getProperty() {
         return property;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public PropertyNode<?> getParent() {
+    PropertyNode<?> getParent() {
         return parent;
     }
 
-    public int childrenCount() {
+    int childrenCount() {
         return children.size();
     }
 
-    public int indexOf(PropertyNode<?> n) {
+    int indexOf(PropertyNode<?> n) {
         return children.indexOf(n);
     }
 
-    public PropertyNode<?> getChild(int i) {
+    PropertyNode<?> getChild(int i) {
         return children.get(i);
     }
 
-    public void addChild(PropertyNode<?> n) {
+    void addChild(PropertyNode<?> n) {
         children.add(n);
         n.parent = this;
     }
 
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return children.isEmpty();
     }
 
-    public boolean has(PropertyNode<?> n) {
+    boolean has(PropertyNode<?> n) {
         return children.contains(n);
     }
 
-    public T getValue() {
+    T getValue() {
         return value;
     }
 
-    public boolean isChanged() {
+    boolean isChanged() {
         if (property == null) {
             return false;
         }
@@ -87,17 +87,17 @@ class PropertyNode<T> {
         return value != null ? !value.equals(curValue) : curValue != null;
     }
 
-    public void setValue(T value) {
+    void setValue(T value) {
         this.value = value;
     }
 
-    public void apply() {
+    void apply() {
         if (property != null) {
             property.set(value);
         }
     }
 
-    public void revert() {
+    void revert() {
         if (property != null) {
             value = property.get();
         }
@@ -127,7 +127,7 @@ class PropertyNode<T> {
         return sb.toString();
     }
 
-    public TreePath getPath() {
+    TreePath getPath() {
         return new TreePath(makePath(0));
     }
 
@@ -143,4 +143,18 @@ class PropertyNode<T> {
         return path;
     }
 
+    /**
+     * Copy a property from another node
+     * @param path
+     * @return
+     */
+    boolean setProperty(PropertyNode path) {
+        if (path.property == null) {
+            return false;
+        }
+
+        property = path.property;
+        value = property.get();
+        return true;
+    }
 }
