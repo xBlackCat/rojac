@@ -1,11 +1,17 @@
-package org.xblackcat.rojac.gui.view;
+package org.xblackcat.rojac.gui.view.factory;
 
 import net.infonode.docking.View;
+import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.*;
+import org.xblackcat.rojac.gui.view.ViewId;
+import org.xblackcat.rojac.gui.view.ViewType;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * Helper class to replace sequence of 'new' operators.
@@ -14,6 +20,26 @@ import java.io.ObjectOutputStream;
  */
 
 public final class ViewHelper {
+    private static final Map<ViewType, IViewFactory> VIEW_FACTORIES;
+
+    static {
+        EnumMap<ViewType, IViewFactory> map = new EnumMap<ViewType, IViewFactory>(ViewType.class);
+        map.put(ViewType.Forum, new ForumThreadViewFactory());
+        map.put(ViewType.SingleThread, new SingleThreadViewFactory());
+        map.put(ViewType.SingleMessage, new MessageViewFactory());
+        map.put(ViewType.Favorite, new FavoriteViewFactory());
+        map.put(ViewType.PostList, new UserPostListFactory());
+        map.put(ViewType.ReplyList, new UserReplyListFactory());
+
+        for (ViewType t : ViewType.values()) {
+            if (map.get(t) == null) {
+                throw new RojacDebugException("A view factory is not defined for " + t + " view type.");
+            }
+        }
+
+        VIEW_FACTORIES = Collections.unmodifiableMap(map);
+    }
+
     /**
      * Stores a view state for future restoring docking layout.
      *
@@ -76,7 +102,11 @@ public final class ViewHelper {
      * @return created view.
      */
     public static IItemView makeView(ViewId viewId, IAppControl appControl) {
-        return viewId.getType().getFactory().makeView(viewId, appControl);
+        IViewFactory factory = VIEW_FACTORIES.get(viewId.getType());
+
+        assert factory != null;
+
+        return factory.makeView(viewId, appControl);
     }
 
 }
