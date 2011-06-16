@@ -65,7 +65,6 @@ final class ComponentFactory {
 
                     @Override
                     public void focusLost(FocusEvent e) {
-                        //To change body of implemented methods use File | Settings | File Templates.
                     }
                 });
 
@@ -111,7 +110,7 @@ final class ComponentFactory {
             JPasswordField field = new JPasswordField();
 
             field.setColumns(TEXT_FIELD_WIDTH);
-            field.setText(String.valueOf(pass.getPassword()));
+            field.setText(pass == null ? null : String.valueOf(pass.getPassword()));
 
             return new PropertyCellEditor(field);
         }

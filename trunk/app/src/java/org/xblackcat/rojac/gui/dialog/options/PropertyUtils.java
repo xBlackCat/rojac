@@ -93,6 +93,10 @@ public final class PropertyUtils {
             root = root.getChild(root.indexOf(path));
         } while (!path.isEmpty());
 
+        if (root.getProperty() == null) {
+            return root.setProperty(path);
+        }
+
         return false;
     }
 
