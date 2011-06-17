@@ -11,18 +11,18 @@ import java.awt.event.ActionEvent;
 /**
  * @author xBlackCat
  */
-public class InvokeExtMarkDialog extends AButtonAction {
+public class InvokeExtMarkDialogAction extends AButtonAction {
     private final Long messageDate;
     private final Scope scope;
     private final int forumId;
     private final int topicId;
     private final Window owner;
 
-    public InvokeExtMarkDialog(Window owner) {
+    public InvokeExtMarkDialogAction(Window owner) {
         this(null, Scope.All, 0, 0, owner);
     }
 
-    public InvokeExtMarkDialog(Long messageDate, Scope scope, int forumId, int topicId, Window owner) {
+    public InvokeExtMarkDialogAction(Long messageDate, Scope scope, int forumId, int topicId, Window owner) {
         super(Messages.Dialog_ExtMark_Title);
         this.messageDate = messageDate;
         this.scope = scope;

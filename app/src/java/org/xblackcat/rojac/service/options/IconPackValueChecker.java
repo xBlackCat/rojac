@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.options;
 
 import org.xblackcat.rojac.gui.theme.IconPack;
 
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,5 +30,10 @@ public class IconPackValueChecker implements IValueChecker<IconPack> {
     @Override
     public boolean isValueCorrect(IconPack v) {
         return DEFAULT_ICON_PACK.equals(v);
+    }
+
+    @Override
+    public Icon getValueIcon(IconPack v) throws IllegalArgumentException {
+        return null;
     }
 }

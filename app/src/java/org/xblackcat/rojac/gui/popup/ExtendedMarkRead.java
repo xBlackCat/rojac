@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.gui.component.InvokeExtMarkDialog;
+import org.xblackcat.rojac.gui.component.InvokeExtMarkDialogAction;
 import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
 import org.xblackcat.rojac.i18n.Messages;
 
@@ -41,7 +41,7 @@ class ExtendedMarkRead extends JMenuItem {
     ) {
         super(title.get());
 
-        addActionListener(new InvokeExtMarkDialog(messageDate, scope, forumId, topicId, owner));
+        addActionListener(new InvokeExtMarkDialogAction(messageDate, scope, forumId, topicId, owner));
     }
 
 }

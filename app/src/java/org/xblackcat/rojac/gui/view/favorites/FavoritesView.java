@@ -3,15 +3,14 @@ package org.xblackcat.rojac.gui.view.favorites;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.datahandler.*;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -142,8 +141,7 @@ public class FavoritesView extends AView {
 
     @Override
     public Icon getTabTitleIcon() {
-        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
-        return imagePack.getIcon(ViewIcon.Favorites);
+        return UIUtils.getIcon(ViewIcon.Favorites);
     }
 
     @Override

@@ -6,7 +6,6 @@ import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.RatingCache;
-import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.PostIcon;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.Post;
@@ -259,13 +258,11 @@ public final class MessageUtils {
     }
 
     public static Icon getPostIcon(Post post) {
-        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
-        return imagePack.getIcon(getItemIcon(post));
+        return UIUtils.getIcon(getItemIcon(post));
     }
 
     public static Icon getPostIcon(MessageData data) {
-        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
-        return imagePack.getIcon(getItemIcon(new Post(data, null)));
+        return getPostIcon(new Post(data, null));
     }
 
     private static PostIcon getItemIcon(Post p) {

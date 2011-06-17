@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -35,4 +36,6 @@ public interface IValueChecker<T> {
      * @return <code>true</code> if the value is valid and <code>false</code> elsewise.
      */
     boolean isValueCorrect(T v);
+
+    Icon getValueIcon(T v) throws IllegalArgumentException;
 }

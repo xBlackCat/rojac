@@ -9,7 +9,6 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.component.UpdateForumListAction;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
@@ -19,6 +18,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -206,8 +206,7 @@ public class ForumsListView extends AView {
 
     @Override
     public Icon getTabTitleIcon() {
-        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
-        return imagePack.getIcon(ViewIcon.ForumList);
+        return UIUtils.getIcon(ViewIcon.ForumList);
     }
 
     @Override

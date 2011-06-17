@@ -58,9 +58,9 @@ class OptionCellEditor extends AbstractCellEditor implements TreeCellEditor {
         editor.removeAll();
         editor.add(delegatedEditor.getTreeCellEditorComponent(tree, value, isSelected, expanded, leaf, row));
 
-        JLabel renderer = (JLabel) ComponentFactory.createTreeCellRenderer(n).getTreeCellRendererComponent(tree, value, isSelected, expanded, leaf, row, true);
+//        JLabel renderer = (JLabel) ComponentFactory.createTreeCellRenderer(n).getTreeCellRendererComponent(tree, value, isSelected, expanded, leaf, row, true);
         label.setText(n.getName() + " : ");
-        label.setIcon(renderer.getIcon());
+//        label.setIcon(renderer.getIcon());
 
         container.invalidate();
         container.repaint();
