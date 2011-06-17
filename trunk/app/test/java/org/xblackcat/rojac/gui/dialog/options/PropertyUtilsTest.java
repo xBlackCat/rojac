@@ -10,8 +10,8 @@ import org.xblackcat.rojac.service.options.Property;
 @SuppressWarnings({"unchecked"})
 public class PropertyUtilsTest extends TestCase {
     public void testMakePropertyPath() {
-        // rojac.viewer.show.marks.pane (5 nodes)
-        Property p = Property.MESSAGE_PANE_SHOW_MARKS;
+        // rojac.main_frame.tray.hide_on_minimize (5 nodes)
+        Property p = Property.ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE;
 
         PropertyNode node = PropertyUtils.propertyPath(p);
 
@@ -20,12 +20,18 @@ public class PropertyUtilsTest extends TestCase {
         assertNull(node.getParent());
 
         node = next(node);
-        assertEquals("viewer", node.getName());
+        assertEquals("main_frame", node.getName());
         assertNull(node.getProperty());
         assertNotNull(node.getParent());
 
         node = next(node);
-        assertEquals("show_marks_pane", node.getName());
+        assertEquals("tray", node.getName());
+        assertNull(node.getProperty());
+        assertNotNull(node.getParent());
+
+
+        node = next(node);
+        assertEquals("hide_on_minimize", node.getName());
         assertNotNull(node.getProperty());
         assertNotNull(node.getParent());
 
@@ -34,13 +40,13 @@ public class PropertyUtilsTest extends TestCase {
     }
 
     public void testMergePropertyPathes() {
-        // rojac.viewer.show.marks.pane (5 nodes)
-        Property p = Property.MESSAGE_PANE_SHOW_MARKS;
+        // rojac.main_frame.tray.hide_on_minimize (5 nodes)
+        Property p = Property.ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE;
 
         // Root node
         final PropertyNode rootNode = new PropertyNode("rojac");
-        final PropertyNode childLevel1 = new PropertyNode("viewer", rootNode);
-        final PropertyNode childLevel2 = new PropertyNode("testing", childLevel1);
+        final PropertyNode childLevel1 = new PropertyNode("main_frame", rootNode);
+        final PropertyNode childLevel2 = new PropertyNode("tray", childLevel1);
 
         rootNode.addChild(childLevel1);
         childLevel1.addChild(childLevel2);
@@ -54,12 +60,12 @@ public class PropertyUtilsTest extends TestCase {
         assertTrue(PropertyUtils.addProperty(rootNode, p));
 
         assertEquals(1, rootNode.childrenCount());
-        assertEquals(2, childLevel1.childrenCount());
-        assertEquals(0, childLevel2.childrenCount());
+        assertEquals(1, childLevel1.childrenCount());
+        assertEquals(1, childLevel2.childrenCount());
 
         // Child should not be changed
         assertTrue(rootNode.getChild(0) == childLevel1);
-        assertTrue(childLevel1.has(new PropertyNode("show_marks_pane")));
+        assertTrue(childLevel2.has(new PropertyNode("hide_on_minimize")));
     }
 
     private static PropertyNode next(PropertyNode n) {

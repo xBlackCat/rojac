@@ -44,9 +44,9 @@ public final class Property<T> {
     public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", getDefaultLocale(), localeChecker);
 
     // Main frame behaviour
-    public static final Property<Boolean> ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE = create("rojac.main_frame.tray.hide_on_minimize", Boolean.TRUE);
-    public static final Property<Boolean> ROJAC_MAIN_FRAME_HIDE_ON_CLOSE = create("rojac.main_frame.tray.hide_on_close", Boolean.FALSE);
-    public static final Property<Boolean> ROJAC_MAIN_FRAME_ASK_ON_CLOSE = create("rojac.main_frame.question.on_close", Boolean.TRUE);
+    public static final Property<Boolean> ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE = create("rojac.behaviour.frame.hide_on_minimize", Boolean.TRUE);
+    public static final Property<Boolean> ROJAC_MAIN_FRAME_HIDE_ON_CLOSE = create("rojac.behaviour.frame.hide_on_close", Boolean.FALSE);
+    public static final Property<Boolean> ROJAC_MAIN_FRAME_ASK_ON_CLOSE = create("rojac.behaviour.question.on_close", Boolean.TRUE);
 
     public static final Property<IconPack> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", IconPackValueChecker.DEFAULT_ICON_PACK, new IconPackValueChecker());
 
@@ -71,10 +71,10 @@ public final class Property<T> {
 
     // Forum view properties.
     public static final Property<Integer> VIEW_NAVIGATION_HISTORY_SIZE = create("rojac.view.history_size", 20);
-    public static final Property<Long> VIEW_THREAD_AUTOSET_READ = create("rojac.view.thread.message.read_delay", Long.valueOf(1000));
-    public static final Property<Boolean> VIEW_THREAD_SET_READ_ON_SCROLL = create("rojac.view.thread.message.read_on_scroll", Boolean.TRUE);
-    public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC = create("rojac.view.thread.message.collapse_threads_after_sync", Boolean.FALSE);
-    public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT = create("rojac.view.thread.message.collapse_threads_after_go_to_next", Boolean.TRUE);
+    public static final Property<Long> VIEW_THREAD_AUTOSET_READ = create("rojac.view.message.read_delay", Long.valueOf(1000));
+    public static final Property<Boolean> VIEW_THREAD_SET_READ_ON_SCROLL = create("rojac.view.message.read_on_scroll", Boolean.TRUE);
+    public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC = create("rojac.view.thread.collapse_threads_after_sync", Boolean.FALSE);
+    public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT = create("rojac.view.thread.collapse_threads_after_go_to_next", Boolean.TRUE);
     public static final Property<Integer> VIEW_THREAD_TAB_TITLE_LIMIT = create("rojac.view.thread.tab_title_limit", Integer.valueOf(0));
 
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_UNREAD_POST = create("rojac.view.styles.unread_post", TextStyle.DEFAULT);
@@ -92,7 +92,7 @@ public final class Property<T> {
      */
     public static final Property<Boolean> SYNCHRONIZER_USE_GZIP = create("rojac.synchronizer.use_compression", Boolean.TRUE);
 
-    public static final Property<Boolean> SYNCHRONIZER_LOAD_BROKEN_TOPICS_AT_ONCE = create("rojac.synchronizer.load_boken_topics_at_once", Boolean.FALSE);
+    public static final Property<Boolean> SYNCHRONIZER_LOAD_TOPICS_AT_ONCE = create("rojac.behaviour.load_topics_at_once", Boolean.FALSE);
     public static final Property<Boolean> SYNCHRONIZER_LOAD_USERS = create("rojac.synchronizer.load.users", Boolean.FALSE);
     public static final Property<Integer> SYNCHRONIZER_LOAD_USERS_PORTION = create("rojac.synchronizer.load.users.portion", Integer.valueOf(1000));
     public static final Property<Integer> SYNCHRONIZER_LOAD_MESSAGES_PORTION = create("rojac.synchronizer.load.messages.portion", Integer.valueOf(100));
@@ -105,9 +105,7 @@ public final class Property<T> {
 
     public static final Property<Boolean> SYNCHRONIZER_MARK_MY_POST_READ = create("rojac.synchronizer.messages.my_as_read", Boolean.FALSE);
 
-    public static final Property<Boolean> MESSAGE_PANE_SHOW_MARKS = create("rojac.viewer.show_marks_pane", Boolean.FALSE);
-
-    public static final Property<Boolean> TRAY_NOTIFICATION_SYNC_COMPLETE = create("rojac.tray.notification.", Boolean.TRUE);
+    public static final Property<Boolean> TRAY_NOTIFICATION_SYNC_COMPLETE = create("rojac.behaviour.tray_notification.on_sync_complete", Boolean.TRUE);
 
     // Forum list view state properties.
     public static final Property<EnumSet<ForumFilterState>> VIEW_FORUM_LIST_FILTER = createPrivate("rojac.view.forum_list.filter", EnumSet.noneOf(ForumFilterState.class));
