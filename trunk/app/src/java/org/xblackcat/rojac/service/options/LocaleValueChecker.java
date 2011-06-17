@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.util.RojacUtils;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -56,5 +57,10 @@ final class LocaleValueChecker implements IValueChecker<Locale> {
     @Override
     public boolean isValueCorrect(Locale v) {
         return locales.contains(v) || v == Locale.ROOT;
+    }
+
+    @Override
+    public Icon getValueIcon(Locale v) throws IllegalArgumentException {
+        return null;
     }
 }

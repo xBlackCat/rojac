@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.dialog.subscribtion;
 
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
-import org.xblackcat.rojac.gui.component.InvokeExtMarkDialog;
+import org.xblackcat.rojac.gui.component.InvokeExtMarkDialogAction;
 import org.xblackcat.rojac.gui.component.UpdateForumListAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Messages;
@@ -105,7 +105,7 @@ public class SubscriptionDialog extends JDialog {
         content.add(WindowsUtils.createToolBar(
                 WindowsUtils.setupImageButton("update", new UpdateForumListAction(SubscriptionDialog.this)),
                 null,
-                WindowsUtils.setupImageButton("mark_read_extented", new InvokeExtMarkDialog(this))
+                WindowsUtils.setupImageButton("mark_read_extented", new InvokeExtMarkDialogAction(this))
         ), BorderLayout.NORTH);
 
         content.add(new JScrollPane(forumList), BorderLayout.CENTER);

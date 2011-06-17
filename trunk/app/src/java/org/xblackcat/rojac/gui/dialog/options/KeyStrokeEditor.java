@@ -1,9 +1,10 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
 import org.xblackcat.rojac.gui.component.AComplexEditor;
+import org.xblackcat.rojac.gui.theme.OptionsIcon;
 import org.xblackcat.rojac.util.ShortCutUtils;
+import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
-import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,8 +23,8 @@ class KeyStrokeEditor extends AComplexEditor<KeyStroke> {
     KeyStrokeEditor() {
         super(new BorderLayout());
 
-        JButton confirm = new JButton(ResourceUtils.loadIcon("/images/icons/button-confirm.png"));
-        JButton cancel = new JButton(ResourceUtils.loadIcon("/images/icons/button-cancel.png"));
+        JButton confirm = new JButton(UIUtils.getIcon(OptionsIcon.Confirm));
+        JButton cancel = new JButton(UIUtils.getIcon(OptionsIcon.Cancel));
 
         confirm.setBorder(null);
         cancel.setBorder(null);

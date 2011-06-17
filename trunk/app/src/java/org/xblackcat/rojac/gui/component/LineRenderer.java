@@ -7,6 +7,29 @@ import java.awt.*;
 * @author xBlackCat
 */
 public class LineRenderer extends JLabel {
+    public LineRenderer() {
+    }
+
+    public LineRenderer(Icon image) {
+        super(image);
+    }
+
+    public LineRenderer(Icon image, int horizontalAlignment) {
+        super(image, horizontalAlignment);
+    }
+
+    public LineRenderer(String text) {
+        super(text);
+    }
+
+    public LineRenderer(String text, int horizontalAlignment) {
+        super(text, horizontalAlignment);
+    }
+
+    public LineRenderer(String text, Icon icon, int horizontalAlignment) {
+        super(text, icon, horizontalAlignment);
+    }
+
     public LineRenderer(int alignment) {
         super();
         setHorizontalAlignment(alignment);

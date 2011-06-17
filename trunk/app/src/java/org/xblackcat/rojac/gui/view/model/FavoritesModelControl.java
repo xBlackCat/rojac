@@ -4,15 +4,14 @@ import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.theme.FavoritesIcon;
-import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.util.EnumMap;
@@ -93,13 +92,12 @@ class FavoritesModelControl implements IModelControl<Post> {
 
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
-        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
         if (model.getRoot() == null) {
-            return imagePack.getIcon(ViewIcon.Favorites);
+            return UIUtils.getIcon(ViewIcon.Favorites);
         }
 
         FavoritesIcon icon = statusIcons.get(model.getRoot().isRead());
-        return imagePack.getIcon(icon);
+        return UIUtils.getIcon(icon);
     }
 
     @Override

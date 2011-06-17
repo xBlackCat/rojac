@@ -114,6 +114,11 @@ final class LAFValueChecker implements IValueChecker<LookAndFeel> {
         return availableLAFs.containsKey(new LNFContainer(v));
     }
 
+    @Override
+    public Icon getValueIcon(LookAndFeel v) throws IllegalArgumentException {
+        return null;
+    }
+
     private final class LNFContainer {
         private final LookAndFeel lnf;
 

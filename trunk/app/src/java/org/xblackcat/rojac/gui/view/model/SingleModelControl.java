@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.view.model;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.ThreadIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
@@ -12,6 +11,7 @@ import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 
@@ -211,8 +211,7 @@ class SingleModelControl extends AThreadsModelControl {
             }
         }
 
-        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
-        return imagePack.getIcon(threadIcon);
+        return UIUtils.getIcon(threadIcon);
     }
 
     @Override

@@ -1,18 +1,35 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
+import org.xblackcat.rojac.gui.component.ComplexTreeRenderer;
+import org.xblackcat.rojac.gui.component.LineRenderer;
+import org.xblackcat.rojac.gui.theme.OptionsIcon;
 import org.xblackcat.rojac.service.options.IValueChecker;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
 /**
-* @author xBlackCat
-*/
-class PropertyTreeCellRenderer extends DefaultTreeCellRenderer {
+ * @author xBlackCat
+ */
+class PropertyTreeCellRenderer extends ComplexTreeRenderer {
+    private final LineRenderer name = new LineRenderer(SwingConstants.LEFT);
+    private final LineRenderer value = new LineRenderer(SwingConstants.LEFT);
+    private final LineRenderer separator = new LineRenderer(":", SwingConstants.LEFT);
+
+    PropertyTreeCellRenderer() {
+        super(new FlowLayout(FlowLayout.LEFT, 3, 0));
+
+        setEnabled(true);
+        add(name);
+        add(separator);
+        add(value);
+
+        setDelegatedComponents(name, separator, value);
+    }
+
     @Override
-    @SuppressWarnings({"unchecked"})
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
@@ -20,12 +37,33 @@ class PropertyTreeCellRenderer extends DefaultTreeCellRenderer {
 
         Property p = pn.getProperty();
 
+        name.setText(pn.getName());
+
+        this.value.setIcon(null);
         if (p != null) {
             IValueChecker checker = p.getChecker();
-            String v = checker != null ? checker.getValueDescription(pn.getValue()) : String.valueOf(pn.getValue());
-            setText(pn.getName() + " : " + v);
+            String v;
+            if (checker != null) {
+                v = checker.getValueDescription(pn.getValue());
+            } else if (pn.getValue() instanceof Boolean) {
+                v = null;
+            } else {
+                v = String.valueOf(pn.getValue());
+            }
+            separator.setVisible(true);
+            this.value.setText(v);
+
+            if (checker != null) {
+                this.value.setIcon(checker.getValueIcon(pn.getValue()));
+            } else if (pn.getValue() instanceof Boolean) {
+                Boolean b = (Boolean) pn.getValue();
+                if (b != null) {
+                    this.value.setIcon(b ? UIUtils.getIcon(OptionsIcon.Enabled) : UIUtils.getIcon(OptionsIcon.Disabled));
+                }
+            }
         } else {
-            setText(pn.getName());
+            this.value.setText(null);
+            separator.setVisible(false);
         }
 
         return this;

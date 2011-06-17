@@ -2,6 +2,9 @@ package org.xblackcat.rojac.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.gui.theme.AnIcon;
+import org.xblackcat.rojac.gui.theme.IconPack;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -99,5 +102,10 @@ public final class UIUtils {
         return new Color(Math.min((int) (r / factor), 255),
                 Math.min((int) (g / factor), 255),
                 Math.min((int) (b / factor), 255));
+    }
+
+    public static Icon getIcon(AnIcon icon) {
+        IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
+        return imagePack.getIcon(icon);
     }
 }
