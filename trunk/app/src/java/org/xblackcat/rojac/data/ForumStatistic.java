@@ -6,14 +6,14 @@ package org.xblackcat.rojac.data;
 
 public class ForumStatistic {
     private final int forumId;
-    private int totalMessages;
-    private int unreadMessages;
-    private Long lastMessageDate;
+    private final int totalMessages;
+    private final int unreadMessages;
+    private final Long lastMessageDate;
 
     public ForumStatistic(int forumId, int totalMessages, int unreadMessages, Long lastMessageDate) {
         this.forumId = forumId;
         this.totalMessages = totalMessages;
-        this.unreadMessages = unreadMessages;
+        this.unreadMessages = unreadMessages < 0 ? 0 : unreadMessages > totalMessages ? totalMessages : unreadMessages;
         this.lastMessageDate = lastMessageDate;
     }
 
@@ -21,27 +21,24 @@ public class ForumStatistic {
         return totalMessages;
     }
 
-    public void setTotalMessages(int totalMessages) {
-        this.totalMessages = totalMessages;
-    }
-
     public int getUnreadMessages() {
         return unreadMessages;
-    }
-
-    public void setUnreadMessages(int unreadMessages) {
-        this.unreadMessages = unreadMessages;
     }
 
     public Long getLastMessageDate() {
         return lastMessageDate;
     }
 
-    public void setLastMessageDate(Long lastMessageDate) {
-        this.lastMessageDate = lastMessageDate;
-    }
-
     public int getForumId() {
         return forumId;
+    }
+
+    public ForumStatistic adjustUnread(int amount) {
+        return  new ForumStatistic(
+                this.forumId,
+                this.totalMessages,
+                this.unreadMessages + amount,
+                this.lastMessageDate
+        );
     }
 }
