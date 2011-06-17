@@ -10,7 +10,7 @@ import org.xblackcat.rojac.service.options.Property;
 @SuppressWarnings({"unchecked"})
 public class PropertyUtilsTest extends TestCase {
     public void testMakePropertyPath() {
-        // rojac.main_frame.tray.hide_on_minimize (5 nodes)
+        // rojac.behaviour.frame.hide_on_minimize (5 nodes)
         Property p = Property.ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE;
 
         PropertyNode node = PropertyUtils.propertyPath(p);
@@ -20,12 +20,12 @@ public class PropertyUtilsTest extends TestCase {
         assertNull(node.getParent());
 
         node = next(node);
-        assertEquals("main_frame", node.getName());
+        assertEquals("behaviour", node.getName());
         assertNull(node.getProperty());
         assertNotNull(node.getParent());
 
         node = next(node);
-        assertEquals("tray", node.getName());
+        assertEquals("frame", node.getName());
         assertNull(node.getProperty());
         assertNotNull(node.getParent());
 
@@ -40,13 +40,13 @@ public class PropertyUtilsTest extends TestCase {
     }
 
     public void testMergePropertyPathes() {
-        // rojac.main_frame.tray.hide_on_minimize (5 nodes)
+        // rojac.behaviour.frame.hide_on_minimize (4 nodes)
         Property p = Property.ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE;
 
         // Root node
         final PropertyNode rootNode = new PropertyNode("rojac");
-        final PropertyNode childLevel1 = new PropertyNode("main_frame", rootNode);
-        final PropertyNode childLevel2 = new PropertyNode("tray", childLevel1);
+        final PropertyNode childLevel1 = new PropertyNode("behaviour", rootNode);
+        final PropertyNode childLevel2 = new PropertyNode("frame", childLevel1);
 
         rootNode.addChild(childLevel1);
         childLevel1.addChild(childLevel2);
