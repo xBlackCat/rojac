@@ -219,12 +219,7 @@ public class ForumsListView extends AView {
         ForumData data = forumsModel.getForumData(forumId);
         ForumStatistic oldStatistic = data.getStat();
 
-        ForumStatistic newStatistic = new ForumStatistic(
-                forumId,
-                oldStatistic.getTotalMessages(),
-                oldStatistic.getUnreadMessages() + amount,
-                oldStatistic.getLastMessageDate()
-        );
+        ForumStatistic newStatistic = oldStatistic.adjustUnread(amount);
 
         forumsModel.updateStatistic(newStatistic);
     }
