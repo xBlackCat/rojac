@@ -7,7 +7,6 @@ import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
-import org.xblackcat.rojac.gui.component.UpdateForumListAction;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
@@ -157,14 +156,11 @@ public class ForumsListView extends AView {
                 new FilterSetAction(ShortCut.ShowOnlyUnread, ForumFilterState.Unread)
         );
 
-        JButton updateListButton = WindowsUtils.setupImageButton("update", new UpdateForumListAction(appControl.getMainFrame()));
-
         JToolBar toolBar = WindowsUtils.createToolBar(
-                updateListButton,
-                null,
                 filled_only,
                 subscribed_only,
-                unread_only);
+                unread_only
+        );
 
         forumsRowFilter.setState(Property.VIEW_FORUM_LIST_FILTER.get());
 
