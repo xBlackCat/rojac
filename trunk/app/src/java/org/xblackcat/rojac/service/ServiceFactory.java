@@ -72,8 +72,7 @@ public final class ServiceFactory {
         dataDispatcher = new DataDispatcher();
 
         executor = new TaskExecutor();
-        final AppContext appContext = AppContext.getAppContext();
-        appContext.put(SwingWorker.class, executor);
+        AppContext.getAppContext().put(SwingWorker.class, executor);
 
         storage = initializeStorage();
 

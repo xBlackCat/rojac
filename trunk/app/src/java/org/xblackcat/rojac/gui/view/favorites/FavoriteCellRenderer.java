@@ -4,7 +4,7 @@ import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
 import org.xblackcat.rojac.i18n.Message;
-import sun.swing.DefaultLookup;
+import org.xblackcat.rojac.util.LookupDelegate;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -14,9 +14,9 @@ import java.awt.*;
 import java.io.Serializable;
 
 /**
-* @author xBlackCat
-*/
-class FavoriteCellRenderer  extends JLightPanel
+ * @author xBlackCat
+ */
+class FavoriteCellRenderer extends JLightPanel
         implements TableCellRenderer, Serializable {
 
     /**
@@ -48,7 +48,7 @@ class FavoriteCellRenderer  extends JLightPanel
     }
 
     private Border getNoFocusBorder() {
-        Border border = DefaultLookup.getBorder(this, ui, "Table.cellNoFocusBorder");
+        Border border = LookupDelegate.getBorder(this, ui, "Table.cellNoFocusBorder");
         if (System.getSecurityManager() != null) {
             if (border != null) return border;
             return SAFE_NO_FOCUS_BORDER;
@@ -103,6 +103,7 @@ class FavoriteCellRenderer  extends JLightPanel
     }
 
     // implements javax.swing.table.TableCellRenderer
+
     /**
      * Returns the default table cell renderer.
      * <p/>
@@ -136,8 +137,8 @@ class FavoriteCellRenderer  extends JLightPanel
                 && dropLocation.getRow() == row
                 && dropLocation.getColumn() == column) {
 
-            fg = DefaultLookup.getColor(this, ui, "Table.dropCellForeground");
-            bg = DefaultLookup.getColor(this, ui, "Table.dropCellBackground");
+            fg = LookupDelegate.getColor(this, ui, "Table.dropCellForeground");
+            bg = LookupDelegate.getColor(this, ui, "Table.dropCellBackground");
 
             isSelected = true;
         }
@@ -151,7 +152,7 @@ class FavoriteCellRenderer  extends JLightPanel
             background = table.getBackground();
             if (background == null || background instanceof javax.swing.plaf.UIResource) {
                 if (row % 2 == 0) {
-                    Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
+                    Color alternateColor = LookupDelegate.getColor(this, ui, "Table.alternateRowColor");
                     if (alternateColor != null) {
                         background = alternateColor;
                     }
@@ -166,20 +167,20 @@ class FavoriteCellRenderer  extends JLightPanel
         if (hasFocus) {
             Border border = null;
             if (isSelected) {
-                border = DefaultLookup.getBorder(this, ui, "Table.focusSelectedCellHighlightBorder");
+                border = LookupDelegate.getBorder(this, ui, "Table.focusSelectedCellHighlightBorder");
             }
             if (border == null) {
-                border = DefaultLookup.getBorder(this, ui, "Table.focusCellHighlightBorder");
+                border = LookupDelegate.getBorder(this, ui, "Table.focusCellHighlightBorder");
             }
             setBorder(border);
 
             if (!isSelected && table.isCellEditable(row, column)) {
                 Color col;
-                col = DefaultLookup.getColor(this, ui, "Table.focusCellForeground");
+                col = LookupDelegate.getColor(this, ui, "Table.focusCellForeground");
                 if (col != null) {
                     setForeground(col);
                 }
-                col = DefaultLookup.getColor(this, ui, "Table.focusCellBackground");
+                col = LookupDelegate.getColor(this, ui, "Table.focusCellBackground");
                 if (col != null) {
                     setBackground(col);
                 }

@@ -2,8 +2,8 @@ package org.xblackcat.rojac.gui.view.recenttopics;
 
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
+import org.xblackcat.rojac.util.LookupDelegate;
 import org.xblackcat.rojac.util.UIUtils;
-import sun.swing.DefaultLookup;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -49,7 +49,7 @@ class TopicCellRenderer extends JLightPanel
     }
 
     private Border getNoFocusBorder() {
-        Border border = DefaultLookup.getBorder(this, ui, "Table.cellNoFocusBorder");
+        Border border = LookupDelegate.getBorder(this, ui, "Table.cellNoFocusBorder");
         if (System.getSecurityManager() != null) {
             if (border != null) return border;
             return SAFE_NO_FOCUS_BORDER;
@@ -136,8 +136,8 @@ class TopicCellRenderer extends JLightPanel
                 && dropLocation.getRow() == row
                 && dropLocation.getColumn() == column) {
 
-            fg = DefaultLookup.getColor(this, ui, "Table.dropCellForeground");
-            bg = DefaultLookup.getColor(this, ui, "Table.dropCellBackground");
+            fg = LookupDelegate.getColor(this, ui, "Table.dropCellForeground");
+            bg = LookupDelegate.getColor(this, ui, "Table.dropCellBackground");
 
             isSelected = true;
         }
@@ -151,7 +151,7 @@ class TopicCellRenderer extends JLightPanel
             background = table.getBackground();
             if (background == null || background instanceof javax.swing.plaf.UIResource) {
                 if (row % 2 == 0) {
-                    Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
+                    Color alternateColor = LookupDelegate.getColor(this, ui, "Table.alternateRowColor");
                     if (alternateColor != null) {
                         background = alternateColor;
                     }
@@ -166,20 +166,20 @@ class TopicCellRenderer extends JLightPanel
         if (hasFocus) {
             Border border = null;
             if (isSelected) {
-                border = DefaultLookup.getBorder(this, ui, "Table.focusSelectedCellHighlightBorder");
+                border = LookupDelegate.getBorder(this, ui, "Table.focusSelectedCellHighlightBorder");
             }
             if (border == null) {
-                border = DefaultLookup.getBorder(this, ui, "Table.focusCellHighlightBorder");
+                border = LookupDelegate.getBorder(this, ui, "Table.focusCellHighlightBorder");
             }
             setBorder(border);
 
             if (!isSelected && table.isCellEditable(row, column)) {
                 Color col;
-                col = DefaultLookup.getColor(this, ui, "Table.focusCellForeground");
+                col = LookupDelegate.getColor(this, ui, "Table.focusCellForeground");
                 if (col != null) {
                     setForeground(col);
                 }
-                col = DefaultLookup.getColor(this, ui, "Table.focusCellBackground");
+                col = LookupDelegate.getColor(this, ui, "Table.focusCellBackground");
                 if (col != null) {
                     setBackground(col);
                 }
