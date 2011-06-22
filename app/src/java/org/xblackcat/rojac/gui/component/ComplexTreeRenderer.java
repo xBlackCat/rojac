@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.component;
 
-import sun.swing.DefaultLookup;
+import org.xblackcat.rojac.util.LookupDelegate;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -82,22 +82,22 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
 
     public ComplexTreeRenderer(LayoutManager layout) {
         super(layout);
-        drawDashedFocusIndicator = DefaultLookup.getBoolean(this, ui, "Tree.drawDashedFocusIndicator", false);
-        fillBackground = DefaultLookup.getBoolean(this, ui, "Tree.rendererFillBackground", true);
-        drawsFocusBorderAroundIcon = DefaultLookup.getBoolean(this, ui, "Tree.drawsFocusBorderAroundIcon", false);
+        drawDashedFocusIndicator = LookupDelegate.getBoolean(this, ui, "Tree.drawDashedFocusIndicator", false);
+        fillBackground = LookupDelegate.getBoolean(this, ui, "Tree.rendererFillBackground", true);
+        drawsFocusBorderAroundIcon = LookupDelegate.getBoolean(this, ui, "Tree.drawsFocusBorderAroundIcon", false);
 
         setOpaque(true);
-        setLeafIcon(DefaultLookup.getIcon(this, ui, "Tree.leafIcon"));
-        setClosedIcon(DefaultLookup.getIcon(this, ui, "Tree.closedIcon"));
-        setOpenIcon(DefaultLookup.getIcon(this, ui, "Tree.openIcon"));
+        setLeafIcon(LookupDelegate.getIcon(this, ui, "Tree.leafIcon"));
+        setClosedIcon(LookupDelegate.getIcon(this, ui, "Tree.closedIcon"));
+        setOpenIcon(LookupDelegate.getIcon(this, ui, "Tree.openIcon"));
 
-        setTextSelectionColor(DefaultLookup.getColor(this, ui, "Tree.selectionForeground"));
-        setTextNonSelectionColor(DefaultLookup.getColor(this, ui, "Tree.textForeground"));
-        setBackgroundSelectionColor(DefaultLookup.getColor(this, ui, "Tree.selectionBackground"));
-        setBackgroundNonSelectionColor(DefaultLookup.getColor(this, ui, "Tree.textBackground"));
-        setBorderSelectionColor(DefaultLookup.getColor(this, ui, "Tree.selectionBorderColor"));
+        setTextSelectionColor(LookupDelegate.getColor(this, ui, "Tree.selectionForeground"));
+        setTextNonSelectionColor(LookupDelegate.getColor(this, ui, "Tree.textForeground"));
+        setBackgroundSelectionColor(LookupDelegate.getColor(this, ui, "Tree.selectionBackground"));
+        setBackgroundNonSelectionColor(LookupDelegate.getColor(this, ui, "Tree.textBackground"));
+        setBorderSelectionColor(LookupDelegate.getColor(this, ui, "Tree.selectionBorderColor"));
 
-        Insets margins = DefaultLookup.getInsets(this, ui, "Tree.rendererMargins");
+        Insets margins = LookupDelegate.getInsets(this, ui, "Tree.rendererMargins");
         if (margins == null) {
             margins = new Insets(0, 0, 0, 0);
         }
@@ -139,7 +139,7 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
                 && dropLocation.getChildIndex() == -1
                 && tree.getRowForPath(dropLocation.getPath()) == row) {
 
-            Color col = DefaultLookup.getColor(this, ui, "Tree.dropCellForeground");
+            Color col = LookupDelegate.getColor(this, ui, "Tree.dropCellForeground");
             if (col != null) {
                 fg = col;
             } else {
@@ -182,7 +182,7 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
 
         Color bColor;
         if (isDropCell) {
-            bColor = DefaultLookup.getColor(this, ui, "Tree.dropCellBackground");
+            bColor = LookupDelegate.getColor(this, ui, "Tree.dropCellBackground");
             if (bColor == null) {
                 bColor = getBackgroundSelectionColor();
             }
@@ -213,21 +213,21 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
      * Returns the default icon, for the current laf, that is used to represent non-leaf nodes that are expanded.
      */
     public Icon getDefaultOpenIcon() {
-        return DefaultLookup.getIcon(this, ui, "Tree.openIcon");
+        return LookupDelegate.getIcon(this, ui, "Tree.openIcon");
     }
 
     /**
      * Returns the default icon, for the current laf, that is used to represent non-leaf nodes that are not expanded.
      */
     public Icon getDefaultClosedIcon() {
-        return DefaultLookup.getIcon(this, ui, "Tree.closedIcon");
+        return LookupDelegate.getIcon(this, ui, "Tree.closedIcon");
     }
 
     /**
      * Returns the default icon, for the current laf, that is used to represent leaf nodes.
      */
     public Icon getDefaultLeafIcon() {
-        return DefaultLookup.getIcon(this, ui, "Tree.leafIcon");
+        return LookupDelegate.getIcon(this, ui, "Tree.leafIcon");
     }
 
     /**
