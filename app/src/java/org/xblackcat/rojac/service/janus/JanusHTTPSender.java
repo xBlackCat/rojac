@@ -48,7 +48,7 @@ import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import static org.xblackcat.rojac.i18n.Messages.*;
+import static org.xblackcat.rojac.i18n.Message.*;
 import static org.xblackcat.rojac.service.options.Property.*;
 
 /**

@@ -5,7 +5,7 @@ import gnu.trove.set.hash.TIntHashSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.User;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
@@ -61,7 +61,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
 
         if (ownUserId > 0) {
             RSDN_USER_ID.set(ownUserId);
-            tracker.addLodMessage(Messages.Synchronize_Message_GotUserId, ownUserId);
+            tracker.addLodMessage(Message.Synchronize_Message_GotUserId, ownUserId);
         }
 
         postProcessing(tracker);
@@ -73,7 +73,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
         int[] messageIds = miscAH.getExtraMessages();
 
         if (!ArrayUtils.isEmpty(messageIds)) {
-            tracker.addLodMessage(Messages.Synchronize_Command_Name_ExtraPosts, Arrays.toString(messageIds));
+            tracker.addLodMessage(Message.Synchronize_Command_Name_ExtraPosts, Arrays.toString(messageIds));
             loadTopics(messageIds, janusService, tracker);
 
             miscAH.clearExtraMessages();
@@ -81,7 +81,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
 
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
         if (!ArrayUtils.isEmpty(brokenTopicIds)) {
-            tracker.addLodMessage(Messages.Synchronize_Command_Name_BrokenTopics, Arrays.toString(brokenTopicIds));
+            tracker.addLodMessage(Message.Synchronize_Command_Name_BrokenTopics, Arrays.toString(brokenTopicIds));
             loadTopics(brokenTopicIds, janusService, tracker);
         }
 
@@ -104,11 +104,11 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
         JanusModerateInfo[] moderates = newPosts.getModerates();
         JanusRatingInfo[] ratings = newPosts.getRatings();
 
-        tracker.addLodMessage(Messages.Synchronize_Message_GotPosts, messages.length, moderates.length, ratings.length);
+        tracker.addLodMessage(Message.Synchronize_Message_GotPosts, messages.length, moderates.length, ratings.length);
 
-        tracker.addLodMessage(Messages.Synchronize_Message_UpdateDatabase);
+        tracker.addLodMessage(Message.Synchronize_Message_UpdateDatabase);
 
-        tracker.addLodMessage(Messages.Synchronize_Message_StoreMessages);
+        tracker.addLodMessage(Message.Synchronize_Message_StoreMessages);
         int count = 0;
         for (JanusMessageInfo mes : newPosts.getMessages()) {
             tracker.updateProgress(count++, newPosts.getMessages().length);
@@ -157,7 +157,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
             }
         }
 
-        tracker.addLodMessage(Messages.Synchronize_Message_StoreModerates);
+        tracker.addLodMessage(Message.Synchronize_Message_StoreModerates);
         count = 0;
         for (JanusModerateInfo mod : newPosts.getModerates()) {
             tracker.updateProgress(count++, newPosts.getModerates().length);
@@ -166,7 +166,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
             updatedMessages.add(mod.getMessageId());
         }
 
-        tracker.addLodMessage(Messages.Synchronize_Message_StoreRatings);
+        tracker.addLodMessage(Message.Synchronize_Message_StoreRatings);
         count = 0;
         for (JanusRatingInfo r : newPosts.getRatings()) {
             tracker.updateProgress(count++, newPosts.getRatings().length);
@@ -179,7 +179,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
     protected void postProcessing(IProgressTracker tracker) throws StorageException {
         int count = 0;
         int[] forUpdate = ratingCacheUpdate.toArray();
-        tracker.addLodMessage(Messages.Synchronize_Message_UpdateCaches);
+        tracker.addLodMessage(Message.Synchronize_Message_UpdateCaches);
         for (int id : forUpdate) {
             MessageUtils.updateRatingCache(id);
             tracker.updateProgress(count++, forUpdate.length);
@@ -188,7 +188,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
         count = 0;
         if (!nonExistUsers.isEmpty()) {
             int[] userIds = nonExistUsers.keys();
-            tracker.addLodMessage(Messages.Synchronize_Message_StoreUserInfo);
+            tracker.addLodMessage(Message.Synchronize_Message_StoreUserInfo);
             for (int userId : userIds) {
                 userAH.storeUserInfo(userId, nonExistUsers.get(userId));
                 tracker.updateProgress(count++, userIds.length);

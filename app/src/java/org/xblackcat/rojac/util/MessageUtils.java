@@ -11,7 +11,7 @@ import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
 import org.xblackcat.rojac.gui.view.thread.MessageReadFlagSetter;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.Property;
@@ -39,6 +39,7 @@ public final class MessageUtils {
     protected static final Pattern TAGLINE_PATTERN = Pattern.compile("\\[tagline\\].+\\[/tagline\\]");
 
     private static final TIntObjectHashMap<String> elements;
+    public static final Pattern DOTS_PATTERN = Pattern.compile("\\.{2,}");
 
     static {
         elements = new TIntObjectHashMap<String>();
@@ -71,7 +72,7 @@ public final class MessageUtils {
 
         StringBuilder res = new StringBuilder();
 
-        res.append(Messages.Message_Response_Header.get(userName));
+        res.append(Message.Message_Response_Header.get(userName));
 
         String abbr = abbreviateUserName(userName);
 
@@ -320,5 +321,30 @@ public final class MessageUtils {
         }
 
         return PostIcon.Unread;
+    }
+
+    public static String constantCamelToPropertyName(String s) {
+        if (s == null) {
+            return null;
+        }
+        StringBuilder result = new StringBuilder(s.length() << 1);
+        boolean wasDot = true;
+        for (char c : s.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                if (!wasDot) {
+                    result.append('_');
+                }
+                c = Character.toLowerCase(c);
+            }
+            if (c == '_') {
+                result.append('.');
+                wasDot = true;
+            } else {
+                result.append(c);
+                wasDot = false;
+            }
+        }
+
+        return DOTS_PATTERN.matcher(result).replaceAll(".");
     }
 }

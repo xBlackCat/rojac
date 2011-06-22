@@ -3,7 +3,7 @@ package org.xblackcat.rojac.service.janus.commands;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.executor.TaskType;
@@ -30,13 +30,13 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
     private final IProgressController progressController = ServiceFactory.getInstance().getProgressControl();
     private final IProgressTracker tracker = new IProgressTracker() {
         @Override
-        public void addLodMessage(Messages message, Object... arguments) {
+        public void addLodMessage(Message message, Object... arguments) {
             progressController.fireJobProgressChanged(0, message, arguments);
         }
 
         @Override
         public void postException(Throwable t) {
-            progressController.fireException(Messages.Synchronize_Message_Exception, ExceptionUtils.getFullStackTrace(t));
+            progressController.fireException(Message.Synchronize_Message_Exception, ExceptionUtils.getFullStackTrace(t));
         }
 
         @Override
@@ -57,14 +57,14 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
         final String userName = RSDN_USER_NAME.get();
         final JanusService janusService = new JanusService(userName, UserHelper.getUserPassword());
 
-        progressController.fireJobProgressChanged(0f, Messages.Synchronize_Message_Start);
+        progressController.fireJobProgressChanged(0f, Message.Synchronize_Message_Start);
         Boolean useCompression = SYNCHRONIZER_USE_GZIP.get();
         janusService.init(useCompression);
         progressController.fireJobProgressChanged(
                 0f,
                 useCompression ?
-                        Messages.Synchronize_Message_CompressionUsed :
-                        Messages.Synchronize_Message_CompressionNotUsed
+                        Message.Synchronize_Message_CompressionUsed :
+                        Message.Synchronize_Message_CompressionNotUsed
         );
 
         try {
@@ -90,7 +90,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
     @Override
     protected void done() {
         progressController.fireJobProgressChanged(1, 1);
-        progressController.fireJobStop(Messages.Synchronize_Message_Done);
+        progressController.fireJobStop(Message.Synchronize_Message_Done);
         if (log.isDebugEnabled()) {
             log.debug("Requests are processed.");
         }

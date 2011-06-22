@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.view.model;
 import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.User;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -34,7 +34,7 @@ class UserPostFavorite extends AnItemFavorite {
     public String loadName() throws StorageException {
         User user = storage.getUserAH().getUserById(itemId);
         String userName = user != null ? user.getUserNick() : "#" + itemId;
-        return Messages.Favorite_UserPosts_Name.get(userName);
+        return Message.Favorite_UserPosts_Name.get(userName);
     }
 
     @Override

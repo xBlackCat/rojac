@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.ViewType;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,7 +15,7 @@ class OpenFavoriteAction extends AbstractAction {
     private final int favoriteId;
 
     public OpenFavoriteAction(IAppControl appControl, int favoriteId) {
-        super(Messages.Popup_View_Open.get());
+        super(Message.Popup_View_Open.get());
         this.appControl = appControl;
         this.favoriteId = favoriteId;
     }

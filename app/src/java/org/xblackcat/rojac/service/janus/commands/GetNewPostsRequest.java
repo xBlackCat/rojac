@@ -5,7 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.NewData;
@@ -30,7 +30,7 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
         int[] forumIds = forumAH.getSubscribedForumIds();
 
         String idsList = Arrays.toString(forumIds);
-        tracker.addLodMessage(Messages.Synchronize_Command_Name_NewPosts, idsList);
+        tracker.addLodMessage(Message.Synchronize_Command_Name_NewPosts, idsList);
         if (ArrayUtils.isEmpty(forumIds)) {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
@@ -50,7 +50,7 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
 
         Integer limit = SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
 
-        tracker.addLodMessage(Messages.Synchronize_Message_Portion, limit);
+        tracker.addLodMessage(Message.Synchronize_Message_Portion, limit);
 
         Version messagesVersion = DataHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
         Version moderatesVersion = DataHelper.getVersion(VersionType.MODERATE_ROW_VERSION);

@@ -4,7 +4,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.InvokeExtMarkDialogAction;
 import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.awt.*;
  * @author xBlackCat
  */
 class ExtendedMarkRead extends JMenuItem {
-    public ExtendedMarkRead(Messages title, MessageData messageData, Window owner) {
+    public ExtendedMarkRead(Message title, MessageData messageData, Window owner) {
         this(
                 title,
                 Scope.Thread,
@@ -23,16 +23,16 @@ class ExtendedMarkRead extends JMenuItem {
         );
     }
 
-    public ExtendedMarkRead(Messages title, Forum forum, Window owner) {
+    public ExtendedMarkRead(Message title, Forum forum, Window owner) {
         this(title, Scope.Forum, null, forum.getForumId(), 0, owner);
     }
 
-    public ExtendedMarkRead(Messages title, Window owner) {
+    public ExtendedMarkRead(Message title, Window owner) {
         this(title, Scope.All, null, 0, 0, owner);
     }
 
     private ExtendedMarkRead(
-            Messages title,
+            Message title,
             Scope scope,
             Long messageDate,
             int forumId,

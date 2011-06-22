@@ -1,24 +1,24 @@
 package org.xblackcat.rojac.gui.dialog.extendmark;
 
 import org.xblackcat.rojac.i18n.IDescribable;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 /**
  * @author xBlackCat
  */
 
 public enum NewState implements IDescribable {
-    Read(Messages.Dialog_ExtMark_State_Read),
-    Unread(Messages.Dialog_ExtMark_State_Unread);
+    Read(Message.Dialog_ExtMark_State_Read),
+    Unread(Message.Dialog_ExtMark_State_Unread);
 
-    private final Messages msg;
+    private final Message msg;
 
-    NewState(Messages msg) {
+    NewState(Message msg) {
         this.msg = msg;
     }
 
     @Override
-    public Messages getLabel() {
+    public Message getLabel() {
         return msg;
     }
 

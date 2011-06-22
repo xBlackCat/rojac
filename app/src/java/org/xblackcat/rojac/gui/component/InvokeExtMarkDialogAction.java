@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.component;
 import org.xblackcat.rojac.gui.dialog.extendmark.ExtendedMarkDialog;
 import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
 import org.xblackcat.rojac.gui.view.thread.SetMessagesReadFlagEx;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +23,7 @@ public class InvokeExtMarkDialogAction extends AButtonAction {
     }
 
     public InvokeExtMarkDialogAction(Long messageDate, Scope scope, int forumId, int topicId, Window owner) {
-        super(Messages.Dialog_ExtMark_Title);
+        super(Message.Dialog_ExtMark_Title);
         this.messageDate = messageDate;
         this.scope = scope;
         this.forumId = forumId;

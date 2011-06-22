@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.janus.commands.ASwingThreadedHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
@@ -32,7 +32,7 @@ public class LoginDialog extends JDialog {
 
     public LoginDialog(Window mainFrame) {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
-        setTitle(Messages.Dialog_Login_Title.get());
+        setTitle(Message.Dialog_Login_Title.get());
 
         setContentPane(setupContentPane());
 
@@ -46,7 +46,7 @@ public class LoginDialog extends JDialog {
 
         cp.add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.Button_Ok,
+                Message.Button_Ok,
                 new CheckCredentialsAction(),
                 new ACancelAction() {
                     @Override
@@ -61,17 +61,17 @@ public class LoginDialog extends JDialog {
         JPanel pane = new JPanel(new BorderLayout(5, 5));
         cp.add(pane, BorderLayout.CENTER);
 
-        pane.add(new JLabel(Messages.Dialog_Login_Text.get(), JLabel.CENTER), BorderLayout.NORTH);
+        pane.add(new JLabel(Message.Dialog_Login_Text.get(), JLabel.CENTER), BorderLayout.NORTH);
 
         fieldLogin = new JTextField(20);
         fieldPassword = new JPasswordField(20);
-        fieldSavePassword = new JCheckBox(Messages.Dialog_Login_SavePassword.get(), RSDN_USER_PASSWORD_SAVE.get());
+        fieldSavePassword = new JCheckBox(Message.Dialog_Login_SavePassword.get(), RSDN_USER_PASSWORD_SAVE.get());
 
         pane.add(WindowsUtils.createColumn(fieldLogin, fieldPassword), BorderLayout.CENTER);
 
         JPanel labels = WindowsUtils.createColumn(
-                new JLabel(Messages.Dialog_Login_UserName.get()),
-                new JLabel(Messages.Dialog_Login_Password.get())
+                new JLabel(Message.Dialog_Login_UserName.get()),
+                new JLabel(Message.Dialog_Login_Password.get())
         );
 
         pane.add(labels, BorderLayout.WEST);
@@ -106,12 +106,12 @@ public class LoginDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (StringUtils.isEmpty(fieldLogin.getText())) {
-                JLOptionPane.showMessageDialog(LoginDialog.this, Messages.Dialog_Login_EmptyUserName.get());
+                JLOptionPane.showMessageDialog(LoginDialog.this, Message.Dialog_Login_EmptyUserName.get());
                 return;
             }
 
             if (ArrayUtils.isEmpty(fieldPassword.getPassword())) {
-                JLOptionPane.showMessageDialog(LoginDialog.this, Messages.Dialog_Login_EmptyPassword.get());
+                JLOptionPane.showMessageDialog(LoginDialog.this, Message.Dialog_Login_EmptyPassword.get());
                 return;
             }
 
@@ -146,8 +146,8 @@ public class LoginDialog extends JDialog {
             if (!setUserId(userId)) {
                 int res = JLOptionPane.showConfirmDialog(
                         LoginDialog.this,
-                        Messages.Dialog_Login_InvalidUserName.get(),
-                        Messages.Dialog_Login_InvalidUserName_Title.get(),
+                        Message.Dialog_Login_InvalidUserName.get(),
+                        Message.Dialog_Login_InvalidUserName_Title.get(),
                         JOptionPane.YES_NO_OPTION
                         );
                 if (res == JOptionPane.NO_OPTION) {

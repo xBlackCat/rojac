@@ -54,7 +54,7 @@ public final class JLOptionPane {
                                          Object message) throws HeadlessException {
         return showInputDialog(parentComponent,
                 message,
-                UIManager.getString("OptionPane.inputDialogTitle", Messages.getLocale()),
+                UIManager.getString("OptionPane.inputDialogTitle", Message.getLocale()),
                 JOptionPane.QUESTION_MESSAGE);
     }
 
@@ -73,7 +73,7 @@ public final class JLOptionPane {
                                          Object initialSelectionValue) {
         return (String) showInputDialog(parentComponent,
                 message,
-                UIManager.getString("OptionPane.inputDialogTitle", Messages.getLocale()),
+                UIManager.getString("OptionPane.inputDialogTitle", Message.getLocale()),
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
@@ -114,7 +114,7 @@ public final class JLOptionPane {
     public static void showMessageDialog(Component parentComponent,
                                          Object message) throws HeadlessException {
         showMessageDialog(parentComponent, message,
-                UIManager.getString("OptionPane.messageDialogTitle", Messages.getLocale()),
+                UIManager.getString("OptionPane.messageDialogTitle", Message.getLocale()),
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -315,18 +315,18 @@ public final class JLOptionPane {
     }
 
     public static String[] getYesNoVariants() {
-        return new String[]{Messages.Button_Yes.get(), Messages.Button_No.get()};
+        return new String[]{Message.Button_Yes.get(), Message.Button_No.get()};
     }
 
     public static String[] getYesNoCancelVariants() {
-        return new String[]{Messages.Button_Yes.get(), Messages.Button_No.get(), Messages.Button_Cancel.get()};
+        return new String[]{Message.Button_Yes.get(), Message.Button_No.get(), Message.Button_Cancel.get()};
     }
 
     public static String[] getOkCancelVariants() {
-        return new String[]{Messages.Button_Ok.get(), Messages.Button_Cancel.get()};
+        return new String[]{Message.Button_Ok.get(), Message.Button_Cancel.get()};
     }
 
     public static String[] getOkVariants() {
-        return new String[]{Messages.Button_Ok.get()};
+        return new String[]{Message.Button_Ok.get()};
     }
 }

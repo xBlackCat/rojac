@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
+import org.xblackcat.rojac.i18n.NodeText;
+
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
 import javax.swing.tree.TreeCellEditor;
@@ -58,9 +60,8 @@ class OptionCellEditor extends AbstractCellEditor implements TreeCellEditor {
         editor.removeAll();
         editor.add(delegatedEditor.getTreeCellEditorComponent(tree, value, isSelected, expanded, leaf, row));
 
-//        JLabel renderer = (JLabel) ComponentFactory.createTreeCellRenderer(n).getTreeCellRendererComponent(tree, value, isSelected, expanded, leaf, row, true);
-        label.setText(n.getName() + " : ");
-//        label.setIcon(renderer.getIcon());
+        label.setText(NodeText.Name.get(n) + " : ");
+        label.setToolTipText(NodeText.Tip.get(n));
 
         container.invalidate();
         container.repaint();

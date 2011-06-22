@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.component;
 
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.ShortCutUtils;
 
 import javax.swing.*;
@@ -14,31 +14,31 @@ import java.awt.event.KeyEvent;
 
 public enum ShortCut {
     // Thread view related
-    NextMessage(Messages.View_Thread_Button_Next, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK),
-    PrevMessage(Messages.View_Thread_Button_Previous, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK),
-    NextUnreadMessage(Messages.View_Thread_Button_NextUnread, KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK),
-    PrevUnreadMessage(Messages.View_Thread_Button_PreviousUnread, KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK),
-    ToThreadRoot(Messages.View_Thread_Button_ToThreadRoot, KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK),
-    NewThread(Messages.View_Thread_Button_NewThread, KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK),
-    MarkSubTreeRead(Messages.Popup_View_ThreadsTree_Mark_ThreadRead, KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
-    MarkWholeThreadRead(Messages.Popup_View_ThreadsTree_Mark_WholeThreadRead,KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
+    NextMessage(Message.View_Thread_Button_Next, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK),
+    PrevMessage(Message.View_Thread_Button_Previous, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK),
+    NextUnreadMessage(Message.View_Thread_Button_NextUnread, KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK),
+    PrevUnreadMessage(Message.View_Thread_Button_PreviousUnread, KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK),
+    ToThreadRoot(Message.View_Thread_Button_ToThreadRoot, KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK),
+    NewThread(Message.View_Thread_Button_NewThread, KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK),
+    MarkSubTreeRead(Message.Popup_View_ThreadsTree_Mark_ThreadRead, KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
+    MarkWholeThreadRead(Message.Popup_View_ThreadsTree_Mark_WholeThreadRead,KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
     // Main frame related
-    Synchronization(Messages.MainFrame_Button_Update, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, 0),
-    LoadExtraMessages(Messages.MainFrame_Button_LoadMessage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, KeyEvent.SHIFT_DOWN_MASK),
-    GoToMessage(Messages.MainFrame_Button_GoToMessage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK),
-    Settings(Messages.MainFrame_Button_Settings, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK),
-    About(Messages.MainFrame_Button_About, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F1, 0),
-    GoBack(Messages.MainFrame_Button_GoBack, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK),
-    GoForward(Messages.MainFrame_Button_GoForward, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK),
-    ForumManage(Messages.MainFrame_Button_ForumManage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F, KeyEvent.ALT_DOWN_MASK),
+    Synchronization(Message.MainFrame_Button_Update, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, 0),
+    LoadExtraMessages(Message.MainFrame_Button_LoadMessage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, KeyEvent.SHIFT_DOWN_MASK),
+    GoToMessage(Message.MainFrame_Button_GoToMessage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK),
+    Settings(Message.MainFrame_Button_Settings, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK),
+    About(Message.MainFrame_Button_About, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F1, 0),
+    GoBack(Message.MainFrame_Button_GoBack, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK),
+    GoForward(Message.MainFrame_Button_GoForward, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK),
+    ForumManage(Message.MainFrame_Button_ForumManage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F, KeyEvent.ALT_DOWN_MASK),
     // Forum list view related
-    ShowOnlyNotEmpty(Messages.View_Forums_Button_Filled, KeyEvent.VK_1, KeyEvent.CTRL_DOWN_MASK),
-    ShowOnlySubscribed(Messages.View_Forums_Button_Subscribed, KeyEvent.VK_2, KeyEvent.CTRL_DOWN_MASK),
-    ShowOnlyUnread(Messages.View_Forums_Button_HasUnread, KeyEvent.VK_3, KeyEvent.CTRL_DOWN_MASK),
+    ShowOnlyNotEmpty(Message.View_Forums_Button_Filled, KeyEvent.VK_1, KeyEvent.CTRL_DOWN_MASK),
+    ShowOnlySubscribed(Message.View_Forums_Button_Subscribed, KeyEvent.VK_2, KeyEvent.CTRL_DOWN_MASK),
+    ShowOnlyUnread(Message.View_Forums_Button_HasUnread, KeyEvent.VK_3, KeyEvent.CTRL_DOWN_MASK),
     // Message view related
-    ReplyOnMessage(Messages.Button_Reply_ToolTip, KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK),
-    ShowMessageMarks(Messages.Panel_Message_Toolbar_Rating, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK),
-    SetMarkOnMessage(Messages.Description_Mark_Select, KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK),
+    ReplyOnMessage(Message.Button_Reply_ToolTip, KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK),
+    ShowMessageMarks(Message.Panel_Message_Toolbar_Rating, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK),
+    SetMarkOnMessage(Message.Description_Mark_Select, KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK),
     ;
     private static final String ACTION_PREFIX = "Action:";
 
@@ -55,18 +55,18 @@ public enum ShortCut {
         }
     }
 
-    private final Messages description;
+    private final Message description;
     private final int condition;
     private final KeyStroke defaultKeyStroke;
     private KeyStroke keyStroke;
 
-    ShortCut(Messages description, int condition, int keyCode, int modifier) {
+    ShortCut(Message description, int condition, int keyCode, int modifier) {
         this.condition = condition;
         this.defaultKeyStroke = KeyStroke.getKeyStroke(keyCode, modifier);
         this.description = description;
     }
 
-    ShortCut(Messages description, int keyCode, int modifier) {
+    ShortCut(Message description, int keyCode, int modifier) {
         this(description, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, keyCode, modifier);
     }
 
@@ -104,7 +104,7 @@ public enum ShortCut {
         return toString.toString();
     }
 
-    public Messages getDescription() {
+    public Message getDescription() {
         return description;
     }
 

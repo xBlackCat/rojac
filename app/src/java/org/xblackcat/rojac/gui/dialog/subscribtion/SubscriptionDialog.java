@@ -5,7 +5,7 @@ import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.component.InvokeExtMarkDialogAction;
 import org.xblackcat.rojac.gui.component.UpdateForumListAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.janus.commands.Request;
@@ -39,7 +39,7 @@ public class SubscriptionDialog extends JDialog {
     private final IDataDispatcher dispatcher = ServiceFactory.getInstance().getDataDispatcher();
 
     public SubscriptionDialog(final Window owner) {
-        super(owner, Messages.Dialog_Subscription_Title.get(), ModalityType.MODELESS);
+        super(owner, Message.Dialog_Subscription_Title.get(), ModalityType.MODELESS);
 
         initializeLayout();
 
@@ -58,8 +58,8 @@ public class SubscriptionDialog extends JDialog {
                         // No forums exists. Ask for load them
                         int res = JLOptionPane.showConfirmDialog(
                                 SubscriptionDialog.this,
-                                Messages.WarnDialog_NoForums_Question.get(),
-                                Messages.WarnDialog_NoForums_Title.get(),
+                                Message.WarnDialog_NoForums_Question.get(),
+                                Message.WarnDialog_NoForums_Title.get(),
                                 JOptionPane.YES_NO_OPTION);
 
                         if (res == JOptionPane.YES_OPTION) {
@@ -111,7 +111,7 @@ public class SubscriptionDialog extends JDialog {
         content.add(new JScrollPane(forumList), BorderLayout.CENTER);
         content.add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.Button_Ok,
+                Message.Button_Ok,
                 new AnOkAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {

@@ -7,7 +7,7 @@ import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.UIUtils;
@@ -136,7 +136,7 @@ public class FavoritesView extends AView {
 
     @Override
     public String getTabTitle() {
-        return Messages.View_Favorites_Title.get();
+        return Message.View_Favorites_Title.get();
     }
 
     @Override

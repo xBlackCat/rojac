@@ -14,7 +14,7 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.datahandler.*;
@@ -114,9 +114,9 @@ public class MessageView extends AView implements IItemView {
 
         initialize();
 
-        answer.setToolTipText(Messages.Button_Reply_ToolTip.get());
-        userLabel.setText(Messages.Panel_Message_Label_User.get());
-        dateLabel.setText(Messages.Panel_Message_Label_Date.get());
+        answer.setToolTipText(Message.Button_Reply_ToolTip.get());
+        userLabel.setText(Message.Panel_Message_Label_User.get());
+        dateLabel.setText(Message.Panel_Message_Label_Date.get());
 
     }
 
@@ -242,8 +242,8 @@ public class MessageView extends AView implements IItemView {
                 JOptionPane.YES_OPTION ==
                         JLOptionPane.showConfirmDialog(
                                 this,
-                                Messages.Dialog_SetMark_Message.get(mark),
-                                Messages.Dialog_SetMark_Title.get(),
+                                Message.Dialog_SetMark_Message.get(mark),
+                                Message.Dialog_SetMark_Title.get(),
                                 JOptionPane.YES_NO_OPTION
                         )) {
             new MarksUpdater(mark).execute();
@@ -265,7 +265,7 @@ public class MessageView extends AView implements IItemView {
         messageTextPane.setText(converted);
         messageTextPane.setCaretPosition(0);
         userInfoLabel.setText(RSDN_USER_NAME.get());
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Message.getLocale());
         messageDateLabel.setText(df.format(new Date()));
         answer.setEnabled(false);
         marks.setEnabled(false);
@@ -280,9 +280,9 @@ public class MessageView extends AView implements IItemView {
         if (StringUtils.isNotEmpty(userName)) {
             userInfoLabel.setText(userName);
         } else {
-            userInfoLabel.setText(Messages.UserName_Anonymous.get());
+            userInfoLabel.setText(Message.UserName_Anonymous.get());
         }
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Messages.getLocale());
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Message.getLocale());
         messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
         answer.setEnabled(true);
         marks.setEnabled(true);
@@ -475,8 +475,8 @@ public class MessageView extends AView implements IItemView {
             if (isCancelled()) {
                 JLOptionPane.showMessageDialog(
                         MessageView.this,
-                        Messages.ErrorDialog_SetMark_Message.get(mark),
-                        Messages.ErrorDialog_SetMark_Title.get(),
+                        Message.ErrorDialog_SetMark_Message.get(mark),
+                        Message.ErrorDialog_SetMark_Title.get(),
                         JOptionPane.DEFAULT_OPTION
                 );
                 if (log.isWarnEnabled()) {

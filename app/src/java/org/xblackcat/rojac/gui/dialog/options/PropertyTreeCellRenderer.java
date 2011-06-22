@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.dialog.options;
 import org.xblackcat.rojac.gui.component.ComplexTreeRenderer;
 import org.xblackcat.rojac.gui.component.LineRenderer;
 import org.xblackcat.rojac.gui.theme.OptionsIcon;
+import org.xblackcat.rojac.i18n.NodeText;
 import org.xblackcat.rojac.service.options.IValueChecker;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.UIUtils;
@@ -29,6 +30,7 @@ class PropertyTreeCellRenderer extends ComplexTreeRenderer {
         setDelegatedComponents(name, separator, value);
     }
 
+    @SuppressWarnings({"unchecked"})
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
@@ -37,7 +39,9 @@ class PropertyTreeCellRenderer extends ComplexTreeRenderer {
 
         Property p = pn.getProperty();
 
-        name.setText(pn.getName());
+        name.setText(NodeText.Name.get(pn));
+
+        setToolTipText(NodeText.Tip.get(pn));
 
         this.value.setIcon(null);
         if (p != null) {

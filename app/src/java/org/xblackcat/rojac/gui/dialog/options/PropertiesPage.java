@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.dialog.options;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import org.xblackcat.rojac.service.options.Property;
@@ -29,7 +29,7 @@ class PropertiesPage extends APage {
     }
 
     protected void initializeLayout() {
-        add(new JLabel(Messages.Dialog_Options_Description_General.get()), BorderLayout.NORTH);
+        add(new JLabel(Message.Dialog_Options_Description_General.get()), BorderLayout.NORTH);
 
         if (model != null) {
             JComponent tree = setupTree();
@@ -42,8 +42,8 @@ class PropertiesPage extends APage {
     }
 
     @Override
-    public Messages getTitle() {
-        return Messages.Dialog_Options_Title_General;
+    public Message getTitle() {
+        return Message.Dialog_Options_Title_General;
     }
 
     @Override
@@ -66,7 +66,7 @@ class PropertiesPage extends APage {
         }
 
         if (packet.isPropertyAffected(ROJAC_GUI_LOCALE)) {
-            Messages.setLocale(ROJAC_GUI_LOCALE.get());
+            Message.setLocale(ROJAC_GUI_LOCALE.get());
         }
 
         if (packet.isPropertyAffected(SYNCHRONIZER_SCHEDULE_PERIOD)) {
@@ -124,6 +124,8 @@ class PropertiesPage extends APage {
 
         tree.setCellRenderer(new OptionTreeCellRenderer());
         tree.setCellEditor(new OptionCellEditor());
+        // Force show tooltips in tree
+        tree.setToolTipText("");
 
         return tree;
     }

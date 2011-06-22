@@ -5,5 +5,5 @@ package org.xblackcat.rojac.i18n;
  */
 
 public interface IDescribable {
-    Messages getLabel();
+    Message getLabel();
 }

@@ -4,7 +4,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.ForumsUpdated;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -22,7 +22,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
 
 class GetForumListRequest extends ARequest<IPacket> {
     public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
-        tracker.addLodMessage(Messages.Synchronize_Command_Name_ForumList);
+        tracker.addLodMessage(Message.Synchronize_Command_Name_ForumList);
 
         ForumsList forumsList;
         try {
@@ -35,7 +35,7 @@ class GetForumListRequest extends ARequest<IPacket> {
         IForumAH fAH = storage.getForumAH();
         IForumGroupAH gAH = storage.getForumGroupAH();
 
-        tracker.addLodMessage(Messages.Synchronize_Message_GotForums, forumsList.getForums().length, forumsList.getForumGroups().length);
+        tracker.addLodMessage(Message.Synchronize_Message_GotForums, forumsList.getForums().length, forumsList.getForumGroups().length);
 
         try {
             int total = forumsList.getForumGroups().length + forumsList.getForums().length;

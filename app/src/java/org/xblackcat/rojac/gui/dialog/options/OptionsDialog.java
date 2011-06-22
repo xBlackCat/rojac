@@ -5,7 +5,7 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.dialog.LoginDialog;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -30,7 +30,7 @@ public class OptionsDialog extends JDialog {
     public OptionsDialog(Window mainFrame) throws RojacException {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
 
-        setTitle(Messages.Dialog_Options_Title.get());
+        setTitle(Message.Dialog_Options_Title.get());
 
         initializeLayout();
 
@@ -62,8 +62,8 @@ public class OptionsDialog extends JDialog {
 
         cp.add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.Button_Ok,
-                new AButtonAction(Messages.Button_ChangePassword) {
+                Message.Button_Ok,
+                new AButtonAction(Message.Button_ChangePassword) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         LoginDialog ld = new LoginDialog(OptionsDialog.this);
@@ -78,7 +78,7 @@ public class OptionsDialog extends JDialog {
                         dispose();
                     }
                 },
-                new AButtonAction(Messages.Button_Apply) {
+                new AButtonAction(Message.Button_Apply) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         applySettings();

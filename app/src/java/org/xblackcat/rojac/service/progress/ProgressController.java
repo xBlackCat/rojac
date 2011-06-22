@@ -2,7 +2,7 @@ package org.xblackcat.rojac.service.progress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -27,7 +27,7 @@ public class ProgressController implements IProgressController {
     }
 
     @Override
-    public void fireJobStart(Messages message, Object... arguments) {
+    public void fireJobStart(Message message, Object... arguments) {
         fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Start, null, message.get(arguments)));
     }
 
@@ -42,7 +42,7 @@ public class ProgressController implements IProgressController {
     }
 
     @Override
-    public void fireJobProgressChanged(float progress, Messages message, Object... arguments) {
+    public void fireJobProgressChanged(float progress, Message message, Object... arguments) {
         fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Work, (int) (progress * 100), message.get(arguments)));
     }
 
@@ -52,12 +52,12 @@ public class ProgressController implements IProgressController {
     }
 
     @Override
-    public void fireJobStop(Messages message, Object... arguments) {
+    public void fireJobStop(Message message, Object... arguments) {
         fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Stop, null, message.get(arguments)));
     }
 
     @Override
-    public void fireIdle(Messages message, Object... arguments) {
+    public void fireIdle(Message message, Object... arguments) {
         fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Idle, null, message.get(arguments)));
     }
 
@@ -77,7 +77,7 @@ public class ProgressController implements IProgressController {
     }
 
     @Override
-    public void fireException(Messages message, Object... arguments) {
+    public void fireException(Message message, Object... arguments) {
         fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Exception, null, message.get(arguments)));
     }
 

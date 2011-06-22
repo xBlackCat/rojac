@@ -14,7 +14,7 @@ import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -655,8 +655,8 @@ public abstract class AThreadView extends AView implements IItemView {
                 }
                 JLOptionPane.showMessageDialog(
                         SwingUtilities.windowForComponent(AThreadView.this),
-                        Messages.ErrorDialog_MessageNotFound_Message.get(messageId),
-                        Messages.ErrorDialog_MessageNotFound_Title.get(messageId),
+                        Message.ErrorDialog_MessageNotFound_Message.get(messageId),
+                        Message.ErrorDialog_MessageNotFound_Title.get(messageId),
                         JOptionPane.WARNING_MESSAGE
                 );
             }
