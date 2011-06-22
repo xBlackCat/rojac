@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.tray.RojacTray;
 import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
 import org.xblackcat.rojac.util.*;
@@ -59,7 +59,7 @@ public final class RojacLauncher {
             throw new RojacException("Can not initialize " + laf.getName() + " L&F.", e);
         }
 
-        Messages.setLocale(ROJAC_GUI_LOCALE.get());
+        Message.setLocale(ROJAC_GUI_LOCALE.get());
 
         ShortCutUtils.loadShortCuts();
 
@@ -127,8 +127,8 @@ public final class RojacLauncher {
                     if (ROJAC_MAIN_FRAME_ASK_ON_CLOSE.get()) {
                         int answer = JLOptionPane.showConfirmDialog(
                                 mainFrame,
-                                Messages.Dialog_ConfirmExit_Message.get(),
-                                Messages.Dialog_ConfirmExit_Title.get(),
+                                Message.Dialog_ConfirmExit_Message.get(),
+                                Message.Dialog_ConfirmExit_Title.get(),
                                 JOptionPane.YES_NO_OPTION
                         );
 

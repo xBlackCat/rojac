@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +12,7 @@ class RemoveFavoriteAction extends AbstractAction {
     private final int favoriteId;
 
     public RemoveFavoriteAction(int favoriteId) {
-        super(Messages.Popup_View_Remove.get());
+        super(Message.Popup_View_Remove.get());
         this.favoriteId = favoriteId;
     }
 

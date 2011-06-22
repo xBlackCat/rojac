@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.data;
 
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 /**
  * @author xBlackCat
@@ -24,6 +24,6 @@ public class FavoriteStatData {
     }
 
     public String asString() {
-        return Messages.View_Favorites_Statistic_Data.get(getUnread(), getTotal());
+        return Message.View_Favorites_Statistic_Data.get(getUnread(), getTotal());
     }
 }

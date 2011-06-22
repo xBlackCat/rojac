@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,7 +18,7 @@ abstract class APage extends JPanel {
 
     protected abstract void applySettings(Window mainFrame);
 
-    public abstract Messages getTitle();
+    public abstract Message getTitle();
 
     public abstract void placeFocus();
 }

@@ -5,7 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.Version;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.NewData;
@@ -26,7 +26,7 @@ class TestRequest extends ARequest<Integer> {
 
     @Override
     public void process(IResultHandler<Integer> handler, IProgressTracker trac, IJanusService janusService) throws RojacException {
-        trac.addLodMessage(Messages.Synchronize_Command_Name_Test);
+        trac.addLodMessage(Message.Synchronize_Command_Name_Test);
 
         Integer userId;
         try {
@@ -41,7 +41,7 @@ class TestRequest extends ARequest<Integer> {
             );
 
             userId = data.getOwnUserId();
-            trac.addLodMessage(Messages.Synchronize_Message_GotUserId, userId);
+            trac.addLodMessage(Message.Synchronize_Message_GotUserId, userId);
         } catch (JanusServiceException e) {
             // Login rejected
             userId = null;

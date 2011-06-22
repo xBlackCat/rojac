@@ -1,47 +1,47 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.data.IFavorite;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 /**
  * @author xBlackCat
  */
 
 public enum FavoriteType {
-    Thread(Messages.Favorite_Thread_Name) {
+    Thread(Message.Favorite_Thread_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new ThreadFavorite(id, config);
         }
     },
-    UserPosts(Messages.Favorite_UserPosts_Name) {
+    UserPosts(Message.Favorite_UserPosts_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new UserPostFavorite(id, config);
         }
     },
-    SubThread(Messages.Favorite_SubTree_Name) {
+    SubThread(Message.Favorite_SubTree_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new SubThreadFavorite(id, config);
         }
     },
-    UserResponses(Messages.Favorite_UserReplies_Name) {
+    UserResponses(Message.Favorite_UserReplies_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new UserResponseFavorite(id, config);
         }
     },
-    Category(Messages.Favorite_Category_Name) {
+    Category(Message.Favorite_Category_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
             return new CategoryFavorite(id, config);
         }
     };
 
-    private final Messages typeName;
+    private final Message typeName;
 
-    FavoriteType(Messages typeName) {
+    FavoriteType(Message typeName) {
         this.typeName = typeName;
     }
 

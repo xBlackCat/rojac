@@ -4,7 +4,7 @@ import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.UIUtils;
@@ -110,7 +110,7 @@ public class RecentTopicsView extends AView {
 
     @Override
     public String getTabTitle() {
-        return Messages.View_RecentTopics_Title.get();
+        return Message.View_RecentTopics_Title.get();
     }
 
     @Override

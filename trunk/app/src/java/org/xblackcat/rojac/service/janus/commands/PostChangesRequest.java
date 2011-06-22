@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
@@ -25,7 +25,7 @@ class PostChangesRequest extends ARequest<IPacket> {
 
     public void process(IResultHandler<IPacket> handler, IProgressTracker trac, IJanusService janusService) {
         IStorage storage = ServiceFactory.getInstance().getStorage();
-        trac.addLodMessage(Messages.Synchronize_Command_Name_Submit);
+        trac.addLodMessage(Message.Synchronize_Command_Name_Submit);
 
         try {
             INewRatingAH nrAH = storage.getNewRatingAH();

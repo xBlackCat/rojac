@@ -7,7 +7,7 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.gui.view.model.Post;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.LinkUtils;
 
@@ -63,16 +63,16 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
         if (messageId != null) {
-            menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage, null));
-            menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
-            menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_View_ThreadsTree_OpenMessage, null));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
 
             menu.addSeparator();
-            MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, stringUrl);
-            MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+            MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Message, stringUrl);
+            MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
 
         } else {
-            MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser, stringUrl);
+            MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser, stringUrl);
         }
 
         menu.add(MenuHelper.copyToClipboard(stringUrl));
@@ -92,14 +92,14 @@ public final class PopupMenuBuilder {
         menu.add(new OpenForumAction(appControl, forumId));
         menu.addSeparator();
 
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, forumId, true));
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, forumId, false));
+        menu.add(new SetForumReadMenuItem(Message.Popup_View_SetReadAll, forumId, true));
+        menu.add(new SetForumReadMenuItem(Message.Popup_View_SetUnreadAll, forumId, false));
 
-        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl.getMainFrame()));
+        menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl.getMainFrame()));
 
         menu.addSeparator();
 
-        JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.Popup_View_Forums_Subscribe.get(), subscribed);
+        JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Message.Popup_View_Forums_Subscribe.get(), subscribed);
         mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
         menu.add(mi);
 
@@ -116,20 +116,20 @@ public final class PopupMenuBuilder {
 
         menu.add(item);
 
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
 
-        menu.add(new SetMessageReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Read, message.getMessageData(), true));
-        menu.add(new SetMessageReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_Unread, message.getMessageData(), false));
+        menu.add(new SetMessageReadMenuItem(Message.Popup_View_ThreadsTree_Mark_Read, message.getMessageData(), true));
+        menu.add(new SetMessageReadMenuItem(Message.Popup_View_ThreadsTree_Mark_Unread, message.getMessageData(), false));
 
         menu.add(MenuHelper.markReadUnreadSubmenu(message, appControl.getMainFrame()));
 
         menu.addSeparator();
-        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
-        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
         if (addFavorites) {
@@ -158,14 +158,14 @@ public final class PopupMenuBuilder {
         final boolean subscribed = forum.isSubscribed();
         final int forumId = forum.getForumId();
 
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, forumId, true));
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, forumId, false));
+        menu.add(new SetForumReadMenuItem(Message.Popup_View_SetReadAll, forumId, true));
+        menu.add(new SetForumReadMenuItem(Message.Popup_View_SetUnreadAll, forumId, false));
 
-        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl.getMainFrame()));
+        menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl.getMainFrame()));
 
         menu.addSeparator();
 
-        JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Messages.Popup_View_Forums_Subscribe.get(), subscribed);
+        JCheckBoxMenuItem mi = new JCheckBoxMenuItem(Message.Popup_View_Forums_Subscribe.get(), subscribed);
         mi.addActionListener(new SubscribeChangeListener(forumId, subscribed));
         menu.add(mi);
 
@@ -176,21 +176,21 @@ public final class PopupMenuBuilder {
         int messageId = post.getMessageId();
         JPopupMenu menu = new JPopupMenu("#" + messageId);
 
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
 
-        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_SetReadAll, post, true));
-        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_SetUnreadAll, post, false));
+        menu.add(new SetThreadReadMenuItem(Message.Popup_View_SetReadAll, post, true));
+        menu.add(new SetThreadReadMenuItem(Message.Popup_View_SetUnreadAll, post, false));
 
-        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, post.getMessageData(), appControl.getMainFrame()));
+        menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, post.getMessageData(), appControl.getMainFrame()));
 
         menu.addSeparator();
-        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
         menu.addSeparator();
-        String text = Messages.Popup_Favorites_Add.get(Messages.Popup_Favorites_Add_Thread.get().toLowerCase(Property.ROJAC_GUI_LOCALE.get()));
+        String text = Message.Popup_Favorites_Add.get(Message.Popup_Favorites_Add_Thread.get().toLowerCase(Property.ROJAC_GUI_LOCALE.get()));
         menu.add(new AddToFavoriteMenuItem(text, FavoriteType.Thread, post.getMessageData().getThreadRootId()));
 
         return menu;
@@ -205,12 +205,12 @@ public final class PopupMenuBuilder {
 
         menu.add(item);
 
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
-        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
-        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
         return menu;
@@ -225,20 +225,20 @@ public final class PopupMenuBuilder {
 
         menu.add(item);
 
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Messages.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
 
-        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_SetReadAll, threadRoot, true));
-        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_SetUnreadAll, threadRoot, false));
+        menu.add(new SetThreadReadMenuItem(Message.Popup_View_SetReadAll, threadRoot, true));
+        menu.add(new SetThreadReadMenuItem(Message.Popup_View_SetUnreadAll, threadRoot, false));
 
         menu.addSeparator();
-        MenuHelper.addOpenLink(menu, Messages.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
         menu.addSeparator();
-        String text = Messages.Popup_Favorites_Add.get(Messages.Popup_Favorites_Add_Thread.get().toLowerCase(Property.ROJAC_GUI_LOCALE.get()));
+        String text = Message.Popup_Favorites_Add.get(Message.Popup_Favorites_Add_Thread.get().toLowerCase(Property.ROJAC_GUI_LOCALE.get()));
         menu.add(new AddToFavoriteMenuItem(text, FavoriteType.Thread, threadRoot.getThreadRootId()));
 
         return menu;
@@ -247,10 +247,10 @@ public final class PopupMenuBuilder {
     public static JPopupMenu getMessagesListTabMenu(Post post, IAppControl appControl) {
         JPopupMenu menu = new JPopupMenu("#");
 
-        menu.add(new SetMessageListReadMenuItem(Messages.Popup_View_SetReadAll, post, true));
-        menu.add(new SetMessageListReadMenuItem(Messages.Popup_View_SetUnreadAll, post, false));
+        menu.add(new SetMessageListReadMenuItem(Message.Popup_View_SetReadAll, post, true));
+        menu.add(new SetMessageListReadMenuItem(Message.Popup_View_SetUnreadAll, post, false));
 
-        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, appControl.getMainFrame()));
+        menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, appControl.getMainFrame()));
 
         return menu;
     }

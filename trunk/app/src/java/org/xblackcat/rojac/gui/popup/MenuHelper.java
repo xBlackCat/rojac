@@ -4,7 +4,7 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.gui.view.model.Post;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.LinkUtils;
 
 import javax.swing.*;
@@ -31,20 +31,20 @@ final class MenuHelper {
         /* Copy link sub-menu. */
 
         JMenu menu = new JMenu();
-        menu.setText(Messages.Popup_View_ThreadsTree_CopyUrl.get());
+        menu.setText(Message.Popup_View_ThreadsTree_CopyUrl.get());
 
         JMenuItem copyUrl = new JMenuItem();
-        copyUrl.setText(Messages.Popup_View_ThreadsTree_CopyUrl_Message.get());
+        copyUrl.setText(Message.Popup_View_ThreadsTree_CopyUrl_Message.get());
         copyUrl.addActionListener(new CopyUrlAction(LinkUtils.buildMessageLink(messageId)));
         menu.add(copyUrl);
 
         JMenuItem copyFlatUrl = new JMenuItem();
-        copyFlatUrl.setText(Messages.Popup_View_ThreadsTree_CopyUrl_Flat.get());
+        copyFlatUrl.setText(Message.Popup_View_ThreadsTree_CopyUrl_Flat.get());
         copyFlatUrl.addActionListener(new CopyUrlAction(LinkUtils.buildFlatThreadLink(messageId)));
         menu.add(copyFlatUrl);
 
         JMenuItem copyThreadUrl = new JMenuItem();
-        copyThreadUrl.setText(Messages.Popup_View_ThreadsTree_CopyUrl_Thread.get());
+        copyThreadUrl.setText(Message.Popup_View_ThreadsTree_CopyUrl_Thread.get());
         copyThreadUrl.addActionListener(new CopyUrlAction(LinkUtils.buildThreadLink(messageId)));
         menu.add(copyThreadUrl);
         return menu;
@@ -57,7 +57,7 @@ final class MenuHelper {
      * @param linkMessage
      * @param url
      */
-    static void addOpenLink(JPopupMenu menu, Messages linkMessage, String url) {
+    static void addOpenLink(JPopupMenu menu, Message linkMessage, String url) {
         final Desktop desktop = Desktop.getDesktop();
 
         if (url != null && desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -69,27 +69,27 @@ final class MenuHelper {
     }
 
     static JMenuItem copyToClipboard(String url) {
-        JMenuItem copyToClipboard = new JMenuItem(Messages.Popup_Link_Copy_ToClipboard.get());
+        JMenuItem copyToClipboard = new JMenuItem(Message.Popup_Link_Copy_ToClipboard.get());
         copyToClipboard.addActionListener(new CopyUrlAction(url));
 
         return copyToClipboard;
     }
 
     static JMenuItem markReadUnreadSubmenu(Post message, Window owner) {
-        JMenu menu = new JMenu(Messages.Popup_View_ThreadsTree_Mark_Title.get());
+        JMenu menu = new JMenu(Message.Popup_View_ThreadsTree_Mark_Title.get());
 
-        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadRead, message, true));
-        menu.add(new SetThreadReadMenuItem(Messages.Popup_View_ThreadsTree_Mark_ThreadUnread, message, false));
+        menu.add(new SetThreadReadMenuItem(Message.Popup_View_ThreadsTree_Mark_ThreadRead, message, true));
+        menu.add(new SetThreadReadMenuItem(Message.Popup_View_ThreadsTree_Mark_ThreadUnread, message, false));
 
         menu.addSeparator();
 
         final MessageData messageData = message.getMessageData();
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetReadAll, messageData.getForumId(), true));
-        menu.add(new SetForumReadMenuItem(Messages.Popup_View_SetUnreadAll, messageData.getForumId(), false));
+        menu.add(new SetForumReadMenuItem(Message.Popup_View_SetReadAll, messageData.getForumId(), true));
+        menu.add(new SetForumReadMenuItem(Message.Popup_View_SetUnreadAll, messageData.getForumId(), false));
 
         menu.addSeparator();
 
-        menu.add(new ExtendedMarkRead(Messages.Popup_View_ThreadsTree_Mark_Extended, messageData, owner));
+        menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, messageData, owner));
 
         return menu;
     }
@@ -103,17 +103,17 @@ final class MenuHelper {
      * @return
      */
     static JMenuItem favoritesSubmenu(MessageData messageData, IAppControl appControl) {
-        JMenu menu = new JMenu(Messages.Popup_Favorites_Add.get("..."));
+        JMenu menu = new JMenu(Message.Popup_Favorites_Add.get("..."));
 
-        menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_Thread.get(), FavoriteType.Thread, messageData.getThreadRootId()));
+        menu.add(new AddToFavoriteMenuItem(Message.Popup_Favorites_Add_Thread.get(), FavoriteType.Thread, messageData.getThreadRootId()));
 //        menu.add(new AddToFavoriteMenuItem("Sub-thread", FavoriteType.SubThread, post.getMessageId()));
         menu.addSeparator();
 
         String userName = messageData.getUserName();
         int userId = messageData.getUserId();
 
-        menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_UserPosts.get(userName), FavoriteType.UserPosts, userId));
-        menu.add(new AddToFavoriteMenuItem(Messages.Popup_Favorites_Add_ToUserReplies.get(userName), FavoriteType.UserResponses, userId));
+        menu.add(new AddToFavoriteMenuItem(Message.Popup_Favorites_Add_UserPosts.get(userName), FavoriteType.UserPosts, userId));
+        menu.add(new AddToFavoriteMenuItem(Message.Popup_Favorites_Add_ToUserReplies.get(userName), FavoriteType.UserResponses, userId));
 //        menu.addSeparator();
 //        menu.add(new AddToFavoriteMenuItem("Add category", FavoriteType.Category, messageData.getCategory()));
 

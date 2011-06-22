@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.component;
 
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 
@@ -9,10 +9,10 @@ import javax.swing.*;
  */
 
 public abstract class AButtonAction extends AbstractAction {
-    private final Messages message;
+    private final Message message;
     private final ShortCut shortCut;
 
-    public AButtonAction(Messages message) {
+    public AButtonAction(Message message) {
         this.message = message;
         shortCut = null;
     }
@@ -22,7 +22,7 @@ public abstract class AButtonAction extends AbstractAction {
         this.shortCut = shortCut;
     }
 
-    public Messages getMessage() {
+    public Message getMessage() {
         return message;
     }
 

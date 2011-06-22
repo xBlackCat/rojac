@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.util;
 
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.janus.commands.Request;
@@ -63,7 +63,7 @@ public final class SynchronizationUtils {
             idx ++;
         } while (size > 0);
 
-        return Messages.ProgressControl_AffectedBytes.get(lastSize, factors.charAt(idx));
+        return Message.ProgressControl_AffectedBytes.get(lastSize, factors.charAt(idx));
     }
 
     private static class ScheduleSynchronization implements Runnable {

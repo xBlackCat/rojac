@@ -6,7 +6,7 @@ import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.component.DescribableListRenderer;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -43,7 +43,7 @@ public class ExtendedMarkDialog extends JDialog {
     public ExtendedMarkDialog(Window owner) {
         super(owner, ModalityType.DOCUMENT_MODAL);
 
-        setTitle(Messages.Dialog_ExtMark_Title.get());
+        setTitle(Message.Dialog_ExtMark_Title.get());
 
         initialize();
         setResizable(false);
@@ -87,7 +87,7 @@ public class ExtendedMarkDialog extends JDialog {
         JPanel p = new JPanel(new BorderLayout(5, 5));
 
         final JPanel topMessage = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topMessage.add(new JLabel(Messages.Dialog_ExtMark_TopLine.get()));
+        topMessage.add(new JLabel(Message.Dialog_ExtMark_TopLine.get()));
 
         topMessage.add(scopeSelector);
 
@@ -113,13 +113,13 @@ public class ExtendedMarkDialog extends JDialog {
         center.add(dateRangeSelector);
         center.add(spinner);
         center.add(chooser);
-        center.add(new JLabel(Messages.Dialog_ExtMark_As.get()));
+        center.add(new JLabel(Message.Dialog_ExtMark_As.get()));
 
         center.add(readStateSelector);
 
         p.add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.Button_Ok,
+                Message.Button_Ok,
                 FlowLayout.RIGHT,
                 new AnOkAction() {
                     @Override

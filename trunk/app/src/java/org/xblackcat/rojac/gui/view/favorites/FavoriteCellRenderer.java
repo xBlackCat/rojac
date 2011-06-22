@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.view.favorites;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import sun.swing.DefaultLookup;
 
 import javax.swing.*;
@@ -44,7 +44,7 @@ class FavoriteCellRenderer  extends JLightPanel
         add(titleLine, BorderLayout.NORTH);
         add(statLine, BorderLayout.EAST);
         add(infoLine, BorderLayout.WEST);
-        infoLine.setText(Messages.View_Favorites_Statistic_Label.get());
+        infoLine.setText(Message.View_Favorites_Statistic_Label.get());
     }
 
     private Border getNoFocusBorder() {

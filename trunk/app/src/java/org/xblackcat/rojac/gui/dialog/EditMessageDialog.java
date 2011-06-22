@@ -10,7 +10,6 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.view.message.EditMessagePane;
 import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.i18n.Messages;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
@@ -100,8 +99,8 @@ public class EditMessageDialog extends JDialog {
         if (StringUtils.isBlank(subject)) {
             JLOptionPane.showMessageDialog(
                     EditMessageDialog.this,
-                    Messages.ErrorDialog_MessageEmptySubject_Message.get(),
-                    Messages.ErrorDialog_MessageEmptySubject_Title.get(),
+                    org.xblackcat.rojac.i18n.Message.ErrorDialog_MessageEmptySubject_Message.get(),
+                    org.xblackcat.rojac.i18n.Message.ErrorDialog_MessageEmptySubject_Title.get(),
                     JOptionPane.WARNING_MESSAGE
             );
 
@@ -163,14 +162,14 @@ public class EditMessageDialog extends JDialog {
 
         cp.add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.Button_Save,
-                new AButtonAction(Messages.Button_Save) {
+                org.xblackcat.rojac.i18n.Message.Button_Save,
+                new AButtonAction(org.xblackcat.rojac.i18n.Message.Button_Save) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         saveMessage();
                     }
                 },
-                new AButtonAction(Messages.Button_Preview) {
+                new AButtonAction(org.xblackcat.rojac.i18n.Message.Button_Preview) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         panelEdit.forcePreview();
@@ -181,7 +180,7 @@ public class EditMessageDialog extends JDialog {
                         }
                     }
                 },
-                new AButtonAction(Messages.Button_Cancel) {
+                new AButtonAction(org.xblackcat.rojac.i18n.Message.Button_Cancel) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         dispose();
@@ -235,8 +234,8 @@ public class EditMessageDialog extends JDialog {
             if (this.isCancelled()) {
                 JLOptionPane.showMessageDialog(
                         EditMessageDialog.this,
-                        Messages.ErrorDialog_MessageNotFound_Message.get(messageId),
-                        Messages.ErrorDialog_MessageNotFound_Title.get(messageId),
+                        org.xblackcat.rojac.i18n.Message.ErrorDialog_MessageNotFound_Message.get(messageId),
+                        org.xblackcat.rojac.i18n.Message.ErrorDialog_MessageNotFound_Title.get(messageId),
                         JOptionPane.WARNING_MESSAGE
                 );
             }

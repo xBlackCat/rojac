@@ -5,7 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.gui.PopupMouseAdapter;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
@@ -105,7 +105,7 @@ public class RojacTray {
     private JPopupMenu getPopupMenu() {
         JPopupMenu menu = new JPopupMenu();
 
-        Messages message = mainFrame.isVisible() ? Messages.Tray_Popup_Item_HideMainframe : Messages.Tray_Popup_Item_ShowMainframe;
+        Message message = mainFrame.isVisible() ? Message.Tray_Popup_Item_HideMainframe : Message.Tray_Popup_Item_ShowMainframe;
         JMenuItem showHideItem = new JMenuItem(message.get());
         final Font font = menu.getFont();
         if (font != null) {
@@ -121,7 +121,7 @@ public class RojacTray {
 
         menu.addSeparator();
 
-        JMenuItem optionsItem = new JMenuItem(Messages.Tray_Popup_Item_Options.get());
+        JMenuItem optionsItem = new JMenuItem(Message.Tray_Popup_Item_Options.get());
         optionsItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -130,7 +130,7 @@ public class RojacTray {
         });
         menu.add(optionsItem);
 
-        JMenuItem aboutItem = new JMenuItem(Messages.Tray_Popup_Item_About.get());
+        JMenuItem aboutItem = new JMenuItem(Message.Tray_Popup_Item_About.get());
         aboutItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -141,7 +141,7 @@ public class RojacTray {
 
         menu.addSeparator();
 
-        JMenuItem exitItem = new JMenuItem(Messages.Tray_Popup_Item_Exit.get());
+        JMenuItem exitItem = new JMenuItem(Message.Tray_Popup_Item_Exit.get());
         exitItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -227,8 +227,8 @@ public class RojacTray {
                     public void process(SynchronizationCompletePacket p) {
                         if (Property.TRAY_NOTIFICATION_SYNC_COMPLETE.get()) {
                             trayIcon.displayMessage(
-                                    Messages.Tray_Balloon_SynchronizationComplete_Title.get(),
-                                    Messages.Tray_Balloon_SynchronizationComplete_Text.get(
+                                    Message.Tray_Balloon_SynchronizationComplete_Title.get(),
+                                    Message.Tray_Balloon_SynchronizationComplete_Text.get(
                                             p.getForumIds().length,
                                             p.getThreadIds().length,
                                             p.getMessageIds().length

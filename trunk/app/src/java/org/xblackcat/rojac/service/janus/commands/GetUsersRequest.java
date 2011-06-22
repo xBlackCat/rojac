@@ -6,7 +6,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
@@ -29,12 +29,12 @@ class GetUsersRequest extends ARequest<IPacket> {
         IStorage storage = ServiceFactory.getInstance().getStorage();
         IUserAH uAH = storage.getUserAH();
 
-        tracker.addLodMessage(Messages.Synchronize_Command_Name_Users);
+        tracker.addLodMessage(Message.Synchronize_Command_Name_Users);
         if (log.isDebugEnabled()) {
             log.debug("Loading new users information.");
         }
         Integer limit = SYNCHRONIZER_LOAD_USERS_PORTION.get();
-        tracker.addLodMessage(Messages.Synchronize_Message_Portion, limit);
+        tracker.addLodMessage(Message.Synchronize_Message_Portion, limit);
 
         try {
             Version localUsersVersion = DataHelper.getVersion(VersionType.USERS_ROW_VERSION);
@@ -67,7 +67,7 @@ class GetUsersRequest extends ARequest<IPacket> {
                 DataHelper.setVersion(VersionType.USERS_ROW_VERSION, localUsersVersion);
             } while (loaded > 0);
 
-            tracker.addLodMessage(Messages.Synchronize_Message_GotUsers, totalUsersNumber);
+            tracker.addLodMessage(Message.Synchronize_Message_GotUsers, totalUsersNumber);
             if (log.isDebugEnabled()) {
                 log.debug(totalUsersNumber + " user(s) was loaded.");
             }

@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.view.thread.MessageReadFlagSetter;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
  * @author xBlackCat
  */
 class SetMessageReadMenuItem extends JMenuItem {
-    public SetMessageReadMenuItem(Messages text, final MessageData messageData, final boolean read) {
+    public SetMessageReadMenuItem(Message text, final MessageData messageData, final boolean read) {
         super(text.get());
         this.addActionListener(new ActionListener() {
             @Override

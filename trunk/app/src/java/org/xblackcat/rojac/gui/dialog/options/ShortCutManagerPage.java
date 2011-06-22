@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.dialog.options;
 
 import org.xblackcat.rojac.gui.component.KeyStrokeCellRenderer;
 import org.xblackcat.rojac.gui.component.MessagesCellRenderer;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -22,13 +22,13 @@ class ShortCutManagerPage extends APage {
     public ShortCutManagerPage() {
         super();
 
-        add(new JLabel(Messages.Dialog_Options_Description_Keymap.get()), BorderLayout.NORTH);
+        add(new JLabel(Message.Dialog_Options_Description_Keymap.get()), BorderLayout.NORTH);
 
         table = new JTable(shortCutsModel);
         table.setTableHeader(null);
         table.setDefaultEditor(KeyStroke.class, new KeyStrokeCellEditor());
 
-        table.setDefaultRenderer(Messages.class, new MessagesCellRenderer());
+        table.setDefaultRenderer(Message.class, new MessagesCellRenderer());
         table.setDefaultRenderer(KeyStroke.class, new KeyStrokeCellRenderer());
 
         ActionMap actionMap = table.getActionMap();
@@ -54,7 +54,7 @@ class ShortCutManagerPage extends APage {
 
         add(
                 WindowsUtils.coverComponent(
-                        new JButton(new AbstractAction(Messages.Button_Default.get()) {
+                        new JButton(new AbstractAction(Message.Button_Default.get()) {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 shortCutsModel.setInitial();
@@ -74,8 +74,8 @@ class ShortCutManagerPage extends APage {
     }
 
     @Override
-    public Messages getTitle() {
-        return Messages.Dialog_Options_Title_Keymap;
+    public Message getTitle() {
+        return Message.Dialog_Options_Title_Keymap;
     }
 
     @Override

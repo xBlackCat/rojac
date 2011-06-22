@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
 import org.xblackcat.rojac.gui.component.ShortCut;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -46,7 +46,7 @@ class ShortCutsTableModel extends AbstractTableModel {
             case 0:
                 return String.class;
             case 1:
-                return Messages.class;
+                return Message.class;
             default:
                 return KeyStroke.class;
         }

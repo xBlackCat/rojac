@@ -8,7 +8,7 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.component.DescribableListRenderer;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.ClipboardUtils;
 import org.xblackcat.rojac.util.LinkUtils;
@@ -34,7 +34,7 @@ public class OpenMessageDialog extends JDialog {
     public OpenMessageDialog(Window mainFrame) {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
 
-        setTitle(Messages.Dialog_OpenMessage_Title.get());
+        setTitle(Message.Dialog_OpenMessage_Title.get());
 
         initializeLayout();
 
@@ -50,7 +50,7 @@ public class OpenMessageDialog extends JDialog {
 
         add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.Button_Ok,
+                Message.Button_Ok,
                 new AnOkAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -105,7 +105,7 @@ public class OpenMessageDialog extends JDialog {
 
         add(cp, BorderLayout.CENTER);
 
-        JLabel l = new JLabel(Messages.Dialog_OpenMessage_Label.get());
+        JLabel l = new JLabel(Message.Dialog_OpenMessage_Label.get());
 
         add(l, BorderLayout.NORTH);
 

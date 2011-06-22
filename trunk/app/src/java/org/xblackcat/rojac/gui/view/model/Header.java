@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.RojacException;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,19 +10,19 @@ import java.lang.reflect.InvocationTargetException;
 * @author xBlackCat
 */
 public enum Header {
-    ID(PostId.class, Messages.Panel_Thread_Header_Id, 70),
-    SUBJECT(Post.class, Messages.Panel_Thread_Header_Subject, 600),
-    USER(PostUser.class, Messages.Panel_Thread_Header_User, 100),
-    REPLIES(PostReplies.class, Messages.Panel_Thread_Header_Replies, 30),
-    RATING(PostRating.class, Messages.Panel_Thread_Header_Rating, 70),
-    DATE(PostDate.class, Messages.Panel_Thread_Header_Date, 140);
+    ID(PostId.class, Message.Panel_Thread_Header_Id, 70),
+    SUBJECT(Post.class, Message.Panel_Thread_Header_Subject, 600),
+    USER(PostUser.class, Message.Panel_Thread_Header_User, 100),
+    REPLIES(PostReplies.class, Message.Panel_Thread_Header_Replies, 30),
+    RATING(PostRating.class, Message.Panel_Thread_Header_Rating, 70),
+    DATE(PostDate.class, Message.Panel_Thread_Header_Date, 140);
 
     private final Class<?> aClass;
     private final Constructor<?> constructor;
-    private final Messages title;
+    private final Message title;
     private final int width;
 
-    Header(Class<?> aClass, Messages title, int width) {
+    Header(Class<?> aClass, Message title, int width) {
         this.aClass = aClass;
         this.title = title;
         this.width = width;

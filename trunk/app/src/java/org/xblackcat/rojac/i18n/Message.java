@@ -4,6 +4,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.util.MessageUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -11,13 +12,12 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.regex.Pattern;
 
 /**
  * @author xBlackCat
  */
 
-public enum Messages {
+public enum Message {
     Main_Window_Title,
     // Button texts
     Button_Ok,
@@ -306,7 +306,7 @@ public enum Messages {
     Popup_View_ThreadsTree_OpenMessage_NewTab,
     Popup_View_ThreadsTree_OpenMessage_CurrentView;
 
-    private static final Log log = LogFactory.getLog(Messages.class);
+    private static final Log log = LogFactory.getLog(Message.class);
     // Constants
     static final String LOCALIZATION_BUNDLE_NAME = "i18n/messages";
 
@@ -315,6 +315,8 @@ public enum Messages {
     private static final Lock readLock;
     private static final Lock writeLock;
     private static Locale currentLocale;
+
+    private final String key = MessageUtils.constantCamelToPropertyName(name());
 
     static {
         ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
@@ -410,7 +412,7 @@ public enum Messages {
     }
 
     public String key() {
-        return constantCamelToPropertyName(name());
+        return key;
     }
 
     public String toString() {
@@ -424,32 +426,5 @@ public enum Messages {
         } finally {
             readLock.unlock();
         }
-    }
-
-    private static final Pattern DOTS_PATTERN = Pattern.compile("\\.{2,}");
-
-    private static String constantCamelToPropertyName(String s) {
-        if (s == null) {
-            return null;
-        }
-        StringBuilder result = new StringBuilder(s.length() << 1);
-        boolean wasDot = true;
-        for (char c : s.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                if (!wasDot) {
-                    result.append('_');
-                }
-                c = Character.toLowerCase(c);
-            }
-            if (c == '_') {
-                result.append('.');
-                wasDot = true;
-            } else {
-                result.append(c);
-                wasDot = false;
-            }
-        }
-
-        return DOTS_PATTERN.matcher(result).replaceAll(".");
     }
 }

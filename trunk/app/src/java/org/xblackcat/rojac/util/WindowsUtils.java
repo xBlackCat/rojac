@@ -3,7 +3,7 @@ package org.xblackcat.rojac.util;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.theme.IButtonIcons;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
@@ -94,7 +94,7 @@ public final class WindowsUtils {
         return setupButton(action, action.getMessage());
     }
 
-    public static JButton setupButton(AButtonAction action, Messages toolTip) {
+    public static JButton setupButton(AButtonAction action, Message toolTip) {
         IButtonIcons icons = Property.ROJAC_GUI_ICONPACK.get().getButtonIcons();
 
         JButton button = new JButton();
@@ -168,7 +168,7 @@ public final class WindowsUtils {
      *
      * @return tool tip text.
      */
-    private static String getToolTip(Messages toolTip, ShortCut shortCut) {
+    private static String getToolTip(Message toolTip, ShortCut shortCut) {
         String toolTipStr = toolTip.get();
         if (shortCut != null && shortCut.getKeyStroke() != null) {
             return toolTipStr + " (" + ShortCutUtils.keyStrokeHint(shortCut.getKeyStroke()) + ')';
@@ -302,7 +302,7 @@ public final class WindowsUtils {
      *
      * @return container with constructed buttons.
      */
-    public static Component createButtonsBar(JDialog dlg, Messages defAction, AButtonAction... buttons) {
+    public static Component createButtonsBar(JDialog dlg, Message defAction, AButtonAction... buttons) {
         return createButtonsBar(dlg, defAction, FlowLayout.CENTER, buttons);
     }
 
@@ -317,7 +317,7 @@ public final class WindowsUtils {
      *
      * @return container with constructed buttons.
      */
-    public static Component createButtonsBar(JDialog dlg, Messages defAction, int align, AButtonAction... buttons) {
+    public static Component createButtonsBar(JDialog dlg, Message defAction, int align, AButtonAction... buttons) {
         if (dlg == null && defAction != null) {
             throw new IllegalArgumentException("Can not set default action if target dialog is not specified.");
         }

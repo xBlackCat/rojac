@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.ViewType;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,7 +15,7 @@ class OpenForumAction extends AbstractAction {
     private final int forumId;
 
     public OpenForumAction(IAppControl appControl, int forumId) {
-        super(Messages.Popup_View_Open.get());
+        super(Message.Popup_View_Open.get());
         this.appControl = appControl;
         this.forumId = forumId;
     }

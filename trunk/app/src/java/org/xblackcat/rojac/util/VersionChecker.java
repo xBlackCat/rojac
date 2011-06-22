@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 
@@ -64,9 +64,9 @@ public class VersionChecker extends RojacWorker<Void, Integer> {
                     log.debug("User should update Rojac dist up to latest version.");
                 }
 
-                JLOptionPane.showMessageDialog(mainFrame, Messages.Dialog_Updater_UpdateExists.get(lastBuild), Messages.Dialog_Updater_UpdateExists_Title.get(), JOptionPane.INFORMATION_MESSAGE);
+                JLOptionPane.showMessageDialog(mainFrame, Message.Dialog_Updater_UpdateExists.get(lastBuild), Message.Dialog_Updater_UpdateExists_Title.get(), JOptionPane.INFORMATION_MESSAGE);
             } else if (manual) {
-                JLOptionPane.showMessageDialog(mainFrame, Messages.Dialog_Updater_NoUpdate.get(), Messages.Dialog_Updater_NoUpdate_Title.get(), JOptionPane.INFORMATION_MESSAGE);
+                JLOptionPane.showMessageDialog(mainFrame, Message.Dialog_Updater_NoUpdate.get(), Message.Dialog_Updater_NoUpdate_Title.get(), JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

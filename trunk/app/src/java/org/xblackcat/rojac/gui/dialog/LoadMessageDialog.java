@@ -5,7 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.ClipboardUtils;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -33,7 +33,7 @@ public class LoadMessageDialog extends JDialog {
         super(mainFrame, DEFAULT_MODALITY_TYPE);
         this.messageId = messageId;
 
-        setTitle(Messages.Dialog_LoadMessage_Title.get());
+        setTitle(Message.Dialog_LoadMessage_Title.get());
 
         initializeLayout();
 
@@ -49,7 +49,7 @@ public class LoadMessageDialog extends JDialog {
 
         add(WindowsUtils.createButtonsBar(
                 this,
-                Messages.Button_Ok,
+                Message.Button_Ok,
                 new AnOkAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -96,7 +96,7 @@ public class LoadMessageDialog extends JDialog {
         cp.add(messageIdText, BorderLayout.NORTH);
 
         loadAtOnce = new JCheckBox(
-                Messages.Dialog_LoadMessage_LoadAtOnce.get(),
+                Message.Dialog_LoadMessage_LoadAtOnce.get(),
                 SYNCHRONIZER_LOAD_TOPICS_AT_ONCE.get()
         );
         cp.add(loadAtOnce, BorderLayout.SOUTH);
@@ -105,9 +105,9 @@ public class LoadMessageDialog extends JDialog {
 
         String label;
         if (messageId == null) {
-            label = Messages.Dialog_LoadMessage_Label.get();
+            label = Message.Dialog_LoadMessage_Label.get();
         } else {
-            label = Messages.Dialog_LoadMessage_MessageNotExists.get(messageId);
+            label = Message.Dialog_LoadMessage_MessageNotExists.get(messageId);
             messageIdText.setEditable(false);
         }
         JLabel l = new JLabel(label);

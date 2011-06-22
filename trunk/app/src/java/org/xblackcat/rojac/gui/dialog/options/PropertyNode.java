@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
+import org.xblackcat.rojac.i18n.ANode;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.tree.TreePath;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * @author xBlackCat
  */
-class PropertyNode<T> {
+class PropertyNode<T> extends ANode {
     private Property<T> property;
     private final String name;
     private PropertyNode<?> parent;
@@ -104,6 +105,21 @@ class PropertyNode<T> {
     }
 
     @Override
+    protected String getKey() {
+        return appendName(new StringBuilder()).toString();
+    }
+
+    private StringBuilder appendName(StringBuilder res) {
+        if (parent != null) {
+            parent.appendName(res);
+            res.append('.');
+        }
+
+        res.append(name);
+        return res;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -145,10 +161,12 @@ class PropertyNode<T> {
 
     /**
      * Copy a property from another node
+     *
      * @param path
+     *
      * @return
      */
-    boolean setProperty(PropertyNode path) {
+    boolean setProperty(PropertyNode<T> path) {
         if (path.property == null) {
             return false;
         }

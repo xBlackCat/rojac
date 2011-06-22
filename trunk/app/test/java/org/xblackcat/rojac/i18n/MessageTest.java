@@ -17,8 +17,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 
 
-public class MessagesTest extends TestCase {
-    private static final Log log = LogFactory.getLog(MessagesTest.class);
+public class MessageTest extends TestCase {
+    private static final Log log = LogFactory.getLog(MessageTest.class);
     private static final Object[] EMPTY = new Object[100];
 
     public void testForExistence() throws IOException {
@@ -29,7 +29,7 @@ public class MessagesTest extends TestCase {
         localeTest(null);
 
         // List of locales
-        Collection<Locale> locales = Arrays.asList(RojacUtils.localesForBundle(Messages.LOCALIZATION_BUNDLE_NAME, false));
+        Collection<Locale> locales = Arrays.asList(RojacUtils.localesForBundle(Message.LOCALIZATION_BUNDLE_NAME, false));
 
         if (log.isInfoEnabled()) {
             log.info("Found " + locales.size() + " locales to test: " + locales);
@@ -53,8 +53,8 @@ public class MessagesTest extends TestCase {
 
     private static boolean localeTest(Locale l) {
         boolean noErrors = true;
-        Messages.setLocale(l, true);
-        for (Messages m : Messages.values()) {
+        Message.setLocale(l, true);
+        for (Message m : Message.values()) {
             if (log.isDebugEnabled()) {
                 log.debug("Check resource " + m);
             }

@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.progress;
 
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 /**
  * Interface to describe actions of progress tracker to show any continues operations in the tray or progress dialog.
@@ -20,7 +20,7 @@ public interface IProgressController {
      * @param message
      * @param arguments
      */
-    void fireJobStart(Messages message, Object... arguments);
+    void fireJobStart(Message message, Object... arguments);
 
     /**
      * Notify listeners about changing jobs progress (completeness) state.
@@ -37,7 +37,7 @@ public interface IProgressController {
      * @param message
      * @param arguments
      */
-    void fireJobProgressChanged(float progress, Messages message, Object... arguments);
+    void fireJobProgressChanged(float progress, Message message, Object... arguments);
 
     /**
      * Notify listeners about job has been stopped.
@@ -50,7 +50,7 @@ public interface IProgressController {
      * @param message
      * @param arguments
      */
-    void fireJobStop(Messages message, Object... arguments);
+    void fireJobStop(Message message, Object... arguments);
 
     /**
      * Notify listeners about no more tasks is processed.
@@ -63,7 +63,7 @@ public interface IProgressController {
      * @param message
      * @param arguments
      */
-    void fireIdle(Messages message, Object... arguments);
+    void fireIdle(Message message, Object... arguments);
 
     /**
      * Registers a new progress listener.
@@ -79,7 +79,7 @@ public interface IProgressController {
      */
     void removeProgressListener(IProgressListener l);
 
-    void fireException(Messages message, Object... arguments);
+    void fireException(Message message, Object... arguments);
 
     void fireJobProgressChanged(long amount);
 }

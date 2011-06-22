@@ -1,12 +1,12 @@
 package org.xblackcat.rojac.gui.component;
 
-import org.xblackcat.rojac.i18n.Messages;
+import org.xblackcat.rojac.i18n.Message;
 
 /**
  * @author xBlackCat
  */
 public abstract class AnOkAction extends AButtonAction {
     protected AnOkAction() {
-        super(Messages.Button_Ok);
+        super(Message.Button_Ok);
     }
 }
