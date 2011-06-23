@@ -188,7 +188,7 @@
 
     <target name="test" description="Make tests before packaging application" depends="compile" if="perform.tests">
         <mkdir dir="${rojac-application.basedir}/report"/>
-        <junit haltonerror="yes" haltonfailure="yes" fork="true" forkmode="class">
+        <junit haltonerror="yes" haltonfailure="yes" fork="true">
             <classpath>
                 <path refid="rojac-application.module.classpath.compile"/>
                 <pathelement location="${rojac-application.output.dir}"/>
