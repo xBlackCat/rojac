@@ -19,10 +19,9 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.utils.ResourceUtils;
-import sun.awt.AppContext;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -56,10 +55,6 @@ public final class ServiceFactory {
         }
     }
 
-    public static void initializeTest(IExecutor executor, IStorage storage, IOptionsService optionsService, IMessageParser messageParser, IProgressController progressController, IDataDispatcher dataDispatcher) {
-        INSTANCE = new ServiceFactory(executor, storage, optionsService, messageParser, progressController, dataDispatcher);
-    }
-
     private final IExecutor executor;
     private final IStorage storage;
     private final IOptionsService optionsService;
@@ -72,7 +67,7 @@ public final class ServiceFactory {
         dataDispatcher = new DataDispatcher();
 
         executor = new TaskExecutor();
-        AppContext.getAppContext().put(SwingWorker.class, executor);
+        RojacUtils.registerExecutor(executor);
 
         storage = initializeStorage();
 
@@ -83,25 +78,6 @@ public final class ServiceFactory {
         } catch (IOException e) {
             throw new RuntimeException("Can't initialize message formatter.", e);
         }
-    }
-
-    /**
-     * For testing purposes.
-     *
-     * @param executor
-     * @param storage
-     * @param optionsService
-     * @param messageParser
-     * @param progressController
-     * @param dataDispatcher
-     */
-    private ServiceFactory(IExecutor executor, IStorage storage, IOptionsService optionsService, IMessageParser messageParser, IProgressController progressController, IDataDispatcher dataDispatcher) {
-        this.executor = executor;
-        this.storage = storage;
-        this.optionsService = optionsService;
-        this.messageParser = messageParser;
-        this.progressController = progressController;
-        this.dataDispatcher = dataDispatcher;
     }
 
     public IStorage getStorage() {

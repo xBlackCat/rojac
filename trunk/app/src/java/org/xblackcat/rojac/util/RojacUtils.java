@@ -10,6 +10,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.IRSDNable;
+import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.CheckUpdatesEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
@@ -18,6 +19,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.net.URL;
 import java.util.*;
@@ -376,6 +379,33 @@ public final class RojacUtils {
 
     public static File getKeyMapFile() {
         return new File(getRojacHome(), "keymap.properties");
+    }
+
+    /**
+     * Hack to avoid noisily warnings during compiling project.
+     *
+     * @param executor executor to register
+     */
+    public static void registerExecutor(IExecutor executor) {
+        // The code is doing the line:
+        // AppContext.getAppContext().put(SwingWorker.class, executor);
+        try {
+            Class<?> aClass = Class.forName("sun.awt.AppContext");
+            Method putMethod = aClass.getMethod("put", Object.class, Object.class);
+            Method getInstanceMethod = aClass.getMethod("getAppContext");
+
+            Object instance = getInstanceMethod.invoke(null);
+
+            putMethod.invoke(instance, SwingWorker.class, executor);
+        } catch (ClassNotFoundException e) {
+            throw new RojacDebugException("sun.awt.AppContext is no longer exist", e);
+        } catch (NoSuchMethodException e) {
+            throw new RojacDebugException("Method not found for class", e);
+        } catch (IllegalAccessException e) {
+            throw new RojacDebugException("Can not access to a method", e);
+        } catch (InvocationTargetException e) {
+            throw new RojacDebugException("Method somehow thrown an exception", e);
+        }
     }
 
     private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
