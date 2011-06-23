@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.i18n.NodeText;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import org.xblackcat.rojac.service.options.Property;
@@ -126,7 +127,7 @@ class PropertiesPage extends APage {
         tree.setCellRenderer(new OptionTreeCellRenderer());
         tree.setCellEditor(new OptionCellEditor());
         // Force show tooltips in tree
-        tree.setToolTipText("");
+        tree.setToolTipText(NodeText.Tip.get(model.getRoot()));
 
         return tree;
     }
