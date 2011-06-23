@@ -14,6 +14,7 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.i18n.JLOptionPane;
+import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
@@ -265,7 +266,7 @@ public class MessageView extends AView implements IItemView {
         messageTextPane.setText(converted);
         messageTextPane.setCaretPosition(0);
         userInfoLabel.setText(RSDN_USER_NAME.get());
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Message.getLocale());
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, LocaleControl.getInstance().getLocale());
         messageDateLabel.setText(df.format(new Date()));
         answer.setEnabled(false);
         marks.setEnabled(false);
@@ -282,7 +283,7 @@ public class MessageView extends AView implements IItemView {
         } else {
             userInfoLabel.setText(Message.UserName_Anonymous.get());
         }
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Message.getLocale());
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, LocaleControl.getInstance().getLocale());
         messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
         answer.setEnabled(true);
         marks.setEnabled(true);

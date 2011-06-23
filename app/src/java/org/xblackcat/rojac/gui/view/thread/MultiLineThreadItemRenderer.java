@@ -6,7 +6,7 @@ import org.xblackcat.rojac.gui.component.ComplexTreeRenderer;
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
 import org.xblackcat.rojac.gui.view.model.Post;
-import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.i18n.LocaleControl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,7 +91,7 @@ class MultiLineThreadItemRenderer extends ComplexTreeRenderer {
                     DateFormat dateFormat = DateFormat.getDateTimeInstance(
                             DateFormat.MEDIUM,
                             DateFormat.SHORT,
-                            Message.getLocale());
+                            LocaleControl.getInstance().getLocale());
                     dateLine.setText(dateFormat.format(new Date(forumDate)));
                 }
 

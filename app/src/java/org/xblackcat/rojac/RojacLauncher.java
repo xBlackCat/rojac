@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.tray.RojacTray;
 import org.xblackcat.rojac.i18n.JLOptionPane;
+import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
@@ -59,7 +60,7 @@ public final class RojacLauncher {
             throw new RojacException("Can not initialize " + laf.getName() + " L&F.", e);
         }
 
-        Message.setLocale(ROJAC_GUI_LOCALE.get());
+        LocaleControl.getInstance().setLocale(ROJAC_GUI_LOCALE.get());
 
         ShortCutUtils.loadShortCuts();
 
