@@ -295,7 +295,12 @@ public enum Message {
 
     Popup_View_ThreadsTree_OpenMessage,
     Popup_View_ThreadsTree_OpenMessage_NewTab,
-    Popup_View_ThreadsTree_OpenMessage_CurrentView;
+    Popup_View_ThreadsTree_OpenMessage_CurrentView,
+
+    OpenMessageMethod_NewTab,
+    OpenMessageMethod_InThread,
+    OpenMessageMethod_InForum,
+    ;
 
     // Constants
     static final String LOCALIZATION_BUNDLE_NAME = "messages";
