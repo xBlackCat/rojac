@@ -14,6 +14,10 @@ public enum NodeText {
     }
 
     public String get(ANode key) {
-        return LocaleControl.getInstance().getString(bundleName, key.getKey());
+        return LocaleControl.getInstance().getString(bundleName, key.key());
+    }
+
+    String getBundleName() {
+        return bundleName;
     }
 }
