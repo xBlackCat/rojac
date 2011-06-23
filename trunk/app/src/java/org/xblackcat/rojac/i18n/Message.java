@@ -1,17 +1,8 @@
 package org.xblackcat.rojac.i18n;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.MessageUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author xBlackCat
@@ -306,70 +297,10 @@ public enum Message {
     Popup_View_ThreadsTree_OpenMessage_NewTab,
     Popup_View_ThreadsTree_OpenMessage_CurrentView;
 
-    private static final Log log = LogFactory.getLog(Message.class);
     // Constants
-    static final String LOCALIZATION_BUNDLE_NAME = "i18n/messages";
-
-    private static ResourceBundle messages;
-
-    private static final Lock readLock;
-    private static final Lock writeLock;
-    private static Locale currentLocale;
+    static final String LOCALIZATION_BUNDLE_NAME = "messages";
 
     private final String key = MessageUtils.constantCamelToPropertyName(name());
-
-    static {
-        ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
-        readLock = rwl.readLock();
-        writeLock = rwl.writeLock();
-
-        setLocale(null);
-    }
-
-    /**
-     * Set the specified locale for messages
-     *
-     * @param locale locale to set.
-     *
-     * @throws IllegalArgumentException is thrown if invalid locale is specified.
-     */
-    public static void setLocale(Locale locale) throws IllegalArgumentException {
-        setLocale(locale, false);
-    }
-
-    /**
-     * Set the specified locale for messages
-     *
-     * @param locale locale to set.
-     * @param strict
-     *
-     * @throws IllegalArgumentException is thrown if invalid locale is specified.
-     */
-    public static void setLocale(Locale locale, boolean strict) throws IllegalArgumentException {
-        ResourceBundle m;
-        if (locale != null) {
-            m = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME, locale);
-            if (!m.getLocale().equals(locale)) {
-                if (strict) {
-                    throw new IllegalArgumentException("Can not load resources for " + locale + " locale.");
-                } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Can not initialize locale " + locale + ". The " + m.getLocale() + " will be used.");
-                    }
-                }
-            }
-        } else {
-            m = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME);
-        }
-
-        writeLock.lock();
-        try {
-            messages = m;
-            currentLocale = m.getLocale();
-        } finally {
-            writeLock.unlock();
-        }
-    }
 
     /**
      * Returns a localized text of the constant. Optionally accepts parameters to substitute into text.
@@ -381,34 +312,7 @@ public enum Message {
      * @throws MissingResourceException if no localized message is exists for the constant.
      */
     public String get(Object... arguments) throws MissingResourceException {
-        String key = key();
-
-        String mes;
-
-        Locale l;
-        readLock.lock();
-        l = currentLocale;
-        try {
-            mes = messages.getString(key);
-        } catch (MissingResourceException e) {
-            if (Property.ROJAC_DEBUG_MODE.get()) {
-                mes = key + ": " + ArrayUtils.toString(arguments);
-            } else {
-                throw e;
-            }
-        } finally {
-            readLock.unlock();
-        }
-        if (mes != null) {
-            try {
-                mes = new String(mes.getBytes("ISO-8859-1"), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("Invalid encoding for string of key " + key, e);
-            }
-            return String.format(l, mes, arguments);
-        } else {
-            return key;
-        }
+        return LocaleControl.getInstance().getString(LOCALIZATION_BUNDLE_NAME, key(), arguments);
     }
 
     public String key() {
@@ -417,14 +321,5 @@ public enum Message {
 
     public String toString() {
         return "Constant: " + name() + " (" + key() + ")";
-    }
-
-    public static Locale getLocale() {
-        readLock.lock();
-        try {
-            return currentLocale;
-        } finally {
-            readLock.unlock();
-        }
     }
 }

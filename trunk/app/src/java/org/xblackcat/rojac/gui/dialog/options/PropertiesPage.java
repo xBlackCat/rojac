@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.dialog.options;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
+import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
@@ -66,7 +67,7 @@ class PropertiesPage extends APage {
         }
 
         if (packet.isPropertyAffected(ROJAC_GUI_LOCALE)) {
-            Message.setLocale(ROJAC_GUI_LOCALE.get());
+            LocaleControl.getInstance().setLocale(ROJAC_GUI_LOCALE.get());
         }
 
         if (packet.isPropertyAffected(SYNCHRONIZER_SCHEDULE_PERIOD)) {

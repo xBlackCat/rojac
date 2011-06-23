@@ -54,7 +54,7 @@ public final class JLOptionPane {
                                          Object message) throws HeadlessException {
         return showInputDialog(parentComponent,
                 message,
-                UIManager.getString("OptionPane.inputDialogTitle", Message.getLocale()),
+                UIManager.getString("OptionPane.inputDialogTitle", LocaleControl.getInstance().getLocale()),
                 JOptionPane.QUESTION_MESSAGE);
     }
 
@@ -73,7 +73,7 @@ public final class JLOptionPane {
                                          Object initialSelectionValue) {
         return (String) showInputDialog(parentComponent,
                 message,
-                UIManager.getString("OptionPane.inputDialogTitle", Message.getLocale()),
+                UIManager.getString("OptionPane.inputDialogTitle", LocaleControl.getInstance().getLocale()),
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
@@ -114,7 +114,7 @@ public final class JLOptionPane {
     public static void showMessageDialog(Component parentComponent,
                                          Object message) throws HeadlessException {
         showMessageDialog(parentComponent, message,
-                UIManager.getString("OptionPane.messageDialogTitle", Message.getLocale()),
+                UIManager.getString("OptionPane.messageDialogTitle", LocaleControl.getInstance().getLocale()),
                 JOptionPane.INFORMATION_MESSAGE);
     }
 

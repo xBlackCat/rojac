@@ -53,7 +53,8 @@ public class MessageTest extends TestCase {
 
     private static boolean localeTest(Locale l) {
         boolean noErrors = true;
-        Message.setLocale(l, true);
+        LocaleControl.getInstance().setLocale(l, true);
+
         for (Message m : Message.values()) {
             if (log.isDebugEnabled()) {
                 log.debug("Check resource " + m);
