@@ -99,7 +99,7 @@ public class LocaleControl {
                 }
             }
         } else {
-            bundle = ResourceBundle.getBundle(base);
+            bundle = ResourceBundle.getBundle("i18n/" + base);
         }
 
         writeLock.lock();
@@ -115,7 +115,7 @@ public class LocaleControl {
     String getString(String bundle, String key, Object... arguments) {
         String mes;
 
-        ResourceBundle messages = LocaleControl.getInstance().getBundle(bundle);
+        ResourceBundle messages = getBundle(bundle);
         try {
             mes = messages.getString(key);
         } catch (MissingResourceException e) {
@@ -136,7 +136,6 @@ public class LocaleControl {
         } else {
             return key;
         }
-
     }
 
 }

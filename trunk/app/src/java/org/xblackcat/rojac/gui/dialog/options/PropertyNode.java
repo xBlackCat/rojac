@@ -105,7 +105,7 @@ class PropertyNode<T> extends ANode {
     }
 
     @Override
-    protected String getKey() {
+    protected String key() {
         return appendName(new StringBuilder()).toString();
     }
 

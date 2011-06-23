@@ -125,8 +125,12 @@
 
     <target name="compile" description="Compile application" depends="prepare, get.revision">
         <!--Compile application classes-->
-        <javac destdir="${rojac-application.output.dir}" debug="${compiler.debug}"
-               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+        <javac destdir="${rojac-application.output.dir}"
+               debug="${compiler.debug}"
+               nowarn="${compiler.generate.no.warnings}"
+               memorymaximumsize="${compiler.max.memory}"
+               fork="true"
+               includeantruntime="false">
             <compilerarg line="${compiler.args.rojac}"/>
             <bootclasspath refid="rojac-application.module.bootclasspath"/>
             <classpath refid="rojac-application.module.classpath"/>
@@ -146,8 +150,12 @@
 
 
         <!--Compile test classes-->
-        <javac destdir="${rojac-application.testoutput.dir}" debug="${compiler.debug}"
-               nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+        <javac destdir="${rojac-application.testoutput.dir}"
+               debug="${compiler.debug}"
+               nowarn="${compiler.generate.no.warnings}"
+               memorymaximumsize="${compiler.max.memory}"
+               includeantruntime="false"
+               fork="true">
             <compilerarg line="${compiler.args.rojac}"/>
             <classpath refid="rojac-application.module.classpath.compile"/>
             <classpath location="${rojac-application.output.dir}"/>
@@ -165,7 +173,7 @@
             </fileset>
         </copy>
 
-        <antcall target="add.svn.info" inheritall="on"/>        
+        <antcall target="add.svn.info" inheritall="on"/>
     </target>
 
     <!-- Run the task only if svn info is success fully obtained. -->
@@ -180,7 +188,7 @@
 
     <target name="test" description="Make tests before packaging application" depends="compile" if="perform.tests">
         <mkdir dir="${rojac-application.basedir}/report"/>
-        <junit haltonerror="yes" haltonfailure="yes">
+        <junit haltonerror="yes" haltonfailure="yes" fork="true" forkmode="class">
             <classpath>
                 <path refid="rojac-application.module.classpath.compile"/>
                 <pathelement location="${rojac-application.output.dir}"/>
@@ -262,7 +270,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
 
         <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.cmd" eol="dos"/>
         <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.bat" eol="dos"/>
-        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh"  eol="unix"/>
+        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh" eol="unix"/>
 
         <chmod file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh" perm="755" failonerror="false"/>
     </target>

@@ -26,10 +26,10 @@ public class MessageTest extends TestCase {
         if (log.isInfoEnabled()) {
             log.info("Test resources for default locale.");
         }
-        localeTest(null);
+        assertTrue("Some translations is missed.", localeTest(null));
 
         // List of locales
-        Collection<Locale> locales = Arrays.asList(RojacUtils.localesForBundle(Message.LOCALIZATION_BUNDLE_NAME, false));
+        Collection<Locale> locales = Arrays.asList(RojacUtils.localesForBundle("i18n/" + Message.LOCALIZATION_BUNDLE_NAME, false));
 
         if (log.isInfoEnabled()) {
             log.info("Found " + locales.size() + " locales to test: " + locales);
