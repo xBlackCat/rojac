@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ThreadIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
@@ -248,5 +249,10 @@ class SingleModelControl extends AThreadsModelControl {
     @Override
     public void unloadThread(AThreadModel<Post> model, Post item) {
         // Single-thread views shouldn't clean the thread info.
+    }
+
+    @Override
+    public OpenMessageMethod getOpenMessageMethod() {
+        return OpenMessageMethod.InForum;
     }
 }

@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 
@@ -16,7 +17,6 @@ public interface IModelControl<T extends ITreeItem<T>> {
      *
      * @param model  model to be initialized.
      * @param itemId item id to identify how to initialize model.
-     *
      * @return forum id the view is belonged to. Used to load forum information.
      */
     void fillModelByItemId(AThreadModel<T> model, int itemId);
@@ -45,7 +45,6 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * @param model         data model to be affected by a packet.
      * @param p             packet to process.
      * @param postProcessor
-     *
      * @return <code>true</code> if packet was processed.
      */
     void processPacket(AThreadModel<T> model, IPacket p, Runnable postProcessor);
@@ -54,7 +53,6 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * Returns a root item for the specified node.
      *
      * @param post node in model.
-     *
      * @return root item for current view type of the specified node.
      */
     T getTreeRoot(T post);
@@ -64,7 +62,6 @@ public interface IModelControl<T extends ITreeItem<T>> {
      *
      * @param post       selected post. Base of popup menu.
      * @param appControl link to application control.
-     *
      * @return constructed popup menu.
      */
     JPopupMenu getItemMenu(T post, IAppControl appControl);
@@ -82,7 +79,6 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * Returns an icon to be shown in view title (usually - in tab title)
      *
      * @param model threads model to provide state data.
-     *
      * @return an icon or <code>null</code> if no icon is provided.
      */
     Icon getTitleIcon(AThreadModel<T> model);
@@ -92,7 +88,6 @@ public interface IModelControl<T extends ITreeItem<T>> {
      *
      * @param model      threads model to provide state data.
      * @param appControl application control provider.
-     *
      * @return popup menu or <code>null</code> if no popup is provided.
      */
     JPopupMenu getTitlePopup(AThreadModel<T> model, IAppControl appControl);
@@ -106,4 +101,11 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * @param item  target thread to clean up.
      */
     void unloadThread(AThreadModel<T> model, T item);
+
+    /**
+     * Method to open a post by double-click
+     *
+     * @return
+     */
+    OpenMessageMethod getOpenMessageMethod();
 }

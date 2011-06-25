@@ -5,6 +5,7 @@ import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.data.ForumMessageData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
@@ -272,5 +273,10 @@ class SortedForumModelControl extends AThreadsModelControl {
 
         thread.clearThread();
         model.nodeStructureChanged(thread);
+    }
+
+    @Override
+    public OpenMessageMethod getOpenMessageMethod() {
+        return OpenMessageMethod.NewTab;
     }
 }

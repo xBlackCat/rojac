@@ -748,6 +748,18 @@ public abstract class AThreadView extends AView implements IItemView {
     protected class ItemListener extends PopupMouseAdapter {
         @Override
         protected void triggerDoubleClick(MouseEvent e) {
+            Point p = e.getPoint();
+
+            TreePath path = getPathForLocation(p);
+
+            if (path != null) {
+                Post mi = (Post) path.getLastPathComponent();
+
+                OpenMessageMethod openMethod = modelControl.getOpenMessageMethod();
+                if (openMethod != null) {
+                    appControl.openMessage(mi.getMessageId(), openMethod);
+                }
+            }
         }
 
         @Override

@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.model;
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.theme.FavoritesIcon;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
@@ -115,6 +116,11 @@ class FavoritesModelControl implements IModelControl<Post> {
         if (delegatedControl != null) {
             delegatedControl.unloadThread(model, item);
         }
+    }
+
+    @Override
+    public OpenMessageMethod getOpenMessageMethod() {
+        return delegatedControl == null ? null : delegatedControl.getOpenMessageMethod();
     }
 
     /**

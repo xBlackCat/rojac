@@ -63,7 +63,7 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
         if (messageId != null) {
-            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_View_ThreadsTree_OpenMessage, null));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
             menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
             menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
 

@@ -15,7 +15,6 @@ import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
-import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.component.TrimingDockingWindowTitleProvider;
@@ -26,7 +25,6 @@ import org.xblackcat.rojac.gui.dialog.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
-import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.factory.ViewHelper;
 import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
@@ -582,18 +580,20 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     @Override
     public void openMessage(int messageId, OpenMessageMethod openMessageMethod) {
         if (openMessageMethod == null) {
-            // Default method first searches trough existing views for the message
-            for (View v : openedViews.values()) {
-                if (v.getComponent() instanceof IItemView) {
-                    IItemView itemView = (IItemView) v.getComponent();
+            throw new RojacDebugException("Open message type can not be null");
+        }
 
-                    if (itemView.containsItem(messageId)) {
-                        // Item found in the view.
-                        // Make the view visible and open it.
-                        v.makeVisible();
-                        itemView.makeVisible(messageId);
-                        return;
-                    }
+        for (View v : openedViews.values()) {
+            if (v.getComponent() instanceof IItemView) {
+                IItemView itemView = (IItemView) v.getComponent();
+
+                if (itemView.containsItem(messageId) &&
+                        openMessageMethod.getAssociatedViewType() == itemView.getId().getType()) {
+                    // Item found in the view.
+                    // Make the view visible and open it.
+                    v.makeVisible();
+                    itemView.makeVisible(messageId);
+                    return;
                 }
             }
         }
@@ -643,6 +643,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             unregisterWindow(window);
         }
 
+        @SuppressWarnings({"SuspiciousMethodCalls"})
         private void unregisterWindow(DockingWindow dw) {
             if (dw == null) {
                 return;
@@ -667,6 +668,9 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         public MessageNavigator(int messageId, OpenMessageMethod openMessageMethod) {
             super(messageId);
+            if (openMessageMethod == null) {
+                throw new RojacDebugException("Open message method can not be null");
+            }
 
             this.openMessageMethod = openMessageMethod;
         }
@@ -678,7 +682,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 return;
             }
 
-            ViewId viewId = getViewId(data);
+            ViewId viewId = openMessageMethod.getAssociatedViewType().makeId(data);
 
             View c = openTab(viewId);
             if (c != null) {
@@ -691,24 +695,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             }
         }
 
-        private ViewId getViewId(MessageData md) {
-            OpenMessageMethod method = openMessageMethod;
-
-            if (method == null) {
-                method = OPEN_MESSAGE_BEHAVIOUR_GENERAL.get();
-            }
-
-            switch (method) {
-                case InForum:
-                    return ViewType.Forum.makeId(md.getForumId());
-                case NewTab:
-                    return ViewType.SingleMessage.makeId(md.getMessageId());
-                case InThread:
-                    return ViewType.SingleThread.makeId(md.getThreadRootId());
-            }
-
-            throw new RojacDebugException("Invalid open message type: " + openMessageMethod);
-        }
     }
 
     private class AboutAction extends AButtonAction {

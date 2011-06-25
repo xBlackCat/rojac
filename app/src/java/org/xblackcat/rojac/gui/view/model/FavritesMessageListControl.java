@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.model;
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -90,5 +91,10 @@ class FavritesMessageListControl extends MessageListControl {
                     }
                 }
         ).dispatch(p);
+    }
+
+    @Override
+    public OpenMessageMethod getOpenMessageMethod() {
+        return OpenMessageMethod.InThread;
     }
 }
