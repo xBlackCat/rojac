@@ -280,8 +280,12 @@ public enum Message {
     Popup_View_ThreadsTree_Mark_Extended,
     Popup_View_ThreadsTree_Mark_WholeThreadRead,
 
-    Popup_MessageTab_OpenMessageInThread,
-    Popup_MessageTab_OpenMessageInForum,
+    Popup_Open_SubMenu,
+    Popup_Open_MessageInThread,
+    Popup_Open_MessageInForum,
+    Popup_Open_MessageInTab,
+    Popup_Open_UserPostList,
+    Popup_Open_UserReplyList,
 
     Popup_Favorites_Add,
     Popup_Favorites_Add_Thread,
@@ -293,11 +297,7 @@ public enum Message {
     Popup_View_ThreadsTree_CopyUrl_Flat,
     Popup_View_ThreadsTree_CopyUrl_Thread,
 
-    Popup_View_ThreadsTree_OpenMessage,
-    Popup_View_ThreadsTree_OpenMessage_NewTab,
-    Popup_View_ThreadsTree_OpenMessage_CurrentView,
-
-    OpenMessageMethod_NewTab,
+    OpenMessageMethod_MessageInTab,
     OpenMessageMethod_InThread,
     OpenMessageMethod_InForum,
     ;
