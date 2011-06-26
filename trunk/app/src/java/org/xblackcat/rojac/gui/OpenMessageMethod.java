@@ -12,7 +12,7 @@ public enum OpenMessageMethod implements IDescribable {
     /**
      * Open a new tab with message view and show the message there.
      */
-    NewTab(Message.OpenMessageMethod_NewTab, ViewType.SingleMessage),
+    NewTab(Message.OpenMessageMethod_MessageInTab, ViewType.SingleMessage),
     InThread(Message.OpenMessageMethod_InThread, ViewType.SingleThread),
     InForum(Message.OpenMessageMethod_InForum, ViewType.Forum),
     ;

@@ -13,6 +13,7 @@ class FavoritePostList extends PostList {
     private final IFavorite favorite;
 
     public FavoritePostList(IFavorite favorite) {
+        super(-1);
         this.favorite = favorite;
     }
 

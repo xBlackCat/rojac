@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
@@ -32,7 +31,7 @@ class PostListControl extends MessageListControl {
     }
 
     public void fillModelByItemId(final AThreadModel<Post> model, final int itemId) {
-        final PostList root = new PostList();
+        final PostList root = new PostList(itemId);
         model.setRoot(root);
 
         new RojacWorker<Void, Void>() {
@@ -55,6 +54,7 @@ class PostListControl extends MessageListControl {
                 root.fillList(messages);
                 root.setLoadingState(LoadingState.Loaded);
                 model.markInitialized();
+                model.nodeStructureChanged(root);
                 model.fireResortModel();
             }
         }.execute();
@@ -85,7 +85,7 @@ class PostListControl extends MessageListControl {
 
     @Override
     public String getTitle(AThreadModel<Post> model) {
-        throw new NotImplementedException("The method shouldn't be used.");
+        return "Test";
     }
 
     @Override

@@ -11,7 +11,6 @@ import java.util.Comparator;
  * @author xBlackCat
  */
 class PostList extends Post {
-    protected static final MessageData FAKE = new MessageData(-1, -1, -1, -1, -1, "", "", -1, -1, true, null);
     protected final static Comparator<Post> SORT_BY_DATE = new Comparator<Post>() {
         @Override
         public int compare(Post o1, Post o2) {
@@ -27,8 +26,8 @@ class PostList extends Post {
      */
     private LoadingState loadingState = LoadingState.NotLoaded;
 
-    public PostList() {
-        super(FAKE, null, null);
+    public PostList(int userId) {
+        super(new MessageData(-1, -1, -1, -1, userId, "", "", -1, -1, true, null), null, null);
     }
 
     @Override

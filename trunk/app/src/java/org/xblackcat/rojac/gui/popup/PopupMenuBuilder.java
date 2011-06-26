@@ -4,6 +4,7 @@ import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
+import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.gui.view.model.Post;
@@ -63,9 +64,9 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
         if (messageId != null) {
-            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
-            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
-            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInForum, OpenMessageMethod.InForum));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInTab, OpenMessageMethod.NewTab));
+            menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInThread, OpenMessageMethod.InThread));
 
             menu.addSeparator();
             MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Message, stringUrl);
@@ -107,8 +108,10 @@ public final class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getTreeViewMenu(Post message, IAppControl appControl, boolean addFavorites) {
-        int messageId = message.getMessageId();
+    public static JPopupMenu getTreeViewMenu(Post post, IAppControl appControl, boolean addFavorites) {
+        int messageId = post.getMessageId();
+        int userId = post.getMessageData().getUserId();
+
         final JPopupMenu menu = new JPopupMenu("#" + messageId);
 
         JMenuItem item = new JMenuItem("#" + messageId);
@@ -116,16 +119,23 @@ public final class PopupMenuBuilder {
 
         menu.add(item);
 
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_View_ThreadsTree_OpenMessage_NewTab, OpenMessageMethod.NewTab));
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        JMenuItem openSubMenu = menu.add(new JMenu(Message.Popup_Open_SubMenu.get()));
+        openSubMenu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInTab, OpenMessageMethod.NewTab));
+        openSubMenu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInThread, OpenMessageMethod.InThread));
+        openSubMenu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInForum, OpenMessageMethod.InForum));
+        if (userId > 0) {
+            // Menu items for non-anonymous
+            String userName = post.getMessageData().getUserName();
+            openSubMenu.add(new OpenPostList(userId, appControl, Message.Popup_Open_UserPostList.get(userName), ViewType.PostList));
+            openSubMenu.add(new OpenPostList(userId, appControl, Message.Popup_Open_UserReplyList.get(userName), ViewType.ReplyList));
+        }
 
         menu.addSeparator();
 
-        menu.add(new SetMessageReadMenuItem(Message.Popup_View_ThreadsTree_Mark_Read, message.getMessageData(), true));
-        menu.add(new SetMessageReadMenuItem(Message.Popup_View_ThreadsTree_Mark_Unread, message.getMessageData(), false));
+        menu.add(new SetMessageReadMenuItem(Message.Popup_View_ThreadsTree_Mark_Read, post.getMessageData(), true));
+        menu.add(new SetMessageReadMenuItem(Message.Popup_View_ThreadsTree_Mark_Unread, post.getMessageData(), false));
 
-        menu.add(MenuHelper.markReadUnreadSubmenu(message, appControl.getMainFrame()));
+        menu.add(MenuHelper.markReadUnreadSubmenu(post, appControl.getMainFrame()));
 
         menu.addSeparator();
         MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
@@ -134,7 +144,7 @@ public final class PopupMenuBuilder {
 
         if (addFavorites) {
             menu.addSeparator();
-            menu.add(MenuHelper.favoritesSubmenu(message.getMessageData(), appControl));
+            menu.add(MenuHelper.favoritesSubmenu(post.getMessageData(), appControl));
         }
 
         return menu;
@@ -176,7 +186,7 @@ public final class PopupMenuBuilder {
         int messageId = post.getMessageId();
         JPopupMenu menu = new JPopupMenu("#" + messageId);
 
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
 
@@ -205,8 +215,8 @@ public final class PopupMenuBuilder {
 
         menu.add(item);
 
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInThread, OpenMessageMethod.InThread));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
         MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
@@ -225,8 +235,8 @@ public final class PopupMenuBuilder {
 
         menu.add(item);
 
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInThread, OpenMessageMethod.InThread));
-        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_MessageTab_OpenMessageInForum, OpenMessageMethod.InForum));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInThread, OpenMessageMethod.InThread));
+        menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInForum, OpenMessageMethod.InForum));
 
         menu.addSeparator();
 
