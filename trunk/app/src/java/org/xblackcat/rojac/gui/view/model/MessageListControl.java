@@ -2,8 +2,10 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
@@ -78,5 +80,58 @@ abstract class MessageListControl implements IModelControl<Post> {
             p.setRead(read);
             model.nodeChanged(p);
         }
+    }
+
+    protected abstract void updateModel(AThreadModel<Post> model, Runnable postProcessor);
+
+    @Override
+    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
+        new PacketDispatcher(
+                new IPacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                },
+                new IPacketProcessor<SetPostReadPacket>() {
+                    @Override
+                    public void process(SetPostReadPacket p) {
+                        if (p.isRecursive()) {
+                            // Post is a root of marked thread
+                            updateModel(model, postProcessor);
+                        } else {
+                            // Mark as read only the post
+                            markPostRead(model, p.getPostId(), p.isRead());
+                        }
+                    }
+                },
+                new IPacketProcessor<SetReadExPacket>() {
+                    @Override
+                    public void process(SetReadExPacket p) {
+                        Post root = model.getRoot();
+
+                        // Second - update already loaded posts.
+                        for (int postId : p.getMessageIds()) {
+                            Post post = root.getMessageById(postId);
+
+                            if (post != null) {
+                                post.setRead(p.isRead());
+                                model.pathToNodeChanged(post);
+                            }
+                        }
+                    }
+                },
+                new IPacketProcessor<SynchronizationCompletePacket>() {
+                    @Override
+                    public void process(SynchronizationCompletePacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                }
+        ).dispatch(p);
+    }
+
+    @Override
+    public OpenMessageMethod getOpenMessageMethod() {
+        return OpenMessageMethod.InThread;
     }
 }

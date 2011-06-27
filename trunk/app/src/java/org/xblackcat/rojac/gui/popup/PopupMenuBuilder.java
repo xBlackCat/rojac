@@ -254,7 +254,19 @@ public final class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getMessagesListTabMenu(Post post, IAppControl appControl) {
+    public static JPopupMenu getFavoriteMessagesListTabMenu(Post post, IAppControl appControl) {
+        return getMessagesListTabMenu(post, appControl, null, null);
+    }
+
+    public static JPopupMenu getPostListTabMenu(Post post, IAppControl appControl) {
+        return getMessagesListTabMenu(post, appControl, FavoriteType.UserPosts, Message.Popup_Favorites_Add_UserPosts.get(post.getMessageData().getUserName()));
+    }
+
+    public static JPopupMenu getReplyListTabMenu(Post post, IAppControl appControl) {
+        return getMessagesListTabMenu(post, appControl, FavoriteType.UserResponses, Message.Popup_Favorites_Add_ToUserReplies.get(post.getMessageData().getUserName()));
+    }
+
+    private static JPopupMenu getMessagesListTabMenu(Post post, IAppControl appControl, FavoriteType favoriteType, String info) {
         JPopupMenu menu = new JPopupMenu("#");
 
         menu.add(new SetMessageListReadMenuItem(Message.Popup_View_SetReadAll, post, true));
@@ -262,6 +274,11 @@ public final class PopupMenuBuilder {
 
         menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, appControl.getMainFrame()));
 
+        if (favoriteType != null && info != null) {
+            menu.addSeparator();
+            String text = Message.Popup_Favorites_Add.get(info.toLowerCase(Property.ROJAC_GUI_LOCALE.get()));
+            menu.add(new AddToFavoriteMenuItem(text, favoriteType, post.getMessageData().getUserId()));
+        }
         return menu;
     }
 }
