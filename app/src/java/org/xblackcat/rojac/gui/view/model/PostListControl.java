@@ -1,17 +1,19 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.xblackcat.rojac.data.IFavorite;
+import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -20,9 +22,9 @@ class PostListControl extends MessageListControl {
     private final boolean replies;
 
     /**
-     * Creates a post list control. All posts a linked with the specified user. If parameter is <code>true</code> -
-     * the control loads all replies on the user posts. If parameter is <code>false</code> - the control loads
-     * all posts of the user.
+     * Creates a post list control. All posts a linked with the specified user. If parameter is <code>true</code> - the
+     * control loads all replies on the user posts. If parameter is <code>false</code> - the control loads all posts of
+     * the user.
      *
      * @param replies set true to load replies of the user instead of user posts.
      */
@@ -34,37 +36,43 @@ class PostListControl extends MessageListControl {
         final PostList root = new PostList(itemId);
         model.setRoot(root);
 
-        new RojacWorker<Void, Void>() {
-
-            private Iterable<MessageData> messages;
-
+        new RojacWorker<Void, String>() {
             @Override
             protected Void perform() throws Exception {
-                IStorage storage = ServiceFactory.getInstance().getStorage();
-                if (replies) {
-                    messages = storage.getMessageAH().getUserReplies(itemId);
-                } else {
-                    messages = storage.getMessageAH().getUserPosts(itemId);
+                IUserAH userAH = ServiceFactory.getInstance().getStorage().getUserAH();
+
+                User userById = userAH.getUserById(itemId);
+                if (userById != null) {
+                    publish(userById.getUserNick());
                 }
+
                 return null;
             }
 
             @Override
-            protected void done() {
-                root.fillList(messages);
-                root.setLoadingState(LoadingState.Loaded);
-                model.markInitialized();
-                model.nodeStructureChanged(root);
-                model.fireResortModel();
+            protected void process(List<String> chunks) {
+                for (String userName : chunks) {
+                    if (userName != null) {
+                        root.setMessageData(
+                                new MessageData(-1, -1, -1, -1, itemId, "", userName, -1, -1, true, null)
+                        );
+                    }
+                }
+
+                model.nodeChanged(root);
             }
         }.execute();
+
+        new PostListLoader(model).execute();
     }
 
     @Override
     public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
         Post root = model.getRoot();
 
-        return PopupMenuBuilder.getMessagesListTabMenu(root, appControl);
+        return replies ?
+                PopupMenuBuilder.getReplyListTabMenu(root, appControl) :
+                PopupMenuBuilder.getPostListTabMenu(root, appControl);
     }
 
     @Override
@@ -72,70 +80,64 @@ class PostListControl extends MessageListControl {
         return null;
     }
 
-    private void updateModel(final AThreadModel<Post> model, Runnable postProcessor) {
+    protected void updateModel(final AThreadModel<Post> model, Runnable postProcessor) {
         assert RojacUtils.checkThread(true);
 
-        // Parent in the case is FavoritePostList object.
-        FavoritePostList root = (FavoritePostList) model.getRoot();
-
-        final IFavorite favorite = root.getFavorite();
-
-        new FavoriteListLoader(postProcessor, favorite, model).execute();
+        new PostListLoader(postProcessor, model).execute();
     }
 
     @Override
     public String getTitle(AThreadModel<Post> model) {
-        return "Test";
+        Post root = model.getRoot();
+
+        if (root == null) {
+            return "#";
+        }
+
+        String userName = root.getMessageData().getUserName();
+        if (StringUtils.isBlank(userName)) {
+            userName = "#" + root.getMessageData().getUserId();
+        }
+
+        Message textBase = replies ? Message.Favorite_UserReplies_Name : Message.Favorite_UserPosts_Name;
+        return textBase.get(userName);
     }
 
-    @Override
-    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
-        new PacketDispatcher(
-                new IPacketProcessor<SetForumReadPacket>() {
-                    @Override
-                    public void process(SetForumReadPacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                },
-                new IPacketProcessor<SetPostReadPacket>() {
-                    @Override
-                    public void process(SetPostReadPacket p) {
-                        if (p.isRecursive()) {
-                            // Post is a root of marked thread
-                            updateModel(model, postProcessor);
-                        } else {
-                            // Mark as read only the post
-                            markPostRead(model, p.getPostId(), p.isRead());
-                        }
-                    }
-                },
-                new IPacketProcessor<SetReadExPacket>() {
-                    @Override
-                    public void process(SetReadExPacket p) {
-                        Post root = model.getRoot();
+    private class PostListLoader extends RojacWorker<Void, Void> {
+        private Iterable<MessageData> messages;
+        private final int itemId;
+        private final AThreadModel<Post> model;
 
-                        // Second - update already loaded posts.
-                        for (int postId : p.getMessageIds()) {
-                            Post post = root.getMessageById(postId);
+        public PostListLoader(Runnable postProcessor, AThreadModel<Post> model) {
+            super(postProcessor);
+            this.itemId = model.getRoot().getMessageData().getUserId();
+            this.model = model;
+        }
 
-                            if (post != null) {
-                                post.setRead(p.isRead());
-                                model.pathToNodeChanged(post);
-                            }
-                        }
-                    }
-                },
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                }
-        ).dispatch(p);
-    }
+        public PostListLoader(AThreadModel<Post> model) {
+            this(null, model);
+        }
 
-    @Override
-    public OpenMessageMethod getOpenMessageMethod() {
-        return OpenMessageMethod.InThread;
+        @Override
+        protected Void perform() throws Exception {
+            IStorage storage = ServiceFactory.getInstance().getStorage();
+            if (replies) {
+                messages = storage.getMessageAH().getUserReplies(itemId);
+            } else {
+                messages = storage.getMessageAH().getUserPosts(itemId);
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            PostList root = (PostList) model.getRoot();
+
+            root.fillList(messages);
+            root.setLoadingState(LoadingState.Loaded);
+            model.markInitialized();
+            model.nodeStructureChanged(root);
+            model.fireResortModel();
+        }
     }
 }
