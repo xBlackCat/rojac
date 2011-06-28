@@ -57,34 +57,7 @@ public class TreeTableThreadView extends AThreadView {
             threads.addMouseListener(new ItemListener());
 
             // Restore selection on any table data changing.
-            threads.getModel().addTableModelListener(new TableModelListener() {
-                @Override
-                public void tableChanged(TableModelEvent e) {
-                    if (e.getType() == TableModelEvent.UPDATE &&
-                            !(e.getColumn() == TableModelEvent.ALL_COLUMNS &&
-                                    e.getFirstRow() == TableModelEvent.HEADER_ROW &&
-                                    e.getLastRow() == TableModelEvent.HEADER_ROW)) {
-                        return;
-                    }
-
-                    ThreadState s = getState();
-                    if (s.openedMessageId() == 0) {
-                        return;
-                    }
-
-                    Post post = model.getRoot().getMessageById(s.openedMessageId());
-                    if (post == null) {
-                        return;
-                    }
-
-                    final TreePath pathToRoot = model.getPathToRoot(post);
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            scrollPathToVisible(pathToRoot);
-                        }
-                    });
-                }
-            });
+            threads.getModel().addTableModelListener(new SelectionHolder());
 
             threads.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             for (Header h : Header.values()) {
@@ -92,7 +65,7 @@ public class TreeTableThreadView extends AThreadView {
                 if (h.getWidth() > 0) {
                     column.setPreferredWidth(h.getWidth());
                     column.setMaxWidth(h.getWidth() << 2);
-                    column.setMinWidth(0);
+                    column.setMinWidth(10);
                     column.setIdentifier(h);
                 }
                 column.setToolTipText(h.getTitle());
@@ -236,5 +209,34 @@ public class TreeTableThreadView extends AThreadView {
 
     protected TreePath getPathForLocation(Point p) {
         return threads.getPathForLocation(p.x, p.y);
+    }
+
+    private class SelectionHolder implements TableModelListener {
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            if (e.getType() == TableModelEvent.UPDATE &&
+                    !(e.getColumn() == TableModelEvent.ALL_COLUMNS &&
+                            e.getFirstRow() == TableModelEvent.HEADER_ROW &&
+                            e.getLastRow() == TableModelEvent.HEADER_ROW)) {
+                return;
+            }
+
+            ThreadState s = getState();
+            if (s.openedMessageId() == 0) {
+                return;
+            }
+
+            Post post = model.getRoot().getMessageById(s.openedMessageId());
+            if (post == null) {
+                return;
+            }
+
+            final TreePath pathToRoot = model.getPathToRoot(post);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    scrollPathToVisible(pathToRoot);
+                }
+            });
+        }
     }
 }
