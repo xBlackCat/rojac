@@ -14,12 +14,20 @@ import java.util.Set;
 class GeneralEnumChecker<T extends Enum<T>> implements IValueChecker<T> {
     private final Set<T> allowedValues;
 
-    public GeneralEnumChecker(Class<T> enumClass) {
-        allowedValues = EnumSet.allOf(enumClass);
+    static <E extends Enum<E>> GeneralEnumChecker<E> only(E value, E... rest) {
+        return new GeneralEnumChecker<E>(EnumSet.of(value, rest));
     }
 
-    public GeneralEnumChecker(T value, T... rest) {
-        allowedValues = EnumSet.of(value, rest);
+    static <E extends Enum<E>> GeneralEnumChecker<E> except(E value, E... rest) {
+        return new GeneralEnumChecker<E>(EnumSet.complementOf(EnumSet.of(value, rest)));
+    }
+
+    GeneralEnumChecker(Class<T> enumClass) {
+        this(EnumSet.allOf(enumClass));
+    }
+
+    private GeneralEnumChecker(Set<T> allowedValues) {
+        this.allowedValues = allowedValues;
     }
 
     @Override

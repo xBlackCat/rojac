@@ -11,6 +11,7 @@ import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -277,6 +278,6 @@ class SortedForumModelControl extends AThreadsModelControl {
 
     @Override
     public OpenMessageMethod getOpenMessageMethod() {
-        return OpenMessageMethod.NewTab;
+        return Property.OPEN_MESSAGE_BEHAVIOUR_FORUM_VIEW.get();
     }
 }

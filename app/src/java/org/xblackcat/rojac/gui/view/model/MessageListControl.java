@@ -6,6 +6,7 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
@@ -132,6 +133,6 @@ abstract class MessageListControl implements IModelControl<Post> {
 
     @Override
     public OpenMessageMethod getOpenMessageMethod() {
-        return OpenMessageMethod.InThread;
+        return Property.OPEN_MESSAGE_BEHAVIOUR_POST_LIST.get();
     }
 }

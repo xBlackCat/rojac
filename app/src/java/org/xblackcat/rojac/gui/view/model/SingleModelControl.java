@@ -241,6 +241,6 @@ class SingleModelControl extends AThreadsModelControl {
 
     @Override
     public OpenMessageMethod getOpenMessageMethod() {
-        return OpenMessageMethod.InForum;
+        return Property.OPEN_MESSAGE_BEHAVIOUR_TOPIC_VIEW.get();
     }
 }

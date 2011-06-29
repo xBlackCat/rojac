@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * @author xBlackCat Date: 23.06.11
  */
-public class NoteTextTest extends TestCase {
+public class NodeTextTest extends TestCase {
     private static final Log log = LogFactory.getLog(MessageTest.class);
 
     private ANode[] nodeList;
