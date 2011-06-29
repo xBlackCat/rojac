@@ -6,7 +6,8 @@ import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.RatingCache;
-import org.xblackcat.rojac.gui.theme.PostIcon;
+import org.xblackcat.rojac.gui.theme.AnIcon;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
@@ -266,61 +267,30 @@ public final class MessageUtils {
         return getPostIcon(new Post(data, null));
     }
 
-    private static PostIcon getItemIcon(Post p) {
+    private static AnIcon getItemIcon(Post p) {
         final int userId = Property.RSDN_USER_ID.get(-1);
 
         boolean isOwnPost = p.getMessageData().getUserId() == userId;
         boolean isResponse = p.getParent() != null && p.getParent().getMessageData().getUserId() == userId;
         boolean hasResponse = p.getRepliesAmount() > 0;
 
-        ReadStatus s = p.isRead();
+        ReadStatus readStatus = p.isRead();
+
+        ReadStatusIcon iconHolder;
 
         if (isOwnPost) {
             if (hasResponse) {
-                switch (s) {
-                    case Unread:
-                        return PostIcon.HasResponseUnread;
-                    case ReadPartially:
-                        return PostIcon.HasResponseReadPartially;
-                    case Read:
-                    default:
-                        return PostIcon.HasResponseRead;
-                }
+                iconHolder = ReadStatusIcon.HasResponse;
             } else {
-                switch (s) {
-                    case Unread:
-                        return PostIcon.OwnPostUnread;
-                    case ReadPartially:
-                        return PostIcon.OwnPostReadPartially;
-                    case Read:
-                    default:
-                        return PostIcon.OwnPostRead;
-                }
+                iconHolder = ReadStatusIcon.OwnPost;
             }
+        } else if (isResponse) {
+            iconHolder = ReadStatusIcon.Response;
+        } else {
+            iconHolder = ReadStatusIcon.Post;
         }
 
-        if (isResponse) {
-            switch (s) {
-                case Unread:
-                    return PostIcon.ResponseUnread;
-                default:
-                case Read:
-                    return PostIcon.ResponseRead;
-                case ReadPartially:
-                    return PostIcon.ResponseReadPartially;
-            }
-        }
-
-        switch (s) {
-            case Read:
-                return PostIcon.Read;
-            case ReadPartially:
-                return PostIcon.ReadPartially;
-            case Unread:
-                return PostIcon.Unread;
-        }
-
-        return PostIcon.Unread;
+        return iconHolder.getIcon(readStatus);
     }
 
     public static String constantCamelToPropertyName(String s) {

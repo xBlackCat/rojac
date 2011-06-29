@@ -4,7 +4,8 @@ import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
-import org.xblackcat.rojac.gui.theme.FavoritesIcon;
+import org.xblackcat.rojac.gui.theme.AnIcon;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -15,8 +16,6 @@ import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
-import java.util.EnumMap;
-import java.util.Map;
 
 /**
  * @author xBlackCat
@@ -26,7 +25,7 @@ class FavoritesModelControl implements IModelControl<Post> {
     private IModelControl<Post> delegatedControl = null;
     private String title = null;
 
-    private Map<ReadStatus, FavoritesIcon> statusIcons = new EnumMap<ReadStatus, FavoritesIcon>(ReadStatus.class);
+    private ReadStatusIcon statusIcons = ReadStatusIcon.Favorite;
 
     @Override
     public void fillModelByItemId(AThreadModel<Post> model, int itemId) {
@@ -97,7 +96,7 @@ class FavoritesModelControl implements IModelControl<Post> {
             return UIUtils.getIcon(ViewIcon.Favorites);
         }
 
-        FavoritesIcon icon = statusIcons.get(model.getRoot().isRead());
+        AnIcon icon = statusIcons.getIcon(model.getRoot().isRead());
         return UIUtils.getIcon(icon);
     }
 
@@ -165,19 +164,18 @@ class FavoritesModelControl implements IModelControl<Post> {
             // Set proper ThreadsControl
             switch (f.getType()) {
                 case UserResponses:
+                    delegatedControl = ModelControls.FAVORITES_MESSAGES;
+                    statusIcons = ReadStatusIcon.FavoriteResponseList;
+                    break;
                 case UserPosts:
                 case Category:
                     delegatedControl = ModelControls.FAVORITES_MESSAGES;
-                    statusIcons.put(ReadStatus.Read, FavoritesIcon.UserPostsRead);
-                    statusIcons.put(ReadStatus.ReadPartially, FavoritesIcon.UserPostsReadPartially);
-                    statusIcons.put(ReadStatus.Unread, FavoritesIcon.UserPostsUnread);
+                    statusIcons = ReadStatusIcon.FavoritePostList;
                     break;
                 case SubThread:
                 case Thread:
                     delegatedControl = ModelControls.SINGLE_THREAD;
-                    statusIcons.put(ReadStatus.Read, FavoritesIcon.ThreadRead);
-                    statusIcons.put(ReadStatus.ReadPartially, FavoritesIcon.ThreadReadPartially);
-                    statusIcons.put(ReadStatus.Unread, FavoritesIcon.ThreadUnread);
+                    statusIcons = ReadStatusIcon.FavoriteThread;
                     break;
             }
 

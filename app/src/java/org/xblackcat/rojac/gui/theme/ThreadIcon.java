@@ -6,10 +6,8 @@ package org.xblackcat.rojac.gui.theme;
  * @author xBlackCat
  */
 
+// TODO: investigate, how to remove the last item from the enum. Is it possible to move it into ReadStatusIcon?
 public enum ThreadIcon implements AnIcon {
-    Read("thread-read.png"),
-    ReadPartially("thread-read-partially.png"),
-    Unread("thread-unread.png"),
     HasResponseUnread("thread-has-response.png");
 
     private final String filename;
