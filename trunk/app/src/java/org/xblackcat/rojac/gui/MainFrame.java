@@ -253,7 +253,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         // Set up main tabbed window for forum views
         TabWindow threads = new TabWindow();
-        threads.getWindowProperties().setUndockEnabled(false);
         threads.getWindowProperties().setMinimizeEnabled(false);
         threads.getWindowProperties().getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(3);
 
@@ -277,6 +276,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         TabWindowProperties threadsTabWindowProperties = rootWindowProperties.getTabWindowProperties();
         threadsTabWindowProperties.getUndockButtonProperties().setVisible(false);
+        threadsTabWindowProperties.getDockButtonProperties().setVisible(false);
         threadsTabWindowProperties.getMinimizeButtonProperties().setVisible(false);
 
 
@@ -297,11 +297,9 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         rootWindow.getWindowProperties().setCloseEnabled(false);
         rootWindow.getWindowProperties().setMaximizeEnabled(false);
-        rootWindow.getWindowProperties().setUndockEnabled(false);
 
         RootWindowProperties properties = rootWindow.getRootWindowProperties();
 
-        properties.getDockingWindowProperties().setUndockEnabled(false);
         properties.getDockingWindowProperties().setCloseEnabled(false);
         properties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
 
@@ -309,6 +307,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         tabWindowProperties.getMaximizeButtonProperties().setVisible(false);
         tabWindowProperties.getCloseButtonProperties().setVisible(false);
         tabWindowProperties.getUndockButtonProperties().setVisible(false);
+        tabWindowProperties.getDockButtonProperties().setVisible(false);
 
         rootWindow.getWindowBar(Direction.LEFT).setEnabled(true);
         rootWindow.getWindowBar(Direction.LEFT).addTab(viewForums, 0);
@@ -402,7 +401,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         props.getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(3);
         props.setCloseEnabled(false);
         props.setMaximizeEnabled(false);
-        props.setUndockEnabled(false);
 
         view.setPopupMenuFactory(new ItemViewPopupFactory(itemView));
 
@@ -422,7 +420,6 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         DockingWindowProperties props = view.getWindowProperties();
         props.setMinimizeEnabled(false);
-        props.setUndockEnabled(false);
         props.setTitleProvider(getTabTitleProvider());
 
         itemView.addInfoChangeListener(new TitleChangeTracker(itemView, view));
