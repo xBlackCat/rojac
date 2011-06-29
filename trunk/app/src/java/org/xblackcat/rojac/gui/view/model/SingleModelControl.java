@@ -4,6 +4,8 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.theme.AnIcon;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.theme.ThreadIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
@@ -185,30 +187,16 @@ class SingleModelControl extends AThreadsModelControl {
 
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
-        ThreadIcon threadIcon = null;
+        AnIcon threadIcon = null;
 
         Post root = model.getRoot();
 
         if (root != null) {
-            switch (root.isRead()) {
-                case Read:
-                    threadIcon = ThreadIcon.Read;
-                    break;
-                case ReadPartially:
-                    threadIcon = ThreadIcon.ReadPartially;
-                    break;
-                case Unread:
-                    threadIcon = ThreadIcon.Unread;
-                    break;
-            }
-
-            if (threadIcon != ThreadIcon.Read) {
-                // Check for non-read replies.
-
-                int userId = Property.RSDN_USER_ID.get(0);
-                if (userId > 0 && hasUnreadReplies(userId, root)) {
-                    threadIcon = ThreadIcon.HasResponseUnread;
-                }
+            int userId = Property.RSDN_USER_ID.get(0);
+            if (userId > 0 && hasUnreadReplies(userId, root)) {
+                threadIcon = ThreadIcon.HasResponseUnread;
+            } else {
+                threadIcon = ReadStatusIcon.Thread.getIcon(root.isRead());
             }
         }
 

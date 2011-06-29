@@ -105,6 +105,10 @@ public final class UIUtils {
     }
 
     public static Icon getIcon(AnIcon icon) {
+        if (icon == null) {
+            return null;
+        }
+
         IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
         return imagePack.getIcon(icon);
     }
