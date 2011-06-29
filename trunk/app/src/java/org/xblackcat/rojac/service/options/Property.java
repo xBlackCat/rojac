@@ -61,8 +61,10 @@ public final class Property<T> {
 
     // Behaviour in opening message in tab
     public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_GENERAL = create("rojac.behaviour.open_message.general", OpenMessageMethod.InForum);
-    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_RECENT_TOPICS = create("rojac.behaviour.open_message.from_recent_topics", OpenMessageMethod.InThread,
-            new GeneralEnumChecker<OpenMessageMethod>(OpenMessageMethod.InThread, OpenMessageMethod.InForum));
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_RECENT_TOPICS = create("rojac.behaviour.open_message.from_recent_topics", OpenMessageMethod.InThread, GeneralEnumChecker.except(OpenMessageMethod.NewTab));
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_FORUM_VIEW = create("rojac.behaviour.open_message.from_forum_view", OpenMessageMethod.InThread, GeneralEnumChecker.except(OpenMessageMethod.InForum));
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_TOPIC_VIEW = create("rojac.behaviour.open_message.from_topic_view", OpenMessageMethod.InForum, GeneralEnumChecker.except(OpenMessageMethod.InThread));
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_POST_LIST = create("rojac.behaviour.open_message.from_post_list", OpenMessageMethod.InForum);
 
     // Progress dialog properties
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.synchronizer.progress.autoshow", Boolean.TRUE);
