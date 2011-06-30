@@ -6,7 +6,6 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.AnIcon;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
-import org.xblackcat.rojac.gui.theme.ThreadIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -194,7 +193,7 @@ class SingleModelControl extends AThreadsModelControl {
         if (root != null) {
             int userId = Property.RSDN_USER_ID.get(0);
             if (userId > 0 && hasUnreadReplies(userId, root)) {
-                threadIcon = ThreadIcon.HasResponseUnread;
+                threadIcon = ReadStatusIcon.ThreadHasResponse.getIcon(ReadStatus.Unread);
             } else {
                 threadIcon = ReadStatusIcon.Thread.getIcon(root.isRead());
             }

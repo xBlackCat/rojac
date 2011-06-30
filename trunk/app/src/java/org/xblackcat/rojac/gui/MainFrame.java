@@ -220,8 +220,8 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             try {
                 ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
                 try {
-                    rootWindow.read(in);
-                    threadsRootWindow.read(in);
+                    rootWindow.read(in, false);
+                    threadsRootWindow.read(in, false);
                 } finally {
                     in.close();
                 }
@@ -477,8 +477,8 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         try {
             ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
             try {
-                rootWindow.write(out);
-                threadsRootWindow.write(out);
+                rootWindow.write(out, false);
+                threadsRootWindow.write(out, false);
             } finally {
                 out.close();
             }

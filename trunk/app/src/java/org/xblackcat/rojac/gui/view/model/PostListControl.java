@@ -5,12 +5,14 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.util.List;
@@ -77,7 +79,16 @@ class PostListControl extends MessageListControl {
 
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
-        return null;
+        Post root = model.getRoot();
+        if (root == null) {
+            return null;
+        }
+
+        ReadStatus readStatus = root.isRead();
+
+        ReadStatusIcon statusIcon = replies ? ReadStatusIcon.ReplyList : ReadStatusIcon.PostList;
+
+        return UIUtils.getIcon(statusIcon.getIcon(readStatus));
     }
 
     protected void updateModel(final AThreadModel<Post> model, Runnable postProcessor) {
