@@ -47,6 +47,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static org.xblackcat.rojac.service.options.Property.*;
@@ -580,17 +581,25 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             throw new RojacDebugException("Open message type can not be null");
         }
 
-        for (View v : openedViews.values()) {
+        Iterator<View> iterator = openedViews.values().iterator();
+        while (iterator.hasNext()) {
+            View v = iterator.next();
             if (v.getComponent() instanceof IItemView) {
+                if (v.getParent() == null) {
+                    iterator.remove();
+                    continue;
+                }
+
                 IItemView itemView = (IItemView) v.getComponent();
 
-                if (itemView.containsItem(messageId) &&
-                        openMessageMethod.getAssociatedViewType() == itemView.getId().getType()) {
-                    // Item found in the view.
-                    // Make the view visible and open it.
-                    v.makeVisible();
-                    itemView.makeVisible(messageId);
-                    return;
+                if (openMessageMethod.getAssociatedViewType() == itemView.getId().getType()) {
+                    if (itemView.containsItem(messageId)) {
+                        // Item found in the view.
+                        // Make the view visible and open it.
+                        v.makeVisible();
+                        itemView.makeVisible(messageId);
+                        return;
+                    }
                 }
             }
         }
