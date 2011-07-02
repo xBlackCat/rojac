@@ -123,6 +123,9 @@ public enum Message {
     WarnDialog_NoForums_Title,
     WarnDialog_NoForums_Question,
 
+    WarnDialog_NothingToSync_Title,
+    WarnDialog_NothingToSync_Question,
+
     // Load extra messages dialog texts
     Dialog_OpenMessage_Title,
     Dialog_OpenMessage_Label,

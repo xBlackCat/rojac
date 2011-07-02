@@ -91,12 +91,12 @@ public class RecentTopicsView extends AView {
     }
 
     @Override
-    public IViewState getState() {
+    public IState getObjectState() {
         return null;
     }
 
     @Override
-    public void setState(IViewState state) {
+    public void setObjectState(IState state) {
     }
 
     @Override

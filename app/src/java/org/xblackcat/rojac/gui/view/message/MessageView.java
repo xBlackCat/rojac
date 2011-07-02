@@ -302,12 +302,12 @@ public class MessageView extends AView implements IItemView {
     }
 
     @Override
-    public IViewState getState() {
+    public IState getObjectState() {
         return null;
     }
 
     @Override
-    public void setState(IViewState state) {
+    public void setObjectState(IState state) {
         // No state for the view.
     }
 

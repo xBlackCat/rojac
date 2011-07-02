@@ -66,7 +66,7 @@ public abstract class AView extends JPanel implements IView {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == IStateListener.class) {
-                ((IStateListener) listeners[i + 1]).stateChanged(this, getState());
+                ((IStateListener) listeners[i + 1]).stateChanged(this, getObjectState());
             }
         }
     }

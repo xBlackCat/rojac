@@ -3,19 +3,14 @@ package org.xblackcat.rojac.gui.dialog.options;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
-import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.i18n.NodeText;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.util.SynchronizationUtils;
-import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
-
-import static org.xblackcat.rojac.service.options.Property.*;
 
 /**
  * @author xBlackCat
@@ -56,24 +51,6 @@ class PropertiesPage extends APage {
     @Override
     protected void applySettings(Window mainFrame) {
         OptionsUpdatedPacket packet = new OptionsUpdatedPacket(model.applySettings());
-
-        // Load changed properties.
-        if (packet.isPropertyAffected(ROJAC_GUI_LOOK_AND_FEEL)) {
-            LookAndFeel laf = ROJAC_GUI_LOOK_AND_FEEL.get();
-            try {
-                UIUtils.setLookAndFeel(laf);
-            } catch (UnsupportedLookAndFeelException e) {
-                log.warn("Can not initialize " + laf.getName() + " L&F.", e);
-            }
-        }
-
-        if (packet.isPropertyAffected(ROJAC_GUI_LOCALE)) {
-            LocaleControl.getInstance().setLocale(ROJAC_GUI_LOCALE.get());
-        }
-
-        if (packet.isPropertyAffected(SYNCHRONIZER_SCHEDULE_PERIOD)) {
-            SynchronizationUtils.setScheduleSynchronizer(mainFrame);
-        }
 
         ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
     }

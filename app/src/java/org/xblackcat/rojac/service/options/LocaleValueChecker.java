@@ -50,7 +50,7 @@ final class LocaleValueChecker implements IValueChecker<Locale> {
         } else if (v == Locale.ROOT) {
             return "Default";
         } else {
-            return v.getDisplayName();
+            return v.getDisplayName(v);
         }
     }
 

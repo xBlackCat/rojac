@@ -4,6 +4,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.dialog.AboutDialog;
 import org.xblackcat.rojac.gui.dialog.options.OptionsDialog;
+import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
 
 import java.awt.*;
 
@@ -75,4 +76,15 @@ public class DialogHelper {
         return null;
     }
 
+    public static void openForumSubscriptionDialog(Window frame) {
+        openForumSubscriptionDialog(frame, null);
+    }
+
+    public static void openForumSubscriptionDialog(Window frame, Runnable onClose) {
+        SubscriptionDialog dlg = new SubscriptionDialog(frame, onClose);
+
+        WindowsUtils.center(dlg, frame);
+
+        dlg.setVisible(true);
+    }
 }

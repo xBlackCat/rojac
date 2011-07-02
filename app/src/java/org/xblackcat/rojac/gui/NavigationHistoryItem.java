@@ -7,14 +7,14 @@ import org.xblackcat.rojac.gui.view.ViewId;
 */
 class NavigationHistoryItem {
     private final ViewId viewId;
-    private final IViewState state;
+    private final IState state;
 
-    NavigationHistoryItem(ViewId viewId, IViewState state) {
+    NavigationHistoryItem(ViewId viewId, IState state) {
         this.viewId = viewId;
         this.state = state;
     }
 
-    public IViewState getState() {
+    public IState getState() {
         return state;
     }
 

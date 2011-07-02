@@ -9,7 +9,6 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
-import java.awt.*;
 import java.lang.ref.SoftReference;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -34,11 +33,7 @@ public final class Property<T> {
     // Global development properties
 
     public static final Property<Boolean> ROJAC_DEBUG_MODE = createPrivate("rojac.global.debug.mode", Boolean.FALSE);
-    // Application component properties
-    public static final Property<Dimension> ROJAC_MAIN_FRAME_SIZE = createPrivate("rojac.main_frame.size", Dimension.class);
-    public static final Property<Point> ROJAC_MAIN_FRAME_POSITION = createPrivate("rojac.main_frame.position", Point.class);
 
-    public static final Property<Integer> ROJAC_MAIN_FRAME_STATE = createPrivate("rojac.main_frame.state", Integer.class);
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());
     public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", getDefaultLocale(), localeChecker);
