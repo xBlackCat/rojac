@@ -36,7 +36,7 @@ public class ThreadDoubleView extends AView implements IItemView {
 
         masterView.addStateChangeListener(new IStateListener() {
             @Override
-            public void stateChanged(IView source, IViewState newState) {
+            public void stateChanged(IView source, IState newState) {
                 if (newState instanceof ThreadState) {
                     slaveView.loadItem(((ThreadState) newState).openedMessageId());
                 }
@@ -93,14 +93,14 @@ public class ThreadDoubleView extends AView implements IItemView {
     }
 
     @Override
-    public ComplexState getState() {
+    public ComplexState getObjectState() {
         assert RojacUtils.checkThread(true);
 
-        return new ComplexState(masterView.getState(), slaveView.getState());
+        return new ComplexState(masterView.getObjectState(), slaveView.getObjectState());
     }
 
     @Override
-    public void setState(IViewState state) {
+    public void setObjectState(IState state) {
         assert RojacUtils.checkThread(true);
 
         if (state == null) {
@@ -114,14 +114,14 @@ public class ThreadDoubleView extends AView implements IItemView {
 
         // Old state support
         if (state instanceof ThreadState) {
-            masterView.setState(state);
+            masterView.setObjectState(state);
             return;
         }
 
         ComplexState s = (ComplexState) state;
 
-        masterView.setState(s.getMasterState());
-        slaveView.setState(s.getSlaveState());
+        masterView.setObjectState(s.getMasterState());
+        slaveView.setObjectState(s.getSlaveState());
     }
 
     @Override

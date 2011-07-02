@@ -155,17 +155,9 @@ public final class RojacLauncher {
 
             mainFrame.applySettings();
 
-            // Setup scheduled synchronizer
-            SynchronizationUtils.setScheduleSynchronizer(mainFrame);
-
             mainFrame.setVisible(mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported());
 
-            mainFrame.loadData();
-
-            // Start synchronization
-            if (SYNCHRONIZER_SCHEDULE_AT_START.get()) {
-                SynchronizationUtils.startSynchronization(mainFrame);
-            }
+            mainFrame.setupScheduler();
 
             new VersionChecker(mainFrame).execute();
         }

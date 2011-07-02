@@ -145,7 +145,7 @@ public abstract class AThreadView extends AView implements IItemView {
     }
 
     @Override
-    public ThreadState getState() {
+    public ThreadState getObjectState() {
         assert RojacUtils.checkThread(true);
 
         Post p = getSelectedItem();
@@ -155,7 +155,7 @@ public abstract class AThreadView extends AView implements IItemView {
     }
 
     @Override
-    public void setState(IViewState state) {
+    public void setObjectState(IState state) {
         assert RojacUtils.checkThread(true);
 
         if (state == null) {
@@ -173,7 +173,7 @@ public abstract class AThreadView extends AView implements IItemView {
 
     @Override
     public void makeVisible(int messageId) {
-        setState(new ThreadState(messageId));
+        setObjectState(new ThreadState(messageId));
     }
 
     @Override

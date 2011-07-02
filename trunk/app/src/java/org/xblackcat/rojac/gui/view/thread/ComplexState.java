@@ -1,27 +1,27 @@
 package org.xblackcat.rojac.gui.view.thread;
 
-import org.xblackcat.rojac.gui.IViewState;
+import org.xblackcat.rojac.gui.IState;
 
 /**
  * @author xBlackCat
  */
 
-final class ComplexState implements IViewState {
+final class ComplexState implements IState {
     private static final long serialVersionUID = 1L;
 
-    private IViewState masterState;
-    private IViewState slaveState;
+    private IState masterState;
+    private IState slaveState;
 
-    public ComplexState(IViewState masterState, IViewState slaveState) {
+    public ComplexState(IState masterState, IState slaveState) {
         this.masterState = masterState;
         this.slaveState = slaveState;
     }
 
-    public IViewState getMasterState() {
+    public IState getMasterState() {
         return masterState;
     }
 
-    public IViewState getSlaveState() {
+    public IState getSlaveState() {
         return slaveState;
     }
 

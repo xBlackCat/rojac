@@ -12,6 +12,7 @@ import net.infonode.docking.util.StringViewMap;
 import net.infonode.docking.util.WindowMenuUtil;
 import net.infonode.gui.UIManagerUtil;
 import net.infonode.util.Direction;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
@@ -22,19 +23,22 @@ import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialog.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialog.OpenMessageDialog;
 import org.xblackcat.rojac.gui.dialog.ProgressTrackerDialog;
-import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.factory.ViewHelper;
 import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.gui.view.recenttopics.RecentTopicsView;
+import org.xblackcat.rojac.i18n.JLOptionPane;
+import org.xblackcat.rojac.i18n.LocaleControl;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.janus.commands.ASwingThreadedHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressController;
+import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.*;
@@ -48,6 +52,7 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static org.xblackcat.rojac.service.options.Property.*;
@@ -56,8 +61,9 @@ import static org.xblackcat.rojac.service.options.Property.*;
  * @author xBlackCat
  */
 
-public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDataHandler {
+public class MainFrame extends JFrame implements IStatefull, IAppControl, IDataHandler {
     private static final Log log = LogFactory.getLog(MainFrame.class);
+    private static final String SCHEDULED_TASK_ID = "SCHEDULED_SYNCHRONIZER";
 
     // Data tracking
     private Map<ViewId, View> openedViews = new HashMap<ViewId, View>();
@@ -87,7 +93,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     protected final NavigationHistoryTracker history = new NavigationHistoryTracker();
     protected final IStateListener navigationListener = new IStateListener() {
         @Override
-        public void stateChanged(IView source, IViewState newState) {
+        public void stateChanged(IView source, IState newState) {
             history.addHistoryItem(new NavigationHistoryItem(source.getId(), newState));
 
             // Update navigation buttons.
@@ -104,13 +110,32 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
             new IPacketProcessor<OptionsUpdatedPacket>() {
                 @Override
                 public void process(OptionsUpdatedPacket p) {
-                    if (p.isPropertyAffected(Property.VIEW_THREAD_TAB_TITLE_LIMIT)) {
+                    if (p.isPropertyAffected(VIEW_THREAD_TAB_TITLE_LIMIT)) {
                         // Update title providers for all message tabs
 
                         DockingWindowTitleProvider newTitleProvider = getTabTitleProvider();
 
                         updateTitleProvider(newTitleProvider, threadsRootWindow);
                     }
+
+                    // Load changed properties.
+                    if (p.isPropertyAffected(ROJAC_GUI_LOOK_AND_FEEL)) {
+                        LookAndFeel laf = ROJAC_GUI_LOOK_AND_FEEL.get();
+                        try {
+                            UIUtils.setLookAndFeel(laf);
+                        } catch (UnsupportedLookAndFeelException e) {
+                            log.warn("Can not initialize " + laf.getName() + " L&F.", e);
+                        }
+                    }
+
+                    if (p.isPropertyAffected(ROJAC_GUI_LOCALE)) {
+                        LocaleControl.getInstance().setLocale(ROJAC_GUI_LOCALE.get());
+                    }
+
+                    if (p.isPropertyAffected(SYNCHRONIZER_SCHEDULE_PERIOD)) {
+                        setScheduleSynchronizer();
+                    }
+
                 }
 
                 private void updateTitleProvider(DockingWindowTitleProvider newTitleProvider, DockingWindow view) {
@@ -123,6 +148,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 }
             }
     );
+    private MainFrameState frameState;
 
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
@@ -144,7 +170,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
         // Default position/size
-        setSize(640, 480);
+        setSize(800, 600);
 
         WindowsUtils.centerOnScreen(this);
 
@@ -212,27 +238,14 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         }
     }
 
-    public void loadData() {
-        File file = RojacUtils.getLayoutFile();
-        if (file.isFile()) {
-            if (log.isInfoEnabled()) {
-                log.info("Load previous layout");
-            }
-            try {
-                ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
-                try {
-                    rootWindow.read(in, false);
-                    threadsRootWindow.read(in, false);
-                } finally {
-                    in.close();
-                }
-            } catch (IOException e) {
-                log.error("Can not load views layout.", e);
-            }
-        } else {
-            if (log.isInfoEnabled()) {
-                log.info("No previous layout is found - use default.");
-            }
+    public void setupScheduler() {
+        // Setup scheduled synchronizer
+        setScheduleSynchronizer();
+
+
+        // Start synchronization if needed
+        if (SYNCHRONIZER_SCHEDULE_AT_START.get()) {
+            startSynchronization();
         }
     }
 
@@ -253,21 +266,17 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         View viewRecentTopics = createView(recentTopicsView);
 
         // Set up main tabbed window for forum views
-        TabWindow threads = new TabWindow();
-        threads.getWindowProperties().setMinimizeEnabled(false);
-        threads.getWindowProperties().getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(3);
-
-        threadsRootWindow = new RootWindow(false, new ThreadViewSerializer(), threads);
+        threadsRootWindow = new RootWindow(false, new ThreadViewSerializer());
         threadsRootWindow.addListener(new CloseViewTabListener());
 
         Color backgroundColor = UIManagerUtil.getColor("Panel.background", "control");
 
-        RootWindowProperties rootWindowProperties = threadsRootWindow.getRootWindowProperties();
-        rootWindowProperties.setDragRectangleBorderWidth(2);
-        rootWindowProperties.setRecursiveTabsEnabled(false);
-        rootWindowProperties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
+        RootWindowProperties threadsRootWindowProperties = threadsRootWindow.getRootWindowProperties();
+        threadsRootWindowProperties.setDragRectangleBorderWidth(2);
+        threadsRootWindowProperties.setRecursiveTabsEnabled(false);
+        threadsRootWindowProperties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
 
-        rootWindowProperties
+        threadsRootWindowProperties
                 .getDockingWindowProperties()
                 .getDropFilterProperties()
                 .setInsertTabDropFilter(noAuxViewsFilter)
@@ -275,11 +284,11 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
                 .setChildDropFilter(noAuxViewsFilter)
                 .setSplitDropFilter(noAuxViewsFilter);
 
-        TabWindowProperties threadsTabWindowProperties = rootWindowProperties.getTabWindowProperties();
-        threadsTabWindowProperties.getUndockButtonProperties().setVisible(false);
-        threadsTabWindowProperties.getDockButtonProperties().setVisible(false);
+        TabWindowProperties threadsTabWindowProperties = threadsRootWindowProperties.getTabWindowProperties();
         threadsTabWindowProperties.getMinimizeButtonProperties().setVisible(false);
-
+        threadsTabWindowProperties.getMaximizeButtonProperties().setVisible(false);
+//        threadsTabWindowProperties.getUndockButtonProperties().setVisible(false);
+//        threadsTabWindowProperties.getDockButtonProperties().setVisible(false);
 
         View threadsView = createThreadsView(threadsRootWindow);
         View[] mainViews = new View[]{
@@ -294,36 +303,55 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         viewMap.addView(RECENT_TOPICS_VIEW_ID, viewRecentTopics);
         viewMap.addView(THREADS_VIEW_ID, threadsView);
 
-        rootWindow = new RootWindow(false, viewMap, new SplitWindow(true, 0.25f, new TabWindow(mainViews), threadsView));
+        rootWindow = new RootWindow(false, viewMap,
+                new SplitWindow(
+                        true,
+                        0.75f,
+                        threadsView,
+                        new SplitWindow(
+                                false,
+                                0.25f,
+                                viewRecentTopics,
+                                new SplitWindow(
+                                        false,
+                                        0.7f,
+                                        viewForums,
+                                        viewFavorites
+                                )
+                        )
+                )
+        );
 
         rootWindow.getWindowProperties().setCloseEnabled(false);
         rootWindow.getWindowProperties().setMaximizeEnabled(false);
 
-        RootWindowProperties properties = rootWindow.getRootWindowProperties();
+        RootWindowProperties rootWindowProperties = rootWindow.getRootWindowProperties();
 
-        properties.getDockingWindowProperties().setCloseEnabled(false);
-        properties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
+        rootWindowProperties.getDockingWindowProperties().setCloseEnabled(false);
+        rootWindowProperties.getDockingWindowProperties().setUndockEnabled(false);
+        rootWindowProperties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
 
-        TabWindowProperties tabWindowProperties = properties.getTabWindowProperties();
+        TabWindowProperties tabWindowProperties = rootWindowProperties.getTabWindowProperties();
         tabWindowProperties.getMaximizeButtonProperties().setVisible(false);
+        tabWindowProperties.getMinimizeButtonProperties().setVisible(false);
         tabWindowProperties.getCloseButtonProperties().setVisible(false);
         tabWindowProperties.getUndockButtonProperties().setVisible(false);
         tabWindowProperties.getDockButtonProperties().setVisible(false);
 
         rootWindow.getWindowBar(Direction.LEFT).setEnabled(true);
-        rootWindow.getWindowBar(Direction.LEFT).addTab(viewForums, 0);
-        rootWindow.getWindowBar(Direction.LEFT).addTab(viewFavorites, 1);
         rootWindow.getWindowBar(Direction.LEFT).getWindowBarProperties().setMinimumWidth(5);
         rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
-        rootWindow.getWindowBar(Direction.RIGHT).addTab(viewRecentTopics, 0);
         rootWindow.getWindowBar(Direction.RIGHT).getWindowBarProperties().setMinimumWidth(5);
         rootWindow.getWindowBar(Direction.DOWN).setEnabled(true);
         rootWindow.getWindowBar(Direction.DOWN).getWindowBarProperties().setMinimumWidth(5);
 
-        properties.setDragRectangleBorderWidth(2);
-        properties.setRecursiveTabsEnabled(false);
+        rootWindowProperties.setDragRectangleBorderWidth(2);
+        rootWindowProperties.setRecursiveTabsEnabled(false);
 
-        viewForums.restore();
+        for (View view : mainViews) {
+            rootWindow.getWindowBar(Direction.RIGHT).addTab(view);
+            view.restore();
+        }
 
         rootWindow.setPopupMenuFactory(WindowMenuUtil.createWindowMenuFactory(viewMap, true));
 
@@ -432,7 +460,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     }
 
     private DockingWindowTitleProvider getTabTitleProvider() {
-        int tabTitleLimit = Property.VIEW_THREAD_TAB_TITLE_LIMIT.get(0);
+        int tabTitleLimit = VIEW_THREAD_TAB_TITLE_LIMIT.get(0);
 
         if (tabTitleLimit > 0) {
             return new TrimingDockingWindowTitleProvider(tabTitleLimit);
@@ -456,30 +484,58 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     }
 
     @Override
-    public void applySettings() {
-        if (ROJAC_MAIN_FRAME_POSITION.isSet()) {
-            setLocation(ROJAC_MAIN_FRAME_POSITION.get());
-        }
-
-        if (ROJAC_MAIN_FRAME_SIZE.isSet()) {
-            setSize(ROJAC_MAIN_FRAME_SIZE.get());
-        }
-
-        if (ROJAC_MAIN_FRAME_STATE.isSet()) {
-            setExtendedState(ROJAC_MAIN_FRAME_STATE.get());
-        }
+    public IState getObjectState() {
+        return frameState;
     }
 
     @Override
-    public void storeSettings() {
-        storeWindowState();
+    public void setObjectState(IState state) {
+        if (state instanceof MainFrameState) {
+            MainFrameState frameState = (MainFrameState) state;
 
+            setLocation(frameState.getLocation());
+            setSize(frameState.getSize());
+            setExtendedState(frameState.getWindowState());
+        }
+    }
+
+    public void applySettings() {
+        File file = RojacUtils.getLayoutFile();
+        if (file.isFile()) {
+            if (log.isInfoEnabled()) {
+                log.info("Load previous layout");
+            }
+            try {
+                ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+                try {
+                    rootWindow.read(in, false);
+                    threadsRootWindow.read(in, false);
+
+                    setObjectState((IState) in.readObject());
+                } finally {
+                    in.close();
+                }
+            } catch (ClassNotFoundException e) {
+                log.error("Main frame state class is not found", e);
+            } catch (IOException e) {
+                log.error("Can not load views layout.", e);
+            }
+        } else {
+            if (log.isInfoEnabled()) {
+                log.info("No previous layout is found - use default.");
+            }
+        }
+    }
+
+    public void storeSettings() {
         File file = RojacUtils.getLayoutFile();
         try {
             ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
             try {
                 rootWindow.write(out, false);
                 threadsRootWindow.write(out, false);
+                // Last item - main frame state
+                out.writeObject(getObjectState());
             } finally {
                 out.close();
             }
@@ -491,10 +547,10 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
     private void storeWindowState() {
         int state = getExtendedState();
 
-        ROJAC_MAIN_FRAME_STATE.set(state);
-        if (state == NORMAL) {
-            ROJAC_MAIN_FRAME_POSITION.set(getLocation());
-            ROJAC_MAIN_FRAME_SIZE.set(getSize());
+        if (state == NORMAL || frameState == null) {
+            frameState = new MainFrameState(state, getLocation(), getSize());
+        } else {
+            frameState = frameState.changeState(state);
         }
     }
 
@@ -607,17 +663,89 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         new MessageNavigator(messageId, openMessageMethod).execute();
     }
 
-    private void goToView(ViewId id, IViewState state) {
+    private void goToView(ViewId id, IState state) {
         View v = openTab(id);
 
         if (state != null) {
-            ((IView) v.getComponent()).setState(state);
+            ((IStatefull) v.getComponent()).setObjectState(state);
         }
     }
 
     private void updateNavigationButtons() {
         navigationBackButton.setEnabled(history.canGoBack());
         navigationForwardButton.setEnabled(history.canGoForward());
+    }
+
+    private void setScheduleSynchronizer() {
+        Integer period = SYNCHRONIZER_SCHEDULE_PERIOD.get();
+
+        IExecutor executor = ServiceFactory.getInstance().getExecutor();
+        executor.killTimer(SCHEDULED_TASK_ID);
+
+        if (period <= 0) {
+            return;
+        }
+
+        // Convert minutes into seconds
+        period *= 60;
+
+        executor.setupPeriodicTask(SCHEDULED_TASK_ID, new ScheduleSynchronization(), period);
+    }
+
+    private void startSynchronization() {
+        new RojacWorker<Void, Boolean>() {
+            @Override
+            protected Void perform() throws Exception {
+                IForumAH forumAH = ServiceFactory.getInstance().getStorage().getForumAH();
+
+                int[] subscribedForumIds = forumAH.getSubscribedForumIds();
+                publish(!ArrayUtils.isEmpty(subscribedForumIds));
+                return null;
+            }
+
+            @Override
+            protected void process(List<Boolean> chunks) {
+                boolean canProcess = chunks.iterator().next();
+
+                if (canProcess) {
+                    Request requests =
+                            SYNCHRONIZER_LOAD_USERS.get() ?
+                                    Request.SYNCHRONIZE_WITH_USERS :
+                                    Request.SYNCHRONIZE;
+
+                    requests.process(MainFrame.this);
+                } else {
+                    int response = JLOptionPane.showConfirmDialog(
+                            MainFrame.this,
+                            Message.WarnDialog_NothingToSync_Question.get(),
+                            Message.WarnDialog_NothingToSync_Title.get(),
+                            JOptionPane.YES_NO_OPTION
+                    );
+                    if (response == JOptionPane.YES_OPTION) {
+                        DialogHelper.openForumSubscriptionDialog(MainFrame.this, new Runnable() {
+                            @Override
+                            public void run() {
+                                assert RojacUtils.checkThread(true);
+
+                                // Check again for forum changes
+                                startSynchronization();
+                            }
+                        });
+                    }
+                }
+            }
+        }.execute();
+    }
+
+    private class ScheduleSynchronization implements Runnable {
+        @Override
+        public void run() {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    startSynchronization();
+                }
+            });
+        }
     }
 
     private class ThreadViewSerializer implements ViewSerializer {
@@ -754,7 +882,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
         }
 
         public void actionPerformed(ActionEvent e) {
-            SynchronizationUtils.startSynchronization(MainFrame.this);
+            startSynchronization();
         }
     }
 
@@ -797,11 +925,7 @@ public class MainFrame extends JFrame implements IConfigurable, IAppControl, IDa
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            SubscriptionDialog dlg = new SubscriptionDialog(MainFrame.this);
-
-            WindowsUtils.center(dlg, MainFrame.this);
-
-            dlg.setVisible(true);
+            DialogHelper.openForumSubscriptionDialog(MainFrame.this);
         }
     }
 }

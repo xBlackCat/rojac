@@ -57,7 +57,7 @@ public final class ViewHelper {
 
         IViewLayout layout = v.storeLayout();
 
-        IViewState stateObject = v.getState();
+        IState stateObject = v.getObjectState();
 
         out.writeObject(layout);
         out.writeObject(stateObject);
@@ -86,8 +86,8 @@ public final class ViewHelper {
             o = in.readObject();
         }
 
-        if (o instanceof IViewState) {
-            view.setState((IViewState) o);
+        if (o instanceof IState) {
+            view.setObjectState((IState) o);
         }
 
         return view;

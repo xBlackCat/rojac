@@ -8,5 +8,5 @@ import java.io.Serializable;
  * @author xBlackCat
  */
 
-public interface IViewState extends Serializable {
+public interface IState extends Serializable {
 }

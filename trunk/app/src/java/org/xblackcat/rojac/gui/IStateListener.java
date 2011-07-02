@@ -7,5 +7,5 @@ import java.util.EventListener;
  */
 
 public interface IStateListener extends EventListener {
-    void stateChanged(IView source, IViewState newState);
+    void stateChanged(IView source, IState newState);
 }

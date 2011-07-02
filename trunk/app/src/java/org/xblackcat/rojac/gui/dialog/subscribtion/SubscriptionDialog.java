@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.dialog.subscribtion;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.component.InvokeExtMarkDialogAction;
@@ -27,6 +29,8 @@ import java.util.Arrays;
  * @author xBlackCat
  */
 public class SubscriptionDialog extends JDialog {
+    private static final Log log = LogFactory.getLog(SubscriptionDialog.class);
+
     private SubscribeForumModel model = new SubscribeForumModel();
     private final IDataHandler handler = new IDataHandler() {
         @Override
@@ -37,9 +41,12 @@ public class SubscriptionDialog extends JDialog {
         }
     };
     private final IDataDispatcher dispatcher = ServiceFactory.getInstance().getDataDispatcher();
+    private final Runnable onClose;
 
-    public SubscriptionDialog(final Window owner) {
+    public SubscriptionDialog(final Window owner, Runnable onClose) {
         super(owner, Message.Dialog_Subscription_Title.get(), ModalityType.MODELESS);
+
+        this.onClose = onClose;
 
         initializeLayout();
 
@@ -120,20 +127,30 @@ public class SubscriptionDialog extends JDialog {
                             new ForumSubscriber(packet).execute();
                         }
 
-                        dispatcher.removeDataHandler(handler);
-                        dispose();
+                        closeDialog();
                     }
                 },
                 new ACancelAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        dispatcher.removeDataHandler(handler);
-                        dispose();
+                        closeDialog();
                     }
                 }
         ), BorderLayout.SOUTH);
 
         setContentPane(content);
+    }
+
+    private void closeDialog() {
+        if (onClose != null) {
+            try {
+                onClose.run();
+            } catch (Exception e) {
+                 log.warn("Exception in 'onClose' handler", e);
+            }
+        }
+        dispatcher.removeDataHandler(handler);
+        dispose();
     }
 
     private class ForumSubscriber extends RojacWorker<Void, Void> {

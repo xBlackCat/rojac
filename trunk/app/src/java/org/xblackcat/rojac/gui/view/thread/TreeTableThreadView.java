@@ -221,7 +221,7 @@ public class TreeTableThreadView extends AThreadView {
                 return;
             }
 
-            ThreadState s = getState();
+            ThreadState s = getObjectState();
             if (s.openedMessageId() == 0) {
                 return;
             }
