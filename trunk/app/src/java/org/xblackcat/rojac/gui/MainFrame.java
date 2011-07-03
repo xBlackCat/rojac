@@ -220,18 +220,23 @@ public class MainFrame extends JFrame implements IStatefull, IAppControl, IDataH
                 @Override
                 protected void done() {
                     if (loadAtOnce) {
-                        Request.EXTRA_MESSAGES.process(MainFrame.this,
-                                Request.PACKET_HANDLER,
-                                new ASwingThreadedHandler<IPacket>() {
-                                    @Override
-                                    protected void execute(IPacket data) {
-                                        SwingUtilities.invokeLater(new Runnable() {
-                                            public void run() {
-                                                openMessage(messageId, method);
-                                            }
-                                        });
-                                    }
-                                });
+                        if (method != null) {
+                            // Open a message after loading.
+                            Request.EXTRA_MESSAGES.process(MainFrame.this,
+                                    Request.PACKET_HANDLER,
+                                    new ASwingThreadedHandler<IPacket>() {
+                                        @Override
+                                        protected void execute(IPacket data) {
+                                            SwingUtilities.invokeLater(new Runnable() {
+                                                public void run() {
+                                                    openMessage(messageId, method);
+                                                }
+                                            });
+                                        }
+                                    });
+                        } else {
+                            Request.EXTRA_MESSAGES.process(MainFrame.this, Request.PACKET_HANDLER);
+                        }
                     }
                 }
             }.execute();
