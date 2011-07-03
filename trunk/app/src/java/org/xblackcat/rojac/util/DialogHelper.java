@@ -18,8 +18,7 @@ public class DialogHelper {
 
     public static void showAboutDialog(Window owner) {
         AboutDialog ad = new AboutDialog(owner);
-        ad.pack();
-        WindowsUtils.centerOnScreen(ad);
+        WindowsUtils.center(ad, owner);
         ad.setVisible(true);
     }
 
