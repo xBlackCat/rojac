@@ -10,8 +10,10 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.IRSDNable;
+import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.CheckUpdatesEnum;
+import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -27,6 +29,9 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.xblackcat.rojac.service.options.Property.RSDN_USER_PASSWORD;
+import static org.xblackcat.rojac.service.options.Property.RSDN_USER_PASSWORD_SAVE;
 
 /**
  * @author xBlackCat
@@ -405,6 +410,21 @@ public final class RojacUtils {
             throw new RojacDebugException("Can not access to a method", e);
         } catch (InvocationTargetException e) {
             throw new RojacDebugException("Method somehow thrown an exception", e);
+        }
+    }
+
+    public static void storeSettings() {
+        ShortCutUtils.storeShortCuts();
+
+        Password password = null;
+        if (!RSDN_USER_PASSWORD_SAVE.get()) {
+            password = RSDN_USER_PASSWORD.clear();
+        }
+
+        ServiceFactory.getInstance().getOptionsService().storeSettings();
+
+        if (password != null) {
+            RSDN_USER_PASSWORD.set(password);
         }
     }
 
