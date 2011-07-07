@@ -6,6 +6,7 @@ import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.dialog.LoginDialog;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -101,5 +102,7 @@ public class OptionsDialog extends JDialog {
         for (APage p : pages) {
             p.applySettings(getOwner());
         }
+
+        RojacUtils.storeSettings();
     }
 }

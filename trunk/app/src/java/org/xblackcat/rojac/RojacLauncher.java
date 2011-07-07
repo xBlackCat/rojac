@@ -67,16 +67,6 @@ public final class RojacLauncher {
         SwingUtilities.invokeLater(new SwingPartInitializer());
     }
 
-    private static void storeSettings() {
-        ShortCutUtils.storeShortCuts();
-
-        if (!RSDN_USER_PASSWORD_SAVE.get()) {
-            RSDN_USER_PASSWORD.clear();
-        }
-
-        ServiceFactory.getInstance().getOptionsService().storeSettings();
-    }
-
     private static void setupUserSettings() {
         // TODO: Load user settings from options
     }
@@ -142,7 +132,7 @@ public final class RojacLauncher {
                     mainFrame.storeSettings();
 
                     // Save settings
-                    storeSettings();
+                    RojacUtils.storeSettings();
 
                     // Close all the resources.
                     ServiceFactory.shutdown();
