@@ -61,6 +61,11 @@ public final class Property<T> {
     public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_TOPIC_VIEW = create("rojac.behaviour.open_message.from_topic_view", OpenMessageMethod.InForum, GeneralEnumChecker.except(OpenMessageMethod.InThread));
     public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_POST_LIST = create("rojac.behaviour.open_message.from_post_list", OpenMessageMethod.InForum);
 
+    // Behaviour of dropping url to main frame
+    public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_OTHERS = create("rojac.behaviour.drop_url.general", OpenMessageMethod.InForum);
+    public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_MESSAGE = create("rojac.behaviour.drop_url.message", OpenMessageMethod.NewTab);
+    public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_TOPIC = create("rojac.behaviour.drop_url.topic", OpenMessageMethod.InThread);
+
     // Progress dialog properties
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.synchronizer.progress.autoshow", Boolean.TRUE);
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOHIDE = create("rojac.synchronizer.progress.autohide", Boolean.FALSE);
