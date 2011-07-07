@@ -37,6 +37,7 @@ import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.janus.commands.ASwingThreadedHandler;
 import org.xblackcat.rojac.service.janus.commands.Request;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IMiscAH;
@@ -46,6 +47,9 @@ import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -361,6 +365,16 @@ public class MainFrame extends JFrame implements IStatefull, IAppControl, IDataH
         rootWindow.setPopupMenuFactory(WindowMenuUtil.createWindowMenuFactory(viewMap, true));
 
         cp.add(rootWindow);
+
+        // Setup DnD
+        DropTarget target = new DropTarget(
+                this,
+                DnDConstants.ACTION_COPY_OR_MOVE,
+                new MainFrameTargetAdapter(),
+                true
+        );
+
+        setDropTarget(target);
     }
 
     private View createThreadsView(DockingWindow threads) {
@@ -931,6 +945,99 @@ public class MainFrame extends JFrame implements IStatefull, IAppControl, IDataH
         @Override
         public void actionPerformed(ActionEvent e) {
             DialogHelper.openForumSubscriptionDialog(MainFrame.this);
+        }
+    }
+
+    private class MainFrameTargetAdapter extends DropTargetAdapter {
+        private DataFlavor acceptableType = null;
+
+        @Override
+        public void dragEnter(DropTargetDragEvent dtde) {
+            // Get the type of object being transferred and determine
+            // whether it is appropriate.
+            checkTransferType(dtde);
+
+            // Accept or reject the drag.
+            acceptOrRejectDrag(dtde);
+        }
+
+        @Override
+        public void drop(DropTargetDropEvent dtde) {
+            if ((dtde.getDropAction() & DnDConstants.ACTION_COPY_OR_MOVE) != 0) {
+                // Accept the drop and get the transfer data
+                dtde.acceptDrop(dtde.getDropAction());
+                Transferable transferable = dtde.getTransferable();
+
+                try {
+                    String url = (String) transferable.getTransferData(DataFlavor.stringFlavor);
+
+                    Integer idFromUrl = LinkUtils.getMessageId(url);
+                    OpenMessageMethod method;
+                    if (idFromUrl != null) {
+                        method = Property.DROP_BEHAVIOUR_URL_MESSAGE.get();
+                    } else if ((idFromUrl = LinkUtils.getThreadId(url)) != null) {
+                        method = Property.DROP_BEHAVIOUR_URL_TOPIC.get();
+                    } else if ((idFromUrl = LinkUtils.getMessageIdFromUrl(url)) != null) {
+                        method = Property.DROP_BEHAVIOUR_URL_OTHERS.get();
+                    } else {
+                        dtde.dropComplete(false);
+                        return;
+                    }
+
+                        openMessage(idFromUrl, method);
+
+                    dtde.dropComplete(true);
+                } catch (Exception e) {
+                    dtde.dropComplete(false);
+                }
+            } else {
+                dtde.rejectDrop();
+            }
+        }
+
+        protected boolean acceptOrRejectDrag(DropTargetDragEvent dtde) {
+            int dropAction = dtde.getDropAction();
+            int sourceActions = dtde.getSourceActions();
+            boolean acceptedDrag = false;
+
+            // Reject if the object being transferred
+            // or the operations available are not acceptable.
+            if (acceptableType == null
+                    || (sourceActions & DnDConstants.ACTION_COPY_OR_MOVE) == 0) {
+                dtde.rejectDrag();
+            } else if ((dropAction & DnDConstants.ACTION_COPY_OR_MOVE) == 0) {
+                // Not offering copy or move - suggest a copy
+                dtde.acceptDrag(DnDConstants.ACTION_COPY);
+                acceptedDrag = true;
+            } else {
+                // Offering an acceptable operation: accept
+                dtde.acceptDrag(dropAction);
+                acceptedDrag = true;
+            }
+
+            return acceptedDrag;
+        }
+
+        protected void checkTransferType(DropTargetDragEvent dtde) {
+//            // Only accept a flavor that returns a Component
+//            DataFlavor[] fl = dtde.getCurrentDataFlavors();
+//            for (DataFlavor aFl : fl) {
+//                if (log.isInfoEnabled()) {
+//                    log.info(aFl);
+//                }
+//
+//                Class dataClass = aFl.getRepresentationClass();
+//                if (URL.class.isAssignableFrom(dataClass)) {
+//                    acceptableType = aFl;
+//                    return;
+//                }
+//
+//                // Add more custom DataFlavors here
+//            }
+
+            if (dtde.getTransferable().isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                acceptableType = DataFlavor.stringFlavor;
+            }
         }
     }
 }
