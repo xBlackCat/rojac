@@ -373,4 +373,19 @@ public final class WindowsUtils {
 
         return panel;
     }
+
+    public static void toFront(final Frame mainFrame) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                mainFrame.setVisible(true);
+                int state = mainFrame.getExtendedState();
+                state &= ~JFrame.ICONIFIED;
+                mainFrame.setExtendedState(state);
+                mainFrame.setAlwaysOnTop(true);
+                mainFrame.toFront();
+                mainFrame.requestFocus();
+                mainFrame.setAlwaysOnTop(false);
+            }
+        });
+    }
 }

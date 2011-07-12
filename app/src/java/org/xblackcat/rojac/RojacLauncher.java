@@ -37,6 +37,12 @@ public final class RojacLauncher {
     }
 
     private static void launch() throws Exception {
+        RunChecker checker = new RunChecker();
+
+        if (checker.performCheck()) {
+            return;
+        }
+
         // Common tasks
         Thread.setDefaultUncaughtExceptionHandler(RojacUtils.GLOBAL_EXCEPTION_HANDLER);
 
@@ -64,14 +70,16 @@ public final class RojacLauncher {
 
         ShortCutUtils.loadShortCuts();
 
-        SwingUtilities.invokeLater(new SwingPartInitializer());
-    }
-
-    private static void setupUserSettings() {
-        // TODO: Load user settings from options
+        SwingUtilities.invokeLater(new SwingPartInitializer(checker));
     }
 
     private static class SwingPartInitializer implements Runnable {
+        private final RunChecker checker;
+
+        public SwingPartInitializer(RunChecker checker) {
+            this.checker = checker;
+        }
+
         public void run() {
             try {
                 perform();
@@ -83,6 +91,12 @@ public final class RojacLauncher {
 
         private void perform() {
             final MainFrame mainFrame = new MainFrame();
+
+            checker.installNewInstanceListener(new Runnable() {
+                public void run() {
+                    WindowsUtils.toFront(mainFrame);
+                }
+            });
 
             ServiceFactory.getInstance().getDataDispatcher().addDataHandler(mainFrame);
 
@@ -140,8 +154,6 @@ public final class RojacLauncher {
                     System.exit(0);
                 }
             });
-
-            setupUserSettings();
 
             mainFrame.applySettings();
 
