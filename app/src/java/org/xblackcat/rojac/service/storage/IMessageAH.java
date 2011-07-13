@@ -23,8 +23,6 @@ public interface IMessageAH extends AH {
      */
     void storeMessage(JanusMessageInfo fm, boolean read) throws StorageException;
 
-    boolean removeForumMessage(int id) throws StorageException;
-
     /**
      * Loads a message body for specified message id.
      *

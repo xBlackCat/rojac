@@ -31,27 +31,9 @@ final class DBRatingAH implements IRatingAH {
                 r.getRateDate().getTimeInMillis());
     }
 
-    public boolean removeRatingsByMessageId(int messageId) throws StorageException {
-        return helper.update(DataQuery.REMOVE_OBJECTS_RATING, messageId) > 0;
-    }
-
     public Rating[] getRatingsByMessageId(int messageId) throws StorageException {
         Collection<Rating> ratings = helper.execute(Converters.TO_RATING, DataQuery.GET_OBJECTS_RATING_BY_MESSAGE_ID, messageId);
         return ratings.toArray(new Rating[ratings.size()]);
-    }
-
-    public Rating[] getAllRatings() throws StorageException {
-        Collection<Rating> ratings = helper.execute(Converters.TO_RATING, DataQuery.GET_OBJECTS_RATING);
-        return ratings.toArray(new Rating[ratings.size()]);
-    }
-
-    public Mark[] getRatingMarksByMessageId(int messageId) throws StorageException {
-        Collection<Mark> ratings = helper.execute(
-                Converters.TO_MARK,
-                DataQuery.GET_OBJECTS_RATING_MARK_BY_MESSAGE_ID,
-                messageId
-        );
-        return ratings.toArray(new Mark[ratings.size()]);
     }
 
     public Collection<MarkStat> getMarkStatByMessageId(int messageId) throws StorageException {

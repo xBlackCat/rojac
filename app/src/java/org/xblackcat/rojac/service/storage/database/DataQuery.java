@@ -9,18 +9,12 @@ import org.xblackcat.utils.ResourceUtils;
 public enum DataQuery implements IPropertiable {
     // All object getting queries
     /**
-     * The query should fetch the version object properties in following order:
-     * <p/>
-     * type(int), version_data(byte[64])
-     */
-    GET_OBJECTS_VERSION,
-    /**
-     * The query should fetch the forum group object properties in following order:
-     * <p/>
-     * id(int), name(String), sort_order(int)
-     */
-    GET_OBJECTS_FORUM_GROUP,
-    /**
+       * The query should fetch the forum group object properties in following order:
+       * <p/>
+       * id(int), name(String), sort_order(int)
+       */
+      GET_OBJECTS_FORUM_GROUP,
+      /**
      * The query should fetch the forum object properties in following order:
      * <p/>
      * id(int), forum group(int), rated(int), inTop(int), rateLimit(int), subscribed(boolean), short name(String),
@@ -52,12 +46,6 @@ public enum DataQuery implements IPropertiable {
      */
     GET_LATEST_TOPIC_LIST,
     /**
-     * The query should fetch the moderate object properties in following order:
-     * <p/>
-     * message id(int), user id(int), forum id(int), creation time(long)
-     */
-    GET_OBJECTS_MODERATE,
-    /**
      * The query should fetch the new message object properties in following order:
      * <p/>
      * id (int), parent id(int), forum id(int), subject(String), message(String)
@@ -69,19 +57,6 @@ public enum DataQuery implements IPropertiable {
      * id (int), message id (int), action (int), forum id(int), description(String), asModerator(boolean)
      */
     GET_OBJECTS_NEW_MODERATES,
-    /**
-     * The query should fetch the user object properties in following order:
-     * <p/>
-     * id (int), name (String), nick (String), real_name (String), email (String), home_page (String), specialization
-     * (String), where_from (String), origin (String)
-     */
-    GET_OBJECTS_USER,
-    /**
-     * The query should fetch the rating object properties in following order:
-     * <p/>
-     * message id(int), topic id(int), user id(int), user rating(int), rate(int), rate date(long)
-     */
-    GET_OBJECTS_RATING,
     /**
      * The query fetches all the favorite objects.
      * <p/>
@@ -162,6 +137,12 @@ public enum DataQuery implements IPropertiable {
      */
     STORE_OBJECT_EXTRA_MESSAGE,
     /**
+     * The query for storing the ignored topic. Ignored topics are not shown in the forum list. Set the parameter:
+     * <p/>
+     * topicId (int)
+     */
+    STORE_OBJECT_IGNORED_TOPIC,
+    /**
      * The query for storing a new record of favorites object.
      * <p/>
      * fields order for the favorites table: id (int), name(string), type(string), config(string)
@@ -212,10 +193,6 @@ public enum DataQuery implements IPropertiable {
 
     // Object removing queries.
     /**
-     * The query for removing the forum object by its id
-     */
-    REMOVE_OBJECT_FORUM,
-    /**
      * The query fir removing the forum group object by its id
      */
     REMOVE_OBJECT_FORUM_GROUP,
@@ -236,17 +213,13 @@ public enum DataQuery implements IPropertiable {
      */
     REMOVE_OBJECT_NEW_MODERATE,
     /**
-     * The query for removing the message object by its id
-     */
-    REMOVE_OBJECT_MESSAGE,
-    /**
      * The query for removing the extra message from the table
      */
     REMOVE_OBJECT_EXTRA_MESSAGE,
     /**
-     * The query for removing the rating objects by message id.
+     * The query for removing topic id from ignored list by id
      */
-    REMOVE_OBJECTS_RATING,
+    REMOVE_OBJECT_IGNORED_TOPIC,
     /**
      * The query for removing the moderate objects by message id.
      */
@@ -261,20 +234,13 @@ public enum DataQuery implements IPropertiable {
     REMOVE_ALL_OBJECTS_EXTRA_MESSAGE,
     REMOVE_ALL_OBJECTS_NEW_RATING,
 
-    // Queries for getting all the ids of the objects
-    GET_IDS_FORUM,
     GET_IDS_FORUM_GROUP,
-    GET_IDS_NEW_RATING,
-    GET_IDS_NEW_MESSAGE,
-    GET_IDS_MESSAGE,
-    GET_IDS_USER,
     GET_IDS_EXTRA_MESSAGE,
 
     // Queries for getting object by its id
     GET_OBJECT_VERSION,
     GET_OBJECT_FORUM,
     GET_OBJECT_FORUM_GROUP,
-    GET_OBJECT_MESSAGE,
     GET_OBJECT_USER,
     GET_OBJECT_FAVORITE,
     /**
@@ -301,10 +267,6 @@ public enum DataQuery implements IPropertiable {
 
     // Queries for getting parts of object by object id
     GET_OBJECT_MESSAGE_BODY,
-    /**
-     * Returns int values - weight of mark
-     */
-    GET_OBJECTS_RATING_MARK_BY_MESSAGE_ID,
     GET_OBJECTS_NEW_RATING_MARK_BY_MESSAGE_ID,
     GET_OBJECTS_MARK_STAT_BY_MESSAGE_ID,
 
@@ -461,12 +423,6 @@ public enum DataQuery implements IPropertiable {
     /**
      * Query for updating ratings cache for message.
      * <p/>
-     * Category id (int), message id (int)
-     */
-    UPDATE_MESSAGE_CATEGORY,
-    /**
-     * Query for updating ratings cache for message.
-     * <p/>
      * rating cache (string), message id (int)
      */
     UPDATE_MESSAGE_RATING_CACHE,
@@ -479,15 +435,7 @@ public enum DataQuery implements IPropertiable {
     UPDATE_OBJECT_USER,
 
     GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
-    /**
-     * The query for retrieving ids for the specified forum group. SQL parameters:
-     * <p/>
-     * forum_group_id(int)
-     */
-    GET_IDS_FORUM_BY_FORUM_GROUP,
     GET_IDS_FORUM_SUBSCRIBED,
-    GET_IDS_MESSAGE_BY_PARENT_ID,
-    GET_IDS_MESSAGE_BY_TOPIC_ID,
     /**
      * Returns messages number in forum. Parameter is forumId.
      */
@@ -520,19 +468,10 @@ public enum DataQuery implements IPropertiable {
      * Returns last message date in forum. Parameter is forumId.
      */
     GET_LAST_MESSAGE_DATE_IN_FORUM,
-    IS_FORUM_HAS_MESSAGES,
     /**
      * Checks is the message id exist
      */
     IS_MESSAGES_EXIST,
-    GET_IDS_TOPIC_MESSAGE_BY_FORUM_ID,
-    /**
-     * Returns two properties for message object: parent id and last_child_date. The properties is returned in following
-     * order:
-     * <p/>
-     * parent_id(int)
-     */
-    GET_PARENT_ID_FOR_MESSAGE_ID,
     GET_BROKEN_TOPIC_IDS, GET_MESSAGES_NUMBER_IN_THREAD, GET_USER_REPLIES_NUMBER, GET_USER_POSTS_NUMBER;
 
     private final String propertyName = ResourceUtils.constantToProperty(this.name());

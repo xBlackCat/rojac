@@ -27,7 +27,7 @@ class PostList extends Post {
     private LoadingState loadingState = LoadingState.NotLoaded;
 
     public PostList(int userId) {
-        super(new MessageData(-1, -1, -1, -1, userId, "", "", -1, -1, true, null), null, null);
+        super(new MessageData(-1, -1, -1, -1, userId, "", "", -1, -1, true, null, false), null, null);
     }
 
     @Override
