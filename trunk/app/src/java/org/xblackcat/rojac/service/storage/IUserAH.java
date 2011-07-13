@@ -13,8 +13,6 @@ public interface IUserAH extends AH {
 
     User getUserById(int id) throws StorageException;
 
-    int[] getAllUserIds() throws StorageException;
-
     void storeUserInfo(int userId, String userName) throws StorageException;
 
     void updateUser(User u) throws StorageException;

@@ -41,10 +41,6 @@ final class DBMessageAH implements IMessageAH {
                 read);
     }
 
-    public boolean removeForumMessage(int id) throws StorageException {
-        return helper.update(DataQuery.REMOVE_OBJECT_MESSAGE, id) > 0;
-    }
-
     public String getMessageBodyById(int messageId) throws StorageException {
         return helper.executeSingle(Converters.TO_STRING, DataQuery.GET_OBJECT_MESSAGE_BODY, messageId);
     }

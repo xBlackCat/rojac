@@ -22,6 +22,16 @@ final class DBMiscAH implements IMiscAH {
         helper.update(DataQuery.REMOVE_OBJECT_EXTRA_MESSAGE, messageId);
     }
 
+    @Override
+    public void addToIgnoredTopicList(int topicId) throws StorageException {
+        helper.update(DataQuery.STORE_OBJECT_IGNORED_TOPIC, topicId);
+    }
+
+    @Override
+    public void removeFromIgnoredTopicList(int topicId) throws StorageException {
+        helper.update(DataQuery.REMOVE_OBJECT_IGNORED_TOPIC, topicId);
+    }
+
     public void clearExtraMessages() throws StorageException {
         helper.update(DataQuery.REMOVE_ALL_OBJECTS_EXTRA_MESSAGE);
     }

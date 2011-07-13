@@ -16,22 +16,46 @@ public class MessageData {
     protected final long updateDate;
     protected final boolean read;
     protected final RatingCache rating;
+    protected final boolean ignored;
 
-    public MessageData(int messageId, int topicId, int parentId, int forumId, int userId, String subject, String userName, long messageDate, long updateDate, boolean read, String rating) {
-        this.messageId = messageId;
-        this.topicId = topicId;
-        this.parentId = parentId;
-        this.forumId = forumId;
-        this.userId = userId;
-        this.subject = subject;
-        this.userName = userName;
-        this.messageDate = messageDate;
-        this.updateDate = updateDate;
-        this.read = read;
-        this.rating = new RatingCache(rating);
+    public MessageData(int messageId,
+                       int topicId,
+                       int parentId,
+                       int forumId,
+                       int userId,
+                       String subject,
+                       String userName,
+                       long messageDate,
+                       long updateDate,
+                       boolean read,
+                       String rating,
+                       boolean ignored) {
+        this(messageId,
+                topicId,
+                parentId,
+                forumId,
+                userId,
+                subject,
+                userName,
+                messageDate,
+                updateDate,
+                read,
+                new RatingCache(rating),
+                ignored);
     }
 
-    private MessageData(int messageId, int topicId, int parentId, int forumId, int userId, String subject, String userName, long messageDate, long updateDate, boolean read, RatingCache rating) {
+    private MessageData(int messageId,
+                        int topicId,
+                        int parentId,
+                        int forumId,
+                        int userId,
+                        String subject,
+                        String userName,
+                        long messageDate,
+                        long updateDate,
+                        boolean read,
+                        RatingCache rating,
+                        boolean ignored) {
         this.messageId = messageId;
         this.topicId = topicId;
         this.parentId = parentId;
@@ -43,6 +67,7 @@ public class MessageData {
         this.updateDate = updateDate;
         this.read = read;
         this.rating = rating;
+        this.ignored = ignored;
     }
 
     public int getMessageId() {
@@ -124,6 +149,7 @@ public class MessageData {
      * Create a new MessageData (if necessary) with new state of read flag.
      *
      * @param read new read state
+     *
      * @return MessageData object with specified read state.
      */
     public MessageData setRead(boolean read) {
@@ -142,7 +168,8 @@ public class MessageData {
                 messageDate,
                 updateDate,
                 read, // Not a field
-                rating
+                rating,
+                ignored
         );
     }
 }

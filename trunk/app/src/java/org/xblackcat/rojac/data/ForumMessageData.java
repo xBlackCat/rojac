@@ -11,17 +11,19 @@ public class ForumMessageData extends MessageData {
 
     public ForumMessageData(Forum forum) {
         super(
-                        -1,
-                        -1,
-                        -1,
-                        forum.getForumId(),
-                        -1,
-                        forum.getForumName(),
-                        forum.getShortForumName(),
-                        -1,
-                        -1,
-                        true,
-                        null);
+                -1,
+                -1,
+                -1,
+                forum.getForumId(),
+                -1,
+                forum.getForumName(),
+                forum.getShortForumName(),
+                -1,
+                -1,
+                true,
+                null,
+                false
+        );
         this.forum = new ForumData(forum);
     }
 
