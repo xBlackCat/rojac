@@ -1,8 +1,9 @@
 package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.*;
-import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.ThreadState;
+import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -16,7 +17,7 @@ import java.beans.PropertyChangeListener;
  * @author xBlackCat
  */
 
-public class ThreadDoubleView extends AView implements IItemView {
+public class ThreadDoubleView extends AnItemView {
     private final IItemView masterView;
     private final IItemView slaveView;
 
@@ -36,7 +37,7 @@ public class ThreadDoubleView extends AView implements IItemView {
 
         masterView.addStateChangeListener(new IStateListener() {
             @Override
-            public void stateChanged(IView source, IState newState) {
+            public void stateChanged(ViewId viewId, IState newState) {
                 if (newState instanceof ThreadState) {
                     slaveView.loadItem(((ThreadState) newState).openedMessageId());
                 }

@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui;
 /**
  * @author xBlackCat
  */
-public interface IStatefull {
+public interface IStateful {
     /**
      * Gets current state of the view.
      *

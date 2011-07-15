@@ -6,7 +6,7 @@ import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
-import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.ViewId;
@@ -36,7 +36,7 @@ import java.util.LinkedList;
  * @author xBlackCat
  */
 
-public abstract class AThreadView extends AView implements IItemView {
+public abstract class AThreadView extends AnItemView {
     private static final Log log = LogFactory.getLog(TreeThreadView.class);
 
     protected final IModelControl<Post> modelControl;

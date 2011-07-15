@@ -1,7 +1,10 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
 import org.xblackcat.rojac.data.IFavorite;
-import org.xblackcat.rojac.gui.*;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IViewLayout;
+import org.xblackcat.rojac.gui.NoViewLayout;
+import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
@@ -63,7 +66,7 @@ public class FavoritesView extends AView {
     );
 
     public FavoritesView(final IAppControl appControl) {
-        super(null, appControl);
+        super(appControl);
 
         final JTable favoritesList = new JTable(favoritesModel);
         favoritesList.setTableHeader(null);
@@ -114,15 +117,6 @@ public class FavoritesView extends AView {
                 favoritesModel.reload(chunks);
             }
         }.execute();
-    }
-
-    @Override
-    public IState getObjectState() {
-        return null;
-    }
-
-    @Override
-    public void setObjectState(IState state) {
     }
 
     @Override

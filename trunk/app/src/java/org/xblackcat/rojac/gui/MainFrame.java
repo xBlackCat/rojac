@@ -65,7 +65,7 @@ import static org.xblackcat.rojac.service.options.Property.*;
  * @author xBlackCat
  */
 
-public class MainFrame extends JFrame implements IStatefull, IAppControl, IDataHandler {
+public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHandler {
     private static final Log log = LogFactory.getLog(MainFrame.class);
     private static final String SCHEDULED_TASK_ID = "SCHEDULED_SYNCHRONIZER";
 
@@ -97,8 +97,8 @@ public class MainFrame extends JFrame implements IStatefull, IAppControl, IDataH
     protected final NavigationHistoryTracker history = new NavigationHistoryTracker();
     protected final IStateListener navigationListener = new IStateListener() {
         @Override
-        public void stateChanged(IView source, IState newState) {
-            history.addHistoryItem(new NavigationHistoryItem(source.getId(), newState));
+        public void stateChanged(ViewId viewId, IState newState) {
+            history.addHistoryItem(new NavigationHistoryItem(viewId, newState));
 
             // Update navigation buttons.
             updateNavigationButtons();
@@ -686,7 +686,7 @@ public class MainFrame extends JFrame implements IStatefull, IAppControl, IDataH
         View v = openTab(id);
 
         if (state != null) {
-            ((IStatefull) v.getComponent()).setObjectState(state);
+            ((IStateful) v.getComponent()).setObjectState(state);
         }
     }
 
@@ -770,7 +770,9 @@ public class MainFrame extends JFrame implements IStatefull, IAppControl, IDataH
     private class ThreadViewSerializer implements ViewSerializer {
         @Override
         public void writeView(View view, ObjectOutputStream out) throws IOException {
-            ViewHelper.storeView(out, view);
+            assert view.getComponent() instanceof IItemView;
+
+            ViewHelper.storeView(out, (IItemView) view.getComponent());
         }
 
         @Override

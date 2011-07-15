@@ -4,7 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
-import org.xblackcat.rojac.gui.*;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IViewLayout;
+import org.xblackcat.rojac.gui.NoViewLayout;
+import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
@@ -89,7 +92,7 @@ public class ForumsListView extends AView {
     );
 
     public ForumsListView(IAppControl appControl) {
-        super(null, appControl);
+        super(appControl);
         final JTable forums = new JTable(forumsModel);
         forums.setTableHeader(null);
         add(new JScrollPane(forums));
@@ -175,15 +178,6 @@ public class ForumsListView extends AView {
         filled_only.setSelected(forumsRowFilter.is(ForumFilterState.NotEmpty));
         subscribed_only.setSelected(forumsRowFilter.is(ForumFilterState.Subscribed));
         unread_only.setSelected(forumsRowFilter.is(ForumFilterState.Unread));
-    }
-
-    @Override
-    public IState getObjectState() {
-        return null;
-    }
-
-    @Override
-    public void setObjectState(IState state) {
     }
 
     @Override

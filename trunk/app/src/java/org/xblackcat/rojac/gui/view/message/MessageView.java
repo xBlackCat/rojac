@@ -7,11 +7,14 @@ import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.RatingCache;
-import org.xblackcat.rojac.gui.*;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IState;
+import org.xblackcat.rojac.gui.IViewLayout;
+import org.xblackcat.rojac.gui.NoViewLayout;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
@@ -44,7 +47,7 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
  * @author xBlackCat
  */
 
-public class MessageView extends AView implements IItemView {
+public class MessageView extends AnItemView {
     private static final Log log = LogFactory.getLog(MessageView.class);
     public static final String MESSAGE_VIEWED_FLAG = "MessageViewed";
     public static final String MESSAGE_LOADED = "MessageLoaded";

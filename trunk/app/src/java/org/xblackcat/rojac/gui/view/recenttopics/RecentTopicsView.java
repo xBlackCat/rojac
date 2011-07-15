@@ -1,6 +1,9 @@
 package org.xblackcat.rojac.gui.view.recenttopics;
 
-import org.xblackcat.rojac.gui.*;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IViewLayout;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
+import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
@@ -37,7 +40,7 @@ public class RecentTopicsView extends AView {
     );
 
     public RecentTopicsView(IAppControl appControl) {
-        super(null, appControl);
+        super(appControl);
         setLayout(new BorderLayout(5, 5));
 
         initializeLayout();
@@ -88,15 +91,6 @@ public class RecentTopicsView extends AView {
 
             }
         });
-    }
-
-    @Override
-    public IState getObjectState() {
-        return null;
-    }
-
-    @Override
-    public void setObjectState(IState state) {
     }
 
     @Override
