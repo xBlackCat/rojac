@@ -164,17 +164,17 @@ class FavoritesModelControl implements IModelControl<Post> {
             // Set proper ThreadsControl
             switch (f.getType()) {
                 case UserResponses:
-                    delegatedControl = ModelControls.FAVORITES_MESSAGES;
+                    delegatedControl = ModelControl.FavoriteMessageList.get();
                     statusIcons = ReadStatusIcon.FavoriteResponseList;
                     break;
                 case UserPosts:
                 case Category:
-                    delegatedControl = ModelControls.FAVORITES_MESSAGES;
+                    delegatedControl = ModelControl.FavoriteMessageList.get();
                     statusIcons = ReadStatusIcon.FavoritePostList;
                     break;
                 case SubThread:
                 case Thread:
-                    delegatedControl = ModelControls.SINGLE_THREAD;
+                    delegatedControl = ModelControl.SingleThread.get();
                     statusIcons = ReadStatusIcon.FavoriteThread;
                     break;
             }

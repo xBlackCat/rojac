@@ -47,9 +47,9 @@ public abstract class AThreadView extends AView implements IItemView {
     private JToolBar toolbar;
     protected ThreadViewLayout layout;
 
-    public AThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
+    public AThreadView(ViewId id, IAppControl appControl, ModelControl modelControl) {
         super(id, appControl);
-        this.modelControl = modelControl;
+        this.modelControl = modelControl.get();
 
         model.addTreeModelListener(new DataIntegrityMonitor());
 

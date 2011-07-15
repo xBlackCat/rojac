@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.ViewId;
-import org.xblackcat.rojac.gui.view.model.IModelControl;
+import org.xblackcat.rojac.gui.view.model.ModelControl;
 import org.xblackcat.rojac.gui.view.model.Post;
 
 import javax.swing.*;
@@ -17,7 +17,7 @@ import java.util.Enumeration;
 public class TreeThreadView extends AThreadView {
     protected JTree threads;
 
-    public TreeThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
+    public TreeThreadView(ViewId id, IAppControl appControl, ModelControl modelControl) {
         super(id, appControl, modelControl);
     }
 
