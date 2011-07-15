@@ -182,7 +182,7 @@ public final class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getThreadViewTabMenu(Post post, IAppControl appControl) {
+    public static JPopupMenu getThreadViewTabMenu(Post post, IAppControl appControl, boolean addToFavorites) {
         int messageId = post.getMessageId();
         JPopupMenu menu = new JPopupMenu("#" + messageId);
 
@@ -199,9 +199,11 @@ public final class PopupMenuBuilder {
         MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
         menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
-        menu.addSeparator();
-        String text = Message.Popup_Favorites_Add.get(Message.Popup_Favorites_Add_Thread.get().toLowerCase(Property.ROJAC_GUI_LOCALE.get()));
-        menu.add(new AddToFavoriteMenuItem(text, FavoriteType.Thread, post.getMessageData().getThreadRootId()));
+        if (addToFavorites) {
+            menu.addSeparator();
+            String text = Message.Popup_Favorites_Add.get(Message.Popup_Favorites_Add_Thread.get().toLowerCase(Property.ROJAC_GUI_LOCALE.get()));
+            menu.add(new AddToFavoriteMenuItem(text, FavoriteType.Thread, post.getMessageData().getThreadRootId()));
+        }
 
         return menu;
     }

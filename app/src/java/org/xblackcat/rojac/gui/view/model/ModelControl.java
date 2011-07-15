@@ -25,10 +25,6 @@ public enum ModelControl {
         }
     },
     /**
-     * Produces a model control to handle favorite post list.
-     */
-    FavoriteMessageList(new FavoritesMessageListControl()),
-    /**
      * Produces a model control to handle user's post list.
      */
     UserPosts(new PostListControl(false)),
