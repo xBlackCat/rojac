@@ -8,7 +8,7 @@ import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.APostProxy;
 import org.xblackcat.rojac.gui.view.model.Header;
-import org.xblackcat.rojac.gui.view.model.IModelControl;
+import org.xblackcat.rojac.gui.view.model.ModelControl;
 import org.xblackcat.rojac.gui.view.model.Post;
 
 import javax.swing.*;
@@ -29,7 +29,7 @@ import java.util.Enumeration;
 public class TreeTableThreadView extends AThreadView {
     protected JXTreeTable threads;
 
-    public TreeTableThreadView(ViewId id, IAppControl appControl, IModelControl<Post> modelControl) {
+    public TreeTableThreadView(ViewId id, IAppControl appControl, ModelControl modelControl) {
         super(id, appControl, modelControl);
     }
 
