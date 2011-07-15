@@ -1,8 +1,10 @@
 package org.xblackcat.rojac.gui.view.factory;
 
-import net.infonode.docking.View;
 import org.xblackcat.rojac.RojacDebugException;
-import org.xblackcat.rojac.gui.*;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.IItemView;
+import org.xblackcat.rojac.gui.IState;
+import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.ViewType;
 
@@ -44,20 +46,18 @@ public final class ViewHelper {
      * Stores a view state for future restoring docking layout.
      *
      * @param out  output stream to store a view state
-     * @param view view to be stored.
-     *
+     * @param itemView
      * @throws IOException exception will be thrown if write can not be performed.
      */
-    public static void storeView(ObjectOutputStream out, View view) throws IOException {
-        IView v = (IView) view.getComponent();
+    public static void storeView(ObjectOutputStream out, IItemView itemView) throws IOException {
 
-        ViewId id = v.getId();
+        ViewId id = itemView.getId();
         // Store view id for future identification.
         out.writeObject(id);
 
-        IViewLayout layout = v.storeLayout();
+        IViewLayout layout = itemView.storeLayout();
 
-        IState stateObject = v.getObjectState();
+        IState stateObject = itemView.getObjectState();
 
         out.writeObject(layout);
         out.writeObject(stateObject);

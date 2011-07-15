@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.service.datahandler.IDataHandler;
 
 import javax.swing.*;
@@ -11,33 +10,13 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-public interface IView extends IDataHandler, IStatefull {
+public interface IView extends IDataHandler, ILayoutful {
     /**
      * Returns a component represented the view.
      *
      * @return a component represented the view.
      */
     JComponent getComponent();
-
-    ViewId getId();
-
-    void addStateChangeListener(IStateListener l);
-
-    void removeStateChangeListener(IStateListener l);
-
-    /**
-     * Returns an object with current layout informaion.
-     *
-     * @return layout config object.
-     */
-    IViewLayout storeLayout();
-
-    /**
-     * Restores the view layout by data stored in the layout object.
-     *
-     * @param o layout config object.
-     */
-    void setupLayout(IViewLayout o);
 
     /**
      * Returns a title of the item tab depending on its state.
@@ -60,7 +39,4 @@ public interface IView extends IDataHandler, IStatefull {
      */
     JPopupMenu getTabTitleMenu();
 
-    void addInfoChangeListener(IInfoChangeListener l);
-
-    void removeInfoChangeListener(IInfoChangeListener l);
 }

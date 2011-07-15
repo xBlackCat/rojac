@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui;
 
+import org.xblackcat.rojac.gui.view.ViewId;
+
 import java.util.EventListener;
 
 /**
@@ -7,5 +9,5 @@ import java.util.EventListener;
  */
 
 public interface IStateListener extends EventListener {
-    void stateChanged(IView source, IState newState);
+    void stateChanged(ViewId viewId, IState newState);
 }

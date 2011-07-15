@@ -1,12 +1,14 @@
 package org.xblackcat.rojac.gui;
 
+import org.xblackcat.rojac.gui.view.ViewId;
+
 /**
  * Main class of item-related views like message pane or threads view.
  *
  * @author xBlackCat
  */
 
-public interface IItemView extends IView {
+public interface IItemView extends IView, IStateful {
     /**
      * (Re-)initializes view and loads all the necessary data into the view.
      *
@@ -30,4 +32,9 @@ public interface IItemView extends IView {
      */
     void makeVisible(int messageId);
 
+    ViewId getId();
+
+    void addStateChangeListener(IStateListener l);
+
+    void removeStateChangeListener(IStateListener l);
 }
