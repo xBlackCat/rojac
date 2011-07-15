@@ -207,7 +207,7 @@ class SingleModelControl extends AThreadsModelControl {
         Post root = model.getRoot();
 
         if (root != null) {
-            return PopupMenuBuilder.getThreadViewTabMenu(root, appControl);
+            return PopupMenuBuilder.getThreadViewTabMenu(root, appControl, true);
         }
 
         return null;

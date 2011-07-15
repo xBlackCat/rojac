@@ -4,6 +4,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.AnIcon;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
@@ -102,7 +103,18 @@ class FavoritesModelControl implements IModelControl<Post> {
 
     @Override
     public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
-        return delegatedControl == null ? null : delegatedControl.getTitlePopup(model, appControl);
+        if (delegatedControl == null) {
+            return null;
+        } else {
+            switch (statusIcons) {
+                case FavoriteThread:
+                    return PopupMenuBuilder.getThreadViewTabMenu(model.getRoot(), appControl, false);
+                case FavoritePostList:
+                case FavoriteResponseList:
+                    return PopupMenuBuilder.getFavoriteMessagesListTabMenu(model.getRoot(), appControl);
+            }
+            return null;
+        }
     }
 
     @Override
@@ -164,12 +176,12 @@ class FavoritesModelControl implements IModelControl<Post> {
             // Set proper ThreadsControl
             switch (f.getType()) {
                 case UserResponses:
-                    delegatedControl = ModelControl.FavoriteMessageList.get();
+                    delegatedControl = ModelControl.UserReplies.get();
                     statusIcons = ReadStatusIcon.FavoriteResponseList;
                     break;
                 case UserPosts:
                 case Category:
-                    delegatedControl = ModelControl.FavoriteMessageList.get();
+                    delegatedControl = ModelControl.UserPosts.get();
                     statusIcons = ReadStatusIcon.FavoritePostList;
                     break;
                 case SubThread:
