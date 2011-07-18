@@ -59,6 +59,13 @@ public enum Message {
     View_Favorites_Statistic_Data,
     View_Favorites_Statistic_Label,
 
+    // Navigation view
+    View_Navigation_Outbox,
+    View_Navigation_SubscribedForums,
+    View_Navigation_NotSubscribedForums,
+    View_Navigation_Favorites,
+    View_Navigation_Ignored,
+
     // Threads view
     View_Thread_Button_NewThread,
     View_Thread_Button_Previous,
