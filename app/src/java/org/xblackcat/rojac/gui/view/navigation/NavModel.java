@@ -6,7 +6,6 @@ import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
-import java.util.Arrays;
 
 /**
  * @author xBlackCat
@@ -14,27 +13,22 @@ import java.util.Arrays;
 class NavModel implements TreeTableModel {
     private final TreeModelSupport support = new TreeModelSupport(this);
     private final ANavItem root;
-    private final ANavItem outbox;
-    private final ANavItem subscribedForums;
-    private final ANavItem notSubscribedForums;
+    private final ANavItem personal;
     private final ANavItem favorites;
-    private final ANavItem ignored;
+
+    final ForumDecorator forumDecorator;
 
     NavModel() {
-        root = new RootNavItem();
+        forumDecorator = new ForumDecorator(this, support);
 
-        outbox = new GroupNavItem(root, Message.View_Navigation_Outbox);
-        subscribedForums = new GroupNavItem(root, Message.View_Navigation_SubscribedForums);
-        notSubscribedForums = new GroupNavItem(root, Message.View_Navigation_NotSubscribedForums);
-        favorites = new GroupNavItem(root, Message.View_Navigation_Favorites);
-        ignored = new GroupNavItem(root, Message.View_Navigation_Ignored);
+        personal = new GroupNavItem(Message.View_Navigation_Personal);
+        favorites = new GroupNavItem(Message.View_Navigation_Favorites);
 
-        root.setChildren(Arrays.asList(
-                outbox,
-                subscribedForums,
-                notSubscribedForums,
-                favorites,
-                ignored)
+        root = new RootNavItem(
+                personal,
+                forumDecorator.getSubscribedForums(),
+                forumDecorator.getNotSubscribedForums(),
+                favorites
         );
     }
 
@@ -79,12 +73,12 @@ class NavModel implements TreeTableModel {
 
     @Override
     public Object getChild(Object parent, int index) {
-        return ((ANavItem) parent).children.get(index);
+        return ((ANavItem) parent).getChild(index);
     }
 
     @Override
     public int getChildCount(Object parent) {
-        return ((ANavItem) parent).children.size();
+        return ((ANavItem) parent).getChildCount();
     }
 
     @Override
@@ -110,7 +104,7 @@ class NavModel implements TreeTableModel {
         ANavItem p = (ANavItem) parent;
 
         if (c.getParent() != parent) {
-            // Only strict comparation!!
+            // Only strict equality!!
             return -1;
         }
 
@@ -119,7 +113,7 @@ class NavModel implements TreeTableModel {
         }
 
         // Not null!
-        return p.children.indexOf(c);
+        return p.indexOf(c);
     }
 
     @Override
@@ -130,5 +124,43 @@ class NavModel implements TreeTableModel {
     @Override
     public void removeTreeModelListener(TreeModelListener l) {
         support.removeTreeModelListener(l);
+    }
+
+    ForumDecorator getForumDecorator() {
+        return forumDecorator;
+    }
+
+    TreePath getPathToRoot(ANavItem aNode) {
+        return new TreePath(getPathToRoot(aNode, 0));
+    }
+
+    ANavItem[] getPathToRoot(ANavItem aNode, int depth) {
+        ANavItem[] retNodes;
+        // This method recurses, traversing towards the root in order
+        // size the array. On the way back, it fills in the nodes,
+        // starting from the root and working back to the original node.
+
+        /* Check for null, in case someone passed in a null node, or
+           they passed in an element that isn't rooted at root. */
+        if (aNode == null) {
+            if (depth == 0) {
+                return null;
+            } else {
+                retNodes = new ANavItem[depth];
+            }
+        } else {
+            depth++;
+            if (aNode == root) {
+                retNodes = new ANavItem[depth];
+            } else {
+                retNodes = getPathToRoot(aNode.getParent(), depth);
+            }
+            retNodes[retNodes.length - depth] = aNode;
+        }
+        return retNodes;
+    }
+
+    public void load() {
+        getForumDecorator().reloadForums();
     }
 }

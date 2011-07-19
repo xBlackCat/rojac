@@ -60,7 +60,7 @@ public enum Message {
     View_Favorites_Statistic_Label,
 
     // Navigation view
-    View_Navigation_Outbox,
+    View_Navigation_Personal,
     View_Navigation_SubscribedForums,
     View_Navigation_NotSubscribedForums,
     View_Navigation_Favorites,
