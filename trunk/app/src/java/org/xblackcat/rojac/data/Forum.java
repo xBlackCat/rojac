@@ -63,6 +63,23 @@ public final class Forum {
         return subscribed;
     }
 
+    public Forum setSubscribed(boolean newSubscribed) {
+        if (newSubscribed == subscribed) {
+            return this;
+        } else {
+            return new Forum(
+                    forumId,
+                    forumGroupId,
+                    inTop,
+                    rated,
+                    rateLimit,
+                    shortForumName,
+                    forumName,
+                    newSubscribed
+            );
+        }
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

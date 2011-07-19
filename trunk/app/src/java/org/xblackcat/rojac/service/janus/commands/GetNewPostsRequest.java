@@ -43,7 +43,7 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
         }
 
         Collection<RequestForumInfo> forumInfo = new LinkedList<RequestForumInfo>();
-        Map<Integer, Number> messagesInForums = forumAH.getMessagesInForum(forumIds);
+        Map<Integer, Number> messagesInForums = forumAH.getMessagesInForums(forumIds);
         for (int forumId : forumIds) {
             forumInfo.add(new RequestForumInfo(forumId, messagesInForums.get(forumId).intValue() == 0));
         }

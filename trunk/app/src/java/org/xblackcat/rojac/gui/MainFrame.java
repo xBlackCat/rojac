@@ -28,6 +28,7 @@ import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.factory.ViewHelper;
 import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
 import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
+import org.xblackcat.rojac.gui.view.navigation.NavigationView;
 import org.xblackcat.rojac.gui.view.recenttopics.RecentTopicsView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
@@ -77,6 +78,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private static final String FAVORITES_VIEW_ID = "favorites_view";
     private static final String RECENT_TOPICS_VIEW_ID = "lastPosts_view";
     private static final String THREADS_VIEW_ID = "threads_view_id";
+    private static final String NAVIGATION_VIEW_ID = "navigation_view_id";
 
     protected final DropFilter noAuxViewsFilter = new DropFilter() {
         @Override
@@ -262,6 +264,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         final ForumsListView forumsListView = new ForumsListView(this);
         final FavoritesView favoritesView = new FavoritesView(this);
         final RecentTopicsView recentTopicsView = new RecentTopicsView(this);
+        final NavigationView navigationView = new NavigationView(this);
 
         JPanel cp = new JPanel(new BorderLayout());
         setContentPane(cp);
@@ -273,6 +276,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         View viewFavorites = createView(favoritesView);
 
         View viewRecentTopics = createView(recentTopicsView);
+
+        View viewNavigation = createView(navigationView);
 
         // Set up main tabbed window for forum views
         threadsRootWindow = new RootWindow(false, new ThreadViewSerializer());
@@ -303,20 +308,27 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         View[] mainViews = new View[]{
                 viewForums,
                 viewFavorites,
-                viewRecentTopics
+                viewRecentTopics,
+                viewNavigation
         };
 
         StringViewMap viewMap = new StringViewMap();
         viewMap.addView(FORUMS_VIEW_ID, viewForums);
         viewMap.addView(FAVORITES_VIEW_ID, viewFavorites);
         viewMap.addView(RECENT_TOPICS_VIEW_ID, viewRecentTopics);
+        viewMap.addView(NAVIGATION_VIEW_ID, viewNavigation);
         viewMap.addView(THREADS_VIEW_ID, threadsView);
 
         rootWindow = new RootWindow(false, viewMap,
                 new SplitWindow(
                         true,
                         0.75f,
-                        threadsView,
+                        new SplitWindow(
+                                true,
+                                0.2f,
+                                viewNavigation,
+                                threadsView
+                        ),
                         new SplitWindow(
                                 false,
                                 0.25f,

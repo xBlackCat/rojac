@@ -69,21 +69,21 @@ final class DBForumAH implements IForumAH {
     }
 
     @Override
-    public Map<Integer, Number> getMessagesInForum(int... forumIds) throws StorageException {
+    public Map<Integer, Number> getMessagesInForums(int... forumIds) throws StorageException {
         return helper.executeSingleBatch(Converters.TO_NUMBER,
                 DataQuery.GET_MESSAGES_NUMBER_IN_FORUM,
                 ArrayUtils.toObject(forumIds));
     }
 
     @Override
-    public Map<Integer, Number> getUnreadMessagesInForum(int... forumIds) throws StorageException {
+    public Map<Integer, Number> getUnreadMessagesInForums(int... forumIds) throws StorageException {
         return helper.executeSingleBatch(Converters.TO_NUMBER,
                 DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
                 ArrayUtils.toObject(forumIds));
     }
 
     @Override
-    public Map<Integer, Number> getLastMessageDateInForum(int... forumIds) throws StorageException {
+    public Map<Integer, Number> getLastMessageDateInForums(int... forumIds) throws StorageException {
         return helper.executeSingleBatch(Converters.TO_NUMBER,
                 DataQuery.GET_LAST_MESSAGE_DATE_IN_FORUM,
                 ArrayUtils.toObject(forumIds));
@@ -92,5 +92,26 @@ final class DBForumAH implements IForumAH {
     @Override
     public Collection<Forum> getAllForums() throws StorageException {
         return helper.execute(Converters.TO_FORUM, DataQuery.GET_OBJECTS_FORUM);
+    }
+
+    @Override
+    public Number getMessagesInForum(int forumId) throws StorageException {
+        return helper.executeSingle(Converters.TO_NUMBER,
+                DataQuery.GET_MESSAGES_NUMBER_IN_FORUM,
+                forumId);
+    }
+
+    @Override
+    public Number getUnreadMessagesInForum(int forumId) throws StorageException {
+        return helper.executeSingle(Converters.TO_NUMBER,
+                DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
+                forumId);
+    }
+
+    @Override
+    public Number getLastMessageDateInForum(int forumId) throws StorageException {
+        return helper.executeSingle(Converters.TO_NUMBER,
+                DataQuery.GET_LAST_MESSAGE_DATE_IN_FORUM,
+                forumId);
     }
 }

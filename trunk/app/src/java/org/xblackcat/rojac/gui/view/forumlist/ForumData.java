@@ -14,9 +14,14 @@ public class ForumData {
     private boolean subscribed;
 
     public ForumData(Forum forum) {
+        this(forum, null);
+    }
+
+    public ForumData(Forum forum, ForumStatistic forumStatistic) {
         this.forum = forum;
         forumId = forum.getForumId();
         subscribed = forum.isSubscribed();
+        stat = forumStatistic;
     }
 
     public Forum getForum() {
