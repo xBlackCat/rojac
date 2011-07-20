@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
+import org.xblackcat.rojac.i18n.Message;
 
 /**
  * @author xBlackCat Date: 18.07.11
@@ -19,7 +20,11 @@ public class ForumNavItem extends ANavItem {
 
     @Override
     String getBriefInfo() {
-        return statistic.getUnreadMessages() + "/" + statistic.getTotalMessages();
+        return Message.View_Navigation_Item_ForumInfo.get(
+                statistic.getUnreadMessages(),
+                statistic.getTotalMessages()
+        );
+
     }
 
     @Override

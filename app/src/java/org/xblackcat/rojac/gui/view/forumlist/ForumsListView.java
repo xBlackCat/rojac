@@ -14,12 +14,11 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
+import org.xblackcat.rojac.gui.view.navigation.AForumUpdater;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -32,7 +31,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Main class for forum view.
@@ -54,7 +52,7 @@ public class ForumsListView extends AView {
             new IPacketProcessor<SetForumReadPacket>() {
                 @Override
                 public void process(SetForumReadPacket p) {
-                    forumsModel.setRead(p.isRead(), p.getForumId());
+                    loadForumStatistic(p.getForumId());
                 }
             },
             new IPacketProcessor<ForumsUpdated>() {
@@ -69,16 +67,16 @@ public class ForumsListView extends AView {
                     loadForumStatistic(p.getForumIds());
                 }
             },
+            new IPacketProcessor<SetSubThreadReadPacket>() {
+                @Override
+                public void process(SetSubThreadReadPacket p) {
+                    loadForumStatistic(p.getForumId());
+                }
+            },
             new IPacketProcessor<SetPostReadPacket>() {
                 @Override
                 public void process(SetPostReadPacket p) {
-                    if (p.isRecursive()) {
-                        // More than one post was changed. Reload stat
-                        loadForumStatistic(p.getForumId());
-                    } else {
-                        // Single post is changed - just increment/decrement stat
-                        adjustUnreadPosts(p.isRead() ? -1 : 1, p.getForumId());
-                    }
+                    loadForumStatistic(p.getForumId());
                 }
             },
             new IPacketProcessor<SubscriptionChangedPacket>() {
@@ -204,15 +202,6 @@ public class ForumsListView extends AView {
         return null;
     }
 
-    private void adjustUnreadPosts(int amount, int forumId) {
-        ForumData data = forumsModel.getForumData(forumId);
-        ForumStatistic oldStatistic = data.getStat();
-
-        ForumStatistic newStatistic = oldStatistic.adjustUnread(amount);
-
-        forumsModel.updateStatistic(newStatistic);
-    }
-
     private void loadForumStatistic(int... forumId) {
         new ForumUpdater(forumId).execute();
     }
@@ -222,7 +211,7 @@ public class ForumsListView extends AView {
         packetDispatcher.dispatch(packet);
     }
 
-    private class ForumUpdater extends RojacWorker<Void, ForumStatistic> {
+    private class ForumUpdater extends AForumUpdater<Void, ForumStatistic> {
         private final int[] forumIds;
 
         public ForumUpdater(int... forumIds) {
@@ -231,20 +220,8 @@ public class ForumsListView extends AView {
 
         @Override
         protected Void perform() throws Exception {
-            IForumAH fah = storage.getForumAH();
-
-            Map<Integer, Number> totalMessages = fah.getMessagesInForums(forumIds);
-            Map<Integer, Number> unreadMessages = fah.getUnreadMessagesInForums(forumIds);
-            Map<Integer, Number> lastPostDate = fah.getLastMessageDateInForums(forumIds);
-
             for (int forumId : forumIds) {
-                Number date = lastPostDate.get(forumId);
-                publish(new ForumStatistic(
-                        forumId,
-                        totalMessages.get(forumId).intValue(),
-                        unreadMessages.get(forumId).intValue(),
-                        date != null ? date.longValue() : null
-                ));
+                publish(getForumStatistic(forumId));
             }
 
             return null;
@@ -258,12 +235,19 @@ public class ForumsListView extends AView {
         }
     }
 
-    private class ForumLoader extends RojacWorker<Void, Forum> {
+    private class ForumLoader extends AForumUpdater<Void, ForumData> {
         @Override
         protected Void perform() throws Exception {
             try {
-                for (Forum f : storage.getForumAH().getAllForums()) {
-                    publish(f);
+                for (Forum f : fah.getAllForums()) {
+                    int forumId = f.getForumId();
+
+                    publish(
+                            new ForumData(
+                                    f,
+                                    getForumStatistic(forumId)
+                            )
+                    );
                 }
             } catch (StorageException e) {
                 log.error("Can not load forum list", e);
@@ -274,12 +258,8 @@ public class ForumsListView extends AView {
         }
 
         @Override
-        protected void process(List<Forum> forums) {
+        protected void process(List<ForumData> forums) {
             forumsModel.fillForums(forums);
-            for (Forum forum : forums) {
-                loadForumStatistic(forum.getForumId());
-            }
-
         }
     }
 

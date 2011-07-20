@@ -39,7 +39,7 @@ public class MessagesReadFlagSetter extends RojacWorker<Void, MessageData> {
     @Override
     protected void process(List<MessageData> chunks) {
         for (MessageData post : chunks) {
-            IPacket processPacket = new SetPostReadPacket(read, post.getForumId(), post.getMessageId(), false);
+            IPacket processPacket = new SetPostReadPacket(read, post.getForumId(), post.getMessageId());
             dispatcher.processPacket(processPacket);
         }
     }

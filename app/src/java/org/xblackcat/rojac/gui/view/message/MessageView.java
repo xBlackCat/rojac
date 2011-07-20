@@ -87,15 +87,18 @@ public class MessageView extends AnItemView {
             new IPacketProcessor<SetPostReadPacket>() {
                 @Override
                 public void process(SetPostReadPacket p) {
-                    if (p.isRecursive()) {
-                        if (messageData != null &&
-                                p.getPostId() == messageData.getThreadRootId()) {
-                            updateReadState(p.isRead());
-                        }
-                    } else {
-                        if (p.getPostId() == messageId) {
-                            updateReadState(p.isRead());
-                        }
+                    if (p.getPostId() == messageId) {
+                        updateReadState(p.isRead());
+                    }
+                }
+            },
+            new IPacketProcessor<SetSubThreadReadPacket>() {
+                @Override
+                public void process(SetSubThreadReadPacket p) {
+                    // ???
+                    if (messageData != null &&
+                            p.getPostId() == messageData.getThreadRootId()) {
+                        updateReadState(p.isRead());
                     }
                 }
             }

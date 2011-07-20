@@ -15,7 +15,6 @@ import ru.rsdn.Janus.RequestForumInfo;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Map;
 
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
 
@@ -43,9 +42,9 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
         }
 
         Collection<RequestForumInfo> forumInfo = new LinkedList<RequestForumInfo>();
-        Map<Integer, Number> messagesInForums = forumAH.getMessagesInForums(forumIds);
         for (int forumId : forumIds) {
-            forumInfo.add(new RequestForumInfo(forumId, messagesInForums.get(forumId).intValue() == 0));
+            Number messagesInForums = forumAH.getMessagesInForum(forumId);
+            forumInfo.add(new RequestForumInfo(forumId, messagesInForums.intValue() == 0));
         }
 
         Integer limit = SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();

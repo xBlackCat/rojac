@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
+import org.xblackcat.rojac.service.datahandler.SetSubThreadReadPacket;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -28,7 +28,7 @@ public class ThreadReadFlagSetter extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        IPacket packet = new SetPostReadPacket(read, threadRoot.getForumId(), threadRoot.getMessageId(), true);
+        IPacket packet = new SetSubThreadReadPacket(read, threadRoot.getForumId(), threadRoot.getMessageId());
         ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
     }
 }

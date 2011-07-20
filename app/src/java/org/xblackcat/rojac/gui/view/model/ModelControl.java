@@ -9,7 +9,7 @@ public enum ModelControl {
     /**
      * Produces a model control to handle single thread in threads view.
      */
-    SingleThread(new SingleModelControl()),
+    SingleThread(new SingleThreadModelControl()),
     /**
      * Produces a model control to handle forum threads in threads view
      */

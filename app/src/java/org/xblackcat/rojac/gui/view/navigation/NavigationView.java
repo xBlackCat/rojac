@@ -40,16 +40,16 @@ public class NavigationView extends AView {
                     model.getForumDecorator().loadForumStatistic(p.getForumIds());
                 }
             },
+            new IPacketProcessor<SetSubThreadReadPacket>() {
+                @Override
+                public void process(SetSubThreadReadPacket p) {
+                    model.getForumDecorator().loadForumStatistic(p.getForumId());
+                }
+            },
             new IPacketProcessor<SetPostReadPacket>() {
                 @Override
                 public void process(SetPostReadPacket p) {
-                    if (p.isRecursive()) {
-                        // More than one post was changed. Reload stat
-                        model.getForumDecorator().loadForumStatistic(p.getForumId());
-                    } else {
-                        // Single post is changed - just increment/decrement stat
-//                        adjustUnreadPosts(p.isRead() ? -1 : 1, p.getForumId());
-                    }
+                    model.getForumDecorator().loadForumStatistic(p.getForumId());
                 }
             },
             new IPacketProcessor<SubscriptionChangedPacket>() {

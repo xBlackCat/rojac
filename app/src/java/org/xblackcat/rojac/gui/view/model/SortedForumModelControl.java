@@ -155,17 +155,19 @@ class SortedForumModelControl extends AThreadsModelControl {
                         }
                     }
                 },
+                new IPacketProcessor<SetSubThreadReadPacket>() {
+                    @Override
+                    public void process(SetSubThreadReadPacket p) {
+                        if (p.getForumId() == forumId) {
+                            markThreadRead(model, p.getPostId(), p.isRead());
+                        }
+                    }
+                },
                 new IPacketProcessor<SetPostReadPacket>() {
                     @Override
                     public void process(SetPostReadPacket p) {
                         if (p.getForumId() == forumId) {
-                            if (p.isRecursive()) {
-                                // Post is a root of marked thread
-                                markThreadRead(model, p.getPostId(), p.isRead());
-                            } else {
-                                // Mark as read only the post
-                                markPostRead(model, p.getPostId(), p.isRead());
-                            }
+                            markPostRead(model, p.getPostId(), p.isRead());
                         }
                     }
                 },

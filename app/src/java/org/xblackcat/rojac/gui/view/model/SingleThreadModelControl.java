@@ -23,7 +23,7 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-class SingleModelControl extends AThreadsModelControl {
+class SingleThreadModelControl extends AThreadsModelControl {
     private static final ThreadToolbarActions[] TOOLBAR_CONFIG = new ThreadToolbarActions[]{
             ThreadToolbarActions.ToThreadRoot,
             ThreadToolbarActions.PreviousPost,
@@ -55,15 +55,6 @@ class SingleModelControl extends AThreadsModelControl {
                 reloadThread(model, postProcessor);
             }
         }.execute();
-    }
-
-    private void markThreadRead(AThreadModel<Post> model, boolean read) {
-        assert RojacUtils.checkThread(true);
-
-        // Root post is Thread object
-        model.getRoot().setDeepRead(read);
-
-        model.subTreeNodesChanged(model.getRoot());
     }
 
 
@@ -102,7 +93,30 @@ class SingleModelControl extends AThreadsModelControl {
                     @Override
                     public void process(SetForumReadPacket p) {
                         if (p.getForumId() == forumId) {
-                            markThreadRead(model, p.isRead());
+                            assert RojacUtils.checkThread(true);
+
+                            // Root post is Thread object
+                            model.getRoot().setDeepRead(p.isRead());
+
+                            model.subTreeNodesChanged(model.getRoot());
+                        }
+                    }
+                },
+                new IPacketProcessor<SetSubThreadReadPacket>() {
+                    @Override
+                    public void process(SetSubThreadReadPacket p) {
+                        if (p.getForumId() == forumId) {
+                            assert RojacUtils.checkThread(true);
+
+                            // Root post is Thread object
+                            Post root = model.getRoot().getMessageById(p.getPostId());
+                            if (root == null) {
+                                return;
+                            }
+
+                            root.setDeepRead(p.isRead());
+
+                            model.subTreeNodesChanged(root);
                         }
                     }
                 },
@@ -110,13 +124,7 @@ class SingleModelControl extends AThreadsModelControl {
                     @Override
                     public void process(SetPostReadPacket p) {
                         if (p.getForumId() == forumId) {
-                            if (p.isRecursive()) {
-                                // Post is a root of marked thread
-                                markThreadRead(model, p.getPostId(), p.isRead());
-                            } else {
-                                // Mark as read only the post
-                                markPostRead(model, p.getPostId(), p.isRead());
-                            }
+                            markPostRead(model, p.getPostId(), p.isRead());
                         }
                     }
                 },

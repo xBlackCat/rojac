@@ -21,8 +21,8 @@ class NavModel implements TreeTableModel {
     NavModel() {
         forumDecorator = new ForumDecorator(this, support);
 
-        personal = new GroupNavItem(Message.View_Navigation_Personal);
-        favorites = new GroupNavItem(Message.View_Navigation_Favorites);
+        personal = new GroupNavItem(Message.View_Navigation_Item_Personal);
+        favorites = new GroupNavItem(Message.View_Navigation_Item_Favorites);
 
         root = new RootNavItem(
                 personal,

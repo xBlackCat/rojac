@@ -45,6 +45,12 @@ public class FavoritesView extends AView {
                     favoritesModel.updateFavoriteData(null);
                 }
             },
+            new IPacketProcessor<SetSubThreadReadPacket>() {
+                @Override
+                public void process(SetSubThreadReadPacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            },
             new IPacketProcessor<SetReadExPacket>() {
                 @Override
                 public void process(SetReadExPacket p) {
