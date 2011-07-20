@@ -32,7 +32,9 @@ public final class Property<T> {
     private static final Set<Property<?>> ALL_PROPERTIES = new HashSet<Property<?>>();
     // Global development properties
 
+    // Debug variables
     public static final Property<Boolean> ROJAC_DEBUG_MODE = createPrivate("rojac.global.debug.mode", Boolean.FALSE);
+    public static final Property<Boolean> ROJAC_DONT_RESTORE_LAYOUT = createPrivate("rojac.global.debug.reset_layout", Boolean.FALSE);
 
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());

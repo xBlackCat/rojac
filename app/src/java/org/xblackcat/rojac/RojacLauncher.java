@@ -8,6 +8,7 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
 import org.xblackcat.rojac.util.*;
 
@@ -155,7 +156,9 @@ public final class RojacLauncher {
                 }
             });
 
-            mainFrame.applySettings();
+            if (!Property.ROJAC_DONT_RESTORE_LAYOUT.get(false)) {
+                mainFrame.applySettings();
+            }
 
             mainFrame.setVisible(mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported());
 
