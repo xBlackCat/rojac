@@ -8,13 +8,12 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IForumAH;
-import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.RojacWorker;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Helper class to manage forum lists in Navigation view
@@ -41,7 +40,6 @@ class ForumDecorator {
             }
         }
     };
-    private final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     private final NavModel model;
     private final TreeModelSupport support;
@@ -55,8 +53,8 @@ class ForumDecorator {
         this.model = model;
         this.support = support;
 
-        subscribedForums = new GroupNavItem(Message.View_Navigation_SubscribedForums);
-        notSubscribedForums = new GroupNavItem(Message.View_Navigation_NotSubscribedForums);
+        subscribedForums = new GroupNavItem(Message.View_Navigation_Item_SubscribedForums);
+        notSubscribedForums = new GroupNavItem(Message.View_Navigation_Item_NotSubscribedForums);
     }
 
     ANavItem getNotSubscribedForums() {
@@ -67,55 +65,30 @@ class ForumDecorator {
         return subscribedForums;
     }
 
-    // Groups manipulation
-    void loadForums(Collection<ForumData> forums) {
-/*
-        subscribedForums.children.clear();
-        notSubscribedForums.children.clear();
-
-        for (ForumData d : forums) {
-            GroupNavItem parent = d.isSubscribed() ? subscribedForums : notSubscribedForums;
-            List<ANavItem> children = parent.children;
-
-            if (d.getStat().getTotalMessages() > 0 || d.isSubscribed()) {
-                ForumNavItem forum = new ForumNavItem(parent, d);
-
-                children.add(forum);
-                viewedForums.put(d.getForumId(), forum);
-            }
-        }
-
-        Collections.sort(subscribedForums.children, FORUM_LIST_COMPARATOR);
-        Collections.sort(notSubscribedForums.children, FORUM_LIST_COMPARATOR);
-
-        support.fireTreeStructureChanged(model.getPathToRoot(subscribedForums));
-        support.fireTreeStructureChanged(model.getPathToRoot(notSubscribedForums));
-*/
-    }
-
     void updateForum(ForumData d) {
         GroupNavItem parent = d.isSubscribed() ? subscribedForums : notSubscribedForums;
 
         int forumId = d.getForumId();
         ForumNavItem forum = new ForumNavItem(parent, d);
 
+        // Remove forum from list if any
+        int idx = subscribedForums.indexOf(forum);
+        if (idx != -1) {
+            ANavItem removed = subscribedForums.remove(idx);
+            support.fireChildRemoved(model.getPathToRoot(subscribedForums), idx, removed);
+        }
+        idx = notSubscribedForums.indexOf(forum);
+        if (idx != -1) {
+            ANavItem removed = notSubscribedForums.remove(idx);
+            support.fireChildRemoved(model.getPathToRoot(notSubscribedForums), idx, removed);
+        }
+
         if (d.getStat().getTotalMessages() > 0 || d.isSubscribed()) {
-            int idx = parent.add(forum, FORUM_LIST_COMPARATOR);
+            idx = parent.add(forum, FORUM_LIST_COMPARATOR);
             viewedForums.put(forumId, forum);
 
             support.fireChildAdded(model.getPathToRoot(parent), idx, forum);
         } else {
-            // Remove forum from list if any
-            int idx = subscribedForums.indexOf(forum);
-            if (idx != -1) {
-                ANavItem removed = subscribedForums.remove(idx);
-                support.fireChildRemoved(model.getPathToRoot(subscribedForums), idx, removed);
-            }
-            idx = notSubscribedForums.indexOf(forum);
-            if (idx != -1) {
-                ANavItem removed = notSubscribedForums.remove(idx);
-                support.fireChildRemoved(model.getPathToRoot(notSubscribedForums), idx, removed);
-            }
             viewedForums.remove(forumId);
         }
     }
@@ -151,7 +124,7 @@ class ForumDecorator {
         }
     }
 
-    private class ForumUpdater extends RojacWorker<Void, ForumStatistic> {
+    private class ForumUpdater extends AForumUpdater<Void, ForumStatistic> {
         private final int[] forumIds;
 
         public ForumUpdater(int... forumIds) {
@@ -160,20 +133,8 @@ class ForumDecorator {
 
         @Override
         protected Void perform() throws Exception {
-            IForumAH fah = storage.getForumAH();
-
-            Map<Integer, Number> totalMessages = fah.getMessagesInForums(forumIds);
-            Map<Integer, Number> unreadMessages = fah.getUnreadMessagesInForums(forumIds);
-            Map<Integer, Number> lastPostDate = fah.getLastMessageDateInForums(forumIds);
-
             for (int forumId : forumIds) {
-                Number date = lastPostDate.get(forumId);
-                publish(new ForumStatistic(
-                        forumId,
-                        totalMessages.get(forumId).intValue(),
-                        unreadMessages.get(forumId).intValue(),
-                        date != null ? date.longValue() : null
-                ));
+                publish(getForumStatistic(forumId));
             }
 
             return null;
@@ -187,9 +148,8 @@ class ForumDecorator {
         }
     }
 
-    private class ForumLoader extends RojacWorker<Void, ForumData> {
+    private class ForumLoader extends AForumUpdater<Void, ForumData> {
         private final Integer forumId;
-        private final IForumAH fah = storage.getForumAH();
 
         ForumLoader(int forumId) {
             this.forumId = forumId;
@@ -213,18 +173,10 @@ class ForumDecorator {
                 for (Forum f : forums) {
                     int forumId = f.getForumId();
 
-                    Number totalMessages = fah.getMessagesInForum(forumId);
-                    Number unreadMessages = fah.getUnreadMessagesInForum(forumId);
-                    Number lastPostDate = fah.getLastMessageDateInForum(forumId);
                     publish(
                             new ForumData(
                                     f,
-                                    new ForumStatistic(
-                                            forumId,
-                                            totalMessages.intValue(),
-                                            unreadMessages.intValue(),
-                                            lastPostDate == null ? null : lastPostDate.longValue()
-                                    )
+                                    getForumStatistic(forumId)
                             )
                     );
                 }

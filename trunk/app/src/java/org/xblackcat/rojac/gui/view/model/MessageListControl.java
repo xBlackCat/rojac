@@ -94,16 +94,16 @@ abstract class MessageListControl implements IModelControl<Post> {
                         updateModel(model, postProcessor);
                     }
                 },
+                new IPacketProcessor<SetSubThreadReadPacket>() {
+                    @Override
+                    public void process(SetSubThreadReadPacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                },
                 new IPacketProcessor<SetPostReadPacket>() {
                     @Override
                     public void process(SetPostReadPacket p) {
-                        if (p.isRecursive()) {
-                            // Post is a root of marked thread
-                            updateModel(model, postProcessor);
-                        } else {
-                            // Mark as read only the post
-                            markPostRead(model, p.getPostId(), p.isRead());
-                        }
+                        markPostRead(model, p.getPostId(), p.isRead());
                     }
                 },
                 new IPacketProcessor<SetReadExPacket>() {

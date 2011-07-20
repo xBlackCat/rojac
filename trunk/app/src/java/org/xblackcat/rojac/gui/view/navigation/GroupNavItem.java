@@ -51,11 +51,6 @@ public class GroupNavItem extends ANavItem {
     int indexOf(ANavItem i) {
         assert children != null;
 
-        if (i.getParent() != this) {
-            // Only strict match!
-            return -1;
-        }
-
         return children.indexOf(i);
     }
 
@@ -66,6 +61,7 @@ public class GroupNavItem extends ANavItem {
 
     int add(ANavItem item, Comparator<ANavItem> comp) {
         children.add(item);
+        item.setParent(this);
 
         if (comp != null) {
             Collections.sort(children, comp);

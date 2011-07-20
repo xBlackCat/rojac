@@ -22,7 +22,8 @@ public final class MultiUserOptionsService extends AnOptionsService {
     private static final Log log = LogFactory.getLog(MultiUserOptionsService.class);
     @SuppressWarnings({"unchecked"})
     private static final Collection<Property<?>> DO_NOT_STORE = new HashSet<Property<?>>(Arrays.asList(
-            Property.ROJAC_DEBUG_MODE
+            Property.ROJAC_DEBUG_MODE,
+            Property.ROJAC_DONT_RESTORE_LAYOUT
     ));
 
     public MultiUserOptionsService() throws OptionsServiceException {

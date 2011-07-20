@@ -1,13 +1,11 @@
 package org.xblackcat.rojac.service.storage.database;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * @author ASUS
@@ -69,27 +67,6 @@ final class DBForumAH implements IForumAH {
     }
 
     @Override
-    public Map<Integer, Number> getMessagesInForums(int... forumIds) throws StorageException {
-        return helper.executeSingleBatch(Converters.TO_NUMBER,
-                DataQuery.GET_MESSAGES_NUMBER_IN_FORUM,
-                ArrayUtils.toObject(forumIds));
-    }
-
-    @Override
-    public Map<Integer, Number> getUnreadMessagesInForums(int... forumIds) throws StorageException {
-        return helper.executeSingleBatch(Converters.TO_NUMBER,
-                DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
-                ArrayUtils.toObject(forumIds));
-    }
-
-    @Override
-    public Map<Integer, Number> getLastMessageDateInForums(int... forumIds) throws StorageException {
-        return helper.executeSingleBatch(Converters.TO_NUMBER,
-                DataQuery.GET_LAST_MESSAGE_DATE_IN_FORUM,
-                ArrayUtils.toObject(forumIds));
-    }
-
-    @Override
     public Collection<Forum> getAllForums() throws StorageException {
         return helper.execute(Converters.TO_FORUM, DataQuery.GET_OBJECTS_FORUM);
     }
@@ -106,6 +83,14 @@ final class DBForumAH implements IForumAH {
         return helper.executeSingle(Converters.TO_NUMBER,
                 DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
                 forumId);
+    }
+
+    @Override
+    public Number getUnreadRepliesInForum(int forumId, int userId) throws StorageException {
+        return helper.executeSingle(Converters.TO_NUMBER,
+                DataQuery.GET_UNREAD_REPLIES_NUMBER_IN_FORUM,
+                forumId,
+                userId);
     }
 
     @Override

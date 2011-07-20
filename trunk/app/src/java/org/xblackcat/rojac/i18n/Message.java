@@ -60,11 +60,12 @@ public enum Message {
     View_Favorites_Statistic_Label,
 
     // Navigation view
-    View_Navigation_Personal,
-    View_Navigation_SubscribedForums,
-    View_Navigation_NotSubscribedForums,
-    View_Navigation_Favorites,
-    View_Navigation_Ignored,
+    View_Navigation_Item_Personal,
+    View_Navigation_Item_SubscribedForums,
+    View_Navigation_Item_NotSubscribedForums,
+    View_Navigation_Item_Favorites,
+    View_Navigation_Item_ForumInfo,
+    View_Navigation_Item_ForumExtraInfo,
 
     // Threads view
     View_Thread_Button_NewThread,

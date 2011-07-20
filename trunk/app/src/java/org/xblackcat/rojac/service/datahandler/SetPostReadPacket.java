@@ -6,19 +6,21 @@ package org.xblackcat.rojac.service.datahandler;
 
 public class SetPostReadPacket extends SetForumReadPacket {
     protected final int postId;
-    protected final boolean recursive;
 
-    public SetPostReadPacket(boolean readStatus, int forumId, int postId, boolean recursive) {
+    /**
+     * Constructs a post read status changed packet.
+     *
+     * @param readStatus
+     * @param forumId
+     * @param postId
+     */
+    public SetPostReadPacket(boolean readStatus, int forumId, int postId) {
         super(readStatus, forumId);
         this.postId = postId;
-        this.recursive = recursive;
     }
 
     public int getPostId() {
         return postId;
     }
 
-    public boolean isRecursive() {
-        return recursive;
-    }
 }
