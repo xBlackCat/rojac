@@ -4,13 +4,11 @@ import org.apache.commons.lang.StringUtils;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.theme.IconPack;
-import org.xblackcat.rojac.gui.view.forumlist.ForumFilterState;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.lang.ref.SoftReference;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -111,9 +109,6 @@ public final class Property<T> {
     public static final Property<Boolean> SYNCHRONIZER_MARK_MY_POST_READ = create("rojac.synchronizer.messages.my_as_read", Boolean.FALSE);
 
     public static final Property<Boolean> TRAY_NOTIFICATION_SYNC_COMPLETE = create("rojac.behaviour.tray_notification.on_sync_complete", Boolean.TRUE);
-
-    // Forum list view state properties.
-    public static final Property<EnumSet<ForumFilterState>> VIEW_FORUM_LIST_FILTER = createPrivate("rojac.view.forum_list.filter", EnumSet.noneOf(ForumFilterState.class));
 
     @SuppressWarnings({"unchecked"})
     static <V> Property<V> create(String name, V defaultValue, IValueChecker<V> checker) {

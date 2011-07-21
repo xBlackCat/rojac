@@ -5,6 +5,7 @@ import org.xblackcat.rojac.data.ForumStatistic;
 
 import javax.swing.*;
 import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * @author xBlackCat
@@ -55,12 +56,12 @@ class ForumsRowFilter extends RowFilter<ForumTableModel, Integer> {
         return state.contains(s);
     }
 
-    public void setState(EnumSet<ForumFilterState> newState) {
+    public void setState(Set<ForumFilterState> newState) {
         state.clear();
         state.addAll(newState);
     }
 
-    public EnumSet<ForumFilterState> getState() {
+    public Set<ForumFilterState> getState() {
         return state.clone();
     }
 }

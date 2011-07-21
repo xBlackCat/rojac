@@ -192,13 +192,14 @@ public final class RojacLauncher {
                 mainFrame.applySettings();
             }
 
-            mainFrame.setVisible(mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported());
+            boolean visible = mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported();
+            if (visible) {
+                WindowsUtils.toFront(mainFrame);
+            }
 
             mainFrame.setupScheduler();
 
             new VersionChecker(mainFrame).execute();
-
-            WindowsUtils.toFront(mainFrame);
         }
 
     }

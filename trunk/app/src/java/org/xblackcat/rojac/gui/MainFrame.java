@@ -80,6 +80,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private static final String THREADS_VIEW_ID = "threads_view_id";
     private static final String NAVIGATION_VIEW_ID = "navigation_view_id";
 
+    private final Map<String, ILayoutful> layoutMap = new HashMap<String, ILayoutful>();
+
     protected final DropFilter noAuxViewsFilter = new DropFilter() {
         @Override
         public boolean acceptDrop(DropInfo dropInfo) {
@@ -319,6 +321,11 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         viewMap.addView(NAVIGATION_VIEW_ID, viewNavigation);
         viewMap.addView(THREADS_VIEW_ID, threadsView);
 
+        layoutMap.put(FORUMS_VIEW_ID, forumsListView);
+        layoutMap.put(FAVORITES_VIEW_ID, favoritesView);
+        layoutMap.put(RECENT_TOPICS_VIEW_ID, recentTopicsView);
+        layoutMap.put(NAVIGATION_VIEW_ID, navigationView);
+
         rootWindow = new RootWindow(false, viewMap,
                 new SplitWindow(
                         true,
@@ -542,7 +549,21 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     rootWindow.read(in, false);
                     threadsRootWindow.read(in, false);
 
-                    setObjectState((IState) in.readObject());
+                    try {
+                        setObjectState((IState) in.readObject());
+
+                        String panelId;
+                        while ((panelId = (String) in.readObject()) != null) {
+                            IViewLayout layout = (IViewLayout) in.readObject();
+
+                            ILayoutful panel = layoutMap.get(panelId);
+                            if (panel != null) {
+                                panel.setupLayout(layout);
+                            }
+                        }
+                    } catch (EOFException e) {
+                        // Ignore to support previous revisions
+                    }
                 } finally {
                     in.close();
                 }
@@ -567,6 +588,12 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 threadsRootWindow.write(out, false);
                 // Last item - main frame state
                 out.writeObject(getObjectState());
+
+                // Store panel's layout
+                for (Map.Entry<String, ILayoutful> element : layoutMap.entrySet()) {
+                    out.writeObject(element.getKey()); // Identifier
+                    out.writeObject(element.getValue().storeLayout()); // Panel layout
+                }
             } finally {
                 out.close();
             }
@@ -998,7 +1025,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                         return;
                     }
 
-                        openMessage(idFromUrl, method);
+                    openMessage(idFromUrl, method);
 
                     dtde.dropComplete(true);
                 } catch (Exception e) {
