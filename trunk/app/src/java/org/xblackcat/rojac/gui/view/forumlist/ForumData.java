@@ -11,7 +11,6 @@ public class ForumData {
     private final int forumId;
     private Forum forum;
     private ForumStatistic stat;
-    private boolean subscribed;
 
     public ForumData(Forum forum) {
         this(forum, null);
@@ -20,7 +19,6 @@ public class ForumData {
     public ForumData(Forum forum, ForumStatistic forumStatistic) {
         this.forum = forum;
         forumId = forum.getForumId();
-        subscribed = forum.isSubscribed();
         stat = forumStatistic;
     }
 
@@ -40,12 +38,8 @@ public class ForumData {
         this.stat = stat;
     }
 
-    public boolean isSubscribed() {
-        return subscribed;
-    }
-
     public void setSubscribed(boolean subscribed) {
-        this.subscribed = subscribed;
+        this.forum = forum.setSubscribed(subscribed);
     }
 
     @Override

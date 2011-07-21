@@ -2,8 +2,13 @@ package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
+import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.i18n.Message;
+
+import javax.swing.*;
 
 /**
  * @author xBlackCat Date: 18.07.11
@@ -16,6 +21,16 @@ public class ForumNavItem extends ANavItem {
         super(parent);
         this.forum = fd.getForum();
         this.statistic = fd.getStat();
+    }
+
+    @Override
+    JPopupMenu getContextMenu(IAppControl appControl) {
+        return PopupMenuBuilder.getForumViewMenu(forum, appControl);
+    }
+
+    @Override
+    void onDoubleClick(IAppControl appControl) {
+        appControl.openTab(ViewType.Forum.makeId(forum.getForumId()));
     }
 
     @Override
@@ -40,6 +55,11 @@ public class ForumNavItem extends ANavItem {
     @Override
     String getExtraTitleLine() {
         return forum.getShortForumName();
+    }
+
+    @Override
+    boolean isExuded() {
+        return statistic.getUnreadMessages() > 0;
     }
 
     Forum getForum() {

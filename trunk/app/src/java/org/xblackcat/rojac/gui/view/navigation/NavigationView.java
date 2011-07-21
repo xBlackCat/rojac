@@ -7,12 +7,16 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.NoViewLayout;
+import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
+import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 /**
  * @author xBlackCat Date: 15.07.11
@@ -24,8 +28,7 @@ public class NavigationView extends AView {
             new IPacketProcessor<SetForumReadPacket>() {
                 @Override
                 public void process(SetForumReadPacket p) {
-                    // TODO: update specified forum and all others items
-//                    model.setRead(p.isRead(), p.getForumId());
+                    model.getForumDecorator().loadForumStatistic(p.getForumId());
                 }
             },
             new IPacketProcessor<ForumsUpdated>() {
@@ -73,12 +76,48 @@ public class NavigationView extends AView {
         viewTable.setAutoCreateColumnsFromModel(false);
         viewTable.setTreeTableModel(model);
         viewTable.setTableHeader(null);
+        viewTable.setColumnMargin(3);
 
         TableColumnModel columnModel = viewTable.getColumnModel();
         columnModel.addColumn(new TableColumnExt(0, 100));
-        columnModel.addColumn(new TableColumnExt(1, 50, new InfoCellRenderer(), null));
+        TableColumnExt infoColumn = new TableColumnExt(1, 50, new InfoCellRenderer(), null);
+        infoColumn.setMaxWidth(70);
+        infoColumn.setMinWidth(30);
+        columnModel.addColumn(infoColumn);
 
         viewTable.setTreeCellRenderer(new LabelCellRenderer());
+
+        viewTable.addMouseListener(new PopupMouseAdapter() {
+            private ANavItem getItem(Point point) {
+                TreePath path = viewTable.getPathForLocation(point.x, point.y);
+
+                return path == null ? null : (ANavItem) path.getLastPathComponent();
+            }
+
+            @Override
+            protected void triggerDoubleClick(MouseEvent e) {
+                ANavItem item = getItem(e.getPoint());
+                if (item != null) {
+                    item.onDoubleClick(NavigationView.this.appControl);
+                }
+            }
+
+            @Override
+            protected void triggerPopup(MouseEvent e) {
+                ANavItem item = getItem(e.getPoint());
+
+                if (item == null) {
+                    return;
+                }
+
+                JPopupMenu menu = item.getContextMenu(NavigationView.this.appControl);
+                if (menu != null) {
+                    final Point p = e.getPoint();
+                    menu.show(e.getComponent(), p.x, p.y);
+                }
+            }
+        });
+
 
         JScrollPane container = new JScrollPane(viewTable);
 
@@ -89,7 +128,7 @@ public class NavigationView extends AView {
 
     @Override
     public String getTabTitle() {
-        return null;
+        return Message.View_Navigation_Title.get();
     }
 
     @Override

@@ -25,7 +25,7 @@ class ForumsRowFilter extends RowFilter<ForumTableModel, Integer> {
         ForumStatistic fs = fd.getStat();
 
         if (state.contains(ForumFilterState.Subscribed) && f != null) {
-            if (!fd.isSubscribed()) {
+            if (!f.isSubscribed()) {
                 return false;
             }
         }

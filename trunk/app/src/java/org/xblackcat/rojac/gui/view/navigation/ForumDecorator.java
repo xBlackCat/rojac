@@ -66,7 +66,8 @@ class ForumDecorator {
     }
 
     void updateForum(ForumData d) {
-        GroupNavItem parent = d.isSubscribed() ? subscribedForums : notSubscribedForums;
+        boolean subscribed = d.getForum().isSubscribed();
+        GroupNavItem parent = subscribed ? subscribedForums : notSubscribedForums;
 
         int forumId = d.getForumId();
         ForumNavItem forum = new ForumNavItem(parent, d);
@@ -83,7 +84,7 @@ class ForumDecorator {
             support.fireChildRemoved(model.getPathToRoot(notSubscribedForums), idx, removed);
         }
 
-        if (d.getStat().getTotalMessages() > 0 || d.isSubscribed()) {
+        if (d.getStat().getTotalMessages() > 0 || subscribed) {
             idx = parent.add(forum, FORUM_LIST_COMPARATOR);
             viewedForums.put(forumId, forum);
 

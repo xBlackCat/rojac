@@ -115,8 +115,7 @@ public class ForumsListView extends AView {
             @Override
             protected void triggerPopup(MouseEvent e) {
                 JPopupMenu menu = PopupMenuBuilder.getForumViewMenu(
-                        getForumData(e),
-                        ForumsListView.this.appControl
+                        getForumData(e).getForum(), ForumsListView.this.appControl
                 );
 
                 final Point p = e.getPoint();

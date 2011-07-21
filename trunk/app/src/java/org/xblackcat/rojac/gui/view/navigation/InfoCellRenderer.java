@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
 /**
  * @author xBlackCat Date: 19.07.11
@@ -8,6 +9,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class InfoCellRenderer extends DefaultTableCellRenderer {
     @Override
     protected void setValue(Object value) {
-        super.setValue(((ANavItem) value).getBriefInfo());
+        ANavItem v = (ANavItem) value;
+        String text = v.getBriefInfo();
+        setText(text);
+        setToolTipText(text);
+
+        Font f = getFont();
+        if (f != null) {
+            setFont(f.deriveFont(v.isExuded() ? Font.BOLD : Font.PLAIN));
+        }
     }
 }

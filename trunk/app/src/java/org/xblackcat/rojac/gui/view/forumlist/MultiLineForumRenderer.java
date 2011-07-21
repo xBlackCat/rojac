@@ -205,7 +205,7 @@ class MultiLineForumRenderer extends JLightPanel
         String dateText = "";
 
         if (f != null) {
-            isSubscribed = fd.isSubscribed();
+            isSubscribed = f.isSubscribed();
 
             titleText = f.getForumName();
 

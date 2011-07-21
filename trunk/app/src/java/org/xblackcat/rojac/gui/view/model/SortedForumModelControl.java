@@ -258,7 +258,7 @@ class SortedForumModelControl extends AThreadsModelControl {
         if (data instanceof ForumMessageData) {
             ForumData f = ((ForumMessageData) data).getForum();
 
-            return PopupMenuBuilder.getForumViewTabMenu(f, appControl);
+            return PopupMenuBuilder.getForumViewTabMenu(f.getForum(), appControl);
         }
 
         return null;
