@@ -6,7 +6,6 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
-import org.xblackcat.rojac.gui.NoViewLayout;
 import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
@@ -17,7 +16,6 @@ import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.navigation.AForumUpdater;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -162,9 +160,6 @@ public class ForumsListView extends AView {
                 unread_only
         );
 
-        forumsRowFilter.setState(Property.VIEW_FORUM_LIST_FILTER.get());
-
-        updateButtonsState();
 
         add(toolBar, BorderLayout.NORTH);
 
@@ -179,11 +174,16 @@ public class ForumsListView extends AView {
 
     @Override
     public IViewLayout storeLayout() {
-        return new NoViewLayout();
+        return new ForumListViewLayout(forumsRowFilter.getState());
     }
 
     @Override
     public void setupLayout(IViewLayout o) {
+        if (o instanceof ForumListViewLayout) {
+            forumsRowFilter.setState(((ForumListViewLayout) o).getStates());
+
+            updateButtonsState();
+        }
     }
 
     @Override
@@ -274,7 +274,6 @@ public class ForumsListView extends AView {
             boolean newState = !forumsRowFilter.is(option);
             forumsRowFilter.set(option, newState);
             forumTableModelTableRowSorter.sort();
-            Property.VIEW_FORUM_LIST_FILTER.set(forumsRowFilter.getState());
             updateButtonsState();
         }
     }
