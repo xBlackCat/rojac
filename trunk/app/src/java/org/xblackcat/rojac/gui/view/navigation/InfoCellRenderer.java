@@ -9,7 +9,7 @@ import java.awt.*;
 public class InfoCellRenderer extends DefaultTableCellRenderer {
     @Override
     protected void setValue(Object value) {
-        ANavItem v = (ANavItem) value;
+        AnItem v = (AnItem) value;
         String text = v.getBriefInfo();
         setText(text);
         setToolTipText(text);

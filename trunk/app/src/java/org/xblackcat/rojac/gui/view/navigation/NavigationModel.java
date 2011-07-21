@@ -10,21 +10,21 @@ import javax.swing.tree.TreePath;
 /**
  * @author xBlackCat
  */
-class NavModel implements TreeTableModel {
+class NavigationModel extends AModelControl implements TreeTableModel {
     private final TreeModelSupport support = new TreeModelSupport(this);
-    private final ANavItem root;
-    private final ANavItem personal;
-    private final ANavItem favorites;
+    private final AnItem root;
+    private final AnItem personal;
+    private final AnItem favorites;
 
     final ForumDecorator forumDecorator;
 
-    NavModel() {
-        forumDecorator = new ForumDecorator(this, support);
+    NavigationModel() {
+        forumDecorator = new ForumDecorator(this);
 
-        personal = new GroupNavItem(Message.View_Navigation_Item_Personal);
-        favorites = new GroupNavItem(Message.View_Navigation_Item_Favorites);
+        personal = new GroupItem(Message.View_Navigation_Item_Personal);
+        favorites = new GroupItem(Message.View_Navigation_Item_Favorites);
 
-        root = new RootNavItem(
+        root = new RootItem(
                 personal,
                 forumDecorator.getSubscribedForums(),
                 forumDecorator.getNotSubscribedForums(),
@@ -34,7 +34,7 @@ class NavModel implements TreeTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return ANavItem.class;
+        return AnItem.class;
     }
 
     @Override
@@ -53,8 +53,8 @@ class NavModel implements TreeTableModel {
     }
 
     @Override
-    public ANavItem getValueAt(Object node, int column) {
-        return (ANavItem) node;
+    public AnItem getValueAt(Object node, int column) {
+        return (AnItem) node;
     }
 
     @Override
@@ -67,24 +67,24 @@ class NavModel implements TreeTableModel {
     }
 
     @Override
-    public ANavItem getRoot() {
+    public AnItem getRoot() {
         return root;
     }
 
     @Override
     public Object getChild(Object parent, int index) {
-        return ((ANavItem) parent).getChild(index);
+        return ((AnItem) parent).getChild(index);
     }
 
     @Override
     public int getChildCount(Object parent) {
-        return ((ANavItem) parent).getChildCount();
+        return ((AnItem) parent).getChildCount();
     }
 
     @Override
     public boolean isLeaf(Object node) {
-        assert node instanceof ANavItem;
-        return !((ANavItem) node).isGroup();
+        assert node instanceof AnItem;
+        return !((AnItem) node).isGroup();
     }
 
     @Override
@@ -97,11 +97,11 @@ class NavModel implements TreeTableModel {
             return -1;
         }
 
-        assert parent instanceof ANavItem;
-        assert child instanceof ANavItem;
+        assert parent instanceof AnItem;
+        assert child instanceof AnItem;
 
-        ANavItem c = (ANavItem) child;
-        ANavItem p = (ANavItem) parent;
+        AnItem c = (AnItem) child;
+        AnItem p = (AnItem) parent;
 
         if (c.getParent() != parent) {
             // Only strict equality!!
@@ -130,12 +130,12 @@ class NavModel implements TreeTableModel {
         return forumDecorator;
     }
 
-    TreePath getPathToRoot(ANavItem aNode) {
+    TreePath getPathToRoot(AnItem aNode) {
         return new TreePath(getPathToRoot(aNode, 0));
     }
 
-    ANavItem[] getPathToRoot(ANavItem aNode, int depth) {
-        ANavItem[] retNodes;
+    AnItem[] getPathToRoot(AnItem aNode, int depth) {
+        AnItem[] retNodes;
         // This method recurses, traversing towards the root in order
         // size the array. On the way back, it fills in the nodes,
         // starting from the root and working back to the original node.
@@ -146,12 +146,12 @@ class NavModel implements TreeTableModel {
             if (depth == 0) {
                 return null;
             } else {
-                retNodes = new ANavItem[depth];
+                retNodes = new AnItem[depth];
             }
         } else {
             depth++;
             if (aNode == root) {
-                retNodes = new ANavItem[depth];
+                retNodes = new AnItem[depth];
             } else {
                 retNodes = getPathToRoot(aNode.getParent(), depth);
             }
@@ -162,5 +162,42 @@ class NavModel implements TreeTableModel {
 
     public void load() {
         getForumDecorator().reloadForums();
+    }
+
+    // Helper methods
+    @Override
+    void safeRemoveChild(AGroupItem parent, AnItem forum) {
+        int idx = parent.indexOf(forum);
+        if (idx != -1) {
+            AnItem removed = parent.remove(idx);
+            support.fireChildRemoved(getPathToRoot(parent), idx, removed);
+        }
+    }
+
+    /**
+     * Add a child to item and notify listeners about this.
+     *
+     * @param parent parent item to add child to
+     * @param child a new child item
+     */
+    @Override
+    void addChild(AGroupItem parent, AnItem child) {
+        int idx = parent.add(child);
+
+        support.fireChildAdded(getPathToRoot(parent), idx, child);
+    }
+
+    /**
+     * Notify listeners that item was updated (and whole path to it too)
+     *
+     * @param item updated item
+     */
+    @Override
+    void itemUpdated(AnItem item) {
+        TreePath path = getPathToRoot(item);
+        while (path != null) {
+            support.firePathChanged(path);
+            path = path.getParentPath();
+        }
     }
 }
