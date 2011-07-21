@@ -34,7 +34,8 @@ public final class Property<T> {
 
     // Debug variables
     public static final Property<Boolean> ROJAC_DEBUG_MODE = createPrivate("rojac.global.debug.mode", Boolean.FALSE);
-    public static final Property<Boolean> ROJAC_DONT_RESTORE_LAYOUT = createPrivate("rojac.global.debug.reset_layout", Boolean.FALSE);
+    public static final Property<Boolean> ROJAC_DEBUG_DONT_RESTORE_LAYOUT = createPrivate("rojac.global.debug.reset_layout", Boolean.FALSE);
+    public static final Property<Boolean> ROJAC_DEBUG_SHUTDOWN_OTHER = createPrivate("rojac.global.debug.shutdown_others", Boolean.FALSE);
 
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());
