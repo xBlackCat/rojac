@@ -6,7 +6,6 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
-import org.xblackcat.rojac.gui.NoViewLayout;
 import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Message;
@@ -17,6 +16,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.Enumeration;
 
 /**
  * @author xBlackCat Date: 15.07.11
@@ -133,11 +133,18 @@ public class NavigationView extends AView {
 
     @Override
     public IViewLayout storeLayout() {
-        return new NoViewLayout();
+        Enumeration<TreePath> paths = (Enumeration<TreePath>) viewTable.getExpandedDescendants(model.getPathToRoot(model.getRoot()));
+
+        // TODO: store opened pathes
+
+        return new NavigationLayout();
     }
 
     @Override
     public void setupLayout(IViewLayout o) {
+        if (o instanceof NavigationLayout) {
+            NavigationLayout l = (NavigationLayout) o;
+        }
     }
 
     @Override
@@ -154,4 +161,5 @@ public class NavigationView extends AView {
     public void processPacket(IPacket packet) {
         packetDispatcher.dispatch(packet);
     }
+
 }
