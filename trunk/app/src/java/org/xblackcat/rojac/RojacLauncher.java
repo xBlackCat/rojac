@@ -1,5 +1,6 @@
 package org.xblackcat.rojac;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
@@ -16,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import static org.xblackcat.rojac.service.options.Property.*;
 
@@ -40,8 +42,15 @@ public final class RojacLauncher {
     private static void launch() throws Exception {
         RunChecker checker = new RunChecker();
 
-        if (checker.performCheck()) {
-            return;
+        // At the moment an OptionsService is not initialized yet. Emulate the line
+        // Boolean shutdown = Property.ROJAC_DEBUG_SHUTDOWN_OTHER.get(false);
+        {
+            String name = Property.ROJAC_DEBUG_SHUTDOWN_OTHER.getName();
+            String property = System.getProperty(name, "no"); // By default - disabled
+            Boolean shutdown = BooleanUtils.toBoolean(property);
+            if (checker.performCheck(shutdown)) {
+                return;
+            }
         }
 
         // Common tasks
@@ -74,6 +83,17 @@ public final class RojacLauncher {
         SwingUtilities.invokeLater(new SwingPartInitializer(checker));
     }
 
+    private static void performShutdown(MainFrame mainFrame) {
+        // Remember application layout and other.
+        mainFrame.storeSettings();
+
+        // Save settings
+        RojacUtils.storeSettings();
+
+        // Close all the resources.
+        ServiceFactory.shutdown();
+    }
+
     private static class SwingPartInitializer implements Runnable {
         private final RunChecker checker;
 
@@ -93,11 +113,31 @@ public final class RojacLauncher {
         private void perform() {
             final MainFrame mainFrame = new MainFrame();
 
-            checker.installNewInstanceListener(new Runnable() {
-                public void run() {
-                    WindowsUtils.toFront(mainFrame);
-                }
-            });
+            checker.installNewInstanceListener(
+                    // Show window
+                    new Runnable() {
+                        public void run() {
+                            WindowsUtils.toFront(mainFrame);
+                        }
+                    },
+                    // Shutdown
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                SwingUtilities.invokeAndWait(new Runnable() {
+                                    public void run() {
+                                        performShutdown(mainFrame);
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                log.error("Shutdown process is interrupted", e);
+                            } catch (InvocationTargetException e) {
+                                log.error("Got exception from shutdown script", e);
+                            }
+                        }
+                    }
+            );
 
             ServiceFactory.getInstance().getDataDispatcher().addDataHandler(mainFrame);
 
@@ -142,21 +182,13 @@ public final class RojacLauncher {
                             return;
                         }
                     }
-
-                    // Remember application layout and other.
-                    mainFrame.storeSettings();
-
-                    // Save settings
-                    RojacUtils.storeSettings();
-
-                    // Close all the resources.
-                    ServiceFactory.shutdown();
+                    performShutdown(mainFrame);
 
                     System.exit(0);
                 }
             });
 
-            if (!Property.ROJAC_DONT_RESTORE_LAYOUT.get(false)) {
+            if (!Property.ROJAC_DEBUG_DONT_RESTORE_LAYOUT.get(false)) {
                 mainFrame.applySettings();
             }
 
@@ -165,8 +197,9 @@ public final class RojacLauncher {
             mainFrame.setupScheduler();
 
             new VersionChecker(mainFrame).execute();
+
+            WindowsUtils.toFront(mainFrame);
         }
 
     }
-
 }
