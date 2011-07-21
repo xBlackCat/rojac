@@ -65,13 +65,13 @@ public class NavigationView extends AView {
             }
     );
 
-    private NavModel model;
+    private NavigationModel model;
     private JXTreeTable viewTable;
 
     public NavigationView(IAppControl appControl) {
         super(appControl);
 
-        model = new NavModel();
+        model = new NavigationModel();
         viewTable = new JXTreeTable();
         viewTable.setAutoCreateColumnsFromModel(false);
         viewTable.setTreeTableModel(model);
@@ -88,15 +88,15 @@ public class NavigationView extends AView {
         viewTable.setTreeCellRenderer(new LabelCellRenderer());
 
         viewTable.addMouseListener(new PopupMouseAdapter() {
-            private ANavItem getItem(Point point) {
+            private AnItem getItem(Point point) {
                 TreePath path = viewTable.getPathForLocation(point.x, point.y);
 
-                return path == null ? null : (ANavItem) path.getLastPathComponent();
+                return path == null ? null : (AnItem) path.getLastPathComponent();
             }
 
             @Override
             protected void triggerDoubleClick(MouseEvent e) {
-                ANavItem item = getItem(e.getPoint());
+                AnItem item = getItem(e.getPoint());
                 if (item != null) {
                     item.onDoubleClick(NavigationView.this.appControl);
                 }
@@ -104,7 +104,7 @@ public class NavigationView extends AView {
 
             @Override
             protected void triggerPopup(MouseEvent e) {
-                ANavItem item = getItem(e.getPoint());
+                AnItem item = getItem(e.getPoint());
 
                 if (item == null) {
                     return;

@@ -4,21 +4,16 @@ import org.xblackcat.rojac.gui.IAppControl;
 
 import javax.swing.*;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author xBlackCat
  */
-class RootNavItem extends ANavItem {
-    private final List<ANavItem> children;
-
-    protected RootNavItem(ANavItem... items) {
-        super(null);
-        children = Arrays.asList(items);
-        for (ANavItem i : children) {
+class RootItem extends AGroupItem {
+    protected RootItem(AnItem... items) {
+        super(null, null, Arrays.asList(items));
+        for (AnItem i : children) {
             i.setParent(this);
         }
-
     }
 
     @Override
@@ -53,28 +48,5 @@ class RootNavItem extends ANavItem {
     @Override
     boolean isExuded() {
         return false;
-    }
-
-    boolean isGroup() {
-        return true;
-    }
-
-    int indexOf(ANavItem i) {
-        if (i.getParent() != this) {
-            // Only strict match!
-            return -1;
-        }
-
-        return children.indexOf(i);
-    }
-
-    @Override
-    int getChildCount() {
-        return children.size();
-    }
-
-    @Override
-    ANavItem getChild(int idx) {
-        return children.get(idx);
     }
 }

@@ -9,18 +9,18 @@ import javax.swing.*;
  *
  * @author xBlackCat
  */
-abstract class ANavItem {
-    protected ANavItem parent;
+abstract class AnItem {
+    protected AnItem parent;
 
-    protected ANavItem(ANavItem parent) {
+    protected AnItem(AnItem parent) {
         this.parent = parent;
     }
 
-    ANavItem getParent() {
+    AnItem getParent() {
         return parent;
     }
 
-    protected void setParent(ANavItem parent) {
+    protected void setParent(AnItem parent) {
         this.parent = parent;
     }
 
@@ -40,9 +40,9 @@ abstract class ANavItem {
 
     abstract boolean isGroup();
 
-    abstract int indexOf(ANavItem i);
+    abstract int indexOf(AnItem i);
 
-    abstract ANavItem getChild(int idx);
+    abstract AnItem getChild(int idx);
 
     abstract int getChildCount();
 }

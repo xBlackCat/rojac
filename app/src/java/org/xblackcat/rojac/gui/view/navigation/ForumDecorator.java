@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.view.navigation;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
@@ -25,11 +24,11 @@ import java.util.List;
 class ForumDecorator {
     private static final Log log = LogFactory.getLog(ForumDecorator.class);
 
-    private static final Comparator<ANavItem> FORUM_LIST_COMPARATOR = new Comparator<ANavItem>() {
+    private static final Comparator<AnItem> FORUM_LIST_COMPARATOR = new Comparator<AnItem>() {
         @Override
-        public int compare(ANavItem o1, ANavItem o2) {
-            ForumNavItem f1 = (ForumNavItem) o1;
-            ForumNavItem f2 = (ForumNavItem) o2;
+        public int compare(AnItem o1, AnItem o2) {
+            ForumItem f1 = (ForumItem) o1;
+            ForumItem f2 = (ForumItem) o2;
 
             if (f1 == null || f1.getForum() == null) {
                 return f2 == null || f2.getForum() == null ? 0 : -1;
@@ -41,61 +40,49 @@ class ForumDecorator {
         }
     };
 
-    private final NavModel model;
-    private final TreeModelSupport support;
+    private final AModelControl modelControl;
 
-    private final GroupNavItem subscribedForums;
-    private final GroupNavItem notSubscribedForums;
+    private final AGroupItem subscribedForums;
+    private final AGroupItem notSubscribedForums;
 
-    private final TIntObjectHashMap<ForumNavItem> viewedForums = new TIntObjectHashMap<ForumNavItem>();
+    private final TIntObjectHashMap<ForumItem> viewedForums = new TIntObjectHashMap<ForumItem>();
 
-    public ForumDecorator(NavModel model, TreeModelSupport support) {
-        this.model = model;
-        this.support = support;
+    public ForumDecorator(AModelControl modelControl) {
+        this.modelControl = modelControl;
 
-        subscribedForums = new GroupNavItem(Message.View_Navigation_Item_SubscribedForums);
-        notSubscribedForums = new GroupNavItem(Message.View_Navigation_Item_NotSubscribedForums);
+        subscribedForums = new GroupItem(Message.View_Navigation_Item_SubscribedForums, FORUM_LIST_COMPARATOR);
+        notSubscribedForums = new GroupItem(Message.View_Navigation_Item_NotSubscribedForums, FORUM_LIST_COMPARATOR);
     }
 
-    ANavItem getNotSubscribedForums() {
+    AnItem getNotSubscribedForums() {
         return notSubscribedForums;
     }
 
-    ANavItem getSubscribedForums() {
+    AnItem getSubscribedForums() {
         return subscribedForums;
     }
 
     void updateForum(ForumData d) {
         boolean subscribed = d.getForum().isSubscribed();
-        GroupNavItem parent = subscribed ? subscribedForums : notSubscribedForums;
+        AGroupItem parent = subscribed ? subscribedForums : notSubscribedForums;
 
         int forumId = d.getForumId();
-        ForumNavItem forum = new ForumNavItem(parent, d);
+        ForumItem forum = new ForumItem(parent, d);
 
         // Remove forum from list if any
-        int idx = subscribedForums.indexOf(forum);
-        if (idx != -1) {
-            ANavItem removed = subscribedForums.remove(idx);
-            support.fireChildRemoved(model.getPathToRoot(subscribedForums), idx, removed);
-        }
-        idx = notSubscribedForums.indexOf(forum);
-        if (idx != -1) {
-            ANavItem removed = notSubscribedForums.remove(idx);
-            support.fireChildRemoved(model.getPathToRoot(notSubscribedForums), idx, removed);
-        }
+        modelControl.safeRemoveChild(subscribedForums, forum);
+        modelControl.safeRemoveChild(notSubscribedForums, forum);
 
         if (d.getStat().getTotalMessages() > 0 || subscribed) {
-            idx = parent.add(forum, FORUM_LIST_COMPARATOR);
+            modelControl.addChild(parent, forum);
             viewedForums.put(forumId, forum);
-
-            support.fireChildAdded(model.getPathToRoot(parent), idx, forum);
         } else {
             viewedForums.remove(forumId);
         }
     }
 
     public void updateSubscribed(int forumId, boolean subscribed) {
-        ForumNavItem item = viewedForums.get(forumId);
+        ForumItem item = viewedForums.get(forumId);
         if (item == null) {
             // Forum not shown yet - load from DB
             new ForumLoader(forumId).execute();
@@ -118,10 +105,10 @@ class ForumDecorator {
     }
 
     private void updateForum(ForumStatistic stat) {
-        ForumNavItem navItem = viewedForums.get(stat.getForumId());
+        ForumItem navItem = viewedForums.get(stat.getForumId());
         if (navItem != null) {
             navItem.setStatistic(stat);
-            support.firePathChanged(model.getPathToRoot(navItem));
+            modelControl.itemUpdated(navItem);
         }
     }
 

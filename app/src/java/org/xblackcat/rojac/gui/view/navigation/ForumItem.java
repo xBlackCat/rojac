@@ -13,11 +13,11 @@ import javax.swing.*;
 /**
  * @author xBlackCat Date: 18.07.11
  */
-public class ForumNavItem extends ANavItem {
+public class ForumItem extends AnItem {
     private final Forum forum;
     private ForumStatistic statistic;
 
-    public ForumNavItem(ANavItem parent, ForumData fd) {
+    public ForumItem(AnItem parent, ForumData fd) {
         super(parent);
         this.forum = fd.getForum();
         this.statistic = fd.getStat();
@@ -80,12 +80,12 @@ public class ForumNavItem extends ANavItem {
     }
 
     @Override
-    int indexOf(ANavItem i) {
+    int indexOf(AnItem i) {
         return -1;
     }
 
     @Override
-    ANavItem getChild(int idx) {
+    AnItem getChild(int idx) {
         return null;
     }
 
@@ -97,9 +97,9 @@ public class ForumNavItem extends ANavItem {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ForumNavItem)) return false;
+        if (!(o instanceof ForumItem)) return false;
 
-        ForumNavItem that = (ForumNavItem) o;
+        ForumItem that = (ForumItem) o;
 
         return forum.equals(that.forum);
     }
