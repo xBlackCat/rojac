@@ -1,5 +1,8 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import org.xblackcat.rojac.gui.IAppControl;
+
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +19,15 @@ class RootNavItem extends ANavItem {
             i.setParent(this);
         }
 
+    }
+
+    @Override
+    JPopupMenu getContextMenu(IAppControl appControl) {
+        return null;
+    }
+
+    @Override
+    void onDoubleClick(IAppControl appControl) {
     }
 
     @Override
@@ -36,6 +48,11 @@ class RootNavItem extends ANavItem {
     @Override
     String getExtraTitleLine() {
         return null;
+    }
+
+    @Override
+    boolean isExuded() {
+        return false;
     }
 
     boolean isGroup() {

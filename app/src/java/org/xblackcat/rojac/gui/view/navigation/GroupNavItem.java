@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.i18n.Message;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,6 +19,15 @@ public class GroupNavItem extends ANavItem {
     protected GroupNavItem(Message title) {
         super(null);
         this.title = title;
+    }
+
+    @Override
+    JPopupMenu getContextMenu(IAppControl appControl) {
+        return null;
+    }
+
+    @Override
+    void onDoubleClick(IAppControl appControl) {
     }
 
     @Override
@@ -37,6 +48,16 @@ public class GroupNavItem extends ANavItem {
     @Override
     String getExtraTitleLine() {
         return null;
+    }
+
+    @Override
+    boolean isExuded() {
+        for (ANavItem child : children) {
+            if (child.isExuded()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     boolean isGroup() {

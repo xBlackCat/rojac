@@ -1,11 +1,11 @@
 package org.xblackcat.rojac.gui.popup;
 
+import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.ViewType;
-import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Message;
@@ -84,8 +84,8 @@ public final class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getForumViewMenu(ForumData forum, IAppControl appControl) {
-        JPopupMenu menu = new JPopupMenu(forum.getForum().getForumName());
+    public static JPopupMenu getForumViewMenu(Forum forum, IAppControl appControl) {
+        JPopupMenu menu = new JPopupMenu(forum.getForumName());
 
         final boolean subscribed = forum.isSubscribed();
         final int forumId = forum.getForumId();
@@ -96,7 +96,7 @@ public final class PopupMenuBuilder {
         menu.add(new SetForumReadMenuItem(Message.Popup_View_SetReadAll, forumId, true));
         menu.add(new SetForumReadMenuItem(Message.Popup_View_SetUnreadAll, forumId, false));
 
-        menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl.getMainFrame()));
+        menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, forum, appControl.getMainFrame()));
 
         menu.addSeparator();
 
@@ -162,8 +162,8 @@ public final class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getForumViewTabMenu(ForumData forum, IAppControl appControl) {
-        JPopupMenu menu = new JPopupMenu(forum.getForum().getForumName());
+    public static JPopupMenu getForumViewTabMenu(Forum forum, IAppControl appControl) {
+        JPopupMenu menu = new JPopupMenu(forum.getForumName());
 
         final boolean subscribed = forum.isSubscribed();
         final int forumId = forum.getForumId();
@@ -171,7 +171,7 @@ public final class PopupMenuBuilder {
         menu.add(new SetForumReadMenuItem(Message.Popup_View_SetReadAll, forumId, true));
         menu.add(new SetForumReadMenuItem(Message.Popup_View_SetUnreadAll, forumId, false));
 
-        menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, forum.getForum(), appControl.getMainFrame()));
+        menu.add(new ExtendedMarkRead(Message.Popup_View_ThreadsTree_Mark_Extended, forum, appControl.getMainFrame()));
 
         menu.addSeparator();
 
