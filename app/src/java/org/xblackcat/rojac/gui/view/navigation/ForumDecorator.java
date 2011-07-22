@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author xBlackCat
  */
-class ForumDecorator {
+class ForumDecorator extends ADecorator {
     private static final Log log = LogFactory.getLog(ForumDecorator.class);
 
     private static final Comparator<AnItem> FORUM_LIST_COMPARATOR = new Comparator<AnItem>() {
@@ -40,26 +40,24 @@ class ForumDecorator {
         }
     };
 
-    private final AModelControl modelControl;
-
     private final AGroupItem subscribedForums;
     private final AGroupItem notSubscribedForums;
 
     private final TIntObjectHashMap<ForumItem> viewedForums = new TIntObjectHashMap<ForumItem>();
 
     public ForumDecorator(AModelControl modelControl) {
-        this.modelControl = modelControl;
+        super(modelControl);
 
         subscribedForums = new GroupItem(Message.View_Navigation_Item_SubscribedForums, FORUM_LIST_COMPARATOR);
         notSubscribedForums = new GroupItem(Message.View_Navigation_Item_NotSubscribedForums, FORUM_LIST_COMPARATOR);
     }
 
-    AnItem getNotSubscribedForums() {
-        return notSubscribedForums;
-    }
-
-    AnItem getSubscribedForums() {
-        return subscribedForums;
+    @Override
+    AnItem[] getItemsList() {
+        return new AnItem[] {
+                subscribedForums,
+                notSubscribedForums
+        };
     }
 
     void updateForum(ForumData d) {

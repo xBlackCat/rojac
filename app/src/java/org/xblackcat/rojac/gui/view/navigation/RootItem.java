@@ -3,14 +3,26 @@ package org.xblackcat.rojac.gui.view.navigation;
 import org.xblackcat.rojac.gui.IAppControl;
 
 import javax.swing.*;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author xBlackCat
  */
 class RootItem extends AGroupItem {
-    protected RootItem(AnItem... items) {
-        super(null, null, Arrays.asList(items));
+    private static List<AnItem> collectItems(ADecorator... items) {
+        List<AnItem> list = new ArrayList<AnItem>();
+        for (ADecorator d : items) {
+            Collections.addAll(list, d.getItemsList());
+        }
+
+        return list;
+    }
+
+    protected RootItem(ADecorator... items) {
+        super(null, null, collectItems(items));
+
         for (AnItem i : children) {
             i.setParent(this);
         }

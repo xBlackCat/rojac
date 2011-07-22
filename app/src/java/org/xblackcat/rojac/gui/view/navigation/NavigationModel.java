@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.view.navigation;
 
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.jdesktop.swingx.treetable.TreeTableModel;
-import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
@@ -13,22 +12,17 @@ import javax.swing.tree.TreePath;
 class NavigationModel extends AModelControl implements TreeTableModel {
     private final TreeModelSupport support = new TreeModelSupport(this);
     private final AnItem root;
-    private final AnItem personal;
-    private final AnItem favorites;
 
-    final ForumDecorator forumDecorator;
+    final ForumDecorator forumDecorator = new ForumDecorator(this);
+    final FavoritesDecorator favoritesDecorator = new FavoritesDecorator(this);
+    final PersonalDecorator personalDecorator = new PersonalDecorator(this);
 
     NavigationModel() {
-        forumDecorator = new ForumDecorator(this);
-
-        personal = new GroupItem(Message.View_Navigation_Item_Personal);
-        favorites = new GroupItem(Message.View_Navigation_Item_Favorites);
 
         root = new RootItem(
-                personal,
-                forumDecorator.getSubscribedForums(),
-                forumDecorator.getNotSubscribedForums(),
-                favorites
+                personalDecorator,
+                forumDecorator,
+                favoritesDecorator
         );
     }
 
@@ -128,6 +122,14 @@ class NavigationModel extends AModelControl implements TreeTableModel {
 
     ForumDecorator getForumDecorator() {
         return forumDecorator;
+    }
+
+    FavoritesDecorator getFavoritesDecorator() {
+        return favoritesDecorator;
+    }
+
+    PersonalDecorator getPersonalDecorator() {
+        return personalDecorator;
     }
 
     TreePath getPathToRoot(AnItem aNode) {
