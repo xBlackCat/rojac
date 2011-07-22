@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.view.model;
 import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -15,11 +14,11 @@ import java.util.Collection;
  * @author xBlackCat
  */
 
-class ThreadFavorite extends AnItemFavorite {
-    protected final IMessageAH messageAH = ServiceFactory.getInstance().getStorage().getMessageAH();
+class ThreadFavorite extends AFavorite {
+    protected final IMessageAH messageAH = storage.getMessageAH();
 
-    ThreadFavorite(Integer id, String config) {
-        super(id, config);
+    ThreadFavorite(Integer id, int itemId) {
+        super(id, itemId);
     }
 
     @Override

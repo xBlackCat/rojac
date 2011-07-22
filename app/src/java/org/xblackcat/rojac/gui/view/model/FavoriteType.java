@@ -11,31 +11,31 @@ public enum FavoriteType {
     Thread(Message.Favorite_Thread_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
-            return new ThreadFavorite(id, config);
+            return new ThreadFavorite(id, Integer.parseInt(config));
         }
     },
     UserPosts(Message.Favorite_UserPosts_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
-            return new UserPostFavorite(id, config);
+            return new UserPostFavorite(id, Integer.parseInt(config));
         }
     },
     SubThread(Message.Favorite_SubTree_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
-            return new SubThreadFavorite(id, config);
+            return new SubThreadFavorite(id, Integer.parseInt(config));
         }
     },
     UserResponses(Message.Favorite_UserReplies_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
-            return new UserResponseFavorite(id, config);
+            return new UserResponseFavorite(id, Integer.parseInt(config));
         }
     },
     Category(Message.Favorite_Category_Name) {
         @Override
         protected IFavorite createFavorite(Integer id, String config) {
-            return new CategoryFavorite(id, config);
+            return new CategoryFavorite(id, Integer.parseInt(config));
         }
     };
 

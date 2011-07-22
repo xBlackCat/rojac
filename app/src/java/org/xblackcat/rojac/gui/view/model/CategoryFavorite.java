@@ -12,9 +12,9 @@ import org.xblackcat.rojac.util.RojacUtils;
  * @author xBlackCat
  */
 
-class CategoryFavorite extends AnItemFavorite {
-    CategoryFavorite(Integer id, String config) {
-        super(id, config);
+class CategoryFavorite extends AFavorite {
+    CategoryFavorite(Integer id, int itemId) {
+        super(id, itemId);
     }
 
     @Override

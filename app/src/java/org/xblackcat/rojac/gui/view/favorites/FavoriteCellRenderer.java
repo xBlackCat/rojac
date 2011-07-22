@@ -197,9 +197,9 @@ class FavoriteCellRenderer extends JLightPanel
         IFavorite f = (IFavorite) value;
 
 
-        boolean isMarked = f.isHighlighted();
+        boolean isMarked = f.isExuded();
         String titleText = f.getName();
-        String statText = f.getStatistic();
+        String statText = (f.getStatistic() != null) ? f.getStatistic().asString() : "...";
 
         table.setToolTipText(titleText + " " + statText);
 
