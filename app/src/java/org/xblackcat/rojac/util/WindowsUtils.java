@@ -214,34 +214,35 @@ public final class WindowsUtils {
             return;
         }
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Window parentWindow = parent instanceof Window ? (Window) parent : SwingUtilities.getWindowAncestor(parent);
+        Rectangle screenSize = parentWindow.getGraphicsConfiguration().getBounds();
 
-        Rectangle bounds = new Rectangle(parent.getLocationOnScreen(), parent.getSize());
+        Dimension size = parent.getSize();
+        Point location = parent.getLocationOnScreen();
 
         int w = window.getWidth();
         int h = window.getHeight();
 
         // center according to parent
 
-        int x = ((int) bounds.getCenterX()) - w / 2;
-        int y = ((int) bounds.getCenterY()) - h / 2;
+        int x = location.x + (size.width - w) / 2;
+        int y = location.y + (size.height - h) / 2;
 
         // does it fit on screen?
 
-        if (x < 0) {
-            x = 0;
-        } else if (x + w > screenSize.getWidth()) {
-            x = ((int) screenSize.getWidth()) - w;
+        if (x < screenSize.x) {
+            x = screenSize.x;
+        } else if (x + w > screenSize.width + screenSize.x) {
+            x = screenSize.x + screenSize.width - w;
         }
 
-        if (y < 0) {
-            y = 0;
-        } else if (y + h > screenSize.getHeight()) {
-            y = ((int) screenSize.getHeight()) - h;
+        if (y < screenSize.y) {
+            y = screenSize.y;
+        } else if (y + h > screenSize.height + screenSize.y) {
+            y = screenSize.y + screenSize.height - h;
         }
 
         // done
-
         window.setBounds(x, y, w, h);
     }
 
