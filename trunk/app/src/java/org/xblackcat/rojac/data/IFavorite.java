@@ -16,11 +16,9 @@ public interface IFavorite {
 
     FavoriteType getType();
 
-    boolean isHighlighted();
+    boolean isExuded();
 
     String getName();
-
-    String getStatistic();
 
     int getId();
 
@@ -36,4 +34,6 @@ public interface IFavorite {
     Post getRootNode() throws RojacException;
 
     String loadName() throws StorageException;
+
+    FavoriteStatData getStatistic();
 }

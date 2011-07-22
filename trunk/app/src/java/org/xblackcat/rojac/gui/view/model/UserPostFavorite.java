@@ -4,8 +4,6 @@ import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -13,11 +11,9 @@ import org.xblackcat.rojac.util.RojacUtils;
  * @author xBlackCat
  */
 
-class UserPostFavorite extends AnItemFavorite {
-    private final IStorage storage = ServiceFactory.getInstance().getStorage();
-
-    UserPostFavorite(Integer id, String config) {
-        super(id, config);
+class UserPostFavorite extends AFavorite {
+    UserPostFavorite(Integer id, int itemId) {
+        super(id, itemId);
     }
 
     @Override

@@ -4,7 +4,6 @@ import org.apache.commons.lang.NotImplementedException;
 import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -13,11 +12,11 @@ import org.xblackcat.rojac.util.RojacUtils;
  * @author xBlackCat
  */
 
-class SubThreadFavorite extends AnItemFavorite {
-    protected final IMessageAH messageAH = ServiceFactory.getInstance().getStorage().getMessageAH();
+class SubThreadFavorite extends AFavorite {
+    protected final IMessageAH messageAH = storage.getMessageAH();
 
-    SubThreadFavorite(Integer id, String config) {
-        super(id, config);
+    SubThreadFavorite(Integer id, int itemId) {
+        super(id, itemId);
     }
 
     @Override
@@ -27,7 +26,7 @@ class SubThreadFavorite extends AnItemFavorite {
 
     @Override
     protected FavoriteStatData loadStatistic() throws StorageException {
-        return ServiceFactory.getInstance().getStorage().getMessageAH().getReplaysInThread(itemId);
+        return messageAH.getReplaysInThread(itemId);
     }
 
     @Override
