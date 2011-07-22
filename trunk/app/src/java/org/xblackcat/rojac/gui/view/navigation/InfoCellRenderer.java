@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * @author xBlackCat Date: 19.07.11
  */
-public class InfoCellRenderer extends DefaultTableCellRenderer {
+class InfoCellRenderer extends DefaultTableCellRenderer {
     @Override
     protected void setValue(Object value) {
         AnItem v = (AnItem) value;

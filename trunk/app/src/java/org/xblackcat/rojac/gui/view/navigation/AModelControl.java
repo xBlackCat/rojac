@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 /**
  * @author xBlackCat Date: 21.07.11
  */
-public abstract class AModelControl {
+abstract class AModelControl {
     // Helper methods
     abstract void safeRemoveChild(AGroupItem parent, AnItem forum);
 

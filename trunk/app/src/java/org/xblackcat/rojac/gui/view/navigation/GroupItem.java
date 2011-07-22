@@ -9,7 +9,7 @@ import java.util.Comparator;
 /**
  * @author xBlackCat
  */
-public class GroupItem extends AGroupItem {
+class GroupItem extends AGroupItem {
     private final Message title;
 
     protected GroupItem(Message title) {

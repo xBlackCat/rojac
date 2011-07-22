@@ -13,7 +13,7 @@ import javax.swing.*;
 /**
  * @author xBlackCat Date: 18.07.11
  */
-public class ForumItem extends AnItem {
+class ForumItem extends AnItem {
     private final Forum forum;
     private ForumStatistic statistic;
 
