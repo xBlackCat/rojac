@@ -35,11 +35,18 @@ class ForumTableModel extends AbstractTableModel {
     }
 
     void fillForums(List<ForumData> forums) {
-        this.forums.clear();
-
-        this.forums.addAll(forums);
-
-        fireTableDataChanged();
+        for (ForumData f : forums) {
+            int idx = this.forums.indexOf(f);
+            if (idx == -1) {
+                // New record
+                int size = this.forums.size();
+                this.forums.add(f);
+                fireTableRowsInserted(size, size);
+            } else {
+                this.forums.set(idx, f);
+                fireTableRowsUpdated(idx, idx);
+            }
+        }
     }
 
     public ForumData getForumData(int forumId) {
