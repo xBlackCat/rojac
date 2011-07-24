@@ -20,7 +20,7 @@ class FavoriteListLoader extends RojacWorker<Void, Post> {
 
     @Override
     protected Void perform() throws Exception {
-        Post newRoot = favorite.getRootNode();
+        Post newRoot = favorite.getType().makeRootNode(favorite.getItemId());
 
         if (newRoot != null) {
             publish(newRoot);

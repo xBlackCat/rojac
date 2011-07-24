@@ -23,13 +23,12 @@ public interface IFavoriteAH {
      * Store a new favorite in database and return it.
      *
      * @param type   favorite type
-     * @param config
-     *
+     * @param itemId
      * @return
      *
      * @throws StorageException
      */
-    IFavorite createFavorite(FavoriteType type, String config) throws StorageException;
+    IFavorite createFavorite(FavoriteType type, int itemId) throws StorageException;
 
     /**
      * Removes a favorite.

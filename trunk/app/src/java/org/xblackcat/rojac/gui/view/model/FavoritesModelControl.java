@@ -157,8 +157,8 @@ class FavoritesModelControl implements IModelControl<Post> {
             f = fAH.getFavorite(favoriteId);
 
             if (f != null) {
-                root = f.getRootNode();
-                name = f.loadName();
+                root = f.getType().makeRootNode(f.getItemId());
+                name = f.getType().loadName(f.getItemId());
             }
 
             return null;
