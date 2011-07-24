@@ -17,7 +17,6 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.Enumeration;
 
 /**
  * @author xBlackCat Date: 15.07.11
@@ -150,17 +149,50 @@ public class NavigationView extends AView {
 
     @Override
     public IViewLayout storeLayout() {
-        Enumeration paths = viewTable.getExpandedDescendants(model.getPathToRoot(model.getRoot()));
+        AnItem root = model.getRoot();
 
-        // TODO: store opened pathes
+        int i = 0;
+        int size = root.getChildCount();
 
-        return new NavigationLayout();
+        boolean[] expanded = new boolean[size];
+
+        while (i < size) {
+            AnItem item = root.getChild(i);
+
+            expanded[i] = viewTable.isExpanded(model.getPathToRoot(item));
+
+            i++;
+        }
+
+        return new NavigationLayout(expanded);
     }
 
     @Override
     public void setupLayout(IViewLayout o) {
         if (o instanceof NavigationLayout) {
             NavigationLayout l = (NavigationLayout) o;
+
+            AnItem root = model.getRoot();
+
+            int i = 0;
+            int size = root.getChildCount();
+
+            boolean[] expanded = l.getExpandedStatus();
+
+            if (expanded.length < size) {
+                // Prevent IndexOutOfBoundsException exception
+                size = expanded.length;
+            }
+
+            while (i < size) {
+                AnItem item = root.getChild(i);
+
+                if (expanded[i]) {
+                     viewTable.expandPath(model.getPathToRoot(item));
+                }
+
+                i++;
+            }
         }
     }
 
