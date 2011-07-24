@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -24,32 +25,29 @@ import java.util.List;
 class ForumDecorator extends ADecorator {
     private static final Log log = LogFactory.getLog(ForumDecorator.class);
 
-    private static final Comparator<AnItem> FORUM_LIST_COMPARATOR = new Comparator<AnItem>() {
+    private static final Comparator<ForumItem> FORUM_LIST_COMPARATOR = new Comparator<ForumItem>() {
         @Override
-        public int compare(AnItem o1, AnItem o2) {
-            ForumItem f1 = (ForumItem) o1;
-            ForumItem f2 = (ForumItem) o2;
-
-            if (f1 == null || f1.getForum() == null) {
-                return f2 == null || f2.getForum() == null ? 0 : -1;
-            } else if (f2 == null || f2.getForum() == null) {
+        public int compare(ForumItem o1, ForumItem o2) {
+            if (o1 == null || o1.getForum() == null) {
+                return o2 == null || o2.getForum() == null ? 0 : -1;
+            } else if (o2 == null || o2.getForum() == null) {
                 return 1;
             } else {
-                return f1.getForum().getForumName().compareToIgnoreCase(f2.getForum().getForumName());
+                return o1.getForum().getForumName().compareToIgnoreCase(o2.getForum().getForumName());
             }
         }
     };
 
-    private final AGroupItem subscribedForums;
-    private final AGroupItem notSubscribedForums;
+    private final AGroupItem<ForumItem> subscribedForums;
+    private final AGroupItem<ForumItem> notSubscribedForums;
 
     private final TIntObjectHashMap<ForumItem> viewedForums = new TIntObjectHashMap<ForumItem>();
 
     public ForumDecorator(AModelControl modelControl) {
         super(modelControl);
 
-        subscribedForums = new GroupItem(Message.View_Navigation_Item_SubscribedForums, FORUM_LIST_COMPARATOR);
-        notSubscribedForums = new GroupItem(Message.View_Navigation_Item_NotSubscribedForums, FORUM_LIST_COMPARATOR);
+        subscribedForums = new GroupItem<ForumItem>(Message.View_Navigation_Item_SubscribedForums, FORUM_LIST_COMPARATOR, ReadStatusIcon.Thread);
+        notSubscribedForums = new GroupItem<ForumItem>(Message.View_Navigation_Item_NotSubscribedForums, FORUM_LIST_COMPARATOR, ReadStatusIcon.Thread);
     }
 
     @Override
@@ -62,7 +60,7 @@ class ForumDecorator extends ADecorator {
 
     void updateForum(ForumData d) {
         boolean subscribed = d.getForum().isSubscribed();
-        AGroupItem parent = subscribed ? subscribedForums : notSubscribedForums;
+        AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
 
         int forumId = d.getForumId();
         ForumItem forum = new ForumItem(parent, d);

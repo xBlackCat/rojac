@@ -13,7 +13,7 @@ class LabelCellRenderer extends DefaultTreeCellRenderer {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
         AnItem v = (AnItem) value;
-        setIcon(null);
+        setIcon(v.getIcon());
         setText(v.getTitleLine());
         setToolTipText(v.getTitleLine());
         Font f = getFont();

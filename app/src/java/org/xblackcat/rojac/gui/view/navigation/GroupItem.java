@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
@@ -9,15 +10,23 @@ import java.util.Comparator;
 /**
  * @author xBlackCat
  */
-class GroupItem extends AGroupItem {
+class GroupItem<T extends AnItem> extends AGroupItem<T> {
     private final Message title;
 
     protected GroupItem(Message title) {
-        this(title, null);
+        this(title, null, null);
     }
 
-    protected GroupItem(Message title, Comparator<AnItem> itemComparator) {
-        super(null, itemComparator);
+    protected GroupItem(Message title, ReadStatusIcon iconSet) {
+        this(title, null, iconSet);
+    }
+
+    protected GroupItem(Message title, Comparator<T> itemComparator) {
+        this(title, itemComparator, null);
+    }
+
+    protected GroupItem(Message title, Comparator<T> itemComparator, ReadStatusIcon iconSet) {
+        super(null, itemComparator, iconSet);
         this.title = title;
     }
 
@@ -32,7 +41,7 @@ class GroupItem extends AGroupItem {
 
     @Override
     String getBriefInfo() {
-        return String.valueOf(children.size());
+        return null;
     }
 
     @Override

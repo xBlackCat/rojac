@@ -5,6 +5,8 @@ import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.ViewType;
+import org.xblackcat.rojac.gui.view.model.ReadStatus;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 
@@ -28,6 +30,28 @@ class FavoriteItem extends AnItem {
     @Override
     void onDoubleClick(IAppControl appControl) {
         appControl.openTab(ViewType.Favorite.makeId(favorite.getId()));
+    }
+
+    @Override
+    Icon getIcon() {
+        return UIUtils.getIcon(favorite.getType().getIcons().getIcon(getReadStatus()));
+    }
+
+    @Override
+    ReadStatus getReadStatus() {
+        if (statistic == null) {
+            return ReadStatus.Read;
+        }
+
+        if (statistic.getTotal() == statistic.getUnread()) {
+            return ReadStatus.Unread;
+        }
+
+        if (statistic.getUnread() == 0) {
+            return ReadStatus.Read;
+        }
+
+        return ReadStatus.ReadPartially;
     }
 
     @Override
@@ -61,6 +85,14 @@ class FavoriteItem extends AnItem {
 
     Favorite getFavorite() {
         return favorite;
+    }
+
+    public void setStatistic(FavoriteStatData statistic) {
+        this.statistic = statistic;
+    }
+
+    public void setName(String newName) {
+        favorite = favorite.setName(newName);
     }
 
     @Override

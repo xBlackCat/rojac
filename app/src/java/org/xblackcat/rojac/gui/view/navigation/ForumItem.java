@@ -4,9 +4,12 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.forumlist.ForumData;
+import org.xblackcat.rojac.gui.view.model.ReadStatus;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 
@@ -31,6 +34,28 @@ class ForumItem extends AnItem {
     @Override
     void onDoubleClick(IAppControl appControl) {
         appControl.openTab(ViewType.Forum.makeId(forum.getForumId()));
+    }
+
+    @Override
+    Icon getIcon() {
+        return UIUtils.getIcon(ReadStatusIcon.Thread.getIcon(getReadStatus()));
+    }
+
+    @Override
+    ReadStatus getReadStatus() {
+        if (statistic == null) {
+            return ReadStatus.Read;
+        }
+
+        if (statistic.getTotalMessages() == statistic.getUnreadMessages()) {
+            return ReadStatus.Unread;
+        }
+
+        if (statistic.getUnreadMessages() == 0) {
+            return ReadStatus.Read;
+        }
+
+        return ReadStatus.ReadPartially;
     }
 
     @Override

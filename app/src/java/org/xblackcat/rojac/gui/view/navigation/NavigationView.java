@@ -8,6 +8,7 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.view.AView;
+import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 
@@ -25,10 +26,23 @@ public class NavigationView extends AView {
     private static final Log log = LogFactory.getLog(NavigationView.class);
 
     private final PacketDispatcher packetDispatcher = new PacketDispatcher(
+            new IPacketProcessor<FavoritesUpdatedPacket>() {
+                @Override
+                public void process(FavoritesUpdatedPacket p) {
+                    model.getFavoritesDecorator().reloadFavorites();
+                }
+            },
+            new IPacketProcessor<FavoriteCategoryUpdatedPacket>() {
+                @Override
+                public void process(FavoriteCategoryUpdatedPacket p) {
+                    model.getFavoritesDecorator().updateFavoriteData(FavoriteType.Category);
+                }
+            },
             new IPacketProcessor<SetForumReadPacket>() {
                 @Override
                 public void process(SetForumReadPacket p) {
                     model.getForumDecorator().loadForumStatistic(p.getForumId());
+                    model.getFavoritesDecorator().updateFavoriteData(null);
                 }
             },
             new IPacketProcessor<ForumsUpdated>() {
@@ -41,18 +55,21 @@ public class NavigationView extends AView {
                 @Override
                 public void process(IForumUpdatePacket p) {
                     model.getForumDecorator().loadForumStatistic(p.getForumIds());
+                    model.getFavoritesDecorator().updateFavoriteData(null);
                 }
             },
             new IPacketProcessor<SetSubThreadReadPacket>() {
                 @Override
                 public void process(SetSubThreadReadPacket p) {
                     model.getForumDecorator().loadForumStatistic(p.getForumId());
+                    model.getFavoritesDecorator().updateFavoriteData(null);
                 }
             },
             new IPacketProcessor<SetPostReadPacket>() {
                 @Override
                 public void process(SetPostReadPacket p) {
                     model.getForumDecorator().loadForumStatistic(p.getForumId());
+                    model.getFavoritesDecorator().updateFavoriteData(null);
                 }
             },
             new IPacketProcessor<SubscriptionChangedPacket>() {
@@ -80,8 +97,8 @@ public class NavigationView extends AView {
 
         TableColumnModel columnModel = viewTable.getColumnModel();
         columnModel.addColumn(new TableColumnExt(0, 100));
-        TableColumnExt infoColumn = new TableColumnExt(1, 50, new InfoCellRenderer(), null);
-        infoColumn.setMaxWidth(70);
+        TableColumnExt infoColumn = new TableColumnExt(1, 80, new InfoCellRenderer(), null);
+        infoColumn.setMaxWidth(140);
         infoColumn.setMinWidth(30);
         columnModel.addColumn(infoColumn);
 
@@ -133,7 +150,7 @@ public class NavigationView extends AView {
 
     @Override
     public IViewLayout storeLayout() {
-        Enumeration<TreePath> paths = (Enumeration<TreePath>) viewTable.getExpandedDescendants(model.getPathToRoot(model.getRoot()));
+        Enumeration paths = viewTable.getExpandedDescendants(model.getPathToRoot(model.getRoot()));
 
         // TODO: store opened pathes
 
