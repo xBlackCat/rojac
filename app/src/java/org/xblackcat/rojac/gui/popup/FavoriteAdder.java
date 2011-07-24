@@ -22,7 +22,7 @@ public class FavoriteAdder extends RojacWorker<Void, Void> {
     protected Void perform() throws Exception {
         IFavoriteAH favoriteAH = ServiceFactory.getInstance().getStorage().getFavoriteAH();
 
-        favoriteAH.createFavorite(type, String.valueOf(itemId));
+        favoriteAH.createFavorite(type, itemId);
         return null;
     }
 

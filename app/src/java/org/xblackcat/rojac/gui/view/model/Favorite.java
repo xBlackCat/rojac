@@ -4,7 +4,6 @@ import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -14,18 +13,25 @@ import java.util.List;
  * @author xBlackCat
  */
 
-abstract class AFavorite implements IFavorite {
-    protected final int itemId;
-
-    protected FavoriteStatData statistic = null;
-    protected final int id;
-    private String name;
+public class Favorite implements IFavorite {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
-    public AFavorite(int id, int itemId) {
-        this.id = id;
+    protected final int itemId;
+    protected final int id;
+    protected final FavoriteType type;
+    protected String name;
 
+    protected FavoriteStatData statistic = null;
+
+    public Favorite(int id, int itemId, FavoriteType type) {
+        this.id = id;
         this.itemId = itemId;
+        this.type = type;
+    }
+
+    @Override
+    public int getItemId() {
+        return itemId;
     }
 
     @Override
@@ -40,14 +46,17 @@ abstract class AFavorite implements IFavorite {
 
     @Override
     public void updateStatistic(Runnable callback) {
-        new ValuesLoader(callback, AFavorite.this).execute();
+        new ValuesLoader(callback, Favorite.this).execute();
     }
-
-    protected abstract FavoriteStatData loadStatistic() throws StorageException;
 
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public FavoriteType getType() {
+        return type;
     }
 
     @Override
@@ -75,18 +84,18 @@ abstract class AFavorite implements IFavorite {
         private String name;
         private final Runnable callback;
         private final boolean initName = isNameDefault();
-        private final AFavorite favorite;
+        private final Favorite favorite;
 
-        public ValuesLoader(Runnable callback, AFavorite favorite) {
+        public ValuesLoader(Runnable callback, Favorite favorite) {
             this.callback = callback;
             this.favorite = favorite;
         }
 
         @Override
         protected Void perform() throws Exception {
-            amount = loadStatistic();
+            amount = getType().loadStatistic(itemId);
             if (initName) {
-                name = loadName();
+                name = favorite.getType().loadName(itemId);
             }
 
             publish();
