@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
-import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.gui.component.JLightPanel;
 import org.xblackcat.rojac.gui.component.LineRenderer;
 import org.xblackcat.rojac.i18n.Message;
@@ -194,12 +194,13 @@ class FavoriteCellRenderer extends JLightPanel
 
         // Setup component with value-based styles
 
-        IFavorite f = (IFavorite) value;
+        FavoriteData fd = (FavoriteData) value;
+        Favorite f = fd.getFavorite();
 
 
-        boolean isMarked = f.isExuded();
+        boolean isMarked = fd.isExuded();
         String titleText = f.getName();
-        String statText = (f.getStatistic() != null) ? f.getStatistic().asString() : "...";
+        String statText = (fd.getStatistic() != null) ? fd.getStatistic().asString() : "...";
 
         table.setToolTipText(titleText + " " + statText);
 
