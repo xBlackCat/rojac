@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
-import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.NoViewLayout;
@@ -76,18 +76,18 @@ public class FavoritesView extends AView {
 
         final JTable favoritesList = new JTable(favoritesModel);
         favoritesList.setTableHeader(null);
-        favoritesList.setDefaultRenderer(IFavorite.class, new FavoriteCellRenderer());
+        favoritesList.setDefaultRenderer(FavoriteData.class, new FavoriteCellRenderer());
         JScrollPane scrollPane = new JScrollPane(favoritesList);
 
         add(scrollPane);
 
         favoritesList.addMouseListener(new PopupMouseAdapter() {
-            private IFavorite getFavorite(MouseEvent e) {
+            private Favorite getFavorite(MouseEvent e) {
                 int ind = favoritesList.rowAtPoint(e.getPoint());
 
                 int modelInd = favoritesList.convertRowIndexToModel(ind);
 
-                return favoritesModel.getValueAt(modelInd, 0);
+                return favoritesModel.getValueAt(modelInd, 0).getFavorite();
             }
 
             @Override
@@ -108,10 +108,10 @@ public class FavoritesView extends AView {
     }
 
     private void reloadFavorites() {
-        new RojacWorker<Void, IFavorite>() {
+        new RojacWorker<Void, Favorite>() {
             @Override
             protected Void perform() throws Exception {
-                for (IFavorite f : storage.getFavoriteAH().getFavorites()) {
+                for (Favorite f : storage.getFavoriteAH().getFavorites()) {
                     publish(f);
                 }
 
@@ -119,7 +119,7 @@ public class FavoritesView extends AView {
             }
 
             @Override
-            protected void process(List<IFavorite> chunks) {
+            protected void process(List<Favorite> chunks) {
                 favoritesModel.reload(chunks);
             }
         }.execute();

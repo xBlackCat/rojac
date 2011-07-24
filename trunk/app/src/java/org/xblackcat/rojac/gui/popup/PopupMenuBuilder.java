@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.popup;
 
+import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.data.IFavorite;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
@@ -150,7 +150,7 @@ public final class PopupMenuBuilder {
         return menu;
     }
 
-    public static JPopupMenu getFavoritesMenu(IFavorite favorite, IAppControl appControl) {
+    public static JPopupMenu getFavoritesMenu(Favorite favorite, IAppControl appControl) {
         final JPopupMenu menu = new JPopupMenu(favorite.getName());
 
         final int favoriteId = favorite.getId();

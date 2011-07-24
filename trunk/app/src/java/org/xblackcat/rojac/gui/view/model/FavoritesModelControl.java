@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
@@ -141,9 +141,9 @@ class FavoritesModelControl implements IModelControl<Post> {
         private final AThreadModel<Post> model;
         private final int favoriteId;
 
-        private IFavorite f;
         private String name;
         private Post root;
+        private FavoriteType type;
 
         public FavoriteLoader(AThreadModel<Post> model, int favoriteId) {
             this.model = model;
@@ -154,11 +154,14 @@ class FavoritesModelControl implements IModelControl<Post> {
         protected Void perform() throws Exception {
             IFavoriteAH fAH = ServiceFactory.getInstance().getStorage().getFavoriteAH();
 
-            f = fAH.getFavorite(favoriteId);
+            Favorite f = fAH.getFavorite(favoriteId);
 
             if (f != null) {
-                root = f.getType().makeRootNode(f.getItemId());
-                name = f.getType().loadName(f.getItemId());
+                type = f.getType();
+                int itemId = f.getItemId();
+
+                root = type.makeRootNode(itemId);
+                name = type.loadName(itemId);
             }
 
             return null;
@@ -166,34 +169,19 @@ class FavoritesModelControl implements IModelControl<Post> {
 
         @Override
         protected void done() {
-            if (f == null) {
+            if (type == null) {
                 model.setRoot(null);
                 return;
             }
 
             title = name;
 
-            // Set proper ThreadsControl
-            switch (f.getType()) {
-                case UserResponses:
-                    delegatedControl = ModelControl.UserReplies.get();
-                    statusIcons = ReadStatusIcon.FavoriteResponseList;
-                    break;
-                case UserPosts:
-                case Category:
-                    delegatedControl = ModelControl.UserPosts.get();
-                    statusIcons = ReadStatusIcon.FavoritePostList;
-                    break;
-                case SubThread:
-                case Thread:
-                    delegatedControl = ModelControl.SingleThread.get();
-                    statusIcons = ReadStatusIcon.FavoriteThread;
-                    break;
-            }
+            // Set proper delegated model control
+            delegatedControl = type.getModelControl().get();
+            statusIcons = type.getIcons();
 
             // Fill model with correspond data.
             model.setRoot(root);
-
         }
     }
 }

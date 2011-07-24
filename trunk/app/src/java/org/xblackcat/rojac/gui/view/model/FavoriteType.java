@@ -5,6 +5,7 @@ import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.User;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IMessageAH;
@@ -19,7 +20,7 @@ import java.util.Collection;
  */
 
 public enum FavoriteType {
-    Thread(Message.Favorite_Thread_Name) {
+    Thread(Message.Favorite_Thread_Name, ModelControl.SingleThread, ReadStatusIcon.FavoriteThread) {
         protected final IMessageAH messageAH = storage.getMessageAH();
 
         @Override
@@ -40,20 +41,20 @@ public enum FavoriteType {
         }
 
         @Override
-        protected String loadName(int itemId) throws RojacException {
+        public String loadName(int itemId) throws RojacException {
             MessageData md = messageAH.getMessageData(itemId);
             String subject = md != null ? md.getSubject() : "#" + itemId;
             return Message.Favorite_Thread_Name.get(subject);
         }
 
         @Override
-        protected FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return messageAH.getReplaysInThread(itemId);
         }
     },
-    UserPosts(Message.Favorite_UserPosts_Name) {
+    UserPosts(Message.Favorite_UserPosts_Name, ModelControl.UserPosts, ReadStatusIcon.FavoritePostList) {
         @Override
         protected Post makeRootNode(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
@@ -67,20 +68,20 @@ public enum FavoriteType {
         }
 
         @Override
-        protected String loadName(int itemId) throws RojacException {
+        public String loadName(int itemId) throws RojacException {
             User user = storage.getUserAH().getUserById(itemId);
             String userName = user != null ? user.getUserNick() : "#" + itemId;
             return Message.Favorite_UserPosts_Name.get(userName);
         }
 
         @Override
-        protected FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return storage.getMessageAH().getUserPostsStat(itemId);
         }
     },
-    SubThread(Message.Favorite_SubTree_Name) {
+    SubThread(Message.Favorite_SubTree_Name, ModelControl.SingleThread, ReadStatusIcon.FavoriteThread) {
         protected final IMessageAH messageAH = storage.getMessageAH();
 
         @Override
@@ -91,7 +92,7 @@ public enum FavoriteType {
         }
 
         @Override
-        protected String loadName(int itemId) throws RojacException {
+        public String loadName(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             MessageData md = messageAH.getMessageData(itemId);
@@ -100,13 +101,13 @@ public enum FavoriteType {
         }
 
         @Override
-        protected FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return messageAH.getReplaysInThread(itemId);
         }
     },
-    UserResponses(Message.Favorite_UserReplies_Name) {
+    UserResponses(Message.Favorite_UserReplies_Name, ModelControl.UserReplies, ReadStatusIcon.FavoriteResponseList) {
         @Override
         protected Post makeRootNode(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
@@ -120,7 +121,7 @@ public enum FavoriteType {
         }
 
         @Override
-        protected String loadName(int itemId) throws RojacException {
+        public String loadName(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             User user = storage.getUserAH().getUserById(itemId);
@@ -129,13 +130,13 @@ public enum FavoriteType {
         }
 
         @Override
-        protected FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return storage.getMessageAH().getUserRepliesStat(itemId);
         }
     },
-    Category(Message.Favorite_Category_Name) {
+    Category(Message.Favorite_Category_Name, ModelControl.SingleThread, ReadStatusIcon.FavoritePostList) {
         @Override
         protected Post makeRootNode(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
@@ -144,14 +145,14 @@ public enum FavoriteType {
         }
 
         @Override
-        protected String loadName(int itemId) throws RojacException {
+        public String loadName(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return Message.Favorite_Category_Name.get("#" + itemId);
         }
 
         @Override
-        protected FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             throw new NotImplementedException();
@@ -160,13 +161,25 @@ public enum FavoriteType {
 
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
     private final Message typeName;
+    private final ModelControl modelControl;
+    private final ReadStatusIcon icons;
 
-    FavoriteType(Message typeName) {
+    FavoriteType(Message typeName, ModelControl modelControl, ReadStatusIcon icons) {
         this.typeName = typeName;
+        this.modelControl = modelControl;
+        this.icons = icons;
     }
 
     public String getTypeName(Object... args) {
         return typeName.get(args);
+    }
+
+    public ModelControl getModelControl() {
+        return modelControl;
+    }
+
+    public ReadStatusIcon getIcons() {
+        return icons;
     }
 
     /**
@@ -180,8 +193,8 @@ public enum FavoriteType {
      */
     protected abstract Post makeRootNode(int itemId) throws RojacException;
 
-    protected abstract String loadName(int itemId) throws RojacException;
+    public abstract String loadName(int itemId) throws RojacException;
 
-    protected abstract FavoriteStatData loadStatistic(int itemId) throws RojacException;
+    public abstract FavoriteStatData loadStatistic(int itemId) throws RojacException;
 
 }

@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import java.util.List;
@@ -9,10 +9,10 @@ import java.util.List;
 * @author xBlackCat
 */
 class FavoriteListLoader extends RojacWorker<Void, Post> {
-    private final IFavorite favorite;
+    private final Favorite favorite;
     private final AThreadModel<Post> model;
 
-    public FavoriteListLoader(Runnable postProcessor, IFavorite favorite, AThreadModel<Post> model) {
+    public FavoriteListLoader(Runnable postProcessor, Favorite favorite, AThreadModel<Post> model) {
         super(postProcessor);
         this.favorite = favorite;
         this.model = model;

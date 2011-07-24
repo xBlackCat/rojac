@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
-import org.xblackcat.rojac.data.IFavorite;
+import org.xblackcat.rojac.data.Favorite;
+import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
+import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -13,11 +15,11 @@ import java.util.List;
  */
 
 class FavoritesModel extends AbstractTableModel {
-    private final List<IFavorite> favorites = new ArrayList<IFavorite>();
+    private final List<FavoriteData> favorites = new ArrayList<FavoriteData>();
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return IFavorite.class;
+        return FavoriteData.class;
     }
 
     @Override
@@ -31,40 +33,75 @@ class FavoritesModel extends AbstractTableModel {
     }
 
     @Override
-    public IFavorite getValueAt(int rowIndex, int columnIndex) {
+    public FavoriteData getValueAt(int rowIndex, int columnIndex) {
         return favorites.get(rowIndex);
     }
 
     public void updateFavoriteData(FavoriteType type) {
-        int i = 0, favoritesSize = favorites.size();
+        int favoritesSize = favorites.size();
+
+        int i = 0;
         while (i < favoritesSize) {
-            IFavorite f = favorites.get(i);
+            FavoriteData fd = favorites.get(i);
+            Favorite f = fd.getFavorite();
             if (type == null || f.getType() == type) {
-                f.updateStatistic(new PostUpdateAction(i));
+                new FavoriteInfoLoader(fd, i).execute();
             }
             i++;
         }
     }
 
-    public void reload(Collection<IFavorite> favorites) {
+
+    public void reload(Collection<Favorite> favorites) {
         this.favorites.clear();
 
-        this.favorites.addAll(favorites);
+        for (Favorite f : favorites) {
+            this.favorites.add(new FavoriteData(f));
+        }
         fireTableDataChanged();
 
         updateFavoriteData(null);
     }
 
-    private class PostUpdateAction implements Runnable {
-        private final int id;
+    private class FavoriteInfoLoader extends RojacWorker<Void, Void> {
+        private FavoriteStatData newStatistic;
+        private String newName;
+        private final FavoriteData favoriteData;
+        private final int rowId;
 
-        public PostUpdateAction(int i) {
-            id = i;
+        public FavoriteInfoLoader(FavoriteData favoriteData, int rowId) {
+            this.favoriteData = favoriteData;
+            this.rowId = rowId;
         }
 
         @Override
-        public void run() {
-            fireTableCellUpdated(id, 0);
+        protected Void perform() throws Exception {
+            Favorite f = favoriteData.getFavorite();
+            FavoriteType type = f.getType();
+            int itemId = f.getItemId();
+
+            newStatistic = type.loadStatistic(itemId);
+            if (!f.isNameSet()) {
+                newName = type.loadName(itemId);
+            }
+
+            publish();
+            return null;
+        }
+
+        @Override
+        protected void process(List<Void> chunks) {
+            favoriteData.setStatistic(newStatistic);
+            if (newName != null) {
+                // Update favorite name
+                favoriteData.setName(newName);
+            }
+        }
+
+        @Override
+        protected void done() {
+            fireTableRowsUpdated(rowId, rowId);
         }
     }
+
 }
