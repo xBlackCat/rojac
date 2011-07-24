@@ -164,11 +164,12 @@ class NavigationModel extends AModelControl implements TreeTableModel {
 
     public void load() {
         getForumDecorator().reloadForums();
+        getFavoritesDecorator().reloadFavorites();
     }
 
     // Helper methods
     @Override
-    void safeRemoveChild(AGroupItem parent, AnItem forum) {
+    <T extends AnItem> void safeRemoveChild(AGroupItem<T> parent, T forum) {
         int idx = parent.indexOf(forum);
         if (idx != -1) {
             AnItem removed = parent.remove(idx);
@@ -183,7 +184,7 @@ class NavigationModel extends AModelControl implements TreeTableModel {
      * @param child a new child item
      */
     @Override
-    void addChild(AGroupItem parent, AnItem child) {
+    <T extends AnItem> void addChild(AGroupItem<T> parent, T child) {
         int idx = parent.add(child);
 
         support.fireChildAdded(getPathToRoot(parent), idx, child);
@@ -201,5 +202,11 @@ class NavigationModel extends AModelControl implements TreeTableModel {
             support.firePathChanged(path);
             path = path.getParentPath();
         }
+    }
+
+    @Override
+    public void removeChildren(AGroupItem item) {
+        item.clear();
+        support.fireTreeStructureChanged(getPathToRoot(item));
     }
 }

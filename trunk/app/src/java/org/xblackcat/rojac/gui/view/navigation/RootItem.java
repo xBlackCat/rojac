@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author xBlackCat
  */
-class RootItem extends AGroupItem {
+class RootItem extends AGroupItem<AnItem> {
     private static List<AnItem> collectItems(ADecorator... items) {
         List<AnItem> list = new ArrayList<AnItem>();
         for (ADecorator d : items) {

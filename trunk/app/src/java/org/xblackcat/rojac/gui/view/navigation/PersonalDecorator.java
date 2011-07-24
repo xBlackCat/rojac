@@ -5,7 +5,7 @@ import org.xblackcat.rojac.i18n.Message;
 /**
  * @author xBlackCat Date: 22.07.11
  */
-public class PersonalDecorator extends ADecorator {
+class PersonalDecorator extends ADecorator {
     private final GroupItem personal;
 
     PersonalDecorator(AModelControl modelControl) {

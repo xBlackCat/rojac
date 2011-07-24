@@ -5,9 +5,11 @@ package org.xblackcat.rojac.gui.view.navigation;
  */
 abstract class AModelControl {
     // Helper methods
-    abstract void safeRemoveChild(AGroupItem parent, AnItem forum);
+    abstract <T extends AnItem> void safeRemoveChild(AGroupItem<T> parent, T forum);
 
-    abstract void addChild(AGroupItem parent, AnItem child);
+    abstract <T extends AnItem> void addChild(AGroupItem<T> parent, T child);
 
     abstract void itemUpdated(AnItem item);
+
+    public abstract void removeChildren(AGroupItem children);
 }

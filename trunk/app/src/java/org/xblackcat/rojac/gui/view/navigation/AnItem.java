@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.view.model.ReadStatus;
 
 import javax.swing.*;
 
@@ -24,6 +25,10 @@ abstract class AnItem {
         this.parent = parent;
     }
 
+    abstract Icon getIcon();
+
+    abstract ReadStatus getReadStatus();
+
     abstract JPopupMenu getContextMenu(IAppControl appControl);
 
     abstract void onDoubleClick(IAppControl appControl);
@@ -40,7 +45,7 @@ abstract class AnItem {
 
     abstract boolean isGroup();
 
-    abstract int indexOf(AnItem i);
+    abstract <V extends AnItem>  int indexOf(V i);
 
     abstract AnItem getChild(int idx);
 
