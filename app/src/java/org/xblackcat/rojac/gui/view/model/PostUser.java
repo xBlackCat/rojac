@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.gui.view.thread.PostTableCellRenderer;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.UIUtils;

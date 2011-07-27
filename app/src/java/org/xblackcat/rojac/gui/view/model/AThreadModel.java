@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 

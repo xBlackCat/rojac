@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.datahandler;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.xblackcat.rojac.util.RojacUtils;
 
 /**

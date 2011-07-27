@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.lang.NotImplementedException;
+import org.xblackcat.rojac.NotImplementedException;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;

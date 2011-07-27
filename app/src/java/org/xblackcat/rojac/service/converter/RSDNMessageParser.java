@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.converter;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.service.converter.tag.RsdnTagList;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.utils.ResourceUtils;

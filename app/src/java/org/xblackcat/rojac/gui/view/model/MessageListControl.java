@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.lang.NotImplementedException;
+import org.xblackcat.rojac.NotImplementedException;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;

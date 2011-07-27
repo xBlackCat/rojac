@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.janus.commands;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.i18n.Message;
@@ -36,7 +36,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
 
         @Override
         public void postException(Throwable t) {
-            progressController.fireException(Message.Synchronize_Message_Exception, ExceptionUtils.getFullStackTrace(t));
+            progressController.fireException(Message.Synchronize_Message_Exception, ExceptionUtils.getStackTrace(t));
         }
 
         @Override

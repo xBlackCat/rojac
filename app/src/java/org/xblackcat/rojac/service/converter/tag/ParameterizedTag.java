@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.converter.tag;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.service.converter.ITagData;
 import org.xblackcat.rojac.service.converter.ITagInfo;
 

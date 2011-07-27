@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.util;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.MessageData;

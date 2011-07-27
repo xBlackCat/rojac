@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.data;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author ASUS

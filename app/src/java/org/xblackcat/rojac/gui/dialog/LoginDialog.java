@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.dialog;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
