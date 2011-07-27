@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.gui.IAppControl;

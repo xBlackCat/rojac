@@ -12,7 +12,7 @@ import net.infonode.docking.util.StringViewMap;
 import net.infonode.docking.util.WindowMenuUtil;
 import net.infonode.gui.UIManagerUtil;
 import net.infonode.util.Direction;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;

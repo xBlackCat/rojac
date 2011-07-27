@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.janus.commands;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.NewMessage;

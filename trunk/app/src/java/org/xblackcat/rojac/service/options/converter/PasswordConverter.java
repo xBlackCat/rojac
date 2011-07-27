@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.options.converter;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.service.options.Password;
 
 /**

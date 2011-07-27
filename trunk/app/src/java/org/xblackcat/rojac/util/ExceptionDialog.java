@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.util;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +33,7 @@ class ExceptionDialog extends JDialog {
         StringBuilder str = new StringBuilder();
         str.append(thread);
         str.append("\n\n");
-        str.append(ExceptionUtils.getFullStackTrace(t));
+        str.append(ExceptionUtils.getStackTrace(t));
         final String stackTrace = str.toString();
 
         // Setup exception text.

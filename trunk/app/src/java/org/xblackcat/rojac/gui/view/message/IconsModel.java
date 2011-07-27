@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.xblackcat.rojac.data.Mark;
 
 import javax.swing.*;

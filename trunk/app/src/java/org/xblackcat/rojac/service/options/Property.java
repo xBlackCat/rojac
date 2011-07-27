@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.options;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.theme.IconPack;

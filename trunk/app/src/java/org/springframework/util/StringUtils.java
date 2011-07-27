@@ -39,7 +39,7 @@ import java.util.*;
  * @author Rob Harrop
  * @author Rick Evans
  * @since 16 April 2001
- * @see org.apache.commons.lang.StringUtils
+ * @see org.apache.commons.lang3.StringUtils
  */
 public abstract class StringUtils {
 

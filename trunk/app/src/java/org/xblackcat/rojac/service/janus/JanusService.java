@@ -3,7 +3,7 @@ package org.xblackcat.rojac.service.janus;
 import org.apache.axis.client.Call;
 import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.transport.http.HTTPConstants;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.NewMessage;

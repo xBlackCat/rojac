@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.theme;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;

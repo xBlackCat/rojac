@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
-import org.apache.commons.lang.NotImplementedException;
+import org.xblackcat.rojac.NotImplementedException;
 import org.xblackcat.rojac.data.MessageData;
 
 import java.util.Collections;
