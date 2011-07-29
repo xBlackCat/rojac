@@ -12,7 +12,7 @@ class TableThreadViewLayout extends ThreadViewLayout {
 
     private Column[] columns;
 
-    public TableThreadViewLayout(ThreadViewLayout parent, Column[] columns) {
+    public TableThreadViewLayout(ThreadViewLayout parent, Column... columns) {
         super(parent.getToolbarPosition(), parent.getToolbarOrientation());
         this.columns = columns;
     }

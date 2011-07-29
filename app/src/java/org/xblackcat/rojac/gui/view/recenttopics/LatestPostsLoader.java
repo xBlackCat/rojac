@@ -30,7 +30,7 @@ class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
         // TODO: optimize loading latest topics
         int[] latestTopics = storage.getMessageAH().getLatestTopics(listSize);
 
-        TIntObjectHashMap<Forum> forums = new TIntObjectHashMap<Forum>();
+        TIntObjectHashMap<Forum> forums = new TIntObjectHashMap<>();
 
         for (int lastPostId : latestTopics) {
             final MessageData lastPost = storage.getMessageAH().getMessageData(lastPostId);

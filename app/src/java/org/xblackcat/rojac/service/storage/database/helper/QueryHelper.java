@@ -36,71 +36,60 @@ public final class QueryHelper implements IQueryHelper {
     public <T> List<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
         try {
-            Connection con = connectionFactory.getReadConnection();
-            try {
-                PreparedStatement st = constructSql(con, sql, parameters);
-                try {
+            try (Connection con = connectionFactory.getReadConnection()) {
+                try (PreparedStatement st = constructSql(con, sql, parameters)) {
                     readLock.lock();
                     try {
-                        ResultSet rs = st.executeQuery();
-                        try {
-                            List<T> res = new ArrayList<T>();
+                        try (ResultSet rs = st.executeQuery()) {
+                            List<T> res = new ArrayList<>();
                             while (rs.next()) {
                                 res.add(c.convert(rs));
                             }
 
                             return Collections.unmodifiableList(res);
-                        } finally {
-                            rs.close();
                         }
+
                     } finally {
                         readLock.unlock();
                     }
-                } finally {
-                    st.close();
                 }
-            } finally {
-                con.close();
+
             }
+
         } catch (SQLException e) {
             throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
         }
     }
 
+    @SafeVarargs
     @Override
-    public <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, String sql, K... keys) throws StorageException {
+    public final <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, String sql, K... keys) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
         try {
-            Connection con = connectionFactory.getReadConnection();
-            try {
-                PreparedStatement st = con.prepareStatement(sql);
-                try {
-                    Map<K, O> resultMap = new HashMap<K,O>();
+            try (Connection con = connectionFactory.getReadConnection()) {
+                try (PreparedStatement st = con.prepareStatement(sql)) {
+                    Map<K, O> resultMap = new HashMap<>();
                     for (K key : keys) {
                         fillStatement(st, key);
 
                         readLock.lock();
                         try {
-                            ResultSet rs = st.executeQuery();
-                            try {
+                            try (ResultSet rs = st.executeQuery()) {
                                 if (rs.next()) {
                                     resultMap.put(key, c.convert(rs));
                                 }
-                            } finally {
-                                rs.close();
                             }
+
                         } finally {
                             readLock.unlock();
                         }
                     }
 
                     return Collections.unmodifiableMap(resultMap);
-                } finally {
-                    st.close();
                 }
-            } finally {
-                con.close();
+
             }
+
         } catch (SQLException e) {
             throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql), e);
         }
@@ -129,22 +118,18 @@ public final class QueryHelper implements IQueryHelper {
     public int update(String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
         try {
-            Connection con = connectionFactory.getWriteConnection();
-            try {
-                PreparedStatement st = constructSql(con, sql, parameters);
-                try {
+            try (Connection con = connectionFactory.getWriteConnection()) {
+                try (PreparedStatement st = constructSql(con, sql, parameters)) {
                     writeLock.lock();
                     try {
                         return st.executeUpdate();
                     } finally {
                         writeLock.unlock();
                     }
-                } finally {
-                    st.close();
                 }
-            } finally {
-                con.close();
+
             }
+
         } catch (SQLException e) {
             throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
         }

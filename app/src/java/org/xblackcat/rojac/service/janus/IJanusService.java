@@ -44,7 +44,7 @@ public interface IJanusService {
      *
      * @throws JanusServiceException throws if any errors occurs.
      */
-    TopicMessages getTopicByMessage(int[] messageIds) throws JanusServiceException;
+    TopicMessages getTopicByMessage(int... messageIds) throws JanusServiceException;
 
     /**
      * Commits the changes (new messages and etc.)

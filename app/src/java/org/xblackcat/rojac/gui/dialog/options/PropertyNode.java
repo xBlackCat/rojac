@@ -17,7 +17,7 @@ class PropertyNode<T> extends ANode {
 
     private T value;
 
-    private final List<PropertyNode<?>> children = new ArrayList<PropertyNode<?>>();
+    private final List<PropertyNode<?>> children = new ArrayList<>();
 
     PropertyNode(String name) {
         this(name, null);

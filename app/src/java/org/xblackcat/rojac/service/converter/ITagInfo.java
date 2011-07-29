@@ -4,10 +4,10 @@ package org.xblackcat.rojac.service.converter;
  * @author xBlackCat
  */
 
-public interface ITagInfo {
+public interface ITagInfo<T extends ITag<T>> {
     int start();
 
-    ITag getTag();
+    T getTag();
 
     /**
      * Processes tag. Returns <code>null</code> if tag has illegal format or incomplete

@@ -152,12 +152,10 @@ public class ShortCutUtils {
 
         Properties keyBinding = new Properties();
         try {
-            BufferedInputStream is = new BufferedInputStream(new FileInputStream(keyMapFile));
-            try {
+            try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(keyMapFile))) {
                 keyBinding.load(is);
-            } finally {
-                is.close();
             }
+
         } catch (IOException e) {
             log.error("Can not load stored keymap", e);
             return;
@@ -200,12 +198,10 @@ public class ShortCutUtils {
         File keyMapFile = RojacUtils.getKeyMapFile();
         
         try {
-            BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(keyMapFile));
-            try {
+            try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(keyMapFile))) {
                 keyBinding.store(os, "Rojac key binding config file.");
-            } finally {
-                os.close();
             }
+
         } catch (IOException e) {
             log.error("Can not store user keymap", e);
             return;

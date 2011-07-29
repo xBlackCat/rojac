@@ -64,7 +64,7 @@ public class MessageView extends AnItemView {
     private JLabel userLabel = new JLabel();
     private JLabel dateLabel = new JLabel();
     private JButton answer;
-    private JComboBox marks;
+    private JComboBox<Mark> marks;
     private String messageTitle;
 
     protected final JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
@@ -220,7 +220,7 @@ public class MessageView extends AnItemView {
         SelectMarkAction marksAction = new SelectMarkAction(marksModel);
         ShowMarkSelectorAction selectorAction = new ShowMarkSelectorAction();
 
-        marks = new JComboBox(marksModel);
+        marks = new JComboBox<>(marksModel);
         marks.setFocusable(false);
         marks.setToolTipText(selectorAction.getMessage().get());
         marks.setRenderer(markRender);

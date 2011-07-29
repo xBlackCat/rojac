@@ -12,7 +12,7 @@ import java.util.List;
  */
 class RootItem extends AGroupItem<AnItem> {
     private static List<AnItem> collectItems(ADecorator... items) {
-        List<AnItem> list = new ArrayList<AnItem>();
+        List<AnItem> list = new ArrayList<>();
         for (ADecorator d : items) {
             Collections.addAll(list, d.getItemsList());
         }

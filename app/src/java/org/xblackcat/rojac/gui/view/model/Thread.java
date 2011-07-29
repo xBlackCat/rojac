@@ -11,7 +11,7 @@ import java.util.*;
  */
 
 public class Thread extends Post {
-    private TIntObjectHashMap<Post> threadPosts = new TIntObjectHashMap<Post>();
+    private TIntObjectHashMap<Post> threadPosts = new TIntObjectHashMap<>();
     private final static Comparator<MessageData> SORT_BY_PARENTS = new Comparator<MessageData>() {
         @Override
         public int compare(MessageData o1, MessageData o2) {
@@ -170,7 +170,7 @@ public class Thread extends Post {
     }
 
     void fillThread(Collection<MessageData> po) {
-        List<MessageData> posts = new ArrayList<MessageData>(po);
+        List<MessageData> posts = new ArrayList<>(po);
         Collections.sort(posts, SORT_BY_PARENTS);
 
         for (MessageData post : posts) {

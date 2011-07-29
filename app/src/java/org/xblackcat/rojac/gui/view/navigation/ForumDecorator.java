@@ -41,13 +41,13 @@ class ForumDecorator extends ADecorator {
     private final AGroupItem<ForumItem> subscribedForums;
     private final AGroupItem<ForumItem> notSubscribedForums;
 
-    private final TIntObjectHashMap<ForumItem> viewedForums = new TIntObjectHashMap<ForumItem>();
+    private final TIntObjectHashMap<ForumItem> viewedForums = new TIntObjectHashMap<>();
 
     public ForumDecorator(AModelControl modelControl) {
         super(modelControl);
 
-        subscribedForums = new GroupItem<ForumItem>(Message.View_Navigation_Item_SubscribedForums, FORUM_LIST_COMPARATOR, ReadStatusIcon.Thread);
-        notSubscribedForums = new GroupItem<ForumItem>(Message.View_Navigation_Item_NotSubscribedForums, FORUM_LIST_COMPARATOR, ReadStatusIcon.Thread);
+        subscribedForums = new GroupItem<>(Message.View_Navigation_Item_SubscribedForums, FORUM_LIST_COMPARATOR, ReadStatusIcon.Thread);
+        notSubscribedForums = new GroupItem<>(Message.View_Navigation_Item_NotSubscribedForums, FORUM_LIST_COMPARATOR, ReadStatusIcon.Thread);
     }
 
     @Override

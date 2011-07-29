@@ -36,12 +36,10 @@ public final class MultiUserOptionsService extends AnOptionsService {
             }
             try {
                 Properties p = new Properties();
-                BufferedInputStream is = new BufferedInputStream(new FileInputStream(userConfigFile));
-                try {
+                try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(userConfigFile))) {
                     p.load(is);
-                } finally {
-                    is.close();
                 }
+
                 loadFromResource(p);
             } catch (IOException e) {
                 throw new OptionsServiceException("Can not load content of user config file.", e);
@@ -112,12 +110,10 @@ public final class MultiUserOptionsService extends AnOptionsService {
         }
 
         try {
-            BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(RojacUtils.getSettingsFile()));
-            try {
+            try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(RojacUtils.getSettingsFile()))) {
                 userSetting.store(os, "Rojac user settings file.");
-            } finally {
-                os.close();
             }
+
             return true;
         } catch (IOException e) {
             log.error("Can not store user settings.", e);

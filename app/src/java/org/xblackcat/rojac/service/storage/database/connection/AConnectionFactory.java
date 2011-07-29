@@ -50,11 +50,7 @@ public abstract class AConnectionFactory implements IConnectionFactory {
 
         try {
             Class.forName(jdbcClass).newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
-        } catch (IllegalAccessException e) {
-            throw new StorageInitializationException("Can not initialize JDBC driver.", e);
-        } catch (InstantiationException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new StorageInitializationException("Can not initialize JDBC driver.", e);
         }
 

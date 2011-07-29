@@ -14,7 +14,7 @@ import java.util.List;
  * @author xBlackCat
  */
 class SubscribeForumModel extends AbstractTableModel {
-    private final List<ForumInfo> data = new ArrayList<ForumInfo>();
+    private final List<ForumInfo> data = new ArrayList<>();
 
     @Override
     public int getRowCount() {
@@ -85,7 +85,7 @@ class SubscribeForumModel extends AbstractTableModel {
      * @return a filled packet or <code>null</code> if no subscription states are changed.
      */
     public SubscriptionChangedPacket getSubscription() {
-        Collection<SubscriptionChangedPacket.Subscription> subscriptions = new LinkedList<SubscriptionChangedPacket.Subscription>();
+        Collection<SubscriptionChangedPacket.Subscription> subscriptions = new LinkedList<>();
 
         for (ForumInfo fi : data) {
             if (fi.getSubscribeStatus() != null) {

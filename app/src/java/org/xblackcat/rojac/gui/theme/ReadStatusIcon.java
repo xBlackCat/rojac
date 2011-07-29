@@ -64,7 +64,7 @@ public enum ReadStatusIcon {
     ReplyList("user-reply"),
     ;
 
-    private final Map<ReadStatus, AnIcon> iconsBuffer = new EnumMap<ReadStatus, AnIcon>(ReadStatus.class);
+    private final Map<ReadStatus, AnIcon> iconsBuffer = new EnumMap<>(ReadStatus.class);
 
     ReadStatusIcon(String base) {
         iconsBuffer.put(ReadStatus.Read, new SimpleIcon(base + "-read.png"));

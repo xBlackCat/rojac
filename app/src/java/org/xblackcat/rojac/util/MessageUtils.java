@@ -43,7 +43,7 @@ public final class MessageUtils {
     public static final Pattern DOTS_PATTERN = Pattern.compile("\\.{2,}");
 
     static {
-        elements = new TIntObjectHashMap<String>();
+        elements = new TIntObjectHashMap<>();
         elements.put(38, "amp"); // & - ampersand
         elements.put(60, "lt"); // < - less-than
         elements.put(62, "gt"); // > - greater-than

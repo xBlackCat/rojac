@@ -197,7 +197,7 @@ public abstract class ResourceUtils {
 				URL_PROTOCOL_ZIP.equals(protocol) ||
 				URL_PROTOCOL_VFSZIP.equals(protocol) ||
 				URL_PROTOCOL_WSJAR.equals(protocol) ||
-				(URL_PROTOCOL_CODE_SOURCE.equals(protocol) && url.getPath().indexOf(JAR_URL_SEPARATOR) != -1));
+				(URL_PROTOCOL_CODE_SOURCE.equals(protocol) && url.getPath().contains(JAR_URL_SEPARATOR)));
 	}
 
 	/**

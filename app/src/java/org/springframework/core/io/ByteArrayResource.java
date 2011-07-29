@@ -46,7 +46,7 @@ public class ByteArrayResource extends AbstractResource {
 	 * Create a new ByteArrayResource.
 	 * @param byteArray the byte array to wrap
 	 */
-	public ByteArrayResource(byte[] byteArray) {
+	public ByteArrayResource(byte... byteArray) {
 		this(byteArray, "resource loaded from byte array");
 	}
 

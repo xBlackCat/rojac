@@ -19,7 +19,7 @@ class PostList extends Post {
             return (thisVal < anotherVal ? -1 : (thisVal == anotherVal ? 0 : 1));
         }
     };
-    protected TIntObjectHashMap<Post> listPosts = new TIntObjectHashMap<Post>();
+    protected TIntObjectHashMap<Post> listPosts = new TIntObjectHashMap<>();
     /**
      * State flag to indicate if this thread is filled with posts or not. If the thread is filled - statistic will be
      * calculated from real posts data. A stat data from DB is user in other case.

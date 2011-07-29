@@ -19,5 +19,6 @@ interface IQueryExecutor {
 
     int[] getIds(DataQuery sql, Object... params) throws StorageException;
 
-    <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, DataQuery sql, K[] keys) throws StorageException;
+    @SuppressWarnings({"unchecked"})
+    <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, DataQuery sql, K... keys) throws StorageException;
 }

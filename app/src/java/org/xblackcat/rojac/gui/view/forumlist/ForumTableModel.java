@@ -15,7 +15,7 @@ import java.util.List;
 class ForumTableModel extends AbstractTableModel {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
-    private List<ForumData> forums = new ArrayList<ForumData>();
+    private List<ForumData> forums = new ArrayList<>();
 
     public ForumData getValueAt(int rowIndex, int columnIndex) {
         return forums.get(rowIndex);

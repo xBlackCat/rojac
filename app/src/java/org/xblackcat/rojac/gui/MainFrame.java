@@ -71,7 +71,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private static final String SCHEDULED_TASK_ID = "SCHEDULED_SYNCHRONIZER";
 
     // Data tracking
-    private Map<ViewId, View> openedViews = new HashMap<ViewId, View>();
+    private Map<ViewId, View> openedViews = new HashMap<>();
     protected RootWindow threadsRootWindow;
 
     private static final String FORUMS_VIEW_ID = "forums_view";
@@ -80,7 +80,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private static final String THREADS_VIEW_ID = "threads_view_id";
     private static final String NAVIGATION_VIEW_ID = "navigation_view_id";
 
-    private final Map<String, ILayoutful> layoutMap = new HashMap<String, ILayoutful>();
+    private final Map<String, ILayoutful> layoutMap = new HashMap<>();
 
     protected final DropFilter noAuxViewsFilter = new DropFilter() {
         @Override
@@ -544,8 +544,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 log.info("Load previous layout");
             }
             try {
-                ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
-                try {
+                try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
                     rootWindow.read(in, false);
                     threadsRootWindow.read(in, false);
 
@@ -564,9 +563,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     } catch (EOFException e) {
                         // Ignore to support previous revisions
                     }
-                } finally {
-                    in.close();
                 }
+
             } catch (ClassNotFoundException e) {
                 log.error("Main frame state class is not found", e);
             } catch (IOException e) {
@@ -582,8 +580,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     public void storeSettings() {
         File file = RojacUtils.getLayoutFile();
         try {
-            ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
-            try {
+            try (ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
                 rootWindow.write(out, false);
                 threadsRootWindow.write(out, false);
                 // Last item - main frame state
@@ -594,9 +591,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     out.writeObject(element.getKey()); // Identifier
                     out.writeObject(element.getValue().storeLayout()); // Panel layout
                 }
-            } finally {
-                out.close();
             }
+
         } catch (IOException e) {
             log.error("Can not store views layout.", e);
         }

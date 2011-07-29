@@ -14,7 +14,7 @@ import java.util.EnumMap;
 public class RatingCache {
     private static final Log log = LogFactory.getLog(RatingCache.class);
 
-    private final EnumMap<Mark, Integer> rating = new EnumMap<Mark, Integer>(Mark.class);
+    private final EnumMap<Mark, Integer> rating = new EnumMap<>(Mark.class);
 
     public RatingCache(Collection<MarkStat> marks) {
         for (MarkStat m : marks) {

@@ -10,7 +10,7 @@ import java.util.Set;
  * @author xBlackCat
  */
 public class OptionsUpdatedPacket implements IPacket {
-    private final Set<Property<?>> affectedProperties = new HashSet<Property<?>>();
+    private final Set<Property<?>> affectedProperties = new HashSet<>();
 
     public OptionsUpdatedPacket(Collection<Property<?>> affectedProperties) {
         this.affectedProperties.addAll(affectedProperties);

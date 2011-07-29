@@ -73,19 +73,16 @@ public final class RunChecker {
 
     public boolean performCheck(boolean shutdown) {
         // First - check if already run
-        Socket socket = new Socket();
         try {
-            try {
+            try (Socket socket = new Socket()) {
                 socket.connect(new InetSocketAddress("127.0.0.1", port), 500);
 
                 if (!socket.isConnected()) {
                     return false;
                 }
 
-                DataOutputStream os = new DataOutputStream(socket.getOutputStream());
-                try {
-                    DataInputStream is = new DataInputStream(socket.getInputStream());
-                    try {
+                try (DataOutputStream os = new DataOutputStream(socket.getOutputStream())) {
+                    try (DataInputStream is = new DataInputStream(socket.getInputStream())) {
 
                         os.writeUTF(shutdown ? requestShutdownString : requestString);
                         os.flush();
@@ -98,15 +95,12 @@ public final class RunChecker {
                             // Double check
                             return performCheck(false);
                         }
-                    } finally {
-                        is.close();
                     }
-                } finally {
-                    os.close();
+
                 }
-            } finally {
-                socket.close();
+
             }
+
         } catch (IOException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Failed to communicate with brother", e);
@@ -140,43 +134,35 @@ public final class RunChecker {
                 try {
                     while (!serverSocket.isClosed()) {
                         try {
-                            Socket socket = serverSocket.accept();
 
-                            try {
-                                DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+                            try (Socket socket = serverSocket.accept()) {
 
-                                try {
+                                try (DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
                                     String string = inputStream.readUTF();
                                     if (requestString.equals(string)) {
                                         process.run();
 
-                                        DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-                                        try {
+                                        try (DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
                                             outputStream.writeUTF(responseString);
-                                        } finally {
-                                            outputStream.close();
                                         }
+
                                     } else if (requestShutdownString.equals(string)) {
                                         shutdownProcess.run();
 
-                                        DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-                                        try {
+                                        try (DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
                                             outputStream.writeUTF(responseShutdownString);
-                                        } finally {
-                                            outputStream.close();
                                         }
+
 
                                         if (log.isDebugEnabled()) {
                                             log.debug("Shutdown by other instance request.");
                                         }
                                         System.exit(0);
                                     }
-                                } finally {
-                                    inputStream.close();
                                 }
-                            } finally {
-                                socket.close();
+
                             }
+
                         } catch (IOException e) {
                             if (log.isWarnEnabled()) {
                                 log.warn("Failed to communicate with brother.", e);

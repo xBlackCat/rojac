@@ -27,7 +27,7 @@ public class SingleTag extends SimpleTag {
         this.priority = priority;
     }
 
-    protected ITagInfo getTagInfo(final String text, final String lower, final int startPos) {
+    protected ITagInfo<SimpleTag> getTagInfo(final String text, final String lower, final int startPos) {
         return new SingleTagInfo(startPos, lower, text);
     }
 

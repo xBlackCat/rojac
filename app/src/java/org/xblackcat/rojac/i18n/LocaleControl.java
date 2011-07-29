@@ -22,7 +22,7 @@ public class LocaleControl {
         return INSTANCE;
     }
 
-    private final Map<String, ResourceBundle> bundlesCache = new HashMap<String, ResourceBundle>();
+    private final Map<String, ResourceBundle> bundlesCache = new HashMap<>();
 
     private final Lock readLock;
     private final Lock writeLock;

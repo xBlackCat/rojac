@@ -41,7 +41,7 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
             log.debug("Load new messages for forums [id=" + idsList + "]");
         }
 
-        Collection<RequestForumInfo> forumInfo = new LinkedList<RequestForumInfo>();
+        Collection<RequestForumInfo> forumInfo = new LinkedList<>();
         for (int forumId : forumIds) {
             Number messagesInForums = forumAH.getMessagesInForum(forumId);
             forumInfo.add(new RequestForumInfo(forumId, messagesInForums.intValue() == 0));

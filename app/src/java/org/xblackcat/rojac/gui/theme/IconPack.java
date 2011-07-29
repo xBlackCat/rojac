@@ -19,7 +19,7 @@ public final class IconPack {
     private final String name;
     private final String pathPrefix;
 
-    private final Map<AnIcon, Icon> iconsCache = new HashMap<AnIcon, Icon>();
+    private final Map<AnIcon, Icon> iconsCache = new HashMap<>();
 
     public IconPack(String name, String pathPrefix, String extension) {
         this.name = name;

@@ -78,14 +78,14 @@ class PropertiesModel implements TreeModel {
      * Store all new values in system properties.
      */
     public Collection<Property<?>> applySettings() {
-        Collection<Property<?>> changedProperties = new LinkedList<Property<?>>();
+        Collection<Property<?>> changedProperties = new LinkedList<>();
         affect(changedProperties, root, false);
 
         return changedProperties;
     }
 
     public Collection<Property<?>> revertSettings() {
-        Collection<Property<?>> changedProperties = new LinkedList<Property<?>>();
+        Collection<Property<?>> changedProperties = new LinkedList<>();
         affect(changedProperties, root, true);
 
         return changedProperties;

@@ -32,8 +32,8 @@ class TextStyleEditor extends AComplexEditor<TextStyle> {
     private final JButton selectForegroundButton = new JButton("...");
     private final JButton selectBackgroundButton = new JButton("...");
 
-    private final JComboBox fontSelector;
-    private final JComboBox fontSizeSelector;
+    private final JComboBox<String> fontSelector;
+    private final JComboBox<Integer> fontSizeSelector;
     private final JToggleButton fontBold = new JToggleButton("B");
     private final JToggleButton fontItalic = new JToggleButton("I");
 
@@ -54,13 +54,13 @@ class TextStyleEditor extends AComplexEditor<TextStyle> {
         GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fontNames = environment.getAvailableFontFamilyNames(Locale.ROOT);
 
-        fontModel = new ListComboBoxModel<String>(Arrays.asList(fontNames));
+        fontModel = new ListComboBoxModel<>(Arrays.asList(fontNames));
 
         List<Integer> sizes = Arrays.asList(6, 7, 8, 9, 10, 12, 14, 16, 18, 22, 26, 32, 48, 72);
-        fontSizeModel = new ListComboBoxModel<Integer>(sizes);
+        fontSizeModel = new ListComboBoxModel<>(sizes);
 
-        fontSelector = new JComboBox(fontModel);
-        fontSizeSelector = new JComboBox(fontSizeModel);
+        fontSelector = new JComboBox<>(fontModel);
+        fontSizeSelector = new JComboBox<>(fontSizeModel);
 
         fontBold.setFont(fontBold.getFont().deriveFont(Font.BOLD));
         fontItalic.setFont(fontItalic.getFont().deriveFont(Font.ITALIC));

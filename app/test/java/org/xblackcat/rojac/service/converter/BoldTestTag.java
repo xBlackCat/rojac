@@ -8,19 +8,19 @@ public class BoldTestTag implements ITag<BoldTestTag> {
     private static final String OPEN_TAG = "[b]";
     private static final String CLOSE_TAG = "[/b]";
 
-    public ITagInfo find(final String text, final String lower) {
+    public ITagInfo<BoldTestTag> find(final String text, final String lower) {
         final int startPos = lower.indexOf(OPEN_TAG);
 
         if (startPos == -1) {
             return null;
         }
 
-        return new ITagInfo() {
+        return new ITagInfo<BoldTestTag>() {
             public int start() {
                 return startPos;
             }
 
-            public ITag getTag() {
+            public BoldTestTag getTag() {
                 return BoldTestTag.this;
             }
 

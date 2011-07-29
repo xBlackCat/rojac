@@ -10,7 +10,7 @@ import org.xblackcat.rojac.service.converter.ITag;
 
 public class LanguageConverterTest extends TestCase {
     public void testSimpleConvert() throws Exception {
-        ITag lc = new LanguageTag("test", null, null, null, null, null, null);
+        ITag lc = new LanguageTag("test", null, null, null, null, null, (String) null);
 
         {
             String input = "Test:[test]UNICODE_STRING interfaceName, dosName;\n\n// ����������� ����������\nstatus = IoRegisterDeviceInterface(\n  pdo,\n  &GUID_MY_USB_DEVICE,\n  0,\n  &interfaceName\n  );\n\n// ������� ���������� ������\nRtlInitUnicodeString(&dosName, L\"\\\\DosDevices\\\\MyUsbDevice\");\nIoCreateSymbolicLink(&dosName, &interfaceName);\n[/test]\nok";
@@ -36,11 +36,9 @@ public class LanguageConverterTest extends TestCase {
                 null,
                 null,
                 null,
-                new String[]{
-                        "one",
-                        "two",
-                        "three"
-                });
+                "one",
+                "two",
+                "three");
 
         {
             String input = "[test]Something one;\nSomething two or three;\nAnother ones are two-heads.\n[/test]";
@@ -66,11 +64,8 @@ public class LanguageConverterTest extends TestCase {
                 "/*", "*/", // Quotes of block comment
                 "\"'",      // String quotes
                 '\\',        // Escape charaster
-                new String[]{
-                        "class",
-                        "word"
-                }
-        );
+                "class",
+                "word");
 
         {
             String input = "Program code:\n[test]\nclass: reserved word\n// Reserved word in comment: class\nprint \"this is a class\"; // Print class\n/*\n* end of class\n*/\nprint \"this class is named \\\"class\\\"!\";\n[/test]\nFinish.";

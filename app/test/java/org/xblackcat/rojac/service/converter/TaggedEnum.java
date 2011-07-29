@@ -13,7 +13,8 @@ public enum TaggedEnum implements ITag<TaggedEnum> {
         this.tag = tag;
     }
 
-    public ITagInfo find(String text, String lower) {
+    @SuppressWarnings("unchecked")
+    public ITagInfo<TaggedEnum> find(String text, String lower) {
         return tag.find(text, text.toLowerCase());
     }
 }

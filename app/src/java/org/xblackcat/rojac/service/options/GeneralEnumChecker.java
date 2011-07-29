@@ -14,12 +14,14 @@ import java.util.Set;
 class GeneralEnumChecker<T extends Enum<T>> implements IValueChecker<T> {
     private final Set<T> allowedValues;
 
+    @SafeVarargs
     static <E extends Enum<E>> GeneralEnumChecker<E> only(E value, E... rest) {
-        return new GeneralEnumChecker<E>(EnumSet.of(value, rest));
+        return new GeneralEnumChecker<>(EnumSet.of(value, rest));
     }
 
+    @SafeVarargs
     static <E extends Enum<E>> GeneralEnumChecker<E> except(E value, E... rest) {
-        return new GeneralEnumChecker<E>(EnumSet.complementOf(EnumSet.of(value, rest)));
+        return new GeneralEnumChecker<>(EnumSet.complementOf(EnumSet.of(value, rest)));
     }
 
     GeneralEnumChecker(Class<T> enumClass) {
@@ -32,7 +34,7 @@ class GeneralEnumChecker<T extends Enum<T>> implements IValueChecker<T> {
 
     @Override
     public List<T> getPossibleValues() {
-        return new ArrayList<T>(allowedValues);
+        return new ArrayList<>(allowedValues);
     }
 
     @Override

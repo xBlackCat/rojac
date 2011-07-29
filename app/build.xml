@@ -293,7 +293,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         <cp>../lib/*.jar</cp>
     </classPath>
     <jre>
-        <minVersion>1.6.0</minVersion>
+        <minVersion>1.7.0</minVersion>
     </jre>
 </launch4jConfig>]]>
         </echo>

@@ -21,7 +21,7 @@ public class MsdnTag extends SimpleTag {
         this.openTextTagEnd = "'>";
     }
 
-    protected ITagInfo getTagInfo(final String text, final String lower, final int startPos) {
+    protected ITagInfo<SimpleTag> getTagInfo(final String text, final String lower, final int startPos) {
         return new MsdnTagInfo(startPos, lower, text);
     }
 

@@ -12,7 +12,7 @@ import java.util.Map;
  * @author xBlackCat
  */
 class ShortCutsTableModel extends AbstractTableModel {
-    private final Map<ShortCut, KeyStroke> values = new EnumMap<ShortCut, KeyStroke>(ShortCut.class);
+    private final Map<ShortCut, KeyStroke> values = new EnumMap<>(ShortCut.class);
 
     ShortCutsTableModel() {
         for (ShortCut sc : ShortCut.values()) {

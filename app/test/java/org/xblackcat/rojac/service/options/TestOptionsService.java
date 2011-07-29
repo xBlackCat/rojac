@@ -15,7 +15,7 @@ public final class TestOptionsService extends AnOptionsService {
     public TestOptionsService() throws OptionsServiceException {
     }
 
-    private Map<String, String> cache = new HashMap<String, String>();
+    private Map<String, String> cache = new HashMap<>();
 
     protected String getProperty(String key) {
         String s = cache.get(key);

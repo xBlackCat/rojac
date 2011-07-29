@@ -35,7 +35,7 @@ public class RojacUtilsTest extends TestCase {
         {
             Locale[] locales = RojacUtils.localesForBundle("/locales/bundle", false);
 
-            Set<Locale> l = new HashSet<Locale>(Arrays.asList(locales));
+            Set<Locale> l = new HashSet<>(Arrays.asList(locales));
 
             assertEquals(3, l.size());
 
@@ -49,7 +49,7 @@ public class RojacUtilsTest extends TestCase {
         {
             Locale[] locales = RojacUtils.localesForBundle("/locales/bundle", true);
 
-            Set<Locale> l = new HashSet<Locale>(Arrays.asList(locales));
+            Set<Locale> l = new HashSet<>(Arrays.asList(locales));
 
             assertEquals(4, l.size());
 

@@ -33,7 +33,7 @@ public class SimpleTag implements ITag<SimpleTag> {
         this.closeTextTag = closeTextTag;
     }
 
-    public ITagInfo find(final String text, String lower) {
+    public ITagInfo<SimpleTag> find(final String text, String lower) {
         final int startPos = lower.indexOf(openTag);
 
         if (startPos == -1) {
@@ -52,7 +52,7 @@ public class SimpleTag implements ITag<SimpleTag> {
      *
      * @return tag info object
      */
-    protected ITagInfo getTagInfo(String text, String lower, int startPos) {
+    protected ITagInfo<SimpleTag> getTagInfo(String text, String lower, int startPos) {
         return new SimpleTagInfo(startPos, lower, text);
     }
 
@@ -60,7 +60,7 @@ public class SimpleTag implements ITag<SimpleTag> {
         return 0;
     }
 
-    protected class SimpleTagInfo implements ITagInfo {
+    protected class SimpleTagInfo implements ITagInfo<SimpleTag> {
         protected final int startPos;
         protected final String lower;
         protected final String text;
@@ -75,7 +75,7 @@ public class SimpleTag implements ITag<SimpleTag> {
             return startPos;
         }
 
-        public ITag getTag() {
+        public SimpleTag getTag() {
             return SimpleTag.this;
         }
 

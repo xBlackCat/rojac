@@ -10,7 +10,7 @@ class NavigationLayout implements IViewLayout {
 
     private final boolean[] expandedStatus;
 
-    public NavigationLayout(boolean[] expandedStatus) {
+    public NavigationLayout(boolean... expandedStatus) {
         this.expandedStatus = expandedStatus;
     }
 
