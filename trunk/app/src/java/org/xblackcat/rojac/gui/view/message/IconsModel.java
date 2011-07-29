@@ -9,7 +9,7 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-class IconsModel extends AbstractListModel implements ComboBoxModel {
+class IconsModel extends AbstractListModel<Mark> implements ComboBoxModel<Mark> {
     private final Mark[] items;
     private Mark selectedItem;
 

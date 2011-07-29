@@ -236,7 +236,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
             path = path.substring(1);
         }
         Enumeration resourceUrls = getClassLoader().getResources(path);
-        Set<Resource> result = new LinkedHashSet<Resource>(16);
+        Set<Resource> result = new LinkedHashSet<>(16);
         while (resourceUrls.hasMoreElements()) {
             URL url = (URL) resourceUrls.nextElement();
             result.add(convertClassLoaderURL(url));
@@ -276,7 +276,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
         String rootDirPath = determineRootDir(locationPattern);
         String subPattern = locationPattern.substring(rootDirPath.length());
         Resource[] rootDirResources = getResources(rootDirPath);
-        Set<Resource> result = new LinkedHashSet<Resource>(16);
+        Set<Resource> result = new LinkedHashSet<>(16);
         for (Resource rootDirResource : rootDirResources) {
             if (isJarResource(rootDirResource)) {
                 result.addAll(doFindPathMatchingJarResources(rootDirResource, subPattern));
@@ -377,7 +377,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
                 // The Sun JRE does not return a slash here, but BEA JRockit does.
                 rootEntryPath = rootEntryPath + "/";
             }
-            Set<Resource> result = new LinkedHashSet<Resource>(8);
+            Set<Resource> result = new LinkedHashSet<>(8);
             for (Enumeration entries = jarFile.entries(); entries.hasMoreElements();) {
                 JarEntry entry = (JarEntry) entries.nextElement();
                 String entryPath = entry.getName();
@@ -453,7 +453,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      */
     protected Set<Resource> doFindMatchingFileSystemResources(File rootDir, String subPattern) throws IOException {
         Set<File> matchingFiles = retrieveMatchingFiles(rootDir, subPattern);
-        Set<Resource> result = new LinkedHashSet<Resource>(matchingFiles.size());
+        Set<Resource> result = new LinkedHashSet<>(matchingFiles.size());
         for (Object matchingFile : matchingFiles) {
             File file = (File) matchingFile;
             result.add(new FileSystemResource(file));
@@ -480,7 +480,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
             fullPattern += "/";
         }
         fullPattern = fullPattern + StringUtils.replace(pattern, File.separator, "/");
-        Set<File> result = new LinkedHashSet<File>(8);
+        Set<File> result = new LinkedHashSet<>(8);
         doRetrieveMatchingFiles(fullPattern, rootDir, result);
         return result;
     }

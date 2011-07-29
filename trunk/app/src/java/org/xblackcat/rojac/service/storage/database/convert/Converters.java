@@ -16,10 +16,10 @@ public final class Converters {
     public static final IToObjectConverter<Rating> TO_RATING = new ToRatingConverter();
     public static final IToObjectConverter<User> TO_USER = new ToUserConverter();
     public static final IToObjectConverter<VersionInfo> TO_VERSION_INFO = new ToVersionInfoConverter();
-    public static final IToObjectConverter<String> TO_STRING = new ToScalarConverter<String>();
-    public static final IToObjectConverter<Number> TO_NUMBER = new ToScalarConverter<Number>();
-    public static final IToObjectConverter<Integer> TO_INTEGER = new ToScalarConverter<Integer>();
-    public static final IToObjectConverter<Long> TO_LONG = new ToScalarConverter<Long>();
+    public static final IToObjectConverter<String> TO_STRING = new ToScalarConverter<>();
+    public static final IToObjectConverter<Number> TO_NUMBER = new ToScalarConverter<>();
+    public static final IToObjectConverter<Integer> TO_INTEGER = new ToScalarConverter<>();
+    public static final IToObjectConverter<Long> TO_LONG = new ToScalarConverter<>();
     public static final IToObjectConverter<Boolean> TO_BOOLEAN = new ToBooleanConverter();
     public static final IToObjectConverter<Mark> TO_MARK = new ToMarkConverter();
     public static final IToObjectConverter<MarkStat> TO_MARK_STAT = new ToMarkStatConverter();

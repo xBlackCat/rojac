@@ -50,7 +50,7 @@ public final class RSDNMessageParserFactory {
     }
 
     private Map<String, ITag[]> loadTagGroups(Map<String, ITag> allTagsMap, String tagGroupsResource) throws IOException {
-        final HashMap<String, ITag[]> map = new HashMap<String, ITag[]>();
+        final HashMap<String, ITag[]> map = new HashMap<>();
 
         final InputStream inStream = ResourceUtils.getResourceAsStream(tagGroupsResource);
         if (inStream == null) {
@@ -69,7 +69,7 @@ public final class RSDNMessageParserFactory {
             }
 
             String[] subTagNames = group.split(",");
-            Collection<ITag> subTags = new LinkedList<ITag>();
+            Collection<ITag> subTags = new LinkedList<>();
 
             for (String s : subTagNames) {
                 ITag t = allTagsMap.get(s);
@@ -94,7 +94,7 @@ public final class RSDNMessageParserFactory {
     }
 
     private Map<String, ITag> loadAvailableTags(String tagsResource) throws IOException {
-        Map<String, ITag> allTagsMap = new HashMap<String, ITag>();
+        Map<String, ITag> allTagsMap = new HashMap<>();
         Properties allTags = new Properties();
 
         allTags.load(ResourceUtils.getResourceAsStream(tagsResource));
@@ -159,11 +159,7 @@ public final class RSDNMessageParserFactory {
             if (log.isWarnEnabled()) {
                 log.warn("Can not create class instance", e);
             }
-        } catch (NoSuchMethodException e) {
-            if (log.isWarnEnabled()) {
-                log.warn("Can not obtain parser", e);
-            }
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | InvocationTargetException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Can not obtain parser", e);
             }
@@ -199,7 +195,7 @@ public final class RSDNMessageParserFactory {
     }
 
     private HashMap<ITag, ITag[]> loadTagRules(Map<String, ITag> allTagsMap, Map<String, ITag[]> tagGroups, String subTagsResource) throws IOException {
-        final HashMap<ITag, ITag[]> tags = new HashMap<ITag, ITag[]>();
+        final HashMap<ITag, ITag[]> tags = new HashMap<>();
         Properties subTagsList = new Properties();
         subTagsList.load(ResourceUtils.getResourceAsStream(subTagsResource));
 
@@ -222,7 +218,7 @@ public final class RSDNMessageParserFactory {
 
             ITag tag = allTagsMap.get(tagName);
             if (tag != null) {
-                Collection<ITag> subTags = new LinkedList<ITag>();
+                Collection<ITag> subTags = new LinkedList<>();
 
                 for (String s : subTagNames) {
                     ITag t = allTagsMap.get(s);

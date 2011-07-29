@@ -10,19 +10,19 @@ package org.xblackcat.rojac.service.converter;
 public class SmileTestTag implements ITag<SmileTestTag> {
     private final static String TAG = ":smile:";
 
-    public ITagInfo find(String text, String lower) {
+    public ITagInfo<SmileTestTag> find(String text, String lower) {
         final int pos = text.indexOf(TAG);
 
         if (pos == -1) {
             return null;
         }
 
-        return new ITagInfo() {
+        return new ITagInfo<SmileTestTag>() {
             public int start() {
                 return pos;
             }
 
-            public ITag getTag() {
+            public SmileTestTag getTag() {
                 return SmileTestTag.this;
             }
 

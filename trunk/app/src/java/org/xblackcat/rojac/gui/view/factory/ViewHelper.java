@@ -25,7 +25,7 @@ public final class ViewHelper {
     private static final Map<ViewType, IViewFactory> VIEW_FACTORIES;
 
     static {
-        EnumMap<ViewType, IViewFactory> map = new EnumMap<ViewType, IViewFactory>(ViewType.class);
+        EnumMap<ViewType, IViewFactory> map = new EnumMap<>(ViewType.class);
         map.put(ViewType.Forum, new ForumThreadViewFactory());
         map.put(ViewType.SingleThread, new SingleThreadViewFactory());
         map.put(ViewType.SingleMessage, new MessageViewFactory());

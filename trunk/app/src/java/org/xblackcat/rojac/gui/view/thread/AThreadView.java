@@ -259,7 +259,7 @@ public abstract class AThreadView extends AnItemView {
     }
 
     private void selectNextPost(Post currentPost, boolean unread) {
-        Collection<Post> toCollapse = new LinkedList<Post>();
+        Collection<Post> toCollapse = new LinkedList<>();
         Post next = findNextPost(currentPost, 0, unread, toCollapse);
         if (next != null) {
             selectItem(next);
@@ -723,7 +723,7 @@ public abstract class AThreadView extends AnItemView {
 
             if (item.getLoadingState() == LoadingState.Loaded) {
                 if (item.getSize() == 1) {
-                    ITreeItem child = item.getChild(0);
+                    ITreeItem<?> child = item.getChild(0);
 
                     expandPath(path.pathByAddingChild(child));
                 }

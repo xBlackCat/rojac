@@ -163,7 +163,6 @@ public final class ServiceFactory {
             }
         }
 
-        IConnectionFactory connectionFactory = null;
         try {
             if (!IConnectionFactory.class.isAssignableFrom(connectionFactoryClass)) {
                 throw new StorageInitializationException("Connection factory should implements IConnectionFactory interface.");
@@ -171,17 +170,12 @@ public final class ServiceFactory {
             Constructor<IConnectionFactory> connectionFactoryConstructor =
                     ((Class<IConnectionFactory>) connectionFactoryClass).getConstructor(String.class);
 
-            connectionFactory = connectionFactoryConstructor.newInstance(configurationName);
+            return connectionFactoryConstructor.newInstance(configurationName);
         } catch (NoSuchMethodException e) {
             throw new StorageInitializationException("Connection factory have no necessary constructor", e);
-        } catch (InstantiationException e) {
-            throw new StorageInitializationException("Can not initialize connection factory", e);
-        } catch (IllegalAccessException e) {
-            throw new StorageInitializationException("Can not initialize connection factory", e);
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
             throw new StorageInitializationException("Can not initialize connection factory", e);
         }
-        return connectionFactory;
     }
 
     private static void checkPath(String target) throws RojacException {
@@ -190,10 +184,12 @@ public final class ServiceFactory {
             if (log.isTraceEnabled()) {
                 log.trace("Create folder at " + target);
             }
-            folder.mkdirs();
+            if (!folder.mkdirs()) {
+                throw new RojacException("Can not create a '" + folder.getAbsolutePath() + "' folder for storing Rojac configuration.");
+            }
         }
         if (!folder.isDirectory()) {
-            throw new RojacException("Can not create a '" + folder.getAbsolutePath() + "' folder for storing Rojac configuration.");
+            throw new RojacException("Target path '" + folder.getAbsolutePath() + "' is not a folder.");
         }
     }
 }

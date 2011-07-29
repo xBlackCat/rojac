@@ -24,8 +24,8 @@ public class TrimingDockingWindowTitleProvider implements DockingWindowTitleProv
     }
 
     public String getTitle(DockingWindow window) {
-        List<String> viewTitles = new ArrayList<String>();
-        List<Boolean> viewPrimary = new ArrayList<Boolean>();
+        List<String> viewTitles = new ArrayList<>();
+        List<Boolean> viewPrimary = new ArrayList<>();
         getViews(window, viewTitles, viewPrimary, true);
 
         int length = 0;

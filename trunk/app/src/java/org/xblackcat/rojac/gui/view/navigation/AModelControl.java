@@ -11,5 +11,5 @@ abstract class AModelControl {
 
     abstract void itemUpdated(AnItem item);
 
-    public abstract void removeChildren(AGroupItem children);
+    public  abstract <T extends AnItem> void removeChildren(AGroupItem<T> children);
 }

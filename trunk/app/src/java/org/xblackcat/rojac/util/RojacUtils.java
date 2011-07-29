@@ -77,35 +77,39 @@ public final class RojacUtils {
             int nextPos = file.indexOf('/', pos);
 
             String branch = file.substring(pos, nextPos);
-            if ("trunk".equals(branch)) {
-                // No additional info will be added
-            } else if ("branches".equals(branch)) {
-                // Read branch name
-                pos = nextPos + 1;
-                versionString.append(" [");
+            switch (branch) {
+                case "trunk":
+                    // No additional info will be added
+                    break;
+                case "branches":
+                    // Read branch name
+                    pos = nextPos + 1;
+                    versionString.append(" [");
 
-                nextPos = file.indexOf('/', pos);
+                    nextPos = file.indexOf('/', pos);
 
-                if (nextPos >= 0) {
-                    versionString.append(file.substring(pos, nextPos));
-                } else {
-                    versionString.append(file.substring(pos));
-                }
+                    if (nextPos >= 0) {
+                        versionString.append(file.substring(pos, nextPos));
+                    } else {
+                        versionString.append(file.substring(pos));
+                    }
 
-                versionString.append(']');
-            } else if ("tags".equals(branch)) {
-                // Read branch name
-                pos = nextPos + 1;
-                versionString.append(" <");
+                    versionString.append(']');
+                    break;
+                case "tags":
+                    // Read branch name
+                    pos = nextPos + 1;
+                    versionString.append(" <");
 
-                nextPos = file.indexOf('/', pos);
+                    nextPos = file.indexOf('/', pos);
 
-                if (nextPos >= 0) {
-                    versionString.append(file.substring(pos, nextPos));
-                } else {
-                    versionString.append(file.substring(pos));
-                }
-                versionString.append('>');
+                    if (nextPos >= 0) {
+                        versionString.append(file.substring(pos, nextPos));
+                    } else {
+                        versionString.append(file.substring(pos));
+                    }
+                    versionString.append('>');
+                    break;
             }
 
             versionString.append(" / rev. ");
@@ -123,10 +127,10 @@ public final class RojacUtils {
     }
 
     @SuppressWarnings({"unchecked"})
-    public static <T extends Serializable> T[] getRSDNObject(IRSDNable<T>[] ar) {
+    public static <T extends Serializable> T[] getRSDNObject(IRSDNable<T>... ar) {
         Class<T> c = getGenericClass(ar.getClass().getComponentType());
 
-        List<T> res = new ArrayList<T>(ar.length);
+        List<T> res = new ArrayList<>(ar.length);
 
         for (IRSDNable<T> o : ar) {
             res.add(o.getRSDNObject());
@@ -211,7 +215,7 @@ public final class RojacUtils {
             bundleName = bundle.substring(pos + 1);
         }
 
-        Collection<Locale> locales = new HashSet<Locale>();
+        Collection<Locale> locales = new HashSet<>();
 
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 

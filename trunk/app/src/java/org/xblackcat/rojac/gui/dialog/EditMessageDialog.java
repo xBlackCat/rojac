@@ -139,10 +139,8 @@ public class EditMessageDialog extends JDialog {
                 try {
                     get();
                     dispose();
-                } catch (InterruptedException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");
-                } catch (ExecutionException e) {
-                    JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");                    
                 }
             }
         };

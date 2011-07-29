@@ -20,10 +20,10 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
 
     private final ScheduledExecutorService scheduler;
 
-    private final Map<String, ScheduledFuture<?>> scheduledTasks = new HashMap<String, ScheduledFuture<?>>();
+    private final Map<String, ScheduledFuture<?>> scheduledTasks = new HashMap<>();
 
     public TaskExecutor() {
-        Map<TaskTypeEnum, ExecutorService> pools = new EnumMap<TaskTypeEnum, ExecutorService>(TaskTypeEnum.class);
+        Map<TaskTypeEnum, ExecutorService> pools = new EnumMap<>(TaskTypeEnum.class);
         pools.put(TaskTypeEnum.Background, setupCommonExecutor());
         pools.put(TaskTypeEnum.DataLoading, setupMessageLoadingExecutor());
         pools.put(TaskTypeEnum.Synchronization, setupServerSynchronizationExecutor());
@@ -104,7 +104,7 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
 
     @Override
     public List<Runnable> shutdownNow() {
-        List<Runnable> list = new ArrayList<Runnable>();
+        List<Runnable> list = new ArrayList<>();
         for (ExecutorService p : pools.values()) {
             list.addAll(p.shutdownNow());
         }

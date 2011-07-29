@@ -205,28 +205,29 @@ public abstract class StringUtils {
 		}
 
 		String[] pathArray = delimitedListToStringArray(pathToUse, FOLDER_SEPARATOR);
-		List<String> pathElements = new LinkedList<String>();
+		List<String> pathElements = new LinkedList<>();
 		int tops = 0;
 
 		for (int i = pathArray.length - 1; i >= 0; i--) {
 			String element = pathArray[i];
-			if (CURRENT_PATH.equals(element)) {
-				// Points to current directory - drop it.
-			}
-			else if (TOP_PATH.equals(element)) {
-				// Registering top path found.
-				tops++;
-			}
-			else {
-				if (tops > 0) {
-					// Merging path element with element corresponding to top path.
-					tops--;
-				}
-				else {
-					// Normal path element found.
-					pathElements.add(0, element);
-				}
-			}
+            switch (element) {
+                case CURRENT_PATH:
+                    // Points to current directory - drop it.
+                    break;
+                case TOP_PATH:
+                    // Registering top path found.
+                    tops++;
+                    break;
+                default:
+                    if (tops > 0) {
+                        // Merging path element with element corresponding to top path.
+                        tops--;
+                    } else {
+                        // Normal path element found.
+                        pathElements.add(0, element);
+                    }
+                    break;
+            }
 		}
 
 		// Remaining top paths need to be retained.
@@ -301,7 +302,7 @@ public abstract class StringUtils {
 			return null;
 		}
 		StringTokenizer st = new StringTokenizer(str, delimiters);
-		List<String> tokens = new ArrayList<String>();
+		List<String> tokens = new ArrayList<>();
 		while (st.hasMoreTokens()) {
 			String token = st.nextToken();
 			if (trimTokens) {
@@ -349,7 +350,7 @@ public abstract class StringUtils {
 		if (delimiter == null) {
 			return new String[] {str};
 		}
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if ("".equals(delimiter)) {
 			for (int i = 0; i < str.length(); i++) {
 				result.add(deleteAny(str.substring(i, i + 1), charsToDelete));

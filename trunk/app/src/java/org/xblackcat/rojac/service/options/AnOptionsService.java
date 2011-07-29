@@ -21,7 +21,7 @@ abstract class AnOptionsService implements IOptionsService {
 
     protected AnOptionsService() throws OptionsServiceException {
         // Load all available converters
-        HashMap<Class<?>, IConverter<?>> map = new HashMap<Class<?>, IConverter<?>>();
+        HashMap<Class<?>, IConverter<?>> map = new HashMap<>();
 
         Properties parsers = new Properties();
 
@@ -48,11 +48,7 @@ abstract class AnOptionsService implements IOptionsService {
             IConverter<?> parser;
             try {
                 parser = (IConverter<?>) ResourceUtils.loadObjectOrEnum(parserName);
-            } catch (ClassNotFoundException e) {
-                throw new OptionsServiceException("Can not load parser for " + className + " class instances", e);
-            } catch (IllegalAccessException e) {
-                throw new OptionsServiceException("Can not load parser for " + className + " class instances", e);
-            } catch (InstantiationException e) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                 throw new OptionsServiceException("Can not load parser for " + className + " class instances", e);
             }
 

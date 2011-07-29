@@ -33,7 +33,7 @@ public class AnimatedIcon implements Icon {
     }
 
     private Icon original;
-    private Set<RepaintArea> repaints = new HashSet<RepaintArea>();
+    private Set<RepaintArea> repaints = new HashSet<>();
 
     /**
      * For use by derived classes that don't have an original.
@@ -172,7 +172,7 @@ public class AnimatedIcon implements Icon {
         public AnimationObserver(AnimatedIcon animIcon, ImageIcon original) {
             this.original = original;
             this.original.setImageObserver(this);
-            ref = new WeakReference<AnimatedIcon>(animIcon);
+            ref = new WeakReference<>(animIcon);
         }
 
         /**

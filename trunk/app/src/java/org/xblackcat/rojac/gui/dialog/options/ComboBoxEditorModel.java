@@ -7,12 +7,12 @@ import javax.swing.*;
 /**
 * @author xBlackCat
 */
-class ComboBoxEditorModel extends AbstractListModel implements ComboBoxModel {
-    private final IValueChecker checker;
-    private Object selected;
+class ComboBoxEditorModel<T> extends AbstractListModel<T> implements ComboBoxModel<T> {
+    private final IValueChecker<T> checker;
+    private T selected;
 
     @SuppressWarnings({"unchecked"})
-    public ComboBoxEditorModel(IValueChecker checker, Object selected) {
+    public ComboBoxEditorModel(IValueChecker<T> checker, T selected) {
         this.checker = checker;
         if (selected != null && checker.isValueCorrect(selected)) {
             this.selected = selected;
@@ -30,19 +30,21 @@ class ComboBoxEditorModel extends AbstractListModel implements ComboBoxModel {
     @Override
     @SuppressWarnings({"unchecked"})
     public void setSelectedItem(Object anItem) {
-        if (checker.isValueCorrect(anItem)) {
-            selected = anItem;
+        T i = (T) anItem;
+
+        if (checker.isValueCorrect(i)) {
+            selected = i;
             fireContentsChanged(this, -1, -1);
         }
     }
 
     @Override
-    public Object getElementAt(int index) {
+    public T getElementAt(int index) {
         return checker.getPossibleValues().get(index);
     }
 
     @Override
-    public Object getSelectedItem() {
+    public T getSelectedItem() {
         return selected;
     }
 }

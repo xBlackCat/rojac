@@ -24,7 +24,7 @@ public class RSDNMessageParser implements IMessageParser {
 
     private final Map<ITag, ITag[]> availableSubTags;
     private static final Comparator<ITagInfo> TAG_COMPARATOR = new Comparator<ITagInfo>() {
-        @SuppressWarnings({"unchecked"})
+        @SuppressWarnings("unchecked")
         public int compare(ITagInfo o1, ITagInfo o2) {
             int m = o1.start() - o2.start();
             if (m == 0) {
@@ -83,7 +83,7 @@ public class RSDNMessageParser implements IMessageParser {
         }
 
         // Make intersection of two tag sets
-        Collection<ITag> tags = new ArrayList<ITag>();
+        Collection<ITag> tags = new ArrayList<>();
         tags.addAll(Arrays.asList(parentTags));
         tags.retainAll(Arrays.asList(subTags));
 
@@ -91,11 +91,11 @@ public class RSDNMessageParser implements IMessageParser {
     }
 
     private String processText(String text, ITag... availableTags) {
-        final Collection<ITagInfo> tags = getFoundTags(text, availableTags);
+        final Collection<ITagInfo<?>> tags = getFoundTags(text, availableTags);
 
         ITagData tagData = null;
-        ITag[] t = null;
-        for (ITagInfo ti : tags) {
+        ITag<?>[] t = null;
+        for (ITagInfo<?> ti : tags) {
             tagData = ti.process();
             if (tagData != null) {
                 t = mergeAvailableTags(ti.getTag(), availableTags);
@@ -127,13 +127,13 @@ public class RSDNMessageParser implements IMessageParser {
         }
     }
 
-    private Collection<ITagInfo> getFoundTags(String text, ITag... availableTags) {
+    private Collection<ITagInfo<?>> getFoundTags(String text, ITag... availableTags) {
         if (!ArrayUtils.isEmpty(availableTags)) {
-            List<ITagInfo> tags = new LinkedList<ITagInfo>();
+            List<ITagInfo<?>> tags = new LinkedList<>();
 
             String lowedText = text.toLowerCase();
             for (ITag t : availableTags) {
-                ITagInfo ti = t.find(text, lowedText);
+                ITagInfo<?> ti = t.find(text, lowedText);
                 if (ti != null) {
                     tags.add(ti);
                 }

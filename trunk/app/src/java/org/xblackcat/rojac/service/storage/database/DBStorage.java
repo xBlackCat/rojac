@@ -202,7 +202,8 @@ public class DBStorage implements IStorage, IQueryExecutor {
     }
 
     @Override
-    public <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, DataQuery sql, K[] keys) throws StorageException {
+    @SafeVarargs
+    public final <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, DataQuery sql, K... keys) throws StorageException {
         return helper.executeSingleBatch(c, getQuery(sql), keys);
     }
 

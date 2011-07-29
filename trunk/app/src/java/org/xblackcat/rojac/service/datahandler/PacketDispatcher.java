@@ -12,7 +12,7 @@ import java.util.Map;
  */
 
 public class PacketDispatcher {
-    private final Map<Class<?>, IPacketProcessor<IPacket>> processors = new HashMap<Class<?>, IPacketProcessor<IPacket>>();
+    private final Map<Class<?>, IPacketProcessor<IPacket>> processors = new HashMap<>();
 
     @SuppressWarnings({"unchecked"})
     public PacketDispatcher(IPacketProcessor... processors) {

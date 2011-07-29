@@ -23,7 +23,7 @@ public final class TestUtils {
      * @return
      */
     public static String applyTag(String text, ITag tag) {
-        final ITagInfo tagInfo = tag.find(text, text.toLowerCase());
+        final ITagInfo<?> tagInfo = tag.find(text, text.toLowerCase());
 
         if (tagInfo == null) {
             return text;
@@ -55,8 +55,8 @@ public final class TestUtils {
         return res.toString();
     }
 
-    public static String applyTags(String text, ITag... tags) {
-        for (ITag t : tags) {
+    public static String applyTags(String text, ITag<?>... tags) {
+        for (ITag<?> t : tags) {
             while (t.find(text, text.toLowerCase()) != null) {
                 text = applyTag(text, t);
             }

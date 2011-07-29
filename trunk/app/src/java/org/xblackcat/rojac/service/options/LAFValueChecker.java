@@ -55,7 +55,7 @@ final class LAFValueChecker implements IValueChecker<LookAndFeel> {
             }
         }
 
-        Map<LNFContainer, String> lafs = new HashMap<LNFContainer, String>();
+        Map<LNFContainer, String> lafs = new HashMap<>();
         for (UIManager.LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
             if (log.isTraceEnabled()) {
                 log.trace("Load " + laf.toString());
@@ -67,10 +67,7 @@ final class LAFValueChecker implements IValueChecker<LookAndFeel> {
             } catch (ClassNotFoundException e1) {
                 log.warn("Can not find class of LAF", e1);
                 continue;
-            } catch (IllegalAccessException e1) {
-                log.warn("Can not initialize L&F class", e1);
-                continue;
-            } catch (InstantiationException e1) {
+            } catch (IllegalAccessException | InstantiationException e1) {
                 log.warn("Can not initialize L&F class", e1);
                 continue;
             }
@@ -90,7 +87,7 @@ final class LAFValueChecker implements IValueChecker<LookAndFeel> {
     public List<LookAndFeel> getPossibleValues() {
         Collection<LNFContainer> lafs = availableLAFs.keySet();
 
-        List<LookAndFeel> lafClasses = new ArrayList<LookAndFeel>(lafs.size());
+        List<LookAndFeel> lafClasses = new ArrayList<>(lafs.size());
 
         for (LNFContainer c : lafs) {
             lafClasses.add(c.getLnf());

@@ -43,7 +43,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket>  {
     private final TIntHashSet updatedMessages = new TIntHashSet();
     private final TIntHashSet ratingCacheUpdate = new TIntHashSet();
 
-    private final TIntObjectHashMap<String> nonExistUsers = new TIntObjectHashMap<String>();
+    private final TIntObjectHashMap<String> nonExistUsers = new TIntObjectHashMap<>();
     private final TIntHashSet existUsers = new TIntHashSet();
 
     LoadExtraMessagesRequest() {

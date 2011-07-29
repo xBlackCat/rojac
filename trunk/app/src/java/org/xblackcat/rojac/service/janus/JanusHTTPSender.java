@@ -313,7 +313,7 @@ class JanusHTTPSender extends BasicHandler {
         int keyIndex = cookie.indexOf("=");
         String key = (keyIndex != -1) ? cookie.substring(0, keyIndex) : cookie;
 
-        List<String> cookies = new ArrayList<String>();
+        List<String> cookies = new ArrayList<>();
         Object oldCookies = msgContext.getProperty(cookieName);
         boolean alreadyExist = false;
         if (oldCookies != null) {

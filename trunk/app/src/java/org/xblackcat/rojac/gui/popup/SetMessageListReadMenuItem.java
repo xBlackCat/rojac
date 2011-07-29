@@ -20,7 +20,7 @@ class SetMessageListReadMenuItem extends JMenuItem {
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Collection<MessageData> datas = new LinkedList<MessageData>();
+                Collection<MessageData> datas = new LinkedList<>();
 
                 for (Post p : root.getSubTreeFlatten()) {
                     datas.add(p.getMessageData());

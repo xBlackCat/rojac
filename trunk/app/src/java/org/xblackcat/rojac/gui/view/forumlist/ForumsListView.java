@@ -41,7 +41,7 @@ public class ForumsListView extends AView {
     // Data and models
     private final ForumTableModel forumsModel = new ForumTableModel();
     private final ForumsRowFilter forumsRowFilter = new ForumsRowFilter();
-    private final TableRowSorter<ForumTableModel> forumTableModelTableRowSorter = new TableRowSorter<ForumTableModel>(forumsModel);
+    private final TableRowSorter<ForumTableModel> forumTableModelTableRowSorter = new TableRowSorter<>(forumsModel);
     private final JToggleButton filled_only;
     private final JToggleButton subscribed_only;
     private final JToggleButton unread_only;

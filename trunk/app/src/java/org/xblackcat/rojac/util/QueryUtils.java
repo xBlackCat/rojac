@@ -28,7 +28,7 @@ public final class QueryUtils {
         String name = '/' + DBCONFIG_PACKAGE + propRoot + "/sql.data.properties";
         Properties queries = ResourceUtils.loadProperties(name);
 
-        Map<T, String> qs = new EnumMap<T, String>(type);
+        Map<T, String> qs = new EnumMap<>(type);
         for (T q : type.getEnumConstants()) {
             String sql = (String) queries.remove(q.getPropertyName());
             if (sql != null) {
@@ -76,7 +76,7 @@ public final class QueryUtils {
             }
         }
 
-        final Map<String, String> map = new LinkedHashMap<String, String>();
+        final Map<String, String> map = new LinkedHashMap<>();
         // Workaround to load properties in natural order.
         Properties p = new Properties() {
             @Override
@@ -95,14 +95,14 @@ public final class QueryUtils {
         Properties init = ResourceUtils.loadProperties('/' + DBCONFIG_PACKAGE + propRoot + "/sql.initialize.properties");
         Properties clue = ResourceUtils.loadProperties('/' + DBCONFIG_PACKAGE + propRoot + "/sql.depends.properties");
 
-        Map<SQL, List<SQL>> map = new LinkedHashMap<SQL, List<SQL>>();
+        Map<SQL, List<SQL>> map = new LinkedHashMap<>();
 
         for (Map.Entry<String, String> ce : check.entrySet()) {
             String name = ce.getKey();
             String sql = ce.getValue();
 
             String inits = clue.getProperty(name, "");
-            List<SQL> sqls = new ArrayList<SQL>();
+            List<SQL> sqls = new ArrayList<>();
             String[] initNames = inits.trim().split(",");
             if (!ArrayUtils.isEmpty(initNames)) {
                 for (String initName : initNames) {

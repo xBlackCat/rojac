@@ -19,7 +19,7 @@ public class NodeTextTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        Set<String> nodes = new HashSet<String>();
+        Set<String> nodes = new HashSet<>();
 
         for (Property p : Property.getAllProperties()) {
             if (p.isPublic()) {

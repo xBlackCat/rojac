@@ -35,12 +35,12 @@ final class LocaleValueChecker implements IValueChecker<Locale> {
                 log.trace("Available locale: " + l);
             }
         }
-        this.locales = new HashSet<Locale>(Arrays.asList(locales));
+        this.locales = new HashSet<>(Arrays.asList(locales));
     }
 
     @Override
     public List<Locale> getPossibleValues() {
-        return new ArrayList<Locale>(locales);
+        return new ArrayList<>(locales);
     }
 
     @Override

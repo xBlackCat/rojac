@@ -54,7 +54,7 @@ class PostChangesRequest extends ARequest<IPacket> {
             }
 
             // Store forum ids of new messages and message ids of new ratings to return update event
-            TIntObjectHashMap<NewMessage> messageForumIds = new TIntObjectHashMap<NewMessage>();
+            TIntObjectHashMap<NewMessage> messageForumIds = new TIntObjectHashMap<>();
 
             for (NewMessage nm : newMessages) {
                 messageForumIds.put(nm.getLocalMessageId(), nm);

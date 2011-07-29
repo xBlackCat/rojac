@@ -12,11 +12,11 @@ import org.xblackcat.utils.ResourceUtils;
  */
 
 public class SmileTag implements ITag<SmileTag> {
-    private final ITag[] tags;
+    private final SingleTag[] tags;
 
     protected SmileTag(Smile smile) {
         String[] smiles = smile.getTags();
-        tags = new ITag[smiles.length];
+        tags = new SingleTag[smiles.length];
         for (int i = 0; i < smiles.length; i++) {
             String tag = smiles[i];
             tags[i] = new SingleTag(
@@ -31,11 +31,12 @@ public class SmileTag implements ITag<SmileTag> {
         }
     }
 
-    public ITagInfo find(String text, String lower) {
-        ITagInfo first = null;
+    @SuppressWarnings("unchecked")
+    public ITagInfo<SmileTag> find(String text, String lower) {
+        ITagInfo<SmileTag> first = null;
 
         for (ITag t : tags) {
-            ITagInfo next = t.find(text, lower);
+            ITagInfo<SmileTag> next = t.find(text, lower);
             if (first == null) {
                 first = next;
             } else if (next != null && next.start() < first.start()) {

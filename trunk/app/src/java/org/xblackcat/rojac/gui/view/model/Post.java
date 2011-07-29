@@ -17,7 +17,7 @@ public class Post implements ITreeItem<Post> {
     protected final Post parent;
     protected final Thread threadRoot;
 
-    protected List<Post> childrenPosts = new ArrayList<Post>();
+    protected List<Post> childrenPosts = new ArrayList<>();
 
     public Post(MessageData messageData, Post parent) {
         this(messageData, parent, null);
@@ -111,7 +111,7 @@ public class Post implements ITreeItem<Post> {
      * @return array of all the post children.
      */
     public Collection<Post> getSubTreeFlatten() {
-        Collection<Post> subPosts = new LinkedList<Post>();
+        Collection<Post> subPosts = new LinkedList<>();
 
         fillCollection(subPosts, this);
 

@@ -9,8 +9,8 @@ import static org.xblackcat.rojac.service.options.Property.VIEW_NAVIGATION_HISTO
 * @author xBlackCat
 */
 class NavigationHistoryTracker {
-    private final Deque<NavigationHistoryItem> history = new LinkedList<NavigationHistoryItem>();
-    private final Deque<NavigationHistoryItem> historyForward = new LinkedList<NavigationHistoryItem>();
+    private final Deque<NavigationHistoryItem> history = new LinkedList<>();
+    private final Deque<NavigationHistoryItem> historyForward = new LinkedList<>();
 
     private NavigationHistoryItem currentItem = null;
 

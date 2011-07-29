@@ -45,7 +45,8 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
         }
     };
 
-    public RequestProcessor(IResultHandler<T> handler, Class<? extends IRequest<T>>[] requests) {
+    @SafeVarargs
+    public RequestProcessor(IResultHandler<T> handler, Class<? extends IRequest<T>>... requests) {
         this.handler = handler;
         this.requests = requests;
     }

@@ -24,11 +24,11 @@ public class Request<T> {
         }
     };
 
-    public static final Request<IPacket> EXTRA_MESSAGES = new Request<IPacket>(LoadExtraMessagesRequest.class);
-    public static final Request<IPacket> GET_FORUMS_LIST = new Request<IPacket>(GetForumListRequest.class);
-    public static final Request<Integer> GET_USER_ID = new Request<Integer>(TestRequest.class);
-    public static final Request<IPacket> SYNCHRONIZE = new Request<IPacket>(PostChangesRequest.class, GetNewPostsRequest.class);
-    public static final Request<IPacket> SYNCHRONIZE_WITH_USERS = new Request<IPacket>(PostChangesRequest.class, GetUsersRequest.class, GetNewPostsRequest.class);
+    public static final Request<IPacket> EXTRA_MESSAGES = new Request<>(LoadExtraMessagesRequest.class);
+    public static final Request<IPacket> GET_FORUMS_LIST = new Request<>(GetForumListRequest.class);
+    public static final Request<Integer> GET_USER_ID = new Request<>(TestRequest.class);
+    public static final Request<IPacket> SYNCHRONIZE = new Request<>(PostChangesRequest.class, GetNewPostsRequest.class);
+    public static final Request<IPacket> SYNCHRONIZE_WITH_USERS = new Request<>(PostChangesRequest.class, GetUsersRequest.class, GetNewPostsRequest.class);
 
     private final Class<? extends IRequest<T>>[] requests;
 
@@ -80,7 +80,7 @@ public class Request<T> {
             }
         }
 
-        new RequestProcessor<T>(new IResultHandler<T>() {
+        new RequestProcessor<>(new IResultHandler<T>() {
             @Override
             public void process(T data) {
                 for (IResultHandler<T> h : handlers) {

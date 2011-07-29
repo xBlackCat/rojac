@@ -8,19 +8,19 @@ public class CodeTestTag implements ITag<CodeTestTag> {
     private static final String OPEN_TAG = "[code]";
     private static final String CLOSE_TAG = "[/code]";
 
-    public ITagInfo find(final String text, final String lower) {
+    public ITagInfo<CodeTestTag> find(final String text, final String lower) {
         final int startPos = lower.indexOf(OPEN_TAG);
 
         if (startPos == -1) {
             return null;
         }
 
-        return new ITagInfo() {
+        return new ITagInfo<CodeTestTag>() {
             public int start() {
                 return startPos;
             }
 
-            public ITag getTag() {
+            public CodeTestTag getTag() {
                 return CodeTestTag.this;
             }
 

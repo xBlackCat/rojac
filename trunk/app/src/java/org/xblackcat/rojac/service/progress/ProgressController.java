@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ProgressController implements IProgressController {
     private static final Log log = LogFactory.getLog(ProgressController.class);
-    private final java.util.Queue<ProgressChangeEvent> waitingEvents = new LinkedBlockingQueue<ProgressChangeEvent>();
+    private final java.util.Queue<ProgressChangeEvent> waitingEvents = new LinkedBlockingQueue<>();
     private boolean processorAimed = false;
 
     private final EventListenerList listenerList = new EventListenerList();

@@ -45,12 +45,10 @@ public enum Header {
         if (constructor != null && o instanceof Post) {
             try {
                 return constructor.newInstance(o);
-            } catch (InstantiationException e) {
+            } catch (InstantiationException | InvocationTargetException e) {
                 throw new RojacException("Can not initialize data class " + aClass.getName(), e);
             } catch (IllegalAccessException e) {
                 throw new RojacException("Security check not passed for data class " + aClass.getName(), e);
-            } catch (InvocationTargetException e) {
-                throw new RojacException("Can not initialize data class " + aClass.getName(), e);
             }
         } else {
             return o;

@@ -35,7 +35,7 @@ class OptionCellEditor extends AbstractCellEditor implements TreeCellEditor {
         if (event == null) {
             return true;
         }
-        PropertyNode propertyNode = getNode(event);
+        PropertyNode<?> propertyNode = getNode(event);
 
         if (propertyNode != null) {
             delegatedEditor = ComponentFactory.createTreeCellEditor(propertyNode);
@@ -48,7 +48,7 @@ class OptionCellEditor extends AbstractCellEditor implements TreeCellEditor {
 
     @Override
     public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
-        PropertyNode n = (PropertyNode) value;
+        PropertyNode<?> n = (PropertyNode) value;
 
         delegatedEditor = ComponentFactory.createTreeCellEditor(n);
 

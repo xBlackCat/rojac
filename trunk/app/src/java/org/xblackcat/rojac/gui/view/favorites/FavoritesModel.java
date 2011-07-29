@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 class FavoritesModel extends AbstractTableModel {
-    private final List<FavoriteData> favorites = new ArrayList<FavoriteData>();
+    private final List<FavoriteData> favorites = new ArrayList<>();
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {

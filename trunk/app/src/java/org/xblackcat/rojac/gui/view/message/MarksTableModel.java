@@ -11,7 +11,7 @@ class MarksTableModel extends AbstractTableModel {
 
     private MarkItem[] rates = NO_MARKS;
 
-    public void setData(MarkItem[] items) {
+    public void setData(MarkItem... items) {
         rates = items;
         fireTableDataChanged();
     }

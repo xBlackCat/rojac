@@ -26,7 +26,7 @@ class FavoritesDecorator extends ADecorator {
 
     public FavoritesDecorator(AModelControl modelControl) {
         super(modelControl);
-        favorites = new GroupItem<FavoriteItem>(Message.View_Navigation_Item_Favorites, ReadStatusIcon.Favorite);
+        favorites = new GroupItem<>(Message.View_Navigation_Item_Favorites, ReadStatusIcon.Favorite);
     }
 
     @Override

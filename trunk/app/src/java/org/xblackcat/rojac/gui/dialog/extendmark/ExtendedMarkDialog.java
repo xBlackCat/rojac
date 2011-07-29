@@ -35,9 +35,9 @@ public class ExtendedMarkDialog extends JDialog {
     private Scope maxScope;
     private Date selectedDate = null;
 
-    private final EnumComboBoxModel<DateDirection> dateRangeModel = new EnumComboBoxModel<DateDirection>(DateDirection.class);
-    private final EnumComboBoxModel<NewState> readStateModel = new EnumComboBoxModel<NewState>(NewState.class);
-    private final EnumComboBoxModel<Scope> scopeModel = new EnumComboBoxModel<Scope>(Scope.class);
+    private final EnumComboBoxModel<DateDirection> dateRangeModel = new EnumComboBoxModel<>(DateDirection.class);
+    private final EnumComboBoxModel<NewState> readStateModel = new EnumComboBoxModel<>(NewState.class);
+    private final EnumComboBoxModel<Scope> scopeModel = new EnumComboBoxModel<>(Scope.class);
     private SpinnerDateModel timeModel;
 
     public ExtendedMarkDialog(Window owner) {
@@ -50,9 +50,9 @@ public class ExtendedMarkDialog extends JDialog {
     }
 
     private void initialize() {
-        JComboBox scopeSelector = new JComboBox(scopeModel);
-        JComboBox dateRangeSelector = new JComboBox(dateRangeModel);
-        JComboBox readStateSelector = new JComboBox(readStateModel);
+        JComboBox<Scope> scopeSelector = new JComboBox<Scope>(scopeModel);
+        JComboBox<DateDirection> dateRangeSelector = new JComboBox<DateDirection>(dateRangeModel);
+        JComboBox<NewState> readStateSelector = new JComboBox<NewState>(readStateModel);
 
         scopeSelector.setRenderer(new DescribableListRenderer() {
             @Override

@@ -27,7 +27,7 @@ public final class Property<T> {
     /**
      * Complete map of properties names to its objects.
      */
-    private static final Set<Property<?>> ALL_PROPERTIES = new HashSet<Property<?>>();
+    private static final Set<Property<?>> ALL_PROPERTIES = new HashSet<>();
     // Global development properties
 
     // Debug variables
@@ -136,7 +136,7 @@ public final class Property<T> {
             checker = new GeneralEnumChecker(type);
         }
 
-        Property<V> prop = new Property<V>(isPublic, name, type, defaultValue, checker);
+        Property<V> prop = new Property<>(isPublic, name, type, defaultValue, checker);
         if (ALL_PROPERTIES.contains(prop)) {
             throw new RojacDebugException("Property '" + name + "' already defined.");
         }
@@ -346,7 +346,7 @@ public final class Property<T> {
 
     public void setCache(T cache) {
         if (cache != null) {
-            this.cache = new SoftReference<T>(cache);
+            this.cache = new SoftReference<>(cache);
         } else {
             this.cache = null;
         }

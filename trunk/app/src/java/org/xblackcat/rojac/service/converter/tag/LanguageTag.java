@@ -80,7 +80,7 @@ public class LanguageTag extends SimpleTag {
             String closeBlockComment,
             String stringBraces,
             Character quoteCharacter,
-            String[] reservedWords) {
+            String... reservedWords) {
         super(tagName, TAG_OPEN, TAG_CLOSE);
 
         if (StringUtils.isEmpty(openBlockComment) != StringUtils.isEmpty(closeBlockComment)) {
@@ -140,7 +140,7 @@ public class LanguageTag extends SimpleTag {
         return reservedWords;
     }
 
-    protected ITagInfo getTagInfo(String text, String lower, final int startPos) {
+    protected ITagInfo<SimpleTag> getTagInfo(String text, String lower, final int startPos) {
         return new LanguageTagInfo(startPos, lower, text);
     }
 

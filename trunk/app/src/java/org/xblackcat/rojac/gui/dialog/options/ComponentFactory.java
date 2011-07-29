@@ -21,35 +21,35 @@ import java.util.Map;
  */
 
 final class ComponentFactory {
-    private static final Map<Class, ListCellRenderer> LIST_RENDERERS = new HashMap<Class, ListCellRenderer>();
-    private static final Map<Class, TreeCellRenderer> TREE_RENDERERS = new HashMap<Class, TreeCellRenderer>();
+    private static final Map<Class, ListCellRenderer> LIST_RENDERERS = new HashMap<>();
+    private static final Map<Class, TreeCellRenderer> TREE_RENDERERS = new HashMap<>();
     private static final DefaultTreeCellRenderer DEFAULT_TREE_CELL_RENDERER = new DefaultTreeCellRenderer();
     private static final PropertyTreeCellRenderer PROPERTY_TREE_CELL_RENDERER = new PropertyTreeCellRenderer();
     private static final int TEXT_FIELD_WIDTH = 10;
 
-    public static PropertyCellEditor createTreeCellEditor(PropertyNode propertyNode) {
+    public static <T> PropertyCellEditor createTreeCellEditor(PropertyNode<T> propertyNode) {
         if (propertyNode == null) {
             return null;
         }
 
-        Property p = propertyNode.getProperty();
+        Property<T> p = propertyNode.getProperty();
         if (p == null) {
             return null;
         }
 
-        IValueChecker valueChecker = p.getChecker();
+        IValueChecker<T> valueChecker = p.getChecker();
 
-        Object currentValue = propertyNode.getValue();
+        T currentValue = propertyNode.getValue();
 
         if (valueChecker != null) {
             if (!CollectionUtils.isEmpty(valueChecker.getPossibleValues())) {
                 // Return combo box based editor
-                ComboBoxModel model = new ComboBoxEditorModel(
+                ComboBoxModel<T> model = new ComboBoxEditorModel<>(
                         valueChecker,
                         currentValue
                 );
 
-                final JComboBox combo = new JComboBox(model);
+                final JComboBox<T> combo = new JComboBox<>(model);
                 combo.setRenderer(new PropertyListCellRenderer(valueChecker));
                 combo.addFocusListener(new FocusListener() {
                     @Override
