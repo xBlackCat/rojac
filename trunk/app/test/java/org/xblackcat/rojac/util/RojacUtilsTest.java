@@ -40,9 +40,9 @@ public class RojacUtilsTest extends TestCase {
             assertEquals(3, l.size());
 
             assertFalse(l.remove(Locale.getDefault()));
-            assertTrue(l.remove(new Locale("de")));
-            assertTrue(l.remove(new Locale("en", "US")));
-            assertTrue(l.remove(new Locale("en", "CA")));
+            assertTrue(l.remove(new Locale("ii")));
+            assertTrue(l.remove(new Locale("un", "EE")));
+            assertTrue(l.remove(new Locale("un", "CC")));
             assertTrue(l.isEmpty());
         }
 
@@ -54,9 +54,9 @@ public class RojacUtilsTest extends TestCase {
             assertEquals(4, l.size());
 
             assertTrue(l.remove(Locale.getDefault()));
-            assertTrue(l.remove(new Locale("de")));
-            assertTrue(l.remove(new Locale("en", "US")));
-            assertTrue(l.remove(new Locale("en", "CA")));
+            assertTrue(l.remove(new Locale("ii")));
+            assertTrue(l.remove(new Locale("un", "EE")));
+            assertTrue(l.remove(new Locale("un", "CC")));
             assertTrue(l.isEmpty());
 
         }
