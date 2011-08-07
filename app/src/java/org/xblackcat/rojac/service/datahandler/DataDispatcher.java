@@ -14,14 +14,14 @@ public class DataDispatcher implements IDataDispatcher {
     public void addDataHandler(IDataHandler handler) {
         assert RojacUtils.checkThread(true);
 
-        handlers = (IDataHandler[]) ArrayUtils.add(this.handlers, handler);
+        handlers = ArrayUtils.add(this.handlers, handler);
     }
 
     @Override
     public void removeDataHandler(IDataHandler handler) {
         assert RojacUtils.checkThread(true);
 
-        handlers = (IDataHandler[]) ArrayUtils.removeElement(this.handlers, handler);
+        handlers = ArrayUtils.removeElement(this.handlers, handler);
     }
 
     @Override

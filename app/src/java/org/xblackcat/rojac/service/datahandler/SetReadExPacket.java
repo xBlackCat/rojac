@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.datahandler;
 
 import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.data.AffectedMessage;
+import org.xblackcat.rojac.data.MessageData;
 
 /**
  * @author xBlackCat
@@ -26,18 +27,27 @@ public class SetReadExPacket implements IPacket, IForumUpdatePacket, IMessageUpd
         }
     }
 
-    public SetReadExPacket(TIntHashSet forumIds, TIntHashSet threadIds, TIntHashSet messageIds, boolean read) {
-        this.forumIds = forumIds;
-        this.messageIds = messageIds;
-        this.threadIds = threadIds;
+    public SetReadExPacket(Iterable<MessageData> messages, boolean read) {
         this.read = read;
+        forumIds = new TIntHashSet();
+        threadIds = new TIntHashSet();
+        messageIds = new TIntHashSet();
+
+        for (MessageData m : messages) {
+            forumIds.add(m.getForumId());
+            threadIds.add(m.getThreadRootId());
+            messageIds.add(m.getMessageId());
+        }
     }
 
-    public SetReadExPacket(boolean read, TIntHashSet messageIds) {
+    public SetReadExPacket(int forumId, int threadId, TIntHashSet messageIds, boolean read) {
         this.forumIds = new TIntHashSet();
         this.threadIds = new TIntHashSet();
         this.messageIds = messageIds;
         this.read = read;
+
+        forumIds.add(forumId);
+        threadIds.add(threadId);
     }
 
     @Override
@@ -64,10 +74,7 @@ public class SetReadExPacket implements IPacket, IForumUpdatePacket, IMessageUpd
         return messageIds.contains(messageId);
     }
 
-    public boolean haveOnlyMessageIds() {
-        return forumIds.isEmpty() && threadIds.isEmpty();
-    }
-
+    @Override
     public boolean isTopicAffected(int threadId) {
         return threadIds.contains(threadId);
     }

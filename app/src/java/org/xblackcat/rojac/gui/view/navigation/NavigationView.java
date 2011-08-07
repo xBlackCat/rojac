@@ -8,9 +8,8 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.view.AView;
-import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
@@ -23,63 +22,6 @@ import java.awt.event.MouseEvent;
  */
 public class NavigationView extends AView {
     private static final Log log = LogFactory.getLog(NavigationView.class);
-
-    private final PacketDispatcher packetDispatcher = new PacketDispatcher(
-            new IPacketProcessor<FavoritesUpdatedPacket>() {
-                @Override
-                public void process(FavoritesUpdatedPacket p) {
-                    model.getFavoritesDecorator().reloadFavorites();
-                }
-            },
-            new IPacketProcessor<FavoriteCategoryUpdatedPacket>() {
-                @Override
-                public void process(FavoriteCategoryUpdatedPacket p) {
-                    model.getFavoritesDecorator().updateFavoriteData(FavoriteType.Category);
-                }
-            },
-            new IPacketProcessor<SetForumReadPacket>() {
-                @Override
-                public void process(SetForumReadPacket p) {
-                    model.getForumDecorator().loadForumStatistic(p.getForumId());
-                    model.getFavoritesDecorator().updateFavoriteData(null);
-                }
-            },
-            new IPacketProcessor<ForumsUpdated>() {
-                @Override
-                public void process(ForumsUpdated p) {
-                    model.getForumDecorator().reloadForums();
-                }
-            },
-            new IPacketProcessor<IForumUpdatePacket>() {
-                @Override
-                public void process(IForumUpdatePacket p) {
-                    model.getForumDecorator().loadForumStatistic(p.getForumIds());
-                    model.getFavoritesDecorator().updateFavoriteData(null);
-                }
-            },
-            new IPacketProcessor<SetSubThreadReadPacket>() {
-                @Override
-                public void process(SetSubThreadReadPacket p) {
-                    model.getForumDecorator().loadForumStatistic(p.getForumId());
-                    model.getFavoritesDecorator().updateFavoriteData(null);
-                }
-            },
-            new IPacketProcessor<SetPostReadPacket>() {
-                @Override
-                public void process(SetPostReadPacket p) {
-                    model.getForumDecorator().loadForumStatistic(p.getForumId());
-                    model.getFavoritesDecorator().updateFavoriteData(null);
-                }
-            },
-            new IPacketProcessor<SubscriptionChangedPacket>() {
-                @Override
-                public void process(SubscriptionChangedPacket p) {
-                    for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
-                        model.getForumDecorator().updateSubscribed(s.getForumId(), s.isSubscribed());
-                    }
-                }
-            }
-    );
 
     private NavigationModel model;
     private JXTreeTable viewTable;
@@ -208,7 +150,7 @@ public class NavigationView extends AView {
 
     @Override
     public void processPacket(IPacket packet) {
-        packetDispatcher.dispatch(packet);
+        model.dispatch(packet);
     }
 
 }

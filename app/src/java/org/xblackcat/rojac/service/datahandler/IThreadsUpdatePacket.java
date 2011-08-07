@@ -6,4 +6,6 @@ package org.xblackcat.rojac.service.datahandler;
 
 public interface IThreadsUpdatePacket extends IPacket {
     int[] getThreadIds();
+
+    boolean isTopicAffected(int threadId);
 }
