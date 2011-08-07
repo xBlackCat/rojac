@@ -131,16 +131,9 @@ class SingleThreadModelControl extends AThreadsModelControl {
                 new IPacketProcessor<SetReadExPacket>() {
                     @Override
                     public void process(SetReadExPacket p) {
-                        if (!p.haveOnlyMessageIds()) {
-                            if (!p.isForumAffected(forumId)) {
-                                // Current forum is not changed - have a rest
-                                return;
-                            }
-
-                            if (!p.isTopicAffected(threadId)) {
-                                // Current forum is not changed - have a rest
-                                return;
-                            }
+                        if (!p.isTopicAffected(threadId)) {
+                            // Current forum is not changed - have a rest
+                            return;
                         }
 
                         Post root = model.getRoot();

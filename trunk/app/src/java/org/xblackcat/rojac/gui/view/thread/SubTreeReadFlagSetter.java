@@ -14,10 +14,14 @@ import org.xblackcat.rojac.util.RojacWorker;
 public class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
     private final boolean read;
     private final TIntHashSet messageIds;
+    private final int threadId;
+    private final int forumId;
 
     public SubTreeReadFlagSetter(boolean read, ITreeItem<?> post) {
         this.read = read;
         messageIds = new TIntHashSet();
+        threadId = post.getTopicId();
+        forumId = post.getForumId();
 
         fillMessageIds(post);
     }
@@ -45,7 +49,7 @@ public class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        IPacket packet = new SetReadExPacket(read, messageIds);
+        IPacket packet = new SetReadExPacket(forumId, threadId, messageIds, read);
         ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
     }
 }

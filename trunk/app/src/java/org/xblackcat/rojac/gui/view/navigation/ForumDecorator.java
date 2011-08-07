@@ -10,10 +10,7 @@ import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.StorageException;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Helper class to manage forum lists in Navigation view
@@ -77,11 +74,11 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    public void updateSubscribed(int forumId, boolean subscribed) {
+    public ILoadTask updateSubscribed(int forumId, boolean subscribed) {
         ForumItem item = viewedForums.get(forumId);
         if (item == null) {
             // Forum not shown yet - load from DB
-            new ForumLoader(forumId).execute();
+            return new ForumLoadTask(forumId);
         } else {
             ForumData fd = new ForumData(
                     item.getForum().setSubscribed(subscribed),
@@ -89,15 +86,22 @@ class ForumDecorator extends ADecorator {
             );
 
             updateForum(fd);
+            return null;
         }
     }
 
-    void loadForumStatistic(int... forumId) {
-        new ForumUpdater(forumId).execute();
+    ILoadTask[] loadForumStatistic(int... forumIds) {
+        ILoadTask[] tasks = new ILoadTask[forumIds.length];
+
+        for (int i = 0, l = tasks.length; i < l; i++) {
+            tasks[i] = new ForumUpdateTask(forumIds[i]);
+        }
+
+        return tasks;
     }
 
-    public void reloadForums() {
-        new ForumLoader().execute();
+    public ILoadTask reloadForums() {
+        return new ForumLoadTask();
     }
 
     private void updateForum(ForumStatistic stat) {
@@ -108,26 +112,69 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    private class ForumUpdater extends AForumUpdater<Void, ForumStatistic> {
-        private final int[] forumIds;
+    private class ForumUpdateTask extends AForumTask<ForumStatistic> {
+        private final int forumId;
 
-        public ForumUpdater(int... forumIds) {
-            this.forumIds = forumIds;
+        protected ForumUpdateTask(int forumId) {
+            this.forumId = forumId;
         }
 
         @Override
-        protected Void perform() throws Exception {
-            for (int forumId : forumIds) {
-                publish(getForumStatistic(forumId));
+        public ForumStatistic doBackground() throws Exception {
+            return getForumStatistic(forumId);
+        }
+
+        @Override
+        public void doSwing(ForumStatistic data) {
+            updateForum(data);
+        }
+    }
+
+    private class ForumLoadTask extends AForumTask<ForumData[]> {
+        private final Integer forumId;
+
+        private ForumLoadTask() {
+            forumId = null;
+        }
+
+        private ForumLoadTask(int forumId) {
+            this.forumId = forumId;
+        }
+
+        @Override
+        public ForumData[] doBackground() throws Exception {
+            Collection<ForumData> result = new ArrayList<>();
+            try {
+                Collection<Forum> forums;
+
+                if (forumId == null) {
+                    forums = fah.getAllForums();
+                } else {
+                    forums = Collections.singleton(fah.getForumById(forumId));
+                }
+
+                for (Forum f : forums) {
+                    int forumId = f.getForumId();
+
+                    result.add(
+                            new ForumData(
+                                    f,
+                                    getForumStatistic(forumId)
+                            )
+                    );
+                }
+            } catch (StorageException e) {
+                log.error("Can not load forum list", e);
+                throw e;
             }
 
-            return null;
+            return result.toArray(new ForumData[result.size()]);
         }
 
         @Override
-        protected void process(List<ForumStatistic> chunks) {
-            for (ForumStatistic stat : chunks) {
-                updateForum(stat);
+        public void doSwing(ForumData[] data) {
+            for (ForumData fd : data) {
+                updateForum(fd);
             }
         }
     }

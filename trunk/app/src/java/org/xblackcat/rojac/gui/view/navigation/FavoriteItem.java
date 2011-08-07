@@ -17,9 +17,10 @@ class FavoriteItem extends AnItem {
     private Favorite favorite;
     private FavoriteStatData statistic;
 
-    public FavoriteItem(AnItem parent, Favorite favorite) {
-        super(parent);
+    public FavoriteItem(Favorite favorite, FavoriteStatData statistic) {
+        super(null);
         this.favorite = favorite;
+        this.statistic = statistic;
     }
 
     @Override

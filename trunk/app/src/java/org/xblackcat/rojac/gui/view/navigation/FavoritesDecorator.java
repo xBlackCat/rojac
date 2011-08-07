@@ -1,18 +1,13 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.util.RojacWorker;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Helper class to work only with favorites in navigation model
@@ -20,8 +15,6 @@ import java.util.List;
  * @author xBlackCat Date: 22.07.11
  */
 class FavoritesDecorator extends ADecorator {
-    private static final Log log = LogFactory.getLog(FavoritesDecorator.class);
-
     private final AGroupItem<FavoriteItem> favorites;
 
     public FavoritesDecorator(AModelControl modelControl) {
@@ -36,88 +29,98 @@ class FavoritesDecorator extends ADecorator {
         };
     }
 
-    void reloadFavorites() {
-        new FavoritesLoader().execute();
+    ILoadTask reloadFavorites() {
+        return new FavoritesLoadTask();
     }
 
-    void updateFavoriteData(FavoriteType type) {
+    ILoadTask[] updateFavoriteData(FavoriteType type) {
         int favoritesSize = favorites.getChildCount();
+        Collection<ILoadTask<Stat>> tasks = new ArrayList<>(favoritesSize);
 
         int i = 0;
         while (i < favoritesSize) {
             FavoriteItem fd = favorites.getChild(i);
             Favorite f = fd.getFavorite();
             if (type == null || f.getType() == type) {
-                new FavoriteInfoLoader(fd).execute();
+                tasks.add(new FavoriteStatLoadTask(fd));
             }
             i++;
         }
+
+        return tasks.toArray(new ILoadTask[tasks.size()]);
     }
 
-    private void reload(Collection<Favorite> favoriteList) {
-        modelControl.removeChildren(favorites);
+    private static class Stat {
+        private final FavoriteStatData newStatistic;
+        private final String newName;
 
-        for (Favorite f : favoriteList) {
-            modelControl.addChild(favorites, new FavoriteItem(favorites, f));
-        }
-
-        updateFavoriteData(null);
-    }
-
-    private class FavoritesLoader extends RojacWorker<Void, Favorite> {
-        @Override
-        protected Void perform() throws Exception {
-            IStorage storage = ServiceFactory.getInstance().getStorage();
-
-            for (Favorite f : storage.getFavoriteAH().getFavorites()) {
-                publish(f);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void process(List<Favorite> chunks) {
-            reload(chunks);
+        private Stat(FavoriteStatData newStatistic, String newName) {
+            this.newStatistic = newStatistic;
+            this.newName = newName;
         }
     }
 
-    private class FavoriteInfoLoader extends RojacWorker<Void, Void> {
-        private FavoriteStatData newStatistic;
-        private String newName;
+    private class FavoriteStatLoadTask extends ALoadTask<Stat> {
         private final FavoriteItem item;
 
-        public FavoriteInfoLoader(FavoriteItem item) {
+        public FavoriteStatLoadTask(FavoriteItem item) {
             this.item = item;
         }
 
         @Override
-        protected Void perform() throws Exception {
+        public Stat doBackground() throws Exception {
             Favorite f = item.getFavorite();
             FavoriteType type = f.getType();
             int itemId = f.getItemId();
 
-            newStatistic = type.loadStatistic(itemId);
-            if (!f.isNameSet()) {
-                newName = type.loadName(itemId);
-            }
+            FavoriteStatData newStatistic = type.loadStatistic(itemId);
+            String newName = f.isNameSet() ? null : type.loadName(itemId);
 
-            publish();
-            return null;
+            return new Stat(newStatistic, newName);
         }
 
         @Override
-        protected void process(List<Void> chunks) {
-            item.setStatistic(newStatistic);
-            if (newName != null) {
+        public void doSwing(Stat data) {
+            item.setStatistic(data.newStatistic);
+            if (data.newName != null) {
                 // Update favorite name
-                item.setName(newName);
+                item.setName(data.newName);
             }
+
+            modelControl.itemUpdated(item);
+        }
+    }
+
+    /**
+     * @author xBlackCat
+     */
+    private class FavoritesLoadTask extends ALoadTask<Collection<FavoriteItem>> {
+        @Override
+        public Collection<FavoriteItem> doBackground() throws Exception {
+            Collection<Favorite> favorites = storage.getFavoriteAH().getFavorites();
+            Collection<FavoriteItem> items = new ArrayList<>(favorites.size());
+
+            for (Favorite f : favorites) {
+                FavoriteType type = f.getType();
+                int itemId = f.getItemId();
+
+                FavoriteStatData newStatistic = type.loadStatistic(itemId);
+                String name = type.loadName(itemId);
+
+                items.add(new FavoriteItem(f.setName(name), newStatistic));
+            }
+
+
+            return items;
         }
 
         @Override
-        protected void done() {
-            modelControl.itemUpdated(item);
+        public void doSwing(Collection<FavoriteItem> data) {
+            modelControl.removeChildren(favorites);
+
+            for (FavoriteItem f : data) {
+                modelControl.addChild(favorites, f);
+            }
         }
     }
 }

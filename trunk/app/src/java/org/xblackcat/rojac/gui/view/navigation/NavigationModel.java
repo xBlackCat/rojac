@@ -1,10 +1,15 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.jdesktop.swingx.treetable.TreeTableModel;
+import org.xblackcat.rojac.gui.view.model.FavoriteType;
+import org.xblackcat.rojac.service.datahandler.*;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author xBlackCat
@@ -12,6 +17,93 @@ import javax.swing.tree.TreePath;
 class NavigationModel extends AModelControl implements TreeTableModel {
     private final TreeModelSupport support = new TreeModelSupport(this);
     private final AnItem root;
+
+    private final PacketDispatcher packetDispatcher = new PacketDispatcher(
+            new IPacketProcessor<FavoritesUpdatedPacket>() {
+                @Override
+                public void process(FavoritesUpdatedPacket p) {
+                    new LoadTaskExecutor(
+                            favoritesDecorator.reloadFavorites()
+                    ).execute();
+                }
+            },
+            new IPacketProcessor<FavoriteCategoryUpdatedPacket>() {
+                @Override
+                public void process(FavoriteCategoryUpdatedPacket p) {
+                    new LoadTaskExecutor(
+                            favoritesDecorator.updateFavoriteData(FavoriteType.Category)
+                    ).execute();
+                }
+            },
+            new IPacketProcessor<SetForumReadPacket>() {
+                @Override
+                public void process(SetForumReadPacket p) {
+                    new LoadTaskExecutor(
+                            ArrayUtils.addAll(
+                                    favoritesDecorator.updateFavoriteData(null),
+                                    forumDecorator.loadForumStatistic(p.getForumId())
+                            )
+                    ).execute();
+                }
+            },
+            new IPacketProcessor<ForumsUpdated>() {
+                @Override
+                public void process(ForumsUpdated p) {
+                    new LoadTaskExecutor(
+                            forumDecorator.reloadForums()
+                    ).execute();
+                }
+            },
+            new IPacketProcessor<IForumUpdatePacket>() {
+                @Override
+                public void process(IForumUpdatePacket p) {
+                    new LoadTaskExecutor(
+                            ArrayUtils.addAll(
+                                    favoritesDecorator.updateFavoriteData(null),
+                                    forumDecorator.loadForumStatistic(p.getForumIds())
+                            )
+                    ).execute();
+                }
+            },
+            new IPacketProcessor<SetSubThreadReadPacket>() {
+                @Override
+                public void process(SetSubThreadReadPacket p) {
+                    new LoadTaskExecutor(
+                            ArrayUtils.addAll(
+                                    favoritesDecorator.updateFavoriteData(null),
+                                    forumDecorator.loadForumStatistic(p.getForumId())
+                            )
+                    ).execute();
+                }
+            },
+            new IPacketProcessor<SetPostReadPacket>() {
+                @Override
+                public void process(SetPostReadPacket p) {
+                    new LoadTaskExecutor(
+                            ArrayUtils.addAll(
+                                    favoritesDecorator.updateFavoriteData(null),
+                                    forumDecorator.loadForumStatistic(p.getForumId())
+                            )
+                    ).execute();
+                }
+            },
+            new IPacketProcessor<SubscriptionChangedPacket>() {
+                @Override
+                public void process(SubscriptionChangedPacket p) {
+                    Collection<ILoadTask> tasks = new ArrayList<>();
+                    for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
+                        ILoadTask task = forumDecorator.updateSubscribed(s.getForumId(), s.isSubscribed());
+                        if (task != null) {
+                            tasks.add(task);
+                        }
+                    }
+
+                    if (!tasks.isEmpty()) {
+                        new LoadTaskExecutor(tasks.toArray(new ILoadTask[tasks.size()])).execute();
+                    }
+                }
+            }
+    );
 
     final ForumDecorator forumDecorator = new ForumDecorator(this);
     final FavoritesDecorator favoritesDecorator = new FavoritesDecorator(this);
@@ -120,18 +212,6 @@ class NavigationModel extends AModelControl implements TreeTableModel {
         support.removeTreeModelListener(l);
     }
 
-    ForumDecorator getForumDecorator() {
-        return forumDecorator;
-    }
-
-    FavoritesDecorator getFavoritesDecorator() {
-        return favoritesDecorator;
-    }
-
-    PersonalDecorator getPersonalDecorator() {
-        return personalDecorator;
-    }
-
     TreePath getPathToRoot(AnItem aNode) {
         return new TreePath(getPathToRoot(aNode, 0));
     }
@@ -163,8 +243,10 @@ class NavigationModel extends AModelControl implements TreeTableModel {
     }
 
     public void load() {
-        getForumDecorator().reloadForums();
-        getFavoritesDecorator().reloadFavorites();
+        new LoadTaskExecutor(
+                forumDecorator.reloadForums(),
+                favoritesDecorator.reloadFavorites()
+        ).execute();
     }
 
     // Helper methods
@@ -181,7 +263,7 @@ class NavigationModel extends AModelControl implements TreeTableModel {
      * Add a child to item and notify listeners about this.
      *
      * @param parent parent item to add child to
-     * @param child a new child item
+     * @param child  a new child item
      */
     @Override
     <T extends AnItem> void addChild(AGroupItem<T> parent, T child) {
@@ -208,5 +290,9 @@ class NavigationModel extends AModelControl implements TreeTableModel {
     public void removeChildren(AGroupItem item) {
         item.clear();
         support.fireTreeStructureChanged(getPathToRoot(item));
+    }
+
+    public void dispatch(IPacket packet) {
+        packetDispatcher.dispatch(packet);
     }
 }
