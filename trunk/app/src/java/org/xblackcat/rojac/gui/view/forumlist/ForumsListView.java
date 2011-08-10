@@ -13,7 +13,6 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
-import org.xblackcat.rojac.gui.view.navigation.AForumUpdater;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.StorageException;

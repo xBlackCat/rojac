@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.view.navigation;
+package org.xblackcat.rojac.gui.view.forumlist;
 
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -12,7 +12,7 @@ import org.xblackcat.rojac.util.RojacWorker;
 /**
  * @author xBlackCat Date: 20.07.11
  */
-public abstract class AForumUpdater<V, T> extends RojacWorker<V, T> {
+abstract class AForumUpdater<V, T> extends RojacWorker<V, T> {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
     protected final IForumAH fah = storage.getForumAH();
 
@@ -31,7 +31,6 @@ public abstract class AForumUpdater<V, T> extends RojacWorker<V, T> {
         } else {
             unreadReplies = 0;
         }
-
 
         return new ForumStatistic(
                 forumId,
