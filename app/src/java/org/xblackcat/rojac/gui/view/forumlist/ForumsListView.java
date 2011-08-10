@@ -74,7 +74,7 @@ public class ForumsListView extends AView {
             new IPacketProcessor<SetPostReadPacket>() {
                 @Override
                 public void process(SetPostReadPacket p) {
-                    loadForumStatistic(p.getForumId());
+                    loadForumStatistic(p.getPost().getForumId());
                 }
             },
             new IPacketProcessor<SubscriptionChangedPacket>() {

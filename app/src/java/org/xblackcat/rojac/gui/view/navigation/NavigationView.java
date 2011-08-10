@@ -34,7 +34,7 @@ public class NavigationView extends AView {
         viewTable.setAutoCreateColumnsFromModel(false);
         viewTable.setTreeTableModel(model);
         viewTable.setTableHeader(null);
-        viewTable.setColumnMargin(3);
+        viewTable.setColumnMargin(0);
 
         TableColumnModel columnModel = viewTable.getColumnModel();
         columnModel.addColumn(new TableColumnExt(0, 100));

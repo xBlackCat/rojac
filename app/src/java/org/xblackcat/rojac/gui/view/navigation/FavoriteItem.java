@@ -88,8 +88,12 @@ class FavoriteItem extends AnItem {
         return favorite;
     }
 
-    public void setStatistic(FavoriteStatData statistic) {
+    void setStatistic(FavoriteStatData statistic) {
         this.statistic = statistic;
+    }
+
+    FavoriteStatData getStatistic() {
+        return statistic;
     }
 
     public void setName(String newName) {

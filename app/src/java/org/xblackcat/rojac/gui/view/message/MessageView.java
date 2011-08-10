@@ -87,7 +87,7 @@ public class MessageView extends AnItemView {
             new IPacketProcessor<SetPostReadPacket>() {
                 @Override
                 public void process(SetPostReadPacket p) {
-                    if (p.getPostId() == messageId) {
+                    if (p.getPost().getMessageId() == messageId) {
                         updateReadState(p.isRead());
                     }
                 }

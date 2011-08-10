@@ -103,7 +103,7 @@ abstract class MessageListControl implements IModelControl<Post> {
                 new IPacketProcessor<SetPostReadPacket>() {
                     @Override
                     public void process(SetPostReadPacket p) {
-                        markPostRead(model, p.getPostId(), p.isRead());
+                        markPostRead(model, p.getPost().getMessageId(), p.isRead());
                     }
                 },
                 new IPacketProcessor<SetReadExPacket>() {

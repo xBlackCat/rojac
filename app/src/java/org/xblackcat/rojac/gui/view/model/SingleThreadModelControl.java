@@ -123,8 +123,9 @@ class SingleThreadModelControl extends AThreadsModelControl {
                 new IPacketProcessor<SetPostReadPacket>() {
                     @Override
                     public void process(SetPostReadPacket p) {
-                        if (p.getForumId() == forumId) {
-                            markPostRead(model, p.getPostId(), p.isRead());
+                        MessageData post = p.getPost();
+                        if (post.getForumId() == forumId && post.getThreadRootId() == threadId) {
+                            markPostRead(model, post.getMessageId(), p.isRead());
                         }
                     }
                 },

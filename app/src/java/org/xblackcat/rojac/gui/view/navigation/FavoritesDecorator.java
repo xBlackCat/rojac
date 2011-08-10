@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.data.FavoriteStatData;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
@@ -43,6 +44,41 @@ class FavoritesDecorator extends ADecorator {
             Favorite f = fd.getFavorite();
             if (type == null || f.getType() == type) {
                 tasks.add(new FavoriteStatLoadTask(fd));
+            }
+            i++;
+        }
+
+        return tasks.toArray(new ILoadTask[tasks.size()]);
+    }
+
+    public ILoadTask[] alterReadStatus(MessageData post, boolean read) {
+        int favoritesSize = favorites.getChildCount();
+        Collection<ILoadTask> tasks = new ArrayList<>(favoritesSize);
+
+        int i = 0;
+        while (i < favoritesSize) {
+            FavoriteItem fd = favorites.getChild(i);
+            Favorite f = fd.getFavorite();
+            FavoriteType type = f.getType();
+            switch (type) {
+                case Category:
+                case UserResponses:
+                case SubThread:
+                    tasks.add(new FavoriteStatLoadTask(fd));
+                    break;
+                case Thread:
+                    if (f.getItemId() == post.getThreadRootId()) {
+                        tasks.add(new FavoriteUnreadAdjust(fd, read ? -1 : 1));
+                    }
+                    break;
+                case UserPosts:
+                    if (f.getItemId() == post.getUserId()) {
+                        tasks.add(new FavoriteUnreadAdjust(fd, read ? -1 : 1));
+                    }
+                    break;
+                default:
+                    tasks.add(new FavoriteUnreadAdjust(fd, read ? -1 : 1));
+                    break;
             }
             i++;
         }
@@ -121,6 +157,30 @@ class FavoritesDecorator extends ADecorator {
             for (FavoriteItem f : data) {
                 modelControl.addChild(favorites, f);
             }
+        }
+    }
+
+    private class FavoriteUnreadAdjust implements ILoadTask<Void> {
+        private final FavoriteItem item;
+        private int adjustDelta;
+
+        public FavoriteUnreadAdjust(FavoriteItem item, int adjustDelta) {
+            this.item = item;
+            this.adjustDelta = adjustDelta;
+        }
+
+        @Override
+        public Void doBackground() throws Exception {
+            return null;
+        }
+
+        @Override
+        public void doSwing(Void data) {
+            FavoriteStatData stat = item.getStatistic();
+
+            item.setStatistic(new FavoriteStatData(stat.getUnread() + adjustDelta, stat.getTotal()));
+
+            modelControl.itemUpdated(item);
         }
     }
 }
