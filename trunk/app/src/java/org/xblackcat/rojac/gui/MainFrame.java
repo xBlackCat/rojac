@@ -26,8 +26,6 @@ import org.xblackcat.rojac.gui.dialog.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.factory.ViewHelper;
-import org.xblackcat.rojac.gui.view.favorites.FavoritesView;
-import org.xblackcat.rojac.gui.view.forumlist.ForumsListView;
 import org.xblackcat.rojac.gui.view.navigation.NavigationView;
 import org.xblackcat.rojac.gui.view.recenttopics.RecentTopicsView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
@@ -74,8 +72,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private Map<ViewId, View> openedViews = new HashMap<>();
     protected RootWindow threadsRootWindow;
 
-    private static final String FORUMS_VIEW_ID = "forums_view";
-    private static final String FAVORITES_VIEW_ID = "favorites_view";
+//    private static final String FORUMS_VIEW_ID = "forums_view";
+//    private static final String FAVORITES_VIEW_ID = "favorites_view";
     private static final String RECENT_TOPICS_VIEW_ID = "lastPosts_view";
     private static final String THREADS_VIEW_ID = "threads_view_id";
     private static final String NAVIGATION_VIEW_ID = "navigation_view_id";
@@ -263,8 +261,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private void initialize() {
-        final ForumsListView forumsListView = new ForumsListView(this);
-        final FavoritesView favoritesView = new FavoritesView(this);
+//        final ForumsListView forumsListView = new ForumsListView(this);
+//        final FavoritesView favoritesView = new FavoritesView(this);
         final RecentTopicsView recentTopicsView = new RecentTopicsView(this);
         final NavigationView navigationView = new NavigationView(this);
 
@@ -272,10 +270,10 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         setContentPane(cp);
 
         // Setup forums view
-        View viewForums = createView(forumsListView);
+//        View viewForums = createView(forumsListView);
 
         // Setup favorites view
-        View viewFavorites = createView(favoritesView);
+//        View viewFavorites = createView(favoritesView);
 
         View viewRecentTopics = createView(recentTopicsView);
 
@@ -308,21 +306,21 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
         View threadsView = createThreadsView(threadsRootWindow);
         View[] mainViews = new View[]{
-                viewForums,
-                viewFavorites,
+//                viewForums,
+//                viewFavorites,
                 viewRecentTopics,
                 viewNavigation
         };
 
         StringViewMap viewMap = new StringViewMap();
-        viewMap.addView(FORUMS_VIEW_ID, viewForums);
-        viewMap.addView(FAVORITES_VIEW_ID, viewFavorites);
+//        viewMap.addView(FORUMS_VIEW_ID, viewForums);
+//        viewMap.addView(FAVORITES_VIEW_ID, viewFavorites);
         viewMap.addView(RECENT_TOPICS_VIEW_ID, viewRecentTopics);
         viewMap.addView(NAVIGATION_VIEW_ID, viewNavigation);
         viewMap.addView(THREADS_VIEW_ID, threadsView);
 
-        layoutMap.put(FORUMS_VIEW_ID, forumsListView);
-        layoutMap.put(FAVORITES_VIEW_ID, favoritesView);
+//        layoutMap.put(FORUMS_VIEW_ID, forumsListView);
+//        layoutMap.put(FAVORITES_VIEW_ID, favoritesView);
         layoutMap.put(RECENT_TOPICS_VIEW_ID, recentTopicsView);
         layoutMap.put(NAVIGATION_VIEW_ID, navigationView);
 
@@ -336,17 +334,18 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                                 viewNavigation,
                                 threadsView
                         ),
-                        new SplitWindow(
-                                false,
-                                0.25f,
-                                viewRecentTopics,
-                                new SplitWindow(
-                                        false,
-                                        0.7f,
-                                        viewForums,
-                                        viewFavorites
-                                )
-                        )
+                        viewRecentTopics
+//                        new SplitWindow(
+//                                false,
+//                                0.25f,
+//                                viewRecentTopics,
+//                                new SplitWindow(
+//                                        false,
+//                                        0.7f,
+//                                        viewForums,
+//                                        viewFavorites
+//                                )
+//                        )
                 )
         );
 

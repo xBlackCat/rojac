@@ -1,26 +1,31 @@
 package org.xblackcat.rojac.service.datahandler;
 
+import org.xblackcat.rojac.data.MessageData;
+
 /**
  * @author xBlackCat
  */
 
-public class SetPostReadPacket extends SetForumReadPacket {
-    protected final int postId;
+public class SetPostReadPacket implements IPacket {
+    protected final MessageData post;
+    private final boolean readStatus;
 
     /**
      * Constructs a post read status changed packet.
      *
+     * @param post
      * @param readStatus
-     * @param forumId
-     * @param postId
      */
-    public SetPostReadPacket(boolean readStatus, int forumId, int postId) {
-        super(readStatus, forumId);
-        this.postId = postId;
+    public SetPostReadPacket(MessageData post, boolean readStatus) {
+        this.post = post;
+        this.readStatus = readStatus;
     }
 
-    public int getPostId() {
-        return postId;
+    public MessageData getPost() {
+        return post;
     }
 
+    public boolean isRead() {
+        return readStatus;
+    }
 }

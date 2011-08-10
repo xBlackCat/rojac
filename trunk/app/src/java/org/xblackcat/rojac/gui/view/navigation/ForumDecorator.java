@@ -10,7 +10,10 @@ import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.StorageException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Helper class to manage forum lists in Navigation view
@@ -112,6 +115,18 @@ class ForumDecorator extends ADecorator {
         }
     }
 
+    public ILoadTask[] alterReadStatus(int forumId, boolean read) {
+        ForumItem navItem = viewedForums.get(forumId);
+        if (navItem != null) {
+            ILoadTask<Void> task = new ForumUnreadAdjust(navItem, read ? -1 : 1);
+
+            return ALoadTask.group(task);
+        }
+
+        return ILoadTask.NO_TASKS;
+    }
+
+
     private class ForumUpdateTask extends AForumTask<ForumStatistic> {
         private final int forumId;
 
@@ -179,51 +194,44 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    private class ForumLoader extends AForumUpdater<Void, ForumData> {
-        private final Integer forumId;
-
-        ForumLoader(int forumId) {
-            this.forumId = forumId;
-        }
-
-        private ForumLoader() {
-            this.forumId = null;
-        }
-
+    private class ForumAjustUnreadTask extends ALoadTask<Void> {
         @Override
-        protected Void perform() throws Exception {
-            try {
-                Collection<Forum> forums;
-
-                if (forumId == null) {
-                    forums = fah.getAllForums();
-                } else {
-                    forums = Collections.singleton(fah.getForumById(forumId));
-                }
-
-                for (Forum f : forums) {
-                    int forumId = f.getForumId();
-
-                    publish(
-                            new ForumData(
-                                    f,
-                                    getForumStatistic(forumId)
-                            )
-                    );
-                }
-            } catch (StorageException e) {
-                log.error("Can not load forum list", e);
-                throw e;
-            }
-
+        public Void doBackground() throws Exception {
             return null;
         }
 
         @Override
-        protected void process(List<ForumData> forums) {
-            for (ForumData fd : forums) {
-                updateForum(fd);
-            }
+        public void doSwing(Void data) {
+
+        }
+    }
+
+    private class ForumUnreadAdjust extends ALoadTask<Void> {
+        private final ForumItem navItem;
+        private int adjustValue;
+
+        public ForumUnreadAdjust(ForumItem navItem, int adjustValue) {
+            this.navItem = navItem;
+            this.adjustValue = adjustValue;
+        }
+
+        @Override
+        public Void doBackground() throws Exception {
+            return null;
+        }
+
+        @Override
+        public void doSwing(Void data) {
+            ForumStatistic statistic = navItem.getStatistic();
+            statistic = new ForumStatistic(
+                    statistic.getForumId(),
+                    statistic.getTotalMessages(),
+                    statistic.getUnreadMessages() + adjustValue,
+                    statistic.getLastMessageDate(),
+                    statistic.getUnreadReplies()
+            );
+            navItem.setStatistic(statistic);
+            modelControl.itemUpdated(navItem);
         }
     }
 }

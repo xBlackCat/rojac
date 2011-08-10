@@ -31,9 +31,7 @@ public class MessageReadFlagSetter extends RojacWorker<Void, Void> {
     protected void done() {
         if (post.isRead() != read) {
             IPacket processPacket = new SetPostReadPacket(
-                    read,
-                    post.getForumId(),
-                    post.getMessageId()
+                    post, read
             );
             ServiceFactory.getInstance().getDataDispatcher().processPacket(processPacket);
         }

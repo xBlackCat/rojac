@@ -166,8 +166,8 @@ class SortedForumModelControl extends AThreadsModelControl {
                 new IPacketProcessor<SetPostReadPacket>() {
                     @Override
                     public void process(SetPostReadPacket p) {
-                        if (p.getForumId() == forumId) {
-                            markPostRead(model, p.getPostId(), p.isRead());
+                        if (p.getPost().getForumId() == forumId) {
+                            markPostRead(model, p.getPost().getMessageId(), p.isRead());
                         }
                     }
                 },

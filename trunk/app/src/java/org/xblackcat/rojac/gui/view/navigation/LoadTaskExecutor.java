@@ -1,44 +1,41 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
-import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
+
+import javax.swing.*;
 
 /**
  * @author xBlackCat
  */
-class LoadTaskExecutor extends RojacWorker<Void, Void> {
+@TaskType(TaskTypeEnum.Background)
+class LoadTaskExecutor implements Runnable {
     private final ILoadTask[] tasks;
-    private final Object[] results;
 
     LoadTaskExecutor(ILoadTask... tasks) {
         this.tasks = tasks;
-        results = new Object[tasks.length];
     }
 
-    @Override
-    protected Void perform() throws Exception {
-        for (int i = 0, tasksLength = tasks.length; i < tasksLength; i++) {
+    @SuppressWarnings({"unchecked"})
+    public void run() {
+        for (final ILoadTask task : tasks) {
             try {
-                Object result = tasks[i].doBackground();
+                final Object result = task.doBackground();
 
-                synchronized (this) {
-                    results[i] = result;
-                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        task.doSwing(result);
+                    }
+                });
             } catch (Exception e) {
                 // TODO: do something
             }
         }
-        return null;
     }
 
-    @SuppressWarnings({"unchecked"})
-    @Override
-    protected void done() {
-        for (int i = 0, tasksLength = tasks.length; i < tasksLength; i++) {
-            Object result;
-            synchronized (this) {
-                result = results[i];
-            }
-            tasks[i].doSwing(result);
-        }
+    public final void execute() {
+        ServiceFactory.getInstance().getExecutor().execute(this);
     }
 }

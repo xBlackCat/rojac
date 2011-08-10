@@ -81,8 +81,8 @@ class NavigationModel extends AModelControl implements TreeTableModel {
                 public void process(SetPostReadPacket p) {
                     new LoadTaskExecutor(
                             ArrayUtils.addAll(
-                                    favoritesDecorator.updateFavoriteData(null),
-                                    forumDecorator.loadForumStatistic(p.getForumId())
+                                    favoritesDecorator.alterReadStatus(p.getPost(), p.isRead()),
+                                    forumDecorator.alterReadStatus(p.getPost().getForumId(), p.isRead())
                             )
                     ).execute();
                 }
