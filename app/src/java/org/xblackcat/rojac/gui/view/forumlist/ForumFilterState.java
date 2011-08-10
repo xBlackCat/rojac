@@ -4,7 +4,7 @@ package org.xblackcat.rojac.gui.view.forumlist;
  * @author xBlackCat
  */
 
-public enum ForumFilterState {
+enum ForumFilterState {
     Subscribed,
     NotEmpty,
     Unread

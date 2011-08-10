@@ -1,13 +1,11 @@
 package org.xblackcat.rojac.data;
 
-import org.xblackcat.rojac.gui.view.forumlist.ForumData;
-
 /**
  * @author xBlackCat
  */
 
 public class ForumMessageData extends MessageData {
-    private final ForumData forum;
+    private final Forum forum;
 
     public ForumMessageData(Forum forum) {
         super(
@@ -24,10 +22,10 @@ public class ForumMessageData extends MessageData {
                 null,
                 false
         );
-        this.forum = new ForumData(forum);
+        this.forum = forum;
     }
 
-    public ForumData getForum() {
+    public Forum getForum() {
         return forum;
     }
 }

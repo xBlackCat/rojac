@@ -6,6 +6,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacUtils;
 
 /**
  * @author xBlackCat
@@ -14,7 +15,9 @@ public abstract class AForumTask<V> extends ALoadTask<V> {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
     protected final IForumAH fah = storage.getForumAH();
 
-    protected ForumStatistic getForumStatistic(int forumId) throws StorageException {
+    protected final ForumStatistic getForumStatistic(int forumId) throws StorageException {
+        assert RojacUtils.checkThread(false);
+
         Number totalMessages = fah.getMessagesInForum(forumId);
         Number unreadMessages = fah.getUnreadMessagesInForum(forumId);
         Number lastPostDate = fah.getLastMessageDateInForum(forumId);

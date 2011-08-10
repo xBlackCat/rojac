@@ -6,7 +6,6 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewType;
-import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.UIUtils;
@@ -20,10 +19,10 @@ class ForumItem extends AnItem {
     private final Forum forum;
     private ForumStatistic statistic;
 
-    public ForumItem(AnItem parent, ForumData fd) {
+    public ForumItem(AnItem parent, Forum forum, ForumStatistic statistic) {
         super(parent);
-        this.forum = fd.getForum();
-        this.statistic = fd.getStat();
+        this.forum = forum;
+        this.statistic = statistic;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class ForumData {
         return stat;
     }
 
-    void setStat(ForumStatistic stat) {
+    public void setStat(ForumStatistic stat) {
         this.stat = stat;
     }
 

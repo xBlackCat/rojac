@@ -2,12 +2,12 @@ package org.xblackcat.rojac.gui.view.model;
 
 import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.RojacDebugException;
+import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumMessageData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
@@ -230,7 +230,7 @@ class SortedForumModelControl extends AThreadsModelControl {
                         final MessageData data = root.getMessageData();
 
                         if (data instanceof ForumMessageData) {
-                            ForumData f = ((ForumMessageData) data).getForum();
+                            Forum f = ((ForumMessageData) data).getForum();
 
                             for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
                                 if (s.getForumId() == f.getForumId()) {
@@ -256,9 +256,9 @@ class SortedForumModelControl extends AThreadsModelControl {
         final MessageData data = model.getRoot().getMessageData();
 
         if (data instanceof ForumMessageData) {
-            ForumData f = ((ForumMessageData) data).getForum();
+            Forum f = ((ForumMessageData) data).getForum();
 
-            return PopupMenuBuilder.getForumViewTabMenu(f.getForum(), appControl);
+            return PopupMenuBuilder.getForumViewTabMenu(f, appControl);
         }
 
         return null;

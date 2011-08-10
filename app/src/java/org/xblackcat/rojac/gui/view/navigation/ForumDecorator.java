@@ -6,14 +6,10 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
-import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.StorageException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Helper class to manage forum lists in Navigation view
@@ -52,26 +48,26 @@ class ForumDecorator extends ADecorator {
 
     @Override
     AnItem[] getItemsList() {
-        return new AnItem[] {
+        return new AnItem[]{
                 subscribedForums,
                 notSubscribedForums
         };
     }
 
-    void updateForum(ForumData d) {
-        boolean subscribed = d.getForum().isSubscribed();
+    void updateForum(Forum forum, ForumStatistic statistic) {
+        boolean subscribed = forum.isSubscribed();
         AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
 
-        int forumId = d.getForumId();
-        ForumItem forum = new ForumItem(parent, d);
+        int forumId = forum.getForumId();
+        ForumItem forumItem = new ForumItem(parent, forum, statistic);
 
         // Remove forum from list if any
-        modelControl.safeRemoveChild(subscribedForums, forum);
-        modelControl.safeRemoveChild(notSubscribedForums, forum);
+        modelControl.safeRemoveChild(subscribedForums, forumItem);
+        modelControl.safeRemoveChild(notSubscribedForums, forumItem);
 
-        if (d.getStat().getTotalMessages() > 0 || subscribed) {
-            modelControl.addChild(parent, forum);
-            viewedForums.put(forumId, forum);
+        if (statistic.getTotalMessages() > 0 || subscribed) {
+            modelControl.addChild(parent, forumItem);
+            viewedForums.put(forumId, forumItem);
         } else {
             viewedForums.remove(forumId);
         }
@@ -83,12 +79,10 @@ class ForumDecorator extends ADecorator {
             // Forum not shown yet - load from DB
             return new ForumLoadTask(forumId);
         } else {
-            ForumData fd = new ForumData(
-                    item.getForum().setSubscribed(subscribed),
-                    item.getStatistic()
-            );
+            Forum forum = item.getForum().setSubscribed(subscribed);
+            ForumStatistic statistic = item.getStatistic();
 
-            updateForum(fd);
+            updateForum(forum, statistic);
             return null;
         }
     }
@@ -118,7 +112,7 @@ class ForumDecorator extends ADecorator {
     public ILoadTask[] alterReadStatus(int forumId, boolean read) {
         ForumItem navItem = viewedForums.get(forumId);
         if (navItem != null) {
-            ILoadTask<Void> task = new ForumUnreadAdjust(navItem, read ? -1 : 1);
+            ILoadTask<Void> task = new ForumUnreadAdjustTask(navItem, read ? -1 : 1);
 
             return ALoadTask.group(task);
         }
@@ -145,7 +139,7 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    private class ForumLoadTask extends AForumTask<ForumData[]> {
+    private class ForumLoadTask extends AForumTask<Map<Forum, ForumStatistic>> {
         private final Integer forumId;
 
         private ForumLoadTask() {
@@ -157,8 +151,8 @@ class ForumDecorator extends ADecorator {
         }
 
         @Override
-        public ForumData[] doBackground() throws Exception {
-            Collection<ForumData> result = new ArrayList<>();
+        public Map<Forum, ForumStatistic> doBackground() throws Exception {
+            Map<Forum, ForumStatistic> result = new HashMap<>();
             try {
                 Collection<Forum> forums;
 
@@ -170,47 +164,31 @@ class ForumDecorator extends ADecorator {
 
                 for (Forum f : forums) {
                     int forumId = f.getForumId();
+                    ForumStatistic statistic = getForumStatistic(forumId);
 
-                    result.add(
-                            new ForumData(
-                                    f,
-                                    getForumStatistic(forumId)
-                            )
-                    );
+                    result.put(f, statistic);
                 }
             } catch (StorageException e) {
                 log.error("Can not load forum list", e);
                 throw e;
             }
 
-            return result.toArray(new ForumData[result.size()]);
+            return result;
         }
 
         @Override
-        public void doSwing(ForumData[] data) {
-            for (ForumData fd : data) {
-                updateForum(fd);
+        public void doSwing(Map<Forum, ForumStatistic> data) {
+            for (Map.Entry<Forum, ForumStatistic> fd : data.entrySet()) {
+                updateForum(fd.getKey(), fd.getValue());
             }
         }
     }
 
-    private class ForumAjustUnreadTask extends ALoadTask<Void> {
-        @Override
-        public Void doBackground() throws Exception {
-            return null;
-        }
-
-        @Override
-        public void doSwing(Void data) {
-
-        }
-    }
-
-    private class ForumUnreadAdjust extends ALoadTask<Void> {
+    private class ForumUnreadAdjustTask extends ALoadTask<Void> {
         private final ForumItem navItem;
         private int adjustValue;
 
-        public ForumUnreadAdjust(ForumItem navItem, int adjustValue) {
+        public ForumUnreadAdjustTask(ForumItem navItem, int adjustValue) {
             this.navItem = navItem;
             this.adjustValue = adjustValue;
         }
