@@ -184,32 +184,23 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    private class ForumUnreadAdjustTask extends ALoadTask<Void> {
-        private final ForumItem navItem;
-        private int adjustValue;
-
-        public ForumUnreadAdjustTask(ForumItem navItem, int adjustValue) {
-            this.navItem = navItem;
-            this.adjustValue = adjustValue;
-        }
-
-        @Override
-        public Void doBackground() throws Exception {
-            return null;
+    private class ForumUnreadAdjustTask extends AnAdjustUnreadTask<ForumItem> {
+        private ForumUnreadAdjustTask(ForumItem item, int adjustDelta) {
+            super(item, adjustDelta);
         }
 
         @Override
         public void doSwing(Void data) {
-            ForumStatistic statistic = navItem.getStatistic();
+            ForumStatistic statistic = item.getStatistic();
             statistic = new ForumStatistic(
                     statistic.getForumId(),
                     statistic.getTotalMessages(),
-                    statistic.getUnreadMessages() + adjustValue,
+                    statistic.getUnreadMessages() + adjustDelta,
                     statistic.getLastMessageDate(),
                     statistic.getUnreadReplies()
             );
-            navItem.setStatistic(statistic);
-            modelControl.itemUpdated(navItem);
+            item.setStatistic(statistic);
+            modelControl.itemUpdated(item);
         }
     }
 }

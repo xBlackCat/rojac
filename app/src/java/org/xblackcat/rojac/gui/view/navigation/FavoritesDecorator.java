@@ -68,16 +68,16 @@ class FavoritesDecorator extends ADecorator {
                     break;
                 case Thread:
                     if (f.getItemId() == post.getThreadRootId()) {
-                        tasks.add(new FavoriteUnreadAdjust(fd, read ? -1 : 1));
+                        tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
                     }
                     break;
                 case UserPosts:
                     if (f.getItemId() == post.getUserId()) {
-                        tasks.add(new FavoriteUnreadAdjust(fd, read ? -1 : 1));
+                        tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
                     }
                     break;
                 default:
-                    tasks.add(new FavoriteUnreadAdjust(fd, read ? -1 : 1));
+                    tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
                     break;
             }
             i++;
@@ -160,18 +160,9 @@ class FavoritesDecorator extends ADecorator {
         }
     }
 
-    private class FavoriteUnreadAdjust implements ILoadTask<Void> {
-        private final FavoriteItem item;
-        private int adjustDelta;
-
-        public FavoriteUnreadAdjust(FavoriteItem item, int adjustDelta) {
-            this.item = item;
-            this.adjustDelta = adjustDelta;
-        }
-
-        @Override
-        public Void doBackground() throws Exception {
-            return null;
+    private class FavoriteAdjustUnreadTask extends AnAdjustUnreadTask<FavoriteItem> {
+        public FavoriteAdjustUnreadTask(FavoriteItem item, int adjustDelta) {
+            super(item, adjustDelta);
         }
 
         @Override
