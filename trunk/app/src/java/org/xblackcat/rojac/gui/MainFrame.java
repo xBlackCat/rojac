@@ -566,7 +566,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
             } catch (ClassNotFoundException e) {
                 log.error("Main frame state class is not found", e);
-            } catch (IOException e) {
+            } catch (IOException|RuntimeException e) {
                 log.error("Can not load views layout.", e);
             }
         } else {
