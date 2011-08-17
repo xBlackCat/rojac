@@ -4,7 +4,6 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.theme.AnIcon;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
@@ -13,7 +12,6 @@ import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 
@@ -188,7 +186,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
 
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
-        AnIcon threadIcon = null;
+        Icon threadIcon = null;
 
         Post root = model.getRoot();
 
@@ -201,7 +199,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
             }
         }
 
-        return UIUtils.getIcon(threadIcon);
+        return threadIcon;
     }
 
     @Override

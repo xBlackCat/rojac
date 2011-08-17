@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.options.Property;
 
 /**
  * @author xBlackCat Date: 22.07.11
@@ -23,5 +24,34 @@ class PersonalDecorator extends ADecorator {
         return new AnItem[]{
                 personal
         };
+    }
+
+    public ALoadTask[] reloadInfo() {
+        Integer userId = Property.RSDN_USER_ID.get();
+        if (userId == null) {
+            return ALoadTask.NO_TASKS;
+        }
+
+        return ALoadTask.NO_TASKS;
+    }
+
+    private class AnswersReloadTask extends ALoadTask<Integer> {
+
+        private final int userId;
+
+        private AnswersReloadTask(int userId) {
+            this.userId = userId;
+        }
+
+        @Override
+        Integer doBackground() throws Exception {
+
+
+            return null;
+        }
+
+        @Override
+        void doSwing(Integer data) {
+        }
     }
 }

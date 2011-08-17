@@ -311,8 +311,7 @@ public enum Message {
 
     OpenMessageMethod_MessageInTab,
     OpenMessageMethod_InThread,
-    OpenMessageMethod_InForum,
-    ;
+    OpenMessageMethod_InForum,;
 
     // Constants
     static final String LOCALIZATION_BUNDLE_NAME = "messages";
@@ -323,9 +322,7 @@ public enum Message {
      * Returns a localized text of the constant. Optionally accepts parameters to substitute into text.
      *
      * @param arguments optionally parameters for formatting message.
-     *
      * @return formatted localized message.
-     *
      * @throws MissingResourceException if no localized message is exists for the constant.
      */
     public String get(Object... arguments) throws MissingResourceException {

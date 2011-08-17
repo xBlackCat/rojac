@@ -149,7 +149,7 @@ public class LoginDialog extends JDialog {
                         Message.Dialog_Login_InvalidUserName.get(),
                         Message.Dialog_Login_InvalidUserName_Title.get(),
                         JOptionPane.YES_NO_OPTION
-                        );
+                );
                 if (res == JOptionPane.NO_OPTION) {
                     // Let user to enter another login/password.
                     return;

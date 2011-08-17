@@ -56,7 +56,7 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
 
     /**
      * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
-          */
+     */
     public Object getCellEditorValue() {
         return editorComponent.getValue();
     }

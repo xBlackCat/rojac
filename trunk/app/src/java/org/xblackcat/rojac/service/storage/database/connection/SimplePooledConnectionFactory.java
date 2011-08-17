@@ -42,7 +42,7 @@ public class SimplePooledConnectionFactory extends AConnectionFactory {
         try {
             PoolingDriver driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp:");
 
-        driver.registerPool("rojacdb", connectionPool);
+            driver.registerPool("rojacdb", connectionPool);
         } catch (SQLException e) {
             throw new StorageInitializationException("Can not obtain pooling driver", e);
         }

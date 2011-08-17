@@ -9,8 +9,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ExceptionDialog extends JDialog {
     public ExceptionDialog(Window owner) {
         super(owner, ModalityType.APPLICATION_MODAL);

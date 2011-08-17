@@ -50,7 +50,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
     /**
      * Loads from resource the options. If an option have already initialized it will not be overwrited.
      *
-     * @param config        config resource bundle.
+     * @param config config resource bundle.
      */
     private void loadFromResource(Properties config) {
         for (Property<?> p : Property.getAllProperties()) {

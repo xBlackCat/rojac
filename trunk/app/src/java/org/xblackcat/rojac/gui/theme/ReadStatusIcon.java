@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.gui.theme;
 
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
+import org.xblackcat.rojac.util.UIUtils;
 
+import javax.swing.*;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -61,10 +63,9 @@ public enum ReadStatusIcon {
     /**
      * Reply list on user's posts read status icons.
      */
-    ReplyList("user-reply"),
-    ;
+    ReplyList("user-reply"),;
 
-    private final Map<ReadStatus, AnIcon> iconsBuffer = new EnumMap<>(ReadStatus.class);
+    private final Map<ReadStatus, IResourceIcon> iconsBuffer = new EnumMap<>(ReadStatus.class);
 
     ReadStatusIcon(String base) {
         iconsBuffer.put(ReadStatus.Read, new SimpleIcon(base + "-read.png"));
@@ -72,8 +73,9 @@ public enum ReadStatusIcon {
         iconsBuffer.put(ReadStatus.Unread, new SimpleIcon(base + "-unread.png"));
     }
 
-    public AnIcon getIcon(ReadStatus status) {
+    public Icon getIcon(ReadStatus status) {
         assert status != null;
-        return iconsBuffer.get(status);
+
+        return UIUtils.getIcon(iconsBuffer.get(status));
     }
 }

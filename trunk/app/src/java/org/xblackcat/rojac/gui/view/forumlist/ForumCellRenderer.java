@@ -30,11 +30,19 @@ class ForumCellRenderer extends DefaultTableCellRenderer {
         if (f != null) {
             isNotSubcribed = !f.isSubscribed();
 
-            if (isNotSubcribed) text.append("<i>");
-            if (hasUnread) text.append("<b>");
+            if (isNotSubcribed) {
+                text.append("<i>");
+            }
+            if (hasUnread) {
+                text.append("<b>");
+            }
             text.append(f.getForumName());
-            if (hasUnread) text.append("</b>");
-            if (isNotSubcribed) text.append("</i>");
+            if (hasUnread) {
+                text.append("</b>");
+            }
+            if (isNotSubcribed) {
+                text.append("</i>");
+            }
 
             if (fs != null) {
                 text.append(" (");

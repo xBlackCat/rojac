@@ -71,8 +71,7 @@ public class PostTableCellRenderer extends JLabel
     private Border getNoFocusBorder() {
         Border border = LookupDelegate.getBorder(this, ui, "Table.cellNoFocusBorder");
         if (System.getSecurityManager() != null) {
-            if (border != null) return border;
-            return SAFE_NO_FOCUS_BORDER;
+            return border != null ? border : SAFE_NO_FOCUS_BORDER;
         } else if (border != null) {
             if (noFocusBorder == null || noFocusBorder == DEFAULT_NO_FOCUS_BORDER) {
                 return border;
@@ -109,9 +108,7 @@ public class PostTableCellRenderer extends JLabel
      * @param hasFocus   true if cell has focus
      * @param row        the row of the cell to render
      * @param column     the column of the cell to render
-     *
      * @return the default table cell renderer
-     *
      * @see javax.swing.JComponent#isPaintingForPrint()
      */
     public Component getTableCellRendererComponent(JTable table, Object value,
@@ -285,7 +282,6 @@ public class PostTableCellRenderer extends JLabel
      *
      * @param value the string value for this cell; if value is <code>null</code> it sets the text value to an empty
      *              string
-     *
      * @see javax.swing.JLabel#setText
      */
     protected void setValue(Object value) {

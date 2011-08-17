@@ -7,8 +7,8 @@ import java.awt.*;
 /**
  * Proxy class to make tree node renderer more flexible.
  *
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class OptionTreeCellRenderer implements TreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {

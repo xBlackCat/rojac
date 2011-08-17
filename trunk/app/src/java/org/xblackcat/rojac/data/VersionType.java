@@ -23,7 +23,9 @@ public enum VersionType {
 
     public static VersionType getType(int id) {
         for (VersionType t : values()) {
-            if (t.id == id) return t;
+            if (t.id == id) {
+                return t;
+            }
         }
 
         throw new IllegalArgumentException("Unknown version type: " + id);

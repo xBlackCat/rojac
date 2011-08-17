@@ -45,7 +45,7 @@ abstract class AnItem {
 
     abstract boolean isGroup();
 
-    abstract <V extends AnItem>  int indexOf(V i);
+    abstract <V extends AnItem> int indexOf(V i);
 
     abstract AnItem getChild(int idx);
 

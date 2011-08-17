@@ -6,7 +6,6 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
-import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 
@@ -35,7 +34,7 @@ class FavoriteItem extends AnItem {
 
     @Override
     Icon getIcon() {
-        return UIUtils.getIcon(favorite.getType().getIcons().getIcon(getReadStatus()));
+        return favorite.getType().getIcons().getIcon(getReadStatus());
     }
 
     @Override
@@ -122,8 +121,12 @@ class FavoriteItem extends AnItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FavoriteItem)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FavoriteItem)) {
+            return false;
+        }
 
         FavoriteItem that = (FavoriteItem) o;
 

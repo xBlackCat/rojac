@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 public class LineRenderer extends JLabel {
     public LineRenderer() {
     }

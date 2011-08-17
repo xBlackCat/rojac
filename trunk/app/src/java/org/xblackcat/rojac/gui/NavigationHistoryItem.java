@@ -3,8 +3,8 @@ package org.xblackcat.rojac.gui;
 import org.xblackcat.rojac.gui.view.ViewId;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class NavigationHistoryItem {
     private final ViewId viewId;
     private final IState state;
@@ -24,8 +24,12 @@ class NavigationHistoryItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         NavigationHistoryItem that = (NavigationHistoryItem) o;
 

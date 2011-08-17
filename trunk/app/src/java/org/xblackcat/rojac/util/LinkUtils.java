@@ -45,7 +45,6 @@ public final class LinkUtils {
      * Extracts message id either from to-message or to-thread url
      *
      * @param link link to check
-     *
      * @return extracted id or <code>null</code> if url is invalid.
      */
     public static Integer getMessageIdFromUrl(String link) {
@@ -64,7 +63,6 @@ public final class LinkUtils {
      * Extracts from text element an URL description text.
      *
      * @param el element of link.
-     *
      * @return description of URL from text. If description can not be obtained the <code>null</code> will be returned.
      */
     public static String getUrlText(Element el) {
@@ -84,7 +82,6 @@ public final class LinkUtils {
      *
      * @param link     link to test
      * @param patterns set of patterns
-     *
      * @return message id or <code>null</code> if id cannot be extracted from link.
      */
     private static Integer checkLink(String link, Pattern... patterns) {

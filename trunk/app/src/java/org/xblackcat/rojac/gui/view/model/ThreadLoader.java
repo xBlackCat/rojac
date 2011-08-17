@@ -12,8 +12,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ThreadLoader extends RojacWorker<Void, MessageData> {
     private static final Log log = LogFactory.getLog(ThreadLoader.class);
 

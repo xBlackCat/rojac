@@ -62,7 +62,6 @@ abstract class AnOptionsService implements IOptionsService {
      * Returns current value of a specified property or <code>null</code> if property is not set.
      *
      * @param key property object to identify a property.
-     *
      * @return a value of the specified property or <code>null</code> if property is not set.
      */
     @SuppressWarnings({"unchecked"})
@@ -120,7 +119,6 @@ abstract class AnOptionsService implements IOptionsService {
      *
      * @param key      property object to identify a property.
      * @param newValue new value to set.
-     *
      * @return a previous value of the property.
      */
     @Override
@@ -178,7 +176,6 @@ abstract class AnOptionsService implements IOptionsService {
      * Implement method for getting property value from a storage.
      *
      * @param key property id.
-     *
      * @return property value as string or <code>null</code> if specified property is not set.
      */
     protected abstract String getProperty(String key);
@@ -188,7 +185,6 @@ abstract class AnOptionsService implements IOptionsService {
      *
      * @param key   property id.
      * @param value a new value of property.
-     *
      * @return previous value of the property.
      */
     protected abstract String setProperty(String key, String value);

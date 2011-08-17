@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import static org.xblackcat.rojac.service.options.Property.VIEW_NAVIGATION_HISTORY_SIZE;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class NavigationHistoryTracker {
     private final Deque<NavigationHistoryItem> history = new LinkedList<>();
     private final Deque<NavigationHistoryItem> historyForward = new LinkedList<>();

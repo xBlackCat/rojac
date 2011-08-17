@@ -146,7 +146,7 @@ public class SubscriptionDialog extends JDialog {
             try {
                 onClose.run();
             } catch (Exception e) {
-                 log.warn("Exception in 'onClose' handler", e);
+                log.warn("Exception in 'onClose' handler", e);
             }
         }
         dispatcher.removeDataHandler(handler);

@@ -5,21 +5,26 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 
 import javax.swing.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * @author xBlackCat
  */
 @TaskType(TaskTypeEnum.Background)
 class LoadTaskExecutor implements Runnable {
-    private final ILoadTask[] tasks;
+    private final Collection<ALoadTask> tasks = new LinkedList<>();
 
-    LoadTaskExecutor(ILoadTask... tasks) {
-        this.tasks = tasks;
+    LoadTaskExecutor(ALoadTask[]... otherTasks) {
+        for (ALoadTask[] tasks : otherTasks) {
+            this.tasks.addAll(Arrays.asList(tasks));
+        }
     }
 
     @SuppressWarnings({"unchecked"})
     public void run() {
-        for (final ILoadTask task : tasks) {
+        for (final ALoadTask task : tasks) {
             try {
                 final Object result = task.doBackground();
 

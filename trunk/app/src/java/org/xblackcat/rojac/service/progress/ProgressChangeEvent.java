@@ -53,14 +53,24 @@ public class ProgressChangeEvent extends EventObject {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProgressChangeEvent)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProgressChangeEvent)) {
+            return false;
+        }
 
         ProgressChangeEvent that = (ProgressChangeEvent) o;
 
-        if (progress != null ? !progress.equals(that.progress) : that.progress != null) return false;
-        if (state != that.state) return false;
-        if (text != null ? !text.equals(that.text) : that.text != null) return false;
+        if (progress != null ? !progress.equals(that.progress) : that.progress != null) {
+            return false;
+        }
+        if (state != that.state) {
+            return false;
+        }
+        if (text != null ? !text.equals(that.text) : that.text != null) {
+            return false;
+        }
 
         return true;
     }

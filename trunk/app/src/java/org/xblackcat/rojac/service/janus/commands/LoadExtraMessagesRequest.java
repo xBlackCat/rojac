@@ -29,7 +29,7 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
  * @author xBlackCat
  */
 
-class LoadExtraMessagesRequest extends ARequest<IPacket>  {
+class LoadExtraMessagesRequest extends ARequest<IPacket> {
     protected final IStorage storage;
     protected final IRatingAH rAH;
     protected final IMessageAH mAH;

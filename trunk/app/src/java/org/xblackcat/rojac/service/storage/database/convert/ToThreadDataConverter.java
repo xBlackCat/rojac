@@ -6,17 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ToThreadDataConverter implements IToObjectConverter<ThreadStatData> {
-@Override
-public ThreadStatData convert(ResultSet rs) throws SQLException {
-    long lastPostDate = rs.getLong(1);
-    int replyAmount = rs.getInt(2);
+    @Override
+    public ThreadStatData convert(ResultSet rs) throws SQLException {
+        long lastPostDate = rs.getLong(1);
+        int replyAmount = rs.getInt(2);
 
-    return new ThreadStatData(
-            lastPostDate,
-            replyAmount
-    );
-}
+        return new ThreadStatData(
+                lastPostDate,
+                replyAmount
+        );
+    }
 }

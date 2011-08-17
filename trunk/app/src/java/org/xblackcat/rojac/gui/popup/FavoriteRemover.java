@@ -6,8 +6,8 @@ import org.xblackcat.rojac.service.storage.IFavoriteAH;
 import org.xblackcat.rojac.util.RojacWorker;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class FavoriteRemover extends RojacWorker<Void, Void> {
     private final int favoriteId;
 

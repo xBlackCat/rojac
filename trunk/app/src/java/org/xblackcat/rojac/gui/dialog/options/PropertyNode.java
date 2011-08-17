@@ -121,8 +121,12 @@ class PropertyNode<T> extends ANode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         PropertyNode that = (PropertyNode) o;
 
@@ -163,7 +167,6 @@ class PropertyNode<T> extends ANode {
      * Copy a property from another node
      *
      * @param path
-     *
      * @return
      */
     boolean setProperty(PropertyNode<T> path) {

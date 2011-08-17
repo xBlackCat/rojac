@@ -51,8 +51,7 @@ class TopicCellRenderer extends JLightPanel
     private Border getNoFocusBorder() {
         Border border = LookupDelegate.getBorder(this, ui, "Table.cellNoFocusBorder");
         if (System.getSecurityManager() != null) {
-            if (border != null) return border;
-            return SAFE_NO_FOCUS_BORDER;
+            return border != null ? border : SAFE_NO_FOCUS_BORDER;
         } else if (border != null) {
             if (noFocusBorder == null || noFocusBorder == DEFAULT_NO_FOCUS_BORDER) {
                 return border;

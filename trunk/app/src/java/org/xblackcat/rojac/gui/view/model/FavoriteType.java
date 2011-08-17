@@ -187,7 +187,6 @@ public enum FavoriteType {
      * could use accessing to database.
      *
      * @return generated and fully initialized root node.
-     *
      * @throws org.xblackcat.rojac.RojacException
      *          if root node can't be constructed.
      */

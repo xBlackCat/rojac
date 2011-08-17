@@ -7,8 +7,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 public enum Header {
     ID(PostId.class, Message.Panel_Thread_Header_Id, 70),
     SUBJECT(Post.class, Message.Panel_Thread_Header_Subject, 600),

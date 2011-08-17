@@ -23,13 +23,12 @@ public interface IExecutor {
      */
     void setupTimer(String id, Runnable target, long delay);
 
-    void setupPeriodicTask(String id, Runnable target, int period);    
+    void setupPeriodicTask(String id, Runnable target, int period);
 
     /**
      * Stops a timer by its id.
      *
      * @param id timer id to identify a timer.
-     *
      * @return <code>true</code> if timer successfully stopped and <code>false</code> if timer with specified id is not
      *         set.
      */

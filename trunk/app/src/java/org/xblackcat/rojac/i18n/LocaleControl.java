@@ -42,7 +42,6 @@ public class LocaleControl {
      * Set the specified locale for messages
      *
      * @param locale locale to set.
-     *
      * @throws IllegalArgumentException is thrown if invalid locale is specified.
      */
     public void setLocale(Locale locale) throws IllegalArgumentException {
@@ -54,7 +53,6 @@ public class LocaleControl {
      *
      * @param locale locale to set.
      * @param strict
-     *
      * @throws IllegalArgumentException is thrown if invalid locale is specified.
      */
     public void setLocale(Locale locale, boolean strict) throws IllegalArgumentException {

@@ -6,8 +6,8 @@ import net.infonode.docking.WindowPopupMenuFactory;
 import javax.swing.*;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ItemViewPopupFactory implements WindowPopupMenuFactory {
     private final IView itemView;
 

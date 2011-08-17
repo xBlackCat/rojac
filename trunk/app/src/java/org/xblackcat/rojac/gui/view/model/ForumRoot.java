@@ -20,7 +20,6 @@ public class ForumRoot extends Post {
      * Searches through all threads for the message Id
      *
      * @param messageId
-     *
      * @return
      */
     @Override

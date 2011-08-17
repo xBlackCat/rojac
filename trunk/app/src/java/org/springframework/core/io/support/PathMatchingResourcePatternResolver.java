@@ -63,49 +63,49 @@ import java.util.jar.JarFile;
  * the wildcard by walking the filesystem. In the case of a jar URL, the resolver either gets a
  * <code>java.net.JarURLConnection</code> from it, or manually parse the jar URL, and then traverse the contents of the
  * jar file, to resolve the wildcards.
- * <p/>
+ *
  * <p><b>Implications on portability:</b>
- * <p/>
+ *
  * <p>If the specified path is already a file URL (either explicitly, or implicitly because the base
  * <code>ResourceLoader</code> is a filesystem one, then wildcarding is guaranteed to work in a completely portable
  * fashion.
- * <p/>
+ *
  * <p>If the specified path is a classpath location, then the resolver must obtain the last non-wildcard path segment
  * URL via a <code>Classloader.getResource()</code> call. Since this is just a node of the path (not the file at the
  * end) it is actually undefined (in the ClassLoader Javadocs) exactly what sort of a URL is returned in this case. In
  * practice, it is usually a <code>java.io.File</code> representing the directory, where the classpath resource resolves
  * to a filesystem location, or a jar URL of some sort, where the classpath resource resolves to a jar location. Still,
  * there is a portability concern on this operation.
- * <p/>
+ *
  * <p>If a jar URL is obtained for the last non-wildcard segment, the resolver must be able to get a
  * <code>java.net.JarURLConnection</code> from it, or manually parse the jar URL, to be able to walk the contents of the
  * jar, and resolve the wildcard. This will work in most environments, but will fail in others, and it is strongly
  * recommended that the wildcard resolution of resources coming from jars be thoroughly tested in your specific
  * environment before you rely on it.
- * <p/>
+ *
  * <p><b><code>classpath*:</code> Prefix:</b>
- * <p/>
+ *
  * <p>There is special support for retrieving multiple class path resources with the same name, via the
  * "<code>classpath*:</code>" prefix. For example, "<code>classpath*:META-INF/beans.xml</code>" will find all
  * "beans.xml" files in the class path, be it in "classes" directories or in JAR files. This is particularly useful for
  * autodetecting config files of the same name at the same location within each jar file. Internally, this happens via a
  * <code>ClassLoader.getResources()</code> call, and is completely portable.
- * <p/>
+ *
  * <p>The "classpath*:" prefix can also be combined with a PathMatcher pattern in the rest of the location path, for
  * example "classpath*:META-INF/*-beans.xml". In this case, the resolution strategy is fairly simple: a
  * <code>ClassLoader.getResources()</code> call is used on the last non-wildcard path segment to get all the matching
  * resources in the class loader hierarchy, and then off each resource the same PathMatcher resolution strategy
  * described above is used for the wildcard subpath.
- * <p/>
+ *
  * <p><b>Other notes:</b>
- * <p/>
+ *
  * <p><b>WARNING:</b> Note that "<code>classpath*:</code>" when combined with Ant-style patterns will only work reliably
  * with at least one root directory before the pattern starts, unless the actual target files reside in the file system.
  * This means that a pattern like "<code>classpath*:*.xml</code>" will <i>not</i> retrieve files from the root of jar
  * files but rather only from the root of expanded directories. This originates from a limitation in the JDK's
  * <code>ClassLoader.getResources()</code> method which only returns file system locations for a passed-in empty String
  * (indicating potential roots to search).
- * <p/>
+ *
  * <p><b>WARNING:</b> Ant-style patterns with "classpath:" resources are not guaranteed to find matching resources if
  * the root package to search is available
  * in multiple class path locations. This is because a resource such as<pre>
@@ -148,7 +148,6 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      *
      * @param classLoader the ClassLoader to load classpath resources with, or <code>null</code> for using the thread
      *                    context class loader
-     *
      * @see org.springframework.core.io.DefaultResourceLoader
      */
     public PathMatchingResourcePatternResolver(ClassLoader classLoader) {
@@ -223,9 +222,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      * Find all class location resources with the given location via the ClassLoader.
      *
      * @param location the absolute path within the classpath
-     *
      * @return the result as Resource array
-     *
      * @throws IOException in case of I/O errors
      * @see java.lang.ClassLoader#getResources
      * @see #convertClassLoaderURL
@@ -249,9 +246,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      * simply creates a UrlResource instance.
      *
      * @param url a URL as returned from the ClassLoader
-     *
      * @return the corresponding Resource object
-     *
      * @see java.lang.ClassLoader#getResources
      * @see org.springframework.core.io.Resource
      */
@@ -264,9 +259,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      * files and zip files and in the file system.
      *
      * @param locationPattern the location pattern to match
-     *
      * @return the result as Resource array
-     *
      * @throws IOException in case of I/O errors
      * @see #doFindPathMatchingJarResources
      * @see #doFindPathMatchingFileResources
@@ -294,9 +287,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      * the pattern "/WEB-INF/*.xml", for example.
      *
      * @param location the location to check
-     *
      * @return the part of the location that denotes the root directory
-     *
      * @see #retrieveMatchingFiles
      */
     protected String determineRootDir(String location) {
@@ -317,7 +308,6 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      * latter are used by BEA WebLogic Server and IBM WebSphere, respectively, but can be treated like jar files).
      *
      * @param resource the resource handle to check (usually the root directory to start path matching from)
-     *
      * @see #doFindPathMatchingJarResources
      * @see org.springframework.util.ResourceUtils#isJarURL
      */
@@ -330,9 +320,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      *
      * @param rootDirResource the root directory as Resource
      * @param subPattern      the sub pattern to match (below the root directory)
-     *
      * @return the Set of matching Resource instances
-     *
      * @throws IOException in case of I/O errors
      * @see java.net.JarURLConnection
      * @see org.springframework.util.PathMatcher
@@ -378,7 +366,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
                 rootEntryPath = rootEntryPath + "/";
             }
             Set<Resource> result = new LinkedHashSet<>(8);
-            for (Enumeration entries = jarFile.entries(); entries.hasMoreElements();) {
+            for (Enumeration entries = jarFile.entries(); entries.hasMoreElements(); ) {
                 JarEntry entry = (JarEntry) entries.nextElement();
                 String entryPath = entry.getName();
                 if (entryPath.startsWith(rootEntryPath)) {
@@ -389,8 +377,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
                 }
             }
             return result;
-        }
-        finally {
+        } finally {
             // Close jar file, but only if freshly obtained -
             // not from JarURLConnection, which might cache the file reference.
             if (newJarFile) {
@@ -406,8 +393,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
         if (jarFileUrl.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             try {
                 return new JarFile(ResourceUtils.toURI(jarFileUrl).getSchemeSpecificPart());
-            }
-            catch (URISyntaxException ex) {
+            } catch (URISyntaxException ex) {
                 // Fallback for URLs that are not valid URIs (should hardly ever happen).
                 return new JarFile(jarFileUrl.substring(ResourceUtils.FILE_URL_PREFIX.length()));
             }
@@ -421,9 +407,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      *
      * @param rootDirResource the root directory as Resource
      * @param subPattern      the sub pattern to match (below the root directory)
-     *
      * @return the Set of matching Resource instances
-     *
      * @throws IOException in case of I/O errors
      * @see #retrieveMatchingFiles
      * @see org.springframework.util.PathMatcher
@@ -432,8 +416,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
         File rootDir;
         try {
             rootDir = rootDirResource.getFile().getAbsoluteFile();
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             return Collections.emptySet();
         }
         return doFindMatchingFileSystemResources(rootDir, subPattern);
@@ -444,9 +427,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      *
      * @param rootDir    the root directory in the file system
      * @param subPattern the sub pattern to match (below the root directory)
-     *
      * @return the Set of matching Resource instances
-     *
      * @throws IOException in case of I/O errors
      * @see #retrieveMatchingFiles
      * @see org.springframework.util.PathMatcher
@@ -466,9 +447,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      *
      * @param rootDir the directory to start from
      * @param pattern the pattern to match against, relative to the root directory
-     *
      * @return the Set of matching File instances
-     *
      * @throws IOException if directory contents could not be retrieved
      */
     protected Set<File> retrieveMatchingFiles(File rootDir, String pattern) throws IOException {
@@ -491,7 +470,6 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
      * @param fullPattern the pattern to match against, with preprended root directory path
      * @param dir         the current directory
      * @param result      the Set of matching File instances to add to
-     *
      * @throws IOException if directory contents could not be retrieved
      */
     protected void doRetrieveMatchingFiles(String fullPattern, File dir, Set<File> result) throws IOException {

@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
-import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ abstract class AGroupItem<T extends AnItem> extends AnItem {
             return null;
         }
 
-        return UIUtils.getIcon(iconSet.getIcon(status));
+        return iconSet.getIcon(status);
     }
 
     @Override

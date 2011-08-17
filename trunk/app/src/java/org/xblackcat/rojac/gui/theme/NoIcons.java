@@ -3,8 +3,8 @@ package org.xblackcat.rojac.gui.theme;
 import javax.swing.*;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 final class NoIcons implements IButtonIcons {
     @Override
     public Icon getDefaultIcon() {

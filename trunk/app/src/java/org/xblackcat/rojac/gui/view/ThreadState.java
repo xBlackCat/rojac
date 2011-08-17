@@ -3,8 +3,8 @@ package org.xblackcat.rojac.gui.view;
 import org.xblackcat.rojac.gui.IState;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 public final class ThreadState implements IState {
     private static final long serialVersionUID = 1L;
 
@@ -20,8 +20,12 @@ public final class ThreadState implements IState {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ThreadState that = (ThreadState) o;
 

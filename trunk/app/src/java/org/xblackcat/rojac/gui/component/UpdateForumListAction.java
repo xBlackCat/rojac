@@ -7,8 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 public class UpdateForumListAction extends AButtonAction {
     private Window window;
 

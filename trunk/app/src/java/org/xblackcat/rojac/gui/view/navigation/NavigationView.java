@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IAppControl;
@@ -21,8 +19,6 @@ import java.awt.event.MouseEvent;
  * @author xBlackCat Date: 15.07.11
  */
 public class NavigationView extends AView {
-    private static final Log log = LogFactory.getLog(NavigationView.class);
-
     private NavigationModel model;
     private JXTreeTable viewTable;
 
@@ -130,7 +126,7 @@ public class NavigationView extends AView {
                 AnItem item = root.getChild(i);
 
                 if (expanded[i]) {
-                     viewTable.expandPath(model.getPathToRoot(item));
+                    viewTable.expandPath(model.getPathToRoot(item));
                 }
 
                 i++;

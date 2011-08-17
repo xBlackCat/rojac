@@ -16,7 +16,6 @@ public final class JLOptionPane {
      * means it is centered on the screen.
      *
      * @param message the <code>Object</code> to display
-     *
      * @throws java.awt.HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */
@@ -32,7 +31,6 @@ public final class JLOptionPane {
      *
      * @param message               the <code>Object</code> to display
      * @param initialSelectionValue the value used to initialize the input field
-     *
      * @since 1.4
      */
     public static String showInputDialog(Object message, Object initialSelectionValue) {
@@ -46,7 +44,6 @@ public final class JLOptionPane {
      *
      * @param parentComponent the parent <code>Component</code> for the dialog
      * @param message         the <code>Object</code> to display
-     *
      * @throws HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */
@@ -66,7 +63,6 @@ public final class JLOptionPane {
      * @param parentComponent       the parent <code>Component</code> for the dialog
      * @param message               the <code>Object</code> to display
      * @param initialSelectionValue the value used to initialize the input field
-     *
      * @since 1.4
      */
     public static String showInputDialog(Component parentComponent, Object message,
@@ -90,7 +86,6 @@ public final class JLOptionPane {
      * @param messageType     the type of message that is to be displayed: <code>ERROR_MESSAGE</code>,
      *                        <code>INFORMATION_MESSAGE</code>, <code>WARNING_MESSAGE</code>,
      *                        <code>QUESTION_MESSAGE</code>, or <code>PLAIN_MESSAGE</code>
-     *
      * @throws HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */
@@ -107,7 +102,6 @@ public final class JLOptionPane {
      *                        or if the <code>parentComponent</code> has no <code>Frame</code>, a default
      *                        <code>Frame</code> is used
      * @param message         the <code>Object</code> to display
-     *
      * @throws HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */
@@ -130,7 +124,6 @@ public final class JLOptionPane {
      * @param messageType     the type of message to be displayed: <code>ERROR_MESSAGE</code>,
      *                        <code>INFORMATION_MESSAGE</code>, <code>WARNING_MESSAGE</code>,
      *                        <code>QUESTION_MESSAGE</code>, or <code>PLAIN_MESSAGE</code>
-     *
      * @throws HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */
@@ -153,7 +146,6 @@ public final class JLOptionPane {
      *                        <code>QUESTION_MESSAGE</code>, or <code>PLAIN_MESSAGE</code>
      * @param icon            an icon to display in the dialog that helps the user identify the kind of message that is
      *                        being displayed
-     *
      * @throws HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */
@@ -178,9 +170,7 @@ public final class JLOptionPane {
      *                        or if the <code>parentComponent</code> has no <code>Frame</code>, a default
      *                        <code>Frame</code> is used
      * @param message         the <code>Object</code> to display
-     *
      * @return an integer indicating the option selected by the user
-     *
      * @throws HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */
@@ -201,9 +191,7 @@ public final class JLOptionPane {
      * @param title           the title string for the dialog
      * @param optionType      an int designating the options available on the dialog: <code>YES_NO_OPTION</code>,
      *                        <code>YES_NO_CANCEL_OPTION</code>, or <code>OK_CANCEL_OPTION</code>
-     *
      * @return an int indicating the option selected by the user
-     *
      * @throws HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */
@@ -230,9 +218,7 @@ public final class JLOptionPane {
      *                        from the pluggable Look and Feel: <code>ERROR_MESSAGE</code>,
      *                        <code>INFORMATION_MESSAGE</code>, <code>WARNING_MESSAGE</code>,
      *                        <code>QUESTION_MESSAGE</code>, or <code>PLAIN_MESSAGE</code>
-     *
      * @return an integer indicating the option selected by the user
-     *
      * @throws HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */
@@ -260,9 +246,7 @@ public final class JLOptionPane {
      *                        <code>WARNING_MESSAGE</code>, <code>QUESTION_MESSAGE</code>, or
      *                        <code>PLAIN_MESSAGE</code>
      * @param icon            the icon to display in the dialog
-     *
      * @return an int indicating the option selected by the user
-     *
      * @throws HeadlessException if <code>GraphicsEnvironment.isHeadless</code> returns <code>true</code>
      * @see java.awt.GraphicsEnvironment#isHeadless
      */

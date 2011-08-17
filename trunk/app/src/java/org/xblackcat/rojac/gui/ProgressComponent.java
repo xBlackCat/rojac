@@ -14,8 +14,8 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ProgressComponent extends JPanel implements IProgressListener {
     private final Component trackerDialog;
     private final JProgressBar bar = new JProgressBar(0, 100);

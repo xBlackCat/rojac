@@ -18,7 +18,6 @@ public interface IMessageAH extends AH {
      *
      * @param fm   message data to be stored into database.
      * @param read read state of the message. <code>true</code> - message is read and <code>false</code> otherwise.
-     *
      * @throws StorageException
      */
     void storeMessage(JanusMessageInfo fm, boolean read) throws StorageException;
@@ -27,9 +26,7 @@ public interface IMessageAH extends AH {
      * Loads a message body for specified message id.
      *
      * @param messageId id of message body to be loaded.
-     *
      * @return the message body.
-     *
      * @throws StorageException
      */
     String getMessageBodyById(int messageId) throws StorageException;
@@ -38,7 +35,6 @@ public interface IMessageAH extends AH {
      * Returns a list of topics which roots have not loaded yet.
      *
      * @return topic ids to have been loaded.
-     *
      * @throws StorageException
      */
     int[] getBrokenTopicIds() throws StorageException;
@@ -48,7 +44,6 @@ public interface IMessageAH extends AH {
      *
      * @param mes  message data to be stored into database.
      * @param read read state of the message. <code>true</code> - message is read and <code>false</code> otherwise.
-     *
      * @throws StorageException
      */
     void updateMessage(JanusMessageInfo mes, boolean read) throws StorageException;
@@ -58,7 +53,6 @@ public interface IMessageAH extends AH {
      *
      * @param messageId message id to be updated
      * @param read      new state of flag.
-     *
      * @throws StorageException
      */
     void updateMessageReadFlag(int messageId, boolean read) throws StorageException;
@@ -67,9 +61,7 @@ public interface IMessageAH extends AH {
      * Checks if a message with specified id is exists.
      *
      * @param messageId message id to check
-     *
      * @return <code>true</code> if message already loaded and <code>false</code> elsewise.
-     *
      * @throws StorageException
      */
     boolean isExist(int messageId) throws StorageException;
@@ -79,9 +71,7 @@ public interface IMessageAH extends AH {
      *
      * @param threadId
      * @param forumId
-     *
      * @return array of messages data.
-     *
      * @throws StorageException
      */
     Collection<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException;
@@ -89,11 +79,8 @@ public interface IMessageAH extends AH {
     /**
      * Loads latest N topics.
      *
-     *
      * @param limit
-     *
      * @return array of messages data.
-     *
      * @throws StorageException
      */
     int[] getLatestTopics(int limit) throws StorageException;
@@ -102,9 +89,7 @@ public interface IMessageAH extends AH {
      * Returns messages data for specified forum id.
      *
      * @param forumId target forum id
-     *
      * @return array of topic messages data.
-     *
      * @throws StorageException
      */
     Iterable<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException;
@@ -113,9 +98,7 @@ public interface IMessageAH extends AH {
      * Returns all a user posts.
      *
      * @param userId user to search.
-     *
      * @return user posts.
-     *
      * @throws StorageException
      */
     Iterable<MessageData> getUserPosts(int userId) throws StorageException;
@@ -124,9 +107,7 @@ public interface IMessageAH extends AH {
      * Returns all replies on the user post
      *
      * @param userId
-     *
      * @return
-     *
      * @throws StorageException
      */
     Collection<MessageData> getUserReplies(int userId) throws StorageException;
@@ -135,9 +116,7 @@ public interface IMessageAH extends AH {
      * Loads a brief thread statistic (amount of replies, non-read messages, etc.)
      *
      * @param threadId target threads id
-     *
      * @return brief thread statistic.
-     *
      * @throws StorageException
      * @see ThreadStatData
      */
@@ -147,9 +126,7 @@ public interface IMessageAH extends AH {
      * Returns number of replies in specified thread (total/non-read)
      *
      * @param threadId target thread id.
-     *
      * @return brief stat data.
-     *
      * @throws StorageException
      */
     FavoriteStatData getReplaysInThread(int threadId) throws StorageException;
@@ -162,9 +139,7 @@ public interface IMessageAH extends AH {
      * Returns number of replies to specified user.
      *
      * @param userId target user id.
-     *
      * @return brief stat data.
-     *
      * @throws StorageException
      */
     FavoriteStatData getUserRepliesStat(int userId) throws StorageException;
@@ -173,9 +148,7 @@ public interface IMessageAH extends AH {
      * Returns number of posts of specified user.
      *
      * @param userId target user id.
-     *
      * @return brief stat data.
-     *
      * @throws StorageException
      */
     FavoriteStatData getUserPostsStat(int userId) throws StorageException;
@@ -185,7 +158,6 @@ public interface IMessageAH extends AH {
      *
      * @param topicId target topic id.
      * @param read    new read state.
-     *
      * @throws StorageException
      */
     void updateThreadReadFlag(int topicId, boolean read) throws StorageException;
@@ -193,9 +165,8 @@ public interface IMessageAH extends AH {
     /**
      * Updates specified message rating cache. See {@linkplain org.xblackcat.rojac.data.RatingCache} for details.
      *
-     * @param id target message id
+     * @param id           target message id
      * @param ratingsCache new cached ratings string.
-     *
      * @throws StorageException
      */
     void updateMessageRatingCache(int id, String ratingsCache) throws StorageException;

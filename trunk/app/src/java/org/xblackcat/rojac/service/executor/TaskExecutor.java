@@ -174,7 +174,6 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
      * will not be checked for annotations.
      *
      * @param clazz class to check.
-     *
      * @return TaskTypeEnum value or <code>null</code> if the annotation is not present.
      */
     private static TaskTypeEnum getTargetType(Class<?> clazz) {
@@ -195,7 +194,9 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
     }
 
     private <T> ExecutorService getAnnotatedPool(T target) {
-        if (target == null) throw new NullPointerException("Can not execute empty target.");
+        if (target == null) {
+            throw new NullPointerException("Can not execute empty target.");
+        }
 
         // Obtain target task type from annotation.
         TaskTypeEnum type = getTargetType(target.getClass());

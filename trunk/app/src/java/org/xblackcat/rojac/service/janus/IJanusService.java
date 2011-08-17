@@ -16,9 +16,7 @@ public interface IJanusService {
      * Retrieves a forums list from Janus WS.
      *
      * @param verRow
-     *
      * @return RSDN forums list.
-     *
      * @throws JanusServiceException throws if any errors occurs.
      */
     ForumsList getForumsList(Version verRow) throws JanusServiceException;
@@ -28,9 +26,7 @@ public interface IJanusService {
      *
      * @param verRow    local version of the users list.
      * @param maxOutput amount of users in the server users list.
-     *
      * @return users list with the version of the list.
-     *
      * @throws JanusServiceException throws if any errors occurs.
      */
     UsersList getNewUsers(Version verRow, int maxOutput) throws JanusServiceException;
@@ -39,9 +35,7 @@ public interface IJanusService {
      * Loads whole topics for given messages.
      *
      * @param messageIds array of messages ids to loads the whole topics with the messages.
-     *
      * @return list of topics with the messages.
-     *
      * @throws JanusServiceException throws if any errors occurs.
      */
     TopicMessages getTopicByMessage(int... messageIds) throws JanusServiceException;
@@ -50,7 +44,6 @@ public interface IJanusService {
      * Commits the changes (new messages and etc.)
      *
      * @return the status of the commit.
-     *
      * @throws JanusServiceException throws if any errors occurs.
      */
     PostInfo commitChanges() throws JanusServiceException;
@@ -62,7 +55,6 @@ public interface IJanusService {
      * @param ratings   new ratings to post.
      * @param moderates new moderate actions to post.
      * @param moderates
-     *
      * @throws JanusServiceException throws if any errors occurs.
      */
     void postChanges(NewMessage[] messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException;
@@ -77,9 +69,7 @@ public interface IJanusService {
      * @param breakMsgIds       ???
      * @param breakTopicIds     ???
      * @param maxOutput         amount of messages in response.
-     *
      * @return new messages and other information.
-     *
      * @throws JanusServiceException throws if any errors occurs.
      */
     NewData getNewData(RequestForumInfo[] requestForumInfos, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;

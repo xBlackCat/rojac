@@ -31,8 +31,7 @@ public enum ModelControl {
     /**
      * Produces a model control to handle list of replies to user's posts.
      */
-    UserReplies(new PostListControl(true)),
-    ;
+    UserReplies(new PostListControl(true)),;
 
     private final IModelControl<Post> control;
 

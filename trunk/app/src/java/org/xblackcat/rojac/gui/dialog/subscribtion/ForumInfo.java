@@ -3,8 +3,8 @@ package org.xblackcat.rojac.gui.dialog.subscribtion;
 import org.xblackcat.rojac.data.Forum;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ForumInfo {
     private final Forum forum;
     private boolean subscribed;

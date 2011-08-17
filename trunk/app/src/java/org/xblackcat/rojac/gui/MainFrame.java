@@ -72,7 +72,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private Map<ViewId, View> openedViews = new HashMap<>();
     protected RootWindow threadsRootWindow;
 
-//    private static final String FORUMS_VIEW_ID = "forums_view";
+    //    private static final String FORUMS_VIEW_ID = "forums_view";
 //    private static final String FAVORITES_VIEW_ID = "favorites_view";
     private static final String RECENT_TOPICS_VIEW_ID = "lastPosts_view";
     private static final String THREADS_VIEW_ID = "threads_view_id";
@@ -566,7 +566,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
             } catch (ClassNotFoundException e) {
                 log.error("Main frame state class is not found", e);
-            } catch (IOException|RuntimeException e) {
+            } catch (IOException | RuntimeException e) {
                 log.error("Can not load views layout.", e);
             }
         } else {

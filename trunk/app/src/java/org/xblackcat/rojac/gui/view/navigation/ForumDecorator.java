@@ -73,7 +73,7 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    public ILoadTask updateSubscribed(int forumId, boolean subscribed) {
+    public ALoadTask updateSubscribed(int forumId, boolean subscribed) {
         ForumItem item = viewedForums.get(forumId);
         if (item == null) {
             // Forum not shown yet - load from DB
@@ -87,8 +87,8 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    ILoadTask[] loadForumStatistic(int... forumIds) {
-        ILoadTask[] tasks = new ILoadTask[forumIds.length];
+    ALoadTask[] loadForumStatistic(int... forumIds) {
+        ALoadTask[] tasks = new ALoadTask[forumIds.length];
 
         for (int i = 0, l = tasks.length; i < l; i++) {
             tasks[i] = new ForumUpdateTask(forumIds[i]);
@@ -97,8 +97,8 @@ class ForumDecorator extends ADecorator {
         return tasks;
     }
 
-    public ILoadTask reloadForums() {
-        return new ForumLoadTask();
+    public ALoadTask[] reloadForums() {
+        return ALoadTask.group(new ForumLoadTask());
     }
 
     private void updateForum(ForumStatistic stat) {
@@ -109,15 +109,15 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    public ILoadTask[] alterReadStatus(int forumId, boolean read) {
+    public ALoadTask[] alterReadStatus(int forumId, boolean read) {
         ForumItem navItem = viewedForums.get(forumId);
         if (navItem != null) {
-            ILoadTask<Void> task = new ForumUnreadAdjustTask(navItem, read ? -1 : 1);
+            ALoadTask<Void> task = new ForumUnreadAdjustTask(navItem, read ? -1 : 1);
 
             return ALoadTask.group(task);
         }
 
-        return ILoadTask.NO_TASKS;
+        return ALoadTask.NO_TASKS;
     }
 
 

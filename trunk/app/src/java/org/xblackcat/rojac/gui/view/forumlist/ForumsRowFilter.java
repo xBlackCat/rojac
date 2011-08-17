@@ -32,7 +32,7 @@ class ForumsRowFilter extends RowFilter<ForumTableModel, Integer> {
         }
 
         if (fs != null) {
-            if (state.contains(ForumFilterState.Unread) && fs.getUnreadMessages() == 0){
+            if (state.contains(ForumFilterState.Unread) && fs.getUnreadMessages() == 0) {
                 return false;
             }
 
