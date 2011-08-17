@@ -11,7 +11,7 @@ import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
-import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.util.DialogHelper;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -169,7 +169,7 @@ public class RojacTray {
 
         @Override
         protected Void perform() throws Exception {
-            IMessageAH mAH = ServiceFactory.getInstance().getStorage().getMessageAH();
+            IStatisticAH mAH = ServiceFactory.getInstance().getStorage().getStatisticAH();
 
             unreadMessages = mAH.getUnreadMessages();
             Integer userId = Property.RSDN_USER_ID.get();

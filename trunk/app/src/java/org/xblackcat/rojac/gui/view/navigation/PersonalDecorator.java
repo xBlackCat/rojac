@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.IStatisticAH;
 
 /**
  * @author xBlackCat Date: 22.07.11
@@ -36,11 +38,12 @@ class PersonalDecorator extends ADecorator {
     }
 
     private class AnswersReloadTask extends ALoadTask<Integer> {
-
         private final int userId;
+        protected IStatisticAH statisticAH;
 
         private AnswersReloadTask(int userId) {
             this.userId = userId;
+            statisticAH = ServiceFactory.getInstance().getStorage().getStatisticAH();
         }
 
         @Override

@@ -11,11 +11,9 @@ import java.util.Collection;
  * @author ASUS
  */
 
-final class DBNewModerateAH implements INewModerateAH {
-    private final IQueryExecutor helper;
-
+final class DBNewModerateAH extends AnAH implements INewModerateAH {
     DBNewModerateAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     public void storeNewModerate(NewModerate nm) throws StorageException {

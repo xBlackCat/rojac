@@ -10,11 +10,9 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
  * @author ASUS
  */
 
-final class DBVersionAH implements IVersionAH {
-    private final IQueryExecutor helper;
-
+final class DBVersionAH extends AnAH implements IVersionAH {
     DBVersionAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     public void updateVersionInfo(VersionInfo v) throws StorageException {

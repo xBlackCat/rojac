@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.view.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -30,7 +30,7 @@ class ThreadUnreadPostsLoader extends RojacWorker<Void, Integer> {
 
     @Override
     protected Void perform() throws Exception {
-        IMessageAH mAH = storage.getMessageAH();
+        IStatisticAH mAH = storage.getStatisticAH();
         try {
             int unreadPosts = mAH.getReplaysInThread(topic.getMessageId()).getUnread();
 

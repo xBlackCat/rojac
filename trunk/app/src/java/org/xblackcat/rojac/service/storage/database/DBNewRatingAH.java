@@ -12,11 +12,9 @@ import java.util.Collection;
  * @author ASUS
  */
 
-final class DBNewRatingAH implements INewRatingAH {
-    private final IQueryExecutor helper;
-
+final class DBNewRatingAH extends AnAH implements INewRatingAH {
     DBNewRatingAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     public void storeNewRating(int messageId, Mark rate) throws StorageException {

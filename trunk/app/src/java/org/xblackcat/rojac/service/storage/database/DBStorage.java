@@ -39,6 +39,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
     private final DBMessageAH messageAH;
     private final DBMiscAH miscAH;
     private final DBFavoriteAH favoriteAH;
+    private final DBStatisticAH statisticAH;
 
     public DBStorage(String propRoot, IConnectionFactory connectionFactory) throws StorageException {
         try {
@@ -67,6 +68,7 @@ public class DBStorage implements IStorage, IQueryExecutor {
         miscAH = new DBMiscAH(this);
         newModerateAH = new DBNewModerateAH(this);
         favoriteAH = new DBFavoriteAH(this);
+        statisticAH = new DBStatisticAH(this);
     }
 
     /* Initialization routines */
@@ -189,6 +191,11 @@ public class DBStorage implements IStorage, IQueryExecutor {
     @Override
     public IFavoriteAH getFavoriteAH() {
         return favoriteAH;
+    }
+
+    @Override
+    public IStatisticAH getStatisticAH() {
+        return statisticAH;
     }
 
     @Override

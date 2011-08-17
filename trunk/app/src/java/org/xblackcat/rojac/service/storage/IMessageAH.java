@@ -1,8 +1,6 @@
 package org.xblackcat.rojac.service.storage;
 
-import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.data.ThreadStatData;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import ru.rsdn.Janus.JanusMessageInfo;
 
@@ -112,46 +110,7 @@ public interface IMessageAH extends AH {
      */
     Collection<MessageData> getUserReplies(int userId) throws StorageException;
 
-    /**
-     * Loads a brief thread statistic (amount of replies, non-read messages, etc.)
-     *
-     * @param threadId target threads id
-     * @return brief thread statistic.
-     * @throws StorageException
-     * @see ThreadStatData
-     */
-    ThreadStatData getThreadStatByThreadId(int threadId) throws StorageException;
-
-    /**
-     * Returns number of replies in specified thread (total/non-read)
-     *
-     * @param threadId target thread id.
-     * @return brief stat data.
-     * @throws StorageException
-     */
-    FavoriteStatData getReplaysInThread(int threadId) throws StorageException;
-
     MessageData getMessageData(int messageId) throws StorageException;
-
-    int getUnreadMessages() throws StorageException;
-
-    /**
-     * Returns number of replies to specified user.
-     *
-     * @param userId target user id.
-     * @return brief stat data.
-     * @throws StorageException
-     */
-    FavoriteStatData getUserRepliesStat(int userId) throws StorageException;
-
-    /**
-     * Returns number of posts of specified user.
-     *
-     * @param userId target user id.
-     * @return brief stat data.
-     * @throws StorageException
-     */
-    FavoriteStatData getUserPostsStat(int userId) throws StorageException;
 
     /**
      * Mark the whole thread as read/unread.
