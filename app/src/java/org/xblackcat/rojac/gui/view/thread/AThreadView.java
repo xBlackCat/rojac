@@ -259,20 +259,21 @@ public abstract class AThreadView extends AnItemView {
     }
 
     private void selectNextPost(Post currentPost, boolean unread) {
-        Collection<Post> toCollapse = new LinkedList<>();
+        selectNextPost(currentPost, unread, new LinkedList<Post>());
+    }
+
+    private void selectNextPost(Post currentPost, boolean unread, Collection<Post> toCollapse) {
         Post next = findNextPost(currentPost, 0, unread, toCollapse);
         if (next != null) {
-            selectItem(next);
-        }
+            if (!toCollapse.isEmpty()) {
+                for (Post post : toCollapse) {
+                    collapsePath(model.getPathToRoot(post));
+                }
 
-        if (!toCollapse.isEmpty()) {
-            for (Post post : toCollapse) {
-                collapsePath(model.getPathToRoot(post));
-            }
-
-            if (next != null) {
                 scrollPathToVisible(model.getPathToRoot(next));
             }
+
+            selectItem(next);
         }
     }
 
@@ -294,7 +295,7 @@ public abstract class AThreadView extends AnItemView {
         if (post.getLoadingState() == LoadingState.NotLoaded) {
             if (!unread || post.isRead() != ReadStatus.Read) {
                 // Has unread children but their have not loaded yet.
-                modelControl.loadThread(model, post, new LoadNextPost(post, unread));
+                modelControl.loadThread(model, post, new LoadNextPost(post, unread, toCollapse));
                 // Change post selection when children are loaded
                 return null;
             }
@@ -336,7 +337,7 @@ public abstract class AThreadView extends AnItemView {
                             post = p;
                             break;
                         case NotLoaded:
-                            modelControl.loadThread(model, p, new LoadNextPost(p, unread));
+                            modelControl.loadThread(model, p, new LoadNextPost(p, unread, toCollapse));
                         case Loading:
                             return null;
                     }
@@ -406,9 +407,7 @@ public abstract class AThreadView extends AnItemView {
      *
      * @param post   root of sub-tree.
      * @param unread if set to true - unread post will be searched.
-     *
      * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
-     *
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastPost(Post post, boolean unread) throws RuntimeException {
@@ -601,15 +600,17 @@ public abstract class AThreadView extends AnItemView {
     private class LoadNextPost implements Runnable {
         private final Post item;
         private final boolean unread;
+        private Collection<Post> toCollapse;
 
-        public LoadNextPost(Post item, boolean unread) {
+        public LoadNextPost(Post item, boolean unread, Collection<Post> toCollapse) {
             this.item = item;
             this.unread = unread;
+            this.toCollapse = toCollapse;
         }
 
         @Override
         public void run() {
-            selectNextPost(item, unread);
+            selectNextPost(item, unread, toCollapse);
         }
     }
 
