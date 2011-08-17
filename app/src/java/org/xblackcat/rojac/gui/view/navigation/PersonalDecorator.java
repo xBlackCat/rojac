@@ -12,7 +12,7 @@ class PersonalDecorator extends ADecorator {
     private final PersonalItem myResponses = new MyResponsesItem();
     private final PersonalItem drafts = new DraftsItem();
 
-    PersonalDecorator(AModelControl modelControl) {
+    PersonalDecorator(IModelControl modelControl) {
         super(modelControl);
 
         personal.add(outBox);
