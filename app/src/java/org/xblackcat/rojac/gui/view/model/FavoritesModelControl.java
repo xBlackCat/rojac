@@ -5,7 +5,6 @@ import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.theme.AnIcon;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
@@ -14,7 +13,6 @@ import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 
@@ -94,11 +92,10 @@ class FavoritesModelControl implements IModelControl<Post> {
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
         if (model.getRoot() == null) {
-            return UIUtils.getIcon(ViewIcon.Favorites);
+            return ViewIcon.Favorites;
         }
 
-        AnIcon icon = statusIcons.getIcon(model.getRoot().isRead());
-        return UIUtils.getIcon(icon);
+        return statusIcons.getIcon(model.getRoot().isRead());
     }
 
     @Override

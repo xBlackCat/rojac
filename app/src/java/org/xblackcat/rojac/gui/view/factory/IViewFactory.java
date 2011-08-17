@@ -5,8 +5,8 @@ import org.xblackcat.rojac.gui.IItemView;
 import org.xblackcat.rojac.gui.view.ViewId;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 interface IViewFactory {
     IItemView makeView(ViewId id, IAppControl appControl);
 }

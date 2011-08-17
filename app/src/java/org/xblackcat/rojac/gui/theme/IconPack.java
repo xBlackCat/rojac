@@ -14,12 +14,12 @@ import java.util.MissingResourceException;
 
 public final class IconPack {
     private static final NoIcons NO_ICONS = new NoIcons();
-    
+
     private final String extension;
     private final String name;
     private final String pathPrefix;
 
-    private final Map<AnIcon, Icon> iconsCache = new HashMap<>();
+    private final Map<IResourceIcon, Icon> iconsCache = new HashMap<>();
 
     public IconPack(String name, String pathPrefix, String extension) {
         this.name = name;
@@ -41,8 +41,12 @@ public final class IconPack {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof IconPack)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof IconPack)) {
+            return false;
+        }
 
         IconPack iconPack = (IconPack) o;
 
@@ -67,7 +71,7 @@ public final class IconPack {
         return new IconsGetter(buttonName);
     }
 
-    public Icon getIcon(AnIcon icon) {
+    public Icon getIcon(IResourceIcon icon) {
         if (icon == null) {
             return null;
         }

@@ -90,16 +90,16 @@ class NavigationModel implements TreeTableModel, IModelControl {
             new IPacketProcessor<SubscriptionChangedPacket>() {
                 @Override
                 public void process(SubscriptionChangedPacket p) {
-                    Collection<ILoadTask> tasks = new ArrayList<>();
+                    Collection<ALoadTask> tasks = new ArrayList<>();
                     for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
-                        ILoadTask task = forumDecorator.updateSubscribed(s.getForumId(), s.isSubscribed());
+                        ALoadTask task = forumDecorator.updateSubscribed(s.getForumId(), s.isSubscribed());
                         if (task != null) {
                             tasks.add(task);
                         }
                     }
 
                     if (!tasks.isEmpty()) {
-                        new LoadTaskExecutor(tasks.toArray(new ILoadTask[tasks.size()])).execute();
+                        new LoadTaskExecutor(tasks.toArray(new ALoadTask[tasks.size()])).execute();
                     }
                 }
             }
@@ -244,6 +244,7 @@ class NavigationModel implements TreeTableModel, IModelControl {
 
     public void load() {
         new LoadTaskExecutor(
+                personalDecorator.reloadInfo(),
                 forumDecorator.reloadForums(),
                 favoritesDecorator.reloadFavorites()
         ).execute();

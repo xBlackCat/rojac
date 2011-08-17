@@ -81,7 +81,6 @@ public abstract class ClassUtils {
      * reference as well).
      *
      * @return the default ClassLoader (never <code>null</code>)
-     *
      * @see java.lang.Thread#getContextClassLoader()
      */
     public static ClassLoader getDefaultClassLoader() {
@@ -104,9 +103,7 @@ public abstract class ClassUtils {
      * loader, or the ClassLoader that loaded the ClassUtils class as fallback.
      *
      * @param name the name of the Class
-     *
      * @return Class instance for the supplied name
-     *
      * @throws ClassNotFoundException if the class was not found
      * @throws LinkageError           if the class file could not be loaded
      * @see Class#forName(String, boolean, ClassLoader)
@@ -122,9 +119,7 @@ public abstract class ClassUtils {
      *
      * @param name        the name of the Class
      * @param classLoader the class loader to use (may be <code>null</code>, which indicates the default class loader)
-     *
      * @return Class instance for the supplied name
-     *
      * @throws ClassNotFoundException if the class was not found
      * @throws LinkageError           if the class file could not be loaded
      * @see Class#forName(String, boolean, ClassLoader)
@@ -170,7 +165,6 @@ public abstract class ClassUtils {
      * suffix notation for primitive arrays; this is only supported by {@link #forName}.
      *
      * @param name the name of the potentially primitive class
-     *
      * @return the primitive class, or <code>null</code> if the name does not denote a primitive class or primitive array
      *         class
      */

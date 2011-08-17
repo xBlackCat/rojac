@@ -30,13 +30,13 @@ class FavoritesDecorator extends ADecorator {
         };
     }
 
-    ILoadTask reloadFavorites() {
-        return new FavoritesLoadTask();
+    ALoadTask[] reloadFavorites() {
+        return ALoadTask.group(new FavoritesLoadTask());
     }
 
-    ILoadTask[] updateFavoriteData(FavoriteType type) {
+    ALoadTask[] updateFavoriteData(FavoriteType type) {
         int favoritesSize = favorites.getChildCount();
-        Collection<ILoadTask<Stat>> tasks = new ArrayList<>(favoritesSize);
+        Collection<ALoadTask<Stat>> tasks = new ArrayList<>(favoritesSize);
 
         int i = 0;
         while (i < favoritesSize) {
@@ -48,12 +48,12 @@ class FavoritesDecorator extends ADecorator {
             i++;
         }
 
-        return tasks.toArray(new ILoadTask[tasks.size()]);
+        return tasks.toArray(new ALoadTask[tasks.size()]);
     }
 
-    public ILoadTask[] alterReadStatus(MessageData post, boolean read) {
+    public ALoadTask[] alterReadStatus(MessageData post, boolean read) {
         int favoritesSize = favorites.getChildCount();
-        Collection<ILoadTask> tasks = new ArrayList<>(favoritesSize);
+        Collection<ALoadTask> tasks = new ArrayList<>(favoritesSize);
 
         int i = 0;
         while (i < favoritesSize) {
@@ -83,7 +83,7 @@ class FavoritesDecorator extends ADecorator {
             i++;
         }
 
-        return tasks.toArray(new ILoadTask[tasks.size()]);
+        return tasks.toArray(new ALoadTask[tasks.size()]);
     }
 
     private static class Stat {

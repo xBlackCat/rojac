@@ -8,7 +8,6 @@ import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 
@@ -37,7 +36,7 @@ class ForumItem extends AnItem {
 
     @Override
     Icon getIcon() {
-        return UIUtils.getIcon(ReadStatusIcon.Thread.getIcon(getReadStatus()));
+        return ReadStatusIcon.Thread.getIcon(getReadStatus());
     }
 
     @Override
@@ -120,8 +119,12 @@ class ForumItem extends AnItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ForumItem)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ForumItem)) {
+            return false;
+        }
 
         ForumItem that = (ForumItem) o;
 

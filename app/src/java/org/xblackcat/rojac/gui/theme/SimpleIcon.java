@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.theme;
 /**
  * @author xBlackCat Date: 29.06.11
  */
-class SimpleIcon implements AnIcon {
+class SimpleIcon implements IResourceIcon {
     private final String filename;
 
     SimpleIcon(String filename) {

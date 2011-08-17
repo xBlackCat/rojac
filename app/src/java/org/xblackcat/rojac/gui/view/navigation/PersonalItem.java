@@ -1,21 +1,22 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
 
 import javax.swing.*;
 
 abstract class PersonalItem extends AnItem {
-    private final Icon icon;
+    private final ReadStatusIcon icon;
     protected int itemsCount;
 
-    protected PersonalItem(Icon icon) {
+    protected PersonalItem(ReadStatusIcon icon) {
         super(null);
         this.icon = icon;
     }
 
     @Override
     Icon getIcon() {
-        return icon;
+        return icon != null ? icon.getIcon(getReadStatus()) : null;
     }
 
     @Override

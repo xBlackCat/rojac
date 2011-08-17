@@ -169,9 +169,7 @@ public final class RojacUtils {
      * Returns a list of available locales for specified bundle.
      *
      * @param bundle base name of bundle with / as separators and without extension.
-     *
      * @return an array of available locales for the specified bundle.
-     *
      * @throws IOException if bundle list can not be obtained.
      */
     public static Locale[] localesForBundle(String bundle) throws IOException {
@@ -183,9 +181,7 @@ public final class RojacUtils {
      *
      * @param bundle     base name of bundle with / as separators and without extension.
      * @param addDefault flag to specify is the default resource bundle should be associated with default locale.
-     *
      * @return an array of available locales for the specified bundle.
-     *
      * @throws IOException if bundle list can not be obtained.
      */
     public static Locale[] localesForBundle(String bundle, boolean addDefault) throws IOException {
@@ -245,7 +241,6 @@ public final class RojacUtils {
      * Checks if a newer version of rojac is exist on google code server.
      *
      * @return <code>null</code> if no info should be displayed and integer (revision number) if revision is obtained.
-     *
      * @throws RojacException thrown if version can not be obtained.
      */
     public static Integer getLastBuild() throws RojacException {

@@ -65,7 +65,7 @@ class OptionCellEditor extends AbstractCellEditor implements TreeCellEditor {
 
         container.invalidate();
         container.repaint();
-        
+
         return container;
     }
 

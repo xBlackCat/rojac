@@ -35,9 +35,7 @@ public class FileSystemResourceLoader extends DefaultResourceLoader {
      * interpreted as relative to the current VM working directory.
      *
      * @param path the path to the resource
-     *
      * @return the corresponding Resource handle
-     *
      * @see FileSystemResource
      */
     protected Resource getResourceByPath(String path) {
@@ -59,8 +57,8 @@ public class FileSystemResourceLoader extends DefaultResourceLoader {
         }
 
         public String getPathWithinContext() {
-			return getPath();
-		}
-	}
+            return getPath();
+        }
+    }
 
 }

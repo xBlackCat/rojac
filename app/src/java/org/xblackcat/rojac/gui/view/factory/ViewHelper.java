@@ -45,7 +45,7 @@ public final class ViewHelper {
     /**
      * Stores a view state for future restoring docking layout.
      *
-     * @param out  output stream to store a view state
+     * @param out      output stream to store a view state
      * @param itemView
      * @throws IOException exception will be thrown if write can not be performed.
      */
@@ -69,9 +69,7 @@ public final class ViewHelper {
      *
      * @param in         input stream with configuration.
      * @param appControl application global control interface to be used in restored views.
-     *
      * @return restored and initialized view.
-     *
      * @throws IOException            will be thrown if read from stream can not be performed.
      * @throws ClassNotFoundException will be thrown if object from stream can not be identified.
      */
@@ -98,7 +96,6 @@ public final class ViewHelper {
      *
      * @param viewId     target view identifier.
      * @param appControl application control to be used in a view.
-     *
      * @return created view.
      */
     public static IItemView makeView(ViewId viewId, IAppControl appControl) {

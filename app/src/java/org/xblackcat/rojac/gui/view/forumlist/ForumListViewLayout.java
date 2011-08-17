@@ -5,8 +5,8 @@ import org.xblackcat.rojac.gui.IViewLayout;
 import java.util.Set;
 
 /**
-* @author xBlackCat Date: 21.07.11
-*/
+ * @author xBlackCat Date: 21.07.11
+ */
 class ForumListViewLayout implements IViewLayout {
     private final Set<ForumFilterState> state;
 

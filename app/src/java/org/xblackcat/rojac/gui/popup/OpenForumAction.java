@@ -8,8 +8,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class OpenForumAction extends AbstractAction {
     private final IAppControl appControl;
     private final int forumId;

@@ -3,8 +3,8 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.gui.IViewLayout;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ComplexLayout implements IViewLayout {
     private static final long serialVersionUID = 1L;
 

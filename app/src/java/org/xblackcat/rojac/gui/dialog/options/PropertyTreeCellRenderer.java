@@ -6,7 +6,6 @@ import org.xblackcat.rojac.gui.theme.OptionsIcon;
 import org.xblackcat.rojac.i18n.NodeText;
 import org.xblackcat.rojac.service.options.IValueChecker;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,7 +61,7 @@ class PropertyTreeCellRenderer extends ComplexTreeRenderer {
             } else if (pn.getValue() instanceof Boolean) {
                 Boolean b = (Boolean) pn.getValue();
                 if (b != null) {
-                    this.value.setIcon(b ? UIUtils.getIcon(OptionsIcon.Enabled) : UIUtils.getIcon(OptionsIcon.Disabled));
+                    this.value.setIcon(b ? OptionsIcon.Enabled : OptionsIcon.Disabled);
                 }
             }
         } else {

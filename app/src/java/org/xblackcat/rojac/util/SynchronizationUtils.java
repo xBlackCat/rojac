@@ -25,7 +25,7 @@ public final class SynchronizationUtils {
         do {
             lastSize = size;
             size >>= 10;
-            idx ++;
+            idx++;
         } while (size > 10);
 
         return Message.ProgressControl_AffectedBytes.get(lastSize, factors.charAt(idx));

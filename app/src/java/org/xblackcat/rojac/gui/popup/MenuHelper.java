@@ -24,7 +24,6 @@ final class MenuHelper {
      * is tree.</li> </ul>
      *
      * @param messageId message id to be used as base of target URLs.
-     *
      * @return sub-menu with registered actions to copy various URLs.
      */
     static JMenu copyLinkSubmenu(int messageId) {
@@ -99,7 +98,6 @@ final class MenuHelper {
      *
      * @param messageData
      * @param appControl
-     *
      * @return
      */
     static JMenuItem favoritesSubmenu(MessageData messageData, IAppControl appControl) {

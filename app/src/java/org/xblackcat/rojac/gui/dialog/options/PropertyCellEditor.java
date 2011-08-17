@@ -71,6 +71,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
         };
         component.addActionListener(delegate);
     }
+
     /**
      * Constructs a <code>PropertyCellEditor</code> that uses a text field.
      *
@@ -236,7 +237,6 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
      * Specifies the number of clicks needed to start editing.
      *
      * @param count an int specifying the number of clicks needed to start editing
-     *
      * @see #getClickCountToStart
      */
     public void setClickCountToStart(int count) {
@@ -310,7 +310,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
     /**
      * The protected <code>EditorDelegate</code> class.
      */
-    protected class EditorDelegate implements ActionListener, ItemListener, Serializable, ChangeListener{
+    protected class EditorDelegate implements ActionListener, ItemListener, Serializable, ChangeListener {
 
         /**
          * The value of this cell.
@@ -340,9 +340,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
          * the necessary number of clicks have occurred, and returns false otherwise.
          *
          * @param anEvent the event
-         *
          * @return true  if cell is ready for editing, false otherwise
-         *
          * @see #setClickCountToStart
          * @see #shouldSelectCell
          */
@@ -354,9 +352,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
          * Returns true to indicate that the editing cell may be selected.
          *
          * @param anEvent the event
-         *
          * @return true
-         *
          * @see #isCellEditable
          */
         public boolean shouldSelectCell(EventObject anEvent) {
@@ -394,7 +390,6 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
          * When an action is performed, editing is ended.
          *
          * @param e the action event
-         *
          * @see #stopCellEditing
          */
         public void actionPerformed(ActionEvent e) {
@@ -405,7 +400,6 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
          * When an item's state changes, editing is ended.
          *
          * @param e the action event
-         *
          * @see #stopCellEditing
          */
         public void itemStateChanged(ItemEvent e) {

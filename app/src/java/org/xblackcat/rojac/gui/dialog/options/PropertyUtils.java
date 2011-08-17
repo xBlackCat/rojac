@@ -28,7 +28,6 @@ public final class PropertyUtils {
      * Generates a tree path of the specified property by its name.
      *
      * @param p property object to generate a path of.
-     *
      * @return root of the path.
      */
     @SuppressWarnings({"unchecked"})

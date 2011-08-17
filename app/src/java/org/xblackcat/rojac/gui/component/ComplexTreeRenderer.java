@@ -112,7 +112,7 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
         this.components = new JComponentDelegate(Arrays.asList(components));
     }
 
-    protected  JComponent getDelegateComponent() {
+    protected JComponent getDelegateComponent() {
         return components;
     }
 
@@ -171,7 +171,9 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
             components.setEnabled(false);
             LookAndFeel laf = UIManager.getLookAndFeel();
             Icon disabledIcon = laf.getDisabledIcon(tree, icon);
-            if (disabledIcon != null) icon = disabledIcon;
+            if (disabledIcon != null) {
+                icon = disabledIcon;
+            }
             setDisabledIcon(icon);
         } else {
             setEnabled(true);

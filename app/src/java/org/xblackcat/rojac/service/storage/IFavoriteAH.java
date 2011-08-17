@@ -14,7 +14,6 @@ public interface IFavoriteAH {
      * Returns all the created favorites.
      *
      * @return array of favorites object.
-     *
      * @throws StorageException
      */
     Collection<Favorite> getFavorites() throws StorageException;
@@ -25,7 +24,6 @@ public interface IFavoriteAH {
      * @param type   favorite type
      * @param itemId
      * @return
-     *
      * @throws StorageException
      */
     Favorite createFavorite(FavoriteType type, int itemId) throws StorageException;
@@ -34,7 +32,6 @@ public interface IFavoriteAH {
      * Removes a favorite.
      *
      * @param id favorite id to remove.
-     *
      * @throws StorageException
      */
     void removeFavorite(int id) throws StorageException;
@@ -43,9 +40,7 @@ public interface IFavoriteAH {
      * Loads a specified favorite by its id
      *
      * @param favoriteId
-     *
      * @return favorite object.
-     *
      * @throws StorageException
      */
     Favorite getFavorite(int favoriteId) throws StorageException;

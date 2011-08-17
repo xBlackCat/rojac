@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.dialog.options;
 import org.xblackcat.rojac.gui.component.AComplexEditor;
 import org.xblackcat.rojac.gui.theme.OptionsIcon;
 import org.xblackcat.rojac.util.ShortCutUtils;
-import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -12,9 +11,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
-* Created by IntelliJ IDEA. User: Alexey Date: 12.05.11 Time: 14:04 To change this template use File | Settings | File
-* Templates.
-*/
+ * Created by IntelliJ IDEA. User: Alexey Date: 12.05.11 Time: 14:04 To change this template use File | Settings | File
+ * Templates.
+ */
 class KeyStrokeEditor extends AComplexEditor<KeyStroke> {
     private KeyStroke stroke;
 
@@ -23,8 +22,8 @@ class KeyStrokeEditor extends AComplexEditor<KeyStroke> {
     KeyStrokeEditor() {
         super(new BorderLayout());
 
-        JButton confirm = new JButton(UIUtils.getIcon(OptionsIcon.Confirm));
-        JButton cancel = new JButton(UIUtils.getIcon(OptionsIcon.Cancel));
+        JButton confirm = new JButton(OptionsIcon.Confirm);
+        JButton cancel = new JButton(OptionsIcon.Cancel);
 
         confirm.setBorder(null);
         cancel.setBorder(null);

@@ -5,7 +5,7 @@ package org.xblackcat.rojac.gui.view.navigation;
  *
  * @author xBlackCat
  */
-abstract class AnAdjustUnreadTask<T extends AnItem> implements ILoadTask<Void> {
+abstract class AnAdjustUnreadTask<T extends AnItem> extends ALoadTask<Void> {
     protected final int adjustDelta;
     protected final T item;
 

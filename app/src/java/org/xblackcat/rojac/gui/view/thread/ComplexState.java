@@ -27,13 +27,21 @@ final class ComplexState implements IState {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ComplexState that = (ComplexState) o;
 
-        if (masterState != null ? !masterState.equals(that.masterState) : that.masterState != null) return false;
-        if (slaveState != null ? !slaveState.equals(that.slaveState) : that.slaveState != null) return false;
+        if (masterState != null ? !masterState.equals(that.masterState) : that.masterState != null) {
+            return false;
+        }
+        if (slaveState != null ? !slaveState.equals(that.slaveState) : that.slaveState != null) {
+            return false;
+        }
 
         return true;
     }

@@ -28,7 +28,6 @@ public final class RSDNMessageParserFactory {
      * @param tagsResource
      * @param tagRulesResource
      * @param tagGroupsResource
-     *
      * @throws IOException
      */
     RSDNMessageParserFactory(String tagsResource, String tagRulesResource, String tagGroupsResource) throws IOException {

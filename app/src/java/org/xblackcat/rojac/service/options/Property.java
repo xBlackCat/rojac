@@ -210,8 +210,12 @@ public final class Property<T> {
     private SoftReference<T> cache;
 
     private Property(boolean pub, String name, Class<T> type, T defaultValue, IValueChecker<T> checker) {
-        if (name == null) throw new NullPointerException("Property name can not be null.");
-        if (type == null) throw new NullPointerException("Class type can not be null.");
+        if (name == null) {
+            throw new NullPointerException("Property name can not be null.");
+        }
+        if (type == null) {
+            throw new NullPointerException("Class type can not be null.");
+        }
 
         this.pub = pub;
         this.name = name;
@@ -324,8 +328,12 @@ public final class Property<T> {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Property property = (Property) o;
 

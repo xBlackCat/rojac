@@ -33,7 +33,7 @@ public interface IProgressController {
     /**
      * Notify listeners about changing jobs progress (completeness) state and provide a message for logging.
      *
-     * @param progress   new value of progress.
+     * @param progress  new value of progress.
      * @param message
      * @param arguments
      */

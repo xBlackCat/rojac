@@ -42,7 +42,6 @@ public abstract class AComplexEditor<T> extends JLightPanel {
      * combo box is editable, then an <code>ActionEvent</code> will be fired when editing has stopped.
      *
      * @param l the <code>ActionListener</code> that is to be notified
-     *
      * @see #setSelectedItem
      */
     public void addActionListener(ActionListener l) {
@@ -63,7 +62,6 @@ public abstract class AComplexEditor<T> extends JLightPanel {
      * Returns an array of all the <code>ActionListener</code>s added to this JTextField with addActionListener().
      *
      * @return all of the <code>ActionListener</code>s added or an empty array if no listeners have been added
-     *
      * @since 1.4
      */
     public synchronized ActionListener[] getActionListeners() {
@@ -74,8 +72,8 @@ public abstract class AComplexEditor<T> extends JLightPanel {
     /**
      * Notifies all listeners that have registered interest for notification on this event type.
      *
-     * @see javax.swing.event.EventListenerList
      * @param command
+     * @see javax.swing.event.EventListenerList
      */
     protected void fireActionEvent(String command) {
         if (!firingActionEvent) {
@@ -97,10 +95,11 @@ public abstract class AComplexEditor<T> extends JLightPanel {
             for (int i = listeners.length - 2; i >= 0; i -= 2) {
                 if (listeners[i] == ActionListener.class) {
                     // Lazily create the event:
-                    if (e == null)
+                    if (e == null) {
                         e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
                                 command,
                                 mostRecentEventTime, modifiers);
+                    }
                     ((ActionListener) listeners[i + 1]).actionPerformed(e);
                 }
             }

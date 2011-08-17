@@ -50,7 +50,9 @@ class FavoriteCellRenderer extends JLightPanel
     private Border getNoFocusBorder() {
         Border border = LookupDelegate.getBorder(this, ui, "Table.cellNoFocusBorder");
         if (System.getSecurityManager() != null) {
-            if (border != null) return border;
+            if (border != null) {
+                return border;
+            }
             return SAFE_NO_FOCUS_BORDER;
         } else if (border != null) {
             if (noFocusBorder == null || noFocusBorder == DEFAULT_NO_FOCUS_BORDER) {
@@ -118,9 +120,7 @@ class FavoriteCellRenderer extends JLightPanel
      * @param hasFocus   true if cell has focus
      * @param row        the row of the cell to render
      * @param column     the column of the cell to render
-     *
      * @return the default table cell renderer
-     *
      * @see javax.swing.JComponent#isPaintingForPrint()
      */
     public Component getTableCellRendererComponent(JTable table, Object value,
@@ -205,7 +205,9 @@ class FavoriteCellRenderer extends JLightPanel
         table.setToolTipText(titleText + " " + statText);
 
         int style = Font.PLAIN;
-        if (isMarked) style |= Font.BOLD;
+        if (isMarked) {
+            style |= Font.BOLD;
+        }
 
         setFont(table.getFont().deriveFont(style));
 

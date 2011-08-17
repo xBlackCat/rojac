@@ -12,7 +12,6 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.util.List;
@@ -88,7 +87,7 @@ class PostListControl extends MessageListControl {
 
         ReadStatusIcon statusIcon = replies ? ReadStatusIcon.ReplyList : ReadStatusIcon.PostList;
 
-        return UIUtils.getIcon(statusIcon.getIcon(readStatus));
+        return statusIcon.getIcon(readStatus);
     }
 
     protected void updateModel(final AThreadModel<Post> model, Runnable postProcessor) {

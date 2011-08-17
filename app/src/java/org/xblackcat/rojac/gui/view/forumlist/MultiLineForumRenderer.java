@@ -50,7 +50,9 @@ class MultiLineForumRenderer extends JLightPanel
     private Border getNoFocusBorder() {
         Border border = LookupDelegate.getBorder(this, ui, "Table.cellNoFocusBorder");
         if (System.getSecurityManager() != null) {
-            if (border != null) return border;
+            if (border != null) {
+                return border;
+            }
             return SAFE_NO_FOCUS_BORDER;
         } else if (border != null) {
             if (noFocusBorder == null || noFocusBorder == DEFAULT_NO_FOCUS_BORDER) {
@@ -103,6 +105,7 @@ class MultiLineForumRenderer extends JLightPanel
     }
 
     // implements javax.swing.table.TableCellRenderer
+
     /**
      * Returns the default table cell renderer.
      * <p/>
@@ -117,9 +120,7 @@ class MultiLineForumRenderer extends JLightPanel
      * @param hasFocus   true if cell has focus
      * @param row        the row of the cell to render
      * @param column     the column of the cell to render
-     *
      * @return the default table cell renderer
-     *
      * @see javax.swing.JComponent#isPaintingForPrint()
      */
     public Component getTableCellRendererComponent(JTable table, Object value,
@@ -233,8 +234,12 @@ class MultiLineForumRenderer extends JLightPanel
         table.setToolTipText(titleText + " " + statText);
 
         int style = Font.PLAIN;
-        if (hasUnread) style |= Font.BOLD;
-        if (!isSubscribed) style |= Font.ITALIC;
+        if (hasUnread) {
+            style |= Font.BOLD;
+        }
+        if (!isSubscribed) {
+            style |= Font.ITALIC;
+        }
 
         Font font = table.getFont().deriveFont(style);
         setFont(font);

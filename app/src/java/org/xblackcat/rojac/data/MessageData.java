@@ -149,7 +149,6 @@ public class MessageData {
      * Create a new MessageData (if necessary) with new state of read flag.
      *
      * @param read new read state
-     *
      * @return MessageData object with specified read state.
      */
     public MessageData setRead(boolean read) {

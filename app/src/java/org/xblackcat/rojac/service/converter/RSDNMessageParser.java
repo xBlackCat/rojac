@@ -60,7 +60,6 @@ public class RSDNMessageParser implements IMessageParser {
      * Searches and highlight all the quotation lines in message. Does not converts line breaks or tags.
      *
      * @param rsdn
-     *
      * @return a new string with highlighted quotation lines.
      */
     protected String preProcessText(String rsdn) {

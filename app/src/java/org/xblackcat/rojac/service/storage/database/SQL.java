@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.service.storage.database;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 public final class SQL {
     private final String name;
     private final String sql;

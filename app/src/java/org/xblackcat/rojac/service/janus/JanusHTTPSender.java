@@ -101,7 +101,6 @@ class JanusHTTPSender extends BasicHandler {
      * from the SOAP server
      *
      * @param msgContext the messsage context
-     *
      * @throws org.apache.axis.AxisFault
      */
     public void invoke(MessageContext msgContext) throws AxisFault {
@@ -388,7 +387,6 @@ class JanusHTTPSender extends BasicHandler {
      * cleanup the cookie value.
      *
      * @param cookie initial cookie value
-     *
      * @return a cleaned up cookie value.
      */
     private String cleanupCookie(String cookie) {
@@ -455,7 +453,6 @@ class JanusHTTPSender extends BasicHandler {
      * @param httpClient The client used for posting
      * @param msgContext the message context
      * @param tmpURL     the url to post to.
-     *
      * @throws Exception
      */
     private void addContextInfo(HttpMethodBase method,
@@ -588,7 +585,6 @@ class JanusHTTPSender extends BasicHandler {
      *
      * @param host          host name
      * @param nonProxyHosts string containing the list of non proxy hosts
-     *
      * @return true/false
      */
     protected boolean isHostInNonProxyList(String host, String nonProxyHosts) {
@@ -625,7 +621,6 @@ class JanusHTTPSender extends BasicHandler {
      *
      * @param pattern the (non-null) pattern to match against
      * @param str     the (non-null) string that must be matched against the pattern
-     *
      * @return <code>true</code> when the string matches against the pattern, <code>false</code> otherwise.
      */
     protected static boolean match(String pattern, String str) {

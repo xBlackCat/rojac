@@ -160,7 +160,6 @@ public class ExtendedMarkDialog extends JDialog {
     /**
      * @param messageDate
      * @param scope
-     *
      * @return <code>false</code> if dialog was canceled and <code>true</code> if date was successfully selected.
      */
     public boolean selectDate(Long messageDate, Scope scope) {

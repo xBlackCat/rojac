@@ -32,14 +32,24 @@ public class PostException {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         PostException that = (PostException) o;
 
-        if (localMessageId != that.localMessageId) return false;
-        if (!exception.equals(that.exception)) return false;
-        if (!info.equals(that.info)) return false;
+        if (localMessageId != that.localMessageId) {
+            return false;
+        }
+        if (!exception.equals(that.exception)) {
+            return false;
+        }
+        if (!info.equals(that.info)) {
+            return false;
+        }
 
         return true;
     }

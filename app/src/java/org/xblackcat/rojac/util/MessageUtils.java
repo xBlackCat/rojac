@@ -6,7 +6,6 @@ import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.RatingCache;
-import org.xblackcat.rojac.gui.theme.AnIcon;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.Post;
@@ -143,7 +142,6 @@ public final class MessageUtils {
      * The method is copied from String utils to prevent modify russian letters into &#&lt;code&gt; form
      *
      * @param str string to escape.
-     *
      * @return escaped string.
      */
     public static String escapeHTML(String str) {
@@ -260,21 +258,13 @@ public final class MessageUtils {
     }
 
     public static Icon getPostIcon(Post post) {
-        return UIUtils.getIcon(getItemIcon(post));
-    }
-
-    public static Icon getPostIcon(MessageData data) {
-        return getPostIcon(new Post(data, null));
-    }
-
-    private static AnIcon getItemIcon(Post p) {
         final int userId = Property.RSDN_USER_ID.get(-1);
 
-        boolean isOwnPost = p.getMessageData().getUserId() == userId;
-        boolean isResponse = p.getParent() != null && p.getParent().getMessageData().getUserId() == userId;
-        boolean hasResponse = p.getRepliesAmount() > 0;
+        boolean isOwnPost = post.getMessageData().getUserId() == userId;
+        boolean isResponse = post.getParent() != null && post.getParent().getMessageData().getUserId() == userId;
+        boolean hasResponse = post.getRepliesAmount() > 0;
 
-        ReadStatus readStatus = p.isRead();
+        ReadStatus readStatus = post.isRead();
 
         ReadStatusIcon iconHolder;
 
@@ -291,6 +281,10 @@ public final class MessageUtils {
         }
 
         return iconHolder.getIcon(readStatus);
+    }
+
+    public static Icon getPostIcon(MessageData data) {
+        return getPostIcon(new Post(data, null));
     }
 
     public static String constantCamelToPropertyName(String s) {

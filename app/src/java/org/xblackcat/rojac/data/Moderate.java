@@ -42,15 +42,27 @@ public final class Moderate {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Moderate that = (Moderate) o;
 
-        if (creationTime != that.creationTime) return false;
-        if (forumId != that.forumId) return false;
-        if (messageId != that.messageId) return false;
-        if (userId != that.userId) return false;
+        if (creationTime != that.creationTime) {
+            return false;
+        }
+        if (forumId != that.forumId) {
+            return false;
+        }
+        if (messageId != that.messageId) {
+            return false;
+        }
+        if (userId != that.userId) {
+            return false;
+        }
 
         return true;
     }

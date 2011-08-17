@@ -9,8 +9,8 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ForumLoader extends RojacWorker<Void, Forum> {
     private static final Log log = LogFactory.getLog(ForumLoader.class);
     private static final IStorage storage = ServiceFactory.getInstance().getStorage();

@@ -16,7 +16,6 @@ import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.UIUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -192,7 +191,7 @@ public class ForumsListView extends AView {
 
     @Override
     public Icon getTabTitleIcon() {
-        return UIUtils.getIcon(ViewIcon.ForumList);
+        return ViewIcon.ForumList;
     }
 
     @Override

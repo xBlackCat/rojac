@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class PropertyListCellRenderer extends DefaultListCellRenderer {
     private final IValueChecker checker;
 

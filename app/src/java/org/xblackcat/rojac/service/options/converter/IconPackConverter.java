@@ -32,7 +32,7 @@ public class IconPackConverter implements IConverter<IconPack> {
             return null;
         }
 
-        return String.format("%s:%s:%s", o.getName(),o.getExtension(), o.getPathPrefix());
+        return String.format("%s:%s:%s", o.getName(), o.getExtension(), o.getPathPrefix());
     }
 
 

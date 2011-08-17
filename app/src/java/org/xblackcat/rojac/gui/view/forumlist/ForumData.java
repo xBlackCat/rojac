@@ -7,14 +7,10 @@ import org.xblackcat.rojac.data.ForumStatistic;
  * @author xBlackCat
  */
 
-public class ForumData {
+class ForumData {
     private final int forumId;
     private Forum forum;
     private ForumStatistic stat;
-
-    public ForumData(Forum forum) {
-        this(forum, null);
-    }
 
     public ForumData(Forum forum, ForumStatistic forumStatistic) {
         this.forum = forum;
@@ -44,8 +40,12 @@ public class ForumData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ForumData forumData = (ForumData) o;
 

@@ -49,7 +49,6 @@ public class SimpleTag implements ITag<SimpleTag> {
      * @param text     original text.
      * @param lower    lowercased original text (used for case-insensitive search)
      * @param startPos position in text where open tag is located
-     *
      * @return tag info object
      */
     protected ITagInfo<SimpleTag> getTagInfo(String text, String lower, int startPos) {
@@ -95,7 +94,6 @@ public class SimpleTag implements ITag<SimpleTag> {
          * @param endPos   position in text where close tag is located
          * @param startPos position in text where open tag is located
          * @param text     original text to parse.
-         *
          * @return tag data object
          */
         protected ITagData getTagData(int endPos, int startPos, String text) {

@@ -41,7 +41,6 @@ public interface IAppControl {
      * Adds (or make visible if already added) a tab with the type and root content id.
      *
      * @param viewId identify of view to open or create.
-     *
      * @return opened view (created or already existed)
      */
     View openTab(ViewId viewId);

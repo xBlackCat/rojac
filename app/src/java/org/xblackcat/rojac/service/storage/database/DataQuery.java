@@ -9,12 +9,12 @@ import org.xblackcat.utils.ResourceUtils;
 public enum DataQuery implements IPropertiable {
     // All object getting queries
     /**
-       * The query should fetch the forum group object properties in following order:
-       * <p/>
-       * id(int), name(String), sort_order(int)
-       */
-      GET_OBJECTS_FORUM_GROUP,
-      /**
+     * The query should fetch the forum group object properties in following order:
+     * <p/>
+     * id(int), name(String), sort_order(int)
+     */
+    GET_OBJECTS_FORUM_GROUP,
+    /**
      * The query should fetch the forum object properties in following order:
      * <p/>
      * id(int), forum group(int), rated(int), inTop(int), rateLimit(int), subscribed(boolean), short name(String),

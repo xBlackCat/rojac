@@ -147,7 +147,7 @@ public final class QueryHelper implements IQueryHelper {
         if (parameters != null) {
             for (int i = 0; i < parameters.length; i++) {
                 if (parameters[i] instanceof Boolean) {
-                    pstmt.setInt(i + 1, ((Boolean)(parameters[i])) ? 1 : 0);
+                    pstmt.setInt(i + 1, ((Boolean) (parameters[i])) ? 1 : 0);
                 } else {
                     pstmt.setObject(i + 1, parameters[i]);
                 }

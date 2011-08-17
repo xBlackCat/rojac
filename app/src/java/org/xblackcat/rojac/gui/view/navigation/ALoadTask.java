@@ -6,15 +6,21 @@ import org.xblackcat.rojac.service.storage.IStorage;
 /**
  * @author xBlackCat
  */
-public abstract class ALoadTask<V> implements ILoadTask<V> {
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
+abstract class ALoadTask<V> {
+    protected static final ALoadTask[] NO_TASKS = new ALoadTask[0];
 
     @SuppressWarnings({"unchecked"})
-    public static <T> ILoadTask<T>[] group(ILoadTask<T> task) {
+    protected static <T> ALoadTask<T>[] group(ALoadTask<T> task) {
         if (task == null) {
             return NO_TASKS;
         }
 
-        return new ILoadTask[]{task};
+        return new ALoadTask[]{task};
     }
+
+    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
+
+    abstract V doBackground() throws Exception;
+
+    abstract void doSwing(V data);
 }

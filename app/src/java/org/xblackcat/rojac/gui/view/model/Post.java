@@ -83,8 +83,12 @@ public class Post implements ITreeItem<Post> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Post)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Post)) {
+            return false;
+        }
 
         Post post = (Post) o;
 

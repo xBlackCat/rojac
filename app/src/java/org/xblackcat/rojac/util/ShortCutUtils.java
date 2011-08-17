@@ -196,7 +196,7 @@ public class ShortCutUtils {
         }
 
         File keyMapFile = RojacUtils.getKeyMapFile();
-        
+
         try {
             try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(keyMapFile))) {
                 keyBinding.store(os, "Rojac key binding config file.");

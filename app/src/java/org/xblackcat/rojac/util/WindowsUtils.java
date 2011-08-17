@@ -32,7 +32,6 @@ public final class WindowsUtils {
      * Cover component by JPanel with FlowLayout (align - CENTER)
      *
      * @param comp component to cover.
-     *
      * @return covered component.
      */
     public static Component coverComponent(Component comp) {
@@ -44,7 +43,6 @@ public final class WindowsUtils {
      *
      * @param comp  component to cover.
      * @param align aling type. See {@linkplain java.awt.FlowLayout#FlowLayout(int)} for available values.
-     *
      * @return covered component.
      */
     public static Component coverComponent(Component comp, int align) {
@@ -57,7 +55,6 @@ public final class WindowsUtils {
      * @param comp       component to cover.
      * @param align      aling type. See {@linkplain java.awt.FlowLayout#FlowLayout(int)} for available values.
      * @param background
-     *
      * @return covered component.
      */
     public static Component coverComponent(Component comp, int align, Color background) {
@@ -124,7 +121,6 @@ public final class WindowsUtils {
      *
      * @param buttonName identifier of images set for the button.
      * @param action     action listener to fire when action is performed.
-     *
      * @return initialized button.
      */
     public static JButton setupImageButton(String buttonName, AButtonAction action) {
@@ -165,7 +161,6 @@ public final class WindowsUtils {
      *
      * @param toolTip  tooltip text.
      * @param shortCut keyboard surtcut for the action.
-     *
      * @return tool tip text.
      */
     private static String getToolTip(Message toolTip, ShortCut shortCut) {
@@ -204,7 +199,6 @@ public final class WindowsUtils {
      *
      * @param window window to be centered
      * @param parent anchor component.
-     *
      * @see #centerOnScreen(java.awt.Window)
      */
     public static void center(Window window, Component parent) {
@@ -251,7 +245,6 @@ public final class WindowsUtils {
      * placed.
      *
      * @param components list of components to be placed into a new toolbar.
-     *
      * @return a toolbar with specified components.
      */
     public static JToolBar createToolBar(JComponent... components) {
@@ -273,7 +266,6 @@ public final class WindowsUtils {
      * buttons is used.
      *
      * @param buttons button properties to be placed to buttons container.
-     *
      * @return container with constructed buttons.
      */
     public static Component createButtonsBar(AButtonAction... buttons) {
@@ -286,7 +278,6 @@ public final class WindowsUtils {
      *
      * @param align   alignment of buttons in the container.
      * @param buttons button properties to be placed to buttons container.
-     *
      * @return container with constructed buttons.
      */
     public static Component createButtonsBar(int align, AButtonAction... buttons) {
@@ -300,7 +291,6 @@ public final class WindowsUtils {
      * @param dlg       dialog to be set with default button.
      * @param defAction message of default button.
      * @param buttons   button properties to be placed to buttons container.
-     *
      * @return container with constructed buttons.
      */
     public static Component createButtonsBar(JDialog dlg, Message defAction, AButtonAction... buttons) {
@@ -315,7 +305,6 @@ public final class WindowsUtils {
      * @param defAction message of default button.
      * @param align     alignment of buttons in the container.
      * @param buttons   button properties to be placed to buttons container.
-     *
      * @return container with constructed buttons.
      */
     public static Component createButtonsBar(JDialog dlg, Message defAction, int align, AButtonAction... buttons) {

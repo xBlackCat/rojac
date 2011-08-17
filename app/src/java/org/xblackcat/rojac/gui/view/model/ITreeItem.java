@@ -14,7 +14,6 @@ public interface ITreeItem<T extends ITreeItem> extends Comparable<T> {
      *
      * @param node
      * @return
-     *
      * @see javax.swing.tree.TreeModel#getIndexOfChild(Object, Object)
      */
     int getIndex(T node);

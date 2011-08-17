@@ -9,8 +9,8 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 public class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
     private final boolean read;
     private final TIntHashSet messageIds;

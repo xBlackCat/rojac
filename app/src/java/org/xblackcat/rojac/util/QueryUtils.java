@@ -59,9 +59,7 @@ public final class QueryUtils {
      * the same order as they defined in properties file.
      *
      * @param propertiesFile target properties resource for loading.
-     *
      * @return
-     *
      * @throws IOException
      */
     public static Map<String, String> loadProperties(String propertiesFile) throws IOException {

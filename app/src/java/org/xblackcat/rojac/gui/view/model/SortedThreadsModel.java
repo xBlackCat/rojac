@@ -74,7 +74,6 @@ public class SortedThreadsModel extends AThreadModel<Post> {
      * @param aNode the Post to get the path for
      * @param depth an int giving the number of steps already taken towards the root (on recursive calls), used to size
      *              the returned array
-     *
      * @return an array of TreeNodes giving the path from the root to the specified node
      */
     protected Post[] getPathToRoot(Post aNode, int depth) {

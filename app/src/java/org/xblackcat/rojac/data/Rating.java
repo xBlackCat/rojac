@@ -54,17 +54,33 @@ public final class Rating {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Rating that = (Rating) o;
 
-        if (messageId != that.messageId) return false;
-        if (rate != that.rate) return false;
-        if (rateDate != that.rateDate) return false;
-        if (topicId != that.topicId) return false;
-        if (userId != that.userId) return false;
-        if (userRating != that.userRating) return false;
+        if (messageId != that.messageId) {
+            return false;
+        }
+        if (rate != that.rate) {
+            return false;
+        }
+        if (rateDate != that.rateDate) {
+            return false;
+        }
+        if (topicId != that.topicId) {
+            return false;
+        }
+        if (userId != that.userId) {
+            return false;
+        }
+        if (userRating != that.userRating) {
+            return false;
+        }
 
         return true;
     }

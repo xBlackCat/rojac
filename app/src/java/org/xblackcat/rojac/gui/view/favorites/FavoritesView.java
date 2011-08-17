@@ -13,7 +13,6 @@ import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -141,7 +140,7 @@ public class FavoritesView extends AView {
 
     @Override
     public Icon getTabTitleIcon() {
-        return UIUtils.getIcon(ViewIcon.Favorites);
+        return ViewIcon.Favorites;
     }
 
     @Override

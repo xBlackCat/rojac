@@ -5,8 +5,8 @@ import org.xblackcat.rojac.service.options.IValueChecker;
 import javax.swing.*;
 
 /**
-* @author xBlackCat
-*/
+ * @author xBlackCat
+ */
 class ComboBoxEditorModel<T> extends AbstractListModel<T> implements ComboBoxModel<T> {
     private final IValueChecker<T> checker;
     private T selected;
