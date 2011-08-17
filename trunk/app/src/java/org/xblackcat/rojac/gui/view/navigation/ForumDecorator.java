@@ -39,7 +39,7 @@ class ForumDecorator extends ADecorator {
 
     private final TIntObjectHashMap<ForumItem> viewedForums = new TIntObjectHashMap<>();
 
-    public ForumDecorator(AModelControl modelControl) {
+    public ForumDecorator(IModelControl modelControl) {
         super(modelControl);
 
         subscribedForums = new GroupItem<>(Message.View_Navigation_Item_SubscribedForums, FORUM_LIST_COMPARATOR, ReadStatusIcon.Thread);

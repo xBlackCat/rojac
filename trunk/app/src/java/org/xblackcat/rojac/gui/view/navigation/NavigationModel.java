@@ -14,7 +14,7 @@ import java.util.Collection;
 /**
  * @author xBlackCat
  */
-class NavigationModel extends AModelControl implements TreeTableModel {
+class NavigationModel implements TreeTableModel, IModelControl {
     private final TreeModelSupport support = new TreeModelSupport(this);
     private final AnItem root;
 
@@ -251,7 +251,7 @@ class NavigationModel extends AModelControl implements TreeTableModel {
 
     // Helper methods
     @Override
-    <T extends AnItem> void safeRemoveChild(AGroupItem<T> parent, T forum) {
+    public <T extends AnItem> void safeRemoveChild(AGroupItem<T> parent, T forum) {
         int idx = parent.indexOf(forum);
         if (idx != -1) {
             AnItem removed = parent.remove(idx);
@@ -266,7 +266,7 @@ class NavigationModel extends AModelControl implements TreeTableModel {
      * @param child  a new child item
      */
     @Override
-    <T extends AnItem> void addChild(AGroupItem<T> parent, T child) {
+    public <T extends AnItem> void addChild(AGroupItem<T> parent, T child) {
         int idx = parent.add(child);
 
         support.fireChildAdded(getPathToRoot(parent), idx, child);
@@ -278,7 +278,7 @@ class NavigationModel extends AModelControl implements TreeTableModel {
      * @param item updated item
      */
     @Override
-    void itemUpdated(AnItem item) {
+    public void itemUpdated(AnItem item) {
         TreePath path = getPathToRoot(item);
         while (path != null) {
             support.firePathChanged(path);

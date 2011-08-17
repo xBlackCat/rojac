@@ -18,7 +18,7 @@ import java.util.Collection;
 class FavoritesDecorator extends ADecorator {
     private final AGroupItem<FavoriteItem> favorites;
 
-    public FavoritesDecorator(AModelControl modelControl) {
+    public FavoritesDecorator(IModelControl modelControl) {
         super(modelControl);
         favorites = new GroupItem<>(Message.View_Navigation_Item_Favorites, ReadStatusIcon.Favorite);
     }
