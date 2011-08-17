@@ -12,11 +12,9 @@ import java.util.Collection;
  * @author xBlackCat
  */
 
-class DBFavoriteAH implements IFavoriteAH {
-    private final IQueryExecutor helper;
-
-    public DBFavoriteAH(IQueryExecutor helper) {
-        this.helper = helper;
+final class DBFavoriteAH extends AnAH implements IFavoriteAH {
+    DBFavoriteAH(IQueryExecutor helper) {
+        super(helper);
     }
 
     @Override

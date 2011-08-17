@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.service.storage.database;
 
-import org.xblackcat.rojac.data.*;
+import org.xblackcat.rojac.data.AffectedMessage;
+import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.Role;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -13,11 +15,9 @@ import java.util.Collection;
  * @author ASUS
  */
 
-final class DBMessageAH implements IMessageAH {
-    private final IQueryExecutor helper;
-
+final class DBMessageAH extends AnAH implements IMessageAH {
     DBMessageAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     public void storeMessage(JanusMessageInfo fm, boolean read) throws StorageException {
@@ -124,39 +124,8 @@ final class DBMessageAH implements IMessageAH {
     }
 
     @Override
-    public ThreadStatData getThreadStatByThreadId(int threadId) throws StorageException {
-        return helper.executeSingle(Converters.TO_THREAD_DATA, DataQuery.GET_THREAD_STAT_DATA, threadId);
-    }
-
-    @Override
-    public FavoriteStatData getReplaysInThread(int threadId) throws StorageException {
-        int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
-        int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
-        return new FavoriteStatData(unread, total);
-    }
-
-    @Override
     public MessageData getMessageData(int messageId) throws StorageException {
         return helper.executeSingle(Converters.TO_MESSAGE_DATA, DataQuery.GET_OBJECT_MESSAGE_DATA, messageId);
-    }
-
-    @Override
-    public int getUnreadMessages() throws StorageException {
-        return helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_MESSAGES_NUMBER).intValue();
-    }
-
-    @Override
-    public FavoriteStatData getUserRepliesStat(int userId) throws StorageException {
-        int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_REPLIES_NUMBER, userId).intValue();
-        int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_REPLIES_NUMBER, userId).intValue();
-        return new FavoriteStatData(unread, total);
-    }
-
-    @Override
-    public FavoriteStatData getUserPostsStat(int userId) throws StorageException {
-        int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_POSTS_NUMBER, userId).intValue();
-        int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_POSTS_NUMBER, userId).intValue();
-        return new FavoriteStatData(unread, total);
     }
 
     @Override

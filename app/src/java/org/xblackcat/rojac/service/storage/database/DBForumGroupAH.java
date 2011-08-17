@@ -9,11 +9,9 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
  * @author ASUS
  */
 
-final class DBForumGroupAH implements IForumGroupAH {
-    private final IQueryExecutor helper;
-
-    DBForumGroupAH(IQueryExecutor helper) {
-        this.helper = helper;
+final class DBForumGroupAH extends AnAH implements IForumGroupAH {
+    public DBForumGroupAH(IQueryExecutor helper) {
+        super(helper);
     }
 
     public void storeForumGroup(ForumGroup fg) throws StorageException {

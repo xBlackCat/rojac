@@ -9,11 +9,9 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
  * @author ASUS
  */
 
-final class DBUserAH implements IUserAH {
-    private final IQueryExecutor helper;
-
+final class DBUserAH extends AnAH implements IUserAH {
     DBUserAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     @Override

@@ -7,11 +7,9 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author ASUS
  */
 
-final class DBMiscAH implements IMiscAH {
-    private final IQueryExecutor helper;
-
+final class DBMiscAH extends AnAH implements IMiscAH {
     DBMiscAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     public void storeExtraMessage(int messageId) throws StorageException {

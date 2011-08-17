@@ -11,11 +11,9 @@ import java.util.Collection;
  * @author ASUS
  */
 
-final class DBNewMessageAH implements INewMessageAH {
-    private final IQueryExecutor helper;
-
+final class DBNewMessageAH extends AnAH implements INewMessageAH {
     DBNewMessageAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     public void storeNewMessage(NewMessage nm) throws StorageException {

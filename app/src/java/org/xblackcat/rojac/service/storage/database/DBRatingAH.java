@@ -14,11 +14,9 @@ import java.util.Collection;
  * @author ASUS
  */
 
-final class DBRatingAH implements IRatingAH {
-    private final IQueryExecutor helper;
-
+final class DBRatingAH extends AnAH implements IRatingAH {
     DBRatingAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     public void storeRating(JanusRatingInfo r) throws StorageException {

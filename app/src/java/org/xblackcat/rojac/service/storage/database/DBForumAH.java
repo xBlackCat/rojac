@@ -10,11 +10,9 @@ import java.util.Collection;
 /**
  * @author ASUS
  */
-final class DBForumAH implements IForumAH {
-    private final IQueryExecutor helper;
-
+final class DBForumAH extends AnAH implements IForumAH {
     DBForumAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     @Override

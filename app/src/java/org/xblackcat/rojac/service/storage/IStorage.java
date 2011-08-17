@@ -33,4 +33,6 @@ public interface IStorage {
     void shutdown() throws StorageException;
 
     IFavoriteAH getFavoriteAH();
+
+    IStatisticAH getStatisticAH();
 }

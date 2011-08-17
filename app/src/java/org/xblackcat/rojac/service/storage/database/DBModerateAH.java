@@ -12,11 +12,9 @@ import java.util.Collection;
  * @author ASUS
  */
 
-final class DBModerateAH implements IModerateAH {
-    private final IQueryExecutor helper;
-
+final class DBModerateAH extends AnAH implements IModerateAH {
     DBModerateAH(IQueryExecutor helper) {
-        this.helper = helper;
+        super(helper);
     }
 
     public void storeModerateInfo(JanusModerateInfo mi) throws StorageException {
