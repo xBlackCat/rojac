@@ -265,6 +265,8 @@ public abstract class AThreadView extends AnItemView {
     private void selectNextPost(Post currentPost, boolean unread, Collection<Post> toCollapse) {
         Post next = findNextPost(currentPost, 0, unread, toCollapse);
         if (next != null) {
+            selectItem(next);
+
             if (!toCollapse.isEmpty()) {
                 for (Post post : toCollapse) {
                     collapsePath(model.getPathToRoot(post));
@@ -272,8 +274,6 @@ public abstract class AThreadView extends AnItemView {
 
                 scrollPathToVisible(model.getPathToRoot(next));
             }
-
-            selectItem(next);
         }
     }
 
