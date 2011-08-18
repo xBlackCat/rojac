@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
 import org.xblackcat.rojac.data.Favorite;
-import org.xblackcat.rojac.data.FavoriteStatData;
+import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -64,7 +64,7 @@ class FavoritesModel extends AbstractTableModel {
     }
 
     private class FavoriteInfoLoader extends RojacWorker<Void, Void> {
-        private FavoriteStatData newStatistic;
+        private UnreadStatData newStatistic;
         private String newName;
         private final FavoriteData favoriteData;
         private final int rowId;

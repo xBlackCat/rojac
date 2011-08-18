@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 
@@ -30,7 +31,7 @@ class DraftsItem extends PersonalItem {
 
     @Override
     String getTitleLine() {
-        return null;
+        return Message.View_Navigation_Item_Draft.get();
     }
 
     @Override
@@ -39,7 +40,7 @@ class DraftsItem extends PersonalItem {
     }
 
     @Override
-    boolean isExuded() {
-        return true;
+    String getBriefInfo() {
+        return getStat().asString();
     }
 }

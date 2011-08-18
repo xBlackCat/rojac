@@ -6,11 +6,11 @@ import org.xblackcat.rojac.i18n.Message;
  * @author xBlackCat
  */
 
-public class FavoriteStatData {
+public class UnreadStatData {
     private final int unread;
     private final int total;
 
-    public FavoriteStatData(int unread, int total) {
+    public UnreadStatData(int unread, int total) {
         this.total = total;
         this.unread = unread;
     }

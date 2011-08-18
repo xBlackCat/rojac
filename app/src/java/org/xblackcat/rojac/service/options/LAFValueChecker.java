@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 final class LAFValueChecker implements IValueChecker<LookAndFeel> {
     private static final Log log = LogFactory.getLog(LAFValueChecker.class);
 
-    private static final String LAF_LIST = "/laf.config";
+    private static final String LAF_LIST = "/laf.properties";
 
     private static final Pattern KEY_PATTERN = Pattern.compile("rojac\\.laf\\.(\\w+)\\.(class|description)");
     private static final Comparator<LookAndFeel> LOOK_AND_FEEL_COMPARATOR = new Comparator<LookAndFeel>() {

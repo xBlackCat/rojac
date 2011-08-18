@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
 
@@ -7,11 +8,12 @@ import javax.swing.*;
 
 abstract class PersonalItem extends AnItem {
     private final ReadStatusIcon icon;
-    protected int itemsCount;
+    private UnreadStatData stat;
 
     protected PersonalItem(ReadStatusIcon icon) {
         super(null);
         this.icon = icon;
+        stat = new UnreadStatData(0, 0);
     }
 
     @Override
@@ -21,7 +23,7 @@ abstract class PersonalItem extends AnItem {
 
     @Override
     ReadStatus getReadStatus() {
-        return ReadStatus.Read;
+        return isExuded() ? ReadStatus.Unread : ReadStatus.Read;
     }
 
     @Override
@@ -44,16 +46,16 @@ abstract class PersonalItem extends AnItem {
         return 0;
     }
 
+    protected UnreadStatData getStat() {
+        return stat;
+    }
+
+    protected void setStat(UnreadStatData stat) {
+        this.stat = stat;
+    }
+
     @Override
-    String getBriefInfo() {
-        return String.valueOf(itemsCount);
-    }
-
-    int getItemsCount() {
-        return itemsCount;
-    }
-
-    void setItemsCount(int itemsCount) {
-        this.itemsCount = itemsCount;
+    boolean isExuded() {
+        return stat != null && stat.getUnread() > 0;
     }
 }

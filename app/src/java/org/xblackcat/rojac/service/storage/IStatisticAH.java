@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage;
 
-import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.ThreadStatData;
+import org.xblackcat.rojac.data.UnreadStatData;
 
 /**
  * @author xBlackCat
@@ -24,7 +24,7 @@ public interface IStatisticAH extends AH {
      * @return brief stat data.
      * @throws org.xblackcat.rojac.service.storage.StorageException
      */
-    FavoriteStatData getReplaysInThread(int threadId) throws StorageException;
+    UnreadStatData getReplaysInThread(int threadId) throws StorageException;
 
     int getUnreadMessages() throws StorageException;
 
@@ -35,7 +35,7 @@ public interface IStatisticAH extends AH {
      * @return brief stat data.
      * @throws org.xblackcat.rojac.service.storage.StorageException
      */
-    FavoriteStatData getUserRepliesStat(int userId) throws StorageException;
+    UnreadStatData getUserRepliesStat(int userId) throws StorageException;
 
     /**
      * Returns number of posts of specified user.
@@ -44,5 +44,5 @@ public interface IStatisticAH extends AH {
      * @return brief stat data.
      * @throws org.xblackcat.rojac.service.storage.StorageException
      */
-    FavoriteStatData getUserPostsStat(int userId) throws StorageException;
+    UnreadStatData getUserPostsStat(int userId) throws StorageException;
 }

@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.ViewType;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
@@ -36,7 +37,7 @@ class MyResponsesItem extends PersonalItem {
 
     @Override
     String getTitleLine() {
-        return null;
+        return Message.View_Navigation_Item_MyResponses.get();
     }
 
     @Override
@@ -45,7 +46,7 @@ class MyResponsesItem extends PersonalItem {
     }
 
     @Override
-    boolean isExuded() {
-        return true;
+    String getBriefInfo() {
+        return getStat().asString();
     }
 }

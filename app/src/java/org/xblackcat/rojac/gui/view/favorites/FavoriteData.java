@@ -1,14 +1,14 @@
 package org.xblackcat.rojac.gui.view.favorites;
 
 import org.xblackcat.rojac.data.Favorite;
-import org.xblackcat.rojac.data.FavoriteStatData;
+import org.xblackcat.rojac.data.UnreadStatData;
 
 /**
  * @author xBlackCat Date: 24.07.11
  */
 class FavoriteData {
     private Favorite favorite;
-    private FavoriteStatData statistic;
+    private UnreadStatData statistic;
 
     FavoriteData(Favorite favorite) {
         this.favorite = favorite;
@@ -18,11 +18,11 @@ class FavoriteData {
         return favorite;
     }
 
-    public FavoriteStatData getStatistic() {
+    public UnreadStatData getStatistic() {
         return statistic;
     }
 
-    public void setStatistic(FavoriteStatData statistic) {
+    public void setStatistic(UnreadStatData statistic) {
         this.statistic = statistic;
     }
 
