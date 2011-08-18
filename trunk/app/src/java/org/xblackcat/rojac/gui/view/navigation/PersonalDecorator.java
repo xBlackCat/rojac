@@ -1,9 +1,13 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * @author xBlackCat Date: 22.07.11
@@ -19,6 +23,7 @@ class PersonalDecorator extends ADecorator {
         super(modelControl);
 
         personal.add(outBox);
+        personal.add(myResponses);
     }
 
     @Override
@@ -29,15 +34,16 @@ class PersonalDecorator extends ADecorator {
     }
 
     public ALoadTask[] reloadInfo() {
+        Collection<ALoadTask> tasks = new LinkedList<>();
         Integer userId = Property.RSDN_USER_ID.get();
-        if (userId == null) {
-            return ALoadTask.NO_TASKS;
+        if (userId != null) {
+            tasks.add(new AnswersReloadTask(userId));
         }
 
-        return ALoadTask.NO_TASKS;
+        return tasks.toArray(new ALoadTask[tasks.size()]);
     }
 
-    private class AnswersReloadTask extends ALoadTask<Integer> {
+    private class AnswersReloadTask extends ALoadTask<UnreadStatData> {
         private final int userId;
         protected IStatisticAH statisticAH;
 
@@ -47,14 +53,14 @@ class PersonalDecorator extends ADecorator {
         }
 
         @Override
-        Integer doBackground() throws Exception {
-
-
-            return null;
+        UnreadStatData doBackground() throws Exception {
+            return statisticAH.getUserRepliesStat(userId);
         }
 
         @Override
-        void doSwing(Integer data) {
+        void doSwing(UnreadStatData data) {
+            myResponses.setStat(data);
+            modelControl.itemUpdated(myResponses);
         }
     }
 }

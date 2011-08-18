@@ -11,7 +11,7 @@ import org.xblackcat.rojac.util.RojacUtils;
 /**
  * @author xBlackCat
  */
-public abstract class AForumTask<V> extends ALoadTask<V> {
+abstract class AForumTask<V> extends ALoadTask<V> {
     protected final IStorage storage = ServiceFactory.getInstance().getStorage();
     protected final IForumAH fah = storage.getForumAH();
 

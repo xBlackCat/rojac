@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage.database;
 
-import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.ThreadStatData;
+import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
@@ -20,10 +20,10 @@ final class DBStatisticAH extends AnAH implements IStatisticAH {
     }
 
     @Override
-    public FavoriteStatData getReplaysInThread(int threadId) throws StorageException {
+    public UnreadStatData getReplaysInThread(int threadId) throws StorageException {
         int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
         int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
-        return new FavoriteStatData(unread, total);
+        return new UnreadStatData(unread, total);
     }
 
     @Override
@@ -32,16 +32,16 @@ final class DBStatisticAH extends AnAH implements IStatisticAH {
     }
 
     @Override
-    public FavoriteStatData getUserRepliesStat(int userId) throws StorageException {
+    public UnreadStatData getUserRepliesStat(int userId) throws StorageException {
         int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_REPLIES_NUMBER, userId).intValue();
         int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_REPLIES_NUMBER, userId).intValue();
-        return new FavoriteStatData(unread, total);
+        return new UnreadStatData(unread, total);
     }
 
     @Override
-    public FavoriteStatData getUserPostsStat(int userId) throws StorageException {
+    public UnreadStatData getUserPostsStat(int userId) throws StorageException {
         int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_POSTS_NUMBER, userId).intValue();
         int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_POSTS_NUMBER, userId).intValue();
-        return new FavoriteStatData(unread, total);
+        return new UnreadStatData(unread, total);
     }
 }

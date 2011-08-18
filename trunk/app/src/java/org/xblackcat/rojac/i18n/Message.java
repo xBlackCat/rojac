@@ -67,6 +67,9 @@ public enum Message {
     View_Navigation_Item_Favorites,
     View_Navigation_Item_ForumInfo,
     View_Navigation_Item_ForumExtraInfo,
+    View_Navigation_Item_Outbox,
+    View_Navigation_Item_MyResponses,
+    View_Navigation_Item_Draft,
 
     // Threads view
     View_Thread_Button_NewThread,

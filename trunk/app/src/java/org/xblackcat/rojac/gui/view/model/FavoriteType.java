@@ -2,8 +2,8 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.NotImplementedException;
 import org.xblackcat.rojac.RojacException;
-import org.xblackcat.rojac.data.FavoriteStatData;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
@@ -45,7 +45,7 @@ public enum FavoriteType {
         }
 
         @Override
-        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public UnreadStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return storage.getStatisticAH().getReplaysInThread(itemId);
@@ -72,7 +72,7 @@ public enum FavoriteType {
         }
 
         @Override
-        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public UnreadStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return storage.getStatisticAH().getUserPostsStat(itemId);
@@ -96,7 +96,7 @@ public enum FavoriteType {
         }
 
         @Override
-        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public UnreadStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return storage.getStatisticAH().getReplaysInThread(itemId);
@@ -125,7 +125,7 @@ public enum FavoriteType {
         }
 
         @Override
-        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public UnreadStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return storage.getStatisticAH().getUserRepliesStat(itemId);
@@ -147,7 +147,7 @@ public enum FavoriteType {
         }
 
         @Override
-        public FavoriteStatData loadStatistic(int itemId) throws RojacException {
+        public UnreadStatData loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             throw new NotImplementedException();
@@ -190,6 +190,6 @@ public enum FavoriteType {
 
     public abstract String loadName(int itemId) throws RojacException;
 
-    public abstract FavoriteStatData loadStatistic(int itemId) throws RojacException;
+    public abstract UnreadStatData loadStatistic(int itemId) throws RojacException;
 
 }

@@ -107,9 +107,9 @@ public final class ServiceFactory {
     private static DBStorage initializeStorage() throws RojacException {
         Properties mainProperties;
         try {
-            mainProperties = ResourceUtils.loadProperties("/rojac.config");
+            mainProperties = ResourceUtils.loadProperties("/rojac.properties");
         } catch (IOException e) {
-            throw new StorageInitializationException("rojac.config was not found in class path", e);
+            throw new StorageInitializationException("rojac.properties was not found in class path", e);
         }
 
         String home = System.getProperty("rojac.home");
