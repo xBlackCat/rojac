@@ -23,6 +23,7 @@ class ToMessageDataConverter implements IToObjectConverter<MessageData> {
         boolean read = rs.getBoolean(10);
         String rating = rs.getString(11);
         boolean topicIgnored = rs.getBoolean(12);
+        int parentUserId = rs.getInt(13);
 
         return new MessageData(
                 messageId,
@@ -36,7 +37,8 @@ class ToMessageDataConverter implements IToObjectConverter<MessageData> {
                 updateDate,
                 read,
                 rating,
-                topicIgnored
+                topicIgnored,
+                parentUserId
         );
     }
 }

@@ -17,7 +17,25 @@ public class MessageData {
     protected final boolean read;
     protected final RatingCache rating;
     protected final boolean ignored;
+    protected final int parentUserId;
 
+    /**
+     * A new instance of MessageData object. The object contain significant data to show item in tree view.
+     *
+     * @param messageId    message id. By the id message can be accessed either in Rojac or on rsdn.ru site.
+     * @param topicId      topic id. If zero - the message is topic starter.
+     * @param parentId     previous message by hierarhy.
+     * @param forumId      forum id of the message.
+     * @param userId       internal user id
+     * @param subject      message subject line
+     * @param userName     the message author name
+     * @param messageDate  create date of the message
+     * @param updateDate   date the message being updated
+     * @param read         flag: is the message has been read
+     * @param rating       rating cache string of the message
+     * @param ignored      boolean flag is teh message(topic) was ignored
+     * @param parentUserId author of previous message by hierarhy. Zero for anonymous or topic head messages.
+     */
     public MessageData(int messageId,
                        int topicId,
                        int parentId,
@@ -29,7 +47,8 @@ public class MessageData {
                        long updateDate,
                        boolean read,
                        String rating,
-                       boolean ignored) {
+                       boolean ignored,
+                       int parentUserId) {
         this(messageId,
                 topicId,
                 parentId,
@@ -41,7 +60,8 @@ public class MessageData {
                 updateDate,
                 read,
                 new RatingCache(rating),
-                ignored);
+                ignored,
+                parentUserId);
     }
 
     private MessageData(int messageId,
@@ -55,7 +75,7 @@ public class MessageData {
                         long updateDate,
                         boolean read,
                         RatingCache rating,
-                        boolean ignored) {
+                        boolean ignored, int parentUserId) {
         this.messageId = messageId;
         this.topicId = topicId;
         this.parentId = parentId;
@@ -68,6 +88,7 @@ public class MessageData {
         this.read = read;
         this.rating = rating;
         this.ignored = ignored;
+        this.parentUserId = parentUserId;
     }
 
     public int getMessageId() {
@@ -128,6 +149,14 @@ public class MessageData {
         return rating;
     }
 
+    public boolean isIgnored() {
+        return ignored;
+    }
+
+    public int getParentUserId() {
+        return parentUserId;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -141,6 +170,10 @@ public class MessageData {
         sb.append(", userName='").append(userName).append('\'');
         sb.append(", messageDate=").append(messageDate);
         sb.append(", updateDate=").append(updateDate);
+        sb.append(", read=").append(read);
+        sb.append(", rating=").append(rating);
+        sb.append(", ignored=").append(ignored);
+        sb.append(", parentUserId=").append(parentUserId);
         sb.append('}');
         return sb.toString();
     }
@@ -168,7 +201,7 @@ public class MessageData {
                 updateDate,
                 read, // Not a field
                 rating,
-                ignored
-        );
+                ignored,
+                parentUserId);
     }
 }
