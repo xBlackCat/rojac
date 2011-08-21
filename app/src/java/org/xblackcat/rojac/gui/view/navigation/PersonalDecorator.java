@@ -1,11 +1,13 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -33,14 +35,42 @@ class PersonalDecorator extends ADecorator {
         };
     }
 
-    public ALoadTask[] reloadInfo() {
+    public Collection<ALoadTask> reloadInfo(boolean fullReload) {
         Collection<ALoadTask> tasks = new LinkedList<>();
         Integer userId = Property.RSDN_USER_ID.get();
         if (userId != null) {
             tasks.add(new AnswersReloadTask(userId));
         }
 
-        return tasks.toArray(new ALoadTask[tasks.size()]);
+        if (fullReload) {
+            // Load others values
+        }
+
+        return tasks;
+    }
+
+    public Collection<ALoadTask> alterReadStatus(MessageData post, boolean read) {
+        Collection<ALoadTask> tasks = new ArrayList<>(4);
+        if (post.getParentUserId() == Property.RSDN_USER_ID.get()) {
+            tasks.add(new AdjustResponsesTask(myResponses, read ? -1 : 1));
+        }
+
+        return tasks;
+    }
+
+    private class AdjustResponsesTask extends AnAdjustUnreadTask<PersonalItem> {
+        public AdjustResponsesTask(PersonalItem item, int adjustDelta) {
+            super(item, adjustDelta);
+        }
+
+        @Override
+        void doSwing(Void data) {
+            UnreadStatData stat = item.getStat();
+            final UnreadStatData newStat = new UnreadStatData(stat.getUnread() + adjustDelta, stat.getTotal());
+            item.setStat(newStat);
+
+            modelControl.itemUpdated(item);
+        }
     }
 
     private class AnswersReloadTask extends ALoadTask<UnreadStatData> {

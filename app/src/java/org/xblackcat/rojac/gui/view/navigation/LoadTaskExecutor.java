@@ -5,7 +5,6 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 
 import javax.swing.*;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -16,9 +15,10 @@ import java.util.LinkedList;
 class LoadTaskExecutor implements Runnable {
     private final Collection<ALoadTask> tasks = new LinkedList<>();
 
-    LoadTaskExecutor(ALoadTask[]... otherTasks) {
-        for (ALoadTask[] tasks : otherTasks) {
-            this.tasks.addAll(Arrays.asList(tasks));
+    @SafeVarargs
+    LoadTaskExecutor(Collection<ALoadTask>... otherTasks) {
+        for (Collection<ALoadTask> tasks : otherTasks) {
+            this.tasks.addAll(tasks);
         }
     }
 
