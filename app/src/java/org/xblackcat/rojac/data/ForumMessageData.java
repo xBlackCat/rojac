@@ -20,8 +20,8 @@ public class ForumMessageData extends MessageData {
                 -1,
                 true,
                 null,
-                false
-        );
+                false,
+                0);
         this.forum = forum;
     }
 

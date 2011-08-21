@@ -55,7 +55,7 @@ class PostListControl extends MessageListControl {
                 for (String userName : chunks) {
                     if (userName != null) {
                         root.setMessageData(
-                                new MessageData(-1, -1, -1, -1, itemId, "", userName, -1, -1, true, null, false)
+                                new MessageData(-1, -1, -1, -1, itemId, "", userName, -1, -1, true, null, false, 0)
                         );
                     }
                 }
