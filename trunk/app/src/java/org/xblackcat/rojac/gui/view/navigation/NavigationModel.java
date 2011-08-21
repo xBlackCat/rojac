@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
@@ -39,10 +38,9 @@ class NavigationModel implements TreeTableModel, IModelControl {
                 @Override
                 public void process(SetForumReadPacket p) {
                     new LoadTaskExecutor(
-                            ArrayUtils.addAll(
-                                    favoritesDecorator.updateFavoriteData(null),
-                                    forumDecorator.loadForumStatistic(p.getForumId())
-                            )
+                            personalDecorator.reloadInfo(false),
+                            favoritesDecorator.updateFavoriteData(null),
+                            forumDecorator.loadForumStatistic(p.getForumId())
                     ).execute();
                 }
             },
@@ -58,10 +56,9 @@ class NavigationModel implements TreeTableModel, IModelControl {
                 @Override
                 public void process(IForumUpdatePacket p) {
                     new LoadTaskExecutor(
-                            ArrayUtils.addAll(
-                                    favoritesDecorator.updateFavoriteData(null),
-                                    forumDecorator.loadForumStatistic(p.getForumIds())
-                            )
+                            personalDecorator.reloadInfo(false),
+                            favoritesDecorator.updateFavoriteData(null),
+                            forumDecorator.loadForumStatistic(p.getForumIds())
                     ).execute();
                 }
             },
@@ -69,10 +66,9 @@ class NavigationModel implements TreeTableModel, IModelControl {
                 @Override
                 public void process(SetSubThreadReadPacket p) {
                     new LoadTaskExecutor(
-                            ArrayUtils.addAll(
-                                    favoritesDecorator.updateFavoriteData(null),
-                                    forumDecorator.loadForumStatistic(p.getForumId())
-                            )
+                            personalDecorator.reloadInfo(false),
+                            favoritesDecorator.updateFavoriteData(null),
+                            forumDecorator.loadForumStatistic(p.getForumId())
                     ).execute();
                 }
             },
@@ -80,10 +76,9 @@ class NavigationModel implements TreeTableModel, IModelControl {
                 @Override
                 public void process(SetPostReadPacket p) {
                     new LoadTaskExecutor(
-                            ArrayUtils.addAll(
-                                    favoritesDecorator.alterReadStatus(p.getPost(), p.isRead()),
-                                    forumDecorator.alterReadStatus(p.getPost().getForumId(), p.isRead())
-                            )
+                            favoritesDecorator.alterReadStatus(p.getPost(), p.isRead()),
+                            forumDecorator.alterReadStatus(p.getPost().getForumId(), p.isRead()),
+                            personalDecorator.alterReadStatus(p.getPost(), p.isRead())
                     ).execute();
                 }
             },
@@ -99,7 +94,7 @@ class NavigationModel implements TreeTableModel, IModelControl {
                     }
 
                     if (!tasks.isEmpty()) {
-                        new LoadTaskExecutor(tasks.toArray(new ALoadTask[tasks.size()])).execute();
+                        new LoadTaskExecutor(tasks).execute();
                     }
                 }
             }
@@ -244,7 +239,7 @@ class NavigationModel implements TreeTableModel, IModelControl {
 
     public void load() {
         new LoadTaskExecutor(
-                personalDecorator.reloadInfo(),
+                personalDecorator.reloadInfo(true),
                 forumDecorator.reloadForums(),
                 favoritesDecorator.reloadFavorites()
         ).execute();

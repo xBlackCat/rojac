@@ -87,18 +87,18 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    ALoadTask[] loadForumStatistic(int... forumIds) {
-        ALoadTask[] tasks = new ALoadTask[forumIds.length];
+    Collection<ALoadTask> loadForumStatistic(int... forumIds) {
+        Collection<ALoadTask> tasks = new ArrayList<>(forumIds.length);
 
-        for (int i = 0, l = tasks.length; i < l; i++) {
-            tasks[i] = new ForumUpdateTask(forumIds[i]);
+        for (int forumId : forumIds) {
+            tasks.add(new ForumUpdateTask(forumId));
         }
 
         return tasks;
     }
 
-    public ALoadTask[] reloadForums() {
-        return ALoadTask.group(new ForumLoadTask());
+    public Collection<ALoadTask> reloadForums() {
+        return Collections.singleton((ALoadTask) new ForumLoadTask());
     }
 
     private void updateForum(ForumStatistic stat) {
@@ -109,15 +109,15 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    public ALoadTask[] alterReadStatus(int forumId, boolean read) {
+    public Collection<ALoadTask> alterReadStatus(int forumId, boolean read) {
         ForumItem navItem = viewedForums.get(forumId);
         if (navItem != null) {
             ALoadTask<Void> task = new ForumUnreadAdjustTask(navItem, read ? -1 : 1);
 
-            return ALoadTask.group(task);
+            return Collections.singleton((ALoadTask) task);
         }
 
-        return ALoadTask.NO_TASKS;
+        return Collections.emptySet();
     }
 
 

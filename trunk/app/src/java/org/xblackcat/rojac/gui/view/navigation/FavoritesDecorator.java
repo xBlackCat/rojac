@@ -9,6 +9,7 @@ import org.xblackcat.rojac.i18n.Message;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Helper class to work only with favorites in navigation model
@@ -30,13 +31,13 @@ class FavoritesDecorator extends ADecorator {
         };
     }
 
-    ALoadTask[] reloadFavorites() {
-        return ALoadTask.group(new FavoritesLoadTask());
+    Collection<ALoadTask> reloadFavorites() {
+        return Collections.singleton((ALoadTask) new FavoritesLoadTask());
     }
 
-    ALoadTask[] updateFavoriteData(FavoriteType type) {
+    Collection<ALoadTask> updateFavoriteData(FavoriteType type) {
         int favoritesSize = favorites.getChildCount();
-        Collection<ALoadTask<Stat>> tasks = new ArrayList<>(favoritesSize);
+        Collection<ALoadTask> tasks = new ArrayList<>(favoritesSize);
 
         int i = 0;
         while (i < favoritesSize) {
@@ -48,10 +49,10 @@ class FavoritesDecorator extends ADecorator {
             i++;
         }
 
-        return tasks.toArray(new ALoadTask[tasks.size()]);
+        return tasks;
     }
 
-    public ALoadTask[] alterReadStatus(MessageData post, boolean read) {
+    public Collection<ALoadTask> alterReadStatus(MessageData post, boolean read) {
         int favoritesSize = favorites.getChildCount();
         Collection<ALoadTask> tasks = new ArrayList<>(favoritesSize);
 
@@ -62,20 +63,24 @@ class FavoritesDecorator extends ADecorator {
             FavoriteType type = f.getType();
             switch (type) {
                 case Category:
-                case UserResponses:
                 case SubThread:
                     tasks.add(new FavoriteStatLoadTask(fd));
                     break;
                 case Thread:
                     if (f.getItemId() == post.getThreadRootId()) {
+                            tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
+                    }
+                    break;
+                case UserResponses:
+                    if (f.getItemId() == post.getParentUserId()) {
                         tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
                     }
                     break;
                 case UserPosts:
-                    if (f.getItemId() == post.getUserId()) {
+                if (f.getItemId() == post.getUserId()) {
                         tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
                     }
-                    break;
+                break;
                 default:
                     tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
                     break;
@@ -83,7 +88,7 @@ class FavoritesDecorator extends ADecorator {
             i++;
         }
 
-        return tasks.toArray(new ALoadTask[tasks.size()]);
+        return tasks;
     }
 
     private static class Stat {
