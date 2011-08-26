@@ -156,6 +156,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     );
     private MainFrameState frameState;
 
+    private final Map<ViewId, IViewLayout> storedLayouts = new HashMap<>();
+
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
 
@@ -492,7 +494,13 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
         view.setPopupMenuFactory(new ItemViewPopupFactory(itemView));
 
-        openedViews.put(itemView.getId(), view);
+        ViewId viewId = itemView.getId();
+        openedViews.put(viewId, view);
+        IViewLayout layout = storedLayouts.get(viewId);
+        if (layout != null) {
+            itemView.setupLayout(layout);
+        }
+
         return view;
     }
 
@@ -840,6 +848,10 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
             if (openedViews.containsValue(dw)) {
                 openedViews.values().remove(dw);
+                if (dw instanceof View) {
+                    IItemView itemView = (IItemView) ((View) dw).getComponent();
+                    storedLayouts.put(itemView.getId(), itemView.storeLayout());
+                }
             }
 
             int views = dw.getChildWindowCount();

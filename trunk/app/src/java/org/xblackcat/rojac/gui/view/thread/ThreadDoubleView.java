@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 public class ThreadDoubleView extends AnItemView {
     private final IItemView masterView;
     private final IItemView slaveView;
+    private final JSplitPane splitPane;
 
     /**
      * Create combined forum thread view. Contains from master (upper component) and slave (lover component).
@@ -54,7 +55,7 @@ public class ThreadDoubleView extends AnItemView {
         masterView.addInfoChangeListener(infoChangeListener);
         slaveView.addInfoChangeListener(infoChangeListener);
 
-        JSplitPane splitPane = new JSplitPane();
+        splitPane = new JSplitPane();
         splitPane.setBottomComponent(slaveView.getComponent());
         splitPane.setTopComponent(masterView.getComponent());
         splitPane.setOrientation(verticalSplit ? JSplitPane.VERTICAL_SPLIT : JSplitPane.HORIZONTAL_SPLIT);
@@ -132,12 +133,16 @@ public class ThreadDoubleView extends AnItemView {
 
             masterView.setupLayout(l.getMasterLayout());
             slaveView.setupLayout(l.getSlaveLayout());
+            splitPane.setDividerLocation(l.getDividerLocation());
         }
     }
 
     @Override
     public IViewLayout storeLayout() {
-        return new ComplexLayout(masterView.storeLayout(), slaveView.storeLayout());
+        return new ComplexLayout(
+                masterView.storeLayout(),
+                slaveView.storeLayout(),
+                splitPane.getDividerLocation());
     }
 
     @Override
