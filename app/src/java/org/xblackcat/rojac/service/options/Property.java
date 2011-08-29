@@ -95,7 +95,8 @@ public final class Property<T> {
      */
     public static final Property<Boolean> SYNCHRONIZER_USE_GZIP = create("rojac.synchronizer.use_compression", Boolean.TRUE);
 
-    public static final Property<Boolean> SYNCHRONIZER_LOAD_TOPICS_AT_ONCE = create("rojac.behaviour.load_topics_at_once", Boolean.FALSE);
+    public static final Property<Boolean> SYNCHRONIZER_LOAD_TOPICS_AT_ONCE = create("rojac.behaviour.topics.load_at_once", Boolean.FALSE);
+    public static final Property<Integer> SYNCHRONIZER_LOAD_TOPICS_PORTION = create("rojac.behaviour.topics.portion", Integer.valueOf(8));
     public static final Property<Boolean> SYNCHRONIZER_LOAD_USERS = create("rojac.synchronizer.load.users", Boolean.FALSE);
     public static final Property<Integer> SYNCHRONIZER_LOAD_USERS_PORTION = create("rojac.synchronizer.load.users.portion", Integer.valueOf(1000));
     public static final Property<Integer> SYNCHRONIZER_LOAD_MESSAGES_PORTION = create("rojac.synchronizer.load.messages.portion", Integer.valueOf(100));

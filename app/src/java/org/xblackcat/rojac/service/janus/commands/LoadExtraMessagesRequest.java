@@ -70,19 +70,33 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
     }
 
     protected int loadData(IProgressTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
+        int portion = Property.SYNCHRONIZER_LOAD_TOPICS_PORTION.get();
+
         int[] messageIds = miscAH.getExtraMessages();
 
         if (!ArrayUtils.isEmpty(messageIds)) {
-            tracker.addLodMessage(Message.Synchronize_Command_Name_ExtraPosts, Arrays.toString(messageIds));
-            loadTopics(messageIds, janusService, tracker);
+            while (messageIds.length > 0) {
+                final int[] portionIds = ArrayUtils.subarray(messageIds, 0, portion);
+
+                tracker.addLodMessage(Message.Synchronize_Command_Name_ExtraPosts, Arrays.toString(portionIds));
+                loadTopics(portionIds, janusService, tracker);
+
+                messageIds = ArrayUtils.subarray(messageIds, portion, messageIds.length);
+            }
 
             miscAH.clearExtraMessages();
         }
 
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
         if (!ArrayUtils.isEmpty(brokenTopicIds)) {
-            tracker.addLodMessage(Message.Synchronize_Command_Name_BrokenTopics, Arrays.toString(brokenTopicIds));
-            loadTopics(brokenTopicIds, janusService, tracker);
+            while (brokenTopicIds.length > 0) {
+                final int[] portionIds = ArrayUtils.subarray(brokenTopicIds , 0, portion);
+
+                tracker.addLodMessage(Message.Synchronize_Command_Name_BrokenTopics, Arrays.toString(portionIds));
+                loadTopics(portionIds, janusService, tracker);
+
+                brokenTopicIds = ArrayUtils.subarray(brokenTopicIds, portion, brokenTopicIds.length);
+            }
         }
 
         return 0;
