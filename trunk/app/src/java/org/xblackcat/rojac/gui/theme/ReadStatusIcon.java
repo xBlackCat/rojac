@@ -63,7 +63,24 @@ public enum ReadStatusIcon {
     /**
      * Reply list on user's posts read status icons.
      */
-    ReplyList("user-reply"),;
+    ReplyList("user-reply"),
+    /**
+     * Status icons for outbox item.
+     */
+    OutboxItem("outbox"),
+    /**
+     * Status icon for forums.
+     */
+    Forum("forum"),
+    /**
+     * Status icon for forums.
+     */
+    ForumSubscribed("subscribed-forum"),
+    /**
+     * Status icons for personal items
+     */
+    Personal("personal"),
+    ;
 
     private final Map<ReadStatus, IResourceIcon> iconsBuffer = new EnumMap<>(ReadStatus.class);
 

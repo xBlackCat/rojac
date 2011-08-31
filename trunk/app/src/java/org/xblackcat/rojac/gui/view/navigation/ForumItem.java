@@ -18,7 +18,7 @@ class ForumItem extends AnItem {
     private final Forum forum;
     private ForumStatistic statistic;
 
-    public ForumItem(AnItem parent, Forum forum, ForumStatistic statistic) {
+    public ForumItem(AGroupItem<ForumItem> parent, Forum forum, ForumStatistic statistic) {
         super(parent);
         this.forum = forum;
         this.statistic = statistic;
@@ -36,7 +36,7 @@ class ForumItem extends AnItem {
 
     @Override
     Icon getIcon() {
-        return ReadStatusIcon.Thread.getIcon(getReadStatus());
+        return ReadStatusIcon.Forum.getIcon(getReadStatus());
     }
 
     @Override
@@ -45,12 +45,12 @@ class ForumItem extends AnItem {
             return ReadStatus.Read;
         }
 
-        if (statistic.getTotalMessages() == statistic.getUnreadMessages()) {
-            return ReadStatus.Unread;
-        }
-
         if (statistic.getUnreadMessages() == 0) {
             return ReadStatus.Read;
+        }
+
+        if (statistic.getTotalMessages() == statistic.getUnreadMessages()) {
+            return ReadStatus.Unread;
         }
 
         return ReadStatus.ReadPartially;

@@ -8,6 +8,7 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
@@ -248,6 +249,10 @@ class SortedForumModelControl extends AThreadsModelControl {
 
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
+        if (model.getRoot() != null) {
+            return ReadStatusIcon.Forum.getIcon(model.getRoot().isRead());
+        }
+
         return null;
     }
 

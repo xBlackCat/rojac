@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.i18n.Message;
 
@@ -13,7 +14,7 @@ import javax.swing.*;
  */
 class OutboxItem extends PersonalItem {
     OutboxItem() {
-        super(null);
+        super(ReadStatusIcon.OutboxItem);
     }
 
     @Override

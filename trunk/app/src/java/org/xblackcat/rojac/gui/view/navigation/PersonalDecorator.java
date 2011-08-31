@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.UnreadStatData;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
@@ -17,7 +18,7 @@ import java.util.LinkedList;
  * @author xBlackCat Date: 22.07.11
  */
 class PersonalDecorator extends ADecorator {
-    private final GroupItem<PersonalItem> personal = new GroupItem<>(Message.View_Navigation_Item_Personal);
+    private final GroupItem<PersonalItem> personal = new GroupItem<>(Message.View_Navigation_Item_Personal, ReadStatusIcon.Personal);
 
     private final PersonalItem outBox = new OutboxItem();
     private final PersonalItem myResponses = new MyResponsesItem();
