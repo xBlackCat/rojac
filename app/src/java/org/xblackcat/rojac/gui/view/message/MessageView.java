@@ -3,10 +3,7 @@ package org.xblackcat.rojac.gui.view.message;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.data.Mark;
-import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.data.NewMessage;
-import org.xblackcat.rojac.data.RatingCache;
+import org.xblackcat.rojac.data.*;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IState;
 import org.xblackcat.rojac.gui.IViewLayout;
@@ -392,12 +389,22 @@ public class MessageView extends AnItemView {
         protected Void perform() throws Exception {
             String messageBody = "";
             try {
-                MessageData messageData = storage.getMessageAH().getMessageData(messageId);
-                if (messageData == null) {
-                    // Somehow message is not found - do not load it
-                    return null;
+                MessageData messageData;
+                if (messageId > 0) {
+                    // Regulag message
+                    messageData = storage.getMessageAH().getMessageData(messageId);
+                    if (messageData == null) {
+                        // Somehow message is not found - do not load it
+                        return null;
+                    }
+                    messageBody = storage.getMessageAH().getMessageBodyById(messageId);
+                } else {
+                    // Local message
+                    NewMessage newMessage = storage.getNewMessageAH().getNewMessageById(-messageId);
+                    messageData = new NewMessageData(newMessage);
+
+                    messageBody = newMessage.getMessage();
                 }
-                messageBody = storage.getMessageAH().getMessageBodyById(messageId);
 
                 String parsedText = rsdnToHtml.convert(messageBody);
 

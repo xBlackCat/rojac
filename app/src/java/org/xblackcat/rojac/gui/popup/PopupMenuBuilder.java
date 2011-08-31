@@ -9,12 +9,18 @@ import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.NewMessagesUpdatedPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.LinkUtils;
+import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Class for prepare pop-up menus for the application.
@@ -265,6 +271,64 @@ public final class PopupMenuBuilder {
 
     public static JPopupMenu getReplyListTabMenu(Post post, IAppControl appControl) {
         return getMessagesListTabMenu(post, appControl, FavoriteType.UserResponses, Message.Popup_Favorites_Add_ToUserReplies.get(post.getMessageData().getUserName()));
+    }
+
+    public static JPopupMenu getNewMessageListMenu(final Post post, final IAppControl appControl) {
+        JPopupMenu menu = new JPopupMenu("#" + (-post.getMessageId()));
+
+        JMenuItem edit = new JMenuItem(Message.Popup_View_OutboxTree_Edit.get());
+        edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                appControl.editMessage(null, -post.getMessageId());
+            }
+        });
+        menu.add(edit);
+        JMenuItem remove = new JMenuItem(Message.Popup_View_OutboxTree_Remove.get());
+        remove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new RojacWorker<Void, Void>() {
+                    @Override
+                    protected Void perform() throws Exception {
+                        ServiceFactory.getInstance().getStorage().getNewMessageAH().removeNewMessage(-post.getMessageId());
+
+                        publish();
+                        return null;
+                    }
+
+                    @Override
+                    protected void process(List<Void> chunks) {
+                        ServiceFactory.getInstance().getDataDispatcher().processPacket(new NewMessagesUpdatedPacket());
+                    }
+                }.execute();
+            }
+        });
+        menu.add(remove);
+        menu.add(new JSeparator());
+        JMenuItem removeAll = new JMenuItem(Message.Popup_View_OutboxTree_RemoveAll.get());
+        removeAll.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new RojacWorker<Void, Void>() {
+                    @Override
+                    protected Void perform() throws Exception {
+                        ServiceFactory.getInstance().getStorage().getNewMessageAH().purgeNewMessage();
+
+                        publish();
+                        return null;
+                    }
+
+                    @Override
+                    protected void process(List<Void> chunks) {
+                        ServiceFactory.getInstance().getDataDispatcher().processPacket(new NewMessagesUpdatedPacket());
+                    }
+                }.execute();
+            }
+        });
+
+        menu.add(removeAll);
+        return menu;
     }
 
     private static JPopupMenu getMessagesListTabMenu(Post post, IAppControl appControl, FavoriteType favoriteType, String info) {

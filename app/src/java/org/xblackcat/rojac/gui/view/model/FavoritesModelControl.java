@@ -3,7 +3,6 @@ package org.xblackcat.rojac.gui.view.model;
 import org.xblackcat.rojac.NotImplementedException;
 import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
@@ -127,8 +126,10 @@ class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public OpenMessageMethod getOpenMessageMethod() {
-        return delegatedControl == null ? null : delegatedControl.getOpenMessageMethod();
+    public void onDoubleClick(Post post, IAppControl appControl) {
+        if (delegatedControl != null) {
+            delegatedControl.onDoubleClick(post, appControl);
+        }
     }
 
     /**

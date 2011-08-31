@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view;
 
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.NewMessageData;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -21,7 +22,11 @@ public class MessageChecker extends RojacWorker<Void, MessageData> {
 
     @Override
     protected Void perform() throws Exception {
-        data = storage.getMessageAH().getMessageData(messageId);
+        if (messageId > 0) {
+            data = storage.getMessageAH().getMessageData(messageId);
+        } else {
+            data = new NewMessageData(storage.getNewMessageAH().getNewMessageById(-messageId));
+        }
         return null;
     }
 }

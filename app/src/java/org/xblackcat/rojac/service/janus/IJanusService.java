@@ -7,6 +7,8 @@ import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.service.janus.data.*;
 import ru.rsdn.Janus.RequestForumInfo;
 
+import java.util.Collection;
+
 /**
  * @author Alexey
  */
@@ -51,13 +53,13 @@ public interface IJanusService {
     /**
      * Posts the changes to the RSDN forum.
      *
+     *
      * @param messages  new messages to post.
      * @param ratings   new ratings to post.
      * @param moderates new moderate actions to post.
-     * @param moderates
      * @throws JanusServiceException throws if any errors occurs.
      */
-    void postChanges(NewMessage[] messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException;
+    void postChanges(Collection<NewMessage> messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException;
 
     /**
      * Gets new messages from Janus WS.

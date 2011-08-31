@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -9,6 +10,7 @@ import org.xblackcat.rojac.service.storage.IStatisticAH;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -43,10 +45,14 @@ class PersonalDecorator extends ADecorator {
         }
 
         if (fullReload) {
-            // Load others values
+            tasks.add(new OutboxReloadTask());
         }
 
         return tasks;
+    }
+
+    public Collection<OutboxReloadTask> reloadOutbox() {
+        return Collections.singleton(new OutboxReloadTask());
     }
 
     public Collection<ALoadTask> alterReadStatus(MessageData post, boolean read) {
@@ -91,6 +97,24 @@ class PersonalDecorator extends ADecorator {
         void doSwing(UnreadStatData data) {
             myResponses.setStat(data);
             modelControl.itemUpdated(myResponses);
+        }
+    }
+
+    private class OutboxReloadTask extends ALoadTask<Integer> {
+        @Override
+        Integer doBackground() throws Exception {
+            Collection<NewMessage> newMessages = storage.getNewMessageAH().getAllNewMessages();
+
+            return newMessages != null ? newMessages.size() : null;
+        }
+
+        @Override
+        void doSwing(Integer data) {
+            if (data != null) {
+                outBox.setStat(new UnreadStatData(0, data));
+
+                modelControl.itemUpdated(outBox);
+            }
         }
     }
 }

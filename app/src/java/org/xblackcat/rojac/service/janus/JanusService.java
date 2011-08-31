@@ -17,6 +17,7 @@ import ru.rsdn.Janus.*;
 
 import javax.xml.rpc.ServiceException;
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.Hashtable;
 
 /**
@@ -126,14 +127,14 @@ public class JanusService implements IJanusService {
     }
 
     @Override
-    public void postChanges(NewMessage[] messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException {
+    public void postChanges(Collection<NewMessage> messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException {
         log.info("Post the changes to the Janus WS.");
 
         try {
             PostRequest postRequest = new PostRequest(
                     userName,
                     password,
-                    RojacUtils.getRSDNObject(messages),
+                    RojacUtils.getRSDNObject(messages.toArray(new NewMessage[messages.size()])),
                     RojacUtils.getRSDNObject(ratings),
                     RojacUtils.getRSDNObject(moderates));
             soap.postChange(postRequest);

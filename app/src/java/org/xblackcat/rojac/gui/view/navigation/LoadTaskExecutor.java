@@ -16,8 +16,8 @@ class LoadTaskExecutor implements Runnable {
     private final Collection<ALoadTask> tasks = new LinkedList<>();
 
     @SafeVarargs
-    LoadTaskExecutor(Collection<ALoadTask>... otherTasks) {
-        for (Collection<ALoadTask> tasks : otherTasks) {
+    LoadTaskExecutor(Collection<? extends ALoadTask>... otherTasks) {
+        for (Collection<? extends ALoadTask> tasks : otherTasks) {
             this.tasks.addAll(tasks);
         }
     }

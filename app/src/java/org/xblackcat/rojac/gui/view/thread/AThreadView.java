@@ -756,10 +756,7 @@ public abstract class AThreadView extends AnItemView {
             if (path != null) {
                 Post mi = (Post) path.getLastPathComponent();
 
-                OpenMessageMethod openMethod = modelControl.getOpenMessageMethod();
-                if (openMethod != null) {
-                    appControl.openMessage(mi.getMessageId(), openMethod);
-                }
+                modelControl.onDoubleClick(mi, appControl);
             }
         }
 

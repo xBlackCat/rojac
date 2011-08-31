@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
@@ -22,6 +23,7 @@ class OutboxItem extends PersonalItem {
 
     @Override
     void onDoubleClick(IAppControl appControl) {
+        appControl.openTab(ViewType.OutBox.makeId(0));
     }
 
     @Override
@@ -41,6 +43,6 @@ class OutboxItem extends PersonalItem {
 
     @Override
     String getBriefInfo() {
-        return getStat().asString();
+        return String.valueOf(getStat().getTotal());
     }
 }

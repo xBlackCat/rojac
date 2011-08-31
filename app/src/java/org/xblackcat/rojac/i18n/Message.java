@@ -295,6 +295,10 @@ public enum Message {
     Popup_View_ThreadsTree_Mark_Extended,
     Popup_View_ThreadsTree_Mark_WholeThreadRead,
 
+    Popup_View_OutboxTree_Edit,
+    Popup_View_OutboxTree_Remove,
+    Popup_View_OutboxTree_RemoveAll,
+
     Popup_Open_SubMenu,
     Popup_Open_MessageInThread,
     Popup_Open_MessageInForum,
