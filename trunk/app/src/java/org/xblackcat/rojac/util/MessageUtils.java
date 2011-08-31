@@ -68,7 +68,7 @@ public final class MessageUtils {
 
     public static String correctBody(String body, String userName) {
         // Remove all taglines from the body
-        body = TAGLINE_PATTERN.matcher(body).replaceAll("");
+        body = removeTagline(body);
 
         StringBuilder res = new StringBuilder();
 
@@ -91,6 +91,11 @@ public final class MessageUtils {
         }
 
         return res.toString();
+    }
+
+    public static String removeTagline(String body) {
+        body = TAGLINE_PATTERN.matcher(body).replaceAll("");
+        return body;
     }
 
     static String abbreviateUserName(String userName) {
@@ -117,7 +122,7 @@ public final class MessageUtils {
     }
 
     public static String addOwnTagLine(String body) {
-        body = TAGLINE_PATTERN.matcher(body).replaceAll("");
+        body = removeTagline(body);
 
         body += "[tagline] " + RojacUtils.VERSION_STRING + " [/tagline]";
 

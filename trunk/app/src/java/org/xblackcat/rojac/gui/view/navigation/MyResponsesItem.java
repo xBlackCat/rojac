@@ -47,6 +47,6 @@ class MyResponsesItem extends PersonalItem {
 
     @Override
     String getBriefInfo() {
-        return getStat().asString();
+        return getStat().getUnread() == 0 ? String.valueOf(getStat().getTotal()) : getStat().asString();
     }
 }

@@ -4,10 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -111,6 +114,65 @@ class PostListControl extends MessageListControl {
 
         Message textBase = replies ? Message.Favorite_UserReplies_Name : Message.Favorite_UserPosts_Name;
         return textBase.get(userName);
+    }
+
+    @Override
+    public void onDoubleClick(Post post, IAppControl appControl) {
+        OpenMessageMethod openMethod = Property.OPEN_MESSAGE_BEHAVIOUR_POST_LIST.get();
+        if (openMethod != null) {
+            appControl.openMessage(post.getMessageId(), openMethod);
+        }
+    }
+
+    @Override
+    public JPopupMenu getItemMenu(Post post, IAppControl appControl) {
+        return PopupMenuBuilder.getTreeViewMenu(post, appControl, false);
+    }
+
+    @Override
+    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
+        new PacketDispatcher(
+                new IPacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                },
+                new IPacketProcessor<SetSubThreadReadPacket>() {
+                    @Override
+                    public void process(SetSubThreadReadPacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                },
+                new IPacketProcessor<SetPostReadPacket>() {
+                    @Override
+                    public void process(SetPostReadPacket p) {
+                        markPostRead(model, p.getPost().getMessageId(), p.isRead());
+                    }
+                },
+                new IPacketProcessor<SetReadExPacket>() {
+                    @Override
+                    public void process(SetReadExPacket p) {
+                        Post root = model.getRoot();
+
+                        // Second - update already loaded posts.
+                        for (int postId : p.getMessageIds()) {
+                            Post post = root.getMessageById(postId);
+
+                            if (post != null) {
+                                post.setRead(p.isRead());
+                                model.pathToNodeChanged(post);
+                            }
+                        }
+                    }
+                },
+                new IPacketProcessor<SynchronizationCompletePacket>() {
+                    @Override
+                    public void process(SynchronizationCompletePacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                }
+        ).dispatch(p);
     }
 
     private class PostListLoader extends RojacWorker<Void, Void> {

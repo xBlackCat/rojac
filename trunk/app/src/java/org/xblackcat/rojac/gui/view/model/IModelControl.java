@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 
@@ -67,6 +66,11 @@ public interface IModelControl<T extends ITreeItem<T>> {
     JPopupMenu getItemMenu(T post, IAppControl appControl);
 
     /**
+     * Perform an action on double click on item
+     */
+    void onDoubleClick(T post, IAppControl appControl);
+
+    /**
      * Flag to indicate if a message could be looked in the view or not.
      *
      * @return <code>true</code> if message could be searched in the view.
@@ -101,11 +105,4 @@ public interface IModelControl<T extends ITreeItem<T>> {
      * @param item  target thread to clean up.
      */
     void unloadThread(AThreadModel<T> model, T item);
-
-    /**
-     * Method to open a post by double-click
-     *
-     * @return
-     */
-    OpenMessageMethod getOpenMessageMethod();
 }

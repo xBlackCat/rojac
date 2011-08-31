@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.service.janus.commands;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +16,8 @@ import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.PostException;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
 import org.xblackcat.rojac.service.storage.*;
+
+import java.util.Collection;
 
 /**
  * @author xBlackCat
@@ -33,7 +36,7 @@ class PostChangesRequest extends ARequest<IPacket> {
             INewModerateAH nmoAH = storage.getNewModerateAH();
 
             NewRating[] newRatings;
-            NewMessage[] newMessages;
+            Collection<NewMessage> newMessages;
             NewModerate[] newModerates;
             try {
                 newRatings = nrAH.getAllNewRatings();
@@ -44,7 +47,7 @@ class PostChangesRequest extends ARequest<IPacket> {
             }
 
             if (ArrayUtils.isEmpty(newRatings) &&
-                    ArrayUtils.isEmpty(newMessages) &&
+                    CollectionUtils.isEmpty(newMessages) &&
                     ArrayUtils.isEmpty(newModerates)) {
 
                 if (log.isDebugEnabled()) {

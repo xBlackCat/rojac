@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
@@ -66,4 +68,19 @@ abstract class AThreadsModelControl implements IModelControl<Post> {
 
         new ThreadLoader(threadModel, item, postProcessor).execute();
     }
+
+    @Override
+    public void onDoubleClick(Post post, IAppControl appControl) {
+        OpenMessageMethod openMethod = getOpenMessageMethod().get();
+        if (openMethod != null) {
+            appControl.openMessage(post.getMessageId(), openMethod);
+        }
+    }
+
+    /**
+     * Method to open a post by double-click
+     *
+     * @return
+     */
+    protected abstract Property<OpenMessageMethod> getOpenMessageMethod();
 }

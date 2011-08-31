@@ -209,6 +209,10 @@ public enum DataQuery implements IPropertiable {
      */
     REMOVE_OBJECT_NEW_MESSAGE,
     /**
+     * The query for removing all the new messages from database
+     */
+    REMOVE_OBJECTS_NEW_MESSAGE,
+    /**
      * The query for removing the new moderate object by its id
      */
     REMOVE_OBJECT_NEW_MODERATE,

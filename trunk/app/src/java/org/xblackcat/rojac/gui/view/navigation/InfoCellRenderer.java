@@ -9,6 +9,7 @@ import java.awt.*;
 class InfoCellRenderer extends DefaultTableCellRenderer {
     @Override
     protected void setValue(Object value) {
+        setHorizontalAlignment(RIGHT);
         AnItem v = (AnItem) value;
         String text = v.getBriefInfo();
         setText(text);

@@ -32,6 +32,7 @@ public final class ViewHelper {
         map.put(ViewType.Favorite, new FavoriteViewFactory());
         map.put(ViewType.PostList, new UserPostListFactory());
         map.put(ViewType.ReplyList, new UserReplyListFactory());
+        map.put(ViewType.OutBox, new OutboxListFactory());
 
         for (ViewType t : ViewType.values()) {
             if (map.get(t) == null) {

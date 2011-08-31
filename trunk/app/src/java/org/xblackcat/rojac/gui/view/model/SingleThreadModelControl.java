@@ -239,7 +239,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public OpenMessageMethod getOpenMessageMethod() {
-        return Property.OPEN_MESSAGE_BEHAVIOUR_TOPIC_VIEW.get();
+    public Property<OpenMessageMethod> getOpenMessageMethod() {
+        return Property.OPEN_MESSAGE_BEHAVIOUR_TOPIC_VIEW;
     }
 }

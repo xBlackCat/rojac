@@ -1,15 +1,8 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.NotImplementedException;
-import org.xblackcat.rojac.gui.IAppControl;
-import org.xblackcat.rojac.gui.OpenMessageMethod;
-import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
-import org.xblackcat.rojac.service.datahandler.*;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
-
-import javax.swing.*;
 
 /**
  * @author xBlackCat
@@ -39,11 +32,6 @@ abstract class MessageListControl implements IModelControl<Post> {
     public Post getTreeRoot(Post post) {
         // Post lists have no parents or children.
         return post;
-    }
-
-    @Override
-    public JPopupMenu getItemMenu(Post post, IAppControl appControl) {
-        return PopupMenuBuilder.getTreeViewMenu(post, appControl, false);
     }
 
     @Override
@@ -84,55 +72,4 @@ abstract class MessageListControl implements IModelControl<Post> {
     }
 
     protected abstract void updateModel(AThreadModel<Post> model, Runnable postProcessor);
-
-    @Override
-    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
-        new PacketDispatcher(
-                new IPacketProcessor<SetForumReadPacket>() {
-                    @Override
-                    public void process(SetForumReadPacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                },
-                new IPacketProcessor<SetSubThreadReadPacket>() {
-                    @Override
-                    public void process(SetSubThreadReadPacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                },
-                new IPacketProcessor<SetPostReadPacket>() {
-                    @Override
-                    public void process(SetPostReadPacket p) {
-                        markPostRead(model, p.getPost().getMessageId(), p.isRead());
-                    }
-                },
-                new IPacketProcessor<SetReadExPacket>() {
-                    @Override
-                    public void process(SetReadExPacket p) {
-                        Post root = model.getRoot();
-
-                        // Second - update already loaded posts.
-                        for (int postId : p.getMessageIds()) {
-                            Post post = root.getMessageById(postId);
-
-                            if (post != null) {
-                                post.setRead(p.isRead());
-                                model.pathToNodeChanged(post);
-                            }
-                        }
-                    }
-                },
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                }
-        ).dispatch(p);
-    }
-
-    @Override
-    public OpenMessageMethod getOpenMessageMethod() {
-        return Property.OPEN_MESSAGE_BEHAVIOUR_POST_LIST.get();
-    }
 }

@@ -6,11 +6,13 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
+import org.xblackcat.rojac.data.NewMessageData;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.view.message.EditMessagePane;
 import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.NewMessagesUpdatedPacket;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -54,12 +56,12 @@ public class EditMessageDialog extends JDialog {
         panelEdit.forcePreview();
     }
 
-    public void answerOn(final int messageId) {
+    public void answerOn(int messageId) {
         if (messageId == 0) {
             return;
         }
 
-        new MessageLoader(messageId).execute();
+        new ReplyLoader(messageId).execute();
     }
 
     public void createTopic(int forumId) {
@@ -70,22 +72,11 @@ public class EditMessageDialog extends JDialog {
     }
 
     public void editMessage(int newMessageId) {
-        NewMessage mes;
-        try {
-            mes = storage.getNewMessageAH().getNewMessageById(newMessageId);
-        } catch (StorageException e) {
-            log.error("Can not load a new message.", e);
+        if (newMessageId == 0) {
             return;
         }
 
-        forumId = mes.getForumId();
-        parentMessageId = mes.getParentId();
-        this.newMessageId = newMessageId;
-
-        panelEdit.setMessage(mes.getMessage(), mes.getSubject());
-
-        WindowsUtils.center(this, getOwner());
-        setVisible(true);
+        new NewMessageLoader(newMessageId).execute();
     }
 
     private void saveMessage() {
@@ -139,6 +130,7 @@ public class EditMessageDialog extends JDialog {
                 try {
                     get();
                     dispose();
+                    ServiceFactory.getInstance().getDataDispatcher().processPacket(new NewMessagesUpdatedPacket());
                 } catch (InterruptedException | ExecutionException e) {
                     JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");
                 }
@@ -189,37 +181,80 @@ public class EditMessageDialog extends JDialog {
         setContentPane(cp);
     }
 
-    private class MessageLoader extends RojacWorker<Void, Message> {
-        private final int messageId;
-
-        public MessageLoader(int messageId) {
-            this.messageId = messageId;
+    private class NewMessageLoader extends MessageLoader {
+        private NewMessageLoader(int messageId) {
+            super(messageId, messageId);
         }
 
         @Override
-        protected Void perform() throws Exception {
+        protected Message loadMessage() throws RojacException {
             try {
-                MessageData messageData = storage.getMessageAH().getMessageData(messageId);
-                String messageBody = storage.getMessageAH().getMessageBodyById(messageId);
-                publish(new Message(messageBody, messageData));
+                NewMessage newMessage = storage.getNewMessageAH().getNewMessageById(messageId);
+                MessageData messageData = new NewMessageData(newMessage);
+                String messageBody = MessageUtils.removeTagline(newMessage.getMessage());
+                parentMessageId = newMessage.getParentId();
+                return new Message(messageData, messageBody, messageData.getSubject());
             } catch (StorageException e) {
                 log.error("Can't load message #" + messageId, e);
                 throw new RojacException("Can't load message #" + messageId, e);
             }
+        }
+    }
+
+    private class ReplyLoader extends MessageLoader {
+        public ReplyLoader(int messageId) {
+            super(messageId, 0);
+            parentMessageId = messageId;
+        }
+
+        @Override
+        protected Message loadMessage() throws RojacException {
+            Message message;
+            try {
+                MessageData messageData = storage.getMessageAH().getMessageData(messageId);
+                String messageBody = storage.getMessageAH().getMessageBodyById(messageId);
+
+                message = new Message(
+                        messageData,
+                        MessageUtils.correctBody(messageBody, messageData.getUserName()),
+                        MessageUtils.correctSubject(messageData.getSubject())
+                );
+            } catch (StorageException e) {
+                log.error("Can't load message #" + messageId, e);
+                throw new RojacException("Can't load message #" + messageId, e);
+            }
+            return message;
+        }
+
+    }
+
+    private abstract class MessageLoader extends RojacWorker<Void, Message> {
+        protected final int messageId;
+        protected int parentMessageId;
+        protected final int newMessageId;
+
+        public MessageLoader(int messageId, int newMessageId) {
+            this.messageId = messageId;
+            this.newMessageId = newMessageId;
+        }
+
+        @Override
+        protected Void perform() throws Exception {
+            publish(loadMessage());
 
             return null;
         }
+
+        protected abstract Message loadMessage() throws RojacException;
 
         @Override
         protected void process(List<Message> chunks) {
             for (Message message : chunks) {
                 forumId = message.getMessageData().getForumId();
-                parentMessageId = messageId;
+                EditMessageDialog.this.parentMessageId = parentMessageId;
+                EditMessageDialog.this.newMessageId = newMessageId;
 
-                String mes = MessageUtils.correctBody(message.getBody(), message.getMessageData().getUserName());
-                String subj = MessageUtils.correctSubject(message.getMessageData().getSubject());
-
-                panelEdit.setMessage(mes, subj);
+                panelEdit.setMessage(message.getBody(), message.getSubj());
 
                 WindowsUtils.center(EditMessageDialog.this, getOwner());
                 setVisible(true);
@@ -240,17 +275,24 @@ public class EditMessageDialog extends JDialog {
         }
     }
 
+
     private static final class Message {
         private final MessageData messageData;
         private final String body;
+        private final String subj;
 
-        private Message(String body, MessageData messageData) {
+        private Message(MessageData messageData, String body, String subj) {
             this.body = body;
             this.messageData = messageData;
+            this.subj = subj;
         }
 
         public String getBody() {
             return body;
+        }
+
+        public String getSubj() {
+            return subj;
         }
 
         public MessageData getMessageData() {

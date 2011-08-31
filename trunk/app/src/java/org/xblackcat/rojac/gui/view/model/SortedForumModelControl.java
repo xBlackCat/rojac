@@ -279,7 +279,7 @@ class SortedForumModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public OpenMessageMethod getOpenMessageMethod() {
-        return Property.OPEN_MESSAGE_BEHAVIOUR_FORUM_VIEW.get();
+    public Property<OpenMessageMethod> getOpenMessageMethod() {
+        return Property.OPEN_MESSAGE_BEHAVIOUR_FORUM_VIEW;
     }
 }

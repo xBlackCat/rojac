@@ -44,6 +44,17 @@ public enum ViewType {
             return makeId(md.getUserId());
         }
     },
+    OutBox {
+        @Override
+        public ViewId makeId(MessageData md) {
+            return makeId(0); // Only one outbox can be shown
+        }
+
+        @Override
+        public ViewId makeId(int itemId) {
+            return new ViewId(0, this);
+        }
+    },
     ;
 
     private ViewType() {
