@@ -14,6 +14,7 @@ import java.awt.*;
 public enum ViewIcon implements Icon {
     RecentTopics,
     ForumList,
+    Navigation,
     Favorites;
 
     private final IResourceIcon icon;

@@ -5,6 +5,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.PopupMouseAdapter;
+import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -136,7 +137,7 @@ public class NavigationView extends AView {
 
     @Override
     public Icon getTabTitleIcon() {
-        return null;
+        return ViewIcon.Navigation;
     }
 
     @Override

@@ -77,18 +77,23 @@ abstract class AGroupItem<T extends AnItem> extends AnItem {
 
         for (T item : children) {
             ReadStatus s = item.getReadStatus();
-            if (s == ReadStatus.Read) {
-                if (hasUnread) {
+            switch (s) {
+                case ReadPartially:
                     return ReadStatus.ReadPartially;
-                } else {
-                    hasRead = true;
-                }
-            } else if (s == ReadStatus.Unread) {
-                if (hasRead) {
-                    return ReadStatus.ReadPartially;
-                } else {
-                    hasUnread = true;
-                }
+                case Read:
+                    if (hasUnread) {
+                        return ReadStatus.ReadPartially;
+                    } else {
+                        hasRead = true;
+                    }
+                    break;
+                case Unread:
+                    if (hasRead) {
+                        return ReadStatus.ReadPartially;
+                    } else {
+                        hasUnread = true;
+                    }
+                    break;
             }
         }
 

@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
@@ -14,7 +15,7 @@ import javax.swing.*;
  */
 class MyResponsesItem extends PersonalItem {
     MyResponsesItem() {
-        super(null);
+        super(ReadStatusIcon.Response);
     }
 
     @Override
