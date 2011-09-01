@@ -25,6 +25,7 @@ import org.xblackcat.rojac.gui.dialog.OpenMessageDialog;
 import org.xblackcat.rojac.gui.dialog.ProgressTrackerDialog;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
+import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.factory.ViewHelper;
 import org.xblackcat.rojac.gui.view.navigation.NavigationView;
 import org.xblackcat.rojac.gui.view.recenttopics.RecentTopicsView;
@@ -67,6 +68,10 @@ import static org.xblackcat.rojac.service.options.Property.*;
 public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHandler {
     private static final Log log = LogFactory.getLog(MainFrame.class);
     private static final String SCHEDULED_TASK_ID = "SCHEDULED_SYNCHRONIZER";
+
+    private static final int ICON_TEXT_GAP = 3;
+    private static final int WINDOW_BAR_BORDER_WIDTH = 2;
+    private static final int DRAG_RECTANGLE_BORDER_WIDTH = 1;
 
     // Data tracking
     private Map<ViewId, View> openedViews = new HashMap<>();
@@ -288,7 +293,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         Color backgroundColor = UIManagerUtil.getColor("Panel.background", "control");
 
         RootWindowProperties threadsRootWindowProperties = threadsRootWindow.getRootWindowProperties();
-        threadsRootWindowProperties.setDragRectangleBorderWidth(2);
+        threadsRootWindowProperties.setDragRectangleBorderWidth(WINDOW_BAR_BORDER_WIDTH);
         threadsRootWindowProperties.setRecursiveTabsEnabled(false);
         threadsRootWindowProperties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
 
@@ -368,13 +373,13 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         tabWindowProperties.getDockButtonProperties().setVisible(false);
 
         rootWindow.getWindowBar(Direction.LEFT).setEnabled(true);
-        rootWindow.getWindowBar(Direction.LEFT).getWindowBarProperties().setMinimumWidth(5);
+        rootWindow.getWindowBar(Direction.LEFT).getWindowBarProperties().setMinimumWidth(WINDOW_BAR_BORDER_WIDTH);
         rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
-        rootWindow.getWindowBar(Direction.RIGHT).getWindowBarProperties().setMinimumWidth(5);
+        rootWindow.getWindowBar(Direction.RIGHT).getWindowBarProperties().setMinimumWidth(WINDOW_BAR_BORDER_WIDTH);
         rootWindow.getWindowBar(Direction.DOWN).setEnabled(true);
-        rootWindow.getWindowBar(Direction.DOWN).getWindowBarProperties().setMinimumWidth(5);
+        rootWindow.getWindowBar(Direction.DOWN).getWindowBarProperties().setMinimumWidth(WINDOW_BAR_BORDER_WIDTH);
 
-        rootWindowProperties.setDragRectangleBorderWidth(2);
+        rootWindowProperties.setDragRectangleBorderWidth(DRAG_RECTANGLE_BORDER_WIDTH);
         rootWindowProperties.setRecursiveTabsEnabled(false);
 
         for (View view : mainViews) {
@@ -466,7 +471,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         );
 
         DockingWindowProperties props = view.getWindowProperties();
-        props.getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(3);
+        props.getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(ICON_TEXT_GAP);
         props.setCloseEnabled(false);
         props.setMaximizeEnabled(false);
 
@@ -489,6 +494,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         DockingWindowProperties props = view.getWindowProperties();
         props.setMinimizeEnabled(false);
         props.setTitleProvider(getTabTitleProvider());
+
+        props.getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(ICON_TEXT_GAP);
 
         itemView.addInfoChangeListener(new TitleChangeTracker(itemView, view));
 
@@ -558,6 +565,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     try {
                         setObjectState((IState) in.readObject());
 
+                        // Null means end of list
                         String panelId;
                         while ((panelId = (String) in.readObject()) != null) {
                             IViewLayout layout = (IViewLayout) in.readObject();
@@ -566,6 +574,12 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                             if (panel != null) {
                                 panel.setupLayout(layout);
                             }
+                        }
+
+                        // Null means end of list
+                        ViewId viewId;
+                        while ((viewId = (ViewId) in.readObject()) != null) {
+                            storedLayouts.put(viewId, (IViewLayout) in.readObject());
                         }
                     } catch (EOFException e) {
                         // Ignore to support previous revisions
@@ -598,6 +612,18 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     out.writeObject(element.getKey()); // Identifier
                     out.writeObject(element.getValue().storeLayout()); // Panel layout
                 }
+                out.writeObject(null);
+
+                // Write forum layouts only
+                for (Map.Entry<ViewId, IViewLayout> element : storedLayouts.entrySet()) {
+                    if (element.getKey().getType() == ViewType.Forum ||
+                            element.getKey().getType() == ViewType.OutBox ||
+                            element.getKey().getType() == ViewType.Favorite) {
+                        out.writeObject(element.getKey()); // Identifier
+                        out.writeObject(element.getValue()); // Panel layout
+                    }
+                }
+                out.writeObject(null);
             }
 
         } catch (IOException e) {

@@ -65,9 +65,9 @@ public class TreeTableThreadView extends AThreadView {
                 if (h.getWidth() > 0) {
                     column.setPreferredWidth(h.getWidth());
                     column.setMaxWidth(h.getWidth() << 2);
-                    column.setMinWidth(10);
-                    column.setIdentifier(h);
                 }
+                column.setMinWidth(10);
+                column.setIdentifier(h);
                 column.setToolTipText(h.getTitle());
                 threads.addColumn(column);
             }
@@ -144,6 +144,7 @@ public class TreeTableThreadView extends AThreadView {
                 int idx = cm.getColumnIndex(c.getAnchor());
 
                 cm.getColumn(idx).setWidth(c.getWidth());
+                cm.getColumn(idx).setPreferredWidth(c.getWidth());
                 cm.moveColumn(idx, c.getIndex());
             }
         }
