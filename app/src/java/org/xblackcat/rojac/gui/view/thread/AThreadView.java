@@ -463,9 +463,7 @@ public abstract class AThreadView extends AnItemView {
             }
         }
 
-        if (selected != null) {
-            selectItem(selected);
-        }
+        selectItem(selected);
     }
 
     @Override
@@ -477,6 +475,8 @@ public abstract class AThreadView extends AnItemView {
                 if (curSelection != null &&
                         !curSelection.equals(getSelectedItem())) {
                     selectItem(curSelection);
+                } else {
+                    selectItem(null);
                 }
             }
         };
@@ -701,9 +701,7 @@ public abstract class AThreadView extends AnItemView {
 
     protected class PostSelector implements TreeSelectionListener {
         public void valueChanged(TreeSelectionEvent e) {
-            if (e.getNewLeadSelectionPath() != null) {
-                fireViewStateChanged();
-            }
+            fireViewStateChanged();
         }
     }
 
@@ -806,6 +804,8 @@ public abstract class AThreadView extends AnItemView {
                 model.removeTreeModelListener(this);
                 if (messageId != 0) {
                     expandThread(messageId);
+                } else {
+                    selectItem(null);
                 }
             }
         }

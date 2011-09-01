@@ -258,7 +258,15 @@ public class MessageView extends AnItemView {
         this.messageId = messageId;
         messageTitle = "#" + messageId;
 
-        new MessageLoader(messageId).execute();
+        if (messageId != 0) {
+            messageTextPane.setEnabled(false);
+            titleBar.setVisible(false);
+
+            new MessageLoader(messageId).execute();
+        } else {
+            messageTextPane.setEnabled(true);
+            titleBar.setVisible(messageId > 0);
+        }
     }
 
     protected void fillFrame(NewMessage mes) {
@@ -280,16 +288,23 @@ public class MessageView extends AnItemView {
 
         messageTextPane.setText(parsedText);
         messageTextPane.setCaretPosition(0);
-        final String userName = mes.getUserName();
-        if (StringUtils.isNotEmpty(userName)) {
-            userInfoLabel.setText(userName);
+        if (mes.getMessageId() > 0) {
+            titleBar.setVisible(true);
+
+            // Normal message
+            final String userName = mes.getUserName();
+            if (StringUtils.isNotEmpty(userName)) {
+                userInfoLabel.setText(userName);
+            } else {
+                userInfoLabel.setText(Message.UserName_Anonymous.get());
+            }
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, LocaleControl.getInstance().getLocale());
+            messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
+            answer.setEnabled(true);
+            marks.setEnabled(true);
         } else {
-            userInfoLabel.setText(Message.UserName_Anonymous.get());
+            titleBar.setVisible(false);
         }
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, LocaleControl.getInstance().getLocale());
-        messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
-        answer.setEnabled(true);
-        marks.setEnabled(true);
     }
 
     @Override
@@ -387,32 +402,40 @@ public class MessageView extends AnItemView {
 
         @Override
         protected Void perform() throws Exception {
-            String messageBody = "";
-            try {
+            if (messageId == 0) {
+                // No message
+                messageTextPane.setEnabled(true);
+                titleBar.setVisible(messageId > 0);
+            } else {
+                String messageBody;
                 MessageData messageData;
-                if (messageId > 0) {
-                    // Regulag message
-                    messageData = storage.getMessageAH().getMessageData(messageId);
-                    if (messageData == null) {
-                        // Somehow message is not found - do not load it
-                        return null;
-                    }
-                    messageBody = storage.getMessageAH().getMessageBodyById(messageId);
-                } else {
-                    // Local message
-                    NewMessage newMessage = storage.getNewMessageAH().getNewMessageById(-messageId);
-                    messageData = new NewMessageData(newMessage);
+                try {
+                    if (messageId > 0) {
+                        // Regulag message
+                        messageData = storage.getMessageAH().getMessageData(messageId);
+                        if (messageData == null) {
+                            // Somehow message is not found - do not load it
+                            return null;
+                        }
+                        messageBody = storage.getMessageAH().getMessageBodyById(messageId);
+                    } else {
+                        // Local message
+                        NewMessage newMessage = storage.getNewMessageAH().getNewMessageById(-messageId);
+                        messageData = new NewMessageData(newMessage);
 
-                    messageBody = newMessage.getMessage();
+                        messageBody = newMessage.getMessage();
+                    }
+                } catch (StorageException e) {
+                    throw new RuntimeException("Can't load message #" + messageId, e);
                 }
 
-                String parsedText = rsdnToHtml.convert(messageBody);
+                try {
+                    String parsedText = rsdnToHtml.convert(messageBody);
 
-                publish(new MessageDataHolder(messageData, parsedText));
-            } catch (StorageException e) {
-                throw new RuntimeException("Can't load message #" + messageId, e);
-            } catch (Exception e) {
-                throw new RuntimeException("Can't parse message #" + messageId + ". Body: " + messageBody, e);
+                    publish(new MessageDataHolder(messageData, parsedText));
+                } catch (Exception e) {
+                    throw new RuntimeException("Can't parse message #" + messageId + ". Body: " + messageBody, e);
+                }
             }
 
             return null;
