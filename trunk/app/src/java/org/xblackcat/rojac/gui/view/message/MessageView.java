@@ -122,6 +122,8 @@ public class MessageView extends AnItemView {
         userLabel.setText(Message.Panel_Message_Label_User.get());
         dateLabel.setText(Message.Panel_Message_Label_Date.get());
 
+        titleBar.setVisible(false);
+        messageTextPane.setEnabled(false);
     }
 
     private void initialize() {
@@ -284,8 +286,16 @@ public class MessageView extends AnItemView {
     }
 
     protected void fillFrame(MessageData mes, String parsedText) {
+        if (mes == null) {
+            // No data
+            messageTextPane.setEnabled(false);
+            titleBar.setVisible(false);
+            return;
+        }
+
         forumId = mes.getForumId();
 
+        messageTextPane.setEnabled(true);
         messageTextPane.setText(parsedText);
         messageTextPane.setCaretPosition(0);
         if (mes.getMessageId() > 0) {
@@ -402,11 +412,7 @@ public class MessageView extends AnItemView {
 
         @Override
         protected Void perform() throws Exception {
-            if (messageId == 0) {
-                // No message
-                messageTextPane.setEnabled(true);
-                titleBar.setVisible(messageId > 0);
-            } else {
+            if (messageId != 0) {
                 String messageBody;
                 MessageData messageData;
                 try {
@@ -436,6 +442,8 @@ public class MessageView extends AnItemView {
                 } catch (Exception e) {
                     throw new RuntimeException("Can't parse message #" + messageId + ". Body: " + messageBody, e);
                 }
+            } else {
+                publish(new MessageDataHolder(null, null));
             }
 
             return null;
@@ -446,6 +454,9 @@ public class MessageView extends AnItemView {
             for (MessageDataHolder md : chunks) {
                 messageData = md.getMessage();
                 fillFrame(messageData, md.getMessageBody());
+                if (messageData == null) {
+                    continue;
+                }
                 fillMarksButton(messageData.getRating());
                 messageTitle = messageData.getSubject();
                 fireInfoChanged();
