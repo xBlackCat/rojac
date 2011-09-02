@@ -91,7 +91,13 @@ class ForumDecorator extends ADecorator {
         Collection<ALoadTask> tasks = new ArrayList<>(forumIds.length);
 
         for (int forumId : forumIds) {
-            tasks.add(new ForumUpdateTask(forumId));
+            if (viewedForums.containsKey(forumId)) {
+                // Existing forum
+                tasks.add(new ForumUpdateTask(forumId));
+            } else {
+                // Not shown forum
+                tasks.add(new ForumLoadTask(forumId));
+            }
         }
 
         return tasks;
