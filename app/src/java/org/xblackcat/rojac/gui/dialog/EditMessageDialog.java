@@ -130,10 +130,10 @@ public class EditMessageDialog extends JDialog {
                 try {
                     get();
                     dispose();
-                    ServiceFactory.getInstance().getDataDispatcher().processPacket(new NewMessagesUpdatedPacket());
                 } catch (InterruptedException | ExecutionException e) {
                     JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");
                 }
+                ServiceFactory.getInstance().getDataDispatcher().processPacket(new NewMessagesUpdatedPacket());
             }
         };
 

@@ -107,8 +107,10 @@ class OutboxListControl extends MessageListControl {
             root.fillList(messages);
             root.setLoadingState(LoadingState.Loaded);
             model.markInitialized();
+            model.nodeChanged(root);
             model.nodeStructureChanged(root);
             model.fireResortModel();
+            super.done();
         }
     }
 }

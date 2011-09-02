@@ -37,4 +37,9 @@ public final class ThreadState implements IState {
     public int hashCode() {
         return openedMessageId;
     }
+
+    @Override
+    public boolean isNavigatable() {
+        return openedMessageId > 0;
+    }
 }

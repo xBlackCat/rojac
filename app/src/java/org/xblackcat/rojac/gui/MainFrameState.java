@@ -31,4 +31,9 @@ public class MainFrameState implements IState {
     public Dimension getSize() {
         return size;
     }
+
+    @Override
+    public boolean isNavigatable() {
+        return false;
+    }
 }

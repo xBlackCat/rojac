@@ -105,10 +105,12 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     protected final IStateListener navigationListener = new IStateListener() {
         @Override
         public void stateChanged(ViewId viewId, IState newState) {
-            history.addHistoryItem(new NavigationHistoryItem(viewId, newState));
+            if (newState.isNavigatable()) {
+                history.addHistoryItem(new NavigationHistoryItem(viewId, newState));
 
-            // Update navigation buttons.
-            updateNavigationButtons();
+                // Update navigation buttons.
+                updateNavigationButtons();
+            }
         }
     };
 
@@ -270,8 +272,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private void initialize() {
 //        final ForumsListView forumsListView = new ForumsListView(this);
 //        final FavoritesView favoritesView = new FavoritesView(this);
-        final RecentTopicsView recentTopicsView = new RecentTopicsView(this);
         final NavigationView navigationView = new NavigationView(this);
+        final RecentTopicsView recentTopicsView = new RecentTopicsView(this);
 
         JPanel cp = new JPanel(new BorderLayout());
         setContentPane(cp);

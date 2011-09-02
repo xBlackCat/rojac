@@ -168,4 +168,31 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
     }
 
     protected abstract T[] getPathToRoot(T aNode, int depth);
+
+    public boolean isPathValid(TreePath treePath) {
+        if (treePath == null || treePath.getPathCount() == 0) {
+            return false;
+        }
+
+        Object[] path = treePath.getPath();
+        T root = getRoot();
+
+        if (!path[0].equals(root)) {
+            return false;
+        }
+
+        T parent = root;
+
+        for (int i = 1, path1Length = path.length; i < path1Length; i++) {
+            T p = (T) path[i];
+
+            if (parent.getIndex(p) < 0) {
+                return false;
+            }
+
+            parent = p;
+        }
+
+        return true;
+    }
 }
