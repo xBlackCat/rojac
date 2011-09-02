@@ -81,10 +81,11 @@ public enum Message {
 
     // Tray texts
     // Note that the first parameter is always a version string.
-    Tray_State_Initialized,
+    Tray_State_Loading,
     Tray_State_Normal,
     Tray_State_Synchronization,
     Tray_State_HaveUnreadMessages,
+    Tray_State_HaveUnreadReplies,
 
     // Tray popup menu texts
     Tray_Popup_Item_ShowMainframe,

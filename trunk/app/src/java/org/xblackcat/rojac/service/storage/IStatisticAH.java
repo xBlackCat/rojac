@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.data.ThreadStatData;
 import org.xblackcat.rojac.data.UnreadStatData;
 
@@ -26,7 +27,7 @@ public interface IStatisticAH extends AH {
      */
     UnreadStatData getReplaysInThread(int threadId) throws StorageException;
 
-    int getUnreadMessages() throws StorageException;
+    ReadStatistic getTotals(int userId) throws StorageException;
 
     /**
      * Returns number of replies to specified user.

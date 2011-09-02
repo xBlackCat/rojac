@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.tray;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.utils.ResourceUtils;
@@ -12,10 +11,11 @@ import java.awt.*;
  */
 
 public enum RojacState {
-    Initialized(Message.Tray_State_Initialized, ResourceUtils.loadImage("/images/tray/initialized.png")),
-    Normal(Message.Tray_State_Normal, ResourceUtils.loadImage("/images/tray/normal.png")),
+    Initialization(Message.Tray_State_Loading, ResourceUtils.loadImage("/images/tray/loading.png")),
     Synchronizing(Message.Tray_State_Synchronization, ResourceUtils.loadImage("/images/tray/synchronization.png")),
-    HaveUnreadMessages(Message.Tray_State_HaveUnreadMessages, ResourceUtils.loadImage("/images/tray/has_unread.png"));
+    NoUnreadMessages(Message.Tray_State_Normal, ResourceUtils.loadImage("/images/tray/normal.png")),
+    HaveUnreadMessages(Message.Tray_State_HaveUnreadMessages, ResourceUtils.loadImage("/images/tray/has-unread.png")),
+    HaveUnreadReplies(Message.Tray_State_HaveUnreadReplies, ResourceUtils.loadImage("/images/tray/has-replies.png"));
 
     private final Image image;
     private final Message title;
@@ -30,6 +30,6 @@ public enum RojacState {
     }
 
     public String getToolTip(Object... arguments) {
-        return title.get(ArrayUtils.add(arguments, 0, RojacUtils.VERSION_STRING));
+        return RojacUtils.VERSION_STRING + "\n" + title.get(arguments);
     }
 }
