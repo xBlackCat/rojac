@@ -9,4 +9,5 @@ import java.io.Serializable;
  */
 
 public interface IState extends Serializable {
+    boolean isNavigatable();
 }

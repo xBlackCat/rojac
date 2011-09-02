@@ -19,6 +19,8 @@ public class PreviewMessageView extends MessageView {
         controls.setVisible(false);
         subjectLine.setBorder(new EmptyBorder(5, 5, 0, 5));
         titleBar.add(subjectLine, BorderLayout.NORTH);
+        titleBar.setVisible(true);
+        messageTextPane.setEnabled(true);
     }
 
     public void showPreview(String subject, String body) {

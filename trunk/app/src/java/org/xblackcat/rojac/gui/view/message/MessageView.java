@@ -53,7 +53,7 @@ public class MessageView extends AnItemView {
     private int messageId;
     private int forumId;
 
-    private final JTextPane messageTextPane = new JTextPane();
+    protected final JTextPane messageTextPane = new JTextPane();
 
     private JButton marksButton;
     private JLabel userInfoLabel = new JLabel();
@@ -261,13 +261,14 @@ public class MessageView extends AnItemView {
         messageTitle = "#" + messageId;
 
         if (messageId != 0) {
-            messageTextPane.setEnabled(false);
-            titleBar.setVisible(false);
+            messageTextPane.setEnabled(true);
+            titleBar.setVisible(messageId > 0);
 
             new MessageLoader(messageId).execute();
         } else {
-            messageTextPane.setEnabled(true);
-            titleBar.setVisible(messageId > 0);
+            messageTextPane.setText(null);
+            messageTextPane.setEnabled(false);
+            titleBar.setVisible(false);
         }
     }
 
@@ -289,6 +290,7 @@ public class MessageView extends AnItemView {
         if (mes == null) {
             // No data
             messageTextPane.setEnabled(false);
+            messageTextPane.setText(null);
             titleBar.setVisible(false);
             return;
         }

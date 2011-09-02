@@ -64,23 +64,16 @@ class OutboxPostList extends Post {
 
     void fillList(Iterable<NewMessage> posts) {
         childrenPosts.clear();
+        listPosts.clear();
 
         for (NewMessage post : posts) {
-            Post p = listPosts.get(post.getLocalMessageId());
+            // New post
+            Post newPost = new Post(new NewMessageData(post), this, null);
 
-            if (p == null) {
-                // New post
-                Post newPost = new Post(new NewMessageData(post), this, null);
+            listPosts.put(post.getLocalMessageId(), newPost);
 
-                listPosts.put(post.getLocalMessageId(), newPost);
-
-                // Postpone sorting
-                childrenPosts.add(newPost);
-            } else {
-                // Post exists
-
-                p.setMessageData(new NewMessageData(post));
-            }
+            // Postpone sorting
+            childrenPosts.add(newPost);
         }
 
         // Sorting...

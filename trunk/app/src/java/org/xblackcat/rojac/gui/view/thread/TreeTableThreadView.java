@@ -166,19 +166,22 @@ public class TreeTableThreadView extends AThreadView {
         if (post != null) {
             TreePath path = model.getPathToRoot(post);
 
-            TreePath parentPath = path.getParentPath();
+            if (model.isPathValid(path)) {
+                TreePath parentPath = path.getParentPath();
 
-            if (parentPath != null && threads.isCollapsed(parentPath)) {
-                expandPath(parentPath);
-            }
-            scrollPathToVisible(path);
+                if (parentPath != null && threads.isCollapsed(parentPath)) {
+                    expandPath(parentPath);
+                }
+                scrollPathToVisible(path);
 
-            if (collapseChildren) {
-                threads.collapsePath(path);
+                if (collapseChildren) {
+                    threads.collapsePath(path);
+                }
+                return;
             }
-        } else {
-            threads.clearSelection();
         }
+
+        threads.clearSelection();
     }
 
     protected void scrollPathToVisible(TreePath path) {
@@ -204,7 +207,12 @@ public class TreeTableThreadView extends AThreadView {
 
     @Override
     protected Post getSelectedItem() {
-        TreePath path = threads.getPathForRow(threads.getSelectedRow());
+        int selectedRow = threads.getSelectedRow();
+        if (selectedRow < 0) {
+            return null;
+        }
+
+        TreePath path = threads.getPathForRow(selectedRow);
         return path == null ? null : (Post) path.getLastPathComponent();
     }
 

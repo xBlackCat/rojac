@@ -26,6 +26,12 @@ final class ComplexState implements IState {
     }
 
     @Override
+    public boolean isNavigatable() {
+        return masterState != null && masterState.isNavigatable() ||
+                slaveState != null && slaveState.isNavigatable();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
