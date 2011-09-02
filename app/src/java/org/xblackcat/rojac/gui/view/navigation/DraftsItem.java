@@ -25,18 +25,8 @@ class DraftsItem extends PersonalItem {
     }
 
     @Override
-    String getExtraInfo() {
-        return null;
-    }
-
-    @Override
     String getTitleLine() {
         return Message.View_Navigation_Item_Draft.get();
-    }
-
-    @Override
-    String getExtraTitleLine() {
-        return null;
     }
 
     @Override

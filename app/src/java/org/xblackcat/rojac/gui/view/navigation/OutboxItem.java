@@ -28,18 +28,8 @@ class OutboxItem extends PersonalItem {
     }
 
     @Override
-    String getExtraInfo() {
-        return null;
-    }
-
-    @Override
     String getTitleLine() {
         return Message.View_Navigation_Item_Outbox.get();
-    }
-
-    @Override
-    String getExtraTitleLine() {
-        return null;
     }
 
     @Override

@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.component.InvokeExtMarkDialogAction;
-import org.xblackcat.rojac.gui.component.UpdateForumListAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;

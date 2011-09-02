@@ -77,6 +77,10 @@ public enum ReadStatusIcon {
      */
     ForumSubscribed("subscribed-forum"),
     /**
+     * Status icon for forums.
+     */
+    ForumWithReply("forum-has-reply"),
+    /**
      * Status icons for personal items
      */
     Personal("personal"),

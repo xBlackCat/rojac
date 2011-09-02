@@ -43,17 +43,7 @@ class RootItem extends AGroupItem<AnItem> {
     }
 
     @Override
-    String getExtraInfo() {
-        return null;
-    }
-
-    @Override
     String getTitleLine() {
-        return null;
-    }
-
-    @Override
-    String getExtraTitleLine() {
         return null;
     }
 

@@ -1,5 +1,6 @@
-package org.xblackcat.rojac.gui.component;
+package org.xblackcat.rojac.gui.dialog.subscribtion;
 
+import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.janus.commands.Request;
 
@@ -9,7 +10,7 @@ import java.awt.event.ActionEvent;
 /**
  * @author xBlackCat
  */
-public class UpdateForumListAction extends AButtonAction {
+class UpdateForumListAction extends AButtonAction {
     private Window window;
 
     public UpdateForumListAction(Window window) {

@@ -5,8 +5,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 import java.util.*;
@@ -115,10 +117,15 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    public Collection<ALoadTask> alterReadStatus(int forumId, boolean read) {
-        ForumItem navItem = viewedForums.get(forumId);
+    public Collection<ALoadTask> alterReadStatus(MessageData messageData, boolean read) {
+        ForumItem navItem = viewedForums.get(messageData.getForumId());
         if (navItem != null) {
-            ALoadTask<Void> task = new ForumUnreadAdjustTask(navItem, read ? -1 : 1);
+            Integer ownId = Property.RSDN_USER_ID.get();
+            ALoadTask<Void> task = new ForumUnreadAdjustTask(
+                    navItem,
+                    read ? -1 : 1,
+                    messageData.getParentUserId() == ownId && messageData.getUserId() != ownId
+            );
 
             return Collections.singleton((ALoadTask) task);
         }
@@ -191,8 +198,11 @@ class ForumDecorator extends ADecorator {
     }
 
     private class ForumUnreadAdjustTask extends AnAdjustUnreadTask<ForumItem> {
-        private ForumUnreadAdjustTask(ForumItem item, int adjustDelta) {
+        private final boolean reply;
+
+        private ForumUnreadAdjustTask(ForumItem item, int adjustDelta, boolean isReply) {
             super(item, adjustDelta);
+            reply = isReply;
         }
 
         @Override
@@ -203,7 +213,7 @@ class ForumDecorator extends ADecorator {
                     statistic.getTotalMessages(),
                     statistic.getUnreadMessages() + adjustDelta,
                     statistic.getLastMessageDate(),
-                    statistic.getUnreadReplies()
+                    statistic.getUnreadReplies() + (reply ? adjustDelta : 0)
             );
             item.setStatistic(statistic);
             modelControl.itemUpdated(item);

@@ -35,11 +35,7 @@ abstract class AnItem {
 
     abstract String getBriefInfo();
 
-    abstract String getExtraInfo();
-
     abstract String getTitleLine();
-
-    abstract String getExtraTitleLine();
 
     abstract boolean isExuded();
 

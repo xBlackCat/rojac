@@ -32,18 +32,8 @@ class MyResponsesItem extends PersonalItem {
     }
 
     @Override
-    String getExtraInfo() {
-        return null;
-    }
-
-    @Override
     String getTitleLine() {
         return Message.View_Navigation_Item_MyResponses.get();
-    }
-
-    @Override
-    String getExtraTitleLine() {
-        return null;
     }
 
     @Override
