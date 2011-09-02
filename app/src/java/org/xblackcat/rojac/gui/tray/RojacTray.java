@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.tray;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.data.UnreadStatData;
+import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -31,9 +32,11 @@ public class RojacTray {
     private static final Log log = LogFactory.getLog(RojacTray.class);
 
     private final boolean supported;
-    private RojacState state = RojacState.Initialized;
-    protected final TrayIcon trayIcon;
+    private RojacState state = RojacState.Initialization;
+    private final TrayIcon trayIcon;
     private final JFrame mainFrame;
+
+    private ReadStatistic statistic = new ReadStatistic(0, 0, 0);
 
     public RojacTray(JFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -59,8 +62,8 @@ public class RojacTray {
     }
 
     private void setupTray() {
-        trayIcon.setImage(RojacState.Initialized.getImage());
-        trayIcon.setToolTip(RojacState.Initialized.getToolTip());
+        trayIcon.setImage(RojacState.Initialization.getImage());
+        trayIcon.setToolTip(RojacState.Initialization.getToolTip());
 
         ServiceFactory.getInstance().getProgressControl().addProgressListener(new TrayProgressListener());
         ServiceFactory.getInstance().getDataDispatcher().addDataHandler(new TrayDataDispatcher());
@@ -81,6 +84,8 @@ public class RojacTray {
                 m.setVisible(true);
             }
         });
+
+        checkUnreadMessages();
     }
 
     private void toggleFrameVisibility() {
@@ -163,29 +168,36 @@ public class RojacTray {
         new UnreadMessagesCountGetter().execute();
     }
 
-    private class UnreadMessagesCountGetter extends RojacWorker<Void, Integer> {
-        protected int unreadMessages;
-        protected UnreadStatData unreadReplies;
-
+    private class UnreadMessagesCountGetter extends RojacWorker<Void, ReadStatistic> {
         @Override
         protected Void perform() throws Exception {
             IStatisticAH mAH = ServiceFactory.getInstance().getStorage().getStatisticAH();
 
-            unreadMessages = mAH.getUnreadMessages();
-            Integer userId = Property.RSDN_USER_ID.get();
-            if (userId != null && userId > 0) {
-                unreadReplies = mAH.getUserRepliesStat(userId);
-            }
+            Integer userId = Property.RSDN_USER_ID.get(-1);
+            publish(mAH.getTotals(userId));
 
             return null;
         }
 
         @Override
-        protected void done() {
-            if (unreadMessages > 0) {
-                setState(RojacState.HaveUnreadMessages, unreadMessages, unreadReplies.asString());
+        protected void process(List<ReadStatistic> chunks) {
+            for (ReadStatistic s : chunks) {
+                setStatistic(s);
             }
         }
+    }
+
+    private void setStatistic(ReadStatistic statistic) {
+        this.statistic = statistic;
+        RojacState state = RojacState.NoUnreadMessages;
+
+        if (statistic.getUnreadReplies() > 0) {
+            state = RojacState.HaveUnreadReplies;
+        } else if (statistic.getUnreadMessages() > 0) {
+            state = RojacState.HaveUnreadMessages;
+        }
+
+        setState(state, statistic.getUnreadMessages(), statistic.getUnreadReplies());
     }
 
     private class TrayProgressListener implements IProgressListener {
@@ -195,7 +207,7 @@ public class RojacTray {
         public void progressChanged(ProgressChangeEvent e) {
             switch (e.getState()) {
                 case Idle:
-                    setState(RojacState.Normal);
+                    setState(RojacState.NoUnreadMessages);
                     break;
                 case Start:
                     break;
@@ -212,7 +224,7 @@ public class RojacTray {
                     setState(RojacState.Synchronizing, lastText, progress);
                     break;
                 case Stop:
-                    setState(RojacState.Normal);
+                    setState(RojacState.NoUnreadMessages);
 
                     checkUnreadMessages();
                     break;
@@ -236,11 +248,42 @@ public class RojacTray {
                                     TrayIcon.MessageType.INFO
                             );
                         }
+
+                        checkUnreadMessages();
                     }
                 },
-                new IPacketProcessor<IPacket>() {
+                new IPacketProcessor<SetPostReadPacket>() {
                     @Override
-                    public void process(IPacket p) {
+                    public void process(SetPostReadPacket p) {
+                        final Integer ownId = Property.RSDN_USER_ID.get(-1);
+                        final int adjust = p.isRead() ? -1 : 1;
+                        final boolean isReply = p.getPost().getParentUserId() == ownId &&
+                                p.getPost().getUserId() != ownId;
+
+                        ReadStatistic newStat = new ReadStatistic(
+                                statistic.getUnreadReplies() + (isReply ? adjust : 0),
+                                statistic.getUnreadMessages() + adjust,
+                                statistic.getTotalMessages()
+                        );
+
+                        setStatistic(newStat);
+                    }
+                },
+                new IPacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
+                        checkUnreadMessages();
+                    }
+                },
+                new IPacketProcessor<SetReadExPacket>() {
+                    @Override
+                    public void process(SetReadExPacket p) {
+                        checkUnreadMessages();
+                    }
+                },
+                new IPacketProcessor<SetSubThreadReadPacket>() {
+                    @Override
+                    public void process(SetSubThreadReadPacket p) {
                         checkUnreadMessages();
                     }
                 }
