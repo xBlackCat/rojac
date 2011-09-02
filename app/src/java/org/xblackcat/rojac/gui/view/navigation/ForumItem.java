@@ -58,11 +58,15 @@ class ForumItem extends AnItem {
 
     @Override
     String getBriefInfo() {
-        return Message.View_Navigation_Item_ForumInfo.get(
-                statistic.getUnreadMessages(),
-                statistic.getTotalMessages()
-        );
+        int unreadMessages = statistic.getUnreadMessages();
+        int totalMessages = statistic.getTotalMessages();
 
+        return unreadMessages == 0 || unreadMessages == totalMessages ?
+                String.valueOf(totalMessages) :
+                Message.View_Navigation_Item_ForumInfo.get(
+                        unreadMessages,
+                        totalMessages
+                );
     }
 
     @Override
