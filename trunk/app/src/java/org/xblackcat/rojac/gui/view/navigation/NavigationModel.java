@@ -85,7 +85,7 @@ class NavigationModel implements TreeTableModel, IModelControl {
                 public void process(SetPostReadPacket p) {
                     new LoadTaskExecutor(
                             favoritesDecorator.alterReadStatus(p.getPost(), p.isRead()),
-                            forumDecorator.alterReadStatus(p.getPost().getForumId(), p.isRead()),
+                            forumDecorator.alterReadStatus(p.getPost(), p.isRead()),
                             personalDecorator.alterReadStatus(p.getPost(), p.isRead())
                     ).execute();
                 }

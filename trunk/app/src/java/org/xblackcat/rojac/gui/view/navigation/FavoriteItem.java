@@ -64,18 +64,8 @@ class FavoriteItem extends AnItem {
     }
 
     @Override
-    String getExtraInfo() {
-        return null;
-    }
-
-    @Override
     String getTitleLine() {
         return favorite.getName();
-    }
-
-    @Override
-    String getExtraTitleLine() {
-        return null;
     }
 
     @Override

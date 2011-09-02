@@ -45,18 +45,8 @@ class GroupItem<T extends AnItem> extends AGroupItem<T> {
     }
 
     @Override
-    String getExtraInfo() {
-        return null;
-    }
-
-    @Override
     String getTitleLine() {
         return title.get();
-    }
-
-    @Override
-    String getExtraTitleLine() {
-        return null;
     }
 
     @Override

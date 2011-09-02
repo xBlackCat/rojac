@@ -36,7 +36,8 @@ class ForumItem extends AnItem {
 
     @Override
     Icon getIcon() {
-        return ReadStatusIcon.Forum.getIcon(getReadStatus());
+        ReadStatusIcon statusIcon = statistic.getUnreadReplies() > 0 ? ReadStatusIcon.ForumWithReply : ReadStatusIcon.Forum;
+        return statusIcon.getIcon(getReadStatus());
     }
 
     @Override
@@ -70,18 +71,8 @@ class ForumItem extends AnItem {
     }
 
     @Override
-    String getExtraInfo() {
-        return null;
-    }
-
-    @Override
     String getTitleLine() {
         return forum.getForumName();
-    }
-
-    @Override
-    String getExtraTitleLine() {
-        return forum.getShortForumName();
     }
 
     @Override
