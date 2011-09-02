@@ -24,6 +24,6 @@ public class UnreadStatData {
     }
 
     public String asString() {
-        return Message.View_Favorites_Statistic_Data.get(getUnread(), getTotal());
+        return unread == total || unread == 0 ? String.valueOf(total) : Message.View_Favorites_Statistic_Data.get(getUnread(), getTotal());
     }
 }
