@@ -77,8 +77,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private Map<ViewId, View> openedViews = new HashMap<>();
     protected RootWindow threadsRootWindow;
 
-    //    private static final String FORUMS_VIEW_ID = "forums_view";
-//    private static final String FAVORITES_VIEW_ID = "favorites_view";
     private static final String RECENT_TOPICS_VIEW_ID = "lastPosts_view";
     private static final String THREADS_VIEW_ID = "threads_view_id";
     private static final String NAVIGATION_VIEW_ID = "navigation_view_id";
@@ -164,6 +162,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private MainFrameState frameState;
 
     private final Map<ViewId, IViewLayout> storedLayouts = new HashMap<>();
+    private View[] mainViews;
 
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
@@ -270,8 +269,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private void initialize() {
-//        final ForumsListView forumsListView = new ForumsListView(this);
-//        final FavoritesView favoritesView = new FavoritesView(this);
         final NavigationView navigationView = new NavigationView(this);
         final RecentTopicsView recentTopicsView = new RecentTopicsView(this);
 
@@ -310,26 +307,18 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         TabWindowProperties threadsTabWindowProperties = threadsRootWindowProperties.getTabWindowProperties();
         threadsTabWindowProperties.getMinimizeButtonProperties().setVisible(false);
         threadsTabWindowProperties.getMaximizeButtonProperties().setVisible(false);
-//        threadsTabWindowProperties.getUndockButtonProperties().setVisible(false);
-//        threadsTabWindowProperties.getDockButtonProperties().setVisible(false);
 
         View threadsView = createThreadsView(threadsRootWindow);
-        View[] mainViews = new View[]{
-//                viewForums,
-//                viewFavorites,
+        mainViews = new View[]{
                 viewRecentTopics,
                 viewNavigation
         };
 
         StringViewMap viewMap = new StringViewMap();
-//        viewMap.addView(FORUMS_VIEW_ID, viewForums);
-//        viewMap.addView(FAVORITES_VIEW_ID, viewFavorites);
         viewMap.addView(RECENT_TOPICS_VIEW_ID, viewRecentTopics);
         viewMap.addView(NAVIGATION_VIEW_ID, viewNavigation);
         viewMap.addView(THREADS_VIEW_ID, threadsView);
 
-//        layoutMap.put(FORUMS_VIEW_ID, forumsListView);
-//        layoutMap.put(FAVORITES_VIEW_ID, favoritesView);
         layoutMap.put(RECENT_TOPICS_VIEW_ID, recentTopicsView);
         layoutMap.put(NAVIGATION_VIEW_ID, navigationView);
 
@@ -344,17 +333,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                                 threadsView
                         ),
                         viewRecentTopics
-//                        new SplitWindow(
-//                                false,
-//                                0.25f,
-//                                viewRecentTopics,
-//                                new SplitWindow(
-//                                        false,
-//                                        0.7f,
-//                                        viewForums,
-//                                        viewFavorites
-//                                )
-//                        )
                 )
         );
 
@@ -563,6 +541,12 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
                     rootWindow.read(in, false);
                     threadsRootWindow.read(in, false);
+
+                    for (View v : mainViews) {
+                        if (v.getRootWindow() == null) {
+                            rootWindow.getWindowBar(Direction.RIGHT).addTab(v);
+                        }
+                    }
 
                     try {
                         setObjectState((IState) in.readObject());
