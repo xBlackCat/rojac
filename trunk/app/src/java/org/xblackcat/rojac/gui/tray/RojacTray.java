@@ -14,6 +14,7 @@ import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.util.DialogHelper;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -68,20 +69,13 @@ public class RojacTray {
         ServiceFactory.getInstance().getProgressControl().addProgressListener(new TrayProgressListener());
         ServiceFactory.getInstance().getDataDispatcher().addDataHandler(new TrayDataDispatcher());
 
-        trayIcon.addMouseListener(new PopupMouseAdapter() {
+        trayIcon.addMouseListener(new TrayListener());
+        trayIcon.addActionListener(new ActionListener() {
             @Override
-            protected void triggerDoubleClick(MouseEvent e) {
-                toggleFrameVisibility();
-            }
-
-            @Override
-            protected void triggerPopup(MouseEvent e) {
-                Point p = e.getPoint();
-
-                JPopupMenu m = getPopupMenu();
-                m.setLocation(p);
-                m.setInvoker(m);
-                m.setVisible(true);
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.setVisible(true);
+                mainFrame.setState(Frame.NORMAL);
+                WindowsUtils.toFront(mainFrame);
             }
         });
 
@@ -95,7 +89,7 @@ public class RojacTray {
         } else {
             mainFrame.setVisible(true);
             mainFrame.setState(Frame.NORMAL);
-            mainFrame.toFront();
+            WindowsUtils.toFront(mainFrame);
         }
     }
 
@@ -168,6 +162,19 @@ public class RojacTray {
         new UnreadMessagesCountGetter().execute();
     }
 
+    private void setStatistic(ReadStatistic statistic) {
+        this.statistic = statistic;
+        RojacState state = RojacState.NoUnreadMessages;
+
+        if (statistic.getUnreadReplies() > 0) {
+            state = RojacState.HaveUnreadReplies;
+        } else if (statistic.getUnreadMessages() > 0) {
+            state = RojacState.HaveUnreadMessages;
+        }
+
+        setState(state, statistic.getUnreadMessages(), statistic.getUnreadReplies());
+    }
+
     private class UnreadMessagesCountGetter extends RojacWorker<Void, ReadStatistic> {
         @Override
         protected Void perform() throws Exception {
@@ -187,19 +194,6 @@ public class RojacTray {
         }
     }
 
-    private void setStatistic(ReadStatistic statistic) {
-        this.statistic = statistic;
-        RojacState state = RojacState.NoUnreadMessages;
-
-        if (statistic.getUnreadReplies() > 0) {
-            state = RojacState.HaveUnreadReplies;
-        } else if (statistic.getUnreadMessages() > 0) {
-            state = RojacState.HaveUnreadMessages;
-        }
-
-        setState(state, statistic.getUnreadMessages(), statistic.getUnreadReplies());
-    }
-
     private class TrayProgressListener implements IProgressListener {
         protected String lastText;
 
@@ -207,7 +201,7 @@ public class RojacTray {
         public void progressChanged(ProgressChangeEvent e) {
             switch (e.getState()) {
                 case Idle:
-                    setState(RojacState.NoUnreadMessages);
+                    setState(RojacState.Initialization);
                     break;
                 case Start:
                     break;
@@ -224,7 +218,7 @@ public class RojacTray {
                     setState(RojacState.Synchronizing, lastText, progress);
                     break;
                 case Stop:
-                    setState(RojacState.NoUnreadMessages);
+                    setState(RojacState.Initialization);
 
                     checkUnreadMessages();
                     break;
@@ -292,6 +286,30 @@ public class RojacTray {
         @Override
         public void processPacket(IPacket packet) {
             dispatcher.dispatch(packet);
+        }
+    }
+
+    private class TrayListener extends PopupMouseAdapter {
+        @Override
+        protected void triggerDoubleClick(MouseEvent e) {
+            toggleFrameVisibility();
+        }
+
+        @Override
+        protected void triggerPopup(MouseEvent e) {
+            Point p = e.getPoint();
+
+            JPopupMenu m = getPopupMenu();
+            m.setLocation(p);
+            m.setInvoker(m);
+            m.setVisible(true);
+        }
+
+        @Override
+        protected void triggerClick() {
+            if (mainFrame.isVisible()) {
+                WindowsUtils.toFront(mainFrame);
+            }
         }
     }
 }
