@@ -124,9 +124,9 @@ public class SubscriptionDialog extends JDialog {
                         final SubscriptionChangedPacket packet = model.getSubscription();
                         if (packet.isNotEmpty()) {
                             new ForumSubscriber(packet).execute();
+                        } else {
+                            closeDialog();
                         }
-
-                        closeDialog();
                     }
                 },
                 new ACancelAction() {
@@ -171,6 +171,7 @@ public class SubscriptionDialog extends JDialog {
         @Override
         protected void done() {
             ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
+            closeDialog();
         }
     }
 
