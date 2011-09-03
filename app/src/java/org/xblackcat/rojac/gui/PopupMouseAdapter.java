@@ -10,28 +10,32 @@ import java.awt.event.MouseEvent;
 public abstract class PopupMouseAdapter extends MouseAdapter {
     @Override
     public final void mouseClicked(MouseEvent e) {
-        checkMenu(e);
+        checkActions(e);
     }
 
     @Override
     public final void mousePressed(MouseEvent e) {
-        checkMenu(e);
+        checkActions(e);
     }
 
     @Override
     public final void mouseReleased(MouseEvent e) {
-        checkMenu(e);
+        checkActions(e);
     }
 
-    private void checkMenu(MouseEvent e) {
+    private void checkActions(MouseEvent e) {
         if (e.isPopupTrigger()) {
             triggerPopup(e);
-        } else if (e.getID() == MouseEvent.MOUSE_CLICKED &&
-                e.getClickCount() == 2 &&
-                e.getButton() == MouseEvent.BUTTON1) {
-            triggerDoubleClick(e);
+        } else if (e.getButton() == MouseEvent.BUTTON1 && e.getID() == MouseEvent.MOUSE_CLICKED) {
+            if (e.getClickCount() == 2) {
+                triggerDoubleClick(e);
+            } else {
+                triggerClick();
+            }
         }
     }
+
+    protected void triggerClick() {}
 
     protected abstract void triggerDoubleClick(MouseEvent e);
 
