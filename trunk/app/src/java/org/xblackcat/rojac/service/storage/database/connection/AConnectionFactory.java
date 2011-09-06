@@ -61,12 +61,12 @@ public abstract class AConnectionFactory implements IConnectionFactory {
 
         String shutdownUrl = databaseProperties.getProperty(DB_SHUTDOWN_URL);
 
-        userName = databaseProperties.getProperty(DB_STORAGE_USER);
+        userName = ResourceUtils.putSystemProperties(databaseProperties.getProperty(DB_STORAGE_USER));
         if (userName == null) {
             log.info("The " + DB_STORAGE_USER + " property is not defined. Unrestricted access to database.");
             password = null;
         } else {
-            password = databaseProperties.getProperty(DB_STORAGE_PASSWORD);
+            password = ResourceUtils.putSystemProperties(databaseProperties.getProperty(DB_STORAGE_PASSWORD));
             if (password == null) {
                 log.info("The " + DB_STORAGE_PASSWORD + " property is not defined. Will be used empty password.");
             }

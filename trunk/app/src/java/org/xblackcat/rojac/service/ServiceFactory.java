@@ -123,7 +123,6 @@ public final class ServiceFactory {
             if (log.isTraceEnabled()) {
                 log.trace("{$rojac.home} is not defined. It will initialized with '" + home + "' value.");
             }
-            System.setProperty("rojac.home", home);
         }
 
         String dbHome = mainProperties.getProperty("rojac.db.home");
@@ -131,10 +130,11 @@ public final class ServiceFactory {
             if (log.isWarnEnabled()) {
                 log.warn("{$rojac.db.home} is not defined. Assumed the same as {$rojac.home}");
             }
+            mainProperties.setProperty("rojac.db.home", home);
             dbHome = home;
         }
         dbHome = ResourceUtils.putSystemProperties(dbHome);
-        System.setProperty("rojac.db.home", dbHome);
+        installProperties(mainProperties, "rojac.home", "rojac.db.home", "rojac.db.host", "rojac.db.user", "rojac.db.password");
 
         checkPath(home);
         checkPath(dbHome);
@@ -148,6 +148,32 @@ public final class ServiceFactory {
         DBStorage storage = new DBStorage(configurationName, connectionFactory);
         storage.initialize();
         return storage;
+    }
+
+    /**
+     * Register specified properties in system.
+     *
+     * @param properties
+     * @param names
+     */
+    private static void installProperties(Properties properties, String... names) {
+        for (String name : names) {
+            String value = properties.getProperty(name);
+            if (StringUtils.isBlank(value)) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Property " + name + " is not defined.");
+                }
+                continue;
+            }
+
+            value = ResourceUtils.putSystemProperties(value);
+
+            if (log.isTraceEnabled()) {
+                log.trace("Initialize property " + name + " with value " + value);
+            }
+
+            System.setProperty(name, value);
+        }
     }
 
     @SuppressWarnings({"unchecked"})
