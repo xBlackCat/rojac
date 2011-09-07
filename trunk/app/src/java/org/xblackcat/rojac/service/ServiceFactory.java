@@ -18,7 +18,9 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.DBStorage;
+import org.xblackcat.rojac.service.storage.database.connection.FileSettings;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
+import org.xblackcat.rojac.service.storage.database.connection.ISettings;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -143,7 +145,7 @@ public final class ServiceFactory {
 
         String connectionFactoryName = mainProperties.getProperty("rojac.database.connection_factory");
 
-        IConnectionFactory connectionFactory = createConnectionFactory(connectionFactoryName, configurationName);
+        IConnectionFactory connectionFactory = createConnectionFactory(connectionFactoryName, new FileSettings(configurationName));
 
         DBStorage storage = new DBStorage(configurationName, connectionFactory);
         storage.initialize();
@@ -177,7 +179,8 @@ public final class ServiceFactory {
     }
 
     @SuppressWarnings({"unchecked"})
-    private static IConnectionFactory createConnectionFactory(String connectionFactoryName, String configurationName) throws StorageInitializationException {
+    private static IConnectionFactory createConnectionFactory(String connectionFactoryName, ISettings settings) throws StorageInitializationException {
+
         Class<?> connectionFactoryClass;
         try {
             connectionFactoryClass = Class.forName("org.xblackcat.rojac.service.storage.database.connection." + connectionFactoryName + "ConnectionFactory");
@@ -194,9 +197,9 @@ public final class ServiceFactory {
                 throw new StorageInitializationException("Connection factory should implements IConnectionFactory interface.");
             }
             Constructor<IConnectionFactory> connectionFactoryConstructor =
-                    ((Class<IConnectionFactory>) connectionFactoryClass).getConstructor(String.class);
+                    ((Class<IConnectionFactory>) connectionFactoryClass).getConstructor(ISettings.class);
 
-            return connectionFactoryConstructor.newInstance(configurationName);
+            return connectionFactoryConstructor.newInstance(settings);
         } catch (NoSuchMethodException e) {
             throw new StorageInitializationException("Connection factory have no necessary constructor", e);
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {

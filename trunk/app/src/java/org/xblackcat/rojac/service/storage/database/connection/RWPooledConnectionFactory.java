@@ -20,10 +20,14 @@ public class RWPooledConnectionFactory extends AConnectionFactory {
     private final ObjectPool writeConnectionPool = new GenericObjectPool(null, 1);
     private final ObjectPool readConnectionPool = new GenericObjectPool(null, 20);
 
-    public RWPooledConnectionFactory(String configurationName) throws StorageInitializationException {
-        super(configurationName);
+    public RWPooledConnectionFactory(ISettings settings) throws StorageInitializationException {
+        super(settings);
 
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(url, userName, password);
+        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
+                settings.getUrl(),
+                settings.getUserName(),
+                settings.getPassword()
+        );
 
         new PoolableConnectionFactory(
                 connectionFactory,
