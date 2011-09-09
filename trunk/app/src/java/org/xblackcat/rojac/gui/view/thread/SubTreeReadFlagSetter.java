@@ -50,6 +50,6 @@ public class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
     @Override
     protected void done() {
         IPacket packet = new SetReadExPacket(forumId, threadId, messageIds, read);
-        ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
+        packet.dispatch();
     }
 }

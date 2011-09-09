@@ -28,6 +28,6 @@ public class FavoriteAdder extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        ServiceFactory.getInstance().getDataDispatcher().processPacket(new FavoritesUpdatedPacket());
+        new FavoritesUpdatedPacket().dispatch();
     }
 }

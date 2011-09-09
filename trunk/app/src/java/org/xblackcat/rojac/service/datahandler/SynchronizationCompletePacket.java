@@ -6,7 +6,7 @@ import gnu.trove.set.hash.TIntHashSet;
  * @author xBlackCat
  */
 
-public class SynchronizationCompletePacket implements IPacket, IForumUpdatePacket, IMessageUpdatePacket, IThreadsUpdatePacket {
+public class SynchronizationCompletePacket extends APacket implements IForumUpdatePacket, IMessageUpdatePacket, IThreadsUpdatePacket {
     private final TIntHashSet forumIds;
     private final TIntHashSet threadIds;
     private final TIntHashSet messageIds;

@@ -5,5 +5,5 @@ package org.xblackcat.rojac.service.datahandler;
  *
  * @author xBlackCat
  */
-public class ReloadDataPacket implements IPacket {
+public class ReloadDataPacket extends APacket{
 }

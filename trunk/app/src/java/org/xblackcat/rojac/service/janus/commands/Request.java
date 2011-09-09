@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.service.janus.commands;
 
 import org.xblackcat.rojac.gui.dialog.LoginDialog;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -20,7 +19,7 @@ public class Request<T> {
     public static final IResultHandler<IPacket> PACKET_HANDLER = new ASwingThreadedHandler<IPacket>() {
         @Override
         public void execute(IPacket packet) {
-            ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
+            packet.dispatch();
         }
     };
 

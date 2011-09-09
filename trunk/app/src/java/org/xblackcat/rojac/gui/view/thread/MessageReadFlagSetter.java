@@ -33,7 +33,7 @@ public class MessageReadFlagSetter extends RojacWorker<Void, Void> {
             IPacket processPacket = new SetPostReadPacket(
                     post, read
             );
-            ServiceFactory.getInstance().getDataDispatcher().processPacket(processPacket);
+            processPacket.dispatch();
         }
     }
 }

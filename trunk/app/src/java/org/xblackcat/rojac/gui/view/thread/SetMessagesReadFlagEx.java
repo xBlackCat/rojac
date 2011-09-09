@@ -73,7 +73,7 @@ public class SetMessagesReadFlagEx extends RojacWorker<Void, SetReadExPacket> {
     @Override
     protected void process(List<SetReadExPacket> chunks) {
         for (SetReadExPacket p : chunks) {
-            ServiceFactory.getInstance().getDataDispatcher().processPacket(p);
+            p.dispatch();
         }
     }
 }

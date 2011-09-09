@@ -5,5 +5,5 @@ package org.xblackcat.rojac.service.datahandler;
  *
  * @author xBlackCat
  */
-public class NewMessagesUpdatedPacket implements IPacket {
+public class NewMessagesUpdatedPacket extends APacket{
 }

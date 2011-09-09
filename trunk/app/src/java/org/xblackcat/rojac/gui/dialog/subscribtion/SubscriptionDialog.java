@@ -39,7 +39,6 @@ public class SubscriptionDialog extends JDialog {
             }
         }
     };
-    private final IDataDispatcher dispatcher = ServiceFactory.getInstance().getDataDispatcher();
     private final Runnable onClose;
 
     public SubscriptionDialog(final Window owner, Runnable onClose) {
@@ -76,7 +75,7 @@ public class SubscriptionDialog extends JDialog {
             }
         });
 
-        dispatcher.addDataHandler(handler);
+        APacket.getDispatcher().addDataHandler(handler);
 
         new ForumLoader(model).execute();
     }
@@ -148,7 +147,7 @@ public class SubscriptionDialog extends JDialog {
                 log.warn("Exception in 'onClose' handler", e);
             }
         }
-        dispatcher.removeDataHandler(handler);
+        APacket.getDispatcher().removeDataHandler(handler);
         dispose();
     }
 
@@ -170,7 +169,7 @@ public class SubscriptionDialog extends JDialog {
 
         @Override
         protected void done() {
-            ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
+            packet.dispatch();
             closeDialog();
         }
     }

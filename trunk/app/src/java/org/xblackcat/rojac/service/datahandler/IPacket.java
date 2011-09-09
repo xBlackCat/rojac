@@ -5,4 +5,5 @@ package org.xblackcat.rojac.service.datahandler;
  */
 
 public interface IPacket {
+    void dispatch();
 }

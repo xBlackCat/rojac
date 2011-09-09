@@ -10,7 +10,7 @@ import java.util.List;
  * @author xBlackCat
  */
 
-public class IconPackValueChecker implements IValueChecker<IconPack> {
+class IconPackValueChecker implements IValueChecker<IconPack> {
     public static final IconPack DEFAULT_ICON_PACK = new IconPack("Default pack", "images", "png");
 
     private static final List<IconPack> ICON_PACKS = Arrays.asList(

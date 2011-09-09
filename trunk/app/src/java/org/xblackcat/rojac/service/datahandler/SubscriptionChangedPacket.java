@@ -6,7 +6,7 @@ import java.util.Collection;
  * @author xBlackCat
  */
 
-public class SubscriptionChangedPacket implements IPacket {
+public class SubscriptionChangedPacket extends APacket{
     private final Collection<Subscription> newSubscriptions;
 
     public SubscriptionChangedPacket(Collection<Subscription> newSubscriptions) {

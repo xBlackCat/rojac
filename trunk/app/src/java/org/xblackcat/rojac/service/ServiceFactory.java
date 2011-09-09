@@ -6,8 +6,6 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.converter.RSDNMessageParserFactory;
-import org.xblackcat.rojac.service.datahandler.DataDispatcher;
-import org.xblackcat.rojac.service.datahandler.IDataDispatcher;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskExecutor;
 import org.xblackcat.rojac.service.options.Property;
@@ -60,11 +58,9 @@ public final class ServiceFactory {
     private final IStorage storage;
     private final IMessageParser messageParser;
     private final IProgressController progressController;
-    private final IDataDispatcher dataDispatcher;
 
     private ServiceFactory() throws RojacException {
         progressController = new ProgressController();
-        dataDispatcher = new DataDispatcher();
 
         executor = new TaskExecutor();
         RojacUtils.registerExecutor(executor);
@@ -93,10 +89,6 @@ public final class ServiceFactory {
 
     public IProgressController getProgressControl() {
         return progressController;
-    }
-
-    public IDataDispatcher getDataDispatcher() {
-        return dataDispatcher;
     }
 
     private static DBStorage initializeStorage() throws RojacException {

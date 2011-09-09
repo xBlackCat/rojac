@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.IDataDispatcher;
 import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -41,8 +40,8 @@ class SubscribeChangeListener implements ActionListener {
                     Collections.singleton(
                             new SubscriptionChangedPacket.Subscription(forumId, !subscribed)
                     );
-            final IDataDispatcher dispatcher = ServiceFactory.getInstance().getDataDispatcher();
-            dispatcher.processPacket(new SubscriptionChangedPacket(subscriptionList));
+
+            new SubscriptionChangedPacket(subscriptionList).dispatch();
         }
     }
 }
