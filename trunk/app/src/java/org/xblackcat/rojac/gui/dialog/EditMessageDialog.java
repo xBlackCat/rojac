@@ -13,8 +13,8 @@ import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.NewMessagesUpdatedPacket;
+import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
-import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -26,6 +26,8 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static org.xblackcat.rojac.i18n.Message.*;
+
 /**
  * @author xBlackCat
  */
@@ -33,7 +35,6 @@ import java.util.concurrent.ExecutionException;
 public class EditMessageDialog extends JDialog {
     private static final Log log = LogFactory.getLog(EditMessageDialog.class);
 
-    protected final IStorage storage;
     private final PreviewMessageView panelPreview;
     private final EditMessagePane panelEdit;
 
@@ -47,7 +48,6 @@ public class EditMessageDialog extends JDialog {
 
         panelPreview = new PreviewMessageView();
         panelEdit = new EditMessagePane(panelPreview);
-        storage = ServiceFactory.getInstance().getStorage();
 
         initializeLayout();
 
@@ -90,8 +90,8 @@ public class EditMessageDialog extends JDialog {
         if (StringUtils.isBlank(subject)) {
             JLOptionPane.showMessageDialog(
                     EditMessageDialog.this,
-                    org.xblackcat.rojac.i18n.Message.ErrorDialog_MessageEmptySubject_Message.get(),
-                    org.xblackcat.rojac.i18n.Message.ErrorDialog_MessageEmptySubject_Title.get(),
+                    ErrorDialog_MessageEmptySubject_Message.get(),
+                    ErrorDialog_MessageEmptySubject_Title.get(),
                     JOptionPane.WARNING_MESSAGE
             );
 
@@ -110,7 +110,7 @@ public class EditMessageDialog extends JDialog {
             @Override
             protected Void perform() throws Exception {
                 try {
-                    INewMessageAH nmAH = storage.getNewMessageAH();
+                    INewMessageAH nmAH = ServiceFactory.getInstance().getStorage().getNewMessageAH();
                     if (newMessageId == 0) {
                         // Create a new own message
                         nmAH.storeNewMessage(nm);
@@ -152,14 +152,14 @@ public class EditMessageDialog extends JDialog {
 
         cp.add(WindowsUtils.createButtonsBar(
                 this,
-                org.xblackcat.rojac.i18n.Message.Button_Save,
-                new AButtonAction(org.xblackcat.rojac.i18n.Message.Button_Save) {
+                Button_Save,
+                new AButtonAction(Button_Save) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         saveMessage();
                     }
                 },
-                new AButtonAction(org.xblackcat.rojac.i18n.Message.Button_Preview) {
+                new AButtonAction(Button_Preview) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         panelEdit.forcePreview();
@@ -170,7 +170,7 @@ public class EditMessageDialog extends JDialog {
                         }
                     }
                 },
-                new AButtonAction(org.xblackcat.rojac.i18n.Message.Button_Cancel) {
+                new AButtonAction(Button_Cancel) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         dispose();
@@ -187,13 +187,13 @@ public class EditMessageDialog extends JDialog {
         }
 
         @Override
-        protected Message loadMessage() throws RojacException {
+        protected MessageInfo loadMessage() throws RojacException {
             try {
-                NewMessage newMessage = storage.getNewMessageAH().getNewMessageById(messageId);
+                NewMessage newMessage = ServiceFactory.getInstance().getStorage().getNewMessageAH().getNewMessageById(messageId);
                 MessageData messageData = new NewMessageData(newMessage);
                 String messageBody = MessageUtils.removeTagline(newMessage.getMessage());
                 parentMessageId = newMessage.getParentId();
-                return new Message(messageData, messageBody, messageData.getSubject());
+                return new MessageInfo(messageData, messageBody, messageData.getSubject());
             } catch (StorageException e) {
                 log.error("Can't load message #" + messageId, e);
                 throw new RojacException("Can't load message #" + messageId, e);
@@ -208,13 +208,14 @@ public class EditMessageDialog extends JDialog {
         }
 
         @Override
-        protected Message loadMessage() throws RojacException {
-            Message message;
+        protected MessageInfo loadMessage() throws RojacException {
+            MessageInfo messageInfo;
             try {
-                MessageData messageData = storage.getMessageAH().getMessageData(messageId);
-                String messageBody = storage.getMessageAH().getMessageBodyById(messageId);
+                IMessageAH messageAH = ServiceFactory.getInstance().getStorage().getMessageAH();
+                MessageData messageData = messageAH.getMessageData(messageId);
+                String messageBody = messageAH.getMessageBodyById(messageId);
 
-                message = new Message(
+                messageInfo = new MessageInfo(
                         messageData,
                         MessageUtils.correctBody(messageBody, messageData.getUserName()),
                         MessageUtils.correctSubject(messageData.getSubject())
@@ -223,12 +224,12 @@ public class EditMessageDialog extends JDialog {
                 log.error("Can't load message #" + messageId, e);
                 throw new RojacException("Can't load message #" + messageId, e);
             }
-            return message;
+            return messageInfo;
         }
 
     }
 
-    private abstract class MessageLoader extends RojacWorker<Void, Message> {
+    private abstract class MessageLoader extends RojacWorker<Void, MessageInfo> {
         protected final int messageId;
         protected int parentMessageId;
         protected final int newMessageId;
@@ -245,16 +246,16 @@ public class EditMessageDialog extends JDialog {
             return null;
         }
 
-        protected abstract Message loadMessage() throws RojacException;
+        protected abstract MessageInfo loadMessage() throws RojacException;
 
         @Override
-        protected void process(List<Message> chunks) {
-            for (Message message : chunks) {
-                forumId = message.getMessageData().getForumId();
+        protected void process(List<MessageInfo> chunks) {
+            for (MessageInfo messageInfo : chunks) {
+                forumId = messageInfo.getMessageData().getForumId();
                 EditMessageDialog.this.parentMessageId = parentMessageId;
                 EditMessageDialog.this.newMessageId = newMessageId;
 
-                panelEdit.setMessage(message.getBody(), message.getSubj());
+                panelEdit.setMessage(messageInfo.getBody(), messageInfo.getSubj());
 
                 WindowsUtils.center(EditMessageDialog.this, getOwner());
                 setVisible(true);
@@ -267,8 +268,8 @@ public class EditMessageDialog extends JDialog {
             if (this.isCancelled()) {
                 JLOptionPane.showMessageDialog(
                         EditMessageDialog.this,
-                        org.xblackcat.rojac.i18n.Message.ErrorDialog_MessageNotFound_Message.get(messageId),
-                        org.xblackcat.rojac.i18n.Message.ErrorDialog_MessageNotFound_Title.get(messageId),
+                        ErrorDialog_MessageNotFound_Message.get(messageId),
+                        ErrorDialog_MessageNotFound_Title.get(messageId),
                         JOptionPane.WARNING_MESSAGE
                 );
             }
@@ -276,12 +277,12 @@ public class EditMessageDialog extends JDialog {
     }
 
 
-    private static final class Message {
+    private static final class MessageInfo {
         private final MessageData messageData;
         private final String body;
         private final String subj;
 
-        private Message(MessageData messageData, String body, String subj) {
+        private MessageInfo(MessageData messageData, String body, String subj) {
             this.body = body;
             this.messageData = messageData;
             this.subj = subj;

@@ -11,6 +11,7 @@ import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -110,7 +111,7 @@ public class FavoritesView extends AView {
         new RojacWorker<Void, Favorite>() {
             @Override
             protected Void perform() throws Exception {
-                for (Favorite f : storage.getFavoriteAH().getFavorites()) {
+                for (Favorite f : ServiceFactory.getInstance().getStorage().getFavoriteAH().getFavorites()) {
                     publish(f);
                 }
 

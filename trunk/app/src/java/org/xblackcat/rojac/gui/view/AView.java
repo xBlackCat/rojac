@@ -3,8 +3,6 @@ package org.xblackcat.rojac.gui.view;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IInfoChangeListener;
 import org.xblackcat.rojac.gui.IView;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +12,6 @@ import java.awt.*;
  */
 
 public abstract class AView extends JPanel implements IView {
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-
     protected final IAppControl appControl;
 
     protected AView(IAppControl appControl) {

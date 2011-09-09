@@ -8,7 +8,7 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
 import org.xblackcat.rojac.service.storage.database.helper.QueryHelper;
-import org.xblackcat.rojac.util.QueryUtils;
+import org.xblackcat.rojac.util.DatabaseUtils;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -43,8 +43,8 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
     public DBStorage(String propRoot, IConnectionFactory connectionFactory) throws StorageException {
         try {
-            this.queries = QueryUtils.loadSQLs(propRoot, DataQuery.class);
-            this.initializeQueries = QueryUtils.loadInitializeSQLs(propRoot);
+            this.queries = DatabaseUtils.loadSQLs(propRoot, DataQuery.class);
+            this.initializeQueries = DatabaseUtils.loadInitializeSQLs(propRoot);
 
             helper = new QueryHelper(connectionFactory);
         } catch (StorageInitializationException e) {

@@ -82,15 +82,14 @@ class PersonalDecorator extends ADecorator {
 
     private class AnswersReloadTask extends ALoadTask<UnreadStatData> {
         private final int userId;
-        protected IStatisticAH statisticAH;
 
         private AnswersReloadTask(int userId) {
             this.userId = userId;
-            statisticAH = ServiceFactory.getInstance().getStorage().getStatisticAH();
         }
 
         @Override
         UnreadStatData doBackground() throws Exception {
+            IStatisticAH statisticAH = ServiceFactory.getInstance().getStorage().getStatisticAH();
             return statisticAH.getUserRepliesStat(userId);
         }
 

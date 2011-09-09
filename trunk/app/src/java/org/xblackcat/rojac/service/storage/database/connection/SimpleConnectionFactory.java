@@ -11,12 +11,12 @@ import java.sql.SQLException;
  */
 
 public class SimpleConnectionFactory extends AConnectionFactory {
-    public SimpleConnectionFactory(ISettings settings) throws StorageInitializationException {
-        super(settings);
+    public SimpleConnectionFactory(DatabaseSettings databaseSettings) throws StorageInitializationException {
+        super(databaseSettings);
     }
 
     public Connection getWriteConnection() throws SQLException {
-        return DriverManager.getConnection(settings.getUrl(), settings.getUserName(), settings.getPassword());
+        return DriverManager.getConnection(databaseSettings.getUrl(), databaseSettings.getUserName(), databaseSettings.getPassword());
     }
 
     @Override

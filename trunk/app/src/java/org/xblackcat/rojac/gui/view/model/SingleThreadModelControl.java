@@ -7,10 +7,8 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
@@ -32,8 +30,6 @@ class SingleThreadModelControl extends AThreadsModelControl {
             ThreadToolbarActions.MarkSubTreeRead,
             ThreadToolbarActions.MarkThreadRead
     };
-
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     @Override
     public void fillModelByItemId(final AThreadModel<Post> model, int threadId) {

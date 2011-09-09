@@ -1,13 +1,14 @@
 package org.xblackcat.rojac.service.options;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.dialog.options.PropertyUtils;
-import org.xblackcat.rojac.service.options.converter.IConverter;
-import org.xblackcat.utils.ResourceUtils;
+import org.xblackcat.rojac.gui.theme.IconPack;
+import org.xblackcat.rojac.gui.theme.TextStyle;
+import org.xblackcat.rojac.service.options.converter.*;
+import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 
-import java.io.IOException;
+import java.awt.*;
 import java.util.*;
 
 /**
@@ -23,37 +24,25 @@ abstract class AnOptionsService implements IOptionsService {
         // Load all available converters
         HashMap<Class<?>, IConverter<?>> map = new HashMap<>();
 
-        Properties parsers = new Properties();
+        map.put(Object.class, new org.xblackcat.rojac.service.options.converter.ObjectConverter());
 
-        try {
-            parsers.load(ResourceUtils.getResourceAsStream("/config/value-parsers.config"));
-        } catch (IOException e) {
-            throw new OptionsServiceException("Can not load parsers for property values", e);
-        }
-
-        for (String className : parsers.stringPropertyNames()) {
-            String parserName = parsers.getProperty(className);
-
-            if (StringUtils.isBlank(parserName)) {
-                throw new OptionsServiceException("There is no parser for " + className + " class instances");
-            }
-
-            Class<?> aClass;
-            try {
-                aClass = AnOptionsService.class.getClassLoader().loadClass(className);
-            } catch (ClassNotFoundException e) {
-                throw new OptionsServiceException("Can not load object class " + className, e);
-            }
-
-            IConverter<?> parser;
-            try {
-                parser = (IConverter<?>) ResourceUtils.loadObjectOrEnum(parserName);
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                throw new OptionsServiceException("Can not load parser for " + className + " class instances", e);
-            }
-
-            map.put(aClass, parser);
-        }
+        map.put(Boolean.class, new BooleanConverter());
+        map.put(Byte.class, new ByteConverter());
+        map.put(Character.class, new CharacterConverter());
+        map.put(Double.class, new DoubleConverter());
+        map.put(Float.class, new FloatConverter());
+        map.put(Integer.class, new IntegerConverter());
+        map.put(Long.class, new LongConverter());
+        map.put(Short.class, new ShortConverter());
+        map.put(String.class, new StringConverter());
+        map.put(Class.class, new ClassConverter());
+        map.put(Password.class, new PasswordConverter());
+        map.put(Point.class, new PointConverter());
+        map.put(Dimension.class, new DimensionConverter());
+        map.put(Locale.class, new LocaleConverter());
+        map.put(IconPack.class, new IconPackConverter());
+        map.put(TextStyle.class, new TextStyleConverter());
+        map.put(DatabaseSettings.class, new DatabaseSettingsConverter());
 
         converters = Collections.unmodifiableMap(map);
     }

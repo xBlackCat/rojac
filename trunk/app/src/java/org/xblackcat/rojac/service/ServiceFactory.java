@@ -12,15 +12,16 @@ import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskExecutor;
 import org.xblackcat.rojac.service.options.IOptionsService;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.service.progress.ProgressController;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.DBStorage;
-import org.xblackcat.rojac.service.storage.database.connection.FileSettings;
+import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
-import org.xblackcat.rojac.service.storage.database.connection.ISettings;
+import org.xblackcat.rojac.util.DatabaseUtils;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -71,8 +72,6 @@ public final class ServiceFactory {
         executor = new TaskExecutor();
         RojacUtils.registerExecutor(executor);
 
-        storage = initializeStorage();
-
         optionsService = new MultiUserOptionsService();
 
         try {
@@ -80,6 +79,8 @@ public final class ServiceFactory {
         } catch (IOException e) {
             throw new RuntimeException("Can't initialize message formatter.", e);
         }
+
+        storage = initializeStorage(optionsService);
     }
 
     public IStorage getStorage() {
@@ -106,7 +107,7 @@ public final class ServiceFactory {
         return dataDispatcher;
     }
 
-    private static DBStorage initializeStorage() throws RojacException {
+    private static DBStorage initializeStorage(IOptionsService optionsService) throws RojacException {
         Properties mainProperties;
         try {
             mainProperties = ResourceUtils.loadProperties("/rojac.properties");
@@ -141,13 +142,26 @@ public final class ServiceFactory {
         checkPath(home);
         checkPath(dbHome);
 
-        String configurationName = mainProperties.getProperty("rojac.database.engine");
+        DatabaseSettings settings = optionsService.getProperty(Property.ROJAC_DATABASE_SETTINGS);
+
+        String engine;
+        if (settings == null) {
+            // TODO: show database settings dialog.
+
+            String defaultEngine = mainProperties.getProperty("rojac.database.engine");
+            settings = DatabaseUtils.readDefaults(defaultEngine);
+            engine = defaultEngine;
+
+            optionsService.setProperty(Property.ROJAC_DATABASE_SETTINGS, settings);
+        } else {
+            engine = settings.getEngine();
+        }
 
         String connectionFactoryName = mainProperties.getProperty("rojac.database.connection_factory");
 
-        IConnectionFactory connectionFactory = createConnectionFactory(connectionFactoryName, new FileSettings(configurationName));
+        IConnectionFactory connectionFactory = createConnectionFactory(connectionFactoryName, settings);
 
-        DBStorage storage = new DBStorage(configurationName, connectionFactory);
+        DBStorage storage = new DBStorage(engine, connectionFactory);
         storage.initialize();
         return storage;
     }
@@ -179,7 +193,7 @@ public final class ServiceFactory {
     }
 
     @SuppressWarnings({"unchecked"})
-    private static IConnectionFactory createConnectionFactory(String connectionFactoryName, ISettings settings) throws StorageInitializationException {
+    private static IConnectionFactory createConnectionFactory(String connectionFactoryName, DatabaseSettings databaseSettings) throws StorageInitializationException {
 
         Class<?> connectionFactoryClass;
         try {
@@ -197,9 +211,9 @@ public final class ServiceFactory {
                 throw new StorageInitializationException("Connection factory should implements IConnectionFactory interface.");
             }
             Constructor<IConnectionFactory> connectionFactoryConstructor =
-                    ((Class<IConnectionFactory>) connectionFactoryClass).getConstructor(ISettings.class);
+                    ((Class<IConnectionFactory>) connectionFactoryClass).getConstructor(DatabaseSettings.class);
 
-            return connectionFactoryConstructor.newInstance(settings);
+            return connectionFactoryConstructor.newInstance(databaseSettings);
         } catch (NoSuchMethodException e) {
             throw new StorageInitializationException("Connection factory have no necessary constructor", e);
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {

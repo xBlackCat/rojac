@@ -20,6 +20,7 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
@@ -418,6 +419,7 @@ public class MessageView extends AnItemView {
                 String messageBody;
                 MessageData messageData;
                 try {
+                    IStorage storage = ServiceFactory.getInstance().getStorage();
                     if (messageId > 0) {
                         // Regulag message
                         messageData = storage.getMessageAH().getMessageData(messageId);
@@ -505,7 +507,7 @@ public class MessageView extends AnItemView {
 
         @Override
         protected Void perform() throws Exception {
-            storage.getNewRatingAH().storeNewRating(messageId, mark);
+            ServiceFactory.getInstance().getStorage().getNewRatingAH().storeNewRating(messageId, mark);
 
             publish(MessageUtils.updateRatingCache(messageId));
 
