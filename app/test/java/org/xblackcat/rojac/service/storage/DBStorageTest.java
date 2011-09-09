@@ -7,7 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.service.storage.database.DataQuery;
 import org.xblackcat.rojac.service.storage.database.SQL;
-import org.xblackcat.rojac.util.QueryUtils;
+import org.xblackcat.rojac.util.DatabaseUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,12 +41,12 @@ public class DBStorageTest extends TestCase {
 
             log.info("Check queries for database configuration " + name);
 
-            Map<SQL,List<SQL>> map = QueryUtils.loadInitializeSQLs(name);
+            Map<SQL,List<SQL>> map = DatabaseUtils.loadInitializeSQLs(name);
             if (log.isInfoEnabled()) {
                 log.info(map.size() + " initialization steps was loaded.");
             }
 
-            Map<DataQuery, String> queries = QueryUtils.loadSQLs(name, DataQuery.class);
+            Map<DataQuery, String> queries = DatabaseUtils.loadSQLs(name, DataQuery.class);
             if (log.isInfoEnabled()) {
                 log.info(queries.size() + " data queries were loaded.");
             }

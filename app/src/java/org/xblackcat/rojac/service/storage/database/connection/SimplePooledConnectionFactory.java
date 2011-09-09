@@ -19,13 +19,13 @@ import java.sql.SQLException;
 public class SimplePooledConnectionFactory extends AConnectionFactory {
     private final ObjectPool connectionPool = new GenericObjectPool(null, 20);
 
-    public SimplePooledConnectionFactory(ISettings settings) throws StorageInitializationException {
-        super(settings);
+    public SimplePooledConnectionFactory(DatabaseSettings databaseSettings) throws StorageInitializationException {
+        super(databaseSettings);
 
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
-                settings.getUrl(),
-                settings.getUserName(),
-                settings.getPassword()
+                databaseSettings.getUrl(),
+                databaseSettings.getUserName(),
+                databaseSettings.getPassword()
         );
 
         new PoolableConnectionFactory(

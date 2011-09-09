@@ -20,7 +20,6 @@ import java.util.List;
  */
 
 class RatingDialog extends JDialog {
-    private final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     private final MarksTableModel marksModel;
     private final int messageId;
@@ -82,6 +81,7 @@ class RatingDialog extends JDialog {
     private class RatingUpdater extends RojacWorker<Void, MarkItem> {
         @Override
         protected Void perform() throws Exception {
+            IStorage storage = ServiceFactory.getInstance().getStorage();
             Rating[] ratings = storage.getRatingAH().getRatingsByMessageId(messageId);
 
             NewRating[] ownRatings = storage.getNewRatingAH().getNewRatingsByMessageId(messageId);

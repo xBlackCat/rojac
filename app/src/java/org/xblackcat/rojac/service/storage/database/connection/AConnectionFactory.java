@@ -14,17 +14,17 @@ import java.sql.SQLException;
 public abstract class AConnectionFactory implements IConnectionFactory {
     protected final Log log = LogFactory.getLog(getClass());
 
-    protected final ISettings settings;
+    protected final DatabaseSettings databaseSettings;
 
-    AConnectionFactory(ISettings settings) throws StorageInitializationException {
-        this.settings = settings;
+    AConnectionFactory(DatabaseSettings databaseSettings) throws StorageInitializationException {
+        this.databaseSettings = databaseSettings;
     }
 
     @Override
     public void shutdown() {
-        if (settings.getShutdownUrl() != null) {
+        if (databaseSettings.getShutdownUrl() != null) {
             try {
-                DriverManager.getConnection(settings.getShutdownUrl());
+                DriverManager.getConnection(databaseSettings.getShutdownUrl());
             } catch (SQLException e) {
                 log.error("Can not execute shutdown sequence in DB.", e);
             }

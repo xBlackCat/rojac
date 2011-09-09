@@ -8,6 +8,8 @@ import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
+import java.util.List;
+
 /**
  * @author xBlackCat
  */
@@ -37,7 +39,7 @@ class ForumLoader extends RojacWorker<Void, Forum> {
     }
 
     @Override
-    protected void process(java.util.List<Forum> forums) {
+    protected void process(List<Forum> forums) {
         model.addForums(forums);
     }
 
