@@ -2,10 +2,10 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.gui.view.model.ITreeItem;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 /**
@@ -40,9 +40,9 @@ public class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
 
     @Override
     protected Void perform() throws Exception {
-        IStorage storage = ServiceFactory.getInstance().getStorage();
+        IMessageAH messageAH = Storage.get(IMessageAH.class);
         for (int postId : messageIds.toArray()) {
-            storage.getMessageAH().updateMessageReadFlag(postId, read);
+            messageAH.updateMessageReadFlag(postId, read);
         }
         return null;
     }

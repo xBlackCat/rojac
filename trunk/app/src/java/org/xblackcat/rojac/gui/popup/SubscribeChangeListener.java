@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
 import org.xblackcat.rojac.service.storage.IForumAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import java.awt.event.ActionEvent;
@@ -29,7 +29,7 @@ class SubscribeChangeListener implements ActionListener {
     private class ForumSubscriber extends RojacWorker<Void, Void> {
         @Override
         protected Void perform() throws Exception {
-            IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
+            IForumAH fah = Storage.get(IForumAH.class);
             fah.setSubscribeForum(forumId, !subscribed);
             return null;
         }

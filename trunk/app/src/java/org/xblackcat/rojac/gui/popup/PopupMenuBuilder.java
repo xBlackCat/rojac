@@ -9,9 +9,10 @@ import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.NewMessagesUpdatedPacket;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.INewMessageAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -291,7 +292,7 @@ public final class PopupMenuBuilder {
                 new RojacWorker<Void, Void>() {
                     @Override
                     protected Void perform() throws Exception {
-                        ServiceFactory.getInstance().getStorage().getNewMessageAH().removeNewMessage(-post.getMessageId());
+                        Storage.get(INewMessageAH.class).removeNewMessage(-post.getMessageId());
 
                         publish();
                         return null;
@@ -313,7 +314,7 @@ public final class PopupMenuBuilder {
                 new RojacWorker<Void, Void>() {
                     @Override
                     protected Void perform() throws Exception {
-                        ServiceFactory.getInstance().getStorage().getNewMessageAH().purgeNewMessage();
+                        Storage.get(INewMessageAH.class).purgeNewMessage();
 
                         publish();
                         return null;

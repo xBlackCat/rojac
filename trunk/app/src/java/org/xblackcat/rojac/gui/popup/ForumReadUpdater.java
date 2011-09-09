@@ -1,9 +1,8 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.SetForumReadPacket;
 import org.xblackcat.rojac.service.storage.IForumAH;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 /**
@@ -20,8 +19,7 @@ class ForumReadUpdater extends RojacWorker<Void, Void> {
 
     @Override
     protected Void perform() throws Exception {
-        IStorage storage = ServiceFactory.getInstance().getStorage();
-        IForumAH fah = storage.getForumAH();
+        IForumAH fah = Storage.get(IForumAH.class);
         fah.setForumRead(forumId, readFlag);
         return null;
     }

@@ -7,10 +7,10 @@ import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.component.InvokeExtMarkDialogAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IForumAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -160,7 +160,7 @@ public class SubscriptionDialog extends JDialog {
 
         @Override
         protected Void perform() throws Exception {
-            IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
+            IForumAH fah = Storage.get(IForumAH.class);
             for (SubscriptionChangedPacket.Subscription s : packet.getNewSubscriptions()) {
                 fah.setSubscribeForum(s.getForumId(), s.isSubscribed());
             }

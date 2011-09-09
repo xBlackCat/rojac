@@ -1,10 +1,9 @@
 package org.xblackcat.rojac.gui.view.forumlist;
 
 import org.xblackcat.rojac.data.ForumStatistic;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -13,8 +12,7 @@ import org.xblackcat.rojac.util.RojacWorker;
  * @author xBlackCat Date: 20.07.11
  */
 abstract class AForumUpdater<V, T> extends RojacWorker<V, T> {
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-    protected final IForumAH fah = storage.getForumAH();
+    protected final IForumAH fah = Storage.get(IForumAH.class);
 
     protected ForumStatistic getForumStatistic(int forumId) throws StorageException {
         assert RojacUtils.checkThread(false);

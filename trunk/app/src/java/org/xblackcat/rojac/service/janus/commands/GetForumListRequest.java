@@ -5,7 +5,6 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.ForumsUpdated;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
@@ -13,7 +12,7 @@ import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.ForumsList;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IForumGroupAH;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 /**
@@ -31,9 +30,8 @@ class GetForumListRequest extends ARequest<IPacket> {
             throw new RsdnProcessorException("Can not obtain forums list", e);
         }
 
-        IStorage storage = ServiceFactory.getInstance().getStorage();
-        IForumAH fAH = storage.getForumAH();
-        IForumGroupAH gAH = storage.getForumGroupAH();
+        IForumAH fAH = Storage.get(IForumAH.class);
+        IForumGroupAH gAH = Storage.get(IForumGroupAH.class);
 
         tracker.addLodMessage(Message.Synchronize_Message_GotForums, forumsList.getForums().length, forumsList.getForumGroups().length);
 

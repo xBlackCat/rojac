@@ -1,9 +1,9 @@
 package org.xblackcat.rojac.gui.popup;
 
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.FavoritesUpdatedPacket;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 /**
@@ -20,7 +20,7 @@ public class FavoriteAdder extends RojacWorker<Void, Void> {
 
     @Override
     protected Void perform() throws Exception {
-        IFavoriteAH favoriteAH = ServiceFactory.getInstance().getStorage().getFavoriteAH();
+        IFavoriteAH favoriteAH = Storage.get(IFavoriteAH.class);
 
         favoriteAH.createFavorite(type, itemId);
         return null;

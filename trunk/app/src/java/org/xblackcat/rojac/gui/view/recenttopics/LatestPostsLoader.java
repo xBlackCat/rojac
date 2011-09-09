@@ -3,9 +3,10 @@ package org.xblackcat.rojac.gui.view.recenttopics;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.IForumAH;
+import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import java.util.List;
@@ -25,19 +26,17 @@ class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
     protected Void perform() throws Exception {
         final Integer listSize = Property.VIEW_RECENT_TOPIC_LIST_SIZE.get();
 
-        final IStorage storage = ServiceFactory.getInstance().getStorage();
-
         // TODO: optimize loading latest topics
-        int[] latestTopics = storage.getMessageAH().getLatestTopics(listSize);
+        int[] latestTopics = Storage.get(IMessageAH.class).getLatestTopics(listSize);
 
         TIntObjectHashMap<Forum> forums = new TIntObjectHashMap<>();
 
         for (int lastPostId : latestTopics) {
-            final MessageData lastPost = storage.getMessageAH().getMessageData(lastPostId);
+            final MessageData lastPost = Storage.get(IMessageAH.class).getMessageData(lastPostId);
 
             Forum f = forums.get(lastPost.getForumId());
             if (f == null) {
-                f = storage.getForumAH().getForumById(lastPost.getForumId());
+                f = Storage.get(IForumAH.class).getForumById(lastPost.getForumId());
                 forums.put(f.getForumId(), f);
             }
 
@@ -47,7 +46,7 @@ class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
                 // Message is topic
                 lastThread = lastPost;
             } else {
-                lastThread = storage.getMessageAH().getMessageData(lastPost.getTopicId());
+                lastThread = Storage.get(IMessageAH.class).getMessageData(lastPost.getTopicId());
             }
 
             publish(new LastPostInfo(

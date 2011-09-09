@@ -9,7 +9,6 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
@@ -27,13 +26,12 @@ class PostChangesRequest extends ARequest<IPacket> {
     private static final Log log = LogFactory.getLog(PostChangesRequest.class);
 
     public void process(IResultHandler<IPacket> handler, IProgressTracker trac, IJanusService janusService) {
-        IStorage storage = ServiceFactory.getInstance().getStorage();
         trac.addLodMessage(Message.Synchronize_Command_Name_Submit);
 
         try {
-            INewRatingAH nrAH = storage.getNewRatingAH();
-            INewMessageAH nmeAH = storage.getNewMessageAH();
-            INewModerateAH nmoAH = storage.getNewModerateAH();
+            INewRatingAH nrAH = Storage.get(INewRatingAH.class);
+            INewMessageAH nmeAH = Storage.get(INewMessageAH.class);
+            INewModerateAH nmoAH = Storage.get(INewModerateAH.class);
 
             NewRating[] newRatings;
             Collection<NewMessage> newMessages;

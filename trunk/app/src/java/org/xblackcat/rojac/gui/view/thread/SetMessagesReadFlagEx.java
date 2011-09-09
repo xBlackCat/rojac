@@ -3,9 +3,9 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.gui.dialog.extendmark.DateDirection;
 import org.xblackcat.rojac.gui.dialog.extendmark.NewState;
 import org.xblackcat.rojac.gui.dialog.extendmark.Scope;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class SetMessagesReadFlagEx extends RojacWorker<Void, SetReadExPacket> {
 
     @Override
     protected Void perform() throws Exception {
-        final IMessageAH mAH = ServiceFactory.getInstance().getStorage().getMessageAH();
+        final IMessageAH mAH = Storage.get(IMessageAH.class);
         SetReadExPacket result = null;
 
         switch (dateDirection) {

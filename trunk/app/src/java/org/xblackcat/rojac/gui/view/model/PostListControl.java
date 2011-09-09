@@ -8,11 +8,11 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IUserAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -43,7 +43,7 @@ class PostListControl extends MessageListControl {
         new RojacWorker<Void, String>() {
             @Override
             protected Void perform() throws Exception {
-                IUserAH userAH = ServiceFactory.getInstance().getStorage().getUserAH();
+                IUserAH userAH = Storage.get(IUserAH.class);
 
                 User userById = userAH.getUserById(itemId);
                 if (userById != null) {
@@ -192,11 +192,10 @@ class PostListControl extends MessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            IStorage storage = ServiceFactory.getInstance().getStorage();
             if (replies) {
-                messages = storage.getMessageAH().getUserReplies(itemId);
+                messages = Storage.get(IMessageAH.class).getUserReplies(itemId);
             } else {
-                messages = storage.getMessageAH().getUserPosts(itemId);
+                messages = Storage.get(IMessageAH.class).getUserPosts(itemId);
             }
             return null;
         }

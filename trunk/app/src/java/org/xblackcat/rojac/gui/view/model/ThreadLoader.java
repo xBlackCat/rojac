@@ -3,8 +3,8 @@ package org.xblackcat.rojac.gui.view.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -16,8 +16,6 @@ import java.util.List;
  */
 class ThreadLoader extends RojacWorker<Void, MessageData> {
     private static final Log log = LogFactory.getLog(ThreadLoader.class);
-
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     private final Thread item;
     private AThreadModel<Post> model;
@@ -34,7 +32,7 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
         int forumId = item.getForumId();
 
         try {
-            Collection<MessageData> datas = storage.getMessageAH().getMessagesDataByTopicId(itemId, forumId);
+            Collection<MessageData> datas = Storage.get(IMessageAH.class).getMessagesDataByTopicId(itemId, forumId);
             for (MessageData md : datas) {
                 publish(md);
             }

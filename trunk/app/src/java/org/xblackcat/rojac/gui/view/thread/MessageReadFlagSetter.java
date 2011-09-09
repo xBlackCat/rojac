@@ -1,10 +1,10 @@
 package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.SetPostReadPacket;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 
@@ -22,8 +22,7 @@ public class MessageReadFlagSetter extends RojacWorker<Void, Void> {
 
     @Override
     protected Void perform() throws Exception {
-        IStorage storage = ServiceFactory.getInstance().getStorage();
-        storage.getMessageAH().updateMessageReadFlag(post.getMessageId(), read);
+        Storage.get(IMessageAH.class).updateMessageReadFlag(post.getMessageId(), read);
         return null;
     }
 

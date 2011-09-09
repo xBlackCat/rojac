@@ -14,6 +14,8 @@ import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
+import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.*;
 
 import javax.swing.*;
@@ -21,6 +23,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
 
 import static org.xblackcat.rojac.service.options.Property.*;
 
@@ -43,21 +46,28 @@ public final class RojacLauncher {
     }
 
     private static void launch() throws Exception {
-        RunChecker checker = new RunChecker();
-
-        Property.setOptionsService(new MultiUserOptionsService());
-
-        // Common tasks
         Thread.setDefaultUncaughtExceptionHandler(RojacUtils.GLOBAL_EXCEPTION_HANDLER);
 
+        // Load and install core Rojac settings
+        Properties mainProperties = RojacUtils.loadCoreOptions();
+        String defaultEngine = mainProperties.getProperty("rojac.database.engine");
+
+        // For the first - load program options
+        Property.setOptionsService(new MultiUserOptionsService());
+
+        RunChecker checker = new RunChecker();
         if (checker.performCheck(Property.ROJAC_DEBUG_SHUTDOWN_OTHER.get())) {
             return;
         }
 
+        // Initialize and install packet dispatcher service
         APacket.setDispatcher(new DataDispatcher());
 
         // Initialize core services
         ServiceFactory.initialize();
+
+        IStorage storage = DatabaseUtils.initializeStorage(defaultEngine);
+        Storage.setStorage(storage);
 
         // Set up debug mode if set
         if (ROJAC_DEBUG_MODE.get()) {

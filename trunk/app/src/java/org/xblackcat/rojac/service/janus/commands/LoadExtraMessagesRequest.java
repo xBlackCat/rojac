@@ -6,7 +6,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
@@ -30,7 +29,6 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
  */
 
 class LoadExtraMessagesRequest extends ARequest<IPacket> {
-    protected final IStorage storage;
     protected final IRatingAH rAH;
     protected final IMessageAH mAH;
     protected final IModerateAH modAH;
@@ -47,13 +45,12 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
     private final TIntHashSet existUsers = new TIntHashSet();
 
     LoadExtraMessagesRequest() {
-        storage = ServiceFactory.getInstance().getStorage();
-        modAH = storage.getModerateAH();
-        mAH = storage.getMessageAH();
-        rAH = storage.getRatingAH();
-        miscAH = storage.getMiscAH();
-        forumAH = storage.getForumAH();
-        userAH = storage.getUserAH();
+        modAH = Storage.get(IModerateAH.class);
+        mAH = Storage.get(IMessageAH.class);
+        rAH = Storage.get(IRatingAH.class);
+        miscAH = Storage.get(IMiscAH.class);
+        forumAH = Storage.get(IForumAH.class);
+        userAH = Storage.get(IUserAH.class);
     }
 
     public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
