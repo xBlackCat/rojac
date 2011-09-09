@@ -178,6 +178,8 @@
 
     <!-- Run the task only if svn info is success fully obtained. -->
     <target name="add.svn.info" if="svn.entry(revision)">
+        <dirname property="revision.number.dir" file="${revision.number.file}"/>
+        <mkdir dir="${revision.number.dir}"/>
         <echo file="${revision.number.file}"># Application revision information
             relative.path=${svn.entry.url}
             revision=${svn.entry(revision)}
