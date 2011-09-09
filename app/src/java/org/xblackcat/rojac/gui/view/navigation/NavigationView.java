@@ -77,8 +77,6 @@ public class NavigationView extends AView {
         JScrollPane container = new JScrollPane(viewTable);
 
         add(container, BorderLayout.CENTER);
-
-        model.load();
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
 import org.xblackcat.rojac.util.*;
@@ -113,6 +114,8 @@ public final class RojacLauncher {
         private void perform() {
             final MainFrame mainFrame = new MainFrame();
 
+            new VersionChecker(mainFrame).execute();
+
             checker.installNewInstanceListener(
                     // Show window
                     new Runnable() {
@@ -199,7 +202,7 @@ public final class RojacLauncher {
 
             mainFrame.setupScheduler();
 
-            new VersionChecker(mainFrame).execute();
+            ServiceFactory.getInstance().getDataDispatcher().processPacket(new ReloadDataPacket());
         }
 
     }

@@ -275,12 +275,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         JPanel cp = new JPanel(new BorderLayout());
         setContentPane(cp);
 
-        // Setup forums view
-//        View viewForums = createView(forumsListView);
-
-        // Setup favorites view
-//        View viewFavorites = createView(favoritesView);
-
         View viewRecentTopics = createView(recentTopicsView);
 
         View viewNavigation = createView(navigationView);

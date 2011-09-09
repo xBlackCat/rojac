@@ -35,6 +35,12 @@ public class RecentTopicsView extends AView {
                         reloadLastPosts();
                     }
                 }
+            },
+            new IPacketProcessor<ReloadDataPacket>() {
+                @Override
+                public void process(ReloadDataPacket p) {
+                    reloadLastPosts();
+                }
             }
     );
 
@@ -43,8 +49,6 @@ public class RecentTopicsView extends AView {
         setLayout(new BorderLayout(5, 5));
 
         initializeLayout();
-
-        reloadLastPosts();
     }
 
     private void reloadLastPosts() {
@@ -54,7 +58,6 @@ public class RecentTopicsView extends AView {
             new LatestPostsLoader(model).execute();
         }
     }
-
 
     private void initializeLayout() {
         final JTable lastPostList = new JTable(model);
