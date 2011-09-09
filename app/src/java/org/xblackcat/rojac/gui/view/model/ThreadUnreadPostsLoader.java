@@ -2,9 +2,8 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -18,8 +17,6 @@ import java.util.List;
 class ThreadUnreadPostsLoader extends RojacWorker<Void, Integer> {
     private static final Log log = LogFactory.getLog(ThreadUnreadPostsLoader.class);
 
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
-
     private final Thread topic;
     private final AThreadModel<Post> model;
 
@@ -30,7 +27,7 @@ class ThreadUnreadPostsLoader extends RojacWorker<Void, Integer> {
 
     @Override
     protected Void perform() throws Exception {
-        IStatisticAH mAH = storage.getStatisticAH();
+        IStatisticAH mAH = Storage.get(IStatisticAH.class);
         try {
             int unreadPosts = mAH.getReplaysInThread(topic.getMessageId()).getUnread();
 

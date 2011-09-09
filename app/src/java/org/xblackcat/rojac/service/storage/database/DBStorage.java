@@ -12,6 +12,7 @@ import org.xblackcat.rojac.util.DatabaseUtils;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,24 +28,12 @@ public class DBStorage implements IStorage, IQueryExecutor {
 
     private final IQueryHelper helper;
 
-    private final DBForumAH forumAH;
-    private final DBRatingAH ratingAH;
-    private final DBUserAH userAH;
-    private final DBForumGroupAH forumGroupAH;
-    private final DBVersionAH versionAH;
-    private final DBNewRatingAH newRatingAH;
-    private final DBModerateAH moderateAH;
-    private final DBNewModerateAH newModerateAH;
-    private final DBNewMessageAH newMessageAH;
-    private final DBMessageAH messageAH;
-    private final DBMiscAH miscAH;
-    private final DBFavoriteAH favoriteAH;
-    private final DBStatisticAH statisticAH;
+    private final Map<Class<? extends AH>, AH> accessHelpers = new HashMap<>();
 
-    public DBStorage(String propRoot, IConnectionFactory connectionFactory) throws StorageException {
+    public DBStorage(String engine, IConnectionFactory connectionFactory) throws StorageException {
         try {
-            this.queries = DatabaseUtils.loadSQLs(propRoot, DataQuery.class);
-            this.initializeQueries = DatabaseUtils.loadInitializeSQLs(propRoot);
+            this.queries = DatabaseUtils.loadSQLs(engine, DataQuery.class);
+            this.initializeQueries = DatabaseUtils.loadInitializeSQLs(engine);
 
             helper = new QueryHelper(connectionFactory);
         } catch (StorageInitializationException e) {
@@ -56,19 +45,19 @@ public class DBStorage implements IStorage, IQueryExecutor {
         }
 
         // Initialize the object AHs
-        forumAH = new DBForumAH(this);
-        ratingAH = new DBRatingAH(this);
-        userAH = new DBUserAH(this);
-        forumGroupAH = new DBForumGroupAH(this);
-        versionAH = new DBVersionAH(this);
-        newRatingAH = new DBNewRatingAH(this);
-        moderateAH = new DBModerateAH(this);
-        newMessageAH = new DBNewMessageAH(this);
-        messageAH = new DBMessageAH(this);
-        miscAH = new DBMiscAH(this);
-        newModerateAH = new DBNewModerateAH(this);
-        favoriteAH = new DBFavoriteAH(this);
-        statisticAH = new DBStatisticAH(this);
+        accessHelpers.put(IForumAH.class, new DBForumAH(this));
+        accessHelpers.put(IRatingAH.class, new DBRatingAH(this));
+        accessHelpers.put(IUserAH.class, new DBUserAH(this));
+        accessHelpers.put(IForumGroupAH.class, new DBForumGroupAH(this));
+        accessHelpers.put(IVersionAH.class, new DBVersionAH(this));
+        accessHelpers.put(INewRatingAH.class, new DBNewRatingAH(this));
+        accessHelpers.put(IModerateAH.class, new DBModerateAH(this));
+        accessHelpers.put(INewMessageAH.class, new DBNewMessageAH(this));
+        accessHelpers.put(IMessageAH.class, new DBMessageAH(this));
+        accessHelpers.put(IMiscAH.class, new DBMiscAH(this));
+        accessHelpers.put(INewModerateAH.class, new DBNewModerateAH(this));
+        accessHelpers.put(IFavoriteAH.class, new DBFavoriteAH(this));
+        accessHelpers.put(IStatisticAH.class, new DBStatisticAH(this));
     }
 
     /* Initialization routines */
@@ -128,74 +117,15 @@ public class DBStorage implements IStorage, IQueryExecutor {
         }
     }
 
+    @SuppressWarnings({"unchecked"})
+    @Override
+    public <T extends AH> T get(Class<T> base) {
+        return (T) accessHelpers.get(base);
+    }
+
     @Override
     public void shutdown() throws StorageException {
         helper.shutdown();
-    }
-
-    @Override
-    public IForumAH getForumAH() {
-        return forumAH;
-    }
-
-    @Override
-    public IForumGroupAH getForumGroupAH() {
-        return forumGroupAH;
-    }
-
-    @Override
-    public IMessageAH getMessageAH() {
-        return messageAH;
-    }
-
-    @Override
-    public IModerateAH getModerateAH() {
-        return moderateAH;
-    }
-
-    @Override
-    public INewMessageAH getNewMessageAH() {
-        return newMessageAH;
-    }
-
-    @Override
-    public INewModerateAH getNewModerateAH() {
-        return newModerateAH;
-    }
-
-    @Override
-    public INewRatingAH getNewRatingAH() {
-        return newRatingAH;
-    }
-
-    @Override
-    public IRatingAH getRatingAH() {
-        return ratingAH;
-    }
-
-    @Override
-    public IUserAH getUserAH() {
-        return userAH;
-    }
-
-    @Override
-    public IVersionAH getVersionAH() {
-        return versionAH;
-    }
-
-    @Override
-    public IMiscAH getMiscAH() {
-        return miscAH;
-    }
-
-    @Override
-    public IFavoriteAH getFavoriteAH() {
-        return favoriteAH;
-    }
-
-    @Override
-    public IStatisticAH getStatisticAH() {
-        return statisticAH;
     }
 
     @Override

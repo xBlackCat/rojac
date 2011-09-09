@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -10,7 +11,7 @@ import org.xblackcat.rojac.util.RojacUtils;
  * @author xBlackCat
  */
 abstract class AForumTask<V> extends ALoadTask<V> {
-    protected final IForumAH fah = storage.getForumAH();
+    protected final IForumAH fah = Storage.get(IForumAH.class);
 
     protected final ForumStatistic getForumStatistic(int forumId) throws StorageException {
         assert RojacUtils.checkThread(false);

@@ -20,8 +20,7 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IStorage;
-import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
@@ -419,18 +418,17 @@ public class MessageView extends AnItemView {
                 String messageBody;
                 MessageData messageData;
                 try {
-                    IStorage storage = ServiceFactory.getInstance().getStorage();
                     if (messageId > 0) {
                         // Regulag message
-                        messageData = storage.getMessageAH().getMessageData(messageId);
+                        messageData = Storage.get(IMessageAH.class).getMessageData(messageId);
                         if (messageData == null) {
                             // Somehow message is not found - do not load it
                             return null;
                         }
-                        messageBody = storage.getMessageAH().getMessageBodyById(messageId);
+                        messageBody = Storage.get(IMessageAH.class).getMessageBodyById(messageId);
                     } else {
                         // Local message
-                        NewMessage newMessage = storage.getNewMessageAH().getNewMessageById(-messageId);
+                        NewMessage newMessage = Storage.get(INewMessageAH.class).getNewMessageById(-messageId);
                         messageData = new NewMessageData(newMessage);
 
                         messageBody = newMessage.getMessage();
@@ -507,7 +505,7 @@ public class MessageView extends AnItemView {
 
         @Override
         protected Void perform() throws Exception {
-            ServiceFactory.getInstance().getStorage().getNewRatingAH().storeNewRating(messageId, mark);
+            Storage.get(INewRatingAH.class).storeNewRating(messageId, mark);
 
             publish(MessageUtils.updateRatingCache(messageId));
 

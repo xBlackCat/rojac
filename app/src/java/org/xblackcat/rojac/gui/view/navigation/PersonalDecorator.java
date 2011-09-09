@@ -5,9 +5,10 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
+import org.xblackcat.rojac.service.storage.Storage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,7 +90,7 @@ class PersonalDecorator extends ADecorator {
 
         @Override
         UnreadStatData doBackground() throws Exception {
-            IStatisticAH statisticAH = ServiceFactory.getInstance().getStorage().getStatisticAH();
+            IStatisticAH statisticAH = Storage.get(IStatisticAH.class);
             return statisticAH.getUserRepliesStat(userId);
         }
 
@@ -103,7 +104,7 @@ class PersonalDecorator extends ADecorator {
     private class OutboxReloadTask extends ALoadTask<Integer> {
         @Override
         Integer doBackground() throws Exception {
-            Collection<NewMessage> newMessages = storage.getNewMessageAH().getAllNewMessages();
+            Collection<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages();
 
             return newMessages != null ? newMessages.size() : null;
         }

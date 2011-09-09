@@ -9,7 +9,7 @@ import java.util.Collection;
  * @author xBlackCat
  */
 
-public interface IFavoriteAH {
+public interface IFavoriteAH extends AH {
     /**
      * Returns all the created favorites.
      *

@@ -7,9 +7,9 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -150,7 +150,7 @@ class FavoritesModelControl implements IModelControl<Post> {
 
         @Override
         protected Void perform() throws Exception {
-            IFavoriteAH fAH = ServiceFactory.getInstance().getStorage().getFavoriteAH();
+            IFavoriteAH fAH = Storage.get(IFavoriteAH.class);
 
             Favorite f = fAH.getFavorite(favoriteId);
 

@@ -7,13 +7,12 @@ import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.UsersList;
-import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.IUserAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_USERS_PORTION;
@@ -26,8 +25,7 @@ class GetUsersRequest extends ARequest<IPacket> {
     private static final Log log = LogFactory.getLog(GetUsersRequest.class);
 
     public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
-        IStorage storage = ServiceFactory.getInstance().getStorage();
-        IUserAH uAH = storage.getUserAH();
+        IUserAH uAH = Storage.get(IUserAH.class);
 
         tracker.addLodMessage(Message.Synchronize_Command_Name_Users);
         if (log.isDebugEnabled()) {

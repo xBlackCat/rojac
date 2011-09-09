@@ -12,6 +12,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.DialogHelper;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -178,7 +179,7 @@ public class RojacTray {
     private class UnreadMessagesCountGetter extends RojacWorker<Void, ReadStatistic> {
         @Override
         protected Void perform() throws Exception {
-            IStatisticAH mAH = ServiceFactory.getInstance().getStorage().getStatisticAH();
+            IStatisticAH mAH = Storage.get(IStatisticAH.class);
 
             Integer userId = Property.RSDN_USER_ID.get(-1);
             publish(mAH.getTotals(userId));

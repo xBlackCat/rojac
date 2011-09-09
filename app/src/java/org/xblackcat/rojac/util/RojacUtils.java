@@ -14,6 +14,7 @@ import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.CheckUpdatesEnum;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -433,6 +434,84 @@ public final class RojacUtils {
      */
     public static boolean isMainThread() {
         return "main".equals(Thread.currentThread().getName());
+    }
+
+    public static Properties loadCoreOptions() throws RojacException {
+        Properties mainProperties;
+        try {
+            mainProperties = ResourceUtils.loadProperties("/rojac.properties");
+        } catch (IOException e) {
+            throw new StorageInitializationException("rojac.properties was not found in class path", e);
+        }
+
+        String home = System.getProperty("rojac.home");
+        if (StringUtils.isBlank(home)) {
+            String userHome = mainProperties.getProperty("rojac.home");
+            if (StringUtils.isBlank(userHome)) {
+                throw new StorageInitializationException("{$rojac.home} is not defined either property in file or system property.");
+            }
+
+            home = ResourceUtils.putSystemProperties(userHome);
+            if (log.isTraceEnabled()) {
+                log.trace("{$rojac.home} is not defined. It will initialized with '" + home + "' value.");
+            }
+        }
+
+        String dbHome = mainProperties.getProperty("rojac.db.home");
+        if (StringUtils.isBlank(dbHome)) {
+            if (log.isWarnEnabled()) {
+                log.warn("{$rojac.db.home} is not defined. Assumed the same as {$rojac.home}");
+            }
+            mainProperties.setProperty("rojac.db.home", home);
+            dbHome = home;
+        }
+        dbHome = ResourceUtils.putSystemProperties(dbHome);
+        installProperties(mainProperties, "rojac.home", "rojac.db.home", "rojac.db.host", "rojac.db.user", "rojac.db.password");
+
+        checkPath(home);
+        checkPath(dbHome);
+        return mainProperties;
+    }
+
+    /**
+     * Register specified properties in system.
+     *
+     * @param properties
+     * @param names
+     */
+    public static void installProperties(Properties properties, String... names) {
+        for (String name : names) {
+            String value = properties.getProperty(name);
+            if (StringUtils.isBlank(value)) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Property " + name + " is not defined.");
+                }
+                continue;
+            }
+
+            value = ResourceUtils.putSystemProperties(value);
+
+            if (log.isTraceEnabled()) {
+                log.trace("Initialize property " + name + " with value " + value);
+            }
+
+            System.setProperty(name, value);
+        }
+    }
+
+    public static void checkPath(String target) throws RojacException {
+        File folder = new File(target);
+        if (!folder.exists()) {
+            if (log.isTraceEnabled()) {
+                log.trace("Create folder at " + target);
+            }
+            if (!folder.mkdirs()) {
+                throw new RojacException("Can not create a '" + folder.getAbsolutePath() + "' folder for storing Rojac configuration.");
+            }
+        }
+        if (!folder.isDirectory()) {
+            throw new RojacException("Target path '" + folder.getAbsolutePath() + "' is not a folder.");
+        }
     }
 
     private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {

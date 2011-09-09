@@ -5,8 +5,8 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumMessageData;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.IForumAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -27,7 +27,7 @@ class ForumInfoLoader extends RojacWorker<Void, Forum> {
 
     @Override
     protected Void perform() throws Exception {
-        IForumAH fah = ServiceFactory.getInstance().getStorage().getForumAH();
+        IForumAH fah = Storage.get(IForumAH.class);
 
         try {
             forum = fah.getForumById(forumId);

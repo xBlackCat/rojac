@@ -11,10 +11,10 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.view.message.EditMessagePane;
 import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.NewMessagesUpdatedPacket;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -110,7 +110,7 @@ public class EditMessageDialog extends JDialog {
             @Override
             protected Void perform() throws Exception {
                 try {
-                    INewMessageAH nmAH = ServiceFactory.getInstance().getStorage().getNewMessageAH();
+                    INewMessageAH nmAH = Storage.get(INewMessageAH.class);
                     if (newMessageId == 0) {
                         // Create a new own message
                         nmAH.storeNewMessage(nm);
@@ -189,7 +189,7 @@ public class EditMessageDialog extends JDialog {
         @Override
         protected MessageInfo loadMessage() throws RojacException {
             try {
-                NewMessage newMessage = ServiceFactory.getInstance().getStorage().getNewMessageAH().getNewMessageById(messageId);
+                NewMessage newMessage = Storage.get(INewMessageAH.class).getNewMessageById(messageId);
                 MessageData messageData = new NewMessageData(newMessage);
                 String messageBody = MessageUtils.removeTagline(newMessage.getMessage());
                 parentMessageId = newMessage.getParentId();
@@ -211,7 +211,7 @@ public class EditMessageDialog extends JDialog {
         protected MessageInfo loadMessage() throws RojacException {
             MessageInfo messageInfo;
             try {
-                IMessageAH messageAH = ServiceFactory.getInstance().getStorage().getMessageAH();
+                IMessageAH messageAH = Storage.get(IMessageAH.class);
                 MessageData messageData = messageAH.getMessageData(messageId);
                 String messageBody = messageAH.getMessageBodyById(messageId);
 

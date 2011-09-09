@@ -1,8 +1,5 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
-
 /**
  * @author xBlackCat
  */
@@ -17,8 +14,6 @@ abstract class ALoadTask<V> {
 
         return new ALoadTask[]{task};
     }
-
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     abstract V doBackground() throws Exception;
 

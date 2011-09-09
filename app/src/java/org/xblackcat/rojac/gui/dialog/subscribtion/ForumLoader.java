@@ -3,8 +3,8 @@ package org.xblackcat.rojac.gui.dialog.subscribtion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.IForumAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -15,7 +15,6 @@ import java.util.List;
  */
 class ForumLoader extends RojacWorker<Void, Forum> {
     private static final Log log = LogFactory.getLog(ForumLoader.class);
-    private static final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     private final SubscribeForumModel model;
 
@@ -27,7 +26,7 @@ class ForumLoader extends RojacWorker<Void, Forum> {
     @Override
     protected Void perform() throws Exception {
         try {
-            for (Forum f : storage.getForumAH().getAllForums()) {
+            for (Forum f : Storage.get(IForumAH.class).getAllForums()) {
                 publish(f);
             }
         } catch (StorageException e) {

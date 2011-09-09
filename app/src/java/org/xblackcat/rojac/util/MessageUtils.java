@@ -17,7 +17,7 @@ import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IRatingAH;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 import javax.swing.*;
@@ -130,9 +130,8 @@ public final class MessageUtils {
     }
 
     public static RatingCache updateRatingCache(int id) throws StorageException {
-        IStorage storage = ServiceFactory.getInstance().getStorage();
-        IMessageAH mAH = storage.getMessageAH();
-        IRatingAH rAH = storage.getRatingAH();
+        IMessageAH mAH = Storage.get(IMessageAH.class);
+        IRatingAH rAH = Storage.get(IRatingAH.class);
 
         Collection<MarkStat> marks = rAH.getMarkStatByMessageId(id);
         RatingCache ratingCache = new RatingCache(marks);

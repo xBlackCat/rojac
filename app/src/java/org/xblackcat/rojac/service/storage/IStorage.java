@@ -5,34 +5,9 @@ package org.xblackcat.rojac.service.storage;
  */
 
 public interface IStorage {
-
     void initialize() throws StorageException;
 
-    IForumAH getForumAH();
-
-    IForumGroupAH getForumGroupAH();
-
-    IMessageAH getMessageAH();
-
-    IModerateAH getModerateAH();
-
-    INewMessageAH getNewMessageAH();
-
-    INewModerateAH getNewModerateAH();
-
-    INewRatingAH getNewRatingAH();
-
-    IRatingAH getRatingAH();
-
-    IUserAH getUserAH();
-
-    IVersionAH getVersionAH();
-
-    IMiscAH getMiscAH();
+    <T extends AH> T get(Class<T> base);
 
     void shutdown() throws StorageException;
-
-    IFavoriteAH getFavoriteAH();
-
-    IStatisticAH getStatisticAH();
 }

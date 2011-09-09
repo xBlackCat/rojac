@@ -5,13 +5,20 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.RojacException;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
+import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.IPropertiable;
 import org.xblackcat.rojac.service.storage.database.SQL;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
+import org.xblackcat.rojac.service.storage.database.connection.SimplePooledConnectionFactory;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -126,7 +133,7 @@ public final class DatabaseUtils {
         return Collections.unmodifiableMap(map);
     }
 
-    public static DatabaseSettings readDefaults(String configurationName) throws StorageInitializationException {
+    private static DatabaseSettings readDefaults(String configurationName) throws StorageInitializationException {
         if (log.isTraceEnabled()) {
             log.trace("Loading database connection properties.");
         }
@@ -253,5 +260,56 @@ public final class DatabaseUtils {
         }
 
         return null;
+    }
+
+    public static DBStorage initializeStorage(String defaultEngine) throws RojacException {
+        DatabaseSettings settings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
+
+        String engine;
+        if (settings == null) {
+            // TODO: show database settings dialog.
+
+            settings = readDefaults(defaultEngine);
+            engine = defaultEngine;
+
+            Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(settings);
+        } else {
+            engine = settings.getEngine();
+        }
+
+        IConnectionFactory connectionFactory = new SimplePooledConnectionFactory(settings);
+
+        DBStorage storage = new DBStorage(engine, connectionFactory);
+        storage.initialize();
+        return storage;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private static IConnectionFactory createConnectionFactory(String connectionFactoryName, DatabaseSettings databaseSettings) throws StorageInitializationException {
+
+        Class<?> connectionFactoryClass;
+        try {
+            connectionFactoryClass = Class.forName("org.xblackcat.rojac.service.storage.database.connection." + connectionFactoryName + "ConnectionFactory");
+        } catch (ClassNotFoundException e) {
+            try {
+                connectionFactoryClass = Class.forName(connectionFactoryName);
+            } catch (ClassNotFoundException e1) {
+                throw new StorageInitializationException("Connection factory " + connectionFactoryName + " is not found", e1);
+            }
+        }
+
+        try {
+            if (!IConnectionFactory.class.isAssignableFrom(connectionFactoryClass)) {
+                throw new StorageInitializationException("Connection factory should implements IConnectionFactory interface.");
+            }
+            Constructor<IConnectionFactory> connectionFactoryConstructor =
+                    ((Class<IConnectionFactory>) connectionFactoryClass).getConstructor(DatabaseSettings.class);
+
+            return connectionFactoryConstructor.newInstance(databaseSettings);
+        } catch (NoSuchMethodException e) {
+            throw new StorageInitializationException("Connection factory have no necessary constructor", e);
+        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
+            throw new StorageInitializationException("Can not initialize connection factory", e);
+        }
     }
 }

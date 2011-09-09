@@ -5,9 +5,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
-import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -21,8 +21,6 @@ import java.util.List;
  */
 class ThreadsLoader extends RojacWorker<Void, Thread> {
     private static final Log log = LogFactory.getLog(ThreadsLoader.class);
-
-    protected final IStorage storage = ServiceFactory.getInstance().getStorage();
 
     private final int forumId;
     private final ForumRoot rootItem;
@@ -48,9 +46,9 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
     @Override
     protected Void perform() throws Exception {
-        IStatisticAH mAH = storage.getStatisticAH();
+        IStatisticAH mAH = Storage.get(IStatisticAH.class);
         try {
-            Iterable<MessageData> threadPosts = storage.getMessageAH().getTopicMessagesDataByForumId(forumId);
+            Iterable<MessageData> threadPosts = Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId);
 
             for (MessageData threadPost : threadPosts) {
                 int topicId = threadPost.getMessageId();

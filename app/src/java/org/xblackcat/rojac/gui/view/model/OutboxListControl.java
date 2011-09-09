@@ -4,9 +4,9 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.*;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.INewMessageAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -95,8 +95,7 @@ class OutboxListControl extends MessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            IStorage storage = ServiceFactory.getInstance().getStorage();
-            messages = storage.getNewMessageAH().getAllNewMessages();
+            messages = Storage.get(INewMessageAH.class).getAllNewMessages();
             return null;
         }
 

@@ -3,8 +3,10 @@ package org.xblackcat.rojac.gui.view.message;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
-import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.storage.IStorage;
+import org.xblackcat.rojac.service.storage.INewRatingAH;
+import org.xblackcat.rojac.service.storage.IRatingAH;
+import org.xblackcat.rojac.service.storage.IUserAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
@@ -81,10 +83,11 @@ class RatingDialog extends JDialog {
     private class RatingUpdater extends RojacWorker<Void, MarkItem> {
         @Override
         protected Void perform() throws Exception {
-            IStorage storage = ServiceFactory.getInstance().getStorage();
-            Rating[] ratings = storage.getRatingAH().getRatingsByMessageId(messageId);
+            IUserAH userAH = Storage.get(IUserAH.class);
 
-            NewRating[] ownRatings = storage.getNewRatingAH().getNewRatingsByMessageId(messageId);
+            Rating[] ratings = Storage.get(IRatingAH.class).getRatingsByMessageId(messageId);
+
+            NewRating[] ownRatings = Storage.get(INewRatingAH.class).getNewRatingsByMessageId(messageId);
 
             MarkItem[] items = new MarkItem[ratings.length + ownRatings.length];
 
@@ -92,7 +95,7 @@ class RatingDialog extends JDialog {
             while (ind < ratings.length) {
                 Rating r = ratings[ind];
 
-                User user = storage.getUserAH().getUserById(r.getUserId());
+                User user = userAH.getUserById(r.getUserId());
 
                 items[ind] = new MarkItem(r, user);
                 ind++;

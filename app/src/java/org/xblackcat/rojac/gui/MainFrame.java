@@ -41,6 +41,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IMiscAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
@@ -219,7 +220,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 @Override
                 protected Void perform() throws Exception {
                     try {
-                        IMiscAH s = ServiceFactory.getInstance().getStorage().getMiscAH();
+                        IMiscAH s = Storage.get(IMiscAH.class);
 
                         s.storeExtraMessage(messageId);
                     } catch (StorageException e) {
@@ -763,7 +764,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         new RojacWorker<Void, Boolean>() {
             @Override
             protected Void perform() throws Exception {
-                IForumAH forumAH = ServiceFactory.getInstance().getStorage().getForumAH();
+                IForumAH forumAH = Storage.get(IForumAH.class);
 
                 int[] subscribedForumIds = forumAH.getSubscribedForumIds();
                 publish(!ArrayUtils.isEmpty(subscribedForumIds));
