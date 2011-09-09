@@ -1,6 +1,5 @@
 package org.xblackcat.rojac;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
@@ -10,6 +9,7 @@ import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
+import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
 import org.xblackcat.rojac.util.*;
@@ -43,19 +43,14 @@ public final class RojacLauncher {
     private static void launch() throws Exception {
         RunChecker checker = new RunChecker();
 
-        // At the moment an OptionsService is not initialized yet. Emulate the line
-        // Boolean shutdown = Property.ROJAC_DEBUG_SHUTDOWN_OTHER.get(false);
-        {
-            String name = Property.ROJAC_DEBUG_SHUTDOWN_OTHER.getName();
-            String property = System.getProperty(name, "no"); // By default - disabled
-            Boolean shutdown = BooleanUtils.toBoolean(property);
-            if (checker.performCheck(shutdown)) {
-                return;
-            }
-        }
+        Property.setOptionsService(new MultiUserOptionsService());
 
         // Common tasks
         Thread.setDefaultUncaughtExceptionHandler(RojacUtils.GLOBAL_EXCEPTION_HANDLER);
+
+        if (checker.performCheck(Property.ROJAC_DEBUG_SHUTDOWN_OTHER.get())) {
+            return;
+        }
 
         // Initialize core services
         ServiceFactory.initialize();

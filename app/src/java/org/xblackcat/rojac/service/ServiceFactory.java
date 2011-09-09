@@ -10,8 +10,6 @@ import org.xblackcat.rojac.service.datahandler.DataDispatcher;
 import org.xblackcat.rojac.service.datahandler.IDataDispatcher;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.executor.TaskExecutor;
-import org.xblackcat.rojac.service.options.IOptionsService;
-import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.service.progress.ProgressController;
@@ -60,7 +58,6 @@ public final class ServiceFactory {
 
     private final IExecutor executor;
     private final IStorage storage;
-    private final IOptionsService optionsService;
     private final IMessageParser messageParser;
     private final IProgressController progressController;
     private final IDataDispatcher dataDispatcher;
@@ -72,7 +69,6 @@ public final class ServiceFactory {
         executor = new TaskExecutor();
         RojacUtils.registerExecutor(executor);
 
-        optionsService = new MultiUserOptionsService();
 
         try {
             messageParser = new RSDNMessageParserFactory().getParser();
@@ -80,15 +76,11 @@ public final class ServiceFactory {
             throw new RuntimeException("Can't initialize message formatter.", e);
         }
 
-        storage = initializeStorage(optionsService);
+        storage = initializeStorage();
     }
 
     public IStorage getStorage() {
         return storage;
-    }
-
-    public IOptionsService getOptionsService() {
-        return optionsService;
     }
 
     public IMessageParser getMessageConverter() {
@@ -107,7 +99,7 @@ public final class ServiceFactory {
         return dataDispatcher;
     }
 
-    private static DBStorage initializeStorage(IOptionsService optionsService) throws RojacException {
+    private static DBStorage initializeStorage() throws RojacException {
         Properties mainProperties;
         try {
             mainProperties = ResourceUtils.loadProperties("/rojac.properties");
@@ -142,7 +134,7 @@ public final class ServiceFactory {
         checkPath(home);
         checkPath(dbHome);
 
-        DatabaseSettings settings = optionsService.getProperty(Property.ROJAC_DATABASE_CONNECTION_SETTINGS);
+        DatabaseSettings settings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
 
         String engine;
         if (settings == null) {
@@ -152,7 +144,7 @@ public final class ServiceFactory {
             settings = DatabaseUtils.readDefaults(defaultEngine);
             engine = defaultEngine;
 
-            optionsService.setProperty(Property.ROJAC_DATABASE_CONNECTION_SETTINGS, settings);
+            Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(settings);
         } else {
             engine = settings.getEngine();
         }
