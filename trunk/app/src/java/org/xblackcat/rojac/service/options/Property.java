@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.theme.IconPack;
-import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.UIUtils;
 
@@ -113,6 +112,23 @@ public final class Property<T> {
     public static final Property<Boolean> SYNCHRONIZER_MARK_MY_POST_READ = create("rojac.synchronizer.messages.my_as_read", Boolean.FALSE);
 
     public static final Property<Boolean> TRAY_NOTIFICATION_SYNC_COMPLETE = create("rojac.behaviour.tray_notification.on_sync_complete", Boolean.TRUE);
+
+    private static IOptionsService optionsService;
+
+    public static void setOptionsService(IOptionsService optionsService) {
+        // Allowed to be invoked only from 'main' thread
+        assert "main".equals(Thread.currentThread().getName());
+
+        Property.optionsService = optionsService;
+    }
+
+    public static IOptionsService getOptionsService() {
+        if (optionsService == null) {
+            throw new RojacDebugException("Options service not yet initialized");
+        }
+
+        return optionsService;
+    }
 
     @SuppressWarnings({"unchecked"})
     static <V> Property<V> create(String name, V defaultValue, IValueChecker<V> checker) {
@@ -265,9 +281,8 @@ public final class Property<T> {
      * @return <code>true</code> if property is initiated and <code>false</code> if default value will be used.
      */
     public boolean isSet() {
-        ServiceFactory instance = ServiceFactory.getInstance();
         // If options service is not initialized - consider property is not set.
-        return instance != null && instance.getOptionsService() != null && instance.getOptionsService().getProperty(this) != null;
+        return getOptionsService().getProperty(this) != null;
 
     }
 
@@ -287,13 +302,7 @@ public final class Property<T> {
      * @return value of the property.
      */
     public T get(T defValue) {
-        ServiceFactory instance = ServiceFactory.getInstance();
-        // For testcase purposes.
-        if (instance == null) {
-            return defValue;
-        }
-
-        T val = instance.getOptionsService().getProperty(this);
+        T val = getOptionsService().getProperty(this);
 
         return val == null ? defValue : val;
     }
@@ -314,12 +323,7 @@ public final class Property<T> {
      * @return previous value of the property or <code>null</code> if property was empty.
      */
     public T set(T val) {
-        ServiceFactory instance = ServiceFactory.getInstance();
-        if (instance != null && instance.getOptionsService() != null) {
-            return instance.getOptionsService().setProperty(this, val);
-        }
-
-        return getDefault();
+        return getOptionsService().setProperty(this, val);
     }
 
     /**
@@ -328,7 +332,7 @@ public final class Property<T> {
      * @return previous value of the property before clearing.
      */
     public T clear() {
-        return ServiceFactory.getInstance().getOptionsService().setProperty(this, null);
+        return getOptionsService().setProperty(this, null);
     }
 
     public boolean equals(Object o) {
