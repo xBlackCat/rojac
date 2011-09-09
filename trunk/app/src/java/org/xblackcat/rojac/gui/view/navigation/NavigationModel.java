@@ -105,6 +105,16 @@ class NavigationModel implements TreeTableModel, IModelControl {
                         new LoadTaskExecutor(tasks).execute();
                     }
                 }
+            },
+            new IPacketProcessor<ReloadDataPacket>() {
+                @Override
+                public void process(ReloadDataPacket p) {
+                    new LoadTaskExecutor(
+                            personalDecorator.reloadInfo(true),
+                            forumDecorator.reloadForums(),
+                            favoritesDecorator.reloadFavorites()
+                    ).execute();
+                }
             }
     );
 
@@ -243,14 +253,6 @@ class NavigationModel implements TreeTableModel, IModelControl {
             retNodes[retNodes.length - depth] = aNode;
         }
         return retNodes;
-    }
-
-    public void load() {
-        new LoadTaskExecutor(
-                personalDecorator.reloadInfo(true),
-                forumDecorator.reloadForums(),
-                favoritesDecorator.reloadFavorites()
-        ).execute();
     }
 
     // Helper methods

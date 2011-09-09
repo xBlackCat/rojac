@@ -142,7 +142,7 @@ public final class ServiceFactory {
         checkPath(home);
         checkPath(dbHome);
 
-        DatabaseSettings settings = optionsService.getProperty(Property.ROJAC_DATABASE_SETTINGS);
+        DatabaseSettings settings = optionsService.getProperty(Property.ROJAC_DATABASE_CONNECTION_SETTINGS);
 
         String engine;
         if (settings == null) {
@@ -152,7 +152,7 @@ public final class ServiceFactory {
             settings = DatabaseUtils.readDefaults(defaultEngine);
             engine = defaultEngine;
 
-            optionsService.setProperty(Property.ROJAC_DATABASE_SETTINGS, settings);
+            optionsService.setProperty(Property.ROJAC_DATABASE_CONNECTION_SETTINGS, settings);
         } else {
             engine = settings.getEngine();
         }
