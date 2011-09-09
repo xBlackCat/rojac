@@ -8,6 +8,8 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.datahandler.APacket;
+import org.xblackcat.rojac.service.datahandler.DataDispatcher;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.options.Property;
@@ -51,6 +53,8 @@ public final class RojacLauncher {
         if (checker.performCheck(Property.ROJAC_DEBUG_SHUTDOWN_OTHER.get())) {
             return;
         }
+
+        APacket.setDispatcher(new DataDispatcher());
 
         // Initialize core services
         ServiceFactory.initialize();
@@ -137,7 +141,7 @@ public final class RojacLauncher {
                     }
             );
 
-            ServiceFactory.getInstance().getDataDispatcher().addDataHandler(mainFrame);
+            APacket.getDispatcher().addDataHandler(mainFrame);
 
             // Setup tray
             final RojacTray tray = new RojacTray(mainFrame);
@@ -197,7 +201,7 @@ public final class RojacLauncher {
 
             mainFrame.setupScheduler();
 
-            ServiceFactory.getInstance().getDataDispatcher().processPacket(new ReloadDataPacket());
+            new ReloadDataPacket().dispatch();
         }
 
     }

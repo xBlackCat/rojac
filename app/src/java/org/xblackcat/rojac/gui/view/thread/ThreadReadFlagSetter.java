@@ -29,6 +29,6 @@ public class ThreadReadFlagSetter extends RojacWorker<Void, Void> {
     @Override
     protected void done() {
         IPacket packet = new SetSubThreadReadPacket(read, threadRoot.getForumId(), threadRoot.getMessageId());
-        ServiceFactory.getInstance().getDataDispatcher().processPacket(packet);
+        packet.dispatch();
     }
 }

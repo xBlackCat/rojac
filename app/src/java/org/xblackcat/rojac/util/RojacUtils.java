@@ -426,6 +426,15 @@ public final class RojacUtils {
         }
     }
 
+    /**
+     * Returns true if the method is invoked from 'main' Java thread.
+     *
+     * @return true if the method is invoked from 'main' thread.
+     */
+    public static boolean isMainThread() {
+        return "main".equals(Thread.currentThread().getName());
+    }
+
     private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
         @Override
         public void uncaughtException(final Thread t, final Throwable e) {

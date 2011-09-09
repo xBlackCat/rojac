@@ -4,7 +4,7 @@ package org.xblackcat.rojac.service.datahandler;
  * @author xBlackCat
  */
 
-public class SetForumReadPacket implements IPacket {
+public class SetForumReadPacket extends APacket{
     protected final int forumId;
     protected final boolean read;
 

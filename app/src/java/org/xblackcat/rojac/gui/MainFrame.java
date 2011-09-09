@@ -436,7 +436,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private View createView(IView itemView) {
-        ServiceFactory.getInstance().getDataDispatcher().addDataHandler(itemView);
+        APacket.getDispatcher().addDataHandler(itemView);
 
         final View view = new View(
                 itemView.getTabTitle(),

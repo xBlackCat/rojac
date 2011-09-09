@@ -8,7 +8,7 @@ import org.xblackcat.rojac.data.MessageData;
  * @author xBlackCat
  */
 
-public class SetReadExPacket implements IPacket, IForumUpdatePacket, IMessageUpdatePacket, IThreadsUpdatePacket {
+public class SetReadExPacket extends APacket implements IForumUpdatePacket, IMessageUpdatePacket, IThreadsUpdatePacket {
     private final boolean read;
     private final TIntHashSet forumIds;
     private final TIntHashSet threadIds;

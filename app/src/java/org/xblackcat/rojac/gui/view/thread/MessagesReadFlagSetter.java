@@ -2,7 +2,6 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.ServiceFactory;
-import org.xblackcat.rojac.service.datahandler.IDataDispatcher;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -14,8 +13,6 @@ import java.util.Collection;
  * @author xBlackCat
  */
 public class MessagesReadFlagSetter extends RojacWorker<Void, MessageData> {
-    private final IDataDispatcher dispatcher = ServiceFactory.getInstance().getDataDispatcher();
-
     private Collection<MessageData> posts;
     private boolean read;
 
@@ -35,6 +32,6 @@ public class MessagesReadFlagSetter extends RojacWorker<Void, MessageData> {
 
     @Override
     protected void done() {
-        dispatcher.processPacket(new SetReadExPacket(posts, read));
+        new SetReadExPacket(posts, read).dispatch();
     }
 }

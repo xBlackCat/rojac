@@ -299,7 +299,7 @@ public final class PopupMenuBuilder {
 
                     @Override
                     protected void process(List<Void> chunks) {
-                        ServiceFactory.getInstance().getDataDispatcher().processPacket(new NewMessagesUpdatedPacket());
+                        new NewMessagesUpdatedPacket().dispatch();
                     }
                 }.execute();
             }
@@ -321,7 +321,7 @@ public final class PopupMenuBuilder {
 
                     @Override
                     protected void process(List<Void> chunks) {
-                        ServiceFactory.getInstance().getDataDispatcher().processPacket(new NewMessagesUpdatedPacket());
+                        new NewMessagesUpdatedPacket().dispatch();
                     }
                 }.execute();
             }

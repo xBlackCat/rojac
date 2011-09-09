@@ -67,7 +67,7 @@ public class RojacTray {
         trayIcon.setToolTip(RojacState.Initialization.getToolTip());
 
         ServiceFactory.getInstance().getProgressControl().addProgressListener(new TrayProgressListener());
-        ServiceFactory.getInstance().getDataDispatcher().addDataHandler(new TrayDataDispatcher());
+        APacket.getDispatcher().addDataHandler(new TrayDataDispatcher());
 
         trayIcon.addMouseListener(new TrayListener());
         trayIcon.addActionListener(new ActionListener() {

@@ -5,6 +5,7 @@ import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
@@ -117,7 +118,7 @@ public final class Property<T> {
 
     public static void setOptionsService(IOptionsService optionsService) {
         // Allowed to be invoked only from 'main' thread
-        assert "main".equals(Thread.currentThread().getName());
+        assert RojacUtils.isMainThread();
 
         Property.optionsService = optionsService;
     }

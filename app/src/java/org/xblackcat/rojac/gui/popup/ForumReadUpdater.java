@@ -28,6 +28,6 @@ class ForumReadUpdater extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        ServiceFactory.getInstance().getDataDispatcher().processPacket(new SetForumReadPacket(readFlag, forumId));
+        new SetForumReadPacket(readFlag, forumId).dispatch();
     }
 }

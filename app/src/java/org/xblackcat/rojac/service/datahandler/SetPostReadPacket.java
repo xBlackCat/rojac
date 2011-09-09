@@ -6,7 +6,7 @@ import org.xblackcat.rojac.data.MessageData;
  * @author xBlackCat
  */
 
-public class SetPostReadPacket implements IPacket {
+public class SetPostReadPacket extends APacket{
     protected final MessageData post;
     private final boolean readStatus;
 
