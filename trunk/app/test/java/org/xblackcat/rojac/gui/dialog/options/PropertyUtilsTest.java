@@ -1,7 +1,10 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
 import junit.framework.TestCase;
+import org.xblackcat.rojac.service.options.IOptionsService;
+import org.xblackcat.rojac.service.options.OptionsServiceException;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.options.TestOptionsService;
 
 /**
  * @author xBlackCat
@@ -9,6 +12,11 @@ import org.xblackcat.rojac.service.options.Property;
 
 @SuppressWarnings({"unchecked"})
 public class PropertyUtilsTest extends TestCase {
+    public void setUp() throws OptionsServiceException {
+        IOptionsService os = new TestOptionsService();
+        Property.setOptionsService(os);
+    }
+
     public void testMakePropertyPath() {
         // rojac.behaviour.frame.hide_on_minimize (5 nodes)
         Property p = Property.ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE;
