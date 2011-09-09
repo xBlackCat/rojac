@@ -188,9 +188,16 @@ public final class DatabaseUtils {
             }
         } else {
             shutdownUrl = null;
-        }
-
-        return new DatabaseSettings(configurationName, url, shutdownUrl, userName, password, jdbcDriverClass);
+        }  
+        
+        return new DatabaseSettings(
+                configurationName, 
+                ResourceUtils.putSystemProperties(url), 
+                ResourceUtils.putSystemProperties(shutdownUrl), 
+                ResourceUtils.putSystemProperties(userName), 
+                ResourceUtils.putSystemProperties(password), 
+                jdbcDriverClass
+        );
     }
 
     public static String convert(DatabaseSettings o) {
