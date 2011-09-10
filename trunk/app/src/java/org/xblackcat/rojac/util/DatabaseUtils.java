@@ -133,14 +133,14 @@ public final class DatabaseUtils {
         return Collections.unmodifiableMap(map);
     }
 
-    private static DatabaseSettings readDefaults(String configurationName) throws StorageInitializationException {
+    public static DatabaseSettings readDefaults(String engine) throws StorageInitializationException {
         if (log.isTraceEnabled()) {
             log.trace("Loading database connection properties.");
         }
         // The properties file should be located in /<propRoot>/database.properties
         Properties databaseProperties;
         try {
-            databaseProperties = ResourceUtils.loadProperties(DBCONFIG_PACKAGE + configurationName + "/database.properties");
+            databaseProperties = ResourceUtils.loadProperties(DBCONFIG_PACKAGE + engine + "/database.properties");
         } catch (IOException e) {
             throw new StorageInitializationException("Can not load config from the database.properties", e);
         }
@@ -191,7 +191,7 @@ public final class DatabaseUtils {
         }  
         
         return new DatabaseSettings(
-                configurationName, 
+                engine,
                 ResourceUtils.putSystemProperties(url), 
                 ResourceUtils.putSystemProperties(shutdownUrl), 
                 ResourceUtils.putSystemProperties(userName), 
