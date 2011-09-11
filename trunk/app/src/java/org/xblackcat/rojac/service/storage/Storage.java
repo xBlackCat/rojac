@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.service.storage;
 
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -13,15 +12,12 @@ public class Storage {
 
     private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private final static Lock readLock = lock.readLock();
-    private final static Lock writeLock = lock.writeLock();
-
     public static <T extends AH> T get(Class<T> ahClass) {
-        readLock.lock();
+        lock.readLock().lock();
         try {
             return storage.get(ahClass);
         } finally {
-            readLock.unlock();
+            lock.readLock().unlock();
         }
     }
 
@@ -32,12 +28,12 @@ public class Storage {
 
         IStorage oldStorage = storage;
 
-        writeLock.lock();
+        lock.writeLock().lock();
         try {
             newStorage.initialize();
             storage = newStorage;
         } finally {
-            writeLock.unlock();
+            lock.writeLock().unlock();
         }
 
         if (oldStorage != null) {
@@ -46,6 +42,14 @@ public class Storage {
     }
 
     public static void shutdown() throws StorageException {
-        storage.shutdown();
+        lock.writeLock().lock();
+        try {
+            if (storage != null) {
+                storage.shutdown();
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+
     }
 }

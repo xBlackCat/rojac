@@ -3,6 +3,7 @@ package org.xblackcat.rojac;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
+import org.xblackcat.rojac.gui.dialog.dbsettings.DBSettingsDialog;
 import org.xblackcat.rojac.gui.tray.RojacTray;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
@@ -14,8 +15,12 @@ import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
-import org.xblackcat.rojac.service.storage.IStorage;
 import org.xblackcat.rojac.service.storage.Storage;
+import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.database.DBStorage;
+import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
+import org.xblackcat.rojac.service.storage.database.connection.SimplePooledConnectionFactory;
 import org.xblackcat.rojac.util.*;
 
 import javax.swing.*;
@@ -23,7 +28,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
 
 import static org.xblackcat.rojac.service.options.Property.*;
 
@@ -49,8 +53,7 @@ public final class RojacLauncher {
         Thread.setDefaultUncaughtExceptionHandler(RojacUtils.GLOBAL_EXCEPTION_HANDLER);
 
         // Load and install core Rojac settings
-        Properties mainProperties = RojacUtils.loadCoreOptions();
-        String defaultEngine = mainProperties.getProperty("rojac.database.engine");
+        RojacUtils.loadCoreOptions();
 
         // For the first - load program options
         Property.setOptionsService(new MultiUserOptionsService());
@@ -65,9 +68,6 @@ public final class RojacLauncher {
 
         // Initialize core services
         ServiceFactory.initialize();
-
-        IStorage storage = DatabaseUtils.initializeStorage(defaultEngine);
-        Storage.setStorage(storage);
 
         // Set up debug mode if set
         if (ROJAC_DEBUG_MODE.get()) {
@@ -99,6 +99,12 @@ public final class RojacLauncher {
 
         // Save settings
         RojacUtils.storeSettings();
+
+        try {
+            Storage.shutdown();
+        } catch (StorageException e) {
+            log.error("Can not shutdown database", e);
+        }
 
         // Close all the resources.
         ServiceFactory.shutdown();
@@ -204,14 +210,54 @@ public final class RojacLauncher {
                 mainFrame.applySettings();
             }
 
-            boolean visible = mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported();
+            DatabaseSettings settings = ROJAC_DATABASE_CONNECTION_SETTINGS.get();
+            boolean visible = mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported() || settings == null;
             if (visible) {
                 WindowsUtils.toFront(mainFrame);
             }
 
-            mainFrame.setupScheduler();
+            if (settings == null) {
+                DBSettingsDialog dlg = new DBSettingsDialog(mainFrame);
 
-            new ReloadDataPacket().dispatch();
+                dlg.pack();
+                WindowsUtils.center(dlg, mainFrame);
+                dlg.setVisible(true);
+
+                settings = dlg.getSettings();
+                if (settings == null) {
+                    JLOptionPane.showMessageDialog(
+                            mainFrame,
+                            "Storage is not defined. The program will shutted down.",
+                            "No storage is defined",
+                            JOptionPane.OK_OPTION
+                    );
+                    performShutdown(mainFrame);
+                }
+
+                Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(settings);
+            }
+
+            new RojacWorker<Void, Void>(new Runnable() {
+                @Override
+                public void run() {
+                    mainFrame.setupScheduler();
+
+                    new ReloadDataPacket().dispatch();
+                }
+            }) {
+                private final DatabaseSettings settings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
+
+                @Override
+                protected Void perform() throws Exception {
+                    IConnectionFactory connectionFactory = new SimplePooledConnectionFactory(settings);
+
+                    DBStorage storage = new DBStorage(settings.getEngine(), connectionFactory);
+                    storage.initialize();
+                    Storage.setStorage(storage);
+
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+            }.execute();
         }
 
     }

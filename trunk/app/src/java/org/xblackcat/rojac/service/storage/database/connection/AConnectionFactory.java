@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage.database.connection;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
@@ -22,7 +23,7 @@ public abstract class AConnectionFactory implements IConnectionFactory {
 
     @Override
     public void shutdown() {
-        if (databaseSettings.getShutdownUrl() != null) {
+        if (StringUtils.isNotBlank(databaseSettings.getShutdownUrl())) {
             try {
                 DriverManager.getConnection(databaseSettings.getShutdownUrl());
             } catch (SQLException e) {
