@@ -831,7 +831,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
                 View view = makeViewWindow(v);
 
-                v.loadItem(v.getId().getId());
+//                v.loadItem(v.getId().getId());
 
                 return view;
             } catch (ClassNotFoundException e) {

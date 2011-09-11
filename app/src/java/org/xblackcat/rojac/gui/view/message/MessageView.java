@@ -69,6 +69,12 @@ public class MessageView extends AnItemView {
     protected MessageData messageData;
 
     private final PacketDispatcher packetDispatcher = new PacketDispatcher(
+            new IPacketProcessor<ReloadDataPacket>() {
+                @Override
+                public void process(ReloadDataPacket p) {
+                    loadItem(getId().getId());
+                }
+            },
             new IPacketProcessor<IMessageUpdatePacket>() {
                 @Override
                 public void process(IMessageUpdatePacket p) {

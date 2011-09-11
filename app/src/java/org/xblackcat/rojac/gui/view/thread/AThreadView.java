@@ -16,6 +16,7 @@ import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
@@ -468,6 +469,12 @@ public abstract class AThreadView extends AnItemView {
 
     @Override
     public final void processPacket(IPacket packet) {
+        if (packet instanceof ReloadDataPacket) {
+            loadItem(getId().getId());
+
+            return;
+        }
+
         // Just in case store a current selection
         final Post curSelection = getSelectedItem();
         Runnable postProcessor = new Runnable() {

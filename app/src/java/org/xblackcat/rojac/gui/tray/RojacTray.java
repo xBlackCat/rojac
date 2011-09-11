@@ -79,8 +79,6 @@ public class RojacTray {
                 WindowsUtils.toFront(mainFrame);
             }
         });
-
-        checkUnreadMessages();
     }
 
     private void toggleFrameVisibility() {
@@ -279,6 +277,12 @@ public class RojacTray {
                 new IPacketProcessor<SetSubThreadReadPacket>() {
                     @Override
                     public void process(SetSubThreadReadPacket p) {
+                        checkUnreadMessages();
+                    }
+                },
+                new IPacketProcessor<ReloadDataPacket>() {
+                    @Override
+                    public void process(ReloadDataPacket p) {
                         checkUnreadMessages();
                     }
                 }

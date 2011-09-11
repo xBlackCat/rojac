@@ -1,12 +1,8 @@
 package org.xblackcat.rojac.gui.dialog.dbsettings;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
-import org.xblackcat.rojac.service.options.MultiUserOptionsService;
-import org.xblackcat.rojac.service.options.OptionsServiceException;
-import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -22,11 +18,11 @@ import static org.xblackcat.rojac.i18n.Message.Button_Save;
  * @author xBlackCat
  */
 public class DBSettingsDialog extends JDialog {
-    private static final Log log = LogFactory.getLog(DBSettingsDialog.class);
     private DBSettingsPane settingsPane;
+    private DatabaseSettings settings;
 
     public DBSettingsDialog(Window owner) {
-        super(owner);
+        super(owner, ModalityType.APPLICATION_MODAL);
 
         try {
             initialize();
@@ -44,7 +40,8 @@ public class DBSettingsDialog extends JDialog {
                 new AButtonAction(Button_Save) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        settingsPane.getCurrentSettings();
+                        settings = settingsPane.getCurrentSettings();
+
                         dispose();
                     }
                 },
@@ -66,13 +63,7 @@ public class DBSettingsDialog extends JDialog {
         setContentPane(cp);
     }
 
-    public static void main(String[] args) throws OptionsServiceException {
-        Property.setOptionsService(new MultiUserOptionsService());
-
-        DBSettingsDialog dialog = new DBSettingsDialog(null);
-        dialog.setVisible(true);
-        dialog.pack();
-        WindowsUtils.centerOnScreen(dialog);
-
+    public DatabaseSettings getSettings() {
+        return settings;
     }
 }
