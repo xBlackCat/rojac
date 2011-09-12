@@ -219,7 +219,6 @@ public final class RojacLauncher {
             if (settings == null) {
                 DBSettingsDialog dlg = new DBSettingsDialog(mainFrame);
 
-                dlg.pack();
                 WindowsUtils.center(dlg, mainFrame);
                 dlg.setVisible(true);
 

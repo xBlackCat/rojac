@@ -147,7 +147,9 @@ public class DBSettingsPane extends JPanel {
 
         final Resource[] resources = resolver.getResources("dbconfig/*/database.properties");
         for (Resource resource : resources) {
-            String engine = resource.getFile().getParentFile().getName();
+            String path = resource.getURL().getPath();
+            int endIndex = path.length() - 20; // "/database.properties".length() == 20
+            String engine = path.substring(path.lastIndexOf('/', endIndex - 1) + 1, endIndex);
             try {
                 DatabaseSettings settings = DatabaseUtils.readDefaults(engine);
 

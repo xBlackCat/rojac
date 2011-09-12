@@ -13,8 +13,6 @@ import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.gui.view.model.Thread;
-import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.options.Property;
@@ -661,12 +659,7 @@ public abstract class AThreadView extends AnItemView {
                 if (sourceStackTrace != null) {
                     log.error("Can't load message #" + messageId, sourceStackTrace);
                 }
-                JLOptionPane.showMessageDialog(
-                        SwingUtilities.windowForComponent(AThreadView.this),
-                        Message.ErrorDialog_MessageNotFound_Message.get(messageId),
-                        Message.ErrorDialog_MessageNotFound_Title.get(messageId),
-                        JOptionPane.WARNING_MESSAGE
-                );
+                appControl.closeTab(getId());
             }
         }
     }
