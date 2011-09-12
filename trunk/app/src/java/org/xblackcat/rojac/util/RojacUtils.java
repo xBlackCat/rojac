@@ -494,6 +494,7 @@ public final class RojacUtils {
             }
 
             System.setProperty(name, value);
+            properties.setProperty(name, value);
         }
     }
 
