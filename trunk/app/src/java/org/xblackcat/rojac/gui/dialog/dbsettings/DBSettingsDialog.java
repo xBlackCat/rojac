@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.dialog.dbsettings;
 
-import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -9,7 +8,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 import static org.xblackcat.rojac.i18n.Message.Button_Cancel;
 import static org.xblackcat.rojac.i18n.Message.Button_Save;
@@ -24,14 +22,14 @@ public class DBSettingsDialog extends JDialog {
     public DBSettingsDialog(Window owner) {
         super(owner, ModalityType.APPLICATION_MODAL);
 
-        try {
-            initialize();
-        } catch (Exception e) {
-            throw new RojacDebugException("Can not load engine list", e);
-        }
+        initialize();
+
+        pack();
+
+        setSize(350, getHeight());
     }
 
-    private void initialize() throws IOException {
+    private void initialize() {
         JPanel cp = new JPanel(new BorderLayout(5, 5));
 
         cp.add(WindowsUtils.createButtonsBar(

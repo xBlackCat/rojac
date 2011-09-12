@@ -43,10 +43,14 @@ class SingleThreadModelControl extends AThreadsModelControl {
         new MessageChecker(threadId) {
             @Override
             protected void done() {
-                rootItem.setMessageData(data);
-                model.nodeChanged(rootItem);
+                if (data != null) {
+                    rootItem.setMessageData(data);
+                    model.nodeChanged(rootItem);
 
-                reloadThread(model, postProcessor);
+                    reloadThread(model, postProcessor);
+                } else {
+                    model.setRoot(null);
+                }
             }
         }.execute();
     }

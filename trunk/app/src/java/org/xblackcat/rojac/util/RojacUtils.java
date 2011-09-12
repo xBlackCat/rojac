@@ -9,12 +9,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.RojacException;
+import org.xblackcat.rojac.RojacInitializationException;
 import org.xblackcat.rojac.data.IRSDNable;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.CheckUpdatesEnum;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -436,19 +436,19 @@ public final class RojacUtils {
         return "main".equals(Thread.currentThread().getName());
     }
 
-    public static Properties loadCoreOptions() throws RojacException {
+    public static Properties loadCoreOptions() throws RojacInitializationException {
         Properties mainProperties;
         try {
             mainProperties = ResourceUtils.loadProperties("/rojac.properties");
         } catch (IOException e) {
-            throw new StorageInitializationException("rojac.properties was not found in class path", e);
+            throw new RojacInitializationException("rojac.properties was not found in class path", e);
         }
 
         String home = System.getProperty("rojac.home");
         if (StringUtils.isBlank(home)) {
             String userHome = mainProperties.getProperty("rojac.home");
             if (StringUtils.isBlank(userHome)) {
-                throw new StorageInitializationException("{$rojac.home} is not defined either property in file or system property.");
+                throw new RojacInitializationException("{$rojac.home} is not defined either property in file or system property.");
             }
 
             home = ResourceUtils.putSystemProperties(userHome);
@@ -463,13 +463,11 @@ public final class RojacUtils {
                 log.warn("{$rojac.db.home} is not defined. Assumed the same as {$rojac.home}");
             }
             mainProperties.setProperty("rojac.db.home", home);
-            dbHome = home;
         }
-        dbHome = ResourceUtils.putSystemProperties(dbHome);
         installProperties(mainProperties, "rojac.home", "rojac.db.home", "rojac.db.host", "rojac.db.user", "rojac.db.password");
 
-        checkPath(home);
-        checkPath(dbHome);
+        checkPath(mainProperties.getProperty("rojac.home"));
+        checkPath(mainProperties.getProperty("rojac.db.home"));
         return mainProperties;
     }
 
@@ -499,18 +497,18 @@ public final class RojacUtils {
         }
     }
 
-    public static void checkPath(String target) throws RojacException {
+    public static void checkPath(String target) throws RojacInitializationException {
         File folder = new File(target);
         if (!folder.exists()) {
             if (log.isTraceEnabled()) {
                 log.trace("Create folder at " + target);
             }
             if (!folder.mkdirs()) {
-                throw new RojacException("Can not create a '" + folder.getAbsolutePath() + "' folder for storing Rojac configuration.");
+                throw new RojacInitializationException("Can not create a '" + folder.getAbsolutePath() + "' folder for storing Rojac configuration.");
             }
         }
         if (!folder.isDirectory()) {
-            throw new RojacException("Target path '" + folder.getAbsolutePath() + "' is not a folder.");
+            throw new RojacInitializationException("Target path '" + folder.getAbsolutePath() + "' is not a folder.");
         }
     }
 
