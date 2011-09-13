@@ -15,6 +15,7 @@ public enum Message {
     Button_Cancel,
     Button_Apply,
     Button_Save,
+    Button_Check,
     Button_Preview,
     Button_Default,
     Button_Yes,
@@ -126,6 +127,16 @@ public enum Message {
     Dialog_Login_EmptyPassword,
     Dialog_Login_InvalidUserName,
     Dialog_Login_InvalidUserName_Title,
+
+    // Database settings dialog
+    Dialog_DbSettings_Title,
+    Dialog_DbSettings_Label,
+    Dialog_DbSettings_Label_Engine,
+    Dialog_DbSettings_Label_Url,
+    Dialog_DbSettings_Label_UserName,
+    Dialog_DbSettings_Label_Passord,
+    Dialog_DbSettings_Label_ShutdownUrl,
+    Dialog_DbSettings_Label_DriverName,
 
     // Subscription manager dialog related
     Dialog_Subscription_Title,

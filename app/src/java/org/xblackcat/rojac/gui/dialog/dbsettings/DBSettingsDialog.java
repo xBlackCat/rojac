@@ -9,8 +9,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-import static org.xblackcat.rojac.i18n.Message.Button_Cancel;
-import static org.xblackcat.rojac.i18n.Message.Button_Save;
+import static org.xblackcat.rojac.i18n.Message.*;
 
 /**
  * @author xBlackCat
@@ -20,7 +19,7 @@ public class DBSettingsDialog extends JDialog {
     private DatabaseSettings settings;
 
     public DBSettingsDialog(Window owner) {
-        super(owner, ModalityType.APPLICATION_MODAL);
+        super(owner, Dialog_DbSettings_Title.get(), ModalityType.APPLICATION_MODAL);
 
         initialize();
 
@@ -54,7 +53,7 @@ public class DBSettingsDialog extends JDialog {
         settingsPane = new DBSettingsPane();
         cp.add(settingsPane, BorderLayout.CENTER);
 
-        cp.add(new JLabel("Select database engine"), BorderLayout.NORTH);
+        cp.add(new JLabel(Dialog_DbSettings_Label.get(), SwingConstants.CENTER), BorderLayout.NORTH);
 
         cp.setBorder(new EmptyBorder(5, 5, 5, 5));
 
