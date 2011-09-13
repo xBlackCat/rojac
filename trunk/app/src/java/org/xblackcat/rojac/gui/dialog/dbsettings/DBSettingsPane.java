@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.xblackcat.rojac.i18n.Message.*;
+
 /**
  * @author xBlackCat
  */
@@ -63,12 +65,12 @@ public class DBSettingsPane extends JPanel {
 
         fieldDriverName.setEditable(false);
 
-        JLabel labelEngine = new JLabel("Engine");
-        JLabel labelUrl = new JLabel("URL");
-        JLabel labelUserName = new JLabel("User name");
-        JLabel labelPassword = new JLabel("Password");
-        JLabel labelShutdownUrl = new JLabel("Shutdown URL");
-        JLabel labelDriverName = new JLabel("JDBC Driver");
+        JLabel labelEngine = new JLabel(Dialog_DbSettings_Label_Engine.get());
+        JLabel labelUrl = new JLabel(Dialog_DbSettings_Label_Url.get());
+        JLabel labelUserName = new JLabel(Dialog_DbSettings_Label_UserName.get());
+        JLabel labelPassword = new JLabel(Dialog_DbSettings_Label_Passord.get());
+        JLabel labelShutdownUrl = new JLabel(Dialog_DbSettings_Label_ShutdownUrl.get());
+        JLabel labelDriverName = new JLabel(Dialog_DbSettings_Label_DriverName.get());
 
         engineSelector.setSelectedItem(null);
         engineSelector.addItemListener(new FieldSetter());
