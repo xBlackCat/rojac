@@ -57,6 +57,10 @@ final class MenuHelper {
      * @param url
      */
     static void addOpenLink(JPopupMenu menu, Message linkMessage, String url) {
+        if (!Desktop.isDesktopSupported()) {
+            return;
+        }
+
         final Desktop desktop = Desktop.getDesktop();
 
         if (url != null && desktop.isSupported(Desktop.Action.BROWSE)) {
