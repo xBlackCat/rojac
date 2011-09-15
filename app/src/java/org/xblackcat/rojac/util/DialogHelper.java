@@ -3,8 +3,10 @@ package org.xblackcat.rojac.util;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.dialog.AboutDialog;
+import org.xblackcat.rojac.gui.dialog.dbsettings.DBSettingsDialog;
 import org.xblackcat.rojac.gui.dialog.options.OptionsDialog;
 import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
+import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 
 import java.awt.*;
 
@@ -85,5 +87,14 @@ public class DialogHelper {
         WindowsUtils.center(dlg, frame);
 
         dlg.setVisible(true);
+    }
+
+    public static DatabaseSettings showDBSettingsDialog(Window mainFrame) {
+        DBSettingsDialog dlg = new DBSettingsDialog(mainFrame);
+
+        WindowsUtils.center(dlg, mainFrame);
+        dlg.setVisible(true);
+
+        return dlg.getSettings();
     }
 }
