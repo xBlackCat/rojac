@@ -5,15 +5,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.RojacException;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
-import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.IPropertiable;
 import org.xblackcat.rojac.service.storage.database.SQL;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
-import org.xblackcat.rojac.service.storage.database.connection.SimplePooledConnectionFactory;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.*;
@@ -269,30 +265,8 @@ public final class DatabaseUtils {
         return null;
     }
 
-    public static DBStorage initializeStorage(String defaultEngine) throws RojacException {
-        DatabaseSettings settings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
-
-        String engine;
-        if (settings == null) {
-            // TODO: show database settings dialog.
-
-            settings = readDefaults(defaultEngine);
-            engine = defaultEngine;
-
-            Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(settings);
-        } else {
-            engine = settings.getEngine();
-        }
-
-        IConnectionFactory connectionFactory = new SimplePooledConnectionFactory(settings);
-
-        DBStorage storage = new DBStorage(engine, connectionFactory);
-        storage.initialize();
-        return storage;
-    }
-
     @SuppressWarnings({"unchecked"})
-    private static IConnectionFactory createConnectionFactory(String connectionFactoryName, DatabaseSettings databaseSettings) throws StorageInitializationException {
+    public static IConnectionFactory createConnectionFactory(String connectionFactoryName, DatabaseSettings databaseSettings) throws StorageInitializationException {
 
         Class<?> connectionFactoryClass;
         try {

@@ -25,7 +25,8 @@ import java.awt.event.ActionEvent;
 public class OptionsDialog extends JDialog {
     private final APage[] pages = new APage[]{
             new PropertiesPage(),
-            new ShortCutManagerPage()
+            new ShortCutManagerPage() ,
+            new DBSettingsPage()
     };
 
     public OptionsDialog(Window mainFrame) throws RojacException {

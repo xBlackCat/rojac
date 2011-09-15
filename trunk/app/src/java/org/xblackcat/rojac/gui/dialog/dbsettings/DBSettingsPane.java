@@ -139,7 +139,7 @@ public class DBSettingsPane extends JPanel {
     public DatabaseSettings getCurrentSettings() {
         String selectedItem = (String) engineSelector.getSelectedItem();
 
-        return updateSettings(selectedItem);
+        return selectedItem == null ? null : updateSettings(selectedItem);
     }
 
     private String loadEngines() throws IOException {
@@ -176,6 +176,9 @@ public class DBSettingsPane extends JPanel {
 
     private DatabaseSettings updateSettings(String engine) {
         DatabaseSettings current = engines.get(engine);
+        if (current == null) {
+            return null;
+        }
 
         DatabaseSettings settings = new DatabaseSettings(
                 engine,
@@ -189,6 +192,10 @@ public class DBSettingsPane extends JPanel {
         engines.put(engine, settings);
 
         return settings;
+    }
+
+    public void requestFocusInField() {
+        engineSelector.requestFocus();
     }
 
     private class FieldSetter implements ItemListener {
