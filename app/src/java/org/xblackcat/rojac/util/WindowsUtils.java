@@ -136,12 +136,11 @@ public final class WindowsUtils {
         // Set common parameters
         button.setHorizontalAlignment(SwingConstants.CENTER);
         button.setVerticalAlignment(SwingConstants.BOTTOM);
-//        button.setBorder(null);
         button.setBackground(Color.white);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
-//        button.setMargin(EMPTY_MARGIN);
         button.setRolloverEnabled(true);
+        button.setFocusable(false);
         button.setOpaque(false);
 
         // Set icons
