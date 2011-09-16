@@ -22,14 +22,18 @@ public class DBSettingsPage extends APage {
 
     @Override
     protected void applySettings(Window mainFrame) {
-        final DatabaseSettings currentSettings = settingsPane.getCurrentSettings();
-        if (currentSettings == null) {
+        DatabaseSettings currentSettings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
+
+        final DatabaseSettings newSettings = settingsPane.getCurrentSettings();
+        if (newSettings == null) {
             return;
         }
 
-        Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(currentSettings);
+        if (!currentSettings.equals(newSettings)) {
+            Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(newSettings);
 
-        new DatabaseInstaller(currentSettings).execute();
+            new DatabaseInstaller(newSettings).execute();
+        }
     }
 
     @Override
