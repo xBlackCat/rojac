@@ -18,9 +18,13 @@ import java.sql.SQLException;
 
 public class SimplePooledConnectionFactory extends AConnectionFactory {
     private final ObjectPool connectionPool = new GenericObjectPool(null, 20);
+    private final String poolName;
+    private final String connectionUrl;
+    private final PoolingDriver driver;
 
     public SimplePooledConnectionFactory(DatabaseSettings databaseSettings) throws StorageInitializationException {
         super(databaseSettings);
+        poolName = "rojacdb." + System.currentTimeMillis();
 
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
                 databaseSettings.getUrl(),
@@ -43,16 +47,22 @@ public class SimplePooledConnectionFactory extends AConnectionFactory {
         }
 
         try {
-            PoolingDriver driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp:");
+            driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp:");
 
-            driver.registerPool("rojacdb", connectionPool);
+            driver.registerPool(poolName, connectionPool);
         } catch (SQLException e) {
             throw new StorageInitializationException("Can not obtain pooling driver", e);
         }
+        connectionUrl = "jdbc:apache:commons:dbcp:" + poolName;
     }
 
     public Connection getWriteConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:apache:commons:dbcp:rojacdb");
+        try {
+            driver.getConnectionPool(poolName);
+        } catch (SQLException e) {
+            return new FakeConnection();
+        }
+        return DriverManager.getConnection(connectionUrl);
     }
 
     @Override
@@ -64,8 +74,7 @@ public class SimplePooledConnectionFactory extends AConnectionFactory {
     public void shutdown() {
         super.shutdown();
         try {
-            PoolingDriver driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp:");
-            driver.closePool("rojacdb");
+            driver.closePool(poolName);
         } catch (SQLException e) {
             log.error("Can not close pool.", e);
         }

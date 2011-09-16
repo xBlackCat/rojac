@@ -45,4 +45,46 @@ public class DatabaseSettings {
     public Class<?> getJdbcDriverClass() {
         return jdbcDriverClass;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DatabaseSettings that = (DatabaseSettings) o;
+
+        if (!engine.equals(that.engine)) {
+            return false;
+        }
+        if (!jdbcDriverClass.equals(that.jdbcDriverClass)) {
+            return false;
+        }
+        if (password != null ? !password.equals(that.password) : that.password != null) {
+            return false;
+        }
+        if (shutdownUrl != null ? !shutdownUrl.equals(that.shutdownUrl) : that.shutdownUrl != null) {
+            return false;
+        }
+        if (!url.equals(that.url)) {
+            return false;
+        }
+
+        return userName != null ? userName.equals(that.userName) : that.userName == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = engine.hashCode();
+        result = 31 * result + url.hashCode();
+        result = 31 * result + (shutdownUrl != null ? shutdownUrl.hashCode() : 0);
+        result = 31 * result + (userName != null ? userName.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + jdbcDriverClass.hashCode();
+        return result;
+    }
 }
