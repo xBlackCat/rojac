@@ -14,6 +14,9 @@ import java.util.Map;
 * @author xBlackCat
 */
 class FakeStatement implements CallableStatement {
+
+    private final EmptyResultSet emptyResultSet = new EmptyResultSet();
+
     @Override
     public void registerOutParameter(int parameterIndex, int sqlType) throws SQLException {
     }
@@ -530,7 +533,7 @@ class FakeStatement implements CallableStatement {
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        return null;
+        return emptyResultSet;
     }
 
     @Override
@@ -755,7 +758,7 @@ class FakeStatement implements CallableStatement {
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        return new EmptyResultSet();
+        return emptyResultSet;
     }
 
     @Override
@@ -822,7 +825,7 @@ class FakeStatement implements CallableStatement {
 
     @Override
     public ResultSet getResultSet() throws SQLException {
-        return null;
+        return emptyResultSet;
     }
 
     @Override
@@ -888,7 +891,7 @@ class FakeStatement implements CallableStatement {
 
     @Override
     public ResultSet getGeneratedKeys() throws SQLException {
-        return null;
+        return emptyResultSet;
     }
 
     @Override
