@@ -172,7 +172,7 @@ public class ExtendedMarkDialog extends JDialog {
         maxScope = scope;
 
         pack();
-        WindowsUtils.center(this, getOwner());
+        WindowsUtils.center(this);
         setVisible(true);
 
         chooser.cleanup();

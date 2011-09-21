@@ -72,7 +72,7 @@ public class Request<T> {
         if (frame != null) {
             while (!UserHelper.isUserRegistered()) {
                 LoginDialog ld = new LoginDialog(frame);
-                WindowsUtils.center(ld, frame);
+                WindowsUtils.center(ld);
                 if (ld.showLoginDialog()) {
                     return;
                 }

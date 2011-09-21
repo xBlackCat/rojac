@@ -20,7 +20,7 @@ public class DialogHelper {
 
     public static void showAboutDialog(Window owner) {
         AboutDialog ad = new AboutDialog(owner);
-        WindowsUtils.center(ad, owner);
+        WindowsUtils.center(ad);
         ad.setVisible(true);
     }
 
@@ -28,7 +28,7 @@ public class DialogHelper {
         try {
             OptionsDialog od = new OptionsDialog(parent);
 
-            WindowsUtils.center(od, parent);
+            WindowsUtils.center(od);
             od.setVisible(true);
         } catch (RojacException ex) {
             showExceptionDialog(ex);
@@ -84,7 +84,7 @@ public class DialogHelper {
     public static void openForumSubscriptionDialog(Window frame, Runnable onClose) {
         SubscriptionDialog dlg = new SubscriptionDialog(frame, onClose);
 
-        WindowsUtils.center(dlg, frame);
+        WindowsUtils.center(dlg);
 
         dlg.setVisible(true);
     }
@@ -92,7 +92,7 @@ public class DialogHelper {
     public static DatabaseSettings showDBSettingsDialog(Window mainFrame) {
         DBSettingsDialog dlg = new DBSettingsDialog(mainFrame);
 
-        WindowsUtils.center(dlg, mainFrame);
+        WindowsUtils.center(dlg);
         dlg.setVisible(true);
 
         return dlg.getSettings();
