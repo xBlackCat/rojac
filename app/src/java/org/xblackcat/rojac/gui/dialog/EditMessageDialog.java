@@ -67,7 +67,7 @@ public class EditMessageDialog extends JDialog {
     public void createTopic(int forumId) {
         this.forumId = forumId;
 
-        WindowsUtils.center(this, getOwner());
+        WindowsUtils.center(this);
         setVisible(true);
     }
 
@@ -257,7 +257,7 @@ public class EditMessageDialog extends JDialog {
 
                 panelEdit.setMessage(messageInfo.getBody(), messageInfo.getSubj());
 
-                WindowsUtils.center(EditMessageDialog.this, getOwner());
+                WindowsUtils.center(EditMessageDialog.this);
                 setVisible(true);
 
             }

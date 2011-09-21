@@ -6,6 +6,7 @@ import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
 import org.xblackcat.rojac.util.SynchronizationUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -60,6 +61,7 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
             logProgress.setValue(0);
 
             if (DIALOGS_PROGRESS_AUTOSHOW.get()) {
+                WindowsUtils.center(this);
                 setVisible(true);
             }
         }

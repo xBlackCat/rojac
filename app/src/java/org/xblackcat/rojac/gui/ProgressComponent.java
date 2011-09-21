@@ -5,6 +5,7 @@ import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
 import org.xblackcat.rojac.util.SynchronizationUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,11 +18,11 @@ import java.awt.event.MouseEvent;
  * @author xBlackCat
  */
 class ProgressComponent extends JPanel implements IProgressListener {
-    private final Component trackerDialog;
+    private final Window trackerDialog;
     private final JProgressBar bar = new JProgressBar(0, 100);
     private ProgressState lastState;
 
-    public ProgressComponent(Component dialog) {
+    public ProgressComponent(Window dialog) {
         super(new BorderLayout(5, 0));
 
         setBorder(new EmptyBorder(2, 2, 2, 2));
@@ -81,6 +82,7 @@ class ProgressComponent extends JPanel implements IProgressListener {
         if (e.getState() == ProgressState.Start) {
             bar.setValue(0);
             if (!trackerDialog.isVisible() && !Property.DIALOGS_PROGRESS_AUTOSHOW.get()) {
+                WindowsUtils.center(trackerDialog);
                 setVisible(true);
             }
         }

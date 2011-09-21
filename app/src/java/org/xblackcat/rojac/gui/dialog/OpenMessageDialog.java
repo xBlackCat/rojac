@@ -152,7 +152,7 @@ public class OpenMessageDialog extends JDialog {
 
         messageIdText.selectAll();
 
-        WindowsUtils.center(this, getOwner());
+        WindowsUtils.center(this);
 
         setVisible(true);
 

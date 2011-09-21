@@ -179,8 +179,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         final IProgressController progressControl = ServiceFactory.getInstance().getProgressControl();
         progressControl.addProgressListener(progressTrackerDialog);
         progressControl.addProgressListener(progressInToolbar);
-        WindowsUtils.center(progressTrackerDialog, this);
-
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 

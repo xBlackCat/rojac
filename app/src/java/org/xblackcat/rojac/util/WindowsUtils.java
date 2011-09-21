@@ -193,6 +193,17 @@ public final class WindowsUtils {
     }
 
     /**
+     * Center a windows relative to its owner.
+     *
+     * @param window window to center.
+     */
+    public static void center(Window window) {
+        if (window != null) {
+            center(window, window.getOwner());
+        }
+    }
+
+    /**
      * Place specified window at the center of specified component. If component is not visible or <code>null</code> -
      * window will be placed at the center of the screen.
      *
