@@ -138,6 +138,10 @@ public enum Message {
     Dialog_DbSettings_Label_ShutdownUrl,
     Dialog_DbSettings_Label_DriverName,
 
+    Dialog_DbCheck_Title,
+    Dialog_DbCheck_Success,
+    Dialog_DbCheck_Fail,
+
     // Subscription manager dialog related
     Dialog_Subscription_Title,
     Dialog_Subscription_Header_Subscription,

@@ -9,6 +9,8 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.IForumAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
 import java.util.*;
@@ -168,6 +170,8 @@ class ForumDecorator extends ADecorator {
             Map<Forum, ForumStatistic> result = new HashMap<>();
             try {
                 Collection<Forum> forums;
+
+                final IForumAH fah = Storage.get(IForumAH.class);
 
                 if (forumId == null) {
                     forums = fah.getAllForums();
