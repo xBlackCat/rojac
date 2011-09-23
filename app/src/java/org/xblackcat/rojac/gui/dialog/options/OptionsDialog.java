@@ -36,8 +36,8 @@ public class OptionsDialog extends JDialog {
 
         initializeLayout();
 
-        setMinimumSize(new Dimension(400, 300));
         pack();
+        setMinimumSize(getSize());
     }
 
     private void initializeLayout() {

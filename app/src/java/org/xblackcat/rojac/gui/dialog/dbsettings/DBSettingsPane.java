@@ -1,24 +1,36 @@
 package org.xblackcat.rojac.gui.dialog.dbsettings;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.RojacDebugException;
+import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.i18n.JLOptionPane;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
+import org.xblackcat.rojac.service.storage.database.connection.SimpleConnectionFactory;
+import org.xblackcat.rojac.service.storage.database.convert.Converters;
+import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
+import org.xblackcat.rojac.service.storage.database.helper.QueryHelper;
 import org.xblackcat.rojac.util.DatabaseUtils;
+import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 import static org.xblackcat.rojac.i18n.Message.*;
 
@@ -35,12 +47,10 @@ public class DBSettingsPane extends JPanel {
     private JPasswordField fieldPassword;
     private JTextField fieldShudownUrl;
     private JTextField fieldDriverName;
+    private final JButton checkButton;
 
     public DBSettingsPane() {
-        GroupLayout groupLayout = new GroupLayout(this);
-        setLayout(groupLayout);
-        groupLayout.setAutoCreateContainerGaps(true);
-        groupLayout.setAutoCreateGaps(true);
+        super(new BorderLayout(5, 5));
 
         String currentEngine;
         try {
@@ -49,10 +59,18 @@ public class DBSettingsPane extends JPanel {
             throw new RojacDebugException("Can not load list of engines", e);
         }
 
-        initialize(currentEngine, groupLayout);
+        add(getFieldsList(currentEngine), BorderLayout.CENTER);
+        checkButton = WindowsUtils.setupButton(new CheckDBSettings());
+        add(WindowsUtils.coverComponent(checkButton, FlowLayout.RIGHT, getBackground()), BorderLayout.SOUTH);
     }
 
-    private void initialize(String currentEngine, GroupLayout groupLayout) {
+    private JComponent getFieldsList(String currentEngine) {
+        JPanel fieldsPane = new JPanel();
+        GroupLayout groupLayout = new GroupLayout(fieldsPane);
+        fieldsPane.setLayout(groupLayout);
+        groupLayout.setAutoCreateContainerGaps(true);
+        groupLayout.setAutoCreateGaps(true);
+
         final ArrayList<String> list = new ArrayList<>(this.engines.keySet());
         Collections.sort(list);
         engineSelector = new JComboBox<>(new ListComboBoxModel<>(list));
@@ -134,6 +152,8 @@ public class DBSettingsPane extends JPanel {
                                 .addComponent(labelDriverName)
                                 .addComponent(fieldDriverName)
                 );
+
+        return fieldsPane;
     }
 
     public DatabaseSettings getCurrentSettings() {
@@ -227,5 +247,75 @@ public class DBSettingsPane extends JPanel {
             }
         }
 
+    }
+
+    private class CheckDBSettings extends AButtonAction {
+        public CheckDBSettings() {
+            super(Message.Button_Check);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final DatabaseSettings curSet = getCurrentSettings();
+
+            if (curSet == null) {
+                return;
+            }
+
+            checkButton.setEnabled(false);
+
+            Runnable buttonEnabler = new Runnable() {
+                @Override
+                public void run() {
+                    checkButton.setEnabled(true);
+                }
+            };
+            new RojacWorker<Void, Exception>(buttonEnabler) {
+                @Override
+                protected Void perform() throws Exception {
+                    try {
+                        IConnectionFactory factory = new SimpleConnectionFactory(curSet);
+                        IQueryHelper queryHelper = new QueryHelper(factory);
+
+                        Number answer = queryHelper.executeSingle(Converters.TO_NUMBER, "SELECT 21+21");
+
+                        if (answer != null && answer.intValue() == 42) {
+                            publish((Exception) null);
+                        } else {
+                            publish(new IllegalStateException("Database math is wrong!"));
+                        }
+
+                        queryHelper.shutdown();
+
+                    } catch (StorageException e1) {
+                        publish(e1);
+                    }
+
+
+                    return null;
+                }
+
+                @Override
+                protected void process(List<Exception> chunks) {
+                    for (Exception check : chunks) {
+                        if (check == null) {
+                            JLOptionPane.showMessageDialog(
+                                    DBSettingsPane.this,
+                                    Message.Dialog_DbCheck_Success.get(),
+                                    Message.Dialog_DbCheck_Title.get(),
+                                    JOptionPane.INFORMATION_MESSAGE
+                            );
+                        } else {
+                            JLOptionPane.showMessageDialog(
+                                    DBSettingsPane.this,
+                                    Message.Dialog_DbCheck_Fail.get(ExceptionUtils.getStackTrace(check)),
+                                    Message.Dialog_DbCheck_Title.get(),
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                    }
+                }
+            }.execute();
+        }
     }
 }
