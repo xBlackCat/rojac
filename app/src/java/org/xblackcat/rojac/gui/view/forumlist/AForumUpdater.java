@@ -12,10 +12,10 @@ import org.xblackcat.rojac.util.RojacWorker;
  * @author xBlackCat Date: 20.07.11
  */
 abstract class AForumUpdater<V, T> extends RojacWorker<V, T> {
-    protected final IForumAH fah = Storage.get(IForumAH.class);
-
     protected ForumStatistic getForumStatistic(int forumId) throws StorageException {
         assert RojacUtils.checkThread(false);
+
+        final IForumAH fah = Storage.get(IForumAH.class);
 
         Number totalMessages = fah.getMessagesInForum(forumId);
         Number unreadMessages = fah.getUnreadMessagesInForum(forumId);

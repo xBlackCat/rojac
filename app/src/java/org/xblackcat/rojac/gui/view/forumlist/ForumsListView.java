@@ -15,6 +15,8 @@ import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.storage.IForumAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -235,6 +237,8 @@ public class ForumsListView extends AView {
     private class ForumLoader extends AForumUpdater<Void, ForumData> {
         @Override
         protected Void perform() throws Exception {
+            final IForumAH fah = Storage.get(IForumAH.class);
+
             try {
                 for (Forum f : fah.getAllForums()) {
                     int forumId = f.getForumId();
