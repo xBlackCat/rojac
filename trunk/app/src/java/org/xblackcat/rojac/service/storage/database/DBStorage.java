@@ -30,14 +30,8 @@ public class DBStorage implements IStorage {
 
         helper = new QueryHelper(connectionFactory);
 
-        try {
-            structureChecker = new StructureChecker(helper);
-            queryExecutor = new QueryHolder(helper);
-        } catch (StorageInitializationException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new StorageInitializationException("Unspecified exception occurs while DB storage initialization.", e);
-        }
+        structureChecker = new StructureChecker(helper);
+        queryExecutor = new QueryHolder(helper);
 
         // Initialize the object AHs
         accessHelpers.put(IForumAH.class, new DBForumAH(queryExecutor));

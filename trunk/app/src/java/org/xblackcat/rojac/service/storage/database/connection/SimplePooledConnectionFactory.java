@@ -63,10 +63,11 @@ public class SimplePooledConnectionFactory extends AConnectionFactory {
     @Override
     public void shutdown() {
         super.shutdown();
-        try {
-            driver.closePool(poolName);
-        } catch (SQLException e) {
-            log.error("Can not close pool.", e);
-        }
+        // TODO: enable and find another way to kill tasks waiting for connections.
+//        try {
+//            driver.closePool(poolName);
+//        } catch (SQLException e) {
+//            log.error("Can not close pool.", e);
+//        }
     }
 }

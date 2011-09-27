@@ -425,13 +425,14 @@ public class MessageView extends AnItemView {
                 MessageData messageData;
                 try {
                     if (messageId > 0) {
-                        // Regulag message
-                        messageData = Storage.get(IMessageAH.class).getMessageData(messageId);
+                        // Regular message
+                        IMessageAH messageAH = Storage.get(IMessageAH.class);
+                        messageData = messageAH.getMessageData(messageId);
                         if (messageData == null) {
                             // Somehow message is not found - do not load it
                             return null;
                         }
-                        messageBody = Storage.get(IMessageAH.class).getMessageBodyById(messageId);
+                        messageBody = messageAH.getMessageBodyById(messageId);
                     } else {
                         // Local message
                         NewMessage newMessage = Storage.get(INewMessageAH.class).getNewMessageById(-messageId);

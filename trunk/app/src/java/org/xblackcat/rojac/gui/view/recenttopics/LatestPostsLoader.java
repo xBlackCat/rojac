@@ -27,12 +27,13 @@ class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
         final Integer listSize = Property.VIEW_RECENT_TOPIC_LIST_SIZE.get();
 
         // TODO: optimize loading latest topics
-        int[] latestTopics = Storage.get(IMessageAH.class).getLatestTopics(listSize);
+        IMessageAH messageAH = Storage.get(IMessageAH.class);
+        int[] latestTopics = messageAH.getLatestTopics(listSize);
 
         TIntObjectHashMap<Forum> forums = new TIntObjectHashMap<>();
 
         for (int lastPostId : latestTopics) {
-            final MessageData lastPost = Storage.get(IMessageAH.class).getMessageData(lastPostId);
+            final MessageData lastPost = messageAH.getMessageData(lastPostId);
 
             Forum f = forums.get(lastPost.getForumId());
             if (f == null) {
@@ -46,7 +47,7 @@ class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
                 // Message is topic
                 lastThread = lastPost;
             } else {
-                lastThread = Storage.get(IMessageAH.class).getMessageData(lastPost.getTopicId());
+                lastThread = messageAH.getMessageData(lastPost.getTopicId());
             }
 
             publish(new LastPostInfo(
