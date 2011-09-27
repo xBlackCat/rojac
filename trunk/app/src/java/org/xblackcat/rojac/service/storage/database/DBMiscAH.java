@@ -8,7 +8,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
  */
 
 final class DBMiscAH extends AnAH implements IMiscAH {
-    DBMiscAH(IQueryExecutor helper) {
+    DBMiscAH(IQueryHolder helper) {
         super(helper);
     }
 

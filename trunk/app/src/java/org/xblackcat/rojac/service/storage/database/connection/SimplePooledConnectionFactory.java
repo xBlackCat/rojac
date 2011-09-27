@@ -17,7 +17,7 @@ import java.sql.SQLException;
  */
 
 public class SimplePooledConnectionFactory extends AConnectionFactory {
-    private final ObjectPool connectionPool = new GenericObjectPool(null, 20);
+    private final ObjectPool connectionPool = new GenericObjectPool(null, 20, GenericObjectPool.WHEN_EXHAUSTED_GROW, 0, true, true);
     private final String poolName;
     private final String connectionUrl;
     private final PoolingDriver driver;
@@ -56,18 +56,8 @@ public class SimplePooledConnectionFactory extends AConnectionFactory {
         connectionUrl = "jdbc:apache:commons:dbcp:" + poolName;
     }
 
-    public Connection getWriteConnection() throws SQLException {
-        try {
-            driver.getConnectionPool(poolName);
-        } catch (SQLException e) {
-            return new FakeConnection();
-        }
+    public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(connectionUrl);
-    }
-
-    @Override
-    public Connection getReadConnection() throws SQLException {
-        return getWriteConnection();
     }
 
     @Override

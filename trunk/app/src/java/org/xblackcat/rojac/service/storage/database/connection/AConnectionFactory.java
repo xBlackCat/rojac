@@ -31,4 +31,9 @@ public abstract class AConnectionFactory implements IConnectionFactory {
             }
         }
     }
+
+    @Override
+    public String getEngine() {
+        return databaseSettings.getEngine();
+    }
 }

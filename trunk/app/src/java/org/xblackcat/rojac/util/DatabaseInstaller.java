@@ -2,10 +2,7 @@ package org.xblackcat.rojac.util;
 
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
-import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
-import org.xblackcat.rojac.service.storage.database.connection.SimplePooledConnectionFactory;
 
 import java.util.List;
 
@@ -28,12 +25,8 @@ public class DatabaseInstaller extends RojacWorker<Void, Void> {
 
     @Override
     protected Void perform() throws Exception {
-        IConnectionFactory connectionFactory = new SimplePooledConnectionFactory(settings);
-
-        DBStorage storage = new DBStorage(settings.getEngine(), connectionFactory);
-
         // Replace storage engine before updating data in views.
-        Storage.setStorage(storage);
+        Storage.setStorage(settings);
 
         publish();
 

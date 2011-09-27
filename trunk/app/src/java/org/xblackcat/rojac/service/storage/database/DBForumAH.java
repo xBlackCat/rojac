@@ -11,7 +11,7 @@ import java.util.Collection;
  * @author ASUS
  */
 final class DBForumAH extends AnAH implements IForumAH {
-    DBForumAH(IQueryExecutor helper) {
+    DBForumAH(IQueryHolder helper) {
         super(helper);
     }
 

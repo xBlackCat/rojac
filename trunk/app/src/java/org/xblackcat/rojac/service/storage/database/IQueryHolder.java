@@ -10,7 +10,7 @@ import java.util.Map;
  * The helper interface to avoid some duplicates in the code.
  */
 
-interface IQueryExecutor {
+interface IQueryHolder {
     int update(DataQuery sql, Object... params) throws StorageException;
 
     <T> T executeSingle(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException;

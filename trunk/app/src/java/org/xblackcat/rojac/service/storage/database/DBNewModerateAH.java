@@ -12,7 +12,7 @@ import java.util.Collection;
  */
 
 final class DBNewModerateAH extends AnAH implements INewModerateAH {
-    DBNewModerateAH(IQueryExecutor helper) {
+    DBNewModerateAH(IQueryHolder helper) {
         super(helper);
     }
 

@@ -15,7 +15,7 @@ import java.util.Collection;
  */
 
 final class DBRatingAH extends AnAH implements IRatingAH {
-    DBRatingAH(IQueryExecutor helper) {
+    DBRatingAH(IQueryHolder helper) {
         super(helper);
     }
 

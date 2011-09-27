@@ -8,9 +8,9 @@ import java.sql.SQLException;
  */
 
 public interface IConnectionFactory {
-    Connection getWriteConnection() throws SQLException;
-
-    Connection getReadConnection() throws SQLException;
+    Connection getConnection() throws SQLException;
 
     void shutdown();
+
+    String getEngine();
 }

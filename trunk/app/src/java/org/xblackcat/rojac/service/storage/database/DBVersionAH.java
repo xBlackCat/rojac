@@ -11,7 +11,7 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
  */
 
 final class DBVersionAH extends AnAH implements IVersionAH {
-    DBVersionAH(IQueryExecutor helper) {
+    DBVersionAH(IQueryHolder helper) {
         super(helper);
     }
 

@@ -34,9 +34,14 @@ public final class DatabaseUtils {
     private DatabaseUtils() {
     }
 
-    public static <T extends Enum<T> & IPropertiable> Map<T, String> loadSQLs(String propRoot, Class<T> type) throws IOException, StorageInitializationException {
+    public static <T extends Enum<T> & IPropertiable> Map<T, String> loadSQLs(String propRoot, Class<T> type) throws StorageInitializationException {
         String name = '/' + DBCONFIG_PACKAGE + propRoot + "/sql.data.properties";
-        Properties queries = ResourceUtils.loadProperties(name);
+        Properties queries;
+        try {
+            queries = ResourceUtils.loadProperties(name);
+        } catch (IOException e) {
+            throw new StorageInitializationException("Can not load queries list", e);
+        }
 
         Map<T, String> qs = new EnumMap<>(type);
         for (T q : type.getEnumConstants()) {

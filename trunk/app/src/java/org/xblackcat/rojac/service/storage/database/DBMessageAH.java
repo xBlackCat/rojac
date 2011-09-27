@@ -16,7 +16,7 @@ import java.util.Collection;
  */
 
 final class DBMessageAH extends AnAH implements IMessageAH {
-    DBMessageAH(IQueryExecutor helper) {
+    DBMessageAH(IQueryHolder helper) {
         super(helper);
     }
 

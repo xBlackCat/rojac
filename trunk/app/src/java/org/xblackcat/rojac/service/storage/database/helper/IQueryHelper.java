@@ -21,4 +21,6 @@ public interface IQueryHelper {
     <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, String sql, K... keys) throws StorageException;
 
     void shutdown();
+
+    String getEngine();
 }

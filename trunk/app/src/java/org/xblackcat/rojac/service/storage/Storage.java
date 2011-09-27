@@ -1,5 +1,9 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.xblackcat.rojac.service.storage.database.DBStorage;
+import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.util.RojacUtils;
+
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -21,16 +25,19 @@ public class Storage {
         }
     }
 
-    public static void setStorage(IStorage newStorage) throws StorageException {
-        if (newStorage == null) {
-            throw new NullPointerException("Storage can not be null");
+    public static void setStorage(DatabaseSettings settings) throws StorageException {
+        assert RojacUtils.checkThread(false);
+
+        if (settings == null) {
+            throw new NullPointerException("Invalid settings.");
         }
 
+        DBStorage newStorage = new DBStorage(settings);
         IStorage oldStorage = storage;
 
         lock.writeLock().lock();
         try {
-            newStorage.initialize();
+            newStorage.check();
             storage = newStorage;
         } finally {
             lock.writeLock().unlock();
