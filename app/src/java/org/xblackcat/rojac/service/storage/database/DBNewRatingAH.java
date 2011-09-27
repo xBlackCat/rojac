@@ -13,7 +13,7 @@ import java.util.Collection;
  */
 
 final class DBNewRatingAH extends AnAH implements INewRatingAH {
-    DBNewRatingAH(IQueryExecutor helper) {
+    DBNewRatingAH(IQueryHolder helper) {
         super(helper);
     }
 

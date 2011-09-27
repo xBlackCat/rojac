@@ -10,7 +10,7 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
  */
 
 final class DBForumGroupAH extends AnAH implements IForumGroupAH {
-    public DBForumGroupAH(IQueryExecutor helper) {
+    public DBForumGroupAH(IQueryHolder helper) {
         super(helper);
     }
 

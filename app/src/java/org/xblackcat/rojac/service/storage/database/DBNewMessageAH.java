@@ -12,7 +12,7 @@ import java.util.Collection;
  */
 
 final class DBNewMessageAH extends AnAH implements INewMessageAH {
-    DBNewMessageAH(IQueryExecutor helper) {
+    DBNewMessageAH(IQueryHolder helper) {
         super(helper);
     }
 

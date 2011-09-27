@@ -11,7 +11,7 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
  * @author xBlackCat
  */
 final class DBStatisticAH extends AnAH implements IStatisticAH {
-    DBStatisticAH(IQueryExecutor helper) {
+    DBStatisticAH(IQueryHolder helper) {
         super(helper);
     }
 

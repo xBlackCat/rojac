@@ -13,7 +13,7 @@ import java.util.Collection;
  */
 
 final class DBFavoriteAH extends AnAH implements IFavoriteAH {
-    DBFavoriteAH(IQueryExecutor helper) {
+    DBFavoriteAH(IQueryHolder helper) {
         super(helper);
     }
 

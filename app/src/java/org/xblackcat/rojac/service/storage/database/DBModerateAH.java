@@ -13,7 +13,7 @@ import java.util.Collection;
  */
 
 final class DBModerateAH extends AnAH implements IModerateAH {
-    DBModerateAH(IQueryExecutor helper) {
+    DBModerateAH(IQueryHolder helper) {
         super(helper);
     }
 

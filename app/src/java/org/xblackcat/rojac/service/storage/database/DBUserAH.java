@@ -10,7 +10,7 @@ import org.xblackcat.rojac.service.storage.database.convert.Converters;
  */
 
 final class DBUserAH extends AnAH implements IUserAH {
-    DBUserAH(IQueryExecutor helper) {
+    DBUserAH(IQueryHolder helper) {
         super(helper);
     }
 
