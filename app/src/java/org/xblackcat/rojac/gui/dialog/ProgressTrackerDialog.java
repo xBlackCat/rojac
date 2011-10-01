@@ -31,6 +31,8 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
         super(mainFrame, ModalityType.MODELESS);
         JPanel cp = new JPanel(new BorderLayout());
 
+        logArea.setEditable(false);
+
         cp.add(new JScrollPane(logArea), BorderLayout.CENTER);
         logProgress = new JProgressBar(JProgressBar.VERTICAL, 0, 100);
         logProgress.setStringPainted(true);
