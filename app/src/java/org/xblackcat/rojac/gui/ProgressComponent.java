@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui;
 
-import org.xblackcat.rojac.gui.component.AButtonAction;
-import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
@@ -11,7 +9,6 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -25,26 +22,14 @@ class ProgressComponent extends JToolBar implements IProgressListener {
     private ProgressState lastState;
 
     public ProgressComponent(Window dialog) {
-        setBorder(null);
-
         setFloatable(false);
+        setBorderPainted(false);
 
         bar.setStringPainted(true);
 
         addSeparator();
         add(bar);
         setVisible(false);
-        final JButton cancelButton = WindowsUtils.setupImageButton("cancel", new AButtonAction(Message.Button_Cancel) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: implement
-            }
-        });
-        cancelButton.setDefaultCapable(false);
-        cancelButton.setFocusable(false);
-        add(cancelButton);
-
-        setMaximumSize(new Dimension(60, 60));
 
         this.trackerDialog = dialog;
 

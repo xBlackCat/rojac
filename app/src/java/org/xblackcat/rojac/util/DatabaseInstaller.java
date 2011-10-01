@@ -1,6 +1,8 @@
 package org.xblackcat.rojac.util;
 
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 
@@ -11,6 +13,7 @@ import java.util.List;
  *
  * @author xBlackCat
  */
+@TaskType(TaskTypeEnum.Background)
 public class DatabaseInstaller extends RojacWorker<Void, Void> {
     private final DatabaseSettings settings;
 
