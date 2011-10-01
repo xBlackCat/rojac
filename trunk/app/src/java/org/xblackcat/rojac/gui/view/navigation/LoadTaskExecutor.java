@@ -11,7 +11,7 @@ import java.util.LinkedList;
 /**
  * @author xBlackCat
  */
-@TaskType(TaskTypeEnum.Background)
+@TaskType(TaskTypeEnum.DataLoading)
 class LoadTaskExecutor implements Runnable {
     private final Collection<ALoadTask> tasks = new LinkedList<>();
 
