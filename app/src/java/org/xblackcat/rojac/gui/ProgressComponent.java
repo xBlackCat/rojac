@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui;
 
+import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
@@ -8,8 +10,8 @@ import org.xblackcat.rojac.util.SynchronizationUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -17,20 +19,30 @@ import java.awt.event.MouseEvent;
 /**
  * @author xBlackCat
  */
-class ProgressComponent extends JPanel implements IProgressListener {
+class ProgressComponent extends JToolBar implements IProgressListener {
     private final Window trackerDialog;
     private final JProgressBar bar = new JProgressBar(0, 100);
     private ProgressState lastState;
 
     public ProgressComponent(Window dialog) {
-        super(new BorderLayout(5, 0));
+        setBorder(null);
 
-        setBorder(new EmptyBorder(2, 2, 2, 2));
+        setFloatable(false);
 
         bar.setStringPainted(true);
 
-        add(bar, BorderLayout.CENTER);
+        addSeparator();
+        add(bar);
         setVisible(false);
+        final JButton cancelButton = WindowsUtils.setupImageButton("cancel", new AButtonAction(Message.Button_Cancel) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: implement
+            }
+        });
+        cancelButton.setDefaultCapable(false);
+        cancelButton.setFocusable(false);
+        add(cancelButton);
 
         setMaximumSize(new Dimension(60, 60));
 
@@ -108,6 +120,9 @@ class ProgressComponent extends JPanel implements IProgressListener {
     }
 
     public void setOrientation(int orientation) {
-        bar.setOrientation(orientation);
+        super.setOrientation(orientation);
+        if (bar != null) {
+            bar.setOrientation(orientation);
+        }
     }
 }
