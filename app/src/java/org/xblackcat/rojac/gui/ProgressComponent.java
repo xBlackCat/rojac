@@ -26,6 +26,7 @@ class ProgressComponent extends JToolBar implements IProgressListener {
         setBorderPainted(false);
 
         bar.setStringPainted(true);
+        bar.setMaximumSize(new Dimension(60, 60));
 
         addSeparator();
         add(bar);
