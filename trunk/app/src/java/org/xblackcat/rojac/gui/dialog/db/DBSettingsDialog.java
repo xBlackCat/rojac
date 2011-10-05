@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.gui.dialog.dbsettings;
+package org.xblackcat.rojac.gui.dialog.db;
 
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;

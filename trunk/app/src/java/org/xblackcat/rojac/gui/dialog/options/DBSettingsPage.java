@@ -1,12 +1,17 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
-import org.xblackcat.rojac.gui.dialog.dbsettings.DBSettingsPane;
+import org.xblackcat.rojac.gui.component.AButtonAction;
+import org.xblackcat.rojac.gui.dialog.db.DBSettingsPane;
+import org.xblackcat.rojac.gui.dialog.db.ImportDialog;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.DatabaseInstaller;
+import org.xblackcat.rojac.util.WindowsUtils;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 /**
  * 15.09.11 16:33
@@ -14,10 +19,13 @@ import java.awt.*;
  * @author xBlackCat
  */
 public class DBSettingsPage extends APage {
-    private DBSettingsPane settingsPane = new DBSettingsPane();
+    private final JButton migrateButton;
+    private final DBSettingsPane settingsPane;
 
-    public DBSettingsPage() {
-        add(settingsPane, BorderLayout.CENTER);
+    public DBSettingsPage(Window owner) {
+        migrateButton = WindowsUtils.setupButton(new ImportAction(owner));
+        settingsPane = new DBSettingsPane(migrateButton);
+        add(settingsPane, BorderLayout.NORTH);
     }
 
     @Override
@@ -44,5 +52,22 @@ public class DBSettingsPage extends APage {
     @Override
     public void placeFocus() {
         settingsPane.requestFocusInField();
+    }
+
+    private class ImportAction extends AButtonAction {
+        private final Window owner;
+
+        public ImportAction(Window owner) {
+            super(Message.Button_Import);
+            this.owner = owner;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ImportDialog importDialog = new ImportDialog(owner);
+
+            WindowsUtils.center(importDialog, owner);
+            importDialog.setVisible(true);
+        }
     }
 }
