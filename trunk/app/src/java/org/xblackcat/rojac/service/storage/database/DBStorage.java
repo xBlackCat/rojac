@@ -55,10 +55,14 @@ public class DBStorage implements IStorage {
         structureChecker.check();
     }
 
-    @SuppressWarnings({"unchecked"})
     @Override
     public <T extends AH> T get(Class<T> base) {
-        return (T) accessHelpers.get(base);
+        @SuppressWarnings({"unchecked"})
+        T accessHelper = (T) accessHelpers.get(base);
+
+        assert accessHelper != null : "Access helper is not registered: " + base.getSimpleName();
+
+        return accessHelper;
     }
 
     @Override
