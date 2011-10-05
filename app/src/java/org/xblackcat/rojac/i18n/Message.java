@@ -21,6 +21,7 @@ public enum Message {
     Button_Yes,
     Button_No,
     Button_ChangePassword,
+    Button_Import,
 
     Button_Reply_ToolTip,
 
@@ -112,6 +113,11 @@ public enum Message {
      */
     Dialog_SetMark_Message,
     Dialog_SetMark_Title,
+
+    Dialog_Import_Title,
+    Dialog_Import_Label,
+    Dialog_Import_Label_Source,
+    Dialog_Import_Label_Destination,
 
     // Confirm exit dialog
     Dialog_ConfirmExit_Message,

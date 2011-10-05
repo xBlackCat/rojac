@@ -1,12 +1,12 @@
-package org.xblackcat.rojac.gui.dialog.dbsettings;
+package org.xblackcat.rojac.gui.dialog.db;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xblackcat.rojac.RojacDebugException;
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
@@ -24,6 +24,7 @@ import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -45,30 +46,49 @@ public class DBSettingsPane extends JPanel {
     private JTextField fieldUrl;
     private JTextField fieldUserName;
     private JPasswordField fieldPassword;
-    private JTextField fieldShudownUrl;
+    private JTextField fieldShutdownUrl;
     private JTextField fieldDriverName;
     private final JButton checkButton;
 
     public DBSettingsPane() {
+        this(false);
+    }
+
+    public DBSettingsPane(boolean skipCurrentSettings) {
+        this(skipCurrentSettings, null);
+    }
+
+    public DBSettingsPane(JButton customButton) {
+        this(false, customButton);
+    }
+
+    public DBSettingsPane(boolean skipCurrentSettings, JButton customButton) {
         super(new BorderLayout(5, 5));
 
         String currentEngine;
         try {
-            currentEngine = loadEngines();
+            currentEngine = loadEngines(skipCurrentSettings);
         } catch (IOException e) {
             throw new RojacDebugException("Can not load list of engines", e);
         }
 
         add(getFieldsList(currentEngine), BorderLayout.CENTER);
         checkButton = WindowsUtils.setupButton(new CheckDBSettings());
-        add(WindowsUtils.coverComponent(checkButton, FlowLayout.RIGHT, getBackground()), BorderLayout.SOUTH);
+        JPanel cover = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+        cover.setBorder(null);
+        if (customButton != null) {
+            cover.add(customButton);
+        }
+        cover.add(checkButton);
+        cover.setBackground(getBackground());
+        add(cover, BorderLayout.SOUTH);
     }
 
     private JComponent getFieldsList(String currentEngine) {
         JPanel fieldsPane = new JPanel();
+        fieldsPane.setBorder(new EmptyBorder(0, 5, 0, 5));
         GroupLayout groupLayout = new GroupLayout(fieldsPane);
         fieldsPane.setLayout(groupLayout);
-        groupLayout.setAutoCreateContainerGaps(true);
         groupLayout.setAutoCreateGaps(true);
 
         final ArrayList<String> list = new ArrayList<>(this.engines.keySet());
@@ -78,7 +98,7 @@ public class DBSettingsPane extends JPanel {
         fieldUrl = new JTextField();
         fieldUserName = new JTextField();
         fieldPassword = new JPasswordField();
-        fieldShudownUrl = new JTextField();
+        fieldShutdownUrl = new JTextField();
         fieldDriverName = new JTextField();
 
         fieldDriverName.setEditable(false);
@@ -117,7 +137,7 @@ public class DBSettingsPane extends JPanel {
                                 .addComponent(fieldUrl)
                                 .addComponent(fieldUserName)
                                 .addComponent(fieldPassword)
-                                .addComponent(fieldShudownUrl)
+                                .addComponent(fieldShutdownUrl)
                                 .addComponent(fieldDriverName)
                 );
 
@@ -145,7 +165,7 @@ public class DBSettingsPane extends JPanel {
                 .addGroup(
                         groupLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
                                 .addComponent(labelShutdownUrl)
-                                .addComponent(fieldShudownUrl)
+                                .addComponent(fieldShutdownUrl)
                 )
                 .addGroup(
                         groupLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
@@ -162,7 +182,7 @@ public class DBSettingsPane extends JPanel {
         return selectedItem == null ? null : updateSettings(selectedItem);
     }
 
-    private String loadEngines() throws IOException {
+    private String loadEngines(boolean skipCurrentSettings) throws IOException {
         engines = new HashMap<>();
 
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -184,11 +204,13 @@ public class DBSettingsPane extends JPanel {
 
         }
 
-        DatabaseSettings settings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
-        if (settings != null) {
-            final String engine = settings.getEngine();
-            engines.put(engine, settings);
-            return engine;
+        if (!skipCurrentSettings) {
+            DatabaseSettings settings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
+            if (settings != null) {
+                final String engine = settings.getEngine();
+                engines.put(engine, settings);
+                return engine;
+            }
         }
 
         return null;
@@ -203,7 +225,7 @@ public class DBSettingsPane extends JPanel {
         DatabaseSettings settings = new DatabaseSettings(
                 engine,
                 fieldUrl.getText(),
-                fieldShudownUrl.getText(),
+                fieldShutdownUrl.getText(),
                 fieldUserName.getText(),
                 String.valueOf(fieldPassword.getPassword()),
                 current.getJdbcDriverClass()
@@ -230,7 +252,7 @@ public class DBSettingsPane extends JPanel {
                 }
             } else if (e.getStateChange() == ItemEvent.SELECTED) {
                 fieldUrl.setEnabled(exists);
-                fieldShudownUrl.setEnabled(exists);
+                fieldShutdownUrl.setEnabled(exists);
                 fieldUserName.setEnabled(exists);
                 fieldPassword.setEnabled(exists);
                 fieldDriverName.setEnabled(exists);
@@ -239,7 +261,7 @@ public class DBSettingsPane extends JPanel {
                     DatabaseSettings settings = engines.get(e.getItem().toString());
 
                     fieldUrl.setText(settings.getUrl());
-                    fieldShudownUrl.setText(settings.getShutdownUrl());
+                    fieldShutdownUrl.setText(settings.getShutdownUrl());
                     fieldUserName.setText(settings.getUserName());
                     fieldPassword.setText(settings.getPassword());
                     fieldDriverName.setText(settings.getJdbcDriverClass().getName());
@@ -270,7 +292,7 @@ public class DBSettingsPane extends JPanel {
                     checkButton.setEnabled(true);
                 }
             };
-            new RojacWorker<Void, Exception>(buttonEnabler) {
+            new RojacWorker<Void, Throwable>(buttonEnabler) {
                 @Override
                 protected Void perform() throws Exception {
                     try {
@@ -280,7 +302,7 @@ public class DBSettingsPane extends JPanel {
                         Number answer = queryHelper.executeSingle(Converters.TO_NUMBER, "SELECT 21+21");
 
                         if (answer != null && answer.intValue() == 42) {
-                            publish((Exception) null);
+                            publish((Throwable) null);
                         } else {
                             publish(new IllegalStateException("Database math is wrong!"));
                         }
@@ -296,8 +318,8 @@ public class DBSettingsPane extends JPanel {
                 }
 
                 @Override
-                protected void process(List<Exception> chunks) {
-                    for (Exception check : chunks) {
+                protected void process(List<Throwable> chunks) {
+                    for (Throwable check : chunks) {
                         if (check == null) {
                             JLOptionPane.showMessageDialog(
                                     DBSettingsPane.this,
@@ -306,9 +328,13 @@ public class DBSettingsPane extends JPanel {
                                     JOptionPane.INFORMATION_MESSAGE
                             );
                         } else {
+                            if (check instanceof RojacException) {
+                                check = check.getCause();
+                            }
+                            
                             JLOptionPane.showMessageDialog(
                                     DBSettingsPane.this,
-                                    Message.Dialog_DbCheck_Fail.get(ExceptionUtils.getStackTrace(check)),
+                                    Message.Dialog_DbCheck_Fail.get(check.getLocalizedMessage()),
                                     Message.Dialog_DbCheck_Title.get(),
                                     JOptionPane.ERROR_MESSAGE
                             );

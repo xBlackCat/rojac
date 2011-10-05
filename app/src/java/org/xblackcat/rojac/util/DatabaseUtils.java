@@ -5,6 +5,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.storage.MigrationQueries;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.IPropertiable;
 import org.xblackcat.rojac.service.storage.database.SQL;
@@ -189,14 +190,14 @@ public final class DatabaseUtils {
             }
         } else {
             shutdownUrl = null;
-        }  
-        
+        }
+
         return new DatabaseSettings(
                 engine,
-                ResourceUtils.putSystemProperties(url), 
-                ResourceUtils.putSystemProperties(shutdownUrl), 
-                ResourceUtils.putSystemProperties(userName), 
-                ResourceUtils.putSystemProperties(password), 
+                ResourceUtils.putSystemProperties(url),
+                ResourceUtils.putSystemProperties(shutdownUrl),
+                ResourceUtils.putSystemProperties(userName),
+                ResourceUtils.putSystemProperties(password),
                 jdbcDriverClass
         );
     }
@@ -268,6 +269,22 @@ public final class DatabaseUtils {
         }
 
         return null;
+    }
+
+    public static MigrationQueries loadImportingQueries(String engine) throws IOException {
+        Properties properties = ResourceUtils.loadProperties('/' + DBCONFIG_PACKAGE + engine + "/sql.check.properties");
+
+        String getTables = properties.getProperty("migration.get.tables");
+        String getTableData = properties.getProperty("migration.get.table.data");
+        String storeTableData = properties.getProperty("migration.store.table.data");
+        String quoteName = properties.getProperty("migration.quote.name");
+
+        return new MigrationQueries(
+                getTables,
+                getTableData,
+                storeTableData,
+                StringUtils.isBlank(quoteName) ? "%1$s" : quoteName
+        );
     }
 
     @SuppressWarnings({"unchecked"})
