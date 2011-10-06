@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ThreadStatData;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -24,6 +25,7 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
     private final int forumId;
     private final ForumRoot rootItem;
+    private final boolean hideIgnored;
 
     public ThreadsLoader(final Runnable postProcessor, final AThreadModel<Post> model, int forumId) {
         super(new Runnable() {
@@ -40,6 +42,7 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
         });
         assert RojacUtils.checkThread(true);
 
+        hideIgnored = Property.HIDE_IGNORED_TOPICS.get(false);
         this.forumId = forumId;
         this.rootItem = (ForumRoot) model.getRoot();
     }
@@ -51,6 +54,10 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
             Iterable<MessageData> threadPosts = Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId);
 
             for (MessageData threadPost : threadPosts) {
+                if (hideIgnored && threadPost.isIgnored()) {
+                    continue;
+                }
+
                 int topicId = threadPost.getMessageId();
 
                 try {

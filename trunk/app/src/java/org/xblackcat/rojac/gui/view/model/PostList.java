@@ -50,6 +50,11 @@ class PostList extends Post {
     }
 
     @Override
+    public boolean isIgnored() {
+        return false;
+    }
+
+    @Override
     public boolean isLeaf() {
         return false;
     }

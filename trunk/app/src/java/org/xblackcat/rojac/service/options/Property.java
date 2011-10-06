@@ -87,6 +87,8 @@ public final class Property<T> {
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_READ_POST = create("rojac.view.styles.read_post", TextStyle.DEFAULT);
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_PARTIAL_READ_POST = create("rojac.view.styles.partial_read_post", TextStyle.DEFAULT);
 
+    public static final Property<Boolean> HIDE_IGNORED_TOPICS = create("rojac.view.thread.hide_ignored", Boolean.FALSE);
+
     public static final Property<Integer> VIEW_RECENT_TOPIC_LIST_SIZE = create("rojac.view.recent_topics.list_size", 20);
 
     // Janus synchronizer properties

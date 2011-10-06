@@ -291,6 +291,10 @@ public abstract class AThreadView extends AnItemView {
             }
         }
 
+        if (post.isIgnored()) {
+            return jumpNextParent(post, unread, toCollapse);
+        }
+
         if (post.getLoadingState() == LoadingState.NotLoaded) {
             if (!unread || post.isRead() != ReadStatus.Read) {
                 // Has unread children but their have not loaded yet.
@@ -304,21 +308,18 @@ public abstract class AThreadView extends AnItemView {
                 (unread && post.isRead() == ReadStatus.Read)) {
             // All items in the sub-tree are read.
             // Go to parent and search again
-            Post parent = post.getParent();
-            if (parent != null) {
-                int nextIdx = parent.getIndex(post) + 1;
-                if (Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT.get()) {
-                    toCollapse.add(post);
-                }
-                return findNextPost(parent, nextIdx, unread, toCollapse);
-            } else {
-                return null;
-            }
+            return jumpNextParent(post, unread, toCollapse);
         }
 
         int i = idx;
         while (i < post.getSize()) {
             Post p = post.getChild(i);
+            
+            if (p.isIgnored()) {
+                i++;
+                continue;
+            }
+            
             if (!unread) {
                 return p;
             }
@@ -356,6 +357,19 @@ public abstract class AThreadView extends AnItemView {
         }
     }
 
+    private Post jumpNextParent(Post post, boolean unread, Collection<Post> toCollapse) {
+        Post parent = post.getParent();
+        if (parent != null) {
+            int nextIdx = parent.getIndex(post) + 1;
+            if (Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT.get()) {
+                toCollapse.add(post);
+            }
+            return findNextPost(parent, nextIdx, unread, toCollapse);
+        } else {
+            return null;
+        }
+    }
+
     private Post findPrevPost(Post post, boolean unread) {
         try {
             if (post == null) {
@@ -369,9 +383,22 @@ public abstract class AThreadView extends AnItemView {
 
             int idx = parent.getIndex(post) - 1;
 
+            if (post.isIgnored()) {
+                if (idx >= 0) {
+                    return findPrevPost(parent.getChild(idx), unread);
+                } else {
+                    return findPrevPost(parent, unread);
+                }
+            }
+
             if (unread) {
                 while (idx >= 0) {
                     Post p = parent.getChild(idx);
+                    if (p.isIgnored()) {
+                        idx--;
+                        continue;
+                    }
+
                     switch (p.isRead()) {
                         case Read:
                             idx--;
@@ -410,7 +437,7 @@ public abstract class AThreadView extends AnItemView {
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastPost(Post post, boolean unread) throws RuntimeException {
-        if (unread && post.isRead() == ReadStatus.Read) {
+        if (unread && post.isRead() == ReadStatus.Read || post.isIgnored()) {
             return null;
         }
 
@@ -430,11 +457,11 @@ public abstract class AThreadView extends AnItemView {
             idx--;
         }
 
-        if (!unread || post.isRead() == ReadStatus.Unread) {
-            return post;
+        if (unread && post.isRead() != ReadStatus.Unread || post.isIgnored()) {
+            return null;
         }
 
-        return null;
+        return post;
     }
 
     private void expandThread(final int messageId) {

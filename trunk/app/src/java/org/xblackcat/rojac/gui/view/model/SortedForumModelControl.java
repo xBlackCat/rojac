@@ -240,6 +240,18 @@ class SortedForumModelControl extends AThreadsModelControl {
                             }
                         }
                     }
+                },
+                new IPacketProcessor<IgnoreUpdatedPacket>() {
+                    @Override
+                    public void process(IgnoreUpdatedPacket p) {
+                        Post threadRoot = model.getRoot().getMessageById(p.getThreadId());
+                        if (threadRoot != null) {
+                            MessageData data = threadRoot.getMessageData();
+                            threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
+                            
+                            model.subTreeNodesChanged(threadRoot);
+                        }
+                    }
                 }
         ).dispatch(p);
     }

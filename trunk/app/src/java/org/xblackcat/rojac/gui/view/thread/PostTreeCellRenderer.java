@@ -1,7 +1,10 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import org.xblackcat.rojac.gui.component.GrayedIcon;
+import org.xblackcat.rojac.gui.view.model.ForumRoot;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.util.MessageUtils;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -33,7 +36,15 @@ class PostTreeCellRenderer extends DefaultTreeCellRenderer {
         Font font = getFont().deriveFont(style);
         setFont(font);
 
-        setIcon(MessageUtils.getPostIcon(post));
+        Icon icon = MessageUtils.getPostIcon(post);
+        if (!(post instanceof ForumRoot)) {
+            if (post.isIgnored()) {
+                icon = new GrayedIcon(icon);
+                setForeground(UIUtils.brighter(getForeground(), .3));
+            }
+        }
+
+        setIcon(icon);
 
         setText(post.getMessageData().getSubject());
 

@@ -138,6 +138,10 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
 
+        menu.add(new IgnoreToggleMenuItem(post.getThreadRoot().getMessageId(), post.isIgnored()));
+        
+        menu.addSeparator();
+
         menu.add(new SetMessageReadMenuItem(Message.Popup_View_ThreadsTree_Mark_Read, post.getMessageData(), true));
         menu.add(new SetMessageReadMenuItem(Message.Popup_View_ThreadsTree_Mark_Unread, post.getMessageData(), false));
 
@@ -286,6 +290,7 @@ public final class PopupMenuBuilder {
         });
         menu.add(edit);
         JMenuItem remove = new JMenuItem(Message.Popup_View_OutboxTree_Remove.get());
+
         remove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -77,6 +77,10 @@ public class Post implements ITreeItem<Post> {
         return replies;
     }
 
+    public boolean isIgnored() {
+        return threadRoot != null && threadRoot.isIgnored();
+    }
+
     public Thread getThreadRoot() {
         return threadRoot;
     }
