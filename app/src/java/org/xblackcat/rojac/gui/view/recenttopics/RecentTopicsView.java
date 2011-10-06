@@ -41,6 +41,12 @@ public class RecentTopicsView extends AView {
                 public void process(ReloadDataPacket p) {
                     reloadLastPosts();
                 }
+            },
+            new IPacketProcessor<IgnoreUpdatedPacket>() {
+                @Override
+                public void process(IgnoreUpdatedPacket p) {
+                    reloadLastPosts();
+                }
             }
     );
 

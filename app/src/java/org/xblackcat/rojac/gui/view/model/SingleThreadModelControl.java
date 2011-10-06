@@ -161,6 +161,18 @@ class SingleThreadModelControl extends AThreadsModelControl {
 
                         reloadThread(model, postProcessor);
                     }
+                },
+                new IPacketProcessor<IgnoreUpdatedPacket>() {
+                    @Override
+                    public void process(IgnoreUpdatedPacket p) {
+                        if (p.getThreadId() == threadId) {
+                            Post threadRoot = model.getRoot();
+                            MessageData data = threadRoot.getMessageData();
+                            threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
+                            
+                            model.subTreeNodesChanged(threadRoot);
+                        }
+                    }
                 }
         ).dispatch(p);
     }

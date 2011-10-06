@@ -306,6 +306,9 @@ public enum Message {
     Popup_View_SetReadAll,
     Popup_View_SetUnreadAll,
 
+    Popup_Ignore_Set,
+    Popup_Ignore_Reset,
+
     // Menu of forum view
     Popup_View_Forums_Subscribe,
     // Messages threads view related messages

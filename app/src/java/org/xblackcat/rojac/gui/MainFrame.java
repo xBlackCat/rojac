@@ -148,6 +148,9 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                         setScheduleSynchronizer();
                     }
 
+                    if (p.isPropertyAffected(HIDE_IGNORED_TOPICS)) {
+                        new ReloadDataPacket().dispatch();
+                    }
                 }
 
                 private void updateTitleProvider(DockingWindowTitleProvider newTitleProvider, DockingWindow view) {

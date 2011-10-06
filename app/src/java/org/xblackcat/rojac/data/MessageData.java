@@ -204,4 +204,26 @@ public class MessageData {
                 ignored,
                 parentUserId);
     }
+
+    public MessageData setIgnored(boolean ignored) {
+        if (ignored == this.ignored) {
+            return this;
+        }
+
+        return new MessageData(
+                messageId,
+                topicId,
+                parentId,
+                forumId,
+                userId,
+                subject,
+                userName,
+                messageDate,
+                updateDate,
+                read,
+                rating,
+                ignored, // Not a field
+                parentUserId);
+
+    }
 }

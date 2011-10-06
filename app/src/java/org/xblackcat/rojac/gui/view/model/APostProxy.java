@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.gui.view.thread.PostTableCellRenderer;
+import org.xblackcat.rojac.util.UIUtils;
 
 import java.awt.*;
 
@@ -32,6 +33,10 @@ public abstract class APostProxy {
         renderer.setFont(font);
         renderer.setText(null);
         renderer.setIcon(null);
+        
+        if (post.isIgnored()) {
+            renderer.setForeground(UIUtils.brighter(renderer.getForeground(), .3));
+        }
 
         setValue(renderer);
     }

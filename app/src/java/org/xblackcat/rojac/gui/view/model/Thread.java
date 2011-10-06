@@ -54,6 +54,11 @@ public class Thread extends Post {
     }
 
     @Override
+    public boolean isIgnored() {
+        return messageData.isIgnored();
+    }
+
+    @Override
     public int getIndex(Post p) {
         if (!filled) {
             return -1;

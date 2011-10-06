@@ -16,6 +16,11 @@ public class ForumRoot extends Post {
         throw new UnsupportedOperationException("There is no thread root for forum");
     }
 
+    @Override
+    public boolean isIgnored() {
+        return false;
+    }
+
     /**
      * Searches through all threads for the message Id
      *
