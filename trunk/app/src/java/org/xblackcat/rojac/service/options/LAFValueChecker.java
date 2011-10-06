@@ -67,7 +67,7 @@ final class LAFValueChecker implements IValueChecker<LookAndFeel> {
             } catch (ClassNotFoundException e1) {
                 log.warn("Can not find class of LAF", e1);
                 continue;
-            } catch (IllegalAccessException | InstantiationException e1) {
+            } catch (Exception e1) {
                 log.warn("Can not initialize L&F class", e1);
                 continue;
             }
