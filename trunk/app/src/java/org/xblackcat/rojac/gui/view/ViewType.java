@@ -55,6 +55,17 @@ public enum ViewType {
             return new ViewId(0, this);
         }
     },
+    IgnoredThreadList {
+        @Override
+        public ViewId makeId(MessageData md) {
+            return makeId(0); // Only one ignored threads list can be shown
+        }
+
+        @Override
+        public ViewId makeId(int itemId) {
+            return new ViewId(0, this);
+        }
+    }
     ;
 
     private ViewType() {

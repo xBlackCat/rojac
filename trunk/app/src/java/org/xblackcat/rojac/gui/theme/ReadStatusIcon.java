@@ -48,6 +48,10 @@ public enum ReadStatusIcon {
      */
     FavoriteResponseList("favorite-userreplies"),
     /**
+     * Ignored thread list status icon
+     */
+    IgnoredThreads("ignored"),
+    /**
      * Thread read status icons.
      */
     Thread("thread"),

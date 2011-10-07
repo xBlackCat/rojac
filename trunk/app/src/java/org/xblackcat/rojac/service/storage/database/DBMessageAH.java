@@ -242,4 +242,12 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
         return result;
     }
+
+    @Override
+    public Collection<MessageData> getIgnoredTopicsList() throws StorageException {
+        return helper.execute(
+                Converters.TO_MESSAGE_DATA,
+                DataQuery.GET_IGNORED_TOPIC_MESSAGE_DATA
+        );
+    }
 }

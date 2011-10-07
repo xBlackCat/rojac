@@ -1,11 +1,14 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.xblackcat.rojac.data.NewMessage;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
+import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.datahandler.*;
-import org.xblackcat.rojac.service.storage.INewMessageAH;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IgnoreUpdatedPacket;
+import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -16,17 +19,17 @@ import java.util.Collection;
 /**
  * @author xBlackCat
  */
-class OutboxListControl extends MessageListControl {
+class IgnoredThreadListControl extends MessageListControl {
     /**
      * Creates a post list control. All posts a linked with the specified user. If parameter is <code>true</code> - the
      * control loads all replies on the user posts. If parameter is <code>false</code> - the control loads all posts of
      * the user.
      */
-    public OutboxListControl() {
+    public IgnoredThreadListControl() {
     }
 
     public void fillModelByItemId(final AThreadModel<Post> model, final int itemId) {
-        final OutboxPostList root = new OutboxPostList();
+        final IgnoredThreadList root = new IgnoredThreadList();
         model.setRoot(root);
 
         updateModel(model, null);
@@ -39,12 +42,12 @@ class OutboxListControl extends MessageListControl {
 
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
-        return null;
+        return ReadStatusIcon.IgnoredThreads.getIcon(ReadStatus.Read);
     }
 
     @Override
     public void onDoubleClick(Post post, IAppControl appControl) {
-        appControl.editMessage(null, -post.getMessageId());
+        appControl.openMessage(post.getMessageId(), OpenMessageMethod.InThread);
     }
 
     protected void updateModel(final AThreadModel<Post> model, Runnable postProcessor) {
@@ -55,7 +58,7 @@ class OutboxListControl extends MessageListControl {
 
     @Override
     public String getTitle(AThreadModel<Post> model) {
-        return Message.View_Navigation_Item_Outbox.get();
+        return Message.View_Navigation_Item_Ignored.get();
     }
 
     public JPopupMenu getItemMenu(Post post, IAppControl appControl) {
@@ -64,24 +67,13 @@ class OutboxListControl extends MessageListControl {
 
     @Override
     public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
-        new PacketDispatcher(
-                new IPacketProcessor<NewMessagesUpdatedPacket>() {
-                    @Override
-                    public void process(NewMessagesUpdatedPacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                },
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                }
-        ).dispatch(p);
+        if (p instanceof IgnoreUpdatedPacket) {
+            updateModel(model, postProcessor);
+        }
     }
 
     private class PostListLoader extends RojacWorker<Void, Void> {
-        private Collection<NewMessage> messages;
+        private Collection<MessageData> messages;
         private final AThreadModel<Post> model;
 
         public PostListLoader(Runnable postProcessor, AThreadModel<Post> model) {
@@ -89,19 +81,15 @@ class OutboxListControl extends MessageListControl {
             this.model = model;
         }
 
-        public PostListLoader(AThreadModel<Post> model) {
-            this(null, model);
-        }
-
         @Override
         protected Void perform() throws Exception {
-            messages = Storage.get(INewMessageAH.class).getAllNewMessages();
+            messages = Storage.get(IMessageAH.class).getIgnoredTopicsList();
             return null;
         }
 
         @Override
         protected void done() {
-            OutboxPostList root = (OutboxPostList) model.getRoot();
+            IgnoredThreadList root = (IgnoredThreadList) model.getRoot();
 
             root.fillList(messages);
             root.setLoadingState(LoadingState.Loaded);

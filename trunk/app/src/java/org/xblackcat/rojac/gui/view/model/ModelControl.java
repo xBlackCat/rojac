@@ -36,6 +36,7 @@ public enum ModelControl {
      * Produces a user messages in outbox
      */
     Outbox(new OutboxListControl()),
+    IgnoredThreadList(new IgnoredThreadListControl()),
     ;
 
     private final IModelControl<Post> control;
@@ -47,4 +48,5 @@ public enum ModelControl {
     public IModelControl<Post> get() {
         return control;
     }
+
 }

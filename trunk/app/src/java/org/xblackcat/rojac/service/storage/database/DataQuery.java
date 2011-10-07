@@ -439,7 +439,12 @@ public enum DataQuery implements IPropertiable {
     UPDATE_OBJECT_USER,
 
     GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
+    /**
+     * Returns all ignored topics message data
+     */
+    GET_IGNORED_TOPIC_MESSAGE_DATA,
     GET_IDS_FORUM_SUBSCRIBED,
+    GET_IGNORED_TOPIC_COUNT,
     /**
      * Returns messages number in forum. Parameter is forumId.
      */

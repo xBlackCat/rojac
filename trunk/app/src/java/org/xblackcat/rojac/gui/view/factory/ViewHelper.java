@@ -7,6 +7,7 @@ import org.xblackcat.rojac.gui.IState;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.ViewType;
+import org.xblackcat.rojac.gui.view.model.ModelControl;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,13 +27,14 @@ public final class ViewHelper {
 
     static {
         EnumMap<ViewType, IViewFactory> map = new EnumMap<>(ViewType.class);
-        map.put(ViewType.Forum, new ForumThreadViewFactory());
-        map.put(ViewType.SingleThread, new SingleThreadViewFactory());
+        map.put(ViewType.Forum, new SplitViewFactory(ModelControl.ForumThreads));
+        map.put(ViewType.SingleThread, new SplitViewFactory(ModelControl.SingleThread));
         map.put(ViewType.SingleMessage, new MessageViewFactory());
-        map.put(ViewType.Favorite, new FavoriteViewFactory());
-        map.put(ViewType.PostList, new UserPostListFactory());
-        map.put(ViewType.ReplyList, new UserReplyListFactory());
-        map.put(ViewType.OutBox, new OutboxListFactory());
+        map.put(ViewType.Favorite, new SplitViewFactory(ModelControl.Favorites));
+        map.put(ViewType.PostList, new SplitViewFactory(ModelControl.UserPosts));
+        map.put(ViewType.ReplyList, new SplitViewFactory(ModelControl.UserReplies));
+        map.put(ViewType.OutBox, new SplitViewFactory(ModelControl.Outbox));
+        map.put(ViewType.IgnoredThreadList, new SplitViewFactory(ModelControl.IgnoredThreadList));
 
         for (ViewType t : ViewType.values()) {
             if (map.get(t) == null) {

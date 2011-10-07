@@ -71,6 +71,7 @@ public enum Message {
     View_Navigation_Item_ForumExtraInfo,
     View_Navigation_Item_Outbox,
     View_Navigation_Item_MyResponses,
+    View_Navigation_Item_Ignored,
     View_Navigation_Item_Draft,
 
     // Threads view
