@@ -25,7 +25,7 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
     private static final Log log = LogFactory.getLog(ProgressTrackerDialog.class);
 
     private JTextArea logArea = new JTextArea();
-    private JProgressBar logProgress;
+    private JProgressBar logProgress = new JProgressBar(JProgressBar.VERTICAL, 0, 100);
 
     public ProgressTrackerDialog(Window mainFrame) {
         super(mainFrame, ModalityType.MODELESS);
@@ -34,7 +34,6 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
         logArea.setEditable(false);
 
         cp.add(new JScrollPane(logArea), BorderLayout.CENTER);
-        logProgress = new JProgressBar(JProgressBar.VERTICAL, 0, 100);
         logProgress.setStringPainted(true);
         cp.add(logProgress, BorderLayout.EAST);
 

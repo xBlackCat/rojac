@@ -119,6 +119,8 @@ public enum Message {
     Dialog_Import_Label,
     Dialog_Import_Label_Source,
     Dialog_Import_Label_Destination,
+    Dialog_Import_Warning_Title,
+    Dialog_Import_Warning_Text,
 
     // Confirm exit dialog
     Dialog_ConfirmExit_Message,
