@@ -141,4 +141,6 @@ public interface IMessageAH extends AH {
     SetReadExPacket setReadBeforeDate(long dateline, boolean read) throws StorageException;
 
     SetReadExPacket setReadAfterDate(long dateline, boolean read) throws StorageException;
+
+    Collection<MessageData> getIgnoredTopicsList() throws StorageException;
 }

@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
 /**
  * @author ASUS
@@ -28,6 +29,14 @@ final class DBMiscAH extends AnAH implements IMiscAH {
     @Override
     public void removeFromIgnoredTopicList(int topicId) throws StorageException {
         helper.update(DataQuery.REMOVE_OBJECT_IGNORED_TOPIC, topicId);
+    }
+
+    @Override
+    public int getAmountOfIgnoredTopics() throws StorageException {
+        return helper.executeSingle(
+                Converters.TO_NUMBER,
+                DataQuery.GET_IGNORED_TOPIC_COUNT
+        ).intValue();
     }
 
     public void clearExtraMessages() throws StorageException {

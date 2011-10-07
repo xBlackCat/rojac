@@ -42,6 +42,14 @@ class NavigationModel implements TreeTableModel, IModelControl {
                     ).execute();
                 }
             },
+            new IPacketProcessor<IgnoreUpdatedPacket>() {
+                @Override
+                public void process(IgnoreUpdatedPacket p) {
+                    new LoadTaskExecutor(
+                            personalDecorator.reloadIgnored()
+                    ).execute();
+                }
+            },
             new IPacketProcessor<SetForumReadPacket>() {
                 @Override
                 public void process(SetForumReadPacket p) {
@@ -110,6 +118,7 @@ class NavigationModel implements TreeTableModel, IModelControl {
                 @Override
                 public void process(ReloadDataPacket p) {
                     new LoadTaskExecutor(
+                            personalDecorator.reloadIgnored(),
                             personalDecorator.reloadInfo(true),
                             forumDecorator.reloadForums(),
                             favoritesDecorator.reloadFavorites()

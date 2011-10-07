@@ -50,7 +50,7 @@ abstract class MessageListControl implements IModelControl<Post> {
     }
 
     @Override
-    public void unloadThread(AThreadModel<Post> postAThreadModel, Post item) {
+    public void unloadThread(AThreadModel<Post> model, Post item) {
         // Nothing to do
     }
 

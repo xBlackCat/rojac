@@ -12,6 +12,8 @@ public interface IMiscAH extends AH {
     void addToIgnoredTopicList(int topicId) throws StorageException;
 
     void removeFromIgnoredTopicList(int topicId) throws StorageException;
+    
+    int getAmountOfIgnoredTopics() throws StorageException;
 
     void clearExtraMessages() throws StorageException;
 

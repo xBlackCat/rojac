@@ -9,15 +9,24 @@ import org.xblackcat.rojac.gui.view.thread.ThreadDoubleView;
 import org.xblackcat.rojac.gui.view.thread.TreeTableThreadView;
 
 /**
+ * 07.10.11 11:05
+ *
  * @author xBlackCat
  */
+class SplitViewFactory implements IViewFactory {
+    private final ModelControl modelControl;
+    private final boolean verticalSplit;
 
-class UserReplyListFactory implements IViewFactory {
+    public SplitViewFactory(ModelControl modelControl) {
+        this.modelControl = modelControl;
+        verticalSplit = true;
+    }
+
     @Override
     public IItemView makeView(ViewId id, IAppControl appControl) {
-        IItemView threadView = new TreeTableThreadView(id, appControl, ModelControl.UserReplies);
+        IItemView threadView = new TreeTableThreadView(id, appControl, modelControl);
         IItemView messageView = new MessageView(id, appControl);
 
-        return new ThreadDoubleView(threadView, messageView, true, appControl);
+        return new ThreadDoubleView(threadView, messageView, verticalSplit, appControl);
     }
 }

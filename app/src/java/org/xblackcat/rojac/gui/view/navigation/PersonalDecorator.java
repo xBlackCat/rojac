@@ -6,6 +6,7 @@ import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -23,6 +24,7 @@ class PersonalDecorator extends ADecorator {
 
     private final PersonalItem outBox = new OutboxItem();
     private final PersonalItem myResponses = new MyResponsesItem();
+    private final PersonalItem ignoredTopics = new IgnoredTopicsItem();
     private final PersonalItem drafts = new DraftsItem();
 
     PersonalDecorator(IModelControl modelControl) {
@@ -30,6 +32,7 @@ class PersonalDecorator extends ADecorator {
 
         personal.add(outBox);
         personal.add(myResponses);
+        personal.add(ignoredTopics);
     }
 
     @Override
@@ -55,6 +58,10 @@ class PersonalDecorator extends ADecorator {
 
     public Collection<OutboxReloadTask> reloadOutbox() {
         return Collections.singleton(new OutboxReloadTask());
+    }
+
+    public Collection<IgnoredReloadTask> reloadIgnored() {
+        return Collections.singleton(new IgnoredReloadTask());
     }
 
     public Collection<ALoadTask> alterReadStatus(MessageData post, boolean read) {
@@ -115,6 +122,22 @@ class PersonalDecorator extends ADecorator {
                 outBox.setStat(new UnreadStatData(0, data));
 
                 modelControl.itemUpdated(outBox);
+            }
+        }
+    }
+
+    private class IgnoredReloadTask extends ALoadTask<Integer> {
+        @Override
+        Integer doBackground() throws Exception {
+            return Storage.get(IMiscAH.class).getAmountOfIgnoredTopics();
+        }
+
+        @Override
+        void doSwing(Integer data) {
+            if (data != null) {
+                ignoredTopics.setStat(new UnreadStatData(0, data));
+
+                modelControl.itemUpdated(ignoredTopics);
             }
         }
     }
