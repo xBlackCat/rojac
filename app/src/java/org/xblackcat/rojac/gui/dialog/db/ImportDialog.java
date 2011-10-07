@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.dialog.db;
 
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
+import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -65,7 +66,12 @@ public class ImportDialog extends JDialog {
                         DatabaseSettings destination = destinationStorage.getCurrentSettings();
 
                         if (source == null || destination == null) {
-                            // TODO: Show warning message
+                            JLOptionPane.showMessageDialog(
+                                    ImportDialog.this,
+                                    Message.Dialog_Import_Warning_Text.get(),
+                                    Message.Dialog_Import_Warning_Title.get(),
+                                    JOptionPane.WARNING_MESSAGE
+                            );
                             return;
                         }
 
