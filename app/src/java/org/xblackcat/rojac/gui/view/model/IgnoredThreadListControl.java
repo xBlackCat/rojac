@@ -62,7 +62,7 @@ class IgnoredThreadListControl extends MessageListControl {
     }
 
     public JPopupMenu getItemMenu(Post post, IAppControl appControl) {
-        return PopupMenuBuilder.getNewMessageListMenu(post, appControl);
+        return PopupMenuBuilder.getIgnoredListMenu(post, appControl);
     }
 
     @Override
