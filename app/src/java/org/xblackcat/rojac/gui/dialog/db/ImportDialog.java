@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.dialog.db;
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -35,32 +36,45 @@ public class ImportDialog extends JDialog {
         destinationStorage.setBorder(new TitledBorder(border, Message.Dialog_Import_Label_Destination.get(), TitledBorder.CENTER, TitledBorder.TOP));
 
         setContentPane(setupContentPage());
-        
+
         pack();
         setMinimumSize(getSize());
     }
 
     private JComponent setupContentPage() {
         JPanel cp = new JPanel(new BorderLayout(5, 5));
-        
+
         cp.setBorder(new EmptyBorder(5, 5, 5, 5));
-        
+
         cp.add(new JLabel(Message.Dialog_Import_Label.get()), BorderLayout.NORTH);
-        
+
         JPanel centerPane = new JPanel(new GridLayout(1, 0, 5, 5));
-        
+
         centerPane.add(sourceStorage);
         centerPane.add(destinationStorage);
-        
+
         cp.add(centerPane, BorderLayout.CENTER);
-        
+
         cp.add(WindowsUtils.createButtonsBar(
                 this,
                 Message.Button_Ok,
                 new AnOkAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        DatabaseSettings source = sourceStorage.getCurrentSettings();
+                        DatabaseSettings destination = destinationStorage.getCurrentSettings();
+
+                        if (source == null || destination == null) {
+                            // TODO: Show warning message
+                            return;
+                        }
+
+                        ImportProcessDialog ipd = new ImportProcessDialog(getOwner());
+                        WindowsUtils.center(ipd);
                         dispose();
+
+                        // TODO: initialize copying data logic
+                        ipd.setVisible(true);
                     }
                 },
                 new ACancelAction() {
@@ -70,7 +84,7 @@ public class ImportDialog extends JDialog {
                     }
                 }
         ), BorderLayout.SOUTH);
-        
+
         return cp;
     }
 }
