@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.popup;
 
-import org.xblackcat.rojac.gui.view.model.Thread;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IgnoreUpdatedPacket;
 import org.xblackcat.rojac.service.storage.IMiscAH;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author xBlackCat
  */
 class IgnoreTopicToggleMenuItem extends JMenuItem {
-    public IgnoreTopicToggleMenuItem(Thread topic) {
+    public IgnoreTopicToggleMenuItem(MessageData topic) {
         final int topicId = topic.getMessageId();
         final int forumId = topic.getForumId();
         final boolean ignored = topic.isIgnored();

@@ -138,7 +138,7 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
 
-        menu.add(new IgnoreTopicToggleMenuItem(post.getThreadRoot()));
+        menu.add(new IgnoreTopicToggleMenuItem(post.getThreadRoot().getMessageData()));
         
         menu.addSeparator();
 
@@ -252,6 +252,10 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
 
+        menu.add(new IgnoreTopicToggleMenuItem(threadRoot));
+
+        menu.addSeparator();
+
         menu.add(new SetThreadReadMenuItem(Message.Popup_View_SetReadAll, threadRoot, true));
         menu.add(new SetThreadReadMenuItem(Message.Popup_View_SetUnreadAll, threadRoot, false));
 
@@ -334,6 +338,30 @@ public final class PopupMenuBuilder {
         });
 
         menu.add(removeAll);
+        return menu;
+    }
+
+    public static JPopupMenu getIgnoredListMenu(Post post, IAppControl appControl) {
+        int messageId = post.getMessageId();
+
+        final JPopupMenu menu = new JPopupMenu("#" + messageId);
+        JMenuItem item = new JMenuItem("#" + messageId);
+        item.setEnabled(false);
+
+        menu.add(item);
+        menu.add(new IgnoreTopicToggleMenuItem(post.getMessageData()));
+
+        menu.addSeparator();
+
+        JMenuItem openSubMenu = menu.add(new JMenu(Message.Popup_Open_SubMenu.get()));
+        openSubMenu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInTab, OpenMessageMethod.NewTab));
+        openSubMenu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInThread, OpenMessageMethod.InThread));
+
+        menu.addSeparator();
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+        menu.add(MenuHelper.copyLinkSubmenu(messageId));
+
         return menu;
     }
 
