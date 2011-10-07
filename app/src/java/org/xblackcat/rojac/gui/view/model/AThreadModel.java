@@ -111,6 +111,10 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
         return initialized;
     }
 
+    public void nodeRemoved(T parent, int childIdx, T child) {
+        modelSupport.fireChildRemoved(getPathToRoot(parent), childIdx, child);
+    }
+
     /**
      * Invoke this method after you've changed how the children identified by childIndexes are to be represented in the
      * tree.

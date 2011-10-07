@@ -244,12 +244,44 @@ class SortedForumModelControl extends AThreadsModelControl {
                 new IPacketProcessor<IgnoreUpdatedPacket>() {
                     @Override
                     public void process(IgnoreUpdatedPacket p) {
-                        Post threadRoot = model.getRoot().getMessageById(p.getThreadId());
-                        if (threadRoot != null) {
-                            MessageData data = threadRoot.getMessageData();
-                            threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
-                            
-                            model.subTreeNodesChanged(threadRoot);
+                        if (p.getForumId() != forumId) {
+                            return;
+                        }
+                        
+                        int threadId = p.getThreadId();
+
+                        if (Property.HIDE_IGNORED_TOPICS.get(false)) {
+                            if (p.isIgnored()) {
+                                ForumRoot root = (ForumRoot) model.getRoot();
+
+                                Post thread = root.getMessageById(threadId);
+                                if (thread == null) {
+                                    // No thread
+                                    assert false : "Ignore non-existed thread #" + threadId + " in forum #" + forumId;
+                                    return;
+                                }
+
+                                int idx = root.removeThread(threadId);
+                                if (idx == -1 ) {
+                                    // No thread (Again?!)
+                                    assert false : "Ignore non-existed thread #" + threadId + " in forum #" + forumId;
+                                    return;
+                                }
+
+                                model.nodeRemoved(root, idx, thread);
+                            } else {
+                                // load thread back.
+                                // Load it back via SyncComplete packet
+                                new SynchronizationCompletePacket(forumId, threadId, threadId).dispatch();
+                            }
+                        } else {
+                            Post threadRoot = model.getRoot().getMessageById(threadId);
+                            if (threadRoot != null) {
+                                MessageData data = threadRoot.getMessageData();
+                                threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
+                                
+                                model.subTreeNodesChanged(threadRoot);
+                            }
                         }
                     }
                 }

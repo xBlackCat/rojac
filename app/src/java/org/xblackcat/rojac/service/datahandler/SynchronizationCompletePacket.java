@@ -17,6 +17,12 @@ public class SynchronizationCompletePacket extends APacket implements IForumUpda
         this.threadIds = threadIds;
     }
 
+    public SynchronizationCompletePacket(int forumId, int threadId, int messageId) {
+        forumIds = new TIntHashSet(new int[]{forumId});
+        threadIds = new TIntHashSet(new int[]{threadId});
+        messageIds = new TIntHashSet(new int[]{messageId});
+    }
+
     @Override
     public int[] getForumIds() {
         return forumIds.toArray();

@@ -138,7 +138,7 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
 
-        menu.add(new IgnoreToggleMenuItem(post.getThreadRoot().getMessageId(), post.isIgnored()));
+        menu.add(new IgnoreTopicToggleMenuItem(post.getThreadRoot()));
         
         menu.addSeparator();
 
