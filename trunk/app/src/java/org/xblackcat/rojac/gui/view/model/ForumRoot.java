@@ -43,6 +43,33 @@ public class ForumRoot extends Post {
         return null;
     }
 
+    /**
+     * Sets whole forum as read or as unread.
+     *
+     * @param read
+     */
+    @Override
+    public void setRead(boolean read) {
+        for (Post threadRoot : childrenPosts) {
+            threadRoot.setDeepRead(read);
+        }
+    }
+
+    public int removeThread(int threadId) {
+        int i = 0;
+        int childrenPostsSize = childrenPosts.size();
+
+        while (i < childrenPostsSize) {
+            Post p = childrenPosts.get(i);
+            if (p.getMessageId() == threadId) {
+                childrenPosts.remove(i);
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
     private static MessageData constructDummyMessageItem(int forumId) {
         return new MessageData(
                 -1,
@@ -58,17 +85,5 @@ public class ForumRoot extends Post {
                 null,
                 false,
                 0);
-    }
-
-    /**
-     * Sets whole forum as read or as unread.
-     *
-     * @param read
-     */
-    @Override
-    public void setRead(boolean read) {
-        for (Post threadRoot : childrenPosts) {
-            threadRoot.setDeepRead(read);
-        }
     }
 }

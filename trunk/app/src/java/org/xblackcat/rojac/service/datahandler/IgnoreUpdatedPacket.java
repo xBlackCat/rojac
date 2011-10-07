@@ -5,11 +5,13 @@ package org.xblackcat.rojac.service.datahandler;
  */
 public class IgnoreUpdatedPacket extends APacket {
     private final int threadId;
+    private final int forumId;
     private final boolean ignored;
 
-    public IgnoreUpdatedPacket(int threadId, boolean ignored) {
+    public IgnoreUpdatedPacket(int forumId, int threadId, boolean ignored) {
         this.threadId = threadId;
         this.ignored = ignored;
+        this.forumId = forumId;
     }
 
     public int getThreadId() {
@@ -18,5 +20,9 @@ public class IgnoreUpdatedPacket extends APacket {
 
     public boolean isIgnored() {
         return ignored;
+    }
+
+    public int getForumId() {
+        return forumId;
     }
 }
