@@ -122,6 +122,35 @@ public enum Message {
     Dialog_Import_Warning_Title,
     Dialog_Import_Warning_Text,
 
+    Dialog_ImportProgress_Title,
+    Dialog_ImportProgress_Label,
+
+    /**
+     * Parameters:
+     * 1. engine name (string)
+     * 2. url (string)
+     */
+    Log_ImportProgress_CheckSource,
+    /**
+     * Parameters:
+     * 1. engine name (string)
+     * 2. url (string)
+     */
+    Log_ImportProgress_CheckDestination,
+    /**
+     * Parameters:
+     * 1. item name (string)
+     * 2. rows amount (integer)
+     */
+    Log_ImportProgress_CopyItem,
+    /**
+     * Parameters:
+     * 1. item name (string)
+     * 2. rows amount (integer)
+     */
+    Log_ImportProgress_CopyDone,
+    Log_ImportProgress_Done,
+
     // Confirm exit dialog
     Dialog_ConfirmExit_Message,
     Dialog_ConfirmExit_Title,

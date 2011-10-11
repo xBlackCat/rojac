@@ -8,6 +8,8 @@ package org.xblackcat.rojac.i18n;
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.options.TestOptionsService;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import java.io.IOException;
@@ -20,6 +22,13 @@ import java.util.MissingResourceException;
 public class MessageTest extends TestCase {
     private static final Log log = LogFactory.getLog(MessageTest.class);
     private static final Object[] EMPTY = new Object[100];
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        Property.setOptionsService(new TestOptionsService());
+    }
 
     public void testForExistence() throws IOException {
         // Test default locale first.

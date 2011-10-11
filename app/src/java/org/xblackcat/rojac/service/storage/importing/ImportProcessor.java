@@ -4,6 +4,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.dialog.db.ImportProcessDialog;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
@@ -80,10 +81,10 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
             IStructureChecker destinationChecker = new StructureChecker(destination);
 
             dlg.setStringPainted(false);
-            publish(new ProgressChangeEvent(this, ProgressState.Work, "Check source..."));
+            publish(new ProgressChangeEvent(this, ProgressState.Work, Message.Log_ImportProgress_CheckSource.get(source.getEngine(), source.getUrl())));
             sourceChecker.check(progressListener);
 
-            publish(new ProgressChangeEvent(this, ProgressState.Work, "Check destination..."));
+            publish(new ProgressChangeEvent(this, ProgressState.Work, Message.Log_ImportProgress_CheckDestination.get(destination.getEngine(), destination.getUrl())));
             destinationChecker.check(progressListener);
 
             dlg.setStringPainted(true);
@@ -99,14 +100,14 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
                     return null;
                 }
 
-                publish(new ProgressChangeEvent(this, ProgressState.Work, "Copy " + item + " (" + sourceRows + ")"));
+                publish(new ProgressChangeEvent(this, ProgressState.Work, Message.Log_ImportProgress_CopyItem.get(item, sourceRows)));
 
                 IRowWriter rowWriter = destinationStorage.getRowWriter(item);
                 sourceStorage.getData(new RowHandler(rowWriter, sourceRows), item);
                 rowWriter.stop();
 
                 int destinationRows = destinationStorage.getRows(item);
-                publish(new ProgressChangeEvent(this, ProgressState.Work, "Copied. Destination size: " + destinationRows));
+                publish(new ProgressChangeEvent(this, ProgressState.Work, Message.Log_ImportProgress_CopyDone.get(item, destinationRows)));
             }
 
         } catch (Exception e) {
@@ -115,7 +116,7 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
         }
 
         dlg.setStringPainted(false);
-        publish(new ProgressChangeEvent(this, ProgressState.Stop, 1, 1, "Done"));
+        publish(new ProgressChangeEvent(this, ProgressState.Stop, 1, 1, Message.Log_ImportProgress_Done.get()));
 
         return null;
     }
