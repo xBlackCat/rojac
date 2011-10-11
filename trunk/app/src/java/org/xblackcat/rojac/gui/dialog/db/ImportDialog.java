@@ -4,8 +4,8 @@ import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.storage.ImportProcessor;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.importing.ImportProcessor;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -76,12 +76,8 @@ public class ImportDialog extends JDialog {
                             return;
                         }
 
-                        ImportProcessDialog ipd = new ImportProcessDialog(getOwner());
-                        WindowsUtils.center(ipd);
                         dispose();
-
-                        new ImportProcessor(source, destination, ipd).execute();
-                        ipd.setVisible(true);
+                        new ImportProcessor(source, destination, getOwner()).execute();
                     }
                 },
                 new ACancelAction() {

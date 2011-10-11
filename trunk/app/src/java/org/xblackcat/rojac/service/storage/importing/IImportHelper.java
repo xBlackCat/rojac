@@ -1,6 +1,6 @@
-package org.xblackcat.rojac.service.storage;
+package org.xblackcat.rojac.service.storage.importing;
 
-import org.xblackcat.rojac.data.Cell;
+import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.IRowHandler;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ public interface IImportHelper {
     
     void getData(IRowHandler rowHandler, String item) throws StorageException;
 
-    int storeItem(String item, Cell[] data) throws StorageException;
+    IRowWriter getRowWriter(String item) throws StorageException;
 
     int getRows(String item) throws StorageException;
 }

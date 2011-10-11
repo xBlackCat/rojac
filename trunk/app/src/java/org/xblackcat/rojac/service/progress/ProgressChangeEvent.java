@@ -7,21 +7,43 @@ import java.util.EventObject;
  */
 
 public class ProgressChangeEvent extends EventObject {
-    private boolean percents;
-    private ProgressState state;
-    private Integer progress;
-    private String text;
+    private final boolean percents;
+    private final ProgressState state;
+    private final Integer value;
+    private final Integer bound;
+    private final String text;
 
-    public ProgressChangeEvent(Object source, ProgressState state, Integer progress, String text) {
-        this(source, state, progress, text, true);
+    public ProgressChangeEvent(Object source, ProgressState state) {
+        this(source, state, null, null, null, true);
     }
 
-    public ProgressChangeEvent(Object source, ProgressState state, Integer progress, String text, boolean percents) {
+    public ProgressChangeEvent(Object source, ProgressState state, int value) {
+        this(source, state, value, null, null, false);
+    }
+
+    public ProgressChangeEvent(Object source, ProgressState state, String text) {
+        this(source, state, null, null, text, true);
+    }
+
+    public ProgressChangeEvent(Object source, ProgressState state, int value, String text) {
+        this(source, state, value, null, text, true);
+    }
+
+    public ProgressChangeEvent(Object source, ProgressState state, int value, int bound) {
+        this(source, state, value, bound, null);
+    }
+
+    public ProgressChangeEvent(Object source, ProgressState state, int value, int bound, String text) {
+        this(source, state, value, bound, text, false);
+    }
+
+    private ProgressChangeEvent(Object source, ProgressState state, Integer value, Integer bound, String text, boolean percents) {
         super(source);
         this.state = state;
-        this.progress = progress;
+        this.value = value;
         this.text = text;
         this.percents = percents;
+        this.bound = bound;
     }
 
     /**
@@ -38,8 +60,8 @@ public class ProgressChangeEvent extends EventObject {
      *
      * @return progress value.
      */
-    public Integer getProgress() {
-        return progress;
+    public Integer getValue() {
+        return value;
     }
 
     /**
@@ -62,7 +84,7 @@ public class ProgressChangeEvent extends EventObject {
 
         ProgressChangeEvent that = (ProgressChangeEvent) o;
 
-        if (progress != null ? !progress.equals(that.progress) : that.progress != null) {
+        if (value != null ? !value.equals(that.value) : that.value != null) {
             return false;
         }
         if (state != that.state) {
@@ -78,7 +100,7 @@ public class ProgressChangeEvent extends EventObject {
     @Override
     public int hashCode() {
         int result = state != null ? state.hashCode() : 0;
-        result = 31 * result + (progress != null ? progress.hashCode() : 0);
+        result = 31 * result + (value != null ? value.hashCode() : 0);
         result = 31 * result + (text != null ? text.hashCode() : 0);
         return result;
     }
@@ -88,7 +110,7 @@ public class ProgressChangeEvent extends EventObject {
         final StringBuilder sb = new StringBuilder();
         sb.append("ProgressChangeEvent");
         sb.append("{state=").append(state);
-        sb.append(", progress=").append(progress);
+        sb.append(", progress=").append(value);
         sb.append(", text='").append(text).append('\'');
         sb.append('}');
         return sb.toString();
@@ -96,5 +118,9 @@ public class ProgressChangeEvent extends EventObject {
 
     public boolean isPercents() {
         return percents;
+    }
+
+    public Integer getBound() {
+        return bound;
     }
 }

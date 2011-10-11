@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.data;
+package org.xblackcat.rojac.service.storage.importing;
 
 /**
  * 05.10.11 10:29

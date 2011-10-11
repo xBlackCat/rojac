@@ -89,9 +89,9 @@ class ProgressComponent extends JToolBar implements IProgressListener {
             setVisible(false);
         }
 
-        if (e.getProgress() != null) {
+        if (e.getValue() != null) {
             if (e.isPercents()) {
-                bar.setValue(e.getProgress());
+                bar.setValue(e.getValue());
                 bar.setIndeterminate(false);
                 bar.setString(null);
             } else {

@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.storage.database;
 
-import org.xblackcat.rojac.data.Cell;
+import org.xblackcat.rojac.service.storage.importing.Cell;
 
 /**
  * 11.10.11 11:21
