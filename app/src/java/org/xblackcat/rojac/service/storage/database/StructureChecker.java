@@ -5,8 +5,11 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.StorageCheckException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
+import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.connection.SimpleConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
+import org.xblackcat.rojac.service.storage.database.helper.QueryHelper;
 import org.xblackcat.rojac.util.DatabaseUtils;
 
 import java.io.IOException;
@@ -18,14 +21,14 @@ import java.util.Map;
  *
  * @author xBlackCat
  */
-class StructureChecker implements IStructureChecker {
+public class StructureChecker implements IStructureChecker {
     private static final Log log = LogFactory.getLog(StructureChecker.class);
 
     private final Map<SQL, List<SQL>> initializationQueries;
     private final IQueryHelper helper;
 
-    StructureChecker(IQueryHelper helper) throws StorageInitializationException {
-        this.helper = helper;
+    public StructureChecker(DatabaseSettings settings) throws StorageInitializationException {
+        this.helper = new QueryHelper(new SimpleConnectionFactory(settings));
         try {
             initializationQueries = DatabaseUtils.loadInitializeSQLs(helper.getEngine());
         } catch (IOException e) {
@@ -41,7 +44,7 @@ class StructureChecker implements IStructureChecker {
     @Override
     public void check(boolean onlyTest) throws StorageCheckException {
         if (log.isInfoEnabled()) {
-            log.info("Check database storage structure started.");
+            log.info("Check database storage structure started [" + helper.getEngine() + "]");
         }
 
         for (Map.Entry<SQL, List<SQL>> entry : initializationQueries.entrySet()) {

@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author xBlackCat
  */
-class DBImportHelper implements IImportHelper {
+public class DBImportHelper implements IImportHelper {
     private final IConnectionFactory connectionFactory;
 
     private final MigrationQueries queries;
@@ -58,20 +58,37 @@ class DBImportHelper implements IImportHelper {
     }
 
     @Override
-    public Iterable<Cell[]> getData(String item) throws StorageException {
+    public void getData(IRowHandler rowHandler, String item) throws StorageException {
         assert RojacUtils.checkThread(false);
 
         try {
             try (Connection con = connectionFactory.getConnection()) {
                 try (Statement st = con.createStatement()) {
                     try (ResultSet rs = st.executeQuery(queries.getTableDataQuery(item))) {
-                        return new LazyResultSet(rs);
+                        ResultSetMetaData metaData = rs.getMetaData();
+                        int columnCount = metaData.getColumnCount();
+
+                        while (rs.next()) {
+                            Cell[] row = new Cell[columnCount];
+
+                            for (int i = 0; i < columnCount; i++) {
+                                row[i] = new Cell(
+                                        metaData.getColumnName(1 + i),
+                                        rs.getObject(1 + i)
+                                );
+                            }
+
+                            if (!rowHandler.handleRow(row)) {
+                                // Got error - aborting.
+                                break;
+                            }
+                        }
                     }
                 }
             }
 
         } catch (SQLException e) {
-            throw new StorageException("Can not read list of tables", e);
+            throw new StorageException("Can not read row", e);
         }
     }
 
@@ -108,6 +125,24 @@ class DBImportHelper implements IImportHelper {
         }
     }
 
+    @Override
+    public int getRows(String item) throws StorageException {
+        assert RojacUtils.checkThread(false);
+
+        try {
+            try (Connection con = connectionFactory.getConnection()) {
+                try (Statement st = con.createStatement()) {
+                    try (ResultSet rs = st.executeQuery(queries.getTableSizeQuery(item))) {
+                        return rs.next() ? rs.getInt(1) : -1;
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new StorageException("Can not get rows of table", e);
+        }
+    }
+
     private static class LazyResultSet implements Iterable<Cell[]> {
         private final ResultSet rs;
 
@@ -128,17 +163,6 @@ class DBImportHelper implements IImportHelper {
                             hasNext = rs.next();
 
                             if (hasNext) {
-                                ResultSetMetaData metaData = rs.getMetaData();
-                                int columnCount = metaData.getColumnCount();
-
-                                row = new Cell[columnCount];
-
-                                for (int i = 0; i < columnCount; i++) {
-                                    row[i] = new Cell(
-                                            metaData.getColumnName(1 + i),
-                                            rs.getObject(1 + i)
-                                    );
-                                }
 
                             } else {
                                 rs.close();

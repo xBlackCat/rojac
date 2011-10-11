@@ -13,6 +13,7 @@ import org.xblackcat.rojac.service.datahandler.DataDispatcher;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
+import org.xblackcat.rojac.service.storage.DatabaseInstaller;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
