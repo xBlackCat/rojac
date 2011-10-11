@@ -31,7 +31,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
     private final IProgressTracker tracker = new IProgressTracker() {
         @Override
         public void addLodMessage(Message message, Object... arguments) {
-            progressController.fireJobProgressChanged(0, message, arguments);
+            progressController.fireJobProgressChanged(message, arguments);
         }
 
         @Override
@@ -58,11 +58,10 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
         final String userName = RSDN_USER_NAME.get();
         final JanusService janusService = new JanusService(userName, UserHelper.getUserPassword());
 
-        progressController.fireJobProgressChanged(0f, Message.Synchronize_Message_Start);
+        progressController.fireJobProgressChanged(Message.Synchronize_Message_Start);
         Boolean useCompression = SYNCHRONIZER_USE_GZIP.get();
         janusService.init(useCompression);
         progressController.fireJobProgressChanged(
-                0f,
                 useCompression ?
                         Message.Synchronize_Message_CompressionUsed :
                         Message.Synchronize_Message_CompressionNotUsed

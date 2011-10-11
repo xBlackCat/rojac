@@ -28,16 +28,15 @@ public interface IProgressController {
      * @param progress new value of progress.
      * @param total
      */
-    void fireJobProgressChanged(long progress, long total);
+    void fireJobProgressChanged(int progress, int total);
 
     /**
      * Notify listeners about changing jobs progress (completeness) state and provide a message for logging.
      *
-     * @param progress  new value of progress.
      * @param message
      * @param arguments
      */
-    void fireJobProgressChanged(float progress, Message message, Object... arguments);
+    void fireJobProgressChanged(Message message, Object... arguments);
 
     /**
      * Notify listeners about job has been stopped.
@@ -81,5 +80,5 @@ public interface IProgressController {
 
     void fireException(Message message, Object... arguments);
 
-    void fireJobProgressChanged(long amount);
+    void fireJobProgressChanged(int amount);
 }
