@@ -5,8 +5,8 @@ import org.xblackcat.rojac.gui.dialog.db.DBSettingsPane;
 import org.xblackcat.rojac.gui.dialog.db.ImportDialog;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.DatabaseInstaller;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
-import org.xblackcat.rojac.util.DatabaseInstaller;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;

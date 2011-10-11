@@ -4,6 +4,7 @@ import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.storage.ImportProcessor;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -79,7 +80,7 @@ public class ImportDialog extends JDialog {
                         WindowsUtils.center(ipd);
                         dispose();
 
-                        // TODO: initialize copying data logic
+                        new ImportProcessor(source, destination, ipd).execute();
                         ipd.setVisible(true);
                     }
                 },

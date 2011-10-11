@@ -5,7 +5,6 @@ package org.xblackcat.rojac.service.storage;
  */
 
 public interface IStorage {
-    void check() throws StorageException;
 
     <T extends AH> T get(Class<T> base);
 

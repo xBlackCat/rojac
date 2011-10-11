@@ -10,12 +10,14 @@ public class MigrationQueries {
     private final String getTableDataQuery;
     private final String storeTableDataQuery;
     private final String nameQuote;
+    private final String tableSizeQuery;
 
-    public MigrationQueries(String tablesQuery, String getTableDataQuery, String storeTableDataQuery, String nameQuote) {
+    public MigrationQueries(String tablesQuery, String getTableDataQuery, String storeTableDataQuery, String nameQuote, String tableSizeQuery) {
         this.tablesQuery = tablesQuery;
         this.getTableDataQuery = getTableDataQuery;
         this.storeTableDataQuery = storeTableDataQuery;
         this.nameQuote = nameQuote;
+        this.tableSizeQuery = tableSizeQuery;
     }
 
     public String getTablesQuery() {
@@ -32,5 +34,9 @@ public class MigrationQueries {
 
     public String quoteName(String name) {
         return String.format(nameQuote, name);
+    }
+
+    public String getTableSizeQuery(String table) {
+        return String.format(tableSizeQuery, table);
     }
 }

@@ -47,4 +47,8 @@ public class ImportProcessDialog extends JDialog {
 
         return cp;
     }
+
+    public void setProgressText(String str) {
+        logArea.append(str + "\n");
+    }
 }

@@ -272,10 +272,11 @@ public final class DatabaseUtils {
     }
 
     public static MigrationQueries loadImportingQueries(String engine) throws IOException {
-        Properties properties = ResourceUtils.loadProperties('/' + DBCONFIG_PACKAGE + engine + "/sql.check.properties");
+        Properties properties = ResourceUtils.loadProperties('/' + DBCONFIG_PACKAGE + engine + "/sql.migration.properties");
 
         String getTables = properties.getProperty("migration.get.tables");
         String getTableData = properties.getProperty("migration.get.table.data");
+        String tableSizeQuery = properties.getProperty("migration.get.table.size");
         String storeTableData = properties.getProperty("migration.store.table.data");
         String quoteName = properties.getProperty("migration.quote.name");
 
@@ -283,8 +284,8 @@ public final class DatabaseUtils {
                 getTables,
                 getTableData,
                 storeTableData,
-                StringUtils.isBlank(quoteName) ? "%1$s" : quoteName
-        );
+                StringUtils.isBlank(quoteName) ? "%1$s" : quoteName,
+                tableSizeQuery);
     }
 
     @SuppressWarnings({"unchecked"})

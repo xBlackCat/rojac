@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.service.storage.database;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
@@ -17,11 +15,8 @@ import java.util.Map;
  */
 
 public class DBStorage implements IStorage {
-    private static final Log log = LogFactory.getLog(DBStorage.class);
-
     private final IQueryHelper helper;
     private final IQueryHolder queryExecutor;
-    private final IStructureChecker structureChecker;
 
     private final Map<Class<? extends AH>, AH> accessHelpers = new HashMap<>();
 
@@ -30,7 +25,6 @@ public class DBStorage implements IStorage {
 
         helper = new QueryHelper(connectionFactory);
 
-        structureChecker = new StructureChecker(helper);
         queryExecutor = new QueryHolder(helper);
 
         // Initialize the object AHs
@@ -47,12 +41,6 @@ public class DBStorage implements IStorage {
         accessHelpers.put(INewModerateAH.class, new DBNewModerateAH(queryExecutor));
         accessHelpers.put(IFavoriteAH.class, new DBFavoriteAH(queryExecutor));
         accessHelpers.put(IStatisticAH.class, new DBStatisticAH(queryExecutor));
-    }
-
-    /* Initialization routines */
-    @Override
-    public void check() throws StorageException {
-        structureChecker.check();
     }
 
     @Override
