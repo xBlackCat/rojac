@@ -221,9 +221,9 @@ class JanusHTTPSender extends BasicHandler {
             }
 
             if (method.getResponseContentLength() < 0) {
-                progressController.fireJobProgressChanged(0f, Synchronize_Message_ReadUnknown);
+                progressController.fireJobProgressChanged(Synchronize_Message_ReadUnknown);
             } else {
-                progressController.fireJobProgressChanged(0f, Synchronize_Message_Read, method.getResponseContentLength());
+                progressController.fireJobProgressChanged(Synchronize_Message_Read, method.getResponseContentLength());
             }
             // wrap the response body stream so that close() also releases
             // the connection back to the pool.
@@ -422,7 +422,7 @@ class JanusHTTPSender extends BasicHandler {
             if (pHost.length() == 0 || pPort == 0) {
                 config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
             } else {
-                progressController.fireJobProgressChanged(0f, Synchronize_Message_ProxyUsed, pHost, pPort);
+                progressController.fireJobProgressChanged(Synchronize_Message_ProxyUsed, pHost, pPort);
                 String pUser = SYNCHRONIZER_PROXY_USER.get("");
                 if (pUser.length() != 0) {
                     String pPass = SYNCHRONIZER_PROXY_PASSWORD.get().toString();
@@ -795,9 +795,9 @@ class JanusHTTPSender extends BasicHandler {
         }
 
         public void writeRequest(OutputStream out) throws IOException {
-            progressController.fireJobProgressChanged(0f, Synchronize_Message_Write, message.getContentLength());
+            progressController.fireJobProgressChanged(Synchronize_Message_Write, message.getContentLength());
             try {
-                this.message.writeTo(new LogOutputStream(out, message.getContentLength()));
+                this.message.writeTo(new LogOutputStream(out, (int) message.getContentLength()));
             } catch (SOAPException e) {
                 throw new IOException(e.getMessage());
             }
@@ -857,13 +857,13 @@ class JanusHTTPSender extends BasicHandler {
     }
 
     private class LogOutputStream extends FilterOutputStream {
-        private long amount = 0;
-        private final long total;
-        private final long chunkSize;
+        private int amount = 0;
+        private final int total;
+        private final int chunkSize;
 
         private long chunkRemain = 0;
 
-        public LogOutputStream(OutputStream out, long contentLength) {
+        public LogOutputStream(OutputStream out, int contentLength) {
             super(out);
             total = contentLength;
 
@@ -888,13 +888,13 @@ class JanusHTTPSender extends BasicHandler {
 
     private class AutoCloseInputStream extends FilterInputStream {
         private final HttpMethodBase method;
-        protected final long total;
-        private long amount = 0;
+        protected final int total;
+        private int amount = 0;
 
         public AutoCloseInputStream(HttpMethodBase method) throws IOException {
             super(method.getResponseBodyAsStream());
             this.method = method;
-            total = method.getResponseContentLength();
+            total = (int) method.getResponseContentLength();
             if (total < 0) {
                 progressController.fireJobProgressChanged(0, 1);
             }
@@ -905,7 +905,8 @@ class JanusHTTPSender extends BasicHandler {
                 super.close();
             } finally {
                 method.releaseConnection();
-                progressController.fireJobProgressChanged(1f, Synchronize_Message_WasRead, amount);
+                progressController.fireJobProgressChanged(1, 1);
+                progressController.fireJobProgressChanged(Synchronize_Message_WasRead, amount);
             }
         }
 

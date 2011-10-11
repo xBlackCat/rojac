@@ -7,26 +7,27 @@ import java.util.EventObject;
  */
 
 public class ProgressChangeEvent extends EventObject {
-    private final boolean percents;
     private final ProgressState state;
     private final Integer value;
     private final Integer bound;
     private final String text;
 
+    private final Integer percents;
+
     public ProgressChangeEvent(Object source, ProgressState state) {
-        this(source, state, null, null, null, true);
+        this(source, state, null, null, null, null);
     }
 
     public ProgressChangeEvent(Object source, ProgressState state, int value) {
-        this(source, state, value, null, null, false);
+        this(source, state, value, null, null, null);
     }
 
     public ProgressChangeEvent(Object source, ProgressState state, String text) {
-        this(source, state, null, null, text, true);
+        this(source, state, null, null, text, null);
     }
 
     public ProgressChangeEvent(Object source, ProgressState state, int value, String text) {
-        this(source, state, value, null, text, true);
+        this(source, state, value, null, text, null);
     }
 
     public ProgressChangeEvent(Object source, ProgressState state, int value, int bound) {
@@ -34,16 +35,21 @@ public class ProgressChangeEvent extends EventObject {
     }
 
     public ProgressChangeEvent(Object source, ProgressState state, int value, int bound, String text) {
-        this(source, state, value, bound, text, false);
+        this(source, state, value, bound, text, null);
     }
 
-    private ProgressChangeEvent(Object source, ProgressState state, Integer value, Integer bound, String text, boolean percents) {
+    private ProgressChangeEvent(Object source, ProgressState state, Integer value, Integer bound, String text, Void v) {
         super(source);
         this.state = state;
         this.value = value;
         this.text = text;
-        this.percents = percents;
         this.bound = bound;
+
+        if (bound != null && value != null) {
+            percents = (int) (value * 100. / bound);
+        } else {
+            percents = null;
+        }
     }
 
     /**
@@ -62,6 +68,10 @@ public class ProgressChangeEvent extends EventObject {
      */
     public Integer getValue() {
         return value;
+    }
+
+    public Integer getPercents() {
+        return percents;
     }
 
     /**
@@ -87,14 +97,11 @@ public class ProgressChangeEvent extends EventObject {
         if (value != null ? !value.equals(that.value) : that.value != null) {
             return false;
         }
-        if (state != that.state) {
-            return false;
-        }
         if (text != null ? !text.equals(that.text) : that.text != null) {
             return false;
         }
 
-        return true;
+        return state == that.state;
     }
 
     @Override
@@ -114,10 +121,6 @@ public class ProgressChangeEvent extends EventObject {
         sb.append(", text='").append(text).append('\'');
         sb.append('}');
         return sb.toString();
-    }
-
-    public boolean isPercents() {
-        return percents;
     }
 
     public Integer getBound() {
