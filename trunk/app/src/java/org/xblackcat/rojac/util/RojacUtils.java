@@ -273,6 +273,7 @@ public final class RojacUtils {
      * @param swing control flag. If set to <code>true</code> the current method will check if it is executing in the
      *              EventDispatching thread. If set to <code>false</code> - in the non-EventDispatching thread. If
      *              condition is failed a message will be added into logs.
+     * @return true if the method invoked in expected thread
      */
     public static boolean checkThread(boolean swing) {
         return checkThread(swing, RojacUtils.class);
@@ -285,6 +286,7 @@ public final class RojacUtils {
      *                  the EventDispatching thread. If set to <code>false</code> - in the non-EventDispatching thread.
      *                  If condition is failed a message will be added into logs.
      * @param tillClass class object till which a stack trace should be trimmed.
+     * @return true if the method invoked in expected thread
      */
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public static boolean checkThread(boolean swing, Class<?> tillClass) {
@@ -304,7 +306,7 @@ public final class RojacUtils {
                 }
 
                 if (shift != stackTrace.length) {
-                    stack.setStackTrace((StackTraceElement[]) ArrayUtils.subarray(stackTrace, shift, stackTrace.length - shift));
+                    stack.setStackTrace(ArrayUtils.subarray(stackTrace, shift, stackTrace.length - shift));
                 }
             }
 
@@ -354,6 +356,7 @@ public final class RojacUtils {
      * Fires a debug exception only if Rojac run in debug mode.
      *
      * @param message message of debug exception.
+     * @throws RojacDebugException risen debug exception with correspond message
      */
     public static void fireDebugException(String message) throws RojacDebugException {
         if (!Property.ROJAC_DEBUG_MODE.get()) {
@@ -368,6 +371,7 @@ public final class RojacUtils {
      *
      * @param message message of debug exception.
      * @param cause   root cause of exception.
+     * @throws RojacDebugException risen debug exception with correspond message and root cause
      */
     public static void fireDebugException(String message, Throwable cause) throws RojacDebugException {
         if (!Property.ROJAC_DEBUG_MODE.get()) {
