@@ -2,9 +2,11 @@ package org.xblackcat.rojac.gui.dialog.db;
 
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -22,6 +24,8 @@ public class ImportProcessDialog extends JDialog {
     public ImportProcessDialog(Window owner, final Runnable cancelAction) {
         super(owner, ModalityType.APPLICATION_MODAL);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        setTitle(Message.Dialog_ImportProgress_Title.get());
 
         logArea.setEditable(false);
         logProgress.setStringPainted(true);
@@ -49,7 +53,9 @@ public class ImportProcessDialog extends JDialog {
     private JComponent setupContentPane() {
         JPanel cp = new JPanel(new BorderLayout(5, 5));
 
-        cp.add(new JLabel("Developing in progress..."), BorderLayout.NORTH);
+        cp.setBorder(new EmptyBorder(5, 10, 5, 10));
+
+        cp.add(new JLabel(Message.Dialog_ImportProgress_Label.get()), BorderLayout.NORTH);
 
         JPanel trackPane = new JPanel(new BorderLayout(5, 5));
         trackPane.add(logProgress, BorderLayout.NORTH);
