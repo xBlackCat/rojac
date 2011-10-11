@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
@@ -7,8 +8,10 @@ import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.IStructureChecker;
 import org.xblackcat.rojac.service.storage.database.StructureChecker;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.util.DialogHelper;
 import org.xblackcat.rojac.util.RojacWorker;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -38,7 +41,18 @@ public class DatabaseInstaller extends RojacWorker<Void, Void> {
         // Replace storage engine before updating data in views.
         IStructureChecker structureChecker = new StructureChecker(settings);
 
-        structureChecker.check();
+        try {
+            structureChecker.check();
+        } catch (StorageCheckException e) {
+            final RojacException exception = new RojacException("Database can not be checked", e);
+            SwingUtilities.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    DialogHelper.showExceptionDialog(exception, false);
+                }
+            });
+            return null;
+        }
 
         Storage.setStorage(new DBStorage(settings));
 
