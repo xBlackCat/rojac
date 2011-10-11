@@ -2,6 +2,9 @@ package org.xblackcat.rojac.service.storage.database;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.progress.IProgressListener;
+import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
+import org.xblackcat.rojac.service.progress.ProgressState;
 import org.xblackcat.rojac.service.storage.StorageCheckException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
@@ -38,14 +41,36 @@ public class StructureChecker implements IStructureChecker {
 
     @Override
     public void check() throws StorageCheckException {
-        check(false);
+        check(null);
+    }
+
+    @Override
+    public void check(IProgressListener progressListener) throws StorageCheckException {
+        check(false, progressListener);
     }
 
     @Override
     public void check(boolean onlyTest) throws StorageCheckException {
+        check(onlyTest, null);
+    }
+
+    @Override
+    public void check(boolean onlyTest, IProgressListener progressListener) throws StorageCheckException {
+        if (progressListener == null) {
+            progressListener = new IProgressListener() {
+                @Override
+                public void progressChanged(ProgressChangeEvent e) {
+                    // Nothing
+                }
+            };
+        }
+
         if (log.isInfoEnabled()) {
             log.info("Check database storage structure started [" + helper.getEngine() + "]");
         }
+
+        int amountChecks = initializationQueries.size();
+        int checkIdx = 0;
 
         for (Map.Entry<SQL, List<SQL>> entry : initializationQueries.entrySet()) {
             boolean success = false;
@@ -53,6 +78,8 @@ public class StructureChecker implements IStructureChecker {
             if (log.isTraceEnabled()) {
                 log.trace("Perform check " + check);
             }
+            progressListener.progressChanged(new ProgressChangeEvent(this, ProgressState.Start, checkIdx, amountChecks));
+
             try {
                 Boolean c = helper.executeSingle(Converters.TO_BOOLEAN, check.getSql());
                 success = Boolean.TRUE.equals(c);
@@ -72,16 +99,24 @@ public class StructureChecker implements IStructureChecker {
                     log.trace(check + " check failed. Perform initialization.");
                 }
 
+                int initAmount = entry.getValue().size();
+
+                int initIdx = checkIdx * initAmount;
+                int initBound = amountChecks * initAmount;
+
                 for (SQL sql : entry.getValue()) {
                     try {
                         if (log.isTraceEnabled()) {
                             log.trace("Perform initialization command " + sql);
                         }
+                        progressListener.progressChanged(new ProgressChangeEvent(this, ProgressState.Work, initIdx, initBound));
                         helper.update(sql.getSql());
                     } catch (StorageException e) {
                         log.error("Can not perform initialization procedure " + sql);
                         throw new StorageCheckException("Can not execute " + sql, e);
                     }
+
+                    initIdx++;
                 }
 
                 // Perform post-check
@@ -99,6 +134,8 @@ public class StructureChecker implements IStructureChecker {
                     throw new StorageCheckException("Post check failed for " + check);
                 }
             }
+
+            checkIdx++;
         }
     }
 }

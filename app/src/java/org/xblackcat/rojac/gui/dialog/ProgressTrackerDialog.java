@@ -71,9 +71,9 @@ public class ProgressTrackerDialog extends JDialog implements IProgressListener 
             setVisible(false);
         }
 
-        if (e.getProgress() != null) {
+        if (e.getValue() != null) {
             if (e.isPercents()) {
-                logProgress.setValue(e.getProgress());
+                logProgress.setValue(e.getValue());
                 logProgress.setIndeterminate(false);
                 logProgress.setString(null);
             } else {

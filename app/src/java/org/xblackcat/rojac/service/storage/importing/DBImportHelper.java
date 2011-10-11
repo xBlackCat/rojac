@@ -1,16 +1,20 @@
-package org.xblackcat.rojac.service.storage.database;
+package org.xblackcat.rojac.service.storage.importing;
 
-import org.xblackcat.rojac.data.Cell;
-import org.xblackcat.rojac.service.storage.IImportHelper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.MigrationQueries;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.database.IRowHandler;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.rojac.util.DatabaseUtils;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 05.10.11 10:13
@@ -18,6 +22,8 @@ import java.util.*;
  * @author xBlackCat
  */
 public class DBImportHelper implements IImportHelper {
+    private static final Log log = LogFactory.getLog(DBImportHelper.class);
+
     private final IConnectionFactory connectionFactory;
 
     private final MigrationQueries queries;
@@ -93,36 +99,8 @@ public class DBImportHelper implements IImportHelper {
     }
 
     @Override
-    public int storeItem(String item, Cell[] data) throws StorageException {
-        assert RojacUtils.checkThread(false);
-
-        StringBuilder signs = new StringBuilder();
-        StringBuilder names = new StringBuilder();
-
-        for (Cell cell : data) {
-            signs.append(",?");
-            names.append(',');
-            names.append(queries.quoteName(cell.getName()));
-        }
-
-        String query = String.format(queries.getStoreTableDataQuery(), item, names.substring(1), signs.substring(1));
-
-        try {
-            try (Connection con = connectionFactory.getConnection()) {
-                try (PreparedStatement st = con.prepareStatement(query)) {
-                    // Fill parameters if any
-                    for (int i = 0, dataLength = data.length; i < dataLength; i++) {
-                        Cell cell = data[i];
-                        st.setObject(i + 1, cell.getData());
-                    }
-                    return st.executeUpdate();
-                }
-
-            }
-
-        } catch (SQLException e) {
-            throw new StorageException("Can not store row into " + item, e);
-        }
+    public IRowWriter getRowWriter(String item) throws StorageException {
+        return new RowWriter(item);
     }
 
     @Override
@@ -143,62 +121,80 @@ public class DBImportHelper implements IImportHelper {
         }
     }
 
-    private static class LazyResultSet implements Iterable<Cell[]> {
-        private final ResultSet rs;
+    private class RowWriter implements IRowWriter {
+        private final String item;
+        private Connection con = null;
+        private PreparedStatement st = null;
 
-        private LazyResultSet(ResultSet rs) {
-            this.rs = rs;
+        public RowWriter(String item) {
+            this.item = item;
         }
 
         @Override
-        public Iterator<Cell[]> iterator() {
-            return new Iterator<Cell[]>() {
-                private Boolean hasNext;
-                private Cell[] row;
+        public int storeRow(Cell[] cells) throws StorageException {
+            assert RojacUtils.checkThread(false);
 
-                @Override
-                public boolean hasNext() {
-                    if (hasNext == null) {
-                        try {
-                            hasNext = rs.next();
+            if (st == null) {
+                initialize(cells);
+            }
 
-                            if (hasNext) {
-
-                            } else {
-                                rs.close();
-                                hasNext = false;
-                            }
-                        } catch (SQLException e) {
-                            throw new IllegalStateException("Can not read next row", e);
-                        }
-                    }
-
-                    return hasNext;
+            try {
+                // Fill parameters if any
+                for (int i = 0, dataLength = cells.length; i < dataLength; i++) {
+                    Cell cell = cells[i];
+                    st.setObject(i + 1, cell.getData());
                 }
 
-                @Override
-                public Cell[] next() {
-                    if (hasNext == null) {
-                        if (!hasNext()) {
-                            throw new NoSuchElementException();
-                        }
+                return st.executeUpdate();
+            } catch (SQLException e) {
+                try {
+                    con.close();
+                } catch (SQLException e1) {
+                    log.error("Can not close connection", e1);
+                }
+                throw new StorageException("Can not insert a row", e);
+            }
+        }
+
+        @Override
+        public void stop() throws StorageException {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                throw new StorageException("Can not close connection", e);
+            }
+        }
+
+        private void initialize(Cell[] cells) throws StorageException {
+            StringBuilder signs = new StringBuilder();
+            StringBuilder names = new StringBuilder();
+
+            for (Cell cell : cells) {
+                signs.append(",?");
+                names.append(',');
+                names.append(queries.quoteName(cell.getName()));
+            }
+
+            String query = String.format(queries.getStoreTableDataQuery(), item, names.substring(1), signs.substring(1));
+
+            try {
+                con = connectionFactory.getConnection();
+                try {
+                    st = con.prepareStatement(query);
+                } catch (SQLException e) {
+                    if (log.isWarnEnabled()) {
+                        log.warn("");
                     }
-                    if (!Boolean.TRUE.equals(hasNext)) {
-                        throw new NoSuchElementException();
-                    }
-                    hasNext = null;
-                    return row;
+
+                    con.close();
+                    throw e;
                 }
 
-                @Override
-                public void remove() {
-                    try {
-                        rs.deleteRow();
-                    } catch (SQLException e) {
-                        throw new IllegalStateException("Can not delete row");
-                    }
-                }
-            };
+            } catch (SQLException e) {
+                throw new StorageException("Can not store row into " + item, e);
+            }
         }
     }
 }

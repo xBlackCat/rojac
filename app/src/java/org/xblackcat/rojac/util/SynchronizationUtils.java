@@ -13,11 +13,11 @@ public final class SynchronizationUtils {
     }
 
     public static String makeSizeString(ProgressChangeEvent e) {
-        if (e.getProgress() == null || e.getProgress() < 0) {
+        if (e.getValue() == null || e.getValue() < 0) {
             return "";
         }
 
-        int size = e.getProgress();
+        int size = e.getValue();
         String factors = " KMGTE";
         int idx = -1;
 
