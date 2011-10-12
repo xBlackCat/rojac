@@ -40,6 +40,7 @@ public class ImportDialog extends JDialog {
         setContentPane(setupContentPage());
 
         pack();
+        setSize(600, getHeight());
         setMinimumSize(getSize());
     }
 

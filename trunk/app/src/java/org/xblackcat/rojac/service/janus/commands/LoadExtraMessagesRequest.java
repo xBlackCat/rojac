@@ -205,6 +205,8 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
                 tracker.updateProgress(count++, userIds.length);
             }
         }
+
+        mAH.updateLastPostInfo(updatedTopics.toArray());
     }
 
 }

@@ -21,4 +21,6 @@ interface IQueryHolder {
 
     @SuppressWarnings({"unchecked"})
     <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, DataQuery sql, K... keys) throws StorageException;
+
+    void updateBatch(DataQuery sql, Object[]... params) throws StorageException;
 }

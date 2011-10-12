@@ -198,6 +198,21 @@ class ForumDecorator extends ADecorator {
             for (Map.Entry<Forum, ForumStatistic> fd : data.entrySet()) {
                 updateForum(fd.getKey(), fd.getValue());
             }
+
+            removeNonExisting(notSubscribedForums, data.keySet());
+            removeNonExisting(subscribedForums, data.keySet());
+        }
+
+        private void removeNonExisting(AGroupItem<ForumItem> group, Set<Forum> list) {
+            int idx = group.children.size();
+            while (idx > 0) {
+                --idx;
+                ForumItem fi = group.getChild(idx);
+                if (!list.contains(fi.getForum())) {
+                    modelControl.safeRemoveChild(group, fi);
+                }
+            }
+
         }
     }
 
