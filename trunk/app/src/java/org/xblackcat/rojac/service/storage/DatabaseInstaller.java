@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.gui.dialog.db.CheckProcessDialog;
 import org.xblackcat.rojac.i18n.JLOptionPane;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
@@ -94,8 +95,8 @@ public class DatabaseInstaller extends RojacWorker<Void, ProgressChangeEvent> {
                     if (settings == null) {
                         JLOptionPane.showMessageDialog(
                                 owner,
-                                "Storage is not defined. The program will be aborted.",
-                                "No storage is defined",
+                                Message.ErrorDialog_StorageNotDefined_Message.get(),
+                                Message.ErrorDialog_StorageNotDefined_Title.get(),
                                 JOptionPane.OK_OPTION
                         );
                         shutDownAction.run();

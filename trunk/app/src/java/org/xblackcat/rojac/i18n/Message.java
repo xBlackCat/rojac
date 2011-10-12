@@ -221,6 +221,9 @@ public enum Message {
     ErrorDialog_MessageEmptySubject_Message,
     ErrorDialog_MessageEmptySubject_Title,
 
+    ErrorDialog_StorageNotDefined_Title,
+    ErrorDialog_StorageNotDefined_Message,
+
     Message_Response_Header,
 
     // Extended mark messages dialgo related
