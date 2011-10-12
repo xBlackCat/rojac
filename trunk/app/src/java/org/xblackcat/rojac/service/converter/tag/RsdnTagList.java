@@ -10,6 +10,7 @@ import org.xblackcat.rojac.service.converter.ITag;
 public enum RsdnTagList {
     Bold(new SimpleTag("b")),
     Italic(new SimpleTag("i")),
+    StrikeOut(new SimpleTag("s")),
     List(new SimpleTag("[list]", "[/list]", "<ul style='margin-top:0; margin-bottom:0;'>", "</ul>")),
     ListNumeric(new SimpleTag("[list=1]", "[/list]", "<ol type='1' start='1' style='margin-top:0; margin-bottom:0;'>", "</ol>")),
     ListAlphabetic(new SimpleTag("[list=a]", "[/list]", "<ol type='a' style='margin-top:0; margin-bottom:0;'>", "</ol>")),
