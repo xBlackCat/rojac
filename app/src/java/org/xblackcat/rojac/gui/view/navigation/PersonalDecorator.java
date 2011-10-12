@@ -25,7 +25,6 @@ class PersonalDecorator extends ADecorator {
     private final PersonalItem outBox = new OutboxItem();
     private final PersonalItem myResponses = new MyResponsesItem();
     private final PersonalItem ignoredTopics = new IgnoredTopicsItem();
-    private final PersonalItem drafts = new DraftsItem();
 
     PersonalDecorator(IModelControl modelControl) {
         super(modelControl);

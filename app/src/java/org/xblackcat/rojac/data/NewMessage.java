@@ -12,6 +12,7 @@ public final class NewMessage implements IRSDNable<PostMessageInfo> {
     private final int forumId;
     private final String subject;
     private final String message;
+    private final boolean draft;
 
     public NewMessage(int localMessageId, int parentId, int forumId, String subject, String message) {
         this.localMessageId = localMessageId;
@@ -19,6 +20,7 @@ public final class NewMessage implements IRSDNable<PostMessageInfo> {
         this.forumId = forumId;
         this.subject = subject;
         this.message = message;
+        draft = false;
     }
 
     public int getLocalMessageId() {
@@ -59,5 +61,9 @@ public final class NewMessage implements IRSDNable<PostMessageInfo> {
         str.append("subject=").append(subject).append(", ");
         str.append("message=").append(message).append(']');
         return str.toString();
+    }
+
+    public boolean isDraft() {
+        return draft;
     }
 }

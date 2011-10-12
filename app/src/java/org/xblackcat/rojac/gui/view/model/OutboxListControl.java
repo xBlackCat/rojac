@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.model;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
@@ -39,6 +40,10 @@ class OutboxListControl extends MessageListControl {
 
     @Override
     public Icon getTitleIcon(AThreadModel<Post> model) {
+        if (model.getRoot() != null) {
+            return ReadStatusIcon.OutboxItem.getIcon(model.getRoot().isRead());
+        }
+
         return null;
     }
 
