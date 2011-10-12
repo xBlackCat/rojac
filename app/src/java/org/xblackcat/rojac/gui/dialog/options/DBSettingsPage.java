@@ -40,7 +40,7 @@ public class DBSettingsPage extends APage {
         if (!currentSettings.equals(newSettings)) {
             Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(newSettings);
 
-            new DatabaseInstaller(newSettings).execute();
+            new DatabaseInstaller(newSettings, mainFrame).execute();
         }
     }
 

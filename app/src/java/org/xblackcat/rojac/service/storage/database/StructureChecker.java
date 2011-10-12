@@ -57,6 +57,7 @@ public class StructureChecker implements IStructureChecker {
     @Override
     public void check(boolean onlyTest, IProgressListener progressListener) throws StorageCheckException {
         if (progressListener == null) {
+            //  NPE and null checks avoiding
             progressListener = new IProgressListener() {
                 @Override
                 public void progressChanged(ProgressChangeEvent e) {
