@@ -125,6 +125,13 @@ public final class RojacLauncher {
         private void perform() {
             final MainFrame mainFrame = new MainFrame();
 
+            final Runnable shutDownAction = new Runnable() {
+                @Override
+                public void run() {
+                    performShutdown(mainFrame);
+                }
+            };
+
             new VersionChecker(mainFrame).execute();
 
             checker.installNewInstanceListener(
@@ -139,11 +146,7 @@ public final class RojacLauncher {
                         @Override
                         public void run() {
                             try {
-                                SwingUtilities.invokeAndWait(new Runnable() {
-                                    public void run() {
-                                        performShutdown(mainFrame);
-                                    }
-                                });
+                                SwingUtilities.invokeAndWait(shutDownAction);
                             } catch (InterruptedException e) {
                                 log.error("Shutdown process is interrupted", e);
                             } catch (InvocationTargetException e) {
@@ -196,7 +199,7 @@ public final class RojacLauncher {
                             return;
                         }
                     }
-                    performShutdown(mainFrame);
+                    shutDownAction.run();
 
                     System.exit(0);
                 }
@@ -212,28 +215,18 @@ public final class RojacLauncher {
                 WindowsUtils.toFront(mainFrame);
             }
 
-            if (settings == null) {
-                settings = DialogHelper.showDBSettingsDialog(mainFrame);
 
-                if (settings == null) {
-                    JLOptionPane.showMessageDialog(
-                            mainFrame,
-                            "Storage is not defined. The program will shutted down.",
-                            "No storage is defined",
-                            JOptionPane.OK_OPTION
-                    );
-                    performShutdown(mainFrame);
-                }
-
-                Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(settings);
-            }
-
-            new DatabaseInstaller(new Runnable() {
-                @Override
-                public void run() {
-                    mainFrame.setupScheduler();
-                }
-            }, Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get(), mainFrame).execute();
+            new DatabaseInstaller(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            mainFrame.setupScheduler();
+                        }
+                    },
+                    shutDownAction,
+                    settings,
+                    mainFrame
+            ).execute();
         }
 
     }

@@ -1,10 +1,11 @@
 package org.xblackcat.rojac.service.storage;
 
-import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.gui.dialog.db.CheckProcessDialog;
+import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
@@ -30,13 +31,17 @@ import java.util.List;
 public class DatabaseInstaller extends RojacWorker<Void, ProgressChangeEvent> {
     private final DatabaseSettings settings;
     private final CheckProcessDialog dlg;
+    private final Runnable shutDownAction;
+    private final Window owner;
 
     public DatabaseInstaller(DatabaseSettings settings, Window window) {
-        this(null, settings, window);
+        this(null, null, settings, window);
     }
 
-    public DatabaseInstaller(Runnable postProcessor, DatabaseSettings settings, Window window) {
+    public DatabaseInstaller(Runnable postProcessor, Runnable shutDownAction, DatabaseSettings settings, Window owner) {
         super(postProcessor);
+        this.shutDownAction = shutDownAction;
+        this.owner = owner;
 
         assert RojacUtils.checkThread(true) : "Installer should be started in EventDispatcher thread";
 
@@ -46,7 +51,7 @@ public class DatabaseInstaller extends RojacWorker<Void, ProgressChangeEvent> {
 
         this.settings = settings;
 
-        dlg = new CheckProcessDialog(window);
+        dlg = new CheckProcessDialog(owner);
     }
 
     @Override
@@ -62,6 +67,10 @@ public class DatabaseInstaller extends RojacWorker<Void, ProgressChangeEvent> {
         // Replace storage engine before updating data in views.
 
         try {
+            if (settings == null) {
+                throw new StorageInitializationException("No settings");
+            }
+
             IStructureChecker structureChecker = new StructureChecker(settings);
             structureChecker.check(new IProgressListener() {
                 @Override
@@ -69,13 +78,33 @@ public class DatabaseInstaller extends RojacWorker<Void, ProgressChangeEvent> {
                     publish(e);
                 }
             });
-        } catch (StorageCheckException e) {
-            final RojacException exception = new RojacException("Database can not be checked", e);
-            SwingUtilities.invokeAndWait(new Runnable() {
+        } catch (final StorageException e) {
+            SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     dlg.dispose();
-                    DialogHelper.showExceptionDialog(exception, false);
+
+                    if (shutDownAction == null) {
+                        RojacUtils.showExceptionDialog(e);
+                        return;
+                    }
+
+                    DatabaseSettings settings = DialogHelper.showDBSettingsDialog(owner);
+
+                    if (settings == null) {
+                        JLOptionPane.showMessageDialog(
+                                owner,
+                                "Storage is not defined. The program will be aborted.",
+                                "No storage is defined",
+                                JOptionPane.OK_OPTION
+                        );
+                        shutDownAction.run();
+                    }
+
+                    Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(settings);
+
+                    // Restart database installer
+                    new DatabaseInstaller(postProcessor, shutDownAction, settings, owner).execute();
                 }
             });
             return null;
