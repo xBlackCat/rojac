@@ -233,7 +233,7 @@ public final class RojacLauncher {
                 public void run() {
                     mainFrame.setupScheduler();
                 }
-            }, Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get()).execute();
+            }, Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get(), mainFrame).execute();
         }
 
     }

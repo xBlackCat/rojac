@@ -125,6 +125,9 @@ public enum Message {
     Dialog_ImportProgress_Title,
     Dialog_ImportProgress_Label,
 
+    Dialog_CheckProgress_Title,
+    Dialog_CheckProgress_Label,
+
     /**
      * Parameters:
      * 1. engine name (string)
