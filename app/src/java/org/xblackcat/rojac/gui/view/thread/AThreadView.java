@@ -513,7 +513,9 @@ public abstract class AThreadView extends AnItemView {
             }
         };
 
-        modelControl.processPacket(model, packet, postProcessor);
+        if (model.isInitialized()) {
+            modelControl.processPacket(model, packet, postProcessor);
+        }
     }
 
     protected abstract void collapsePath(TreePath path);
