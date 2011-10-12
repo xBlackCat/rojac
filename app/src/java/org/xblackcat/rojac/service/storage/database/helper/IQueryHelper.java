@@ -23,4 +23,6 @@ public interface IQueryHelper {
     void shutdown();
 
     String getEngine();
+
+    void updateBatch(String query, Object[]... params) throws StorageException;
 }

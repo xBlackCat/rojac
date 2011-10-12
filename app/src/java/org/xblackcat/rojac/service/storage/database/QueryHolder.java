@@ -46,6 +46,11 @@ class QueryHolder implements IQueryHolder {
     }
 
     @Override
+    public void updateBatch(DataQuery sql, Object[]... params) throws StorageException {
+        helper.updateBatch(getQuery(sql), params);
+    }
+
+    @Override
     public <T> Collection<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.execute(c, getQuery(sql), params);
     }

@@ -489,7 +489,14 @@ public enum DataQuery implements IPropertiable {
      * Checks is the message id exist
      */
     IS_MESSAGES_EXIST,
-    GET_BROKEN_TOPIC_IDS, GET_MESSAGES_NUMBER_IN_THREAD, GET_USER_REPLIES_NUMBER, GET_USER_POSTS_NUMBER;
+    GET_BROKEN_TOPIC_IDS,
+    GET_MESSAGES_NUMBER_IN_THREAD,
+    GET_USER_REPLIES_NUMBER,
+    GET_USER_POSTS_NUMBER,
+
+    UPDATE_TOPIC_MESSAGES_SET_LASTPOST_ID,
+    UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE
+    ;
 
     private final String propertyName = ResourceUtils.constantToProperty(this.name());
 

@@ -81,6 +81,27 @@ public final class QueryHelper implements IQueryHelper {
     }
 
     @Override
+    public void updateBatch(String sql, Object[]... params) throws StorageException {
+        assert RojacUtils.checkThread(false, QueryHelper.class);
+
+        try {
+            try (Connection con = connectionFactory.getConnection()) {
+                try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+                    for (Object[] parameters : params) {
+                        fillStatement(preparedStatement, parameters);
+
+                        preparedStatement.executeUpdate();
+                    }
+                }
+
+            }
+
+        } catch (SQLException e) {
+            throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql), e);
+        }
+    }
+
+    @Override
     public void shutdown() {
         connectionFactory.shutdown();
     }

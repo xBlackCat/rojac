@@ -70,6 +70,19 @@ final class DBMessageAH extends AnAH implements IMessageAH {
                 m.getMessageId());
     }
 
+    @Override
+    public void updateLastPostInfo(int... threadIds) throws StorageException {
+        Object[][] params = new Object[threadIds.length][];
+
+        for (int i = 0; i < threadIds.length; i++) {
+            params[i] = new Integer[]{threadIds[i]};
+        }
+
+        helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_ID, params);
+
+        helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE, params);
+    }
+
     public void updateMessageReadFlag(int messageId, boolean read) throws StorageException {
         helper.update(DataQuery.UPDATE_MESSAGE_READ_FLAG,
                 read,

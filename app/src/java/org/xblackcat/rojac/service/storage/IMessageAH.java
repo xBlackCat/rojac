@@ -47,6 +47,14 @@ public interface IMessageAH extends AH {
     void updateMessage(JanusMessageInfo mes, boolean read) throws StorageException;
 
     /**
+     * Update last post info in specified threads
+     *
+     * @param threadIds
+     * @throws StorageException
+     */
+    void updateLastPostInfo(int... threadIds) throws StorageException;
+
+    /**
      * Updates read flag of the specified message.
      *
      * @param messageId message id to be updated

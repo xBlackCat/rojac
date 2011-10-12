@@ -266,8 +266,8 @@ class NavigationModel implements TreeTableModel, IModelControl {
 
     // Helper methods
     @Override
-    public <T extends AnItem> void safeRemoveChild(AGroupItem<T> parent, T forum) {
-        int idx = parent.indexOf(forum);
+    public <T extends AnItem> void safeRemoveChild(AGroupItem<T> parent, T child) {
+        int idx = parent.indexOf(child);
         if (idx != -1) {
             AnItem removed = parent.remove(idx);
             support.fireChildRemoved(getPathToRoot(parent), idx, removed);
@@ -302,9 +302,9 @@ class NavigationModel implements TreeTableModel, IModelControl {
     }
 
     @Override
-    public void removeChildren(AGroupItem item) {
-        item.clear();
-        support.fireTreeStructureChanged(getPathToRoot(item));
+    public void removeAllChildren(AGroupItem parent) {
+        parent.clear();
+        support.fireTreeStructureChanged(getPathToRoot(parent));
     }
 
     public void dispatch(IPacket packet) {

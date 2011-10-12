@@ -159,7 +159,7 @@ class FavoritesDecorator extends ADecorator {
 
         @Override
         public void doSwing(Collection<FavoriteItem> data) {
-            modelControl.removeChildren(favorites);
+            modelControl.removeAllChildren(favorites);
 
             for (FavoriteItem f : data) {
                 modelControl.addChild(favorites, f);
