@@ -19,7 +19,7 @@ public class NewMessageData extends MessageData {
                 Property.RSDN_USER_NAME.get(),
                 -1,
                 -1,
-                true,
+                !md.isDraft(),
                 null,
                 false,
                 0);

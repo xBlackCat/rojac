@@ -46,10 +46,6 @@ public class DatabaseInstaller extends RojacWorker<Void, ProgressChangeEvent> {
 
         assert RojacUtils.checkThread(true) : "Installer should be started in EventDispatcher thread";
 
-        if (settings == null) {
-            throw new NullPointerException("Invalid settings.");
-        }
-
         this.settings = settings;
 
         dlg = new CheckProcessDialog(owner);
