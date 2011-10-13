@@ -24,4 +24,8 @@ public final class SQL {
     public String toString() {
         return getName();
     }
+
+    public boolean isSimpleQuery() {
+        return !name.startsWith("complex.") && !sql.contains(";");
+    }
 }

@@ -102,9 +102,15 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
 
                 publish(new ProgressChangeEvent(this, ProgressState.Work, Message.Log_ImportProgress_CopyItem.get(item, sourceRows)));
 
-                IRowWriter rowWriter = destinationStorage.getRowWriter(item);
-                sourceStorage.getData(new RowHandler(rowWriter, sourceRows), item);
-                rowWriter.stop();
+                try (IRowWriter rowWriter = destinationStorage.getRowWriter(item, true)) {
+                    sourceStorage.getData(new RowHandler(rowWriter, sourceRows), item);
+                } catch (StorageException e) {
+                    log.warn("Can not merge data. Try to copy it", e);
+
+                    try (IRowWriter rowWriter = destinationStorage.getRowWriter(item, false)) {
+                        sourceStorage.getData(new RowHandler(rowWriter, sourceRows), item);
+                    }
+                }
 
                 int destinationRows = destinationStorage.getRows(item);
                 publish(new ProgressChangeEvent(this, ProgressState.Work, Message.Log_ImportProgress_CopyDone.get(item, destinationRows)));
@@ -148,7 +154,7 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
     private class RowHandler implements IRowHandler {
         private final IRowWriter rowWriter;
         private final int sourceRows;
-        
+
         private int idx;
 
         public RowHandler(IRowWriter rowWriter, int sourceRows) {
@@ -160,7 +166,7 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
         public boolean handleRow(Cell[] row) {
             try {
                 rowWriter.storeRow(row);
-                idx ++;
+                idx++;
                 publish(new ProgressChangeEvent(this, ProgressState.Work, idx, sourceRows));
 
                 return !isStopped();
