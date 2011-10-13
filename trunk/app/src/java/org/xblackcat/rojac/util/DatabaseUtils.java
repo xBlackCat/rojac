@@ -278,12 +278,14 @@ public final class DatabaseUtils {
         String getTableData = properties.getProperty("migration.get.table.data");
         String tableSizeQuery = properties.getProperty("migration.get.table.size");
         String storeTableData = properties.getProperty("migration.store.table.data");
+        String mergeTableData = properties.getProperty("migration.merge.table.data");
         String quoteName = properties.getProperty("migration.quote.name");
 
         return new MigrationQueries(
                 getTables,
                 getTableData,
                 storeTableData,
+                mergeTableData,
                 StringUtils.isBlank(quoteName) ? "%1$s" : quoteName,
                 tableSizeQuery);
     }

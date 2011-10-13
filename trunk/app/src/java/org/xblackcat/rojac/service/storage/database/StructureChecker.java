@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.progress.IProgressListener;
@@ -11,11 +12,14 @@ import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.service.storage.database.connection.SimpleConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
+import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
 import org.xblackcat.rojac.service.storage.database.helper.QueryHelper;
 import org.xblackcat.rojac.util.DatabaseUtils;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -111,9 +115,37 @@ public class StructureChecker implements IStructureChecker {
                             log.trace("Perform initialization command " + sql);
                         }
                         progressListener.progressChanged(new ProgressChangeEvent(this, ProgressState.Work, initIdx, initBound));
-                        helper.update(sql.getSql());
+                        if (sql.isSimpleQuery()) {
+                            helper.update(sql.getSql());
+                        } else {
+                            String queries[] = sql.getSql().split(";");
+
+                            String getRowsQuery = queries[0];
+
+                            queries = ArrayUtils.subarray(queries, 1, queries.length);
+
+                            List<Object[]> rowsList = helper.execute(new IToObjectConverter<Object[]>() {
+                                @Override
+                                public Object[] convert(ResultSet rs) throws SQLException {
+                                    int columnCount = rs.getMetaData().getColumnCount();
+                                    Object[] row = new Object[columnCount];
+
+                                    for (int i = 0; i < columnCount; i++) {
+                                        row[i] = rs.getObject(i + 1);
+                                    }
+
+                                    return row;
+                                }
+                            }, getRowsQuery);
+
+                            Object[][] rows = rowsList.toArray(new Object[rowsList.size()][]);
+
+                            for (String query : queries) {
+                                helper.updateBatch(query, rows);
+                            }
+                        }
                     } catch (StorageException e) {
-                        log.error("Can not perform initialization procedure " + sql);
+                        log.error("Can not perform initialization procedure " + sql, e);
                         throw new StorageCheckException("Can not execute " + sql, e);
                     }
 

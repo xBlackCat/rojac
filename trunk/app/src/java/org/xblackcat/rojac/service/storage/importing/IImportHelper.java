@@ -15,7 +15,7 @@ public interface IImportHelper {
     
     void getData(IRowHandler rowHandler, String item) throws StorageException;
 
-    IRowWriter getRowWriter(String item) throws StorageException;
+    IRowWriter getRowWriter(String item, boolean merge) throws StorageException;
 
     int getRows(String item) throws StorageException;
 }

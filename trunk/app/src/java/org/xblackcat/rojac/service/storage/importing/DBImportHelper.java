@@ -99,8 +99,8 @@ public class DBImportHelper implements IImportHelper {
     }
 
     @Override
-    public IRowWriter getRowWriter(String item) throws StorageException {
-        return new RowWriter(item);
+    public IRowWriter getRowWriter(String item, boolean merge) throws StorageException {
+        return new RowWriter(item, merge ? queries.getMergeTableDataQuery() : queries.getStoreTableDataQuery());
     }
 
     @Override
@@ -125,9 +125,11 @@ public class DBImportHelper implements IImportHelper {
         private final String item;
         private Connection con = null;
         private PreparedStatement st = null;
+        private final String dataQuery;
 
-        public RowWriter(String item) {
+        public RowWriter(String item, String dataQuery) {
             this.item = item;
+            this.dataQuery = dataQuery;
         }
 
         @Override
@@ -157,9 +159,9 @@ public class DBImportHelper implements IImportHelper {
         }
 
         @Override
-        public void stop() throws StorageException {
+        public void close() throws StorageException {
             try {
-                if (con != null) {
+                if (con != null && !con.isClosed()) {
                     con.close();
                 }
             } catch (SQLException e) {
@@ -177,7 +179,7 @@ public class DBImportHelper implements IImportHelper {
                 names.append(queries.quoteName(cell.getName()));
             }
 
-            String query = String.format(queries.getStoreTableDataQuery(), item, names.substring(1), signs.substring(1));
+            String query = String.format(dataQuery, item, names.substring(1), signs.substring(1));
 
             try {
                 con = connectionFactory.getConnection();
@@ -185,7 +187,7 @@ public class DBImportHelper implements IImportHelper {
                     st = con.prepareStatement(query);
                 } catch (SQLException e) {
                     if (log.isWarnEnabled()) {
-                        log.warn("");
+                        log.warn("Invalid query", e);
                     }
 
                     con.close();
