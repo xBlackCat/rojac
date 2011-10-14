@@ -20,4 +20,8 @@ public interface INewMessageAH extends AH {
     NewMessage getNewMessageById(int id) throws StorageException;
 
     Collection<NewMessage> getAllNewMessages() throws StorageException;
+
+    Collection<NewMessage> getNewMessagesToSend() throws StorageException;
+
+    void setDraftFlag(boolean draft, int messageId) throws StorageException;
 }

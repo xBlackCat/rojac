@@ -24,6 +24,10 @@ public class UnreadStatData {
     }
 
     public String asString() {
-        return unread == total || unread == 0 ? String.valueOf(total) : Message.View_Favorites_Statistic_Data.get(getUnread(), getTotal());
+        return asString(Message.View_Favorites_Statistic_Data);
+    }
+
+    public String asString(Message statRenderString) {
+        return unread == total || unread == 0 ? String.valueOf(total) : statRenderString.get(getUnread(), getTotal());
     }
 }

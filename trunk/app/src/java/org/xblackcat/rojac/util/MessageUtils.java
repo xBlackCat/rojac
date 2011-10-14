@@ -124,7 +124,7 @@ public final class MessageUtils {
     public static String addOwnTagLine(String body) {
         body = removeTagline(body);
 
-        body += "[tagline] " + RojacUtils.VERSION_STRING + " [/tagline]";
+        body += "[tagline] [url=http://code.google.com/p/rojac/]" + RojacUtils.VERSION_STRING + "[/url] [/tagline]";
 
         return body;
     }

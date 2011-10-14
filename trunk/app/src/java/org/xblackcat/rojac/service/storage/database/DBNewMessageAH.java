@@ -27,7 +27,8 @@ final class DBNewMessageAH extends AnAH implements INewMessageAH {
                 nm.getParentId(),
                 nm.getForumId(),
                 nm.getSubject(),
-                nm.getMessage()
+                nm.getMessage(),
+                nm.isDraft()
         );
     }
 
@@ -37,6 +38,7 @@ final class DBNewMessageAH extends AnAH implements INewMessageAH {
                 DataQuery.UPDATE_OBJECT_NEW_MESSAGE,
                 nm.getSubject(),
                 nm.getMessage(),
+                nm.isDraft(),
                 nm.getLocalMessageId()
         );
     }
@@ -52,6 +54,20 @@ final class DBNewMessageAH extends AnAH implements INewMessageAH {
 
     public NewMessage getNewMessageById(int id) throws StorageException {
         return helper.executeSingle(Converters.TO_NEW_MESSAGE, DataQuery.GET_OBJECT_NEW_MESSAGE, id);
+    }
+
+    @Override
+    public Collection<NewMessage> getNewMessagesToSend() throws StorageException {
+        return helper.execute(Converters.TO_NEW_MESSAGE, DataQuery.GET_OBJECTS_NEW_MESSAGE_TO_SEND);
+    }
+
+    @Override
+    public void setDraftFlag(boolean draft, int messageId) throws StorageException {
+        helper.update(
+                DataQuery.UPDATE_OBJECT_NEW_MESSAGE_DRAFT_FLAG,
+                draft,
+                messageId
+        );
     }
 
     public Collection<NewMessage> getAllNewMessages() throws StorageException {

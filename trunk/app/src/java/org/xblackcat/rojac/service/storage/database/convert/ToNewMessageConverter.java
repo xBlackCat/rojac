@@ -16,6 +16,8 @@ class ToNewMessageConverter implements IToObjectConverter<NewMessage> {
         int forumId = rs.getInt(3);
         String subject = rs.getString(4);
         String message = rs.getString(5);
-        return new NewMessage(id, parentId, forumId, subject, message);
+        boolean draft = rs.getBoolean(6);
+
+        return new NewMessage(id, parentId, forumId, subject, message, draft);
     }
 }

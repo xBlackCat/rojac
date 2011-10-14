@@ -38,7 +38,7 @@ class PostChangesRequest extends ARequest<IPacket> {
             NewModerate[] newModerates;
             try {
                 newRatings = nrAH.getAllNewRatings();
-                newMessages = nmeAH.getAllNewMessages();
+                newMessages = nmeAH.getNewMessagesToSend();
                 newModerates = nmoAH.getAllNewModerates();
             } catch (StorageException e) {
                 throw new RsdnProcessorException("Can not load your changes.", e);

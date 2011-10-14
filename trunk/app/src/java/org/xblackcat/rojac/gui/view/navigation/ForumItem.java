@@ -59,15 +59,36 @@ class ForumItem extends AnItem {
 
     @Override
     String getBriefInfo() {
+        int myReplies = statistic.getUnreadReplies();
         int unreadMessages = statistic.getUnreadMessages();
         int totalMessages = statistic.getTotalMessages();
 
-        return unreadMessages == 0 || unreadMessages == totalMessages ?
-                String.valueOf(totalMessages) :
-                Message.View_Navigation_Item_ForumInfo.get(
+        if (unreadMessages == 0) {
+            return String.valueOf(totalMessages);
+        } else if (unreadMessages == totalMessages) {
+            if (myReplies == 0) {
+                return String.valueOf(totalMessages);
+            } else {
+                return Message.View_Navigation_Item_ForumInfo_Full.get(
+                        myReplies,
                         unreadMessages,
                         totalMessages
                 );
+            }
+        } else {
+            if (myReplies == 0) {
+                return Message.View_Navigation_Item_ForumInfo.get(
+                        unreadMessages,
+                        totalMessages
+                );
+            } else {
+                return Message.View_Navigation_Item_ForumInfo_Full.get(
+                        myReplies,
+                        unreadMessages,
+                        totalMessages
+                );
+            }
+        }
     }
 
     @Override

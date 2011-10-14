@@ -80,7 +80,14 @@ class PersonalDecorator extends ADecorator {
         @Override
         void doSwing(Void data) {
             UnreadStatData stat = item.getStat();
-            final UnreadStatData newStat = new UnreadStatData(stat.getUnread() + adjustDelta, stat.getTotal());
+            int unread = stat.getUnread() + adjustDelta;
+            if (unread < 0) {
+                unread = 0;
+            } else if (unread > stat.getTotal()) {
+                unread = stat.getTotal();
+            }
+
+            final UnreadStatData newStat = new UnreadStatData(unread, stat.getTotal());
             item.setStat(newStat);
 
             modelControl.itemUpdated(item);
@@ -107,18 +114,24 @@ class PersonalDecorator extends ADecorator {
         }
     }
 
-    private class OutboxReloadTask extends ALoadTask<Integer> {
+    private class OutboxReloadTask extends ALoadTask<UnreadStatData> {
         @Override
-        Integer doBackground() throws Exception {
+        UnreadStatData doBackground() throws Exception {
             Collection<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages();
-
-            return newMessages != null ? newMessages.size() : null;
+            int toSend = 0;
+            for (NewMessage nm : newMessages) {
+                if (!nm.isDraft()) {
+                    ++toSend;
+                }
+            }
+            
+            return new UnreadStatData(toSend, newMessages.size());
         }
 
         @Override
-        void doSwing(Integer data) {
+        void doSwing(UnreadStatData data) {
             if (data != null) {
-                outBox.setStat(new UnreadStatData(0, data));
+                outBox.setStat(data);
 
                 modelControl.itemUpdated(outBox);
             }

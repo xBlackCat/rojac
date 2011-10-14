@@ -154,17 +154,24 @@ public final class Property<T> {
 
     @SuppressWarnings({"unchecked"})
     static <V> Property<V> create(boolean isPublic, String name, Class<V> type, V defaultValue, IValueChecker<V> checker) {
+        return create(isPublic, name, type, defaultValue, checker, false);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    static <V> Property<V> create(boolean isPublic, String name, Class<V> type, V defaultValue, IValueChecker<V> checker, boolean test) {
         if (type.isEnum() && checker == null) {
             // Use default enum checker
             checker = new GeneralEnumChecker(type);
         }
 
         Property<V> prop = new Property<>(isPublic, name, type, defaultValue, checker);
-        if (ALL_PROPERTIES.contains(prop)) {
-            throw new RojacDebugException("Property '" + name + "' already defined.");
-        }
+        if (!test) {
+            if (ALL_PROPERTIES.contains(prop)) {
+                throw new RojacDebugException("Property '" + name + "' already defined.");
+            }
 
-        ALL_PROPERTIES.add(prop);
+            ALL_PROPERTIES.add(prop);
+        }
         return prop;
     }
 
@@ -177,7 +184,19 @@ public final class Property<T> {
      * @return newly generated property object.
      */
     static <E> Property<E> create(String name, Class<E> type) {
-        return create(name, type, null, null);
+        return create(true, name, type, null, null);
+    }
+
+    /**
+     * Util method for create property object.
+     *
+     * @param name property name
+     * @param type class representing property value type.
+     * @param <E>  property value type
+     * @return newly generated property object.
+     */
+    static <E> Property<E> createTest(String name, Class<E> type) {
+        return create(true, name, type, null, null, true);
     }
 
     /**
