@@ -32,6 +32,16 @@ final class DBMiscAH extends AnAH implements IMiscAH {
     }
 
     @Override
+    public void addToIgnoredUserList(int userId) throws StorageException {
+        helper.update(DataQuery.STORE_OBJECT_IGNORED_TOPIC, userId);
+    }
+
+    @Override
+    public void removeFromIgnoredUserList(int userId) throws StorageException {
+        helper.update(DataQuery.STORE_OBJECT_IGNORED_TOPIC, userId);
+    }
+
+    @Override
     public int getAmountOfIgnoredTopics() throws StorageException {
         return helper.executeSingle(
                 Converters.TO_NUMBER,

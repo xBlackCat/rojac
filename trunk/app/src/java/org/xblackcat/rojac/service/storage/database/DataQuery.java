@@ -149,6 +149,12 @@ public enum DataQuery implements IPropertiable {
      */
     STORE_OBJECT_IGNORED_TOPIC,
     /**
+     * The query for storing the ignored user. Set the parameter:
+     * <p/>
+     * userId (int)
+     */
+    STORE_OBJECT_IGNORED_USER,
+    /**
      * The query for storing a new record of favorites object.
      * <p/>
      * fields order for the favorites table: id (int), name(string), type(string), config(string)
@@ -230,6 +236,10 @@ public enum DataQuery implements IPropertiable {
      * The query for removing topic id from ignored list by id
      */
     REMOVE_OBJECT_IGNORED_TOPIC,
+    /**
+     * The query for removing user id from ignored list by id
+     */
+    REMOVE_OBJECT_IGNORED_USER,
     /**
      * The query for removing the moderate objects by message id.
      */
