@@ -286,6 +286,9 @@ public final class PopupMenuBuilder {
         JPopupMenu menu = new JPopupMenu("#" + (-post.getMessageId()));
 
         JMenuItem edit = new JMenuItem(Message.Popup_View_OutboxTree_Edit.get());
+        menu.add(new SendToggleMenuItem(post.getMessageData()));
+
+        menu.addSeparator();
         edit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

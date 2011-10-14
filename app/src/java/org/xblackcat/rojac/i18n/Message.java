@@ -360,6 +360,8 @@ public enum Message {
     Popup_View_ThreadsTree_Mark_Extended,
     Popup_View_ThreadsTree_Mark_WholeThreadRead,
 
+    Popup_View_OutboxTree_MarkAsDraft,
+    Popup_View_OutboxTree_MarkToSend,
     Popup_View_OutboxTree_Edit,
     Popup_View_OutboxTree_Remove,
     Popup_View_OutboxTree_RemoveAll,
