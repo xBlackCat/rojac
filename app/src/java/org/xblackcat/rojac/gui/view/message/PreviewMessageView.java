@@ -29,7 +29,8 @@ public class PreviewMessageView extends MessageView {
                 -1,
                 -1,
                 subject,
-                body
+                body,
+                true
         );
 
         fillFrame(m);

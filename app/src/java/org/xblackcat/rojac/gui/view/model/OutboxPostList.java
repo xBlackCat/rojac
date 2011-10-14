@@ -63,6 +63,19 @@ class OutboxPostList extends Post {
     }
 
     @Override
+    public ReadStatus isRead() {
+        if (childrenPosts.isEmpty()) {
+            return ReadStatus.Read;
+        } else {
+            if (super.isRead() != ReadStatus.Read) {
+                return ReadStatus.Unread;
+            } else {
+                return ReadStatus.ReadPartially;
+            }
+        }
+    }
+
+    @Override
     public Post getMessageById(int messageId) {
         return listPosts.get(messageId);
     }

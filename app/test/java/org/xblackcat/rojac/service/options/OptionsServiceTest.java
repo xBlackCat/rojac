@@ -7,18 +7,18 @@ import junit.framework.TestCase;
  */
 
 public class OptionsServiceTest extends TestCase {
-    private static final Property<Class> TEST_PROPERTY_CLASS = Property.create("rojac.test.class", Class.class);
-    private static final Property<TestClass> TEST_PROPERTY_OBJECT = Property.create("rojac.test.object", TestClass.class);
-    private static final Property<String> TEST_PROPERTY_STRING = Property.create("rojac.test.string", String.class);
-    private static final Property<Boolean> TEST_PROPERTY_BOOLEAN = Property.create("rojac.test.boolean", Boolean.class);
-    private static final Property<Character> TEST_PROPERTY_CHAR = Property.create("rojac.test.char", Character.class);
-    private static final Property<Byte> TEST_PROPERTY_BYTE = Property.create("rojac.test.byte", Byte.class);
-    private static final Property<Short> TEST_PROPERTY_SHORT = Property.create("rojac.test.short", Short.class);
-    private static final Property<Integer> TEST_PROPERTY_INT = Property.create("rojac.test.int", Integer.class);
-    private static final Property<Long> TEST_PROPERTY_LONG = Property.create("rojac.test.long", Long.class);
-    private static final Property<Double> TEST_PROPERTY_DOUBLE = Property.create("rojac.test.double", Double.class);
-    private static final Property<Float> TEST_PROPERTY_FLOAT = Property.create("rojac.test.float", Float.class);
-    private static final Property<TestEnum> TEST_PROPERTY_ENUM = Property.create("rojac.test.enum", TestEnum.class);
+    private static final Property<Class> TEST_PROPERTY_CLASS = Property.createTest("rojac.test.class", Class.class);
+    private static final Property<TestClass> TEST_PROPERTY_OBJECT = Property.createTest("rojac.test.object", TestClass.class);
+    private static final Property<String> TEST_PROPERTY_STRING = Property.createTest("rojac.test.string", String.class);
+    private static final Property<Boolean> TEST_PROPERTY_BOOLEAN = Property.createTest("rojac.test.boolean", Boolean.class);
+    private static final Property<Character> TEST_PROPERTY_CHAR = Property.createTest("rojac.test.char", Character.class);
+    private static final Property<Byte> TEST_PROPERTY_BYTE = Property.createTest("rojac.test.byte", Byte.class);
+    private static final Property<Short> TEST_PROPERTY_SHORT = Property.createTest("rojac.test.short", Short.class);
+    private static final Property<Integer> TEST_PROPERTY_INT = Property.createTest("rojac.test.int", Integer.class);
+    private static final Property<Long> TEST_PROPERTY_LONG = Property.createTest("rojac.test.long", Long.class);
+    private static final Property<Double> TEST_PROPERTY_DOUBLE = Property.createTest("rojac.test.double", Double.class);
+    private static final Property<Float> TEST_PROPERTY_FLOAT = Property.createTest("rojac.test.float", Float.class);
+    private static final Property<TestEnum> TEST_PROPERTY_ENUM = Property.createTest("rojac.test.enum", TestEnum.class);
 
     private IOptionsService s;
 

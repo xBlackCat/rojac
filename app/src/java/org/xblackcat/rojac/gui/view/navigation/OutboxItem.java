@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewType;
+import org.xblackcat.rojac.gui.view.model.ReadStatus;
 import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
@@ -34,6 +35,12 @@ class OutboxItem extends PersonalItem {
 
     @Override
     String getBriefInfo() {
-        return String.valueOf(getStat().getTotal());
+        return getStat().asString(Message.View_Navigation_Item_ForumInfo);
+    }
+
+    @Override
+    Icon getIcon() {
+        ReadStatus status = getStat().getTotal() == 0 ? ReadStatus.Read : getStat().getUnread() > 0 ? ReadStatus.ReadPartially : ReadStatus.Unread;
+        return ReadStatusIcon.OutboxItem.getIcon(status);
     }
 }

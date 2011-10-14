@@ -14,6 +14,6 @@ final class PostId extends APostProxy {
 
     @Override
     protected void setValue(PostTableCellRenderer renderer) {
-        renderer.setText(String.valueOf(post.getMessageData().getMessageId()));
+        renderer.setText(String.valueOf(Math.abs(post.getMessageData().getMessageId())));
     }
 }

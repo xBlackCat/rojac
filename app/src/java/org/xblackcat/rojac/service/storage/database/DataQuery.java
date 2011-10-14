@@ -50,6 +50,12 @@ public enum DataQuery implements IPropertiable {
      * <p/>
      * id (int), parent id(int), forum id(int), subject(String), message(String)
      */
+    GET_OBJECTS_NEW_MESSAGE_TO_SEND,
+    /**
+     * The query should fetch the new message object properties in following order:
+     * <p/>
+     * id (int), parent id(int), forum id(int), subject(String), message(String)
+     */
     GET_OBJECTS_NEW_MESSAGE,
     /**
      * The query should fetch the new moderate object properties in following order:
@@ -247,11 +253,6 @@ public enum DataQuery implements IPropertiable {
     GET_OBJECT_FORUM_GROUP,
     GET_OBJECT_USER,
     GET_OBJECT_FAVORITE,
-    /**
-     * The query should fetch the new message object properties in following order:
-     * <p/>
-     * id(int), message id(int), rate(int)
-     */
     GET_OBJECT_NEW_MESSAGE,
     /**
      * The query should fetch the new moderate object properties in following order:
@@ -424,6 +425,13 @@ public enum DataQuery implements IPropertiable {
      * parent id(int), forum id(int), subject(String), message(String), id (int)
      */
     UPDATE_OBJECT_NEW_MESSAGE,
+    /**
+     * The query for updating a draft flag in new message object . Set the object parameters in following order:
+     * <p/>
+     * draft(bool), id (int)
+     */
+    UPDATE_OBJECT_NEW_MESSAGE_DRAFT_FLAG,
+
     /**
      * Query for updating ratings cache for message.
      * <p/>

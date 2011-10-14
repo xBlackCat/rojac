@@ -14,13 +14,13 @@ public final class NewMessage implements IRSDNable<PostMessageInfo> {
     private final String message;
     private final boolean draft;
 
-    public NewMessage(int localMessageId, int parentId, int forumId, String subject, String message) {
+    public NewMessage(int localMessageId, int parentId, int forumId, String subject, String message, boolean draft) {
         this.localMessageId = localMessageId;
         this.parentId = parentId;
         this.forumId = forumId;
         this.subject = subject;
         this.message = message;
-        draft = false;
+        this.draft = draft;
     }
 
     public int getLocalMessageId() {
@@ -44,6 +44,8 @@ public final class NewMessage implements IRSDNable<PostMessageInfo> {
     }
 
     public PostMessageInfo getRSDNObject() {
+        assert !draft : "Got draft as message to send";
+
         return new PostMessageInfo(
                 localMessageId,
                 parentId,

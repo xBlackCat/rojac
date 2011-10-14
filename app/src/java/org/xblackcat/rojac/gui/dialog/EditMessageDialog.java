@@ -79,7 +79,7 @@ public class EditMessageDialog extends JDialog {
         new NewMessageLoader(newMessageId).execute();
     }
 
-    private void saveMessage() {
+    private void saveMessage(final boolean send) {
 
         String body = panelEdit.getBody();
 
@@ -103,7 +103,8 @@ public class EditMessageDialog extends JDialog {
                 parentMessageId,
                 forumId,
                 subject,
-                body
+                body,
+                !send
         );
 
         RojacWorker<Void, Void> sw = new RojacWorker<Void, Void>() {
@@ -128,8 +129,11 @@ public class EditMessageDialog extends JDialog {
             @Override
             protected void done() {
                 try {
+                    // Get exception if any
                     get();
                     dispose();
+                    if (send) {
+                    }
                 } catch (InterruptedException | ExecutionException e) {
                     JLOptionPane.showMessageDialog(EditMessageDialog.this, "Can not save changes");
                 }
@@ -153,10 +157,16 @@ public class EditMessageDialog extends JDialog {
         cp.add(WindowsUtils.createButtonsBar(
                 this,
                 Button_Save,
+                new AButtonAction(Button_Send) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        saveMessage(true);
+                    }
+                },
                 new AButtonAction(Button_Save) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        saveMessage();
+                        saveMessage(false);
                     }
                 },
                 new AButtonAction(Button_Preview) {
@@ -189,10 +199,15 @@ public class EditMessageDialog extends JDialog {
         @Override
         protected MessageInfo loadMessage() throws RojacException {
             try {
-                NewMessage newMessage = Storage.get(INewMessageAH.class).getNewMessageById(messageId);
+                INewMessageAH newMessageAH = Storage.get(INewMessageAH.class);
+
+                NewMessage newMessage = newMessageAH.getNewMessageById(messageId);
+
                 MessageData messageData = new NewMessageData(newMessage);
                 String messageBody = MessageUtils.removeTagline(newMessage.getMessage());
                 parentMessageId = newMessage.getParentId();
+
+                newMessageAH.setDraftFlag(true, messageId);
                 return new MessageInfo(messageData, messageBody, messageData.getSubject());
             } catch (StorageException e) {
                 log.error("Can't load message #" + messageId, e);
@@ -259,7 +274,7 @@ public class EditMessageDialog extends JDialog {
 
                 WindowsUtils.center(EditMessageDialog.this);
                 setVisible(true);
-
+                new NewMessagesUpdatedPacket().dispatch();
             }
         }
 
