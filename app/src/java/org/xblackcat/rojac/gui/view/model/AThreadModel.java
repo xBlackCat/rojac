@@ -73,7 +73,7 @@ public abstract class AThreadModel<T extends ITreeItem<T>> implements TreeModel,
 
     private void subTreeChanged(TreePath path) {
         final T node = (T) path.getLastPathComponent();
-        nodeChanged(node);
+        modelSupport.firePathChanged(path);
 
         for (int i = 0; i < node.getSize(); i++) {
             subTreeChanged(path.pathByAddingChild(node.getChild(i)));

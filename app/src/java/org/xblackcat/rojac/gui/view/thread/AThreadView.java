@@ -16,6 +16,7 @@ import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.util.PostUtils;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
 
@@ -267,8 +268,7 @@ public abstract class AThreadView extends AnItemView {
         do {
             next = findNextPost(next, 0, unread, toCollapse);
 
-            // TODO: allow to ignore reply on ignored user post
-            skip = isPostIgnored(next);
+            skip = PostUtils.isPostIgnoredByUser(next);
         } while (skip);
         if (next != null) {
             selectItem(next);
@@ -283,18 +283,13 @@ public abstract class AThreadView extends AnItemView {
         }
     }
 
-    private boolean isPostIgnored(Post post) {
-        return post != null && post.isIgnoredUser();
-    }
-
     private void selectPrevPost(Post currentPost, boolean unread) {
         Post prev = currentPost;
         boolean skip;
         do {
             prev = findPrevPost(prev, unread);
 
-            // TODO: allow to ignore reply on ignored user post
-            skip = isPostIgnored(prev);
+            skip = PostUtils.isPostIgnoredByUser(prev);
         } while (skip);
 
         if (prev != null) {
@@ -310,8 +305,7 @@ public abstract class AThreadView extends AnItemView {
             }
         }
 
-        // TODO: move to options
-        boolean ignoreSubUserThread = false;
+        boolean ignoreSubUserThread = Property.SKIP_IGNORED_USER_THREAD.get();
 
         if (post.isIgnored()) {
             return jumpNextParent(post, unread, toCollapse);
@@ -342,7 +336,7 @@ public abstract class AThreadView extends AnItemView {
                 continue;
             }
 
-            if (!unread && !(p.isIgnoredUser() && ignoreSubUserThread)) {
+            if (!unread &&!(ignoreSubUserThread && p.isIgnoredUser())) {
                 return p;
             }
 
@@ -365,10 +359,10 @@ public abstract class AThreadView extends AnItemView {
                     }
                     break;
                 case Unread:
-                    if (!(p.isIgnoredUser() && ignoreSubUserThread)) {
-                        return p;
-                    } else {
+                    if (ignoreSubUserThread && p.isIgnoredUser()) {
                         i++;
+                    } else {
+                        return p;
                     }
                     break;
             }
@@ -464,7 +458,7 @@ public abstract class AThreadView extends AnItemView {
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastPost(Post post, boolean unread) throws RuntimeException {
-        boolean ignoreSubUserThread = false;
+        boolean ignoreSubUserThread = Property.SKIP_IGNORED_USER_THREAD.get();
 
         if (unread && post.isRead() == ReadStatus.Read || post.isIgnored()) {
             return null;
@@ -486,7 +480,10 @@ public abstract class AThreadView extends AnItemView {
             idx--;
         }
 
-        if (unread && post.isRead() != ReadStatus.Unread || (post.isIgnoredUser() && ignoreSubUserThread) || post.isIgnored()) {
+        if (unread && post.isRead() != ReadStatus.Unread ||
+                post.isIgnored() ||
+                (ignoreSubUserThread && post.isIgnoredUser())
+                ) {
             return null;
         }
 

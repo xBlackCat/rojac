@@ -87,6 +87,15 @@ class SingleThreadModelControl extends AThreadsModelControl {
         final int threadId = model.getRoot().getMessageId();
 
         new PacketDispatcher(
+                new IPacketProcessor<OptionsUpdatedPacket>() {
+                    @Override
+                    public void process(OptionsUpdatedPacket p) {
+                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                            model.subTreeNodesChanged(model.getRoot());
+                        }
+                    }
+                },
                 new IPacketProcessor<SetForumReadPacket>() {
                     @Override
                     public void process(SetForumReadPacket p) {
