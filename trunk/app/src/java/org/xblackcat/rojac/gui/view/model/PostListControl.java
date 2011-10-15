@@ -132,6 +132,12 @@ class PostListControl extends MessageListControl {
     @Override
     public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
+                new IPacketProcessor<IgnoreUserUpdatedPacket>() {
+                    @Override
+                    public void process(IgnoreUserUpdatedPacket p) {
+                        PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored());
+                    }
+                },
                 new IPacketProcessor<OptionsUpdatedPacket>() {
                     @Override
                     public void process(OptionsUpdatedPacket p) {

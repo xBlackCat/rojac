@@ -250,6 +250,12 @@ class SortedForumModelControl extends AThreadsModelControl {
                         }
                     }
                 },
+                new IPacketProcessor<IgnoreUserUpdatedPacket>() {
+                    @Override
+                    public void process(IgnoreUserUpdatedPacket p) {
+                        PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored());
+                    }
+                },
                 new IPacketProcessor<IgnoreUpdatedPacket>() {
                     @Override
                     public void process(IgnoreUpdatedPacket p) {
