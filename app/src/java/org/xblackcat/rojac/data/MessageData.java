@@ -17,6 +17,7 @@ public class MessageData {
     protected final boolean read;
     protected final RatingCache rating;
     protected final boolean ignored;
+    protected final boolean ignoredUser;
     protected final int parentUserId;
 
     /**
@@ -34,7 +35,8 @@ public class MessageData {
      * @param read         flag: is the message has been read
      * @param rating       rating cache string of the message
      * @param ignored      boolean flag is teh message(topic) was ignored
-     * @param parentUserId author of previous message by hierarhy. Zero for anonymous or topic head messages.
+     * @param parentUserId author of previous message by hierarchy. Zero for anonymous or topic head messages.
+     * @param ignoredUser  flag is author of the message is ignored
      */
     public MessageData(int messageId,
                        int topicId,
@@ -48,7 +50,8 @@ public class MessageData {
                        boolean read,
                        String rating,
                        boolean ignored,
-                       int parentUserId) {
+                       int parentUserId,
+                       boolean ignoredUser) {
         this(messageId,
                 topicId,
                 parentId,
@@ -61,7 +64,8 @@ public class MessageData {
                 read,
                 new RatingCache(rating),
                 ignored,
-                parentUserId);
+                parentUserId,
+                ignoredUser);
     }
 
     private MessageData(int messageId,
@@ -75,7 +79,9 @@ public class MessageData {
                         long updateDate,
                         boolean read,
                         RatingCache rating,
-                        boolean ignored, int parentUserId) {
+                        boolean ignored,
+                        int parentUserId,
+                        boolean ignoredUser) {
         this.messageId = messageId;
         this.topicId = topicId;
         this.parentId = parentId;
@@ -89,6 +95,7 @@ public class MessageData {
         this.rating = rating;
         this.ignored = ignored;
         this.parentUserId = parentUserId;
+        this.ignoredUser = ignoredUser;
     }
 
     public int getMessageId() {
@@ -174,6 +181,7 @@ public class MessageData {
         sb.append(", rating=").append(rating);
         sb.append(", ignored=").append(ignored);
         sb.append(", parentUserId=").append(parentUserId);
+        sb.append(", ignoredUser=").append(ignoredUser);
         sb.append('}');
         return sb.toString();
     }
@@ -202,7 +210,8 @@ public class MessageData {
                 read, // Not a field
                 rating,
                 ignored,
-                parentUserId);
+                parentUserId,
+                ignoredUser);
     }
 
     public MessageData setIgnored(boolean ignored) {
@@ -223,7 +232,8 @@ public class MessageData {
                 read,
                 rating,
                 ignored, // Not a field
-                parentUserId);
+                parentUserId,
+                ignoredUser);
 
     }
 }

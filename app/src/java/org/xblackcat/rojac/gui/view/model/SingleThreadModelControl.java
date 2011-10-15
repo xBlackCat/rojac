@@ -35,7 +35,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
     public void fillModelByItemId(final AThreadModel<Post> model, int threadId) {
         assert RojacUtils.checkThread(true);
 
-        MessageData fakeMessageData = new MessageData(threadId, 0, 0, 0, 0, null, "Loading...", 0L, 0L, false, null, false, 0);
+        MessageData fakeMessageData = new MessageData(threadId, 0, 0, 0, 0, null, "Loading...", 0L, 0L, false, null, false, 0, false);
         final Thread rootItem = new Thread(fakeMessageData, null);
 
         model.setRoot(rootItem);

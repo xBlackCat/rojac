@@ -84,6 +84,7 @@ public class ForumRoot extends Post {
                 true,
                 null,
                 false,
-                0);
+                0,
+                false);
     }
 }

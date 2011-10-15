@@ -22,6 +22,6 @@ public class NewMessageData extends MessageData {
                 !md.isDraft(),
                 null,
                 false,
-                0);
+                0, false);
     }
 }
