@@ -1,6 +1,5 @@
-package org.xblackcat.rojac.util;
+package org.xblackcat.rojac.gui.view.model;
 
-import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.service.options.Property;
 
 /**
@@ -36,5 +35,21 @@ public final class PostUtils {
         }
 
         return false;
+    }
+
+    public static void setIgnoreUserFlag(AThreadModel<Post> model, int userId, boolean ignored) {
+        updateIgnoreUserFlag(model, model.getRoot(), userId, ignored);
+
+        model.subTreeNodesChanged(model.getRoot());
+    }
+
+    private static void updateIgnoreUserFlag(AThreadModel<Post> model, Post root, int userId, boolean ignored) {
+        if (root.getMessageData().getUserId() == userId && root.isIgnoredUser() != ignored) {
+            root.setMessageData(root.getMessageData().setIgnoredUser(ignored));
+        }
+
+        for (Post p : root.childrenPosts) {
+            updateIgnoreUserFlag(model, p, userId, ignored);
+        }
     }
 }

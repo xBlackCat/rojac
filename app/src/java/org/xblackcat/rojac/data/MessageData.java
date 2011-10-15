@@ -215,7 +215,8 @@ public class MessageData {
                 rating,
                 ignored,
                 parentUserId,
-                ignoredUser);
+                ignoredUser
+        );
     }
 
     public MessageData setIgnored(boolean ignored) {
@@ -237,7 +238,31 @@ public class MessageData {
                 rating,
                 ignored, // Not a field
                 parentUserId,
-                ignoredUser);
+                ignoredUser
+        );
 
+    }
+
+    public MessageData setIgnoredUser(boolean ignoredUser) {
+        if (ignoredUser == this.ignoredUser) {
+            return this;
+        }
+
+        return new MessageData(
+                messageId,
+                topicId,
+                parentId,
+                forumId,
+                userId,
+                subject,
+                userName,
+                messageDate,
+                updateDate,
+                read,
+                rating,
+                ignored,
+                parentUserId,
+                ignoredUser  // Not a field
+        );
     }
 }

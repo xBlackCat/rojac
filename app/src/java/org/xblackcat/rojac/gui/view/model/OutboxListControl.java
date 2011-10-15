@@ -104,10 +104,6 @@ class OutboxListControl extends MessageListControl {
             this.model = model;
         }
 
-        public PostListLoader(AThreadModel<Post> model) {
-            this(null, model);
-        }
-
         @Override
         protected Void perform() throws Exception {
             messages = Storage.get(INewMessageAH.class).getAllNewMessages();

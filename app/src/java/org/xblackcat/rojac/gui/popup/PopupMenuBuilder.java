@@ -138,8 +138,11 @@ public final class PopupMenuBuilder {
 
         menu.addSeparator();
 
-        menu.add(new IgnoreTopicToggleMenuItem(post.getThreadRoot().getMessageData()));
-        
+        if (post.getThreadRoot() != null) {
+            menu.add(new IgnoreTopicToggleMenuItem(post.getThreadRoot().getMessageData()));
+        }
+        menu.add(new IgnoreUserToggleMenuItem(post.getMessageData()));
+
         menu.addSeparator();
 
         menu.add(new SetMessageReadMenuItem(Message.Popup_View_ThreadsTree_Mark_Read, post.getMessageData(), true));

@@ -3,8 +3,8 @@ package org.xblackcat.rojac.gui.view.thread;
 import org.xblackcat.rojac.gui.component.GrayedIcon;
 import org.xblackcat.rojac.gui.view.model.ForumRoot;
 import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.model.PostUtils;
 import org.xblackcat.rojac.util.MessageUtils;
-import org.xblackcat.rojac.util.PostUtils;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;

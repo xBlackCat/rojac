@@ -8,6 +8,7 @@ import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IgnoreUpdatedPacket;
+import org.xblackcat.rojac.service.datahandler.IgnoreUserUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
@@ -77,6 +78,9 @@ class IgnoredThreadListControl extends MessageListControl {
                     updatedPacket.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
                 model.subTreeNodesChanged(model.getRoot());
             }
+        } else if (p instanceof IgnoreUserUpdatedPacket) {
+            IgnoreUserUpdatedPacket up = (IgnoreUserUpdatedPacket) p;
+            PostUtils.setIgnoreUserFlag(model, up.getUserId(), up.isIgnored());
         }
     }
 

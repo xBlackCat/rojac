@@ -348,6 +348,8 @@ public enum Message {
 
     Popup_Ignore_Set,
     Popup_Ignore_Reset,
+    Popup_IgnoreUser_Set,
+    Popup_IgnoreUser_Reset,
 
     // Menu of forum view
     Popup_View_Forums_Subscribe,
