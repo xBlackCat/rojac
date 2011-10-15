@@ -21,7 +21,7 @@ public class ForumMessageData extends MessageData {
                 true,
                 null,
                 false,
-                0);
+                0, false);
         this.forum = forum;
     }
 
