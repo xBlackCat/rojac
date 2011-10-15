@@ -132,6 +132,15 @@ class PostListControl extends MessageListControl {
     @Override
     public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
+                new IPacketProcessor<OptionsUpdatedPacket>() {
+                    @Override
+                    public void process(OptionsUpdatedPacket p) {
+                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                            model.subTreeNodesChanged(model.getRoot());
+                        }
+                    }
+                },
                 new IPacketProcessor<SetForumReadPacket>() {
                     @Override
                     public void process(SetForumReadPacket p) {

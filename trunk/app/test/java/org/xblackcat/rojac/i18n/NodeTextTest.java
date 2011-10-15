@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.options.TestOptionsService;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import java.io.IOException;
@@ -19,6 +20,8 @@ public class NodeTextTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
+        Property.setOptionsService(new TestOptionsService());
+
         Set<String> nodes = new HashSet<>();
 
         for (Property p : Property.getAllProperties()) {

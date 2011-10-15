@@ -87,7 +87,9 @@ public final class Property<T> {
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_READ_POST = create("rojac.view.styles.read_post", TextStyle.DEFAULT);
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_PARTIAL_READ_POST = create("rojac.view.styles.partial_read_post", TextStyle.DEFAULT);
 
-    public static final Property<Boolean> HIDE_IGNORED_TOPICS = create("rojac.view.thread.hide_ignored", Boolean.FALSE);
+    public static final Property<Boolean> HIDE_IGNORED_TOPICS = create("rojac.view.thread.ignored.hide_ignored", Boolean.FALSE);
+    public static final Property<Boolean> SKIP_IGNORED_USER_REPLY = create("rojac.view.thread.ignored.skip_ignored_users_reply", Boolean.FALSE);
+    public static final Property<Boolean> SKIP_IGNORED_USER_THREAD = create("rojac.view.thread.ignored.skip_ignored_users_thread", Boolean.FALSE);
 
     public static final Property<Integer> VIEW_RECENT_TOPIC_LIST_SIZE = create("rojac.view.recent_topics.list_size", 20);
 

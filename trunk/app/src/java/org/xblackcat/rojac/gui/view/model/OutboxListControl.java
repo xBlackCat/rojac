@@ -6,6 +6,7 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -70,6 +71,15 @@ class OutboxListControl extends MessageListControl {
     @Override
     public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
+                new IPacketProcessor<OptionsUpdatedPacket>() {
+                    @Override
+                    public void process(OptionsUpdatedPacket p) {
+                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                            model.subTreeNodesChanged(model.getRoot());
+                        }
+                    }
+                },
                 new IPacketProcessor<NewMessagesUpdatedPacket>() {
                     @Override
                     public void process(NewMessagesUpdatedPacket p) {

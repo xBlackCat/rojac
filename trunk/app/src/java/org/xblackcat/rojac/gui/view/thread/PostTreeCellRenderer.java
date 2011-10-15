@@ -4,6 +4,7 @@ import org.xblackcat.rojac.gui.component.GrayedIcon;
 import org.xblackcat.rojac.gui.view.model.ForumRoot;
 import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.util.MessageUtils;
+import org.xblackcat.rojac.util.PostUtils;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
@@ -38,7 +39,17 @@ class PostTreeCellRenderer extends DefaultTreeCellRenderer {
 
         Icon icon = MessageUtils.getPostIcon(post);
         if (!(post instanceof ForumRoot)) {
-            if (post.isIgnored() || post.isIgnoredUser()) {
+            boolean ignored;
+
+            if (post.isIgnored()) {
+                ignored = true;
+            } else if (PostUtils.isPostIgnoredByUser(post)) {
+                ignored = true;
+            } else {
+                ignored = false;
+            }
+
+            if (ignored) {
                 icon = new GrayedIcon(icon);
                 setForeground(UIUtils.brighter(getForeground(), .3));
             }
