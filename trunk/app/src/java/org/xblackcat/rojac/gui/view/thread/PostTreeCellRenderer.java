@@ -38,7 +38,7 @@ class PostTreeCellRenderer extends DefaultTreeCellRenderer {
 
         Icon icon = MessageUtils.getPostIcon(post);
         if (!(post instanceof ForumRoot)) {
-            if (post.isIgnored()) {
+            if (post.isIgnored() || post.isIgnoredUser()) {
                 icon = new GrayedIcon(icon);
                 setForeground(UIUtils.brighter(getForeground(), .3));
             }

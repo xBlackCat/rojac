@@ -34,7 +34,7 @@ public abstract class APostProxy {
         renderer.setText(null);
         renderer.setIcon(null);
         
-        if (post.isIgnored()) {
+        if (post.isIgnored() || post.isIgnoredUser()) {
             renderer.setForeground(UIUtils.brighter(renderer.getForeground(), .3));
         }
 
