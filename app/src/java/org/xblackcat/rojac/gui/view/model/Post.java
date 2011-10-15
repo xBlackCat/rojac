@@ -81,6 +81,10 @@ public class Post implements ITreeItem<Post> {
         return threadRoot != null && threadRoot.isIgnored();
     }
 
+    public boolean isIgnoredUser() {
+        return messageData.isIgnoredUser();
+    }
+
     public Thread getThreadRoot() {
         return threadRoot;
     }

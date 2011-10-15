@@ -164,6 +164,10 @@ public class MessageData {
         return parentUserId;
     }
 
+    public boolean isIgnoredUser() {
+        return ignoredUser;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
