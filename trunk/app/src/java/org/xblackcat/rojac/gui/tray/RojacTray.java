@@ -311,7 +311,7 @@ public class RojacTray {
         }
 
         @Override
-        protected void triggerClick() {
+        protected void triggerClick(MouseEvent e) {
             if (mainFrame.isVisible()) {
                 WindowsUtils.toFront(mainFrame);
             }

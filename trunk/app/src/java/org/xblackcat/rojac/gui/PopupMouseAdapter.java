@@ -30,12 +30,12 @@ public abstract class PopupMouseAdapter extends MouseAdapter {
             if (e.getClickCount() == 2) {
                 triggerDoubleClick(e);
             } else {
-                triggerClick();
+                triggerClick(e);
             }
         }
     }
 
-    protected void triggerClick() {}
+    protected void triggerClick(MouseEvent e) {}
 
     protected abstract void triggerDoubleClick(MouseEvent e);
 
