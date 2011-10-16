@@ -9,6 +9,7 @@ import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
@@ -50,10 +51,22 @@ public class NavigationView extends AView {
             }
 
             @Override
+            protected void triggerClick(MouseEvent e) {
+                if (Property.VIEW_NAVIGATION_OPEN_ONE_CLICK.get()) {
+                    AnItem item = getItem(e.getPoint());
+                    if (item != null) {
+                        item.onDoubleClick(NavigationView.this.appControl);
+                    }
+                }
+            }
+
+            @Override
             protected void triggerDoubleClick(MouseEvent e) {
-                AnItem item = getItem(e.getPoint());
-                if (item != null) {
-                    item.onDoubleClick(NavigationView.this.appControl);
+                if (!Property.VIEW_NAVIGATION_OPEN_ONE_CLICK.get()) {
+                    AnItem item = getItem(e.getPoint());
+                    if (item != null) {
+                        item.onDoubleClick(NavigationView.this.appControl);
+                    }
                 }
             }
 

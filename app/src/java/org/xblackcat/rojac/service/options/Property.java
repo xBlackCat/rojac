@@ -83,6 +83,8 @@ public final class Property<T> {
     public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT = create("rojac.view.thread.collapse_threads_after_go_to_next", Boolean.TRUE);
     public static final Property<Integer> VIEW_THREAD_TAB_TITLE_LIMIT = create("rojac.view.thread.tab_title_limit", Integer.valueOf(0));
 
+    public static final Property<Boolean> VIEW_NAVIGATION_OPEN_ONE_CLICK = create("rojac.view.navigation.open_one_click", Boolean.FALSE);
+
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_UNREAD_POST = create("rojac.view.styles.unread_post", TextStyle.DEFAULT);
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_READ_POST = create("rojac.view.styles.read_post", TextStyle.DEFAULT);
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_PARTIAL_READ_POST = create("rojac.view.styles.partial_read_post", TextStyle.DEFAULT);
