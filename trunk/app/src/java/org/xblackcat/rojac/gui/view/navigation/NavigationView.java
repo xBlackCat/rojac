@@ -33,6 +33,7 @@ public class NavigationView extends AView {
         viewTable.setTreeTableModel(model);
         viewTable.setTableHeader(null);
         viewTable.setColumnMargin(0);
+        viewTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         TableColumnModel columnModel = viewTable.getColumnModel();
         columnModel.addColumn(new TableColumnExt(0, 100));
