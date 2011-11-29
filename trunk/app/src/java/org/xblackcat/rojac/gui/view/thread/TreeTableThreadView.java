@@ -73,10 +73,10 @@ public class TreeTableThreadView extends AThreadView {
             }
 
             // Handle keyboard events to emulate tree navigation in TreeTable
-            threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "prevOrClose");
+            threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "parentOrCollapse");
             threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "nextOrExpand");
 
-            threads.getActionMap().put("prevOrClose", new AbstractAction() {
+            threads.getActionMap().put("parentOrCollapse", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int row = threads.getSelectedRow();
@@ -88,8 +88,18 @@ public class TreeTableThreadView extends AThreadView {
                         threads.collapseRow(row);
                         threads.scrollRowToVisible(row);
                     } else if (row > 0) {
-                        threads.setRowSelectionInterval(row - 1, row - 1);
-                        threads.scrollRowToVisible(row - 1);
+                        TreePath pathForRow = threads.getPathForRow(row);
+                        if (pathForRow != null) {
+                            TreePath parent = pathForRow.getParentPath();
+                            if (parent != null) {
+                                row = threads.getRowForPath(parent);
+
+                                if (row >= 0) {
+                                    threads.setRowSelectionInterval(row, row);
+                                    threads.scrollRowToVisible(row);
+                                }
+                            }
+                        }
                     }
                 }
             });
