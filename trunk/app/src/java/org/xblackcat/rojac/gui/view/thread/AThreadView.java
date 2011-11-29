@@ -10,7 +10,6 @@ import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.ViewId;
-import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -25,8 +24,6 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -99,21 +96,6 @@ public abstract class AThreadView extends AnItemView {
             };
             addInfoChangeListener(toolBarTracker);
         }
-
-        addPropertyChangeListener(MessageView.MESSAGE_VIEWED_FLAG, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                Post post = model.getRoot().getMessageById((Integer) evt.getNewValue());
-
-                selectNextPost(post, true);
-            }
-        });
-        addPropertyChangeListener(MessageView.MESSAGE_LOADED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                getThreadsContainer().requestFocus();
-            }
-        });
     }
 
     private JToolBar createToolBar() {
@@ -240,6 +222,14 @@ public abstract class AThreadView extends AnItemView {
 
     protected abstract void scrollPathToVisible(TreePath treePath);
 
+    public void selectNextPost(int postId) {
+        Post post = model.getRoot().getMessageById(postId);
+
+        if (post != null) {
+            selectNextPost(post, true);
+        }
+    }
+
     private void applyState() {
         assert RojacUtils.checkThread(true);
 
@@ -335,7 +325,7 @@ public abstract class AThreadView extends AnItemView {
                 continue;
             }
 
-            if (!unread &&!(ignoreSubUserThread && p.isIgnoredUser())) {
+            if (!unread && !(ignoreSubUserThread && p.isIgnoredUser())) {
                 return p;
             }
 
@@ -544,6 +534,10 @@ public abstract class AThreadView extends AnItemView {
     }
 
     protected abstract void collapsePath(TreePath path);
+
+    public void setFocus() {
+        getThreadsContainer().requestFocus();
+    }
 
     // Toolbar possible actions
     class NewThreadAction extends AButtonAction {

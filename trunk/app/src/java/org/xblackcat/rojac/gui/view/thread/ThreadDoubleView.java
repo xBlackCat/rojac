@@ -4,14 +4,11 @@ import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.ThreadState;
 import org.xblackcat.rojac.gui.view.ViewId;
-import org.xblackcat.rojac.gui.view.message.MessageView;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.ShortCutUtils;
 
 import javax.swing.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * @author xBlackCat
@@ -65,23 +62,6 @@ public class ThreadDoubleView extends AnItemView {
 
         ShortCutUtils.mergeInputMaps(this, slaveView.getComponent());
         ShortCutUtils.mergeInputMaps(this, masterView.getComponent());
-
-        slaveView.getComponent().addPropertyChangeListener(MessageView.MESSAGE_VIEWED_FLAG, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                masterView.getComponent().firePropertyChange(
-                        MessageView.MESSAGE_VIEWED_FLAG,
-                        ((Integer) evt.getOldValue()).intValue(),
-                        ((Integer) evt.getNewValue()).intValue()
-                );
-            }
-        });
-        slaveView.getComponent().addPropertyChangeListener(MessageView.MESSAGE_LOADED, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                masterView.getComponent().firePropertyChange(MessageView.MESSAGE_LOADED, 0, 1);
-            }
-        });
     }
 
     public void loadItem(int itemId) {
