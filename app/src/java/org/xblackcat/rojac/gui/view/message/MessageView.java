@@ -12,6 +12,7 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AnItemView;
+import org.xblackcat.rojac.gui.view.IPostEvent;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
@@ -46,12 +47,12 @@ import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
 
 public class MessageView extends AnItemView {
     private static final Log log = LogFactory.getLog(MessageView.class);
-    public static final String MESSAGE_VIEWED_FLAG = "MessageViewed";
-    public static final String MESSAGE_LOADED = "MessageLoaded";
     private final IMessageParser rsdnToHtml = ServiceFactory.getInstance().getMessageConverter();
 
+    private final Runnable onLoaded;
+    private final IPostEvent onScrollEnd;
+
     private int messageId;
-    private int forumId;
 
     protected final JTextPane messageTextPane = new JTextPane();
 
@@ -114,6 +115,10 @@ public class MessageView extends AnItemView {
 
 
     public MessageView(ViewId id, IAppControl appControl) {
+        this(id, appControl, null, null);
+    }
+
+    public MessageView(ViewId id, IAppControl appControl, Runnable onLoaded, IPostEvent onScrollEnd) {
         super(id, appControl);
 
         if (id != null) {
@@ -130,6 +135,10 @@ public class MessageView extends AnItemView {
 
         titleBar.setVisible(false);
         messageTextPane.setEnabled(false);
+
+        // Events
+        this.onLoaded = onLoaded;
+        this.onScrollEnd = onScrollEnd;
     }
 
     private void initialize() {
@@ -164,7 +173,9 @@ public class MessageView extends AnItemView {
                         }
                     }
 
-                    MessageView.this.firePropertyChange(MESSAGE_VIEWED_FLAG, 0, messageId);
+                    if (onScrollEnd != null) {
+                        onScrollEnd.fired(messageData.getMessageId());
+                    }
                     return;
                 }
 
@@ -270,7 +281,7 @@ public class MessageView extends AnItemView {
             messageTextPane.setEnabled(true);
             titleBar.setVisible(messageId > 0);
 
-            new MessageLoader(messageId).execute();
+            new MessageLoader(messageId, onLoaded).execute();
         } else {
             messageTextPane.setText(null);
             messageTextPane.setEnabled(false);
@@ -279,8 +290,6 @@ public class MessageView extends AnItemView {
     }
 
     protected void fillFrame(NewMessage mes) {
-        forumId = mes.getForumId();
-
         String message = mes.getMessage();
         String converted = rsdnToHtml.convert(message);
         messageTextPane.setText(converted);
@@ -300,8 +309,6 @@ public class MessageView extends AnItemView {
             titleBar.setVisible(false);
             return;
         }
-
-        forumId = mes.getForumId();
 
         messageTextPane.setEnabled(true);
         messageTextPane.setText(parsedText);
@@ -414,7 +421,8 @@ public class MessageView extends AnItemView {
     private class MessageLoader extends RojacWorker<Void, MessageDataHolder> {
         private final int messageId;
 
-        public MessageLoader(int messageId) {
+        public MessageLoader(int messageId, Runnable onLoaded) {
+            super(onLoaded);
             this.messageId = messageId;
         }
 
@@ -477,11 +485,6 @@ public class MessageView extends AnItemView {
                     }
                 }
             }
-        }
-
-        @Override
-        protected void done() {
-            MessageView.this.firePropertyChange(MESSAGE_LOADED, null, null);
         }
     }
 
@@ -549,7 +552,7 @@ public class MessageView extends AnItemView {
         }
 
         public void actionPerformed(ActionEvent e) {
-            appControl.editMessage(forumId, messageId);
+            appControl.editMessage(messageData.getForumId(), messageId);
         }
     }
 
