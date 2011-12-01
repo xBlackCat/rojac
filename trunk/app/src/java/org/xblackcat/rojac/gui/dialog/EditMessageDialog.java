@@ -9,7 +9,7 @@ import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.data.NewMessageData;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.view.message.EditMessagePane;
-import org.xblackcat.rojac.gui.view.message.PreviewMessageView;
+import org.xblackcat.rojac.gui.view.message.PreviewMessagePane;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.service.datahandler.NewMessagesUpdatedPacket;
 import org.xblackcat.rojac.service.storage.IMessageAH;
@@ -35,7 +35,7 @@ import static org.xblackcat.rojac.i18n.Message.*;
 public class EditMessageDialog extends JDialog {
     private static final Log log = LogFactory.getLog(EditMessageDialog.class);
 
-    private final PreviewMessageView panelPreview;
+    private final PreviewMessagePane panelPreview;
     private final EditMessagePane panelEdit;
 
     // new message credentials
@@ -46,7 +46,7 @@ public class EditMessageDialog extends JDialog {
     public EditMessageDialog(Window owner) {
         super(owner, ModalityType.MODELESS);
 
-        panelPreview = new PreviewMessageView();
+        panelPreview = new PreviewMessagePane();
         panelEdit = new EditMessagePane(panelPreview);
 
         initializeLayout();
