@@ -10,10 +10,10 @@ import java.awt.*;
  * @author xBlackCat
  */
 
-public class PreviewMessageView extends MessageView {
+public class PreviewMessagePane extends MessagePane {
     private final JLabel subjectLine = new JLabel();
 
-    public PreviewMessageView() {
+    public PreviewMessagePane() {
         super(null, null);
 
         controls.setVisible(false);

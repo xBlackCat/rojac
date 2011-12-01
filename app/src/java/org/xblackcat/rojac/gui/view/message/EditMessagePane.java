@@ -10,11 +10,11 @@ import java.awt.*;
  */
 
 public class EditMessagePane extends JPanel {
-    private final PreviewMessageView preview;
+    private final PreviewMessagePane preview;
     protected final JTextField fieldSubject = new JTextField();
     protected final JTextPane fieldBody = new JTextPane();
 
-    public EditMessagePane(PreviewMessageView preview) {
+    public EditMessagePane(PreviewMessagePane preview) {
         super(new BorderLayout());
         this.preview = preview;
 
