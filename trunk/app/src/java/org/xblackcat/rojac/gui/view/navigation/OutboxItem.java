@@ -35,12 +35,12 @@ class OutboxItem extends PersonalItem {
 
     @Override
     String getBriefInfo() {
-        return getStat().asString(Message.View_Navigation_Item_ForumInfo);
+        return getStat().asString();
     }
 
     @Override
     Icon getIcon() {
-        ReadStatus status = getStat().getTotal() == 0 ? ReadStatus.Read : getStat().getUnread() > 0 ? ReadStatus.ReadPartially : ReadStatus.Unread;
+        ReadStatus status = getStat().getTotalMessages() == 0 ? ReadStatus.Read : getStat().getUnreadMessages() > 0 ? ReadStatus.ReadPartially : ReadStatus.Unread;
         return ReadStatusIcon.OutboxItem.getIcon(status);
     }
 }

@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.data;
 
+import org.xblackcat.rojac.i18n.Message;
+
 /**
  * @author xBlackCat
  */
@@ -24,5 +26,34 @@ public class ReadStatistic {
 
     public int getUnreadReplies() {
         return unreadReplies;
+    }
+
+    public String asString() {
+        if (unreadMessages == 0) {
+            return String.valueOf(totalMessages);
+        } else if (unreadMessages == totalMessages) {
+            if (unreadReplies == 0) {
+                return String.valueOf(totalMessages);
+            } else {
+                return Message.View_Navigation_Item_ForumInfo_Full.get(
+                        unreadReplies,
+                        unreadMessages,
+                        totalMessages
+                );
+            }
+        } else {
+            if (unreadReplies == 0) {
+                return Message.View_Navigation_Item_ForumInfo.get(
+                        unreadMessages,
+                        totalMessages
+                );
+            } else {
+                return Message.View_Navigation_Item_ForumInfo_Full.get(
+                        unreadReplies,
+                        unreadMessages,
+                        totalMessages
+                );
+            }
+        }
     }
 }

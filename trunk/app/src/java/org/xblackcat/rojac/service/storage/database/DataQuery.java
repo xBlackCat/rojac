@@ -492,6 +492,11 @@ public enum DataQuery implements IPropertiable {
      */
     GET_UNREAD_MESSAGES_NUMBER_IN_THREAD,
     /**
+    /**
+     * Returns unread replies number in thread. Parameter is threadId.
+     */
+    GET_UNREAD_REPLIES_NUMBER_IN_THREAD,
+    /**
      * Returns unread messages number of a user. Parameter is userId.
      */
     GET_UNREAD_USER_POSTS_NUMBER,

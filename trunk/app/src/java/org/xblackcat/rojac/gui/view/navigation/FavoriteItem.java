@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.data.Favorite;
-import org.xblackcat.rojac.data.UnreadStatData;
+import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.ViewType;
@@ -14,9 +14,9 @@ import javax.swing.*;
  */
 class FavoriteItem extends AnItem {
     private Favorite favorite;
-    private UnreadStatData statistic;
+    private ReadStatistic statistic;
 
-    public FavoriteItem(Favorite favorite, UnreadStatData statistic) {
+    public FavoriteItem(Favorite favorite, ReadStatistic statistic) {
         super(null);
         this.favorite = favorite;
         this.statistic = statistic;
@@ -43,11 +43,11 @@ class FavoriteItem extends AnItem {
             return ReadStatus.Read;
         }
 
-        if (statistic.getTotal() == statistic.getUnread()) {
+        if (statistic.getTotalMessages() == statistic.getUnreadMessages()) {
             return ReadStatus.Unread;
         }
 
-        if (statistic.getUnread() == 0) {
+        if (statistic.getUnreadMessages() == 0) {
             return ReadStatus.Read;
         }
 
@@ -70,18 +70,18 @@ class FavoriteItem extends AnItem {
 
     @Override
     boolean isExuded() {
-        return statistic != null && statistic.getUnread() > 0;
+        return statistic != null && statistic.getUnreadMessages() > 0;
     }
 
     Favorite getFavorite() {
         return favorite;
     }
 
-    void setStatistic(UnreadStatData statistic) {
+    void setStatistic(ReadStatistic statistic) {
         this.statistic = statistic;
     }
 
-    UnreadStatData getStatistic() {
+    ReadStatistic getStatistic() {
         return statistic;
     }
 

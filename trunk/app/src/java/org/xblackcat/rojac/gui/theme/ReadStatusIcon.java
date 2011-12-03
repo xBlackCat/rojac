@@ -18,7 +18,7 @@ public enum ReadStatusIcon {
     /**
      * Single post read status icons. Common case.
      */
-    Post("message"),
+    Post("message-post"),
     /**
      * Single post read status icons. Own posts case.
      */

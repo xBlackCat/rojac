@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.view.model;
 import org.xblackcat.rojac.NotImplementedException;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.data.UnreadStatData;
+import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
@@ -29,7 +29,7 @@ public enum FavoriteType {
             }
 
             Collection<MessageData> messages = messageAH.getMessagesDataByTopicId(itemId, messageData.getForumId());
-            Thread root = new Thread(messageData, null, 0, null);
+            Thread root = new Thread(messageData, null, 0, 0, 0, 0);
             root.fillThread(messages);
             root.setLoadingState(LoadingState.Loaded);
 
@@ -44,10 +44,10 @@ public enum FavoriteType {
         }
 
         @Override
-        public UnreadStatData loadStatistic(int itemId) throws RojacException {
+        public ReadStatistic loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
-            return Storage.get(IStatisticAH.class).getReplaysInThread(itemId);
+            return Storage.get(IStatisticAH.class).getReplaysInThread(itemId, 0);
         }
     },
     UserPosts(Message.Favorite_UserPosts_Name, ModelControl.UserPosts, ReadStatusIcon.FavoritePostList) {
@@ -71,7 +71,7 @@ public enum FavoriteType {
         }
 
         @Override
-        public UnreadStatData loadStatistic(int itemId) throws RojacException {
+        public ReadStatistic loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return Storage.get(IStatisticAH.class).getUserPostsStat(itemId);
@@ -95,10 +95,10 @@ public enum FavoriteType {
         }
 
         @Override
-        public UnreadStatData loadStatistic(int itemId) throws RojacException {
+        public ReadStatistic loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
-            return Storage.get(IStatisticAH.class).getReplaysInThread(itemId);
+            return Storage.get(IStatisticAH.class).getReplaysInThread(itemId, 0);
         }
     },
     UserResponses(Message.Favorite_UserReplies_Name, ModelControl.UserReplies, ReadStatusIcon.FavoriteResponseList) {
@@ -124,7 +124,7 @@ public enum FavoriteType {
         }
 
         @Override
-        public UnreadStatData loadStatistic(int itemId) throws RojacException {
+        public ReadStatistic loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             return Storage.get(IStatisticAH.class).getUserRepliesStat(itemId);
@@ -146,7 +146,7 @@ public enum FavoriteType {
         }
 
         @Override
-        public UnreadStatData loadStatistic(int itemId) throws RojacException {
+        public ReadStatistic loadStatistic(int itemId) throws RojacException {
             assert RojacUtils.checkThread(false);
 
             throw new NotImplementedException();
@@ -188,6 +188,6 @@ public enum FavoriteType {
 
     public abstract String loadName(int itemId) throws RojacException;
 
-    public abstract UnreadStatData loadStatistic(int itemId) throws RojacException;
+    public abstract ReadStatistic loadStatistic(int itemId) throws RojacException;
 
 }

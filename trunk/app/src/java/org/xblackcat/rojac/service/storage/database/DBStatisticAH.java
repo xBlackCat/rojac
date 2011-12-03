@@ -2,7 +2,6 @@ package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.data.ThreadStatData;
-import org.xblackcat.rojac.data.UnreadStatData;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
@@ -21,10 +20,11 @@ final class DBStatisticAH extends AnAH implements IStatisticAH {
     }
 
     @Override
-    public UnreadStatData getReplaysInThread(int threadId) throws StorageException {
+    public ReadStatistic getReplaysInThread(int threadId, int userId) throws StorageException {
+        int unreadReplies = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_REPLIES_NUMBER_IN_THREAD, threadId, userId).intValue();
         int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
         int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_MESSAGES_NUMBER_IN_THREAD, threadId).intValue();
-        return new UnreadStatData(unread, total);
+        return new ReadStatistic(unreadReplies, unread, total);
     }
 
     @Override
@@ -37,16 +37,16 @@ final class DBStatisticAH extends AnAH implements IStatisticAH {
     }
 
     @Override
-    public UnreadStatData getUserRepliesStat(int userId) throws StorageException {
+    public ReadStatistic getUserRepliesStat(int userId) throws StorageException {
         int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_REPLIES_NUMBER, userId).intValue();
         int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_REPLIES_NUMBER, userId).intValue();
-        return new UnreadStatData(unread, total);
+        return new ReadStatistic(0, unread, total);
     }
 
     @Override
-    public UnreadStatData getUserPostsStat(int userId) throws StorageException {
+    public ReadStatistic getUserPostsStat(int userId) throws StorageException {
         int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_POSTS_NUMBER, userId).intValue();
         int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_POSTS_NUMBER, userId).intValue();
-        return new UnreadStatData(unread, total);
+        return new ReadStatistic(0, unread, total);
     }
 }

@@ -34,6 +34,6 @@ class IgnoredTopicsItem extends PersonalItem {
 
     @Override
     String getBriefInfo() {
-        return String.valueOf(getStat().getTotal());
+        return String.valueOf(getStat().getTotalMessages());
     }
 }

@@ -7,7 +7,6 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.ReadStatus;
-import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
 
@@ -59,36 +58,7 @@ class ForumItem extends AnItem {
 
     @Override
     String getBriefInfo() {
-        int myReplies = statistic.getUnreadReplies();
-        int unreadMessages = statistic.getUnreadMessages();
-        int totalMessages = statistic.getTotalMessages();
-
-        if (unreadMessages == 0) {
-            return String.valueOf(totalMessages);
-        } else if (unreadMessages == totalMessages) {
-            if (myReplies == 0) {
-                return String.valueOf(totalMessages);
-            } else {
-                return Message.View_Navigation_Item_ForumInfo_Full.get(
-                        myReplies,
-                        unreadMessages,
-                        totalMessages
-                );
-            }
-        } else {
-            if (myReplies == 0) {
-                return Message.View_Navigation_Item_ForumInfo.get(
-                        unreadMessages,
-                        totalMessages
-                );
-            } else {
-                return Message.View_Navigation_Item_ForumInfo_Full.get(
-                        myReplies,
-                        unreadMessages,
-                        totalMessages
-                );
-            }
-        }
+        return statistic.asString();
     }
 
     @Override

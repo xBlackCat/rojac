@@ -16,7 +16,7 @@ final class PostReplies extends APostProxy {
     protected void setValue(PostTableCellRenderer renderer) {
         String replies;
 
-        int repliesAmount = post.getRepliesAmount();
+        int repliesAmount = post.getPostAmount();
 
         if (repliesAmount == 0 && post.getThreadRoot() != post) {
             // Do not show zeroes for non-root posts.

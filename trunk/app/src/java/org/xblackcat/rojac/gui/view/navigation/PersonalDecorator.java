@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.NewMessage;
-import org.xblackcat.rojac.data.UnreadStatData;
+import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
@@ -79,22 +79,22 @@ class PersonalDecorator extends ADecorator {
 
         @Override
         void doSwing(Void data) {
-            UnreadStatData stat = item.getStat();
-            int unread = stat.getUnread() + adjustDelta;
+            ReadStatistic  stat = item.getStat();
+            int unread = stat.getUnreadMessages() + adjustDelta;
             if (unread < 0) {
                 unread = 0;
-            } else if (unread > stat.getTotal()) {
-                unread = stat.getTotal();
+            } else if (unread > stat.getTotalMessages()) {
+                unread = stat.getTotalMessages();
             }
 
-            final UnreadStatData newStat = new UnreadStatData(unread, stat.getTotal());
+            final ReadStatistic newStat = new ReadStatistic(0, unread, stat.getTotalMessages());
             item.setStat(newStat);
 
             modelControl.itemUpdated(item);
         }
     }
 
-    private class AnswersReloadTask extends ALoadTask<UnreadStatData> {
+    private class AnswersReloadTask extends ALoadTask<ReadStatistic> {
         private final int userId;
 
         private AnswersReloadTask(int userId) {
@@ -102,21 +102,21 @@ class PersonalDecorator extends ADecorator {
         }
 
         @Override
-        UnreadStatData doBackground() throws Exception {
+        ReadStatistic doBackground() throws Exception {
             IStatisticAH statisticAH = Storage.get(IStatisticAH.class);
             return statisticAH.getUserRepliesStat(userId);
         }
 
         @Override
-        void doSwing(UnreadStatData data) {
+        void doSwing(ReadStatistic data) {
             myResponses.setStat(data);
             modelControl.itemUpdated(myResponses);
         }
     }
 
-    private class OutboxReloadTask extends ALoadTask<UnreadStatData> {
+    private class OutboxReloadTask extends ALoadTask<ReadStatistic> {
         @Override
-        UnreadStatData doBackground() throws Exception {
+        ReadStatistic doBackground() throws Exception {
             Collection<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages();
             int toSend = 0;
             for (NewMessage nm : newMessages) {
@@ -124,12 +124,12 @@ class PersonalDecorator extends ADecorator {
                     ++toSend;
                 }
             }
-            
-            return new UnreadStatData(toSend, newMessages.size());
+
+            return new ReadStatistic(0, toSend, newMessages.size());
         }
 
         @Override
-        void doSwing(UnreadStatData data) {
+        void doSwing(ReadStatistic data) {
             if (data != null) {
                 outBox.setStat(data);
 
@@ -147,7 +147,7 @@ class PersonalDecorator extends ADecorator {
         @Override
         void doSwing(Integer data) {
             if (data != null) {
-                ignoredTopics.setStat(new UnreadStatData(0, data));
+                ignoredTopics.setStat(new ReadStatistic(0, 0, data));
 
                 modelControl.itemUpdated(ignoredTopics);
             }
