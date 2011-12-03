@@ -19,6 +19,7 @@ import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.ShortCutUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,11 +76,6 @@ public class MessageView extends AnItemView {
     );
     private final MessagePane messagePane;
 
-    private void updateReadState(boolean read) {
-        messageData = messageData.setRead(read);
-        fireInfoChanged();
-    }
-
     public MessageView(ViewId id, IAppControl appControl) {
         this(id, appControl, null, null);
     }
@@ -109,9 +105,16 @@ public class MessageView extends AnItemView {
                 }
             }
         };
-        
+
         messagePane = new MessagePane(appControl, onScrollEnd);
         add(messagePane, BorderLayout.CENTER);
+
+        ShortCutUtils.mergeInputMaps(this, messagePane);
+    }
+
+    private void updateReadState(boolean read) {
+        messageData = messageData.setRead(read);
+        fireInfoChanged();
     }
 
     public void loadItem(final int messageId) {
