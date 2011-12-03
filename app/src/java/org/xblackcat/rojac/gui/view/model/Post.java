@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.service.options.Property;
 
 import java.util.*;
 
@@ -69,12 +70,34 @@ public class Post implements ITreeItem<Post> {
      *
      * @return real replies amount.
      */
-    public int getRepliesAmount() {
+    public int getPostAmount() {
         int replies = childrenPosts.size();
         for (Post c : childrenPosts) {
-            replies += c.getRepliesAmount();
+            replies += c.getPostAmount();
         }
         return replies;
+    }
+
+    public boolean isReply(int userId) {
+        return messageData != null && messageData.getParentUserId() == userId;
+    }
+
+    public boolean hasUnreadReply() {
+        return hasUnreadReply(Property.RSDN_USER_ID.get(-1));
+    }
+
+    protected boolean hasUnreadReply(int userId) {
+        if (messageData != null && isReply(userId) && !messageData.isRead()){
+            return true;
+        }
+
+        for (Post c : childrenPosts) {
+            if (c.hasUnreadReply(userId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean isIgnored() {

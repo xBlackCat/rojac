@@ -265,21 +265,23 @@ public final class MessageUtils {
         final int userId = Property.RSDN_USER_ID.get(-1);
 
         boolean isOwnPost = post.getMessageData().getUserId() == userId;
-        boolean isResponse = post.getParent() != null && post.getParent().getMessageData().getUserId() == userId;
-        boolean hasResponse = post.getRepliesAmount() > 0;
+        boolean isResponse = post.isReply(Property.RSDN_USER_ID.get(-1));
+        boolean hasUnreadReply = post.hasUnreadReply();
 
         ReadStatus readStatus = post.isRead();
 
         ReadStatusIcon iconHolder;
 
         if (isOwnPost) {
-            if (hasResponse) {
+            if (post.getSize() > 0) {
                 iconHolder = ReadStatusIcon.HasResponse;
             } else {
                 iconHolder = ReadStatusIcon.OwnPost;
             }
         } else if (isResponse) {
             iconHolder = ReadStatusIcon.Response;
+        } else if (hasUnreadReply) {
+            iconHolder = ReadStatusIcon.HasResponse;
         } else {
             iconHolder = ReadStatusIcon.Post;
         }

@@ -2,6 +2,8 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.data.ReadStatistic;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -14,13 +16,13 @@ import java.util.List;
  *
  * @author xBlackCat
  */
-class ThreadUnreadPostsLoader extends RojacWorker<Void, Integer> {
-    private static final Log log = LogFactory.getLog(ThreadUnreadPostsLoader.class);
+class ThreadStatisticLoader extends RojacWorker<Void, ReadStatistic> {
+    private static final Log log = LogFactory.getLog(ThreadStatisticLoader.class);
 
     private final Thread topic;
     private final AThreadModel<Post> model;
 
-    public ThreadUnreadPostsLoader(Thread topic, AThreadModel<Post> model) {
+    public ThreadStatisticLoader(Thread topic, AThreadModel<Post> model) {
         this.topic = topic;
         this.model = model;
     }
@@ -29,7 +31,7 @@ class ThreadUnreadPostsLoader extends RojacWorker<Void, Integer> {
     protected Void perform() throws Exception {
         IStatisticAH mAH = Storage.get(IStatisticAH.class);
         try {
-            int unreadPosts = mAH.getReplaysInThread(topic.getMessageId()).getUnread();
+            ReadStatistic unreadPosts = mAH.getReplaysInThread(topic.getMessageId(), Property.RSDN_USER_ID.get(-1));
 
             publish(unreadPosts);
         } catch (StorageException e) {
@@ -40,8 +42,8 @@ class ThreadUnreadPostsLoader extends RojacWorker<Void, Integer> {
     }
 
     @Override
-    protected void process(List<Integer> chunks) {
-        for (int unreadPosts : chunks) {
+    protected void process(List<ReadStatistic> chunks) {
+        for (ReadStatistic unreadPosts : chunks) {
             topic.setUnreadPosts(unreadPosts);
             model.pathToNodeChanged(topic);
         }

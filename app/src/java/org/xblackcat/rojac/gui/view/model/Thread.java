@@ -2,7 +2,8 @@ package org.xblackcat.rojac.gui.view.model;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.data.ThreadStatData;
+import org.xblackcat.rojac.data.ReadStatistic;
+import org.xblackcat.rojac.service.options.Property;
 
 import java.util.*;
 
@@ -27,8 +28,10 @@ public class Thread extends Post {
     private boolean filled = false;
     private LoadingState loadingState = LoadingState.NotLoaded;
 
-    private ThreadStatData threadStatData;
+    private long lastPostDate;
+    private int replyAmount;
     private int unreadPosts;
+    private int unreadReplies;
 
     /**
      * Aux constructor for newly created thread.
@@ -37,14 +40,16 @@ public class Thread extends Post {
      * @param parent
      */
     Thread(MessageData messageData, ForumRoot parent) {
-        this(messageData, new ThreadStatData(messageData.getMessageDate(), 0), 0, parent);
+        this(messageData, parent, messageData.getMessageDate(), 0, 0, 0);
         filled = true;
     }
 
-    public Thread(MessageData messageData, ThreadStatData threadStatData, int unreadPosts, ForumRoot parent) {
+    public Thread(MessageData messageData, ForumRoot parent, long lastPostDate, int replyAmount, int unreadPosts, int unreadReplies) {
         super(messageData, parent, null);
-        this.threadStatData = threadStatData;
+        this.lastPostDate = lastPostDate;
+        this.replyAmount = replyAmount;
         this.unreadPosts = unreadPosts;
+        this.unreadReplies = unreadReplies;
 
         threadPosts.put(messageData.getMessageId(), this);
     }
@@ -79,10 +84,10 @@ public class Thread extends Post {
     public long getLastPostDate() {
         if (filled) {
             return super.getLastPostDate();
-        } else if (threadStatData.getReplyAmount() == 0) {
+        } else if (replyAmount == 0) {
             return messageData.getMessageDate();
         } else {
-            return threadStatData.getLastPostDate();
+            return lastPostDate;
         }
     }
 
@@ -104,12 +109,12 @@ public class Thread extends Post {
     }
 
     @Override
-    public int getRepliesAmount() {
+    public int getPostAmount() {
         if (filled) {
             // Do not count itself.
             return threadPosts.size() - 1;
         } else {
-            return threadStatData.getReplyAmount();
+            return replyAmount;
         }
     }
 
@@ -119,7 +124,7 @@ public class Thread extends Post {
 
     @Override
     public LoadingState getLoadingState() {
-        return !filled && threadStatData.getReplyAmount() == 0 ? LoadingState.Loaded : loadingState;
+        return !filled && replyAmount == 0 ? LoadingState.Loaded : loadingState;
     }
 
     @Override
@@ -139,7 +144,7 @@ public class Thread extends Post {
 
     @Override
     public boolean isLeaf() {
-        return filled ? super.isLeaf() : threadStatData.getReplyAmount() == 0;
+        return filled ? super.isLeaf() : replyAmount == 0;
     }
 
     public boolean isFilled() {
@@ -147,26 +152,41 @@ public class Thread extends Post {
     }
 
     @Override
+    public boolean hasUnreadReply() {
+        if (filled) {
+            return super.hasUnreadReply();
+        } else {
+            return unreadReplies > 0;
+        }
+    }
+
+    @Override
     public Post getMessageById(int messageId) {
         return threadPosts.get(messageId);
     }
 
-    void setUnreadPosts(int unreadPosts) {
-        this.unreadPosts = unreadPosts;
+    void setUnreadPosts(ReadStatistic unreadPosts) {
+        this.unreadPosts = unreadPosts.getUnreadMessages();
+        this.unreadReplies = unreadPosts.getUnreadReplies();
     }
 
     void clearThread() {
-        long lastPostDate = getLastPostDate();
-        int repliesAmount = getRepliesAmount();
+        lastPostDate = getLastPostDate();
+        replyAmount = getPostAmount();
 
         unreadPosts = 0;
+        unreadReplies = 0;
+        int myId = Property.RSDN_USER_ID.get(-1);
+        
         for (Post p : threadPosts.valueCollection()) {
             if (p != this && !p.messageData.isRead()) {
                 unreadPosts++;
+                if (p.messageData.getParentUserId() == myId) {
+                    unreadReplies ++;
+                }
             }
         }
 
-        threadStatData = new ThreadStatData(lastPostDate, repliesAmount);
         childrenPosts.clear();
         threadPosts.clear();
         threadPosts.put(getMessageId(), this);
@@ -218,7 +238,7 @@ public class Thread extends Post {
         } else {
             // Thread hasn't filled yet - just reset statistic data.
             setRead(read);
-            unreadPosts = read ? 0 : threadStatData.getReplyAmount();
+            unreadPosts = read ? 0 : replyAmount;
         }
     }
 }

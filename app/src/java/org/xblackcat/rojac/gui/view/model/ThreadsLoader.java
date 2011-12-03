@@ -4,6 +4,7 @@ import gnu.trove.list.array.TIntArrayList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.data.ThreadStatData;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
@@ -61,10 +62,17 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
                 int topicId = threadPost.getMessageId();
 
                 try {
-                    int unreadPosts = mAH.getReplaysInThread(topicId).getUnread();
+                    ReadStatistic unreadPosts = mAH.getReplaysInThread(topicId, Property.RSDN_USER_ID.get(-1));
                     ThreadStatData stat = mAH.getThreadStatByThreadId(topicId);
 
-                    publish(new Thread(threadPost, stat, unreadPosts, rootItem));
+                    publish(new Thread(
+                            threadPost,
+                            rootItem,
+                            stat.getLastPostDate(),
+                            unreadPosts.getTotalMessages(),
+                            unreadPosts.getUnreadMessages(),
+                            unreadPosts.getUnreadReplies())
+                    );
                 } catch (StorageException e) {
                     log.error("Can not load statistic for topic #" + topicId, e);
                 }

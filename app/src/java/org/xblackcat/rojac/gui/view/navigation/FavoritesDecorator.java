@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 
 import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.data.UnreadStatData;
+import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
@@ -94,10 +94,10 @@ class FavoritesDecorator extends ADecorator {
     }
 
     private static class Stat {
-        private final UnreadStatData newStatistic;
+        private final ReadStatistic newStatistic;
         private final String newName;
 
-        private Stat(UnreadStatData newStatistic, String newName) {
+        private Stat(ReadStatistic newStatistic, String newName) {
             this.newStatistic = newStatistic;
             this.newName = newName;
         }
@@ -116,7 +116,7 @@ class FavoritesDecorator extends ADecorator {
             FavoriteType type = f.getType();
             int itemId = f.getItemId();
 
-            UnreadStatData newStatistic = type.loadStatistic(itemId);
+            ReadStatistic newStatistic = type.loadStatistic(itemId);
             String newName = f.isNameSet() ? null : type.loadName(itemId);
 
             return new Stat(newStatistic, newName);
@@ -147,7 +147,7 @@ class FavoritesDecorator extends ADecorator {
                 FavoriteType type = f.getType();
                 int itemId = f.getItemId();
 
-                UnreadStatData newStatistic = type.loadStatistic(itemId);
+                ReadStatistic newStatistic = type.loadStatistic(itemId);
                 String name = type.loadName(itemId);
 
                 items.add(new FavoriteItem(f.setName(name), newStatistic));
@@ -174,9 +174,9 @@ class FavoritesDecorator extends ADecorator {
 
         @Override
         public void doSwing(Void data) {
-            UnreadStatData stat = item.getStatistic();
+            ReadStatistic stat = item.getStatistic();
 
-            item.setStatistic(new UnreadStatData(stat.getUnread() + adjustDelta, stat.getTotal()));
+            item.setStatistic(new ReadStatistic(0, stat.getUnreadMessages() + adjustDelta, stat.getTotalMessages()));
 
             modelControl.itemUpdated(item);
         }

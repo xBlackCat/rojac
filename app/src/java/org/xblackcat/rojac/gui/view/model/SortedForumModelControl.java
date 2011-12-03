@@ -203,8 +203,8 @@ class SortedForumModelControl extends AThreadsModelControl {
                             Thread topic = (Thread) post;
 
                             if (!topic.isFilled()) {
-                                // Queue updatestat data.
-                                new ThreadUnreadPostsLoader(topic, model).execute();
+                                // Queue update stat data.
+                                new ThreadStatisticLoader(topic, model).execute();
                             }
                         }
 
