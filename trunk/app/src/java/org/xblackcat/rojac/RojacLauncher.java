@@ -3,8 +3,8 @@ package org.xblackcat.rojac;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
+import org.xblackcat.rojac.gui.component.Windows7Bar;
 import org.xblackcat.rojac.gui.tray.RojacTray;
-import org.xblackcat.rojac.gui.win7.RojacWindowBar;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
@@ -159,9 +159,12 @@ public final class RojacLauncher {
 
             APacket.getDispatcher().addDataHandler(mainFrame);
 
-            RojacWindowBar bar = new RojacWindowBar();
-            if (bar.isSupported()) {
-                bar.installBar(mainFrame);
+            if (Windows7Bar.isSupported()) {
+                Windows7Bar taskBar = Windows7Bar.getWindowBar(mainFrame);
+
+                ServiceFactory.getInstance()
+                        .getProgressControl()
+                        .addProgressListener(new Windows7BarProgressTracker(mainFrame, taskBar));
             }
 
             // Setup tray
@@ -236,5 +239,4 @@ public final class RojacLauncher {
         }
 
     }
-
 }
