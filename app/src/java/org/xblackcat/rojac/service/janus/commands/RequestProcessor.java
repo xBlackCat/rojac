@@ -89,7 +89,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        progressController.fireJobProgressChanged(1, 1);
+//        progressController.fireJobProgressChanged(1, 1);
         progressController.fireJobStop(Message.Synchronize_Message_Done);
         if (log.isDebugEnabled()) {
             log.debug("Requests are processed.");
