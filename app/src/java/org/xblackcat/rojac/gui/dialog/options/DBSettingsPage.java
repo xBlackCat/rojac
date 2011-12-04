@@ -19,11 +19,10 @@ import java.awt.event.ActionEvent;
  * @author xBlackCat
  */
 public class DBSettingsPage extends APage {
-    private final JButton migrateButton;
     private final DBSettingsPane settingsPane;
 
     public DBSettingsPage(Window owner) {
-        migrateButton = WindowsUtils.setupButton(new ImportAction(owner));
+        JButton migrateButton = WindowsUtils.setupButton(new ImportAction(owner));
         settingsPane = new DBSettingsPane(migrateButton);
         add(settingsPane, BorderLayout.NORTH);
     }

@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.bridj.cpp.com.shell.ITaskbarList3;
+import org.xblackcat.rojac.gui.component.Windows7Bar;
 import org.xblackcat.rojac.gui.dialog.db.CheckProcessDialog;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
@@ -35,11 +37,17 @@ public class DatabaseInstaller extends RojacWorker<Void, ProgressChangeEvent> {
     private final Runnable shutDownAction;
     private final Window owner;
 
+    private final Windows7Bar win7bar;
+
     public DatabaseInstaller(DatabaseSettings settings, Window window) {
         this(null, null, settings, window);
     }
 
     public DatabaseInstaller(Runnable postProcessor, Runnable shutDownAction, DatabaseSettings settings, Window owner) {
+        this(postProcessor, shutDownAction, settings, owner, Windows7Bar.getWindowBar(owner));
+    }
+
+    public DatabaseInstaller(Runnable postProcessor, Runnable shutDownAction, DatabaseSettings settings, Window owner, Windows7Bar win7bar) {
         super(postProcessor);
         this.shutDownAction = shutDownAction;
         this.owner = owner;
@@ -49,6 +57,7 @@ public class DatabaseInstaller extends RojacWorker<Void, ProgressChangeEvent> {
         this.settings = settings;
 
         dlg = new CheckProcessDialog(owner);
+        this.win7bar = win7bar;
     }
 
     @Override
@@ -120,9 +129,17 @@ public class DatabaseInstaller extends RojacWorker<Void, ProgressChangeEvent> {
         for (ProgressChangeEvent e : chunks) {
             if (e.getState() == ProgressState.Stop) {
                 dlg.dispose();
+                if (win7bar != null) {
+                    win7bar.setState(ITaskbarList3.TbpFlag.TBPF_NOPROGRESS);
+                }
+
                 new ReloadDataPacket().dispatch();
             } else if (e.getBound() != null && e.getValue() != null) {
                 dlg.setProgress(e.getValue(), e.getBound());
+                if (win7bar != null) {
+                    win7bar.setState(ITaskbarList3.TbpFlag.TBPF_PAUSED);
+                    win7bar.setProgress(e.getValue(), e.getBound());
+                }
             }
         }
     }
