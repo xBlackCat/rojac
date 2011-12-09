@@ -37,7 +37,7 @@ class SortedForumModelControl extends AThreadsModelControl {
     };
 
     @Override
-    public void fillModelByItemId(final AThreadModel<Post> model, final int forumId) {
+    public void fillModelByItemId(final SortedThreadsModel model, final int forumId) {
         assert RojacUtils.checkThread(true);
 
         final ForumRoot rootItem = new ForumRoot(forumId);
@@ -56,7 +56,7 @@ class SortedForumModelControl extends AThreadsModelControl {
         infoLoader.execute();
     }
 
-    private void markForumRead(AThreadModel<Post> model, boolean read) {
+    private void markForumRead(SortedThreadsModel model, boolean read) {
         assert RojacUtils.checkThread(true);
 
         // Root post is ForumRoot object
@@ -72,7 +72,7 @@ class SortedForumModelControl extends AThreadsModelControl {
         return false;
     }
 
-    private void updateModel(final Runnable postProcessor, final AThreadModel<Post> model, int... threadIds) {
+    private void updateModel(final Runnable postProcessor, final SortedThreadsModel model, int... threadIds) {
         assert RojacUtils.checkThread(true);
 
         TIntHashSet filledThreads = new TIntHashSet();
@@ -125,7 +125,7 @@ class SortedForumModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public String getTitle(AThreadModel<Post> model) {
+    public String getTitle(SortedThreadsModel model) {
         // Root is ForumRoot object
         Post root = model.getRoot();
         if (root != null) {
@@ -141,7 +141,7 @@ class SortedForumModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
+    public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
         final int forumId = model.getRoot().getForumId();
 
         new PacketDispatcher(
@@ -304,7 +304,7 @@ class SortedForumModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public Icon getTitleIcon(AThreadModel<Post> model) {
+    public Icon getTitleIcon(SortedThreadsModel model) {
         if (model.getRoot() != null) {
             return ReadStatusIcon.Forum.getIcon(model.getRoot().isRead());
         }
@@ -313,7 +313,7 @@ class SortedForumModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
+    public JPopupMenu getTitlePopup(SortedThreadsModel model, IAppControl appControl) {
         final MessageData data = model.getRoot().getMessageData();
 
         if (data instanceof ForumMessageData) {
@@ -332,7 +332,7 @@ class SortedForumModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public void unloadThread(AThreadModel<Post> model, Post item) {
+    public void unloadThread(SortedThreadsModel model, Post item) {
         Thread thread = (Thread) item;
 
         thread.clearThread();

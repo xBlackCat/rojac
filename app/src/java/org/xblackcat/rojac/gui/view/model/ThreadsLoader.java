@@ -28,7 +28,7 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     private final ForumRoot rootItem;
     private final boolean hideIgnored;
 
-    public ThreadsLoader(final Runnable postProcessor, final AThreadModel<Post> model, int forumId) {
+    public ThreadsLoader(final Runnable postProcessor, final SortedThreadsModel model, int forumId) {
         super(new Runnable() {
             @Override
             public void run() {

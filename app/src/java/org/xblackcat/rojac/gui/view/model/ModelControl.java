@@ -19,7 +19,7 @@ public enum ModelControl {
      */
     Favorites(null) {
         @Override
-        public IModelControl<Post> get() {
+        public IModelControl get() {
             // The control is mutable - always generate a new instance.
             return new FavoritesModelControl();
         }
@@ -39,13 +39,13 @@ public enum ModelControl {
     IgnoredThreadList(new IgnoredThreadListControl()),
     ;
 
-    private final IModelControl<Post> control;
+    private final IModelControl control;
 
-    ModelControl(IModelControl<Post> control) {
+    ModelControl(IModelControl control) {
         this.control = control;
     }
 
-    public IModelControl<Post> get() {
+    public IModelControl get() {
         return control;
     }
 

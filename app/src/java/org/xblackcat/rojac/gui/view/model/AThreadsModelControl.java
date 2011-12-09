@@ -11,7 +11,7 @@ import javax.swing.*;
 /**
  * Handle common thread-model behaviour
  */
-abstract class AThreadsModelControl implements IModelControl<Post> {
+abstract class AThreadsModelControl implements IModelControl {
     @Override
     public Post getTreeRoot(Post post) {
         return post == null ? null : post.getThreadRoot();
@@ -23,7 +23,7 @@ abstract class AThreadsModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void resortModel(AThreadModel<Post> model) {
+    public void resortModel(SortedThreadsModel model) {
         model.root.deepResort();
         model.modelSupport.fireNewRoot();
     }
@@ -33,7 +33,7 @@ abstract class AThreadsModelControl implements IModelControl<Post> {
         return true;
     }
 
-    protected void markThreadRead(AThreadModel<Post> model, int threadRootId, boolean read) {
+    protected void markThreadRead(SortedThreadsModel model, int threadRootId, boolean read) {
         assert RojacUtils.checkThread(true);
 
         Post post = model.getRoot().getMessageById(threadRootId);
@@ -45,7 +45,7 @@ abstract class AThreadsModelControl implements IModelControl<Post> {
         }
     }
 
-    protected void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
+    protected void markPostRead(SortedThreadsModel model, int postId, boolean read) {
         assert RojacUtils.checkThread(true);
 
         final Post post = model.getRoot().getMessageById(postId);
@@ -56,7 +56,7 @@ abstract class AThreadsModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void loadThread(final AThreadModel<Post> threadModel, Post p, Runnable postProcessor) {
+    public void loadThread(final SortedThreadsModel threadModel, Post p, Runnable postProcessor) {
         assert RojacUtils.checkThread(true);
 
         //  In the Sorted model only Thread object could be loaded.

@@ -17,10 +17,10 @@ class ForumInfoLoader extends RojacWorker<Void, Forum> {
     private static final Log log = LogFactory.getLog(ForumInfoLoader.class);
 
     private final int forumId;
-    private AThreadModel<Post> model;
+    private SortedThreadsModel model;
     private Forum forum;
 
-    public ForumInfoLoader(AThreadModel<Post> model, int forumId) {
+    public ForumInfoLoader(SortedThreadsModel model, int forumId) {
         this.forumId = forumId;
         this.model = model;
     }

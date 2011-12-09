@@ -27,7 +27,7 @@ class OutboxListControl extends MessageListControl {
     public OutboxListControl() {
     }
 
-    public void fillModelByItemId(final AThreadModel<Post> model, final int itemId) {
+    public void fillModelByItemId(final SortedThreadsModel model, final int itemId) {
         final OutboxPostList root = new OutboxPostList();
         model.setRoot(root);
 
@@ -35,12 +35,12 @@ class OutboxListControl extends MessageListControl {
     }
 
     @Override
-    public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
+    public JPopupMenu getTitlePopup(SortedThreadsModel model, IAppControl appControl) {
         return null;
     }
 
     @Override
-    public Icon getTitleIcon(AThreadModel<Post> model) {
+    public Icon getTitleIcon(SortedThreadsModel model) {
         if (model.getRoot() != null) {
             return ReadStatusIcon.OutboxItem.getIcon(model.getRoot().isRead());
         }
@@ -53,14 +53,14 @@ class OutboxListControl extends MessageListControl {
         appControl.editMessage(null, -post.getMessageId());
     }
 
-    protected void updateModel(final AThreadModel<Post> model, Runnable postProcessor) {
+    protected void updateModel(final SortedThreadsModel model, Runnable postProcessor) {
         assert RojacUtils.checkThread(true);
 
         new PostListLoader(postProcessor, model).execute();
     }
 
     @Override
-    public String getTitle(AThreadModel<Post> model) {
+    public String getTitle(SortedThreadsModel model) {
         return Message.View_Navigation_Item_Outbox.get();
     }
 
@@ -69,7 +69,7 @@ class OutboxListControl extends MessageListControl {
     }
 
     @Override
-    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
+    public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
                 new IPacketProcessor<OptionsUpdatedPacket>() {
                     @Override
@@ -97,9 +97,9 @@ class OutboxListControl extends MessageListControl {
 
     private class PostListLoader extends RojacWorker<Void, Void> {
         private Collection<NewMessage> messages;
-        private final AThreadModel<Post> model;
+        private final SortedThreadsModel model;
 
-        public PostListLoader(Runnable postProcessor, AThreadModel<Post> model) {
+        public PostListLoader(Runnable postProcessor, SortedThreadsModel model) {
             super(postProcessor);
             this.model = model;
         }

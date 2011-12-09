@@ -20,9 +20,9 @@ class ThreadStatisticLoader extends RojacWorker<Void, ReadStatistic> {
     private static final Log log = LogFactory.getLog(ThreadStatisticLoader.class);
 
     private final Thread topic;
-    private final AThreadModel<Post> model;
+    private final SortedThreadsModel model;
 
-    public ThreadStatisticLoader(Thread topic, AThreadModel<Post> model) {
+    public ThreadStatisticLoader(Thread topic, SortedThreadsModel model) {
         this.topic = topic;
         this.model = model;
     }

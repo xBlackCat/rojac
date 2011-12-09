@@ -11,7 +11,7 @@ import java.util.*;
  * @author xBlackCat
  */
 
-public class Post implements ITreeItem<Post> {
+public class Post implements Comparable<Post> {
     protected MessageData messageData;
 
     // Tree-related fields
@@ -55,12 +55,10 @@ public class Post implements ITreeItem<Post> {
         return childrenPosts.indexOf(p);
     }
 
-    @Override
     public Post getChild(int idx) {
         return childrenPosts.get(idx);
     }
 
-    @Override
     public int getSize() {
         return childrenPosts.size();
     }
@@ -132,7 +130,6 @@ public class Post implements ITreeItem<Post> {
         return messageData.getMessageId();
     }
 
-    @Override
     public int compareTo(Post o) {
         long postDate = o.getMessageData().getMessageDate();
         long thisPostDate = getMessageData().getMessageDate();
@@ -167,22 +164,18 @@ public class Post implements ITreeItem<Post> {
 
     // State related methods
 
-    @Override
     public int getMessageId() {
         return messageData.getMessageId();
     }
 
-    @Override
     public int getForumId() {
         return messageData.getForumId();
     }
 
-    @Override
     public int getTopicId() {
         return messageData.getTopicId();
     }
 
-    @Override
     public long getLastPostDate() {
         if (childrenPosts.isEmpty()) {
             return messageData.getMessageDate();

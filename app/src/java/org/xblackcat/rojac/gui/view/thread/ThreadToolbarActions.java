@@ -10,52 +10,52 @@ import javax.swing.*;
 public enum ThreadToolbarActions {
     NewThread {
         @Override
-        JButton makeButton(AThreadView view) {
+        JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "new_thread", view.new NewThreadAction());
         }
     },
     ToThreadRoot {
         @Override
-        JButton makeButton(AThreadView view) {
+        JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "to_root", view.new ToThreadRootAction());
         }
     },
     PreviousPost {
         @Override
-        JButton makeButton(AThreadView view) {
+        JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "prev", view.new PreviousAction());
         }
     },
     NextPost {
         @Override
-        JButton makeButton(AThreadView view) {
+        JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "next", view.new NextAction());
         }
     },
     PreviousUnread {
         @Override
-        JButton makeButton(AThreadView view) {
+        JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "prev_unread", view.new PreviousUnreadAction());
         }
     },
     NextUnread {
         @Override
-        JButton makeButton(AThreadView view) {
+        JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "next_unread", view.new NextUnreadAction());
         }
     },
     MarkSubTreeRead {
         @Override
-        JButton makeButton(AThreadView view) {
+        JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "mark_read_subtree", view.new MarkSubTreeReadAction());
         }
     },
     MarkThreadRead {
         @Override
-        JButton makeButton(AThreadView view) {
+        JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "mark_read_thread", view.new MarkWholeThreadReadAction());
         }
     },;
 
-    abstract JButton makeButton(AThreadView view);
+    abstract JButton makeButton(TreeTableThreadView view);
 }

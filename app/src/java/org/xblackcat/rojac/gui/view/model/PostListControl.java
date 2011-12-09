@@ -36,7 +36,7 @@ class PostListControl extends MessageListControl {
         this.replies = replies;
     }
 
-    public void fillModelByItemId(final AThreadModel<Post> model, final int itemId) {
+    public void fillModelByItemId(final SortedThreadsModel model, final int itemId) {
         final PostList root = new PostList(itemId);
         model.setRoot(root);
 
@@ -71,7 +71,7 @@ class PostListControl extends MessageListControl {
     }
 
     @Override
-    public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
+    public JPopupMenu getTitlePopup(SortedThreadsModel model, IAppControl appControl) {
         Post root = model.getRoot();
 
         return replies ?
@@ -80,7 +80,7 @@ class PostListControl extends MessageListControl {
     }
 
     @Override
-    public Icon getTitleIcon(AThreadModel<Post> model) {
+    public Icon getTitleIcon(SortedThreadsModel model) {
         Post root = model.getRoot();
         if (root == null) {
             return null;
@@ -93,14 +93,14 @@ class PostListControl extends MessageListControl {
         return statusIcon.getIcon(readStatus);
     }
 
-    protected void updateModel(final AThreadModel<Post> model, Runnable postProcessor) {
+    protected void updateModel(final SortedThreadsModel model, Runnable postProcessor) {
         assert RojacUtils.checkThread(true);
 
         new PostListLoader(postProcessor, model).execute();
     }
 
     @Override
-    public String getTitle(AThreadModel<Post> model) {
+    public String getTitle(SortedThreadsModel model) {
         Post root = model.getRoot();
 
         if (root == null) {
@@ -130,7 +130,7 @@ class PostListControl extends MessageListControl {
     }
 
     @Override
-    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
+    public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
                 new IPacketProcessor<IgnoreUserUpdatedPacket>() {
                     @Override
@@ -193,15 +193,15 @@ class PostListControl extends MessageListControl {
     private class PostListLoader extends RojacWorker<Void, Void> {
         private Iterable<MessageData> messages;
         private final int itemId;
-        private final AThreadModel<Post> model;
+        private final SortedThreadsModel model;
 
-        public PostListLoader(Runnable postProcessor, AThreadModel<Post> model) {
+        public PostListLoader(Runnable postProcessor, SortedThreadsModel model) {
             super(postProcessor);
             this.itemId = model.getRoot().getMessageData().getUserId();
             this.model = model;
         }
 
-        public PostListLoader(AThreadModel<Post> model) {
+        public PostListLoader(SortedThreadsModel model) {
             this(null, model);
         }
 

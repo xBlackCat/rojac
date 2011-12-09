@@ -1,8 +1,7 @@
 package org.xblackcat.rojac.gui.view.thread;
 
 import gnu.trove.set.hash.TIntHashSet;
-import org.xblackcat.rojac.gui.view.model.ITreeItem;
-import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.gui.view.model.Post;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -17,7 +16,7 @@ public class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
     private final int threadId;
     private final int forumId;
 
-    public SubTreeReadFlagSetter(boolean read, ITreeItem<?> post) {
+    public SubTreeReadFlagSetter(boolean read, Post post) {
         this.read = read;
         messageIds = new TIntHashSet();
         threadId = post.getTopicId();
@@ -26,13 +25,13 @@ public class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
         fillMessageIds(post);
     }
 
-    private void fillMessageIds(ITreeItem<?> post) {
+    private void fillMessageIds(Post post) {
         messageIds.add(post.getMessageId());
 
         int i = 0;
         int childrenLength = post.getSize();
         while (i < childrenLength) {
-            ITreeItem<?> p = post.getChild(i);
+            Post p = post.getChild(i);
             fillMessageIds(p);
             i++;
         }
@@ -49,7 +48,6 @@ public class SubTreeReadFlagSetter extends RojacWorker<Void, Void> {
 
     @Override
     protected void done() {
-        IPacket packet = new SetReadExPacket(forumId, threadId, messageIds, read);
-        packet.dispatch();
+        new SetReadExPacket(forumId, threadId, messageIds, read).dispatch();
     }
 }

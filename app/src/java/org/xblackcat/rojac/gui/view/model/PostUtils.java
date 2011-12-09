@@ -37,13 +37,13 @@ public final class PostUtils {
         return false;
     }
 
-    public static void setIgnoreUserFlag(AThreadModel<Post> model, int userId, boolean ignored) {
+    public static void setIgnoreUserFlag(SortedThreadsModel model, int userId, boolean ignored) {
         updateIgnoreUserFlag(model, model.getRoot(), userId, ignored);
 
         model.subTreeNodesChanged(model.getRoot());
     }
 
-    private static void updateIgnoreUserFlag(AThreadModel<Post> model, Post root, int userId, boolean ignored) {
+    private static void updateIgnoreUserFlag(SortedThreadsModel model, Post root, int userId, boolean ignored) {
         if (root.getMessageData().getUserId() == userId && root.isIgnoredUser() != ignored) {
             root.setMessageData(root.getMessageData().setIgnoredUser(ignored));
         }

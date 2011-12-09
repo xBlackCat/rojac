@@ -7,11 +7,11 @@ import org.xblackcat.rojac.data.MessageData;
 *
 * @author xBlackCat
 */
-class MessageDataHolder {
+public class MessageDataHolder {
     private final MessageData message;
     private final String messageBody;
 
-    MessageDataHolder(MessageData message, String messageBody) {
+    public MessageDataHolder(MessageData message, String messageBody) {
         this.message = message;
         this.messageBody = messageBody;
     }

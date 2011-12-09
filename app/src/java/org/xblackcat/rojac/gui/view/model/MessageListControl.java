@@ -8,7 +8,7 @@ import org.xblackcat.rojac.util.RojacUtils;
  * @author xBlackCat
  */
 
-abstract class MessageListControl implements IModelControl<Post> {
+abstract class MessageListControl implements IModelControl {
     private static final ThreadToolbarActions[] TOOLBAR_CONFIG = new ThreadToolbarActions[]{
             ThreadToolbarActions.PreviousPost,
             ThreadToolbarActions.NextPost,
@@ -17,7 +17,7 @@ abstract class MessageListControl implements IModelControl<Post> {
     };
 
     @Override
-    public void loadThread(AThreadModel<Post> model, Post item, Runnable postProcessor) {
+    public void loadThread(SortedThreadsModel model, Post item, Runnable postProcessor) {
         throw new NotImplementedException("The method shouldn't be used.");
     }
 
@@ -40,7 +40,7 @@ abstract class MessageListControl implements IModelControl<Post> {
     }
 
     @Override
-    public void resortModel(AThreadModel<Post> model) {
+    public void resortModel(SortedThreadsModel model) {
         // Nothing to do
     }
 
@@ -50,12 +50,12 @@ abstract class MessageListControl implements IModelControl<Post> {
     }
 
     @Override
-    public void unloadThread(AThreadModel<Post> model, Post item) {
+    public void unloadThread(SortedThreadsModel model, Post item) {
         // Nothing to do
     }
 
 
-    protected void markPostRead(AThreadModel<Post> model, int postId, boolean read) {
+    protected void markPostRead(SortedThreadsModel model, int postId, boolean read) {
         assert RojacUtils.checkThread(true);
 
         Post p = model.getRoot().getMessageById(postId);
@@ -71,5 +71,5 @@ abstract class MessageListControl implements IModelControl<Post> {
         }
     }
 
-    protected abstract void updateModel(AThreadModel<Post> model, Runnable postProcessor);
+    protected abstract void updateModel(SortedThreadsModel model, Runnable postProcessor);
 }
