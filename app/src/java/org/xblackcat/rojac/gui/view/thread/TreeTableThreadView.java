@@ -732,7 +732,7 @@ public class TreeTableThreadView extends AnItemView {
         };
 
         if (model.isInitialized()) {
-            modelControl.processPacket(model, packet, postProcessor);
+            modelControl.processPacket(model, packet, null);
         }
     }
 
