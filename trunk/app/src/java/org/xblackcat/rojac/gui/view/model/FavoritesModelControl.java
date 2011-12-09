@@ -19,14 +19,14 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-class FavoritesModelControl implements IModelControl<Post> {
-    private IModelControl<Post> delegatedControl = null;
+class FavoritesModelControl implements IModelControl {
+    private IModelControl delegatedControl = null;
     private String title = null;
 
     private ReadStatusIcon statusIcons = ReadStatusIcon.Favorite;
 
     @Override
-    public void fillModelByItemId(AThreadModel<Post> model, int itemId) {
+    public void fillModelByItemId(SortedThreadsModel model, int itemId) {
         assert RojacUtils.checkThread(true);
 
         title = "Favorite #" + itemId;
@@ -35,7 +35,7 @@ class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void loadThread(AThreadModel<Post> model, Post item, Runnable postProcessor) {
+    public void loadThread(SortedThreadsModel model, Post item, Runnable postProcessor) {
         assert RojacUtils.checkThread(true);
 
         throw new NotImplementedException("The method shouldn't be invoked.");
@@ -49,7 +49,7 @@ class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public String getTitle(AThreadModel<Post> model) {
+    public String getTitle(SortedThreadsModel model) {
         assert RojacUtils.checkThread(true);
 
         if (title == null) {
@@ -60,7 +60,7 @@ class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void processPacket(AThreadModel<Post> model, IPacket p, Runnable postProcessor) {
+    public void processPacket(SortedThreadsModel model, IPacket p, Runnable postProcessor) {
         if (delegatedControl != null) {
             delegatedControl.processPacket(model, p, postProcessor);
         }
@@ -82,14 +82,14 @@ class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void resortModel(AThreadModel<Post> model) {
+    public void resortModel(SortedThreadsModel model) {
         if (delegatedControl != null) {
             delegatedControl.resortModel(model);
         }
     }
 
     @Override
-    public Icon getTitleIcon(AThreadModel<Post> model) {
+    public Icon getTitleIcon(SortedThreadsModel model) {
         if (model.getRoot() == null) {
             return ViewIcon.Favorites;
         }
@@ -98,7 +98,7 @@ class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
+    public JPopupMenu getTitlePopup(SortedThreadsModel model, IAppControl appControl) {
         if (delegatedControl == null) {
             return null;
         } else {
@@ -119,7 +119,7 @@ class FavoritesModelControl implements IModelControl<Post> {
     }
 
     @Override
-    public void unloadThread(AThreadModel<Post> model, Post item) {
+    public void unloadThread(SortedThreadsModel model, Post item) {
         if (delegatedControl != null) {
             delegatedControl.unloadThread(model, item);
         }
@@ -136,14 +136,14 @@ class FavoritesModelControl implements IModelControl<Post> {
      * Util class to determine favorite type and the control behaviour.
      */
     private class FavoriteLoader extends RojacWorker<Void, Void> {
-        private final AThreadModel<Post> model;
+        private final SortedThreadsModel model;
         private final int favoriteId;
 
         private String name;
         private Post root;
         private FavoriteType type;
 
-        public FavoriteLoader(AThreadModel<Post> model, int favoriteId) {
+        public FavoriteLoader(SortedThreadsModel model, int favoriteId) {
             this.model = model;
             this.favoriteId = favoriteId;
         }

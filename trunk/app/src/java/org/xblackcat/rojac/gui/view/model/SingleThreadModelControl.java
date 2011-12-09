@@ -32,7 +32,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
     };
 
     @Override
-    public void fillModelByItemId(final AThreadModel<Post> model, int threadId) {
+    public void fillModelByItemId(final SortedThreadsModel model, int threadId) {
         assert RojacUtils.checkThread(true);
 
         MessageData fakeMessageData = new MessageData(threadId, 0, 0, 0, 0, null, "Loading...", 0L, 0L, false, null, false, 0, false);
@@ -64,7 +64,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public String getTitle(AThreadModel<Post> model) {
+    public String getTitle(SortedThreadsModel model) {
         assert RojacUtils.checkThread(true);
 
         // Root is Thread object
@@ -82,7 +82,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public void processPacket(final AThreadModel<Post> model, IPacket p, final Runnable postProcessor) {
+    public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
         final int forumId = model.getRoot().getForumId();
         final int threadId = model.getRoot().getMessageId();
 
@@ -192,7 +192,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
         ).dispatch(p);
     }
 
-    private void reloadThread(final AThreadModel<Post> model, final Runnable postProcessor) {
+    private void reloadThread(final SortedThreadsModel model, final Runnable postProcessor) {
         final Thread root = (Thread) model.getRoot();
 
         root.setLoadingState(LoadingState.Loading);
@@ -212,7 +212,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public Icon getTitleIcon(AThreadModel<Post> model) {
+    public Icon getTitleIcon(SortedThreadsModel model) {
         Icon threadIcon = null;
 
         Post root = model.getRoot();
@@ -230,7 +230,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public JPopupMenu getTitlePopup(AThreadModel<Post> model, IAppControl appControl) {
+    public JPopupMenu getTitlePopup(SortedThreadsModel model, IAppControl appControl) {
         Post root = model.getRoot();
 
         if (root != null) {
@@ -261,7 +261,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public void unloadThread(AThreadModel<Post> model, Post item) {
+    public void unloadThread(SortedThreadsModel model, Post item) {
         // Single-thread views shouldn't clean the thread info.
     }
 

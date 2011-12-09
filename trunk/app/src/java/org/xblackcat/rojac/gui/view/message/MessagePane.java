@@ -164,7 +164,7 @@ public class MessagePane extends JPanel {
                     return;
                 }
 
-                JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+                 JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
 
                 int oldValue = scrollBar.getValue();
                 if (!scrollBar.isVisible() || oldValue + scrollBar.getHeight() >= scrollBar.getMaximum()) {
@@ -199,7 +199,7 @@ public class MessagePane extends JPanel {
         marks.setEnabled(false);
     }
 
-    protected void fillFrame(MessageData mes, String messageBody) {
+    public void fillFrame(MessageData mes, String messageBody) {
         messageData = mes;
 
         if (mes == null) {

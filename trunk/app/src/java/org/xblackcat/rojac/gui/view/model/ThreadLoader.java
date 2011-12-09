@@ -18,9 +18,9 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
     private static final Log log = LogFactory.getLog(ThreadLoader.class);
 
     private final Thread item;
-    private AThreadModel<Post> model;
+    private SortedThreadsModel model;
 
-    public ThreadLoader(AThreadModel<Post> model, Thread item, Runnable postProcessor) {
+    public ThreadLoader(SortedThreadsModel model, Thread item, Runnable postProcessor) {
         super(postProcessor);
         this.item = item;
         this.model = model;

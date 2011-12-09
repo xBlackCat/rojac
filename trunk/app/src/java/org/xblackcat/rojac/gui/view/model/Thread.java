@@ -165,12 +165,12 @@ public class Thread extends Post {
         return threadPosts.get(messageId);
     }
 
-    void setUnreadPosts(ReadStatistic unreadPosts) {
+    public void setUnreadPosts(ReadStatistic unreadPosts) {
         this.unreadPosts = unreadPosts.getUnreadMessages();
         this.unreadReplies = unreadPosts.getUnreadReplies();
     }
 
-    void clearThread() {
+    public void clearThread() {
         lastPostDate = getLastPostDate();
         replyAmount = getPostAmount();
 
@@ -194,7 +194,7 @@ public class Thread extends Post {
         filled = false;
     }
 
-    void fillThread(Collection<MessageData> po) {
+    public void fillThread(Collection<MessageData> po) {
         List<MessageData> posts = new ArrayList<>(po);
         Collections.sort(posts, SORT_BY_PARENTS);
 
