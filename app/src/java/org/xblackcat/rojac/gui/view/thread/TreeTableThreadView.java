@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.thread;
 
+import gnu.trove.set.hash.TIntHashSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingx.JXTreeTable;
@@ -11,6 +12,8 @@ import org.xblackcat.rojac.data.NewMessageData;
 import org.xblackcat.rojac.gui.*;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
+import org.xblackcat.rojac.gui.dialog.ignoreunread.IgnoreTopicsDialog;
+import org.xblackcat.rojac.gui.dialog.ignoreunread.TopicIgnoringSelection;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ThreadState;
@@ -18,17 +21,13 @@ import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.message.MessageDataHolder;
 import org.xblackcat.rojac.gui.view.message.MessagePane;
 import org.xblackcat.rojac.gui.view.model.*;
+import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IgnoreUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IMessageAH;
-import org.xblackcat.rojac.service.storage.INewMessageAH;
-import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.MessageUtils;
-import org.xblackcat.rojac.util.RojacUtils;
-import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.ShortCutUtils;
+import org.xblackcat.rojac.service.storage.*;
+import org.xblackcat.rojac.util.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -39,9 +38,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -305,10 +303,10 @@ public class TreeTableThreadView extends AnItemView {
     }
 
     @Override
-    public void loadItem(int forumId) {
-        this.rootItemId = forumId;
+    public void loadItem(int itemId) {
+        this.rootItemId = itemId;
 
-        modelControl.fillModelByItemId(model, forumId);
+        modelControl.fillModelByItemId(model, itemId);
     }
 
     @Override
@@ -871,6 +869,84 @@ public class TreeTableThreadView extends AnItemView {
                 selectItem(modelControl.getTreeRoot(currentPost), true);
             }
 
+        }
+    }
+
+    class IgnoreUnreadAction extends AButtonAction {
+        IgnoreUnreadAction() {
+            super(ShortCut.IgnoreUnread);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Post root = model.getRoot();
+
+            assert root instanceof ForumRoot : "Only forum view can use the action";
+
+            if (Property.IGNORE_TOPICS_DIALOG_SHOW.get(true) ||
+                    !Property.IGNORE_TOPICS_SELECT_METHOD.isSet()) {
+                IgnoreTopicsDialog dlg = new IgnoreTopicsDialog(appControl.getMainFrame());
+
+                WindowsUtils.center(dlg);
+                dlg.setVisible(true);
+
+                TopicIgnoringSelection selectionType = dlg.getAcceptedSelectionType();
+
+                if (selectionType == null) {
+                    return;
+                }
+
+                Property.IGNORE_TOPICS_SELECT_METHOD.set(selectionType);
+            }
+
+            TIntHashSet threadsToIgnore = new TIntHashSet();
+            
+            for (int i = 0; i < root.getSize(); i++) {
+                Thread thread = (Thread) root.getChild(i);
+
+                if (thread.isIgnored()) {
+                    // Already ignored
+                    continue;
+                }
+                
+                switch (Property.IGNORE_TOPICS_SELECT_METHOD.get()) {
+                    case TotallyUnread:
+                        // Only topic start post read
+                        if (thread.getPostAmount() - 1 <= thread.getUnreadPosts()) {
+                            threadsToIgnore.add(thread.getMessageId());
+                        }
+                        break;
+                    case HaveUnread:
+                        // Have at least one unread post
+                        if (thread.isRead() != ReadStatus.Read) {
+                            threadsToIgnore.add(thread.getMessageId());
+                        }
+                        break;
+                }
+            }
+
+            final int[] threadIds = threadsToIgnore.toArray();
+            final int forumId = root.getForumId();
+            new RojacWorker<Void, Integer>() {
+                @Override
+                protected Void perform() throws Exception {
+                    IMiscAH miscAH = Storage.get(IMiscAH.class);
+
+                    for (int threadId : threadIds) {
+                        miscAH.addToIgnoredTopicList(threadId);
+                        publish(threadId);
+                    }
+
+                    return null;
+                }
+
+                @Override
+                protected void process(List<Integer> chunks) {
+                    for (Integer threadId : chunks) {
+                        new IgnoreUpdatedPacket(forumId, threadId, true).dispatch();
+                    }
+                }
+            }.execute();
         }
     }
 

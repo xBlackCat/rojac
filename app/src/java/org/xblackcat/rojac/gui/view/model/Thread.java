@@ -170,6 +170,10 @@ public class Thread extends Post {
         this.unreadReplies = unreadPosts.getUnreadReplies();
     }
 
+    public int getUnreadPosts() {
+        return unreadPosts;
+    }
+
     public void clearThread() {
         lastPostDate = getLastPostDate();
         replyAmount = getPostAmount();
