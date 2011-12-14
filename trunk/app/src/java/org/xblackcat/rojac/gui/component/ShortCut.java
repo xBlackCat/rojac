@@ -22,6 +22,7 @@ public enum ShortCut {
     NewThread(Message.View_Thread_Button_NewThread, KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK),
     MarkSubTreeRead(Message.Popup_View_ThreadsTree_Mark_ThreadRead, KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
     MarkWholeThreadRead(Message.Popup_View_ThreadsTree_Mark_WholeThreadRead, KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
+    IgnoreUnread(Message.View_Thread_Button_IgnoreUnread, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK),
     // Main frame related
     Synchronization(Message.MainFrame_Button_Update, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, 0),
     LoadExtraMessages(Message.MainFrame_Button_LoadMessage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, KeyEvent.SHIFT_DOWN_MASK),

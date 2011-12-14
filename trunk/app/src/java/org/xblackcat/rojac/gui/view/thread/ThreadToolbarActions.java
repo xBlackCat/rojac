@@ -55,7 +55,13 @@ public enum ThreadToolbarActions {
         JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "mark_read_thread", view.new MarkWholeThreadReadAction());
         }
-    },;
+    },
+    IgnoreUnread {
+        @Override
+        JButton makeButton(TreeTableThreadView view) {
+            return WindowsUtils.registerImageButton(view, "ignore_unread", view.new IgnoreUnreadAction());
+        }
+    };
 
     abstract JButton makeButton(TreeTableThreadView view);
 }

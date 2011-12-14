@@ -83,6 +83,7 @@ public enum Message {
     View_Thread_Button_PreviousUnread,
     View_Thread_Button_NextUnread,
     View_Thread_Button_ToThreadRoot,
+    View_Thread_Button_IgnoreUnread,
 
     // Tray texts
     // Note that the first parameter is always a version string.
@@ -228,7 +229,7 @@ public enum Message {
 
     Message_Response_Header,
 
-    // Extended mark messages dialgo related
+    // Extended mark messages dialog related
     Dialog_ExtMark_Title,
     Dialog_ExtMark_TopLine,
     Dialog_ExtMark_As,
@@ -239,6 +240,11 @@ public enum Message {
     Dialog_ExtMark_Scope_All,
     Dialog_ExtMark_Scope_Forum,
     Dialog_ExtMark_Scope_Thread,
+
+    Dialog_IgnoreTopics_Title,
+    Dialog_IgnoreTopics_TopLine,
+    Dialog_IgnoreTopics_RememberSettings,
+    Dialog_IgnoreTopics_SelectionMethod,
 
     // Updater dialog messages
     /**
@@ -387,7 +393,13 @@ public enum Message {
 
     OpenMessageMethod_MessageInTab,
     OpenMessageMethod_InThread,
-    OpenMessageMethod_InForum,;
+    OpenMessageMethod_InForum,
+
+    TopicIgnoringSelection_TotallyUnread,
+    TopicIgnoringSelection_HaveUnread,
+
+    // --------
+    ;
 
     // Constants
     static final String LOCALIZATION_BUNDLE_NAME = "messages";

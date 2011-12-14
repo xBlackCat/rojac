@@ -3,6 +3,7 @@ package org.xblackcat.rojac.service.options;
 import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
+import org.xblackcat.rojac.gui.dialog.ignoreunread.TopicIgnoringSelection;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -89,6 +90,9 @@ public final class Property<T> {
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_READ_POST = create("rojac.view.styles.read_post", TextStyle.DEFAULT);
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_PARTIAL_READ_POST = create("rojac.view.styles.partial_read_post", TextStyle.DEFAULT);
 
+    public static final Property<Boolean> IGNORE_TOPICS_DIALOG_SHOW = create("rojac.view.thread.ignore_topics.show_dialog", Boolean.TRUE);
+    public static final Property<TopicIgnoringSelection> IGNORE_TOPICS_SELECT_METHOD = create("rojac.view.thread.ignore_topics.select_method", TopicIgnoringSelection.TotallyUnread);
+
     public static final Property<Boolean> HIDE_IGNORED_TOPICS = create("rojac.view.thread.ignored.hide_ignored", Boolean.FALSE);
     public static final Property<Boolean> SKIP_IGNORED_USER_REPLY = create("rojac.view.thread.ignored.skip_ignored_users_reply", Boolean.FALSE);
     public static final Property<Boolean> SKIP_IGNORED_USER_THREAD = create("rojac.view.thread.ignored.skip_ignored_users_thread", Boolean.FALSE);
@@ -119,6 +123,11 @@ public final class Property<T> {
     public static final Property<Boolean> SYNCHRONIZER_MARK_MY_POST_READ = create("rojac.synchronizer.messages.my_as_read", Boolean.FALSE);
 
     public static final Property<Boolean> TRAY_NOTIFICATION_SYNC_COMPLETE = create("rojac.behaviour.tray_notification.on_sync_complete", Boolean.TRUE);
+
+    public static final Property<Boolean> MAINTENANCE_DELETE_OLD_MESSAGES = create("rojac.maintenance.clean_db", Boolean.FALSE);
+    public static final Property<Boolean> MAINTENANCE_DELETE_ONLY_IGNORED = create("rojac.maintenance.clean_db.only_ignored", Boolean.TRUE);
+    public static final Property<Integer> MAINTENANCE_DELETE_OLDER_THAN = create("rojac.maintenance.clean_db.older_than_days", 14);
+    public static final Property<Boolean> MAINTENANCE_DELETE_AFTER_SYNCHRONIZATION = create("rojac.maintenance.clean_db.after_sync", Boolean.TRUE);
 
     private static IOptionsService optionsService;
 
