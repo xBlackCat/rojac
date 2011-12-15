@@ -11,6 +11,7 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.IPostEvent;
 import org.xblackcat.rojac.gui.view.ViewId;
+import org.xblackcat.rojac.gui.view.model.PostUtils;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
@@ -173,7 +174,7 @@ public class MessageView extends AnItemView {
 
     @Override
     public Icon getTabTitleIcon() {
-        return messageData == null ? null : MessageUtils.getPostIcon(messageData);
+        return messageData == null ? null : PostUtils.getPostIcon(messageData);
     }
 
     @Override

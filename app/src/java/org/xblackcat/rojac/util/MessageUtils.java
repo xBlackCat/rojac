@@ -261,38 +261,6 @@ public final class MessageUtils {
         }
     }
 
-    public static Icon getPostIcon(Post post) {
-        final int userId = Property.RSDN_USER_ID.get(-1);
-
-        boolean isOwnPost = post.getMessageData().getUserId() == userId;
-        boolean isResponse = post.isReply(Property.RSDN_USER_ID.get(-1));
-        boolean hasUnreadReply = post.hasUnreadReply();
-
-        ReadStatus readStatus = post.isRead();
-
-        ReadStatusIcon iconHolder;
-
-        if (isOwnPost) {
-            if (post.getSize() > 0) {
-                iconHolder = ReadStatusIcon.HasResponse;
-            } else {
-                iconHolder = ReadStatusIcon.OwnPost;
-            }
-        } else if (isResponse) {
-            iconHolder = ReadStatusIcon.Response;
-        } else if (hasUnreadReply) {
-            iconHolder = ReadStatusIcon.HasResponse;
-        } else {
-            iconHolder = ReadStatusIcon.Post;
-        }
-
-        return iconHolder.getIcon(readStatus);
-    }
-
-    public static Icon getPostIcon(MessageData data) {
-        return getPostIcon(new Post(data, null));
-    }
-
     public static String constantCamelToPropertyName(String s) {
         if (s == null) {
             return null;
