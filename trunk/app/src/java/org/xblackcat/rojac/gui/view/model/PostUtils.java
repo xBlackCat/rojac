@@ -1,6 +1,10 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.service.options.Property;
+
+import javax.swing.*;
 
 /**
  * @author xBlackCat
@@ -51,5 +55,37 @@ public final class PostUtils {
         for (Post p : root.childrenPosts) {
             updateIgnoreUserFlag(model, p, userId, ignored);
         }
+    }
+
+    public static Icon getPostIcon(Post post) {
+        final int userId = Property.RSDN_USER_ID.get(-1);
+
+        boolean isOwnPost = post.getMessageData().getUserId() == userId;
+        boolean isResponse = post.isReply(Property.RSDN_USER_ID.get(-1));
+        boolean hasUnreadReply = post.hasUnreadReply();
+
+        ReadStatus readStatus = post.isRead();
+
+        ReadStatusIcon iconHolder;
+
+        if (isOwnPost) {
+            if (post.getPostAmount() > 0) {
+                iconHolder = ReadStatusIcon.HasResponse;
+            } else {
+                iconHolder = ReadStatusIcon.OwnPost;
+            }
+        } else if (isResponse) {
+            iconHolder = ReadStatusIcon.Response;
+        } else if (hasUnreadReply) {
+            iconHolder = ReadStatusIcon.HasResponse;
+        } else {
+            iconHolder = ReadStatusIcon.Post;
+        }
+
+        return iconHolder.getIcon(readStatus);
+    }
+
+    public static Icon getPostIcon(MessageData data) {
+        return getPostIcon(new Post(data, null));
     }
 }

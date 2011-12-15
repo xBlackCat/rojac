@@ -121,6 +121,7 @@ public final class Property<T> {
     public static final Property<Password> SYNCHRONIZER_PROXY_PASSWORD = create("rojac.synchronizer.proxy.pass", Password.class);
 
     public static final Property<Boolean> SYNCHRONIZER_MARK_MY_POST_READ = create("rojac.synchronizer.messages.my_as_read", Boolean.FALSE);
+    public static final Property<Boolean> SYNCHRONIZER_MARK_IGNORED_POST_READ = create("rojac.synchronizer.messages.ignored_as_read", Boolean.FALSE);
 
     public static final Property<Boolean> TRAY_NOTIFICATION_SYNC_COMPLETE = create("rojac.behaviour.tray_notification.on_sync_complete", Boolean.TRUE);
 
