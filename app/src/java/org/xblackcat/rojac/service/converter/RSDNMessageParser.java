@@ -18,9 +18,9 @@ public class RSDNMessageParser implements IMessageParser {
     private static final String PRE_QUOTATION_REPLACEMENT = "[span]$1>$2[/span]";
 
     private static final Pattern QUOTATION_PATTERN = Pattern.compile("^\\[span\\](.*)\\[/span\\]$", Pattern.MULTILINE);
-    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+)[\\.,!:]?$", Pattern.MULTILINE);
+    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+?)[\\.,!:]?(\\[|\\]|\\s|$)", Pattern.MULTILINE);
 
-    private static final String HYPERLINKS_REPLACEMENT = "$1[url=$2]$2[/url]";
+    private static final String HYPERLINKS_REPLACEMENT = "$1[url=$2]$2[/url]$4";
 
     private final Map<ITag, ITag[]> availableSubTags;
     private static final Comparator<ITagInfo> TAG_COMPARATOR = new Comparator<ITagInfo>() {
