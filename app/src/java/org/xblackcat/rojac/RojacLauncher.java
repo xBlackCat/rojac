@@ -1,5 +1,6 @@
 package org.xblackcat.rojac;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.MainFrame;
@@ -40,13 +41,13 @@ public final class RojacLauncher {
 
     public static void main(String... args) {
         try {
-            launch();
+            launch(args);
         } catch (Exception e) {
             log.fatal("Can not initialize Rojac", e);
         }
     }
 
-    private static void launch() throws Exception {
+    private static void launch(String[] args) throws Exception {
         Thread.setDefaultUncaughtExceptionHandler(RojacUtils.GLOBAL_EXCEPTION_HANDLER);
 
         // Load and install core Rojac settings
@@ -56,7 +57,17 @@ public final class RojacLauncher {
         Property.setOptionsService(new MultiUserOptionsService());
 
         RunChecker checker = new RunChecker();
-        if (checker.performCheck(Property.ROJAC_DEBUG_SHUTDOWN_OTHER.get())) {
+        Integer postId = null;
+        if (!ArrayUtils.isEmpty(args)) {
+            try {
+                postId = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                postId = LinkUtils.getMessageIdFromUrl(args[0]);
+            }
+        }
+
+        Boolean shutdownOthers = Property.ROJAC_DEBUG_SHUTDOWN_OTHER.get();
+        if (checker.performCheck(shutdownOthers, postId)) {
             return;
         }
 
@@ -87,7 +98,7 @@ public final class RojacLauncher {
 
         ShortCutUtils.loadShortCuts();
 
-        SwingUtilities.invokeLater(new SwingPartInitializer(checker));
+        SwingUtilities.invokeLater(new SwingPartInitializer(checker, postId));
     }
 
     private static void performShutdown(MainFrame mainFrame) {
@@ -109,9 +120,11 @@ public final class RojacLauncher {
 
     private static class SwingPartInitializer implements Runnable {
         private final RunChecker checker;
+        private final Integer postId;
 
-        public SwingPartInitializer(RunChecker checker) {
+        public SwingPartInitializer(RunChecker checker, Integer postId) {
             this.checker = checker;
+            this.postId = postId;
         }
 
         public void run() {
@@ -137,9 +150,13 @@ public final class RojacLauncher {
 
             checker.installNewInstanceListener(
                     // Show window
-                    new Runnable() {
-                        public void run() {
+                    new IRemoteAction() {
+                        public void run(Integer postId) {
                             WindowsUtils.toFront(mainFrame);
+
+                            if (postId != null) {
+                                mainFrame.openMessage(postId, Property.OPEN_MESSAGE_BEHAVIOUR_GENERAL.get());
+                            }
                         }
                     },
                     // Shutdown
@@ -230,6 +247,10 @@ public final class RojacLauncher {
                         @Override
                         public void run() {
                             mainFrame.setupScheduler();
+
+                            if (postId != null) {
+                                mainFrame.openMessage(postId, Property.OPEN_MESSAGE_BEHAVIOUR_GENERAL.get());
+                            }
                         }
                     },
                     shutDownAction,

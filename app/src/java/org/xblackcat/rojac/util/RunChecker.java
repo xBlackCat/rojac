@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -47,7 +48,7 @@ public final class RunChecker {
         this.responseShutdownString = responseShutdownString;
     }
 
-    public boolean installNewInstanceListener(Runnable process, Runnable shutdownProcess) {
+    public boolean installNewInstanceListener(IRemoteAction process, Runnable shutdownProcess) {
         final ServerSocket serverSocket;
 
         try {
@@ -71,7 +72,7 @@ public final class RunChecker {
         return true;
     }
 
-    public boolean performCheck(boolean shutdown) {
+    public boolean performCheck(boolean shutdown, Integer postId) {
         // First - check if already run
         try {
             try (Socket socket = new Socket()) {
@@ -84,7 +85,14 @@ public final class RunChecker {
                 try (DataOutputStream os = new DataOutputStream(socket.getOutputStream())) {
                     try (DataInputStream is = new DataInputStream(socket.getInputStream())) {
 
-                        os.writeUTF(shutdown ? requestShutdownString : requestString);
+                        if (shutdown) {
+                            os.writeUTF(requestShutdownString);
+                        } else {
+                            os.writeUTF(requestString);
+                            if (postId != null) {
+                                os.writeInt(postId);
+                            }
+                        }
                         os.flush();
 
                         String resp = is.readUTF();
@@ -93,7 +101,7 @@ public final class RunChecker {
                             return true;
                         } else if (responseShutdownString.equals(resp)) {
                             // Double check
-                            return performCheck(false);
+                            return performCheck(false, postId);
                         }
                     }
 
@@ -112,10 +120,10 @@ public final class RunChecker {
 
     private class LaunchListener implements Runnable {
         private final ServerSocket serverSocket;
-        private final Runnable process;
+        private final IRemoteAction process;
         private final Runnable shutdownProcess;
 
-        public LaunchListener(ServerSocket serverSocket, Runnable process, Runnable shutdownProcess) {
+        public LaunchListener(ServerSocket serverSocket, IRemoteAction process, Runnable shutdownProcess) {
             if (process == null) {
                 throw new NullPointerException("Actions after establishing connection is not defined");
             }
@@ -140,7 +148,14 @@ public final class RunChecker {
                                 try (DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
                                     String string = inputStream.readUTF();
                                     if (requestString.equals(string)) {
-                                        process.run();
+                                        Integer postId;
+                                        try {
+                                            postId = inputStream.readInt();
+                                        } catch (EOFException e) {
+                                            // Just move to front
+                                            postId = null;
+                                        }
+                                        process.run(postId);
 
                                         try (DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
                                             outputStream.writeUTF(responseString);
