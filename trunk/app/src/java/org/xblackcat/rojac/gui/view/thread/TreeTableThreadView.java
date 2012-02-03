@@ -35,10 +35,13 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.*;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -137,7 +140,7 @@ public class TreeTableThreadView extends AnItemView {
                         toolbar.setOrientation(layout.getToolbarOrientation());
                         add(toolbar, layout.getToolbarPosition());
                     } else {
-                        add(toolbar, BorderLayout.NORTH);
+                        add(toolbar, BorderLayout.WEST);
                     }
                 }
             };
@@ -228,6 +231,37 @@ public class TreeTableThreadView extends AnItemView {
                     threads.scrollRowToVisible(row + 1);
                     threads.setRowSelectionInterval(row + 1, row + 1);
                 }
+            }
+        });
+
+        // Install Drag support
+        threads.setDragEnabled(true);
+        threads.setTransferHandler(new TransferHandler() {
+            @Override
+            public int getSourceActions(JComponent c) {
+                return COPY;
+            }
+
+            @Override
+            protected Transferable createTransferable(JComponent c) {
+                if (c instanceof JXTreeTable) {
+                    JXTreeTable threads = (JXTreeTable) c;
+                    int[] rows = threads.getSelectedRows();
+
+                    if (rows == null || rows.length == 0) {
+                        return null;
+                    }
+
+                    Post[] posts = new Post[rows.length];
+
+                    for (int i = 0; i < rows.length; i++) {
+                        posts[i] = (Post) threads.getPathForRow(rows[i]).getLastPathComponent();
+                    }
+
+                    return new PostTransferable(posts);
+                }
+
+                return null;
             }
         });
 
@@ -900,7 +934,7 @@ public class TreeTableThreadView extends AnItemView {
             }
 
             TIntHashSet threadsToIgnore = new TIntHashSet();
-            
+
             for (int i = 0; i < root.getSize(); i++) {
                 Thread thread = (Thread) root.getChild(i);
 
@@ -908,7 +942,7 @@ public class TreeTableThreadView extends AnItemView {
                     // Already ignored
                     continue;
                 }
-                
+
                 switch (Property.IGNORE_TOPICS_SELECT_METHOD.get()) {
                     case TotallyUnread:
                         // Only topic start post read

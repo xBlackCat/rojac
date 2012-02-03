@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.component;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bridj.Platform;
 import org.bridj.Pointer;
 import org.bridj.cpp.com.COMRuntime;
@@ -18,6 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author xBlackCat
  */
 public class Windows7Bar {
+    private static final Log log = LogFactory.getLog(Windows7Bar.class);
+
     private static final ITaskbarList3 list;
     private static final Map<Window, Windows7Bar> taskBars = new ConcurrentHashMap<>();
 
@@ -29,8 +33,9 @@ public class Windows7Bar {
         if (Platform.isWindows7()) {
             try {
                 listBar = COMRuntime.newInstance(ITaskbarList3.class);
-            } catch (ClassNotFoundException e) {
+            } catch (Throwable e) {
                 // No classes installed
+                log.error("Can not initialize Windows 7 task bar", e);
             }
         }
         list = listBar;
