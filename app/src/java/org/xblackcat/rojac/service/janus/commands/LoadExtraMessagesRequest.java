@@ -44,6 +44,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
 
     private final TIntObjectHashMap<String> nonExistUsers = new TIntObjectHashMap<>();
     private final TIntHashSet existUsers = new TIntHashSet();
+    private final TIntHashSet nonExistRatingUsers = new TIntHashSet();
 
     LoadExtraMessagesRequest() {
         modAH = Storage.get(IModerateAH.class);
@@ -72,28 +73,30 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
 
         int[] messageIds = miscAH.getExtraMessages();
 
-        if (!ArrayUtils.isEmpty(messageIds)) {
-            while (messageIds.length > 0) {
-                final int[] portionIds = ArrayUtils.subarray(messageIds, 0, portion);
+        if (ArrayUtils.isNotEmpty(messageIds)) {
+            int offset = 0;
+            while (offset < messageIds.length) {
+                final int[] portionIds = ArrayUtils.subarray(messageIds, offset, portion);
 
                 tracker.addLodMessage(Message.Synchronize_Command_Name_ExtraPosts, Arrays.toString(portionIds));
                 loadTopics(portionIds, janusService, tracker);
 
-                messageIds = ArrayUtils.subarray(messageIds, portion, messageIds.length);
+                offset += portionIds.length;
             }
 
             miscAH.clearExtraMessages();
         }
 
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
-        if (!ArrayUtils.isEmpty(brokenTopicIds)) {
-            while (brokenTopicIds.length > 0) {
-                final int[] portionIds = ArrayUtils.subarray(brokenTopicIds, 0, portion);
+        if (ArrayUtils.isNotEmpty(brokenTopicIds)) {
+            int offset = 0;
+            while (offset < brokenTopicIds.length) {
+                final int[] portionIds = ArrayUtils.subarray(brokenTopicIds, offset, portion);
 
                 tracker.addLodMessage(Message.Synchronize_Command_Name_BrokenTopics, Arrays.toString(portionIds));
                 loadTopics(portionIds, janusService, tracker);
 
-                brokenTopicIds = ArrayUtils.subarray(brokenTopicIds, portion, brokenTopicIds.length);
+                offset += portionIds.length;
             }
         }
 
@@ -125,11 +128,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         for (JanusMessageInfo mes : newPosts.getMessages()) {
             tracker.updateProgress(count++, newPosts.getMessages().length);
 
-            // TODO: compute the flag depending on MessageData and user settings.
-            boolean read = false;
-            if (Property.SYNCHRONIZER_MARK_MY_POST_READ.get() && Property.RSDN_USER_ID.isSet()) {
-                read = mes.getUserId() == Property.RSDN_USER_ID.get();
-            }
+            boolean read = setMessageRead(mes);
 
             int mId = mes.getMessageId();
             if (mAH.isExist(mId)) {
@@ -160,8 +159,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
             }
 
             // User is not stored in caches - check database
-            User user = userAH.getUserById(userId);
-            if (user == null) {
+            if (!userAH.isUserExists(userId)) {
                 // User not exists - queue for storing
                 nonExistUsers.put(userId, mes.getUserNick());
             } else {
@@ -170,30 +168,68 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         }
 
         tracker.addLodMessage(Message.Synchronize_Message_StoreModerates);
-        count = 0;
-        for (JanusModerateInfo mod : newPosts.getModerates()) {
-            tracker.updateProgress(count++, newPosts.getModerates().length);
+        for (int i = 0, moderatesLength = moderates.length; i < moderatesLength; i++) {
+            JanusModerateInfo mod = moderates[i];
+            tracker.updateProgress(i, moderatesLength);
+
             modAH.storeModerateInfo(mod);
             updatedForums.add(mod.getForumId());
             updatedMessages.add(mod.getMessageId());
         }
 
         tracker.addLodMessage(Message.Synchronize_Message_StoreRatings);
-        count = 0;
-        for (JanusRatingInfo r : newPosts.getRatings()) {
-            tracker.updateProgress(count++, newPosts.getRatings().length);
+        for (int i = 0, ratings1Length = ratings.length; i < ratings1Length; i++) {
+            JanusRatingInfo r = ratings[i];
+            tracker.updateProgress(i, ratings1Length);
+
             rAH.storeRating(r);
             updatedMessages.add(r.getMessageId());
             ratingCacheUpdate.add(r.getMessageId());
+
+            int userId = r.getUserId();
+
+            if (existUsers.contains(userId)) {
+                // The user is already exists in DB.
+                continue;
+            }
+
+            // Do not check DB if user already queued for storing
+            if (nonExistUsers.containsKey(userId)) {
+                continue;
+            }
+
+            // User is not stored in caches - check database
+            if (userAH.isUserExists(userId)) {
+                existUsers.add(userId);
+            } else {
+                // Try to load users from JanusAT
+                nonExistRatingUsers.add(userId);
+            }
         }
     }
 
+    private boolean setMessageRead(JanusMessageInfo mes) {
+        if (Property.SYNCHRONIZER_MARK_MY_POST_READ.get() && Property.RSDN_USER_ID.isSet()) {
+            if (mes.getUserId() == Property.RSDN_USER_ID.get()) {
+                // Own posts mark as read
+                return true;
+            }
+        }
+
+        // TODO: compute the flag depending on MessageData and user settings.
+
+        return false;
+    }
+
     protected void postProcessing(IProgressTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
-        if (!nonExistUsers.isEmpty()) {
+        if (!nonExistUsers.isEmpty() || !nonExistRatingUsers.isEmpty()) {
             int[] userIds;
             if (Property.SYNCHRONIZER_LOAD_USERS.get()) {
+                TIntHashSet usersToLoad = new TIntHashSet(nonExistUsers.keys());
+                usersToLoad.addAll(nonExistRatingUsers);
+
                 // Try to loads users from JanusAT
-                userIds = nonExistUsers.keys();
+                userIds = usersToLoad.toArray();
                 try {
                     int portion = Property.SYNCHRONIZER_LOAD_USERS_PORTION.get();
                     int offset = 0;
@@ -210,6 +246,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
                             User user = users[i];
                             userAH.storeUser(user);
                             nonExistUsers.remove(user.getId());
+                            nonExistRatingUsers.remove(user.getId());
                             tracker.updateProgress(i, usersLength);
                         }
 
@@ -221,6 +258,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
             }
 
             // If we still have unresolved users?
+            // Process only users we could resolve names from posts
             if (!nonExistUsers.isEmpty()) {
                 userIds = nonExistUsers.keys();
                 tracker.addLodMessage(Message.Synchronize_Message_StoreUserInfo);
@@ -235,8 +273,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         int[] forUpdate = ratingCacheUpdate.toArray();
         tracker.addLodMessage(Message.Synchronize_Message_UpdateCaches);
         for (int i = 0, forUpdateLength = forUpdate.length; i < forUpdateLength; i++) {
-            int id = forUpdate[i];
-            MessageUtils.updateRatingCache(id);
+            MessageUtils.updateRatingCache(forUpdate[i]);
             tracker.updateProgress(i, forUpdateLength);
         }
 

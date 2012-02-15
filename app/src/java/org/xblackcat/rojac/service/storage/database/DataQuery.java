@@ -511,7 +511,11 @@ public enum DataQuery implements IPropertiable {
     /**
      * Checks is the message id exist
      */
-    IS_MESSAGES_EXIST,
+    IS_MESSAGE_EXISTS,
+    /**
+     * Checks is the message id exist
+     */
+    IS_USER_EXISTS,
     GET_BROKEN_TOPIC_IDS,
     GET_MESSAGES_NUMBER_IN_THREAD,
     GET_USER_REPLIES_NUMBER,

@@ -91,7 +91,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
     public boolean isExist(int messageId) throws StorageException {
         return helper.executeSingle(Converters.TO_BOOLEAN,
-                DataQuery.IS_MESSAGES_EXIST,
+                DataQuery.IS_MESSAGE_EXISTS,
                 messageId);
     }
 
