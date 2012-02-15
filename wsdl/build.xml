@@ -59,7 +59,7 @@
 
     <path id="rojac-wsdl.module.classpath">
         <path refid="jdk.classpath"/>
-        <fileset dir="../app/libs">
+        <fileset dir="app-libs">
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="libs">
