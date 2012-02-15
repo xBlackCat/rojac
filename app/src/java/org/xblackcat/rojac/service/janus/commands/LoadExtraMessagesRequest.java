@@ -11,6 +11,7 @@ import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.TopicMessages;
+import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.util.MessageUtils;
@@ -61,7 +62,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
             tracker.addLodMessage(Message.Synchronize_Message_GotUserId, ownUserId);
         }
 
-        postProcessing(tracker);
+        postProcessing(tracker, janusService);
 
         handler.process(new SynchronizationCompletePacket(updatedForums, updatedTopics, updatedMessages));
     }
@@ -87,7 +88,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         int[] brokenTopicIds = mAH.getBrokenTopicIds();
         if (!ArrayUtils.isEmpty(brokenTopicIds)) {
             while (brokenTopicIds.length > 0) {
-                final int[] portionIds = ArrayUtils.subarray(brokenTopicIds , 0, portion);
+                final int[] portionIds = ArrayUtils.subarray(brokenTopicIds, 0, portion);
 
                 tracker.addLodMessage(Message.Synchronize_Command_Name_BrokenTopics, Arrays.toString(portionIds));
                 loadTopics(portionIds, janusService, tracker);
@@ -187,23 +188,56 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         }
     }
 
-    protected void postProcessing(IProgressTracker tracker) throws StorageException {
-        int count = 0;
-        int[] forUpdate = ratingCacheUpdate.toArray();
-        tracker.addLodMessage(Message.Synchronize_Message_UpdateCaches);
-        for (int id : forUpdate) {
-            MessageUtils.updateRatingCache(id);
-            tracker.updateProgress(count++, forUpdate.length);
+    protected void postProcessing(IProgressTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
+        if (!nonExistUsers.isEmpty()) {
+            int[] userIds;
+            if (Property.SYNCHRONIZER_LOAD_USERS.get()) {
+                // Try to loads users from JanusAT
+                userIds = nonExistUsers.keys();
+                try {
+                    int portion = Property.SYNCHRONIZER_LOAD_USERS_PORTION.get();
+                    int offset = 0;
+
+                    while (offset < userIds.length) {
+                        int[] portionIds = ArrayUtils.subarray(userIds, offset, offset + portion);
+                        tracker.addLodMessage(Message.Synchronize_Command_Name_Users, Arrays.toString(portionIds));
+
+                        UsersList usersByIds = janusService.getUsersByIds(portionIds);
+
+                        tracker.addLodMessage(Message.Synchronize_Message_StoreFullUserInfo);
+                        User[] users = usersByIds.getUsers();
+                        for (int i = 0, usersLength = users.length; i < usersLength; i++) {
+                            User user = users[i];
+                            userAH.storeUser(user);
+                            nonExistUsers.remove(user.getId());
+                            tracker.updateProgress(i, usersLength);
+                        }
+
+                        offset += portionIds.length;
+                    }
+                } catch (JanusServiceException e) {
+                    tracker.postException(e);
+                }
+            }
+
+            // If we still have unresolved users?
+            if (!nonExistUsers.isEmpty()) {
+                userIds = nonExistUsers.keys();
+                tracker.addLodMessage(Message.Synchronize_Message_StoreUserInfo);
+                for (int i = 0, userIdsLength = userIds.length; i < userIdsLength; i++) {
+                    int userId = userIds[i];
+                    userAH.storeUserInfo(userId, nonExistUsers.get(userId));
+                    tracker.updateProgress(i, userIdsLength);
+                }
+            }
         }
 
-        count = 0;
-        if (!nonExistUsers.isEmpty()) {
-            int[] userIds = nonExistUsers.keys();
-            tracker.addLodMessage(Message.Synchronize_Message_StoreUserInfo);
-            for (int userId : userIds) {
-                userAH.storeUserInfo(userId, nonExistUsers.get(userId));
-                tracker.updateProgress(count++, userIds.length);
-            }
+        int[] forUpdate = ratingCacheUpdate.toArray();
+        tracker.addLodMessage(Message.Synchronize_Message_UpdateCaches);
+        for (int i = 0, forUpdateLength = forUpdate.length; i < forUpdateLength; i++) {
+            int id = forUpdate[i];
+            MessageUtils.updateRatingCache(id);
+            tracker.updateProgress(i, forUpdateLength);
         }
 
         mAH.updateLastPostInfo(updatedTopics.toArray());

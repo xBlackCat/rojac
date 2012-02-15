@@ -75,4 +75,6 @@ public interface IJanusService {
      * @throws JanusServiceException throws if any errors occurs.
      */
     NewData getNewData(RequestForumInfo[] requestForumInfos, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
+
+    UsersList getUsersByIds(int ... ids) throws JanusServiceException;
 }

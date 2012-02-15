@@ -191,6 +191,28 @@ public class JanusService implements IJanusService {
         return new NewData(ownId, forumRowVersion, ratingRowVersion, moderateRowVersion, newMessages, newModerate, newRating);
     }
 
+    @Override
+    public UsersList getUsersByIds(int[] ids) throws JanusServiceException {
+        log.info("Retrieve users by ids");
+        if (log.isDebugEnabled()) {
+            log.debug("Requested user ids: " + ArrayUtils.toString(ids));
+        }
+
+        UserResponse userByIds;
+        try {
+            userByIds = soap.getUserByIds(new UserByIdsRequest(userName, password, ids));
+        } catch (RemoteException e) {
+            throw new JanusServiceException("Can not obtain users from the server", e);
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Got " + userByIds.getUsers().length + " user(s).");
+        }
+
+
+        return new UsersList(userByIds);
+    }
+
     @SuppressWarnings({"unchecked"})
     public void init(boolean useCompression) throws JanusServiceException {
         try {

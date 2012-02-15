@@ -777,12 +777,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 boolean canProcess = chunks.iterator().next();
 
                 if (canProcess) {
-                    Request requests =
-                            SYNCHRONIZER_LOAD_USERS.get() ?
-                                    Request.SYNCHRONIZE_WITH_USERS :
-                                    Request.SYNCHRONIZE;
-
-                    requests.process(MainFrame.this);
+                    Request.SYNCHRONIZE.process(MainFrame.this);
                 } else {
                     int response = JLOptionPane.showConfirmDialog(
                             MainFrame.this,
