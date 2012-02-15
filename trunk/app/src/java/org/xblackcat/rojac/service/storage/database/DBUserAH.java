@@ -59,6 +59,11 @@ final class DBUserAH extends AnAH implements IUserAH {
         return helper.update(DataQuery.REMOVE_OBJECT_USER, id) > 0;
     }
 
+    @Override
+    public boolean isUserExists(int id) throws StorageException {
+        return helper.executeSingle(Converters.TO_BOOLEAN, DataQuery.IS_USER_EXISTS, id);
+    }
+
     public User getUserById(int id) throws StorageException {
         return helper.executeSingle(Converters.TO_USER, DataQuery.GET_OBJECT_USER, id);
     }

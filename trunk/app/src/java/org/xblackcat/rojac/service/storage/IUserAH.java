@@ -16,4 +16,6 @@ public interface IUserAH extends AH {
     void storeUserInfo(int userId, String userName) throws StorageException;
 
     void updateUser(User u) throws StorageException;
+
+    boolean isUserExists(int id) throws StorageException;
 }
