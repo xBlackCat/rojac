@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.message;
 
+import net.java.balloontip.BalloonTip;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -164,7 +165,7 @@ public class MessagePane extends JPanel {
                     return;
                 }
 
-                 JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+                JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
 
                 int oldValue = scrollBar.getValue();
                 if (!scrollBar.isVisible() || oldValue + scrollBar.getHeight() >= scrollBar.getMaximum()) {
@@ -324,9 +325,19 @@ public class MessagePane extends JPanel {
                 // No button - no marks.
                 return;
             }
-            RatingDialog rd = new RatingDialog(SwingUtilities.windowForComponent(MessagePane.this), messageData.getMessageId());
-            WindowsUtils.center(rd, marksButton);
-            rd.setVisible(true);
+            final RatingPane rd = new RatingPane(messageData.getMessageId());
+            LeftRightRoundedBalloonStyle tipStyle = new LeftRightRoundedBalloonStyle(5, 5, rd.getBackground(), Color.black);
+
+            RightCenterPositioner positioner = new RightCenterPositioner(15, 15);
+            final BalloonTip tip = new BalloonTip(marksButton, rd, tipStyle, positioner, null);
+
+            tip.setVisible(true);
+            rd.trackFocus(new Runnable() {
+                @Override
+                public void run() {
+                    tip.closeBalloon();
+                }
+            });
         }
     }
 

@@ -2,31 +2,29 @@ package org.xblackcat.rojac.gui.view.message;
 
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 /**
  * @author xBlackCat
  */
-class RateTableCellRenderer extends DefaultTableCellRenderer {
+class RateTableCellRenderer extends DefaultListCellRenderer {
     private static final Color LIGHT_GREEN = new Color(127, 255, 127);
 
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
         MarkItem mi = (MarkItem) value;
 
         setIcon(mi.getMark().getIcon());
         // TODO: loads colors and fonts from the options
         if (mi.isNewRate()) {
-            setBackground(LIGHT_GREEN);
-            setForeground(Color.BLACK);
+            setForeground(UIUtils.brighter(getForeground(), .99));
             setText(Property.RSDN_USER_NAME.get());
         } else {
-            setBackground(Color.WHITE);
-            setForeground(Color.BLACK);
             User u = mi.getUser();
             if (u != null) {
                 setText(u.getUserNick());
