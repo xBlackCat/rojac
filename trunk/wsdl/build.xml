@@ -22,7 +22,7 @@
     <property name="compiler.debug" value="on"/>
     <property name="compiler.generate.no.warnings" value="off"/>
     <!--<property name="compiler.args" value="-target jsr14"/>-->
-    <property name="compiler.args" value=""/>
+    <property name="compiler.args" value="-encoding UTF-8"/>
     <property name="compiler.max.memory" value="128m"/>
     <patternset id="compiler.resources">
         <include name="**/?*.properties"/>
