@@ -179,6 +179,7 @@ class ForumDecorator extends ADecorator {
                     forums = Collections.singleton(fah.getForumById(forumId));
                 }
 
+                // TODO: load all forums statistics at once!
                 for (Forum f : forums) {
                     int forumId = f.getForumId();
                     ForumStatistic statistic = getForumStatistic(forumId);

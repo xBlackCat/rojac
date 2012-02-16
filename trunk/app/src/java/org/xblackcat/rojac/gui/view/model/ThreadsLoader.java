@@ -54,6 +54,7 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
         try {
             Iterable<MessageData> threadPosts = Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId);
 
+            // TODO: optimize the loop! Move to DB all grouping stuff
             for (MessageData threadPost : threadPosts) {
                 if (hideIgnored && threadPost.isIgnored()) {
                     continue;
