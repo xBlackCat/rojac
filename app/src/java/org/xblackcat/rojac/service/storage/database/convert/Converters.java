@@ -2,6 +2,9 @@ package org.xblackcat.rojac.service.storage.database.convert;
 
 import org.xblackcat.rojac.data.*;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * @author xBlackCat
  */
@@ -27,6 +30,16 @@ public final class Converters {
     public static final IToObjectConverter<ThreadStatData> TO_THREAD_DATA = new ToThreadDataConverter();
     public static final IToObjectConverter<Favorite> TO_FAVORITE = new ToFavoriteConverter();
     public static final IToObjectConverter<AffectedMessage> TO_AFFECTED_MESSAGE_CONVERTER = new ToAffectedMessageConverter();
+    public static final IToObjectConverter<ReadStatistic> TO_READ_STATISTIC = new IToObjectConverter<ReadStatistic>() {
+        @Override
+        public ReadStatistic convert(ResultSet rs) throws SQLException {
+            int totals = rs.getInt(1);
+            int unreadPosts = rs.getInt(2);
+            int unreadReplies = rs.getInt(3);
+
+            return new ReadStatistic(unreadReplies, unreadPosts, totals);
+        }
+    };
 
     private Converters() {
     }
