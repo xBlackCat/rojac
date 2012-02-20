@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.service.storage.database.helper;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
@@ -10,13 +12,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author ASUS
  */
 
 public final class QueryHelper implements IQueryHelper {
+    private static final Log log = LogFactory.getLog(QueryHelper.class);
+
     private final IConnectionFactory connectionFactory;
 
     public QueryHelper(IConnectionFactory connectionFactory) {
@@ -27,15 +34,34 @@ public final class QueryHelper implements IQueryHelper {
     public <T> List<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
+        if (log.isTraceEnabled()) {
+            log.trace("Execute query " + RojacUtils.constructDebugSQL(sql, parameters));
+        }
+
         try {
             try (Connection con = connectionFactory.getConnection()) {
+                long start = System.currentTimeMillis();
                 try (PreparedStatement st = constructSql(con, sql, parameters)) {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Query was built in " + (System.currentTimeMillis() - start) + " ms");
+                        start = System.currentTimeMillis();
+                    }
+
                     try (ResultSet rs = st.executeQuery()) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("Query was executed in " + (System.currentTimeMillis() - start) + " ms");
+                            start = System.currentTimeMillis();
+                        }
+
+
                         List<T> res = new ArrayList<>();
                         while (rs.next()) {
                             res.add(c.convert(rs));
                         }
 
+                        if (log.isTraceEnabled()) {
+                            log.trace(res.size() + " row(s) fetched in " + (System.currentTimeMillis() - start) + " ms");
+                        }
                         return Collections.unmodifiableList(res);
                     }
                 }
@@ -43,35 +69,6 @@ public final class QueryHelper implements IQueryHelper {
 
         } catch (SQLException e) {
             throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
-        }
-    }
-
-    @SafeVarargs
-    @Override
-    public final <K, O> Map<K, O> executeSingleBatch(IToObjectConverter<O> c, String sql, K... keys) throws StorageException {
-        assert RojacUtils.checkThread(false, QueryHelper.class);
-
-        try {
-            try (Connection con = connectionFactory.getConnection()) {
-                try (PreparedStatement st = con.prepareStatement(sql)) {
-                    Map<K, O> resultMap = new HashMap<>();
-                    for (K key : keys) {
-                        fillStatement(st, key);
-
-                        try (ResultSet rs = st.executeQuery()) {
-                            if (rs.next()) {
-                                resultMap.put(key, c.convert(rs));
-                            }
-                        }
-                    }
-
-                    return Collections.unmodifiableMap(resultMap);
-                }
-
-            }
-
-        } catch (SQLException e) {
-            throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql), e);
         }
     }
 
@@ -125,10 +122,24 @@ public final class QueryHelper implements IQueryHelper {
     public int update(String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
+        if (log.isTraceEnabled()) {
+            log.trace("Execute update " + RojacUtils.constructDebugSQL(sql, parameters));
+        }
+
+
         try {
             try (Connection con = connectionFactory.getConnection()) {
+                long start = System.currentTimeMillis();
                 try (PreparedStatement st = constructSql(con, sql, parameters)) {
-                    return st.executeUpdate();
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update was prepared in " + (System.currentTimeMillis() - start) + " ms");
+                        start = System.currentTimeMillis();
+                    }
+                    int rows = st.executeUpdate();
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update was executed in " + (System.currentTimeMillis() - start) + " ms");
+                    }
+                    return rows;
                 }
 
             }
