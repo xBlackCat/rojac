@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.forumlist;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
@@ -15,9 +16,12 @@ import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -210,7 +214,7 @@ public class ForumsListView extends AView {
         packetDispatcher.dispatch(packet);
     }
 
-    private class ForumUpdater extends AForumUpdater<Void, ForumStatistic> {
+    private class ForumUpdater extends RojacWorker<Void, ForumStatistic> {
         private final int[] forumIds;
 
         public ForumUpdater(int... forumIds) {
@@ -232,24 +236,39 @@ public class ForumsListView extends AView {
                 forumsModel.updateStatistic(stat);
             }
         }
+
+        protected ForumStatistic getForumStatistic(int forumId) throws StorageException {
+            assert RojacUtils.checkThread(false);
+
+            final IForumAH fah = Storage.get(IForumAH.class);
+
+            ForumStatistic statistic = fah.getForumStatistic(forumId, Property.RSDN_USER_ID.get(-1));
+            if (statistic == null) {
+                statistic = ForumStatistic.noStatistic(forumId);
+            }
+
+            return statistic;
+        }
     }
 
-    private class ForumLoader extends AForumUpdater<Void, ForumData> {
+    private class ForumLoader extends RojacWorker<Void, ForumData> {
         @Override
         protected Void perform() throws Exception {
             final IForumAH fah = Storage.get(IForumAH.class);
 
             try {
+                TIntObjectHashMap<ForumData> data = new TIntObjectHashMap<>();
                 for (Forum f : fah.getAllForums()) {
                     int forumId = f.getForumId();
 
-                    publish(
-                            new ForumData(
-                                    f,
-                                    getForumStatistic(forumId)
-                            )
-                    );
+                    data.put(forumId, new ForumData(f));
                 }
+
+                for (ForumStatistic stat : fah.getForumsStatistic(Property.RSDN_USER_ID.get(-1))) {
+                    data.get(stat.getForumId()).setStat(stat);
+                }
+
+                publish(data.values());
             } catch (StorageException e) {
                 log.error("Can not load forum list", e);
                 throw e;

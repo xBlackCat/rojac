@@ -22,4 +22,7 @@ public class ForumStatistic extends ReadStatistic {
         return forumId;
     }
 
+    public static ForumStatistic noStatistic(int forumId) {
+        return new ForumStatistic(forumId, 0, 0, null, 0);
+    }
 }

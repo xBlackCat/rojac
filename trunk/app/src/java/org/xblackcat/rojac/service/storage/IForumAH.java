@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.data.ForumStatistic;
 
 import java.util.Collection;
 
@@ -63,4 +64,8 @@ public interface IForumAH extends AH {
     Number getLastMessageDateInForum(int forumId) throws StorageException;
 
     Number getUnreadRepliesInForum(int forumId, int userId) throws StorageException;
+
+    ForumStatistic getForumStatistic(int forumId, int userId) throws StorageException;
+
+    Collection<ForumStatistic> getForumsStatistic(int userId) throws StorageException;
 }

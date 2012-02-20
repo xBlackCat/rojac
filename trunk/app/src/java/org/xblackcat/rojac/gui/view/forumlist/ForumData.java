@@ -7,15 +7,19 @@ import org.xblackcat.rojac.data.ForumStatistic;
  * @author xBlackCat
  */
 
-class ForumData {
+public class ForumData {
     private final int forumId;
     private Forum forum;
     private ForumStatistic stat;
 
-    public ForumData(Forum forum, ForumStatistic forumStatistic) {
+    public ForumData(Forum forum) {
+        this(forum, ForumStatistic.noStatistic(forum.getForumId()));
+    }
+
+    public ForumData(Forum forum, ForumStatistic statistic) {
         this.forum = forum;
         forumId = forum.getForumId();
-        stat = forumStatistic;
+        stat = statistic;
     }
 
     public Forum getForum() {
