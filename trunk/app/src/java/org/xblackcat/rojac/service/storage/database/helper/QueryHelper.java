@@ -132,8 +132,11 @@ public final class QueryHelper implements IQueryHelper {
     public int update(String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
-        if (log.isTraceEnabled()) {
-            log.trace("Execute update " + RojacUtils.constructDebugSQL(sql, parameters));
+        String debugAnchor = Property.ROJAC_SQL_DEBUG.get() ? RojacUtils.generateHash() : null;
+        if (debugAnchor != null) {
+            if (log.isTraceEnabled()) {
+                log.trace("[" + debugAnchor + "] Execute update " + RojacUtils.constructDebugSQL(sql, parameters));
+            }
         }
 
 
@@ -141,13 +144,17 @@ public final class QueryHelper implements IQueryHelper {
             try (Connection con = connectionFactory.getConnection()) {
                 long start = System.currentTimeMillis();
                 try (PreparedStatement st = constructSql(con, sql, parameters)) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Update was prepared in " + (System.currentTimeMillis() - start) + " ms");
-                        start = System.currentTimeMillis();
+                    if (debugAnchor != null) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("[" + debugAnchor + "] Update was prepared in " + (System.currentTimeMillis() - start) + " ms");
+                            start = System.currentTimeMillis();
+                        }
                     }
                     int rows = st.executeUpdate();
-                    if (log.isTraceEnabled()) {
-                        log.trace("Update was executed in " + (System.currentTimeMillis() - start) + " ms");
+                    if (debugAnchor != null) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("[" + debugAnchor + "] Update was executed in " + (System.currentTimeMillis() - start) + " ms");
+                        }
                     }
                     return rows;
                 }
