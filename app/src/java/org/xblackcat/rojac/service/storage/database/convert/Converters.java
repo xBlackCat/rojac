@@ -40,6 +40,21 @@ public final class Converters {
             return new ReadStatistic(unreadReplies, unreadPosts, totals);
         }
     };
+    public static final IToObjectConverter<ForumStatistic> TO_FORUM_STATISTIC = new IToObjectConverter<ForumStatistic>() {
+        @Override
+        public ForumStatistic convert(ResultSet rs) throws SQLException {
+            int totals = rs.getInt(1);
+            int unreadPosts = rs.getInt(2);
+            int unreadReplies = rs.getInt(3);
+            Long lastPostDate = rs.getLong(4);
+            if (rs.wasNull()) {
+                lastPostDate = null;
+            }
+            int forumId = rs.getInt(5);
+
+            return new ForumStatistic(forumId, totals, unreadPosts, lastPostDate, unreadReplies);
+        }
+    };
 
     private Converters() {
     }

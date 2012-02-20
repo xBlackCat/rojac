@@ -7,6 +7,7 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
+import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
@@ -108,7 +109,7 @@ class ForumDecorator extends ADecorator {
     }
 
     public Collection<ALoadTask> reloadForums() {
-        return Collections.singleton((ALoadTask) new ForumLoadTask());
+        return Collections.singleton((ALoadTask) new ForumReloadTask());
     }
 
     private void updateForum(ForumStatistic stat) {
@@ -154,56 +155,71 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    private class ForumLoadTask extends AForumTask<Map<Forum, ForumStatistic>> {
-        private final Integer forumId;
-
-        private ForumLoadTask() {
-            forumId = null;
-        }
+    private class ForumLoadTask extends AForumTask<ForumData> {
+        private final int forumId;
 
         private ForumLoadTask(int forumId) {
             this.forumId = forumId;
         }
 
         @Override
-        public Map<Forum, ForumStatistic> doBackground() throws Exception {
-            Map<Forum, ForumStatistic> result = new HashMap<>();
+        public ForumData doBackground() throws Exception {
             try {
-                Collection<Forum> forums;
+                Forum f;
 
                 final IForumAH fah = Storage.get(IForumAH.class);
 
-                if (forumId == null) {
-                    forums = fah.getAllForums();
-                } else {
-                    forums = Collections.singleton(fah.getForumById(forumId));
-                }
+                f = fah.getForumById(forumId);
 
-                // TODO: load all forums statistics at once!
-                for (Forum f : forums) {
-                    int forumId = f.getForumId();
-                    ForumStatistic statistic = getForumStatistic(forumId);
+                int forumId = f.getForumId();
+                ForumStatistic statistic = getForumStatistic(forumId);
 
-                    result.put(f, statistic);
-                }
+                return new ForumData(f, statistic);
             } catch (StorageException e) {
                 log.error("Can not load forum list", e);
                 throw e;
             }
-
-            return result;
         }
 
         @Override
-        public void doSwing(Map<Forum, ForumStatistic> data) {
-            if (forumId == null) {
-                // Reload all forums
-                modelControl.removeAllChildren(subscribedForums);
-                modelControl.removeAllChildren(notSubscribedForums);
-            }
+        public void doSwing(ForumData data) {
+            updateForum(data.getForum(), data.getStat());
+        }
+    }
 
-            for (Map.Entry<Forum, ForumStatistic> fd : data.entrySet()) {
-                updateForum(fd.getKey(), fd.getValue());
+    private class ForumReloadTask extends ALoadTask<Collection<ForumData>> {
+        @Override
+        public Collection<ForumData> doBackground() throws Exception {
+            final IForumAH fah = Storage.get(IForumAH.class);
+
+            try {
+                Map<Integer, ForumData> data = new HashMap<>();
+                for (Forum f : fah.getAllForums()) {
+                    int forumId = f.getForumId();
+
+                    data.put(forumId, new ForumData(f));
+                }
+
+                Collection<ForumStatistic> forumsStatistic = fah.getForumsStatistic(Property.RSDN_USER_ID.get(-1));
+                for (ForumStatistic stat : forumsStatistic) {
+                    data.get(stat.getForumId()).setStat(stat);
+                }
+
+                return data.values();
+            } catch (StorageException e) {
+                log.error("Can not load forum list", e);
+                throw e;
+            }
+        }
+
+        @Override
+        public void doSwing(Collection<ForumData> data) {
+            // Reload all forums
+            modelControl.removeAllChildren(subscribedForums);
+            modelControl.removeAllChildren(notSubscribedForums);
+
+            for (ForumData fd : data) {
+                updateForum(fd.getForum(), fd.getStat());
             }
         }
     }

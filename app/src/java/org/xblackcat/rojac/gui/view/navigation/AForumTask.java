@@ -16,25 +16,6 @@ abstract class AForumTask<V> extends ALoadTask<V> {
 
         final IForumAH fah = Storage.get(IForumAH.class);
 
-        Number totalMessages = fah.getMessagesInForum(forumId);
-        Number unreadMessages = fah.getUnreadMessagesInForum(forumId);
-        Number lastPostDate = fah.getLastMessageDateInForum(forumId);
-
-        Property<Integer> rsdnUserId = Property.RSDN_USER_ID;
-        int unreadReplies;
-
-        if (rsdnUserId.isSet()) {
-            unreadReplies = fah.getUnreadRepliesInForum(forumId, rsdnUserId.get()).intValue();
-        } else {
-            unreadReplies = 0;
-        }
-
-        return new ForumStatistic(
-                forumId,
-                totalMessages.intValue(),
-                unreadMessages.intValue(),
-                lastPostDate == null ? null : lastPostDate.longValue(),
-                unreadReplies
-        );
+        return fah.getForumStatistic(forumId, Property.RSDN_USER_ID.get(-1));
     }
 }

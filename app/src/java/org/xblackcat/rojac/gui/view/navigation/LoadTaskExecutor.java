@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import java.util.Collection;
@@ -10,6 +12,8 @@ import java.util.List;
  * @author xBlackCat
  */
 class LoadTaskExecutor extends RojacWorker<Void, LoadTaskExecutor.TaskResult<?>> {
+    private static final Log log = LogFactory.getLog(LoadTaskExecutor.class);
+
     private final Collection<ALoadTask> tasks = new LinkedList<>();
 
     @SafeVarargs
@@ -29,7 +33,7 @@ class LoadTaskExecutor extends RojacWorker<Void, LoadTaskExecutor.TaskResult<?>>
 
                 publish(taskResult);
             } catch (Exception e) {
-                // TODO: do something
+                log.error("Can not perform load task", e);
             }
         }
 
