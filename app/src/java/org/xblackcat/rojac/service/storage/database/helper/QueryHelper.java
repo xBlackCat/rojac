@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database.helper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
@@ -34,23 +35,30 @@ public final class QueryHelper implements IQueryHelper {
     public <T> List<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
-        if (log.isTraceEnabled()) {
-            log.trace("Execute query " + RojacUtils.constructDebugSQL(sql, parameters));
+        String debugAnchor = Property.ROJAC_SQL_DEBUG.get() ? RojacUtils.generateHash() : null;
+        if (debugAnchor != null) {
+            if (log.isTraceEnabled()) {
+                log.trace("[" + debugAnchor + "] Execute query " + RojacUtils.constructDebugSQL(sql, parameters));
+            }
         }
 
         try {
             try (Connection con = connectionFactory.getConnection()) {
                 long start = System.currentTimeMillis();
                 try (PreparedStatement st = constructSql(con, sql, parameters)) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Query was built in " + (System.currentTimeMillis() - start) + " ms");
-                        start = System.currentTimeMillis();
+                    if (debugAnchor != null) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("[" + debugAnchor + "] Query was built in " + (System.currentTimeMillis() - start) + " ms");
+                            start = System.currentTimeMillis();
+                        }
                     }
 
                     try (ResultSet rs = st.executeQuery()) {
-                        if (log.isTraceEnabled()) {
-                            log.trace("Query was executed in " + (System.currentTimeMillis() - start) + " ms");
-                            start = System.currentTimeMillis();
+                        if (debugAnchor != null) {
+                            if (log.isTraceEnabled()) {
+                                log.trace("[" + debugAnchor + "] Query was executed in " + (System.currentTimeMillis() - start) + " ms");
+                                start = System.currentTimeMillis();
+                            }
                         }
 
 
@@ -59,8 +67,10 @@ public final class QueryHelper implements IQueryHelper {
                             res.add(c.convert(rs));
                         }
 
-                        if (log.isTraceEnabled()) {
-                            log.trace(res.size() + " row(s) fetched in " + (System.currentTimeMillis() - start) + " ms");
+                        if (debugAnchor != null) {
+                            if (log.isTraceEnabled()) {
+                                log.trace("[" + debugAnchor + "] " + res.size() + " row(s) fetched in " + (System.currentTimeMillis() - start) + " ms");
+                            }
                         }
                         return Collections.unmodifiableList(res);
                     }

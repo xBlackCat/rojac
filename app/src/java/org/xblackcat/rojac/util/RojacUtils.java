@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -515,6 +516,13 @@ public final class RojacUtils {
         if (!folder.isDirectory()) {
             throw new RojacInitializationException("Target path '" + folder.getAbsolutePath() + "' is not a folder.");
         }
+    }
+
+    public static String generateHash() {
+        SecureRandom rnd = new SecureRandom();
+        byte[] str = new byte[4];
+        rnd.nextBytes(str);
+        return String.format("%h", new Object[]{str});
     }
 
     private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
