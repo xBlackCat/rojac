@@ -41,8 +41,8 @@ class PersonalDecorator extends ADecorator {
         };
     }
 
-    public Collection<ALoadTask> reloadInfo(boolean fullReload) {
-        Collection<ALoadTask> tasks = new LinkedList<>();
+    public Collection<ILoadTask> reloadInfo(boolean fullReload) {
+        Collection<ILoadTask> tasks = new LinkedList<>();
         Integer userId = Property.RSDN_USER_ID.get();
         if (userId != null) {
             tasks.add(new AnswersReloadTask(userId));
@@ -63,8 +63,8 @@ class PersonalDecorator extends ADecorator {
         return Collections.singleton(new IgnoredReloadTask());
     }
 
-    public Collection<ALoadTask> alterReadStatus(MessageData post, boolean read) {
-        Collection<ALoadTask> tasks = new ArrayList<>(4);
+    public Collection<ILoadTask> alterReadStatus(MessageData post, boolean read) {
+        Collection<ILoadTask> tasks = new ArrayList<>(4);
         if (post.getParentUserId() == Property.RSDN_USER_ID.get()) {
             tasks.add(new AdjustResponsesTask(myResponses, read ? -1 : 1));
         }
@@ -78,7 +78,7 @@ class PersonalDecorator extends ADecorator {
         }
 
         @Override
-        void doSwing(Void data) {
+        public void doSwing(Void data) {
             ReadStatistic  stat = item.getStat();
             int unread = stat.getUnreadMessages() + adjustDelta;
             if (unread < 0) {
@@ -94,7 +94,7 @@ class PersonalDecorator extends ADecorator {
         }
     }
 
-    private class AnswersReloadTask extends ALoadTask<ReadStatistic> {
+    private class AnswersReloadTask implements ILoadTask<ReadStatistic> {
         private final int userId;
 
         private AnswersReloadTask(int userId) {
@@ -102,21 +102,21 @@ class PersonalDecorator extends ADecorator {
         }
 
         @Override
-        ReadStatistic doBackground() throws Exception {
+        public ReadStatistic doBackground() throws Exception {
             IStatisticAH statisticAH = Storage.get(IStatisticAH.class);
             return statisticAH.getUserRepliesStat(userId);
         }
 
         @Override
-        void doSwing(ReadStatistic data) {
+        public void doSwing(ReadStatistic data) {
             myResponses.setStat(data);
             modelControl.itemUpdated(myResponses);
         }
     }
 
-    private class OutboxReloadTask extends ALoadTask<ReadStatistic> {
+    private class OutboxReloadTask implements ILoadTask<ReadStatistic> {
         @Override
-        ReadStatistic doBackground() throws Exception {
+        public ReadStatistic doBackground() throws Exception {
             Collection<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages();
             int toSend = 0;
             for (NewMessage nm : newMessages) {
@@ -129,7 +129,7 @@ class PersonalDecorator extends ADecorator {
         }
 
         @Override
-        void doSwing(ReadStatistic data) {
+        public void doSwing(ReadStatistic data) {
             if (data != null) {
                 outBox.setStat(data);
 
@@ -138,14 +138,14 @@ class PersonalDecorator extends ADecorator {
         }
     }
 
-    private class IgnoredReloadTask extends ALoadTask<Integer> {
+    private class IgnoredReloadTask implements ILoadTask<Integer> {
         @Override
-        Integer doBackground() throws Exception {
+        public Integer doBackground() throws Exception {
             return Storage.get(IMiscAH.class).getAmountOfIgnoredTopics();
         }
 
         @Override
-        void doSwing(Integer data) {
+        public void doSwing(Integer data) {
             if (data != null) {
                 ignoredTopics.setStat(new ReadStatistic(0, 0, data));
 

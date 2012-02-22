@@ -101,9 +101,9 @@ class NavigationModel implements TreeTableModel, IModelControl {
             new IPacketProcessor<SubscriptionChangedPacket>() {
                 @Override
                 public void process(SubscriptionChangedPacket p) {
-                    Collection<ALoadTask> tasks = new ArrayList<>();
+                    Collection<ILoadTask> tasks = new ArrayList<>();
                     for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
-                        ALoadTask task = forumDecorator.updateSubscribed(s.getForumId(), s.isSubscribed());
+                        ILoadTask task = forumDecorator.updateSubscribed(s.getForumId(), s.isSubscribed());
                         if (task != null) {
                             tasks.add(task);
                         }
