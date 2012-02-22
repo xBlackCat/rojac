@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import gnu.trove.impl.sync.TSynchronizedIntObjectMap;
+import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -7,14 +9,17 @@ import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
-import org.xblackcat.rojac.gui.view.forumlist.ForumData;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.util.RojacUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Helper class to manage forum lists in Navigation view
@@ -42,7 +47,9 @@ class ForumDecorator extends ADecorator {
     private final AGroupItem<ForumItem> subscribedForums;
     private final AGroupItem<ForumItem> notSubscribedForums;
 
-    private final TIntObjectHashMap<ForumItem> viewedForums = new TIntObjectHashMap<>();
+    private final TIntObjectMap<ForumItem> viewedForums = new TIntObjectHashMap<>();
+
+    private final TIntObjectMap<Forum> forumsCache = new TSynchronizedIntObjectMap<>(new TIntObjectHashMap<Forum>());
 
     public ForumDecorator(IModelControl modelControl) {
         super(modelControl);
@@ -59,7 +66,9 @@ class ForumDecorator extends ADecorator {
         };
     }
 
-    void updateForum(Forum forum, ForumStatistic statistic) {
+    void updateForum(ForumStatistic statistic) {
+        Forum forum = forumsCache.get(statistic.getForumId());
+
         boolean subscribed = forum.isSubscribed();
         AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
 
@@ -78,22 +87,31 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    public ALoadTask updateSubscribed(int forumId, boolean subscribed) {
-        ForumItem item = viewedForums.get(forumId);
-        if (item == null) {
+    public ILoadTask updateSubscribed(int forumId, boolean subscribed) {
+        Forum forum = forumsCache.get(forumId);
+
+        if (forum == null) {
             // Forum not shown yet - load from DB
             return new ForumLoadTask(forumId);
         } else {
-            Forum forum = item.getForum().setSubscribed(subscribed);
-            ForumStatistic statistic = item.getStatistic();
+            forum = forum.setSubscribed(subscribed);
+            forumsCache.put(forum.getForumId(), forum);
 
-            updateForum(forum, statistic);
-            return null;
+            ForumItem item = viewedForums.get(forumId);
+
+            if (item != null) {
+                ForumStatistic statistic = item.getStatistic();
+
+                updateForum(statistic);
+                return null;
+            } else {
+                return new ForumUpdateTask(forumId);
+            }
         }
     }
 
-    Collection<ALoadTask> loadForumStatistic(int... forumIds) {
-        Collection<ALoadTask> tasks = new ArrayList<>(forumIds.length);
+    Collection<ILoadTask> loadForumStatistic(int... forumIds) {
+        Collection<ILoadTask> tasks = new ArrayList<>(forumIds.length);
 
         for (int forumId : forumIds) {
             if (viewedForums.containsKey(forumId)) {
@@ -108,11 +126,11 @@ class ForumDecorator extends ADecorator {
         return tasks;
     }
 
-    public Collection<ALoadTask> reloadForums() {
-        return Collections.singleton((ALoadTask) new ForumReloadTask());
+    public Collection<ForumReloadTask> reloadForums() {
+        return Collections.singleton(new ForumReloadTask());
     }
 
-    private void updateForum(ForumStatistic stat) {
+    private void updateForumStatistic(ForumStatistic stat) {
         ForumItem navItem = viewedForums.get(stat.getForumId());
         if (navItem != null) {
             navItem.setStatistic(stat);
@@ -120,25 +138,25 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    public Collection<ALoadTask> alterReadStatus(MessageData messageData, boolean read) {
+    public Collection<ILoadTask<Void>> alterReadStatus(MessageData messageData, boolean read) {
         ForumItem navItem = viewedForums.get(messageData.getForumId());
         if (navItem != null) {
             Integer ownId = Property.RSDN_USER_ID.get();
-            ALoadTask<Void> task = new ForumUnreadAdjustTask(
+            ILoadTask<Void> task = new ForumUnreadAdjustTask(
                     navItem,
                     read ? -1 : 1,
                     messageData.getParentUserId() == ownId && messageData.getUserId() != ownId
             );
 
-            return Collections.singleton((ALoadTask) task);
+            return Collections.singleton(task);
         }
 
         return Collections.emptySet();
     }
 
 
-    private class ForumUpdateTask extends AForumTask<ForumStatistic> {
-        private final int forumId;
+    private class ForumUpdateTask implements ILoadTask<ForumStatistic> {
+        protected final int forumId;
 
         protected ForumUpdateTask(int forumId) {
             this.forumId = forumId;
@@ -146,7 +164,17 @@ class ForumDecorator extends ADecorator {
 
         @Override
         public ForumStatistic doBackground() throws Exception {
-            return getForumStatistic(forumId);
+            assert RojacUtils.checkThread(false);
+
+            final IForumAH fah = Storage.get(IForumAH.class);
+
+            ForumStatistic forumStatistic = fah.getForumStatistic(forumId, Property.RSDN_USER_ID.get(-1));
+
+            if (forumStatistic == null) {
+                forumStatistic = ForumStatistic.noStatistic(forumId);
+            }
+
+            return forumStatistic;
         }
 
         @Override
@@ -155,15 +183,13 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    private class ForumLoadTask extends AForumTask<ForumData> {
-        private final int forumId;
-
-        private ForumLoadTask(int forumId) {
-            this.forumId = forumId;
+    private class ForumLoadTask extends ForumUpdateTask {
+        protected ForumLoadTask(int forumId) {
+            super(forumId);
         }
 
         @Override
-        public ForumData doBackground() throws Exception {
+        public ForumStatistic doBackground() throws Exception {
             try {
                 Forum f;
 
@@ -171,57 +197,61 @@ class ForumDecorator extends ADecorator {
 
                 f = fah.getForumById(forumId);
 
-                int forumId = f.getForumId();
-                ForumStatistic statistic = getForumStatistic(forumId);
+                if (f == null) {
+                    return null;
+                }
 
-                return new ForumData(f, statistic);
+                forumsCache.put(forumId, f);
+
+                return super.doBackground();
             } catch (StorageException e) {
                 log.error("Can not load forum list", e);
                 throw e;
             }
-        }
-
-        @Override
-        public void doSwing(ForumData data) {
-            updateForum(data.getForum(), data.getStat());
         }
     }
 
-    private class ForumReloadTask extends ALoadTask<Collection<ForumData>> {
+    private class ForumReloadTask implements ILoadTask<Collection<Forum>> {
         @Override
-        public Collection<ForumData> doBackground() throws Exception {
+        public Collection<Forum> doBackground() throws Exception {
             final IForumAH fah = Storage.get(IForumAH.class);
 
-            try {
-                Map<Integer, ForumData> data = new HashMap<>();
-                for (Forum f : fah.getAllForums()) {
-                    int forumId = f.getForumId();
-
-                    data.put(forumId, new ForumData(f));
-                }
-
-                Collection<ForumStatistic> forumsStatistic = fah.getForumsStatistic(Property.RSDN_USER_ID.get(-1));
-                for (ForumStatistic stat : forumsStatistic) {
-                    data.get(stat.getForumId()).setStat(stat);
-                }
-
-                return data.values();
-            } catch (StorageException e) {
-                log.error("Can not load forum list", e);
-                throw e;
-            }
+            return fah.getAllForums();
         }
 
         @Override
-        public void doSwing(Collection<ForumData> data) {
+        public void doSwing(Collection<Forum> data) {
             // Reload all forums
             modelControl.removeAllChildren(subscribedForums);
             modelControl.removeAllChildren(notSubscribedForums);
+            viewedForums.clear();
 
-            for (ForumData fd : data) {
-                updateForum(fd.getForum(), fd.getStat());
+            for (Forum forum : data) {
+                forumsCache.put(forum.getForumId(), forum);
+
+                boolean subscribed = forum.isSubscribed();
+                AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
+
+                int forumId = forum.getForumId();
+                ForumItem forumItem = new ForumItem(parent, forum, ForumStatistic.noStatistic(forumId));
+
+                modelControl.addChild(parent, forumItem);
+                viewedForums.put(forumId, forumItem);
             }
+
+            Collection<ILoadTask<ForumStatistic>> loadStatTasks = new ArrayList<>(forumsCache.size());
+
+            for (ForumItem i : subscribedForums.children) {
+                loadStatTasks.add(new ForumUpdateTask(i.getForum().getForumId()));
+            }
+
+            for (ForumItem i : notSubscribedForums.children) {
+                loadStatTasks.add(new ForumUpdateTask(i.getForum().getForumId()));
+            }
+
+            new LoadTaskExecutor(loadStatTasks).execute();
         }
+
     }
 
     private class ForumUnreadAdjustTask extends AnAdjustUnreadTask<ForumItem> {

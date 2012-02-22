@@ -33,13 +33,13 @@ class FavoritesDecorator extends ADecorator {
         };
     }
 
-    Collection<ALoadTask> reloadFavorites() {
-        return Collections.singleton((ALoadTask) new FavoritesLoadTask());
+    Collection<FavoritesLoadTask> reloadFavorites() {
+        return Collections.singleton(new FavoritesLoadTask());
     }
 
-    Collection<ALoadTask> updateFavoriteData(FavoriteType type) {
+    Collection<ILoadTask> updateFavoriteData(FavoriteType type) {
         int favoritesSize = favorites.getChildCount();
-        Collection<ALoadTask> tasks = new ArrayList<>(favoritesSize);
+        Collection<ILoadTask> tasks = new ArrayList<>(favoritesSize);
 
         int i = 0;
         while (i < favoritesSize) {
@@ -54,9 +54,9 @@ class FavoritesDecorator extends ADecorator {
         return tasks;
     }
 
-    public Collection<ALoadTask> alterReadStatus(MessageData post, boolean read) {
+    public Collection<ILoadTask> alterReadStatus(MessageData post, boolean read) {
         int favoritesSize = favorites.getChildCount();
-        Collection<ALoadTask> tasks = new ArrayList<>(favoritesSize);
+        Collection<ILoadTask> tasks = new ArrayList<>(favoritesSize);
 
         int i = 0;
         while (i < favoritesSize) {
@@ -103,7 +103,7 @@ class FavoritesDecorator extends ADecorator {
         }
     }
 
-    private class FavoriteStatLoadTask extends ALoadTask<Stat> {
+    private class FavoriteStatLoadTask implements ILoadTask<Stat> {
         private final FavoriteItem item;
 
         public FavoriteStatLoadTask(FavoriteItem item) {
@@ -137,7 +137,7 @@ class FavoritesDecorator extends ADecorator {
     /**
      * @author xBlackCat
      */
-    private class FavoritesLoadTask extends ALoadTask<Collection<FavoriteItem>> {
+    private class FavoritesLoadTask implements ILoadTask<Collection<FavoriteItem>> {
         @Override
         public Collection<FavoriteItem> doBackground() throws Exception {
             Collection<Favorite> favorites = Storage.get(IFavoriteAH.class).getFavorites();

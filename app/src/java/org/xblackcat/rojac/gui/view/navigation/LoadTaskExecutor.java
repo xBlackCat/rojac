@@ -14,17 +14,17 @@ import java.util.List;
 class LoadTaskExecutor extends RojacWorker<Void, LoadTaskExecutor.TaskResult<?>> {
     private static final Log log = LogFactory.getLog(LoadTaskExecutor.class);
 
-    private final Collection<ALoadTask> tasks = new LinkedList<>();
+    private final Collection<ILoadTask> tasks = new LinkedList<>();
 
     @SafeVarargs
-    LoadTaskExecutor(Collection<? extends ALoadTask>... otherTasks) {
-        for (Collection<? extends ALoadTask> tasks : otherTasks) {
+    LoadTaskExecutor(Collection<? extends ILoadTask>... otherTasks) {
+        for (Collection<? extends ILoadTask> tasks : otherTasks) {
             this.tasks.addAll(tasks);
         }
     }
 
     public Void perform() {
-        for (final ALoadTask task : tasks) {
+        for (final ILoadTask task : tasks) {
             try {
                 final Object result = task.doBackground();
 
@@ -48,10 +48,10 @@ class LoadTaskExecutor extends RojacWorker<Void, LoadTaskExecutor.TaskResult<?>>
     }
 
     protected static final class TaskResult<T> {
-        final ALoadTask<T> task;
+        final ILoadTask<T> task;
         final T result;
 
-        private TaskResult(ALoadTask<T> task, T result) {
+        private TaskResult(ILoadTask<T> task, T result) {
             this.result = result;
             this.task = task;
         }
