@@ -5,24 +5,15 @@ package org.xblackcat.rojac.data;
  */
 
 public class ForumStatistic extends ReadStatistic {
-    private final int forumId;
+    public static final ForumStatistic NO_STAT = new ForumStatistic(0, 0, null, 0);
     private final Long lastMessageDate;
 
-    public ForumStatistic(int forumId, int totalMessages, int unreadMessages, Long lastMessageDate, int unreadReplies) {
+    public ForumStatistic(int totalMessages, int unreadMessages, Long lastMessageDate, int unreadReplies) {
         super(unreadReplies, unreadMessages, totalMessages);
-        this.forumId = forumId;
         this.lastMessageDate = lastMessageDate;
     }
 
     public Long getLastMessageDate() {
         return lastMessageDate;
-    }
-
-    public int getForumId() {
-        return forumId;
-    }
-
-    public static ForumStatistic noStatistic(int forumId) {
-        return new ForumStatistic(forumId, 0, 0, null, 0);
     }
 }

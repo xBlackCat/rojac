@@ -50,9 +50,8 @@ public final class Converters {
             if (rs.wasNull()) {
                 lastPostDate = null;
             }
-            int forumId = rs.getInt(5);
 
-            return new ForumStatistic(forumId, totals, unreadPosts, lastPostDate, unreadReplies);
+            return new ForumStatistic(totals, unreadPosts, lastPostDate, unreadReplies);
         }
     };
 
