@@ -82,30 +82,4 @@ final class DBForumAH extends AnAH implements IForumAH {
         return helper.executeSingle(Converters.TO_FORUM_STATISTIC, DataQuery.GET_FORUM_STATISTIC, userId, forumId);
     }
 
-    @Override
-    public Collection<ForumStatistic> getForumsStatistic(int userId) throws StorageException {
-        return helper.execute(Converters.TO_FORUM_STATISTIC, DataQuery.GET_FORUMS_STATISTIC, userId);
-    }
-
-    @Override
-    public Number getUnreadMessagesInForum(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_NUMBER,
-                DataQuery.GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
-                forumId);
-    }
-
-    @Override
-    public Number getUnreadRepliesInForum(int forumId, int userId) throws StorageException {
-        return helper.executeSingle(Converters.TO_NUMBER,
-                DataQuery.GET_UNREAD_REPLIES_NUMBER_IN_FORUM,
-                forumId,
-                userId);
-    }
-
-    @Override
-    public Number getLastMessageDateInForum(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_NUMBER,
-                DataQuery.GET_LAST_MESSAGE_DATE_IN_FORUM,
-                forumId);
-    }
 }

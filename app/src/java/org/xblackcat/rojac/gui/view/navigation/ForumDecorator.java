@@ -66,20 +66,19 @@ class ForumDecorator extends ADecorator {
         };
     }
 
-    void updateForum(ForumStatistic statistic) {
-        Forum forum = forumsCache.get(statistic.getForumId());
+    void updateForum(int forumId, ForumStatistic statistic) {
+        Forum forum = forumsCache.get(forumId);
 
         boolean subscribed = forum.isSubscribed();
         AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
 
-        int forumId = forum.getForumId();
         ForumItem forumItem = new ForumItem(parent, forum, statistic);
 
         // Remove forum from list if any
         modelControl.safeRemoveChild(subscribedForums, forumItem);
         modelControl.safeRemoveChild(notSubscribedForums, forumItem);
 
-        if (statistic.getTotalMessages() > 0 || subscribed) {
+        if (statistic == null || statistic.getTotalMessages() > 0 || subscribed) {
             modelControl.addChild(parent, forumItem);
             viewedForums.put(forumId, forumItem);
         } else {
@@ -102,7 +101,7 @@ class ForumDecorator extends ADecorator {
             if (item != null) {
                 ForumStatistic statistic = item.getStatistic();
 
-                updateForum(statistic);
+                updateForum(forumId, statistic);
                 return null;
             } else {
                 return new ForumUpdateTask(forumId);
@@ -128,14 +127,6 @@ class ForumDecorator extends ADecorator {
 
     public Collection<ForumReloadTask> reloadForums() {
         return Collections.singleton(new ForumReloadTask());
-    }
-
-    private void updateForumStatistic(ForumStatistic stat) {
-        ForumItem navItem = viewedForums.get(stat.getForumId());
-        if (navItem != null) {
-            navItem.setStatistic(stat);
-            modelControl.itemUpdated(navItem);
-        }
     }
 
     public Collection<ILoadTask<Void>> alterReadStatus(MessageData messageData, boolean read) {
@@ -171,7 +162,7 @@ class ForumDecorator extends ADecorator {
             ForumStatistic forumStatistic = fah.getForumStatistic(forumId, Property.RSDN_USER_ID.get(-1));
 
             if (forumStatistic == null) {
-                forumStatistic = ForumStatistic.noStatistic(forumId);
+                forumStatistic = ForumStatistic.NO_STAT;
             }
 
             return forumStatistic;
@@ -179,7 +170,7 @@ class ForumDecorator extends ADecorator {
 
         @Override
         public void doSwing(ForumStatistic data) {
-            updateForum(data);
+            updateForum(forumId, data);
         }
     }
 
@@ -233,7 +224,7 @@ class ForumDecorator extends ADecorator {
                 AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
 
                 int forumId = forum.getForumId();
-                ForumItem forumItem = new ForumItem(parent, forum, ForumStatistic.noStatistic(forumId));
+                ForumItem forumItem = new ForumItem(parent, forum, null);
 
                 modelControl.addChild(parent, forumItem);
                 viewedForums.put(forumId, forumItem);
@@ -265,8 +256,11 @@ class ForumDecorator extends ADecorator {
         @Override
         public void doSwing(Void data) {
             ForumStatistic statistic = item.getStatistic();
+            if (statistic == null) {
+                return;
+            }
+
             statistic = new ForumStatistic(
-                    statistic.getForumId(),
                     statistic.getTotalMessages(),
                     statistic.getUnreadMessages() + adjustDelta,
                     statistic.getLastMessageDate(),

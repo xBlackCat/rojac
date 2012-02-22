@@ -35,6 +35,10 @@ class ForumItem extends AnItem {
 
     @Override
     Icon getIcon() {
+        if (statistic == null) {
+            return ReadStatusIcon.Forum.getIcon(ReadStatus.Read);
+        }
+
         ReadStatusIcon statusIcon = statistic.getUnreadReplies() > 0 ? ReadStatusIcon.ForumWithReply : ReadStatusIcon.Forum;
         return statusIcon.getIcon(getReadStatus());
     }
@@ -58,7 +62,7 @@ class ForumItem extends AnItem {
 
     @Override
     String getBriefInfo() {
-        return statistic.asString();
+        return statistic == null ? "---" : statistic.asString();
     }
 
     @Override
@@ -68,7 +72,7 @@ class ForumItem extends AnItem {
 
     @Override
     boolean isExuded() {
-        return statistic.getUnreadMessages() > 0;
+        return statistic != null && statistic.getUnreadMessages() > 0;
     }
 
     Forum getForum() {
