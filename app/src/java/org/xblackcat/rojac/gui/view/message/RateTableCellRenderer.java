@@ -11,15 +11,13 @@ import java.awt.*;
  * @author xBlackCat
  */
 class RateTableCellRenderer extends DefaultListCellRenderer {
-    private static final Color LIGHT_GREEN = new Color(127, 255, 127);
-
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
         MarkItem mi = (MarkItem) value;
 
-        setIcon(mi.getMark().getIcon());
+        setIcon(mi.getMarkIcons());
         // TODO: loads colors and fonts from the options
         if (mi.isNewRate()) {
             setForeground(UIUtils.brighter(getForeground(), .99));
