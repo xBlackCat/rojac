@@ -1,9 +1,9 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import org.xblackcat.rojac.data.NewRating;
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
-import org.xblackcat.rojac.service.storage.INewRatingAH;
 import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -96,27 +96,32 @@ class RatingPane extends JPanel {
 
             Rating[] ratings = Storage.get(IRatingAH.class).getRatingsByMessageId(messageId);
 
-            NewRating[] ownRatings = Storage.get(INewRatingAH.class).getNewRatingsByMessageId(messageId);
+//            NewRating[] ownRatings = Storage.get(INewRatingAH.class).getNewRatingsByMessageId(messageId);
 
-            MarkItem[] items = new MarkItem[ratings.length + ownRatings.length];
+            TIntObjectMap<MarkItem> userMarks = new TIntObjectHashMap<>();
 
-            int ind = 0;
-            while (ind < ratings.length) {
-                Rating r = ratings[ind];
+            for (Rating r : ratings) {
+                int userId = r.getUserId();
 
-                User user = userAH.getUserById(r.getUserId());
+                MarkItem item = userMarks.get(userId);
 
-                items[ind] = new MarkItem(r, user);
-                ind++;
+                if (item == null) {
+                    User user = userAH.getUserById(userId);
+
+                    item = new MarkItem(userId, user);
+                    userMarks.put(userId, item);
+                }
+
+                item.addMark(r.getRate());
             }
 
-            int i = 0;
-            while (i < ownRatings.length) {
-                NewRating r = ownRatings[i++];
-                items[ind++] = new MarkItem(r);
-            }
-
-            publish(items);
+//            int i = 0;
+//            while (i < ownRatings.length) {
+//                NewRating r = ownRatings[i++];
+//                items[ind++] = new MarkItem(r);
+//            }
+//
+            publish(userMarks.values(new MarkItem[userMarks.size()]));
 
             return null;
         }

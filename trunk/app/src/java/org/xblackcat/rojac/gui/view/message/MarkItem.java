@@ -1,9 +1,12 @@
 package org.xblackcat.rojac.gui.view.message;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.NewRating;
-import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
+import org.xblackcat.rojac.service.options.Property;
+
+import javax.swing.*;
 
 /**
  * @author xBlackCat
@@ -11,28 +14,21 @@ import org.xblackcat.rojac.data.User;
 
 final class MarkItem {
     private final Integer id;
-    private final Mark mark;
-    private final Integer userId;
+    private Mark[] marks = new Mark[0];
     private final User user;
-    private final Long date;
+    private final int userId;
 
     MarkItem(NewRating r) {
-        this(r.getId(), r.getRate(), null, null, null);
+        this(r.getId(), Property.RSDN_USER_ID.get(-1), null);
     }
 
-    MarkItem(Rating r) {
-        this(r, null);
+    MarkItem(int userId, User user) {
+        this(null, userId, user);
     }
 
-    MarkItem(Rating r, User user) {
-        this(null, r.getRate(), r.getUserId(), r.getRateDate(), user);
-    }
-
-    private MarkItem(Integer id, Mark mark, Integer userId, Long date, User user) {
+    private MarkItem(Integer id, int userId, User user) {
         this.id = id;
-        this.mark = mark;
         this.userId = userId;
-        this.date = date;
         this.user = user;
     }
 
@@ -40,16 +36,16 @@ final class MarkItem {
         return id;
     }
 
-    public Mark getMark() {
-        return mark;
+    public Icon getMarkIcons() {
+        return new MarksIcon(marks);
+    }
+
+    public void addMark(Mark m) {
+        marks = ArrayUtils.add(marks, m);
     }
 
     public Integer getUserId() {
         return userId;
-    }
-
-    public Long getDate() {
-        return date;
     }
 
     public boolean isNewRate() {
@@ -59,4 +55,5 @@ final class MarkItem {
     public User getUser() {
         return user;
     }
+
 }
