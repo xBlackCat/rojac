@@ -65,6 +65,11 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
 
         postProcessing(tracker, janusService);
 
+        // Do not update zero-identified objects
+        updatedForums.remove(0);
+        updatedTopics.remove(0);
+        updatedMessages.remove(0);
+
         handler.process(new SynchronizationCompletePacket(updatedForums, updatedTopics, updatedMessages));
     }
 
