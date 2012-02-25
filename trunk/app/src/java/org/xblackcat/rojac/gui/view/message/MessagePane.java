@@ -328,7 +328,7 @@ public class MessagePane extends JPanel {
             final RatingPane rd = new RatingPane(messageData.getMessageId());
             LeftRightRoundedBalloonStyle tipStyle = new LeftRightRoundedBalloonStyle(5, 5, rd.getBackground(), Color.black);
 
-            RightCenterPositioner positioner = new RightCenterPositioner(15, 15);
+            LeftCenterPositioner positioner = new LeftCenterPositioner(15, 15);
             final BalloonTip tip = new BalloonTip(marksButton, rd, tipStyle, positioner, null);
 
             tip.setVisible(true);

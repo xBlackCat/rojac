@@ -1,33 +1,38 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 
 /**
  * @author xBlackCat
  */
 
-class RatingListModel extends AbstractListModel<MarkItem> {
-    private static final MarkItem[] NO_MARKS = new MarkItem[0];
+class RatingListModel extends AbstractTableModel {
+    public static final MarkItem[] NO_MARKS = new MarkItem[0];
 
     private MarkItem[] rates = NO_MARKS;
 
     public void setData(MarkItem... items) {
-        if (rates.length > 0) {
-            fireIntervalRemoved(this, 0, rates.length - 1);
-        }
         rates = items;
-        if (rates.length > 0) {
-            fireIntervalAdded(this, 0, rates.length - 1);
-        }
+        fireTableDataChanged();
     }
 
     @Override
-    public int getSize() {
+    public Class<?> getColumnClass(int columnIndex) {
+        return MarkItem.class;
+    }
+
+    @Override
+    public int getRowCount() {
         return rates.length;
     }
 
     @Override
-    public MarkItem getElementAt(int index) {
-        return rates[index];
+    public int getColumnCount() {
+        return 2;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return rates[rowIndex];
     }
 }
