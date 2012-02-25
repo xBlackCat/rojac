@@ -4,8 +4,8 @@ import net.java.balloontip.positioners.BasicBalloonTipPositioner;
 
 import java.awt.*;
 
-public class RightCenterPositioner extends BasicBalloonTipPositioner {
-    public RightCenterPositioner(int hO, int vO) {
+public class LeftCenterPositioner extends BasicBalloonTipPositioner {
+    public LeftCenterPositioner(int hO, int vO) {
         super(hO, vO);
     }
 

@@ -399,6 +399,14 @@ public enum Message {
     TopicIgnoringSelection_TotallyUnread,
     TopicIgnoringSelection_HaveUnread,
 
+    UserInfoPane_Label_UserNick,
+    UserInfoPane_Label_RealName,
+    UserInfoPane_Label_PublicEmail,
+    UserInfoPane_Label_HomePage,
+    UserInfoPane_Label_Specialization,
+    UserInfoPane_Label_WhereFrom,
+    UserInfoPane_Label_Origin,
+    UserInfoPane_Label_UserClass,
     // --------
     ;
 
