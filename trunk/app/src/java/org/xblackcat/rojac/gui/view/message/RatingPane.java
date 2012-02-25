@@ -12,12 +12,12 @@ import org.xblackcat.rojac.gui.hint.UserInfoPane;
 import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.Storage;
+import org.xblackcat.rojac.util.ColumnsAutoSizer;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -49,13 +49,7 @@ class RatingPane extends JPanel {
 
         initializeLayout();
 
-        setSize(200, 100);
-
-        updateData();
-    }
-
-    private void updateData() {
-        new RatingUpdater().execute();
+        setMaximumSize(new Dimension(200, 100));
     }
 
     private void initializeLayout() {
@@ -131,7 +125,15 @@ class RatingPane extends JPanel {
         marksList.requestFocus();
     }
 
+    public void loadRating(Runnable postProcessor) {
+        new RatingUpdater(postProcessor).execute();
+    }
+
     private class RatingUpdater extends RojacWorker<Void, MarkItem[]> {
+        private RatingUpdater(Runnable postProcessor) {
+            super(postProcessor);
+        }
+
         @Override
         protected Void perform() throws Exception {
             IUserAH userAH = Storage.get(IUserAH.class);
@@ -172,20 +174,19 @@ class RatingPane extends JPanel {
         protected void process(List<MarkItem[]> chunks) {
             MarkItem[] items = chunks.iterator().next();
 
-            int maxWidth = 0;
-
-            for (MarkItem mi : items) {
-                maxWidth = Math.max(maxWidth, mi.getMarkIcons().getIconWidth());
-            }
-
-
             marksModel.setData(items);
-            TableColumn column = marksList.getColumnModel().getColumn(0);
 
-            maxWidth += 5;
-            column.setPreferredWidth(maxWidth);
-            column.setWidth(maxWidth);
-            column.setMaxWidth(maxWidth);
+            ColumnsAutoSizer.sizeColumnsToFit(marksList, 10);
+
+            Dimension size = marksList.getPreferredSize();
+            int newHeight = size.height + 15;
+            int newWidth = marksList.getColumnModel().getTotalColumnWidth() + 15;
+            if (newHeight > getMaximumSize().height) {
+                newHeight = getMaximumSize().height;
+                // Add size of scroll bar
+                newWidth += 10;
+            }
+            setPreferredSize(new Dimension(newWidth, newHeight));
         }
     }
 }
