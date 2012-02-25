@@ -67,14 +67,16 @@ public class LeftRightRoundedBalloonStyle extends BalloonTipStyle {
         outline.lineTo(xRight - arcWidth, y);
         outline.quadTo(xRight, y, xRight, y + arcHeight);
 
-        if (!flipX && !flipY) {
-            outline.lineTo(xRight, y + verticalOffset);
-            outline.lineTo(xRight + horizontalOffset, y + verticalOffset);
-            outline.lineTo(xRight, y + horizontalOffset + verticalOffset);
-        } else if (!flipX && flipY) {
-            outline.lineTo(xRight, y + height - horizontalOffset - verticalOffset);
-            outline.lineTo(xRight + horizontalOffset, y + height - verticalOffset);
-            outline.lineTo(xRight, y + height - verticalOffset);
+        if (!flipX) {
+            if (!flipY) {
+                outline.lineTo(xRight, y + verticalOffset);
+                outline.lineTo(xRight + horizontalOffset, y + verticalOffset);
+                outline.lineTo(xRight, y + horizontalOffset + verticalOffset);
+            } else {
+                outline.lineTo(xRight, y + height - horizontalOffset - verticalOffset);
+                outline.lineTo(xRight + horizontalOffset, y + height - verticalOffset);
+                outline.lineTo(xRight, y + height - verticalOffset);
+            }
         }
 
         outline.lineTo(xRight, y + height - arcHeight);
@@ -82,14 +84,16 @@ public class LeftRightRoundedBalloonStyle extends BalloonTipStyle {
         outline.lineTo(xLeft + arcWidth, y + height);
         outline.quadTo(xLeft, y + height, xLeft, y + height - arcHeight);
 
-        if (flipX && !flipY) {
-            outline.lineTo(xLeft, y + horizontalOffset + verticalOffset);
-            outline.lineTo(xLeft - horizontalOffset, y + verticalOffset);
-            outline.lineTo(xLeft, y + verticalOffset);
-        } else if (flipX && flipY) {
-            outline.lineTo(xLeft, y + height - verticalOffset);
-            outline.lineTo(xLeft - horizontalOffset, y + height - verticalOffset);
-            outline.lineTo(xLeft, y + height - horizontalOffset - verticalOffset);
+        if (flipX) {
+            if (!flipY) {
+                outline.lineTo(xLeft, y + horizontalOffset + verticalOffset);
+                outline.lineTo(xLeft - horizontalOffset, y + verticalOffset);
+                outline.lineTo(xLeft, y + verticalOffset);
+            } else {
+                outline.lineTo(xLeft, y + height - verticalOffset);
+                outline.lineTo(xLeft - horizontalOffset, y + height - verticalOffset);
+                outline.lineTo(xLeft, y + height - horizontalOffset - verticalOffset);
+            }
         }
 
         outline.closePath();
