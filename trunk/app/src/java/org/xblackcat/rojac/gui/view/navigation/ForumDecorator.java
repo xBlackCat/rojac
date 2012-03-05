@@ -69,6 +69,11 @@ class ForumDecorator extends ADecorator {
     void updateForum(int forumId, ForumStatistic statistic) {
         Forum forum = forumsCache.get(forumId);
 
+        if (forum == null) {
+            assert false : "Unknown forum id: " + forumId;
+            return;
+        }
+
         boolean subscribed = forum.isSubscribed();
         AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
 
@@ -189,8 +194,10 @@ class ForumDecorator extends ADecorator {
                 f = fah.getForumById(forumId);
 
                 if (f == null) {
+                    assert false : "Unknown forum id: " + forumId;
                     return null;
                 }
+
 
                 forumsCache.put(forumId, f);
 
