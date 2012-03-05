@@ -81,7 +81,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         if (ArrayUtils.isNotEmpty(messageIds)) {
             int offset = 0;
             while (offset < messageIds.length) {
-                final int[] portionIds = ArrayUtils.subarray(messageIds, offset, portion);
+                final int[] portionIds = ArrayUtils.subarray(messageIds, offset, offset + portion);
 
                 tracker.addLodMessage(Message.Synchronize_Command_Name_ExtraPosts, Arrays.toString(portionIds));
                 loadTopics(portionIds, janusService, tracker);
@@ -96,7 +96,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         if (ArrayUtils.isNotEmpty(brokenTopicIds)) {
             int offset = 0;
             while (offset < brokenTopicIds.length) {
-                final int[] portionIds = ArrayUtils.subarray(brokenTopicIds, offset, portion);
+                final int[] portionIds = ArrayUtils.subarray(brokenTopicIds, offset, offset + portion);
 
                 tracker.addLodMessage(Message.Synchronize_Command_Name_BrokenTopics, Arrays.toString(portionIds));
                 loadTopics(portionIds, janusService, tracker);
