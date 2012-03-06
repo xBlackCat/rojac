@@ -7,6 +7,8 @@ import org.xblackcat.rojac.util.RojacWorker;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 /**
  * @author xBlackCat
@@ -24,17 +26,35 @@ class LoadTaskExecutor extends RojacWorker<Void, LoadTaskExecutor.TaskResult<?>>
     }
 
     public Void perform() {
+        ForkJoinPool pool = new ForkJoinPool();
         for (final ILoadTask task : tasks) {
-            try {
-                final Object result = task.doBackground();
+            pool.execute(new ForkJoinTask<Object>() {
+                @Override
+                public Object getRawResult() {
+                    return null;
+                }
 
-                @SuppressWarnings({"unchecked"})
-                TaskResult taskResult = new TaskResult(task, result);
+                @Override
+                protected void setRawResult(Object value) {
+                }
 
-                publish(taskResult);
-            } catch (Exception e) {
-                log.error("Can not perform load task", e);
-            }
+                @Override
+                protected boolean exec() {
+                    try {
+                        final Object result = task.doBackground();
+
+                        @SuppressWarnings({"unchecked"})
+                        TaskResult taskResult = new TaskResult(task, result);
+
+                        publish(taskResult);
+
+                        return true;
+                    } catch (Exception e) {
+                        log.error("Can not perform load task", e);
+                        return false;
+                    }
+                }
+            });
         }
 
         return null;
