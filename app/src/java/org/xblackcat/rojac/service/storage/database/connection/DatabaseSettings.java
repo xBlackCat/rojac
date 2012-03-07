@@ -6,6 +6,7 @@ package org.xblackcat.rojac.service.storage.database.connection;
  * @author xBlackCat
  */
 public class DatabaseSettings {
+    protected final String engineName;
     protected final String engine;
     protected final String url;
     protected final String shutdownUrl;
@@ -13,13 +14,18 @@ public class DatabaseSettings {
     protected final String password;
     protected final Class<?> jdbcDriverClass;
 
-    public DatabaseSettings(String engine, String url, String shutdownUrl, String userName, String password, Class<?> jdbcDriverClass) {
+    public DatabaseSettings(String engineName, String engine, String url, String shutdownUrl, String userName, String password, Class<?> jdbcDriverClass) {
+        this.engineName = engineName;
         this.engine = engine;
         this.url = url;
         this.shutdownUrl = shutdownUrl;
         this.userName = userName;
         this.password = password;
         this.jdbcDriverClass = jdbcDriverClass;
+    }
+
+    public String getEngineName() {
+        return engineName;
     }
 
     public String getEngine() {
