@@ -333,8 +333,14 @@ public class MessagePane extends JPanel {
                     LeftRightRoundedBalloonStyle tipStyle = new LeftRightRoundedBalloonStyle(5, 5, rd.getBackground(), Color.black);
 
                     LeftCenterPositioner positioner = new LeftCenterPositioner(15, 15);
-                    final BalloonTip tip = new BalloonTip(marksButton, rd, tipStyle, positioner, null);
-
+                    JButton closeButton = WindowsUtils.setupImageButton("cancel", new AButtonAction(Message.Button_Close) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                        }
+                    });
+                    closeButton.setBorder(null);
+                    closeButton.setContentAreaFilled(false);
+                    final BalloonTip tip = new BalloonTip(marksButton, rd, tipStyle, positioner, closeButton);
                     tip.refreshLocation();
                     tip.setVisible(true);
 

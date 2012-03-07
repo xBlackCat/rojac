@@ -13,6 +13,7 @@ public enum Message {
     // Button texts
     Button_Ok,
     Button_Cancel,
+    Button_Close,
     Button_Apply,
     Button_Save,
     Button_Send,
