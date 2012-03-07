@@ -30,8 +30,8 @@ public class ImportDialog extends JDialog {
 
         setTitle(Message.Dialog_Import_Title.get());
 
-        sourceStorage = new DBSettingsPane(true);
-        destinationStorage = new DBSettingsPane();
+        sourceStorage = new DBSettingsPane(true, true);
+        destinationStorage = new DBSettingsPane(false, true);
 
         LineBorder border = new LineBorder(Color.black, 1, true);
         sourceStorage.setBorder(new TitledBorder(border, Message.Dialog_Import_Label_Source.get(), TitledBorder.CENTER, TitledBorder.TOP));

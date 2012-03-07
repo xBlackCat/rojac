@@ -182,6 +182,7 @@ public enum Message {
     Dialog_DbSettings_Label_Passord,
     Dialog_DbSettings_Label_ShutdownUrl,
     Dialog_DbSettings_Label_DriverName,
+    Dialog_DbSettings_CurrentEngine,
 
     Dialog_DbCheck_Title,
     Dialog_DbCheck_Success,

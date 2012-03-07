@@ -55,19 +55,32 @@ public class DBSettingsPane extends JPanel {
     }
 
     public DBSettingsPane(boolean skipCurrentSettings) {
-        this(skipCurrentSettings, null);
+        this(skipCurrentSettings, false);
+    }
+
+    public DBSettingsPane(boolean skipCurrentSettings, boolean separateCurrent) {
+        this(null, skipCurrentSettings, separateCurrent);
     }
 
     public DBSettingsPane(JButton customButton) {
-        this(false, customButton);
+        this(customButton, false);
     }
 
-    public DBSettingsPane(boolean skipCurrentSettings, JButton customButton) {
+    public DBSettingsPane(JButton customButton, boolean skipCurrentSettings) {
+        this(customButton, skipCurrentSettings, false);
+    }
+
+    /**
+     * @param customButton        add custom button to panel
+     * @param skipCurrentSettings do not load current database settings
+     * @param separateCurrent     show current settings as separate record in list.
+     */
+    public DBSettingsPane(JButton customButton, boolean skipCurrentSettings, boolean separateCurrent) {
         super(new BorderLayout(5, 5));
 
         String currentEngine;
         try {
-            currentEngine = loadEngines(skipCurrentSettings);
+            currentEngine = loadEngines(skipCurrentSettings, separateCurrent);
         } catch (IOException e) {
             throw new RojacDebugException("Can not load list of engines", e);
         }
@@ -182,7 +195,7 @@ public class DBSettingsPane extends JPanel {
         return selectedItem == null ? null : updateSettings(selectedItem);
     }
 
-    private String loadEngines(boolean skipCurrentSettings) throws IOException {
+    private String loadEngines(boolean skipCurrentSettings, boolean separateCurrent) throws IOException {
         engines = new HashMap<>();
 
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -197,33 +210,36 @@ public class DBSettingsPane extends JPanel {
 
                 assert engine.equals(settings.getEngine());
 
-                engines.put(engine, settings);
+                engines.put(settings.getEngineName(), settings);
             } catch (StorageInitializationException e) {
                 log.warn("Found invalid configuration");
             }
 
         }
 
-        if (!skipCurrentSettings) {
+        if (!skipCurrentSettings || separateCurrent) {
             DatabaseSettings settings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
             if (settings != null) {
-                final String engine = settings.getEngine();
-                engines.put(engine, settings);
-                return engine;
+                final String engineName = separateCurrent ? Message.Dialog_DbSettings_CurrentEngine.get(settings.getEngineName()) : settings.getEngineName();
+                engines.put(engineName, settings);
+                if (!skipCurrentSettings) {
+                    return engineName;
+                }
             }
         }
 
         return null;
     }
 
-    private DatabaseSettings updateSettings(String engine) {
-        DatabaseSettings current = engines.get(engine);
+    private DatabaseSettings updateSettings(String engineName) {
+        DatabaseSettings current = engines.get(engineName);
         if (current == null) {
             return null;
         }
 
         DatabaseSettings settings = new DatabaseSettings(
-                engine,
+                engineName,
+                current.getEngine(),
                 fieldUrl.getText(),
                 fieldShutdownUrl.getText(),
                 fieldUserName.getText(),
@@ -231,7 +247,7 @@ public class DBSettingsPane extends JPanel {
                 current.getJdbcDriverClass()
         );
 
-        engines.put(engine, settings);
+        engines.put(engineName, settings);
 
         return settings;
     }
@@ -331,7 +347,7 @@ public class DBSettingsPane extends JPanel {
                             if (check instanceof RojacException) {
                                 check = check.getCause();
                             }
-                            
+
                             JLOptionPane.showMessageDialog(
                                     DBSettingsPane.this,
                                     Message.Dialog_DbCheck_Fail.get(check.getLocalizedMessage()),

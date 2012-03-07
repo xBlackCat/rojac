@@ -26,6 +26,7 @@ public final class DatabaseUtils {
     private static final Log log = LogFactory.getLog(DatabaseUtils.class);
 
     private static final String DBCONFIG_PACKAGE = "dbconfig/";
+    private static final String DB_STORAGE_NAME = "db.engine.name";
     private static final String DB_STORAGE_JDBC_CLASS = "db.jdbc.driver.class";
     private static final String DB_STORAGE_URL = "db.connection.url.pattern";
     private static final String DB_SHUTDOWN_URL = "db.shutdown.url.pattern";
@@ -153,6 +154,7 @@ public final class DatabaseUtils {
         }
 
         Class<?> jdbcDriverClass;
+        String engineName;
         String url;
         String userName;
         String password;
@@ -163,6 +165,11 @@ public final class DatabaseUtils {
             jdbcDriverClass.newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new StorageInitializationException("Can not initialize JDBC driver.", e);
+        }
+
+        engineName = databaseProperties.getProperty(DB_STORAGE_NAME);
+        if (StringUtils.isBlank(engineName)) {
+            engineName = engine;
         }
 
         url = ResourceUtils.putSystemProperties(databaseProperties.getProperty(DB_STORAGE_URL));
@@ -193,6 +200,7 @@ public final class DatabaseUtils {
         }
 
         return new DatabaseSettings(
+                engineName,
                 engine,
                 ResourceUtils.putSystemProperties(url),
                 ResourceUtils.putSystemProperties(shutdownUrl),
@@ -214,6 +222,7 @@ public final class DatabaseUtils {
             datas.writeObject(o.getUserName());
             datas.writeObject(o.getPassword());
             datas.writeObject(o.getShutdownUrl());
+            datas.writeObject(o.getEngineName());
             datas.flush();
 
             return Base64.encodeBase64String(outputStream.toByteArray());
@@ -256,8 +265,9 @@ public final class DatabaseUtils {
             String userName = (String) inputStream.readObject();
             String password = (String) inputStream.readObject();
             String shutdownUrl = (String) inputStream.readObject();
+            String engineName = (String) inputStream.readObject();
 
-            return new DatabaseSettings(engine, url, shutdownUrl, userName, password, jdbcClass);
+            return new DatabaseSettings(engineName, engine, url, shutdownUrl, userName, password, jdbcClass);
         } catch (IOException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Can not load database settings.");
