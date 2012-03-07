@@ -69,19 +69,26 @@ public class DBImportHelper implements IImportHelper {
 
         try {
             try (Connection con = connectionFactory.getConnection()) {
-                try (Statement st = con.createStatement()) {
+                try (Statement st = con.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
                     try (ResultSet rs = st.executeQuery(queries.getTableDataQuery(item))) {
+                        rs.setFetchDirection(ResultSet.FETCH_FORWARD);
+                        rs.setFetchSize(2);
+
                         ResultSetMetaData metaData = rs.getMetaData();
                         int columnCount = metaData.getColumnCount();
+                        String[] columnNames = new String[columnCount];
+
+                        for (int i = 0; i < columnCount; i++) {
+                            columnNames[i] = metaData.getColumnName(1 + i);
+                        }
+
+                        rowHandler.initialize(columnNames);
 
                         while (rs.next()) {
-                            Cell[] row = new Cell[columnCount];
+                            Object[] row = new Object[columnCount];
 
                             for (int i = 0; i < columnCount; i++) {
-                                row[i] = new Cell(
-                                        metaData.getColumnName(1 + i),
-                                        rs.getObject(1 + i)
-                                );
+                                row[i] = rs.getObject(1 + i);
                             }
 
                             if (!rowHandler.handleRow(row)) {
@@ -133,18 +140,17 @@ public class DBImportHelper implements IImportHelper {
         }
 
         @Override
-        public int storeRow(Cell[] cells) throws StorageException {
+        public int storeRow(Object[] cells) throws StorageException {
             assert RojacUtils.checkThread(false);
 
             if (st == null) {
-                initialize(cells);
+                throw new StorageException("Statement is not initialized!");
             }
 
             try {
                 // Fill parameters if any
                 for (int i = 0, dataLength = cells.length; i < dataLength; i++) {
-                    Cell cell = cells[i];
-                    st.setObject(i + 1, cell.getData());
+                    st.setObject(i + 1, cells[i]);
                 }
 
                 return st.executeUpdate();
@@ -169,14 +175,15 @@ public class DBImportHelper implements IImportHelper {
             }
         }
 
-        private void initialize(Cell[] cells) throws StorageException {
+        @Override
+        public void initialize(String[] columnNames) throws StorageException {
             StringBuilder signs = new StringBuilder();
             StringBuilder names = new StringBuilder();
 
-            for (Cell cell : cells) {
+            for (String cell : columnNames) {
                 signs.append(",?");
                 names.append(',');
-                names.append(queries.quoteName(cell.getName()));
+                names.append(queries.quoteName(cell));
             }
 
             String query = String.format(dataQuery, item, names.substring(1), signs.substring(1));

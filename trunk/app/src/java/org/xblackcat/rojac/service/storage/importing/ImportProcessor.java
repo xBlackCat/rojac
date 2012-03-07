@@ -163,7 +163,12 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
         }
 
         @Override
-        public boolean handleRow(Cell[] row) {
+        public void initialize(String[] columnNames) throws StorageException {
+            rowWriter.initialize(columnNames);
+        }
+
+        @Override
+        public boolean handleRow(Object[] row) {
             try {
                 rowWriter.storeRow(row);
                 idx++;

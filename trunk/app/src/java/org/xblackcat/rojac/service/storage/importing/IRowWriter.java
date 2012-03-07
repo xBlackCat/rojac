@@ -8,7 +8,9 @@ import org.xblackcat.rojac.service.storage.StorageException;
  * @author xBlackCat
  */
 public interface IRowWriter extends AutoCloseable {
-    int storeRow(Cell[] cells) throws StorageException;
+    void initialize(String[] columnNames) throws StorageException;
+
+    int storeRow(Object[] cells) throws StorageException;
 
     void close() throws StorageException;
 }
