@@ -1,10 +1,15 @@
 package org.xblackcat.rojac;
 
 import org.bridj.cpp.com.shell.ITaskbarList3;
+import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.component.Windows7Bar;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
+import org.xblackcat.rojac.service.storage.IStatisticAH;
+import org.xblackcat.rojac.service.storage.Storage;
+import org.xblackcat.rojac.util.RojacWorker;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -42,16 +47,33 @@ class Windows7BarProgressTracker implements IProgressListener {
                 }
                 break;
             case Stop:
-                taskBar.setProgress(1, 1);
+                taskBar.setState(ITaskbarList3.TbpFlag.TBPF_NOPROGRESS);
 
-                mainFrame.addWindowFocusListener(new WindowAdapter() {
+                // To hide errors and other notifications
+                installProgressCleaner();
+
+                new RojacWorker<Void, Integer>() {
                     @Override
-                    public void windowGainedFocus(WindowEvent e) {
-                        taskBar.setState(ITaskbarList3.TbpFlag.TBPF_NOPROGRESS);
-                        mainFrame.removeWindowFocusListener(this);
+                    protected Void perform() throws Exception {
+                        Integer ownId = Property.RSDN_USER_ID.get(-1);
+
+                        ReadStatistic userRepliesStat = Storage.get(IStatisticAH.class).getUserRepliesStat(ownId);
+                        publish(userRepliesStat.getUnreadMessages());
+
+                        return null;
                     }
-                });
+                }.execute();
                 break;
         }
+    }
+
+    private void installProgressCleaner() {
+        mainFrame.addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                taskBar.setState(ITaskbarList3.TbpFlag.TBPF_NOPROGRESS);
+                mainFrame.removeWindowFocusListener(this);
+            }
+        });
     }
 }
