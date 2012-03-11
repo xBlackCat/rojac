@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.ReadStatistic;
-import org.xblackcat.rojac.data.ThreadStatData;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
@@ -15,13 +15,8 @@ final class DBStatisticAH extends AnAH implements IStatisticAH {
     }
 
     @Override
-    public ThreadStatData getThreadStatByThreadId(int threadId) throws StorageException {
-        return helper.executeSingle(Converters.TO_THREAD_DATA, DataQuery.GET_THREAD_STAT_DATA, threadId);
-    }
-
-    @Override
-    public ReadStatistic getReplaysInThread(int threadId, int userId) throws StorageException {
-        return helper.executeSingle(Converters.TO_READ_STATISTIC, DataQuery.GET_MESSAGES_STATISTIC_IN_THREAD, threadId, threadId, threadId, userId);
+    public DiscussionStatistic getReplaysInThread(int threadId, int userId) throws StorageException {
+        return helper.executeSingle(Converters.TO_DISCUSSION_STATISTIC, DataQuery.GET_MESSAGES_STATISTIC_IN_THREAD, userId, threadId);
     }
 
     @Override

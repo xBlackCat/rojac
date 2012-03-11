@@ -5,8 +5,8 @@ import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
@@ -66,7 +66,7 @@ class ForumDecorator extends ADecorator {
         };
     }
 
-    void updateForum(int forumId, ForumStatistic statistic) {
+    void updateForum(int forumId, DiscussionStatistic statistic) {
         Forum forum = forumsCache.get(forumId);
 
         if (forum == null) {
@@ -104,7 +104,7 @@ class ForumDecorator extends ADecorator {
             ForumItem item = viewedForums.get(forumId);
 
             if (item != null) {
-                ForumStatistic statistic = item.getStatistic();
+                DiscussionStatistic statistic = item.getStatistic();
 
                 updateForum(forumId, statistic);
                 return null;
@@ -151,7 +151,7 @@ class ForumDecorator extends ADecorator {
     }
 
 
-    private class ForumUpdateTask implements ILoadTask<ForumStatistic> {
+    private class ForumUpdateTask implements ILoadTask<DiscussionStatistic> {
         protected final int forumId;
 
         protected ForumUpdateTask(int forumId) {
@@ -159,22 +159,22 @@ class ForumDecorator extends ADecorator {
         }
 
         @Override
-        public ForumStatistic doBackground() throws Exception {
+        public DiscussionStatistic doBackground() throws Exception {
             assert RojacUtils.checkThread(false);
 
             final IForumAH fah = Storage.get(IForumAH.class);
 
-            ForumStatistic forumStatistic = fah.getForumStatistic(forumId, Property.RSDN_USER_ID.get(-1));
+            DiscussionStatistic forumStatistic = fah.getForumStatistic(forumId, Property.RSDN_USER_ID.get(-1));
 
             if (forumStatistic == null) {
-                forumStatistic = ForumStatistic.NO_STAT;
+                forumStatistic = DiscussionStatistic.NO_STAT;
             }
 
             return forumStatistic;
         }
 
         @Override
-        public void doSwing(ForumStatistic data) {
+        public void doSwing(DiscussionStatistic data) {
             updateForum(forumId, data);
         }
     }
@@ -185,7 +185,7 @@ class ForumDecorator extends ADecorator {
         }
 
         @Override
-        public ForumStatistic doBackground() throws Exception {
+        public DiscussionStatistic doBackground() throws Exception {
             try {
                 Forum f;
 
@@ -237,7 +237,7 @@ class ForumDecorator extends ADecorator {
                 viewedForums.put(forumId, forumItem);
             }
 
-            Collection<ILoadTask<ForumStatistic>> loadStatTasks = new ArrayList<>(forumsCache.size());
+            Collection<ILoadTask<DiscussionStatistic>> loadStatTasks = new ArrayList<>(forumsCache.size());
 
             for (ForumItem i : subscribedForums.children) {
                 loadStatTasks.add(new ForumUpdateTask(i.getForum().getForumId()));
@@ -262,12 +262,12 @@ class ForumDecorator extends ADecorator {
 
         @Override
         public void doSwing(Void data) {
-            ForumStatistic statistic = item.getStatistic();
+            DiscussionStatistic statistic = item.getStatistic();
             if (statistic == null) {
                 return;
             }
 
-            statistic = new ForumStatistic(
+            statistic = new DiscussionStatistic(
                     statistic.getTotalMessages(),
                     statistic.getUnreadMessages() + adjustDelta,
                     statistic.getLastMessageDate(),

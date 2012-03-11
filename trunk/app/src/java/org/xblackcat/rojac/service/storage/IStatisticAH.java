@@ -1,24 +1,16 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.ReadStatistic;
-import org.xblackcat.rojac.data.ThreadStatData;
 
 /**
  * @author xBlackCat
  */
 public interface IStatisticAH extends AH {
-    /**
-     * Loads a brief thread statistic (amount of replies, non-read messages, etc.)
-     *
-     * @param threadId target threads id
-     * @return brief thread statistic.
-     * @throws org.xblackcat.rojac.service.storage.StorageException
-     * @see org.xblackcat.rojac.data.ThreadStatData
-     */
-    ThreadStatData getThreadStatByThreadId(int threadId) throws StorageException;
 
     /**
      * Returns number of replies in specified thread (total/non-read)
+     *
      *
      *
      *
@@ -27,7 +19,7 @@ public interface IStatisticAH extends AH {
      * @return brief stat data.
      * @throws org.xblackcat.rojac.service.storage.StorageException
      */
-    ReadStatistic getReplaysInThread(int threadId, int userId) throws StorageException;
+    DiscussionStatistic getReplaysInThread(int threadId, int userId) throws StorageException;
 
     ReadStatistic getTotals(int userId) throws StorageException;
 
