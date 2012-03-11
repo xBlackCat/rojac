@@ -5,6 +5,7 @@ import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
+import ru.rsdn.Janus.RequestForumInfo;
 
 import java.util.Collection;
 
@@ -35,8 +36,8 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public int[] getSubscribedForumIds() throws StorageException {
-        return helper.getIds(DataQuery.GET_IDS_FORUM_SUBSCRIBED);
+    public Collection<RequestForumInfo> getSubscribedForums() throws StorageException {
+        return helper.execute(Converters.TO_SUBSCRIBED_FORUM, DataQuery.GET_SUBSCRIBED_FORUMS);
     }
 
     @Override
@@ -68,13 +69,6 @@ final class DBForumAH extends AnAH implements IForumAH {
     @Override
     public Collection<Forum> getAllForums() throws StorageException {
         return helper.execute(Converters.TO_FORUM, DataQuery.GET_OBJECTS_FORUM);
-    }
-
-    @Override
-    public Number getMessagesInForum(int forumId) throws StorageException {
-        return helper.executeSingle(Converters.TO_NUMBER,
-                DataQuery.GET_MESSAGES_NUMBER_IN_FORUM,
-                forumId);
     }
 
     @Override

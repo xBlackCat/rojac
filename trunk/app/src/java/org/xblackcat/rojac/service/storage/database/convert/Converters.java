@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.service.storage.database.convert;
 
 import org.xblackcat.rojac.data.*;
+import ru.rsdn.Janus.RequestForumInfo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,6 +53,16 @@ public final class Converters {
             }
 
             return new ForumStatistic(totals, unreadPosts, lastPostDate, unreadReplies);
+        }
+    };
+
+    public static final IToObjectConverter<RequestForumInfo> TO_SUBSCRIBED_FORUM = new IToObjectConverter<RequestForumInfo>() {
+        @Override
+        public RequestForumInfo convert(ResultSet rs) throws SQLException {
+            int forumId = rs.getInt(1);
+            boolean empty = rs.getBoolean(2);
+
+            return new RequestForumInfo(forumId, empty);
         }
     };
 

@@ -12,7 +12,6 @@ import net.infonode.docking.util.StringViewMap;
 import net.infonode.docking.util.WindowMenuUtil;
 import net.infonode.gui.UIManagerUtil;
 import net.infonode.util.Direction;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
@@ -45,6 +44,7 @@ import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
+import ru.rsdn.Janus.RequestForumInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,10 +55,8 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static org.xblackcat.rojac.service.options.Property.*;
 
@@ -767,8 +765,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
             protected Void perform() throws Exception {
                 IForumAH forumAH = Storage.get(IForumAH.class);
 
-                int[] subscribedForumIds = forumAH.getSubscribedForumIds();
-                publish(!ArrayUtils.isEmpty(subscribedForumIds));
+                Collection<RequestForumInfo> subscribedForumIds = forumAH.getSubscribedForums();
+                publish(!subscribedForumIds.isEmpty());
                 return null;
             }
 

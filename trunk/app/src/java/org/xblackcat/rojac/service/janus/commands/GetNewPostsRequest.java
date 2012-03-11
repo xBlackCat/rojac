@@ -12,9 +12,7 @@ import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.storage.StorageException;
 import ru.rsdn.Janus.RequestForumInfo;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
 
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
 
@@ -26,25 +24,28 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
     protected int loadData(IProgressTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
-        int[] forumIds = forumAH.getSubscribedForumIds();
+        Collection<RequestForumInfo> forumInfo = forumAH.getSubscribedForums();
 
-        String idsList = Arrays.toString(forumIds);
-        tracker.addLodMessage(Message.Synchronize_Command_Name_NewPosts, idsList);
-        if (ArrayUtils.isEmpty(forumIds)) {
+        if (forumInfo.isEmpty()) {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
             }
             return 0;
         }
 
+        RequestForumInfo[] forumInfos = forumInfo.toArray(new RequestForumInfo[forumInfo.size()]);
+
+        StringBuilder idsListBuilder = new StringBuilder();
+        for (RequestForumInfo rfi : forumInfos) {
+            idsListBuilder.append(", ");
+            idsListBuilder.append(rfi.getForumId());
+        }
+        String idsList = idsListBuilder.substring(2);
+
+        tracker.addLodMessage(Message.Synchronize_Command_Name_NewPosts, idsList);
+
         if (log.isDebugEnabled()) {
             log.debug("Load new messages for forums [id=" + idsList + "]");
-        }
-
-        Collection<RequestForumInfo> forumInfo = new LinkedList<>();
-        for (int forumId : forumIds) {
-            Number messagesInForums = forumAH.getMessagesInForum(forumId);
-            forumInfo.add(new RequestForumInfo(forumId, messagesInForums.intValue() == 0));
         }
 
         Integer limit = SYNCHRONIZER_LOAD_MESSAGES_PORTION.get();
@@ -65,7 +66,8 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
             NewData data;
             try {
                 data = janusService.getNewData(
-                        forumInfo.toArray(new RequestForumInfo[forumInfo.size()]), ratingsVersion,
+                        forumInfos,
+                        ratingsVersion,
                         messagesVersion,
                         moderatesVersion,
                         ArrayUtils.EMPTY_INT_ARRAY,
