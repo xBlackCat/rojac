@@ -461,20 +461,8 @@ public enum DataQuery implements IPropertiable {
      * Returns all ignored topics message data
      */
     GET_IGNORED_TOPIC_MESSAGE_DATA,
-    GET_IDS_FORUM_SUBSCRIBED,
+    GET_SUBSCRIBED_FORUMS,
     GET_IGNORED_TOPIC_COUNT,
-    /**
-     * Returns messages number in forum. Parameter is forumId.
-     */
-    GET_MESSAGES_NUMBER_IN_FORUM,
-    /**
-     * Returns unread messages number in forum. Parameter is forumId.
-     */
-    GET_UNREAD_MESSAGES_NUMBER_IN_FORUM,
-    /**
-     * Returns unread replies number in forum. Parameter is forumId.
-     */
-    GET_UNREAD_REPLIES_NUMBER_IN_FORUM,
     /**
      * Returns unread messages number.
      */
@@ -488,15 +476,6 @@ public enum DataQuery implements IPropertiable {
      */
     GET_UNREAD_USER_REPLIES_NUMBER,
     /**
-     * Returns unread messages number in thread. Parameter is threadId.
-     */
-    GET_UNREAD_MESSAGES_NUMBER_IN_THREAD,
-    /**
-    /**
-     * Returns unread replies number in thread. Parameter is threadId.
-     */
-    GET_UNREAD_REPLIES_NUMBER_IN_THREAD,
-    /**
      * Returns unread messages number of a user. Parameter is userId.
      */
     GET_UNREAD_USER_POSTS_NUMBER,
@@ -504,10 +483,6 @@ public enum DataQuery implements IPropertiable {
      * Returns date of last message in forum and amount of replays. Parameter is threadId.
      */
     GET_THREAD_STAT_DATA,
-    /**
-     * Returns last message date in forum. Parameter is forumId.
-     */
-    GET_LAST_MESSAGE_DATE_IN_FORUM,
     /**
      * Checks is the message id exist
      */
@@ -517,13 +492,11 @@ public enum DataQuery implements IPropertiable {
      */
     IS_USER_EXISTS,
     GET_BROKEN_TOPIC_IDS,
-    GET_MESSAGES_NUMBER_IN_THREAD,
     GET_USER_REPLIES_NUMBER,
     GET_USER_POSTS_NUMBER,
     
     GET_MESSAGES_STATISTIC_IN_THREAD,
     GET_FORUM_STATISTIC,
-    GET_FORUMS_STATISTIC,
 
     UPDATE_TOPIC_MESSAGES_SET_LASTPOST_ID,
     UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE

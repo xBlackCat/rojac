@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumStatistic;
+import ru.rsdn.Janus.RequestForumInfo;
 
 import java.util.Collection;
 
@@ -14,7 +15,7 @@ public interface IForumAH extends AH {
 
     Forum getForumById(int forumId) throws StorageException;
 
-    int[] getSubscribedForumIds() throws StorageException;
+    Collection<RequestForumInfo> getSubscribedForums() throws StorageException;
 
     /**
      * Updates forum information. Notice that <code>isSubscribed</code>  field is not changed during operation.
@@ -35,15 +36,6 @@ public interface IForumAH extends AH {
      * @throws StorageException
      */
     Collection<Forum> getAllForums() throws StorageException;
-
-    /**
-     * Returns total amount of messages in the specified forum.
-     *
-     * @param forumId forum id.
-     * @return total amount of messages in forum.
-     * @throws StorageException will be thrown if something wrong.
-     */
-    Number getMessagesInForum(int forumId) throws StorageException;
 
     ForumStatistic getForumStatistic(int forumId, int userId) throws StorageException;
 }
