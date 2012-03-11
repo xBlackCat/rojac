@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.view.navigation;
 
+import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
@@ -15,9 +15,9 @@ import javax.swing.*;
  */
 class ForumItem extends AnItem {
     private final Forum forum;
-    private ForumStatistic statistic;
+    private DiscussionStatistic statistic;
 
-    public ForumItem(AGroupItem<ForumItem> parent, Forum forum, ForumStatistic statistic) {
+    public ForumItem(AGroupItem<ForumItem> parent, Forum forum, DiscussionStatistic statistic) {
         super(parent);
         this.forum = forum;
         this.statistic = statistic;
@@ -79,11 +79,11 @@ class ForumItem extends AnItem {
         return forum;
     }
 
-    ForumStatistic getStatistic() {
+    DiscussionStatistic getStatistic() {
         return statistic;
     }
 
-    void setStatistic(ForumStatistic statistic) {
+    void setStatistic(DiscussionStatistic statistic) {
         this.statistic = statistic;
     }
 

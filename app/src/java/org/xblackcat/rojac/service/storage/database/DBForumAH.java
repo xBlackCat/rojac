@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.data.ForumStatistic;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
@@ -72,8 +72,8 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public ForumStatistic getForumStatistic(int forumId, int userId) throws StorageException {
-        return helper.executeSingle(Converters.TO_FORUM_STATISTIC, DataQuery.GET_FORUM_STATISTIC, userId, forumId);
+    public DiscussionStatistic getForumStatistic(int forumId, int userId) throws StorageException {
+        return helper.executeSingle(Converters.TO_DISCUSSION_STATISTIC, DataQuery.GET_FORUM_STATISTIC, userId, forumId);
     }
 
 }

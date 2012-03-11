@@ -29,7 +29,7 @@ public enum FavoriteType {
             }
 
             Collection<MessageData> messages = messageAH.getMessagesDataByTopicId(itemId, messageData.getForumId());
-            Thread root = new Thread(messageData, null, 0, 0, 0, 0);
+            Thread root = new Thread(messageData, null);
             root.fillThread(messages);
             root.setLoadingState(LoadingState.Loaded);
 

@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
-import org.xblackcat.rojac.data.ForumStatistic;
 import ru.rsdn.Janus.RequestForumInfo;
 
 import java.util.Collection;
@@ -37,5 +37,5 @@ public interface IForumAH extends AH {
      */
     Collection<Forum> getAllForums() throws StorageException;
 
-    ForumStatistic getForumStatistic(int forumId, int userId) throws StorageException;
+    DiscussionStatistic getForumStatistic(int forumId, int userId) throws StorageException;
 }

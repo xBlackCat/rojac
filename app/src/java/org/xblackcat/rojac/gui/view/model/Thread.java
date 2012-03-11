@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
+import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.service.options.Property;
@@ -40,16 +41,23 @@ public class Thread extends Post {
      * @param parent
      */
     Thread(MessageData messageData, ForumRoot parent) {
-        this(messageData, parent, messageData.getMessageDate(), 0, 0, 0);
+        this(messageData, parent, null);
         filled = true;
     }
 
-    public Thread(MessageData messageData, ForumRoot parent, long lastPostDate, int replyAmount, int unreadPosts, int unreadReplies) {
+    public Thread(MessageData messageData, ForumRoot parent, DiscussionStatistic stat) {
         super(messageData, parent, null);
-        this.lastPostDate = lastPostDate;
-        this.replyAmount = replyAmount;
-        this.unreadPosts = unreadPosts;
-        this.unreadReplies = unreadReplies;
+        if (stat != null) {
+            this.lastPostDate = stat.getLastMessageDate() == null ? messageData.getMessageDate() : stat.getLastMessageDate();
+            this.replyAmount = stat.getTotalMessages();
+            this.unreadPosts = stat.getUnreadMessages();
+            this.unreadReplies = stat.getUnreadReplies();
+        } else {
+            this.lastPostDate = messageData.getMessageDate();
+            this.replyAmount = 0;
+            this.unreadPosts = 0;
+            this.unreadReplies = 0;
+        }
 
         threadPosts.put(messageData.getMessageId(), this);
     }
@@ -181,12 +189,12 @@ public class Thread extends Post {
         unreadPosts = 0;
         unreadReplies = 0;
         int myId = Property.RSDN_USER_ID.get(-1);
-        
+
         for (Post p : threadPosts.valueCollection()) {
             if (p != this && !p.messageData.isRead()) {
                 unreadPosts++;
                 if (p.messageData.getParentUserId() == myId) {
-                    unreadReplies ++;
+                    unreadReplies++;
                 }
             }
         }

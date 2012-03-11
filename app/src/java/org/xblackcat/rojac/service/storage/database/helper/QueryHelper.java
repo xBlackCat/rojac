@@ -3,7 +3,6 @@ package org.xblackcat.rojac.service.storage.database.helper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
@@ -118,9 +117,7 @@ public final class QueryHelper implements IQueryHelper {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
         Collection<T> col = execute(c, sql, parameters);
-        if (col.size() > 1) {
-            throw new StorageDataException("Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters));
-        }
+        assert col.size() < 2 : "Expected one or zero but got " + col.size() + " results on query " + RojacUtils.constructDebugSQL(sql, parameters);
         if (col.isEmpty()) {
             return null;
         } else {
