@@ -25,7 +25,7 @@ class TestRequest extends ARequest<Integer> {
     };
 
     @Override
-    public void process(IResultHandler<Integer> handler, IProgressTracker trac, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<Integer> handler, ILogTracker trac, IJanusService janusService) throws RojacException {
         trac.addLodMessage(Message.Synchronize_Command_Name_Test);
 
         Integer userId;

@@ -20,7 +20,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
  */
 
 class GetForumListRequest extends ARequest<IPacket> {
-    public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<IPacket> handler, ILogTracker tracker, IJanusService janusService) throws RojacException {
         tracker.addLodMessage(Message.Synchronize_Command_Name_ForumList);
 
         ForumsList forumsList;

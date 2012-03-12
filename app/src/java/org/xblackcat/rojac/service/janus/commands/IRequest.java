@@ -8,7 +8,7 @@ import org.xblackcat.rojac.service.janus.IJanusService;
  */
 
 public interface IRequest<T> {
-    void process(IResultHandler<T> handler, IProgressTracker trac, IJanusService janusService) throws RojacException;
+    void process(IResultHandler<T> handler, ILogTracker trac, IJanusService janusService) throws RojacException;
 
     String getName();
 }

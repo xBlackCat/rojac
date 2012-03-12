@@ -28,7 +28,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
     private final IResultHandler<T> handler;
 
     private final IProgressController progressController = ServiceFactory.getInstance().getProgressControl();
-    private final IProgressTracker tracker = new IProgressTracker() {
+    private final ILogTracker tracker = new ILogTracker() {
         @Override
         public void addLodMessage(Message message, Object... arguments) {
             progressController.fireJobProgressChanged(message, arguments);

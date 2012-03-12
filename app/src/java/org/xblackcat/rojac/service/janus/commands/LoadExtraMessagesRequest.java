@@ -55,7 +55,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         userAH = Storage.get(IUserAH.class);
     }
 
-    public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<IPacket> handler, ILogTracker tracker, IJanusService janusService) throws RojacException {
         int ownUserId = loadData(tracker, janusService);
 
         if (ownUserId > 0) {
@@ -73,7 +73,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         handler.process(new SynchronizationCompletePacket(updatedForums, updatedTopics, updatedMessages));
     }
 
-    protected int loadData(IProgressTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
+    protected int loadData(ILogTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
         int portion = Property.SYNCHRONIZER_LOAD_TOPICS_PORTION.get();
 
         int[] messageIds = miscAH.getExtraMessages();
@@ -108,7 +108,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         return 0;
     }
 
-    private void loadTopics(int[] messageIds, IJanusService janusService, IProgressTracker tracker) throws RsdnProcessorException, StorageException {
+    private void loadTopics(int[] messageIds, IJanusService janusService, ILogTracker tracker) throws RsdnProcessorException, StorageException {
         TopicMessages extra;
         try {
             extra = janusService.getTopicByMessage(messageIds);
@@ -119,7 +119,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         storeNewPosts(tracker, extra);
     }
 
-    protected void storeNewPosts(IProgressTracker tracker, TopicMessages newPosts) throws StorageException {
+    protected void storeNewPosts(ILogTracker tracker, TopicMessages newPosts) throws StorageException {
         JanusMessageInfo[] messages = newPosts.getMessages();
         JanusModerateInfo[] moderates = newPosts.getModerates();
         JanusRatingInfo[] ratings = newPosts.getRatings();
@@ -226,7 +226,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         return false;
     }
 
-    protected void postProcessing(IProgressTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
+    protected void postProcessing(ILogTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
         if (!nonExistUsers.isEmpty() || !nonExistRatingUsers.isEmpty()) {
             int[] userIds;
             if (Property.SYNCHRONIZER_LOAD_USERS.get()) {
@@ -282,7 +282,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
             tracker.updateProgress(i, forUpdateLength);
         }
 
-        mAH.updateLastPostInfo(updatedTopics.toArray());
+        mAH.updateLastPostInfo(tracker, updatedTopics);
     }
 
 }

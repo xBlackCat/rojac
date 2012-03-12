@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
@@ -40,8 +41,8 @@ class QueryHolder implements IQueryHolder {
     }
 
     @Override
-    public void updateBatch(DataQuery sql, Object[]... params) throws StorageException {
-        helper.updateBatch(getQuery(sql), params);
+    public void updateBatch(DataQuery sql, IProgressTracker tracker, Object[]... params) throws StorageException {
+        helper.updateBatch(getQuery(sql), tracker, params);
     }
 
     @Override
