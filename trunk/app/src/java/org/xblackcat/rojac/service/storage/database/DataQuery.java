@@ -480,10 +480,6 @@ public enum DataQuery implements IPropertiable {
      */
     GET_UNREAD_USER_POSTS_NUMBER,
     /**
-     * Returns date of last message in forum and amount of replays. Parameter is threadId.
-     */
-    GET_THREAD_STAT_DATA,
-    /**
      * Checks is the message id exist
      */
     IS_MESSAGE_EXISTS,
