@@ -23,7 +23,7 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MES
 class GetNewPostsRequest extends LoadExtraMessagesRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
-    protected int loadData(IProgressTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
+    protected int loadData(ILogTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
         Collection<RequestForumInfo> forumInfo = forumAH.getSubscribedForums();
 
         if (forumInfo.isEmpty()) {

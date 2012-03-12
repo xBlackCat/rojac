@@ -24,7 +24,7 @@ import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_USE
 class GetUsersRequest extends ARequest<IPacket> {
     private static final Log log = LogFactory.getLog(GetUsersRequest.class);
 
-    public void process(IResultHandler<IPacket> handler, IProgressTracker tracker, IJanusService janusService) throws RojacException {
+    public void process(IResultHandler<IPacket> handler, ILogTracker tracker, IJanusService janusService) throws RojacException {
         IUserAH uAH = Storage.get(IUserAH.class);
 
         tracker.addLodMessage(Message.Synchronize_Command_Name_Users);

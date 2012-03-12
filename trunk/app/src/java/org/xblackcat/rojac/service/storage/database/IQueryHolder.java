@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 
@@ -18,5 +19,5 @@ interface IQueryHolder {
 
     int[] getIds(DataQuery sql, Object... params) throws StorageException;
 
-    void updateBatch(DataQuery sql, Object[]... params) throws StorageException;
+    void updateBatch(DataQuery sql, IProgressTracker tracker, Object[]... params) throws StorageException;
 }

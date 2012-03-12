@@ -1,8 +1,11 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.data.AffectedMessage;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.Role;
+import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -71,16 +74,18 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public void updateLastPostInfo(int... threadIds) throws StorageException {
-        Object[][] params = new Object[threadIds.length][];
+    public void updateLastPostInfo(IProgressTracker tracker, TIntHashSet threadIds) throws StorageException {
+        Object[][] params = new Object[threadIds.size()][];
 
-        for (int i = 0; i < threadIds.length; i++) {
-            params[i] = new Integer[]{threadIds[i]};
+        TIntIterator iterator = threadIds.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            params[i++] = new Integer[]{iterator.next()};
         }
 
-        helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_ID, params);
+        helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_ID, tracker, params);
 
-        helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE, params);
+        helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE, tracker, params);
     }
 
     public void updateMessageReadFlag(int messageId, boolean read) throws StorageException {

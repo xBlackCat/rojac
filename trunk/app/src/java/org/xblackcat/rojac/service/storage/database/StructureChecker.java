@@ -141,7 +141,7 @@ public class StructureChecker implements IStructureChecker {
                             Object[][] rows = rowsList.toArray(new Object[rowsList.size()][]);
 
                             for (String query : queries) {
-                                helper.updateBatch(query, rows);
+                                helper.updateBatch(query, null, rows);
                             }
                         }
                     } catch (StorageException e) {

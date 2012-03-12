@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database.helper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
@@ -87,16 +88,21 @@ public final class QueryHelper implements IQueryHelper {
     }
 
     @Override
-    public void updateBatch(String sql, Object[]... params) throws StorageException {
+    public void updateBatch(String sql, IProgressTracker tracker, Object[]... params) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
         try {
             try (Connection con = connectionFactory.getConnection()) {
                 try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
-                    for (Object[] parameters : params) {
-                        fillStatement(preparedStatement, parameters);
+                    int i = 0, paramsLength = params.length;
+                    while (i < paramsLength) {
+                        if (tracker != null) {
+                            tracker.updateProgress(i, paramsLength);
+                        }
+                        fillStatement(preparedStatement, params[i]);
 
                         preparedStatement.executeUpdate();
+                        i++;
                     }
                 }
 

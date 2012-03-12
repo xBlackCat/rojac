@@ -25,7 +25,7 @@ import java.util.Collection;
 class PostChangesRequest extends ARequest<IPacket> {
     private static final Log log = LogFactory.getLog(PostChangesRequest.class);
 
-    public void process(IResultHandler<IPacket> handler, IProgressTracker trac, IJanusService janusService) {
+    public void process(IResultHandler<IPacket> handler, ILogTracker trac, IJanusService janusService) {
         trac.addLodMessage(Message.Synchronize_Command_Name_Submit);
 
         try {
