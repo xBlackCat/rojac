@@ -11,7 +11,6 @@ import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
-import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
@@ -19,13 +18,14 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.storage.INewRatingAH;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.util.*;
+import org.xblackcat.rojac.util.MessageUtils;
+import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.ShortCutUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -147,7 +147,7 @@ public class MessagePane extends JPanel {
     private void initialize() {
         messageTextPane.setEditorKit(new HTMLEditorKit());
         messageTextPane.setEditable(false);
-        messageTextPane.addHyperlinkListener(new HyperlinkHandler());
+        messageTextPane.addHyperlinkListener(new HyperlinkHandler(MessagePane.this.appControl, messageTextPane));
 
         add(titleBar, BorderLayout.NORTH);
         final JScrollPane scrollPane = new JScrollPane(messageTextPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -283,25 +283,6 @@ public class MessagePane extends JPanel {
         messageTextPane.setText(null);
         messageTextPane.setEnabled(false);
         titleBar.setVisible(false);
-    }
-
-    private class HyperlinkHandler implements HyperlinkListener {
-        public void hyperlinkUpdate(HyperlinkEvent e) {
-            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                JPopupMenu menu = PopupMenuBuilder.getLinkMenu(
-                        e.getURL(),
-                        e.getDescription(),
-                        LinkUtils.getUrlText(e.getSourceElement()),
-                        appControl
-                );
-
-                Point l = MouseInfo.getPointerInfo().getLocation();
-                SwingUtilities.convertPointFromScreen(l, messageTextPane);
-                menu.show(messageTextPane, l.x, l.y);
-            } else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED) {
-                // TODO: show popup with message info
-            }
-        }
     }
 
     private class ReplyAction extends AButtonAction {
