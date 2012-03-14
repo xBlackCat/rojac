@@ -44,6 +44,18 @@ public class UserInfoPane extends JPanel {
         add(loadingComponent, BorderLayout.SOUTH);
 
         setMinimumSize(new Dimension(100, 50));
+
+        Color color = new Color(0xFFFFCC);
+        setBackground(color);
+
+        for (Component c : getComponents()) {
+            c.setBackground(color);
+            if (c instanceof Container) {
+                for (Component cc : ((Container) c).getComponents()) {
+                    cc.setBackground(color);
+                }
+            }
+        }
     }
 
     private JPanel setupUserInfoPane() {
