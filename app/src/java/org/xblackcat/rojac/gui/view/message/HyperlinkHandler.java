@@ -11,6 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
+import org.xblackcat.rojac.gui.theme.PreviewIcon;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.ClipboardUtils;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -129,43 +131,7 @@ class HyperlinkHandler implements HyperlinkListener {
 
         final BalloonTip balloonTip = setupBalloon(sourceElement, mouseY, linkPreview);
 
-        linkPreview.onCopyLink(new Runnable() {
-            @Override
-            public void run() {
-                ClipboardUtils.copyToClipboard(url.toExternalForm());
-                balloonTip.setContents(new JLabel("Link copied to clipboard"));
-                balloonTip.setVisible(true);
-
-                Timer timer = new Timer((int) TimeUnit.SECONDS.toMillis(3), new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        balloonTip.closeBalloon();
-                    }
-                });
-                timer.setRepeats(false);
-                timer.start();
-            }
-        });
-
-        new RojacWorker<Void, Image>() {
-            @Override
-            protected Void perform() throws Exception {
-                HtmlImageGenerator gen = new HtmlImageGenerator();
-                gen.loadUrl(url);
-                gen.setSize(new Dimension(800, 600));
-                publish(gen.getBufferedImage().getScaledInstance(320, 200, Image.SCALE_SMOOTH));
-
-                return null;
-            }
-
-            @Override
-            protected void process(java.util.List<Image> chunks) {
-                for (Image image : chunks) {
-                    linkPreview.setPreview(image);
-                    balloonTip.refreshLocation();
-                }
-            }
-        }.execute();
+        linkPreview.setBalloonTip(balloonTip);
     }
 
     /**
@@ -173,16 +139,16 @@ class HyperlinkHandler implements HyperlinkListener {
      *
      * @param sourceElement
      * @param y
-     * @param linkPreview   @return
+     * @param info          @return
      */
-    private BalloonTip setupBalloon(final Element sourceElement, int y, JComponent linkPreview) {
+    private BalloonTip setupBalloon(final Element sourceElement, int y, JComponent info) {
         Rectangle r = getElementRectangle(sourceElement, y);
 
         Color color = new Color(0xFFFFCC);
-        linkPreview.setBackground(color);
-        BalloonTipStyle tipStyle = new RoundedBalloonStyle(5, 5, linkPreview.getBackground(), Color.black);
+        info.setBackground(color);
+        BalloonTipStyle tipStyle = new RoundedBalloonStyle(5, 5, info.getBackground(), Color.black);
 
-        final BalloonTip balloonTip = new CustomBalloonTip(invoker, linkPreview, r, tipStyle, new LeftAbovePositioner(15, 15), null);
+        final BalloonTip balloonTip = new CustomBalloonTip(invoker, info, r, tipStyle, new LeftAbovePositioner(15, 15), null);
         openBalloons.put(sourceElement, balloonTip);
 
         balloonTip.addHierarchyListener(new HierarchyListener() {
@@ -236,17 +202,72 @@ class HyperlinkHandler implements HyperlinkListener {
     static class HtmlPagePreview extends JPanel {
         private final JLabel previewImage;
         private final JLabel label;
+        private BalloonTip balloonTip;
 
         HtmlPagePreview(final URL url) {
             super(new BorderLayout());
 
             label = new JLabel("<html><body><a href='" + url + "'>" + url + "</a>", SwingConstants.CENTER);
+            label.setIcon(PreviewIcon.CopyToClipBoard);
             label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            label.setToolTipText("Click to copy the link to clipboard");
+            label.setToolTipText(Message.PreviewLink_CopyToClipboard_Tooltip.get());
 
             add(label, BorderLayout.NORTH);
-            previewImage = new JLabel("Loading....", SwingConstants.CENTER);
+            previewImage = new JLabel(Message.PreviewLink_Load.get(), SwingConstants.CENTER);
+            previewImage.setToolTipText(Message.PreviewLink_Load_Tooltip.get());
+            previewImage.setIcon(PreviewIcon.Load);
             add(previewImage, BorderLayout.CENTER);
+
+            final MouseListener clickListener = new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    previewImage.removeMouseListener(this);
+                    previewImage.setToolTipText(null);
+                    previewImage.setText(Message.PreviewLink_Loading.get());
+                    previewImage.setIcon(PreviewIcon.Loading);
+
+                    new RojacWorker<Void, Image>() {
+                        @Override
+                        protected Void perform() throws Exception {
+                            HtmlImageGenerator gen = new HtmlImageGenerator();
+                            gen.loadUrl(url);
+                            gen.setSize(new Dimension(800, 600));
+                            publish(gen.getBufferedImage().getScaledInstance(320, 200, Image.SCALE_SMOOTH));
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void process(java.util.List<Image> chunks) {
+                            for (Image image : chunks) {
+                                setPreview(image);
+                                balloonTip.refreshLocation();
+                            }
+                        }
+                    }.execute();
+
+                }
+            };
+
+            previewImage.addMouseListener(clickListener);
+
+            label.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    ClipboardUtils.copyToClipboard(url.toExternalForm());
+                    balloonTip.setContents(new JLabel(Message.PreviewLink_LinkCopied.get()));
+                    balloonTip.setVisible(true);
+
+                    Timer timer = new Timer((int) TimeUnit.SECONDS.toMillis(3), new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            balloonTip.closeBalloon();
+                        }
+                    });
+                    timer.setRepeats(false);
+                    timer.start();
+                }
+            });
 
         }
 
@@ -255,13 +276,8 @@ class HyperlinkHandler implements HyperlinkListener {
             previewImage.setIcon(new ImageIcon(image));
         }
 
-        public void onCopyLink(final Runnable runnable) {
-            label.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    runnable.run();
-                }
-            });
+        public void setBalloonTip(BalloonTip balloonTip) {
+            this.balloonTip = balloonTip;
         }
     }
 

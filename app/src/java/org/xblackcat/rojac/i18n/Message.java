@@ -409,6 +409,12 @@ public enum Message {
     UserInfoPane_Label_WhereFrom,
     UserInfoPane_Label_Origin,
     UserInfoPane_Label_UserClass,
+
+    PreviewLink_CopyToClipboard_Tooltip,
+    PreviewLink_LinkCopied,
+    PreviewLink_Load,
+    PreviewLink_Load_Tooltip,
+    PreviewLink_Loading,
     // --------
     ;
 
