@@ -1,6 +1,10 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import gui.ava.html.image.generator.HtmlImageGenerator;
+import chrriis.dj.nativeswing.swtimpl.NativeComponent;
+import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationEvent;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.CustomBalloonTip;
 import net.java.balloontip.positioners.LeftAbovePositioner;
@@ -16,6 +20,7 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.ClipboardUtils;
 import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.rojac.util.SWTUtils;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -24,11 +29,13 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -216,7 +223,9 @@ class HyperlinkHandler implements HyperlinkListener {
             previewImage = new JLabel(Message.PreviewLink_Load.get(), SwingConstants.CENTER);
             previewImage.setToolTipText(Message.PreviewLink_Load_Tooltip.get());
             previewImage.setIcon(PreviewIcon.Load);
-            add(previewImage, BorderLayout.CENTER);
+            if (SWTUtils.isSwtEnabled) {
+                add(previewImage, BorderLayout.CENTER);
+            }
 
             final MouseListener clickListener = new MouseAdapter() {
                 @Override
@@ -229,16 +238,37 @@ class HyperlinkHandler implements HyperlinkListener {
                     new RojacWorker<Void, Image>() {
                         @Override
                         protected Void perform() throws Exception {
-                            HtmlImageGenerator gen = new HtmlImageGenerator();
-                            gen.loadUrl(url);
-                            gen.setSize(new Dimension(800, 600));
-                            publish(gen.getBufferedImage().getScaledInstance(320, 200, Image.SCALE_SMOOTH));
+                            final JWebBrowser webBrowser = SWTUtils.prepareBrowser();
+
+                            webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
+                                @Override
+                                public void locationChanged(WebBrowserNavigationEvent e) {
+                                    updateThumbnail();
+                                }
+
+                                @Override
+                                public void loadingProgressChanged(WebBrowserEvent e) {
+                                    updateThumbnail();
+                                }
+
+                                private void updateThumbnail() {
+                                    BufferedImage image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+
+                                    NativeComponent nativeComponent = webBrowser.getNativeComponent();
+                                    nativeComponent.setSize(new Dimension(800, 600));
+                                    nativeComponent.paintComponent(image);
+
+                                    publish(image.getScaledInstance(400, 300, Image.SCALE_SMOOTH));
+                                }
+                            });
+
+                            boolean navigated = webBrowser.navigate(url.toExternalForm());
 
                             return null;
                         }
 
                         @Override
-                        protected void process(java.util.List<Image> chunks) {
+                        protected void process(List<Image> chunks) {
                             for (Image image : chunks) {
                                 setPreview(image);
                                 balloonTip.refreshLocation();
@@ -280,5 +310,4 @@ class HyperlinkHandler implements HyperlinkListener {
             this.balloonTip = balloonTip;
         }
     }
-
 }
