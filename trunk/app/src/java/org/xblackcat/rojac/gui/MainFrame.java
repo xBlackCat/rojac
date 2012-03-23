@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui;
 
+import chrriis.dj.nativeswing.swtimpl.NativeComponent;
+import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import net.infonode.docking.*;
 import net.infonode.docking.drop.DropFilter;
 import net.infonode.docking.drop.DropInfo;
@@ -681,7 +683,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     @Override
-    public Window getMainFrame() {
+    public JFrame getMainFrame() {
         return this;
     }
 
@@ -797,6 +799,21 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 }
             }
         }.execute();
+    }
+
+    public void installBrowser(final JWebBrowser browser) {
+        JDialog window = new JDialog(this);
+        JScrollPane pane = new JScrollPane(browser);
+        window.setContentPane(pane);
+
+        getContentPane().add(pane, BorderLayout.SOUTH);
+
+        pane.setPreferredSize(new Dimension(0, 0));
+        pane.setVisible(false);
+        window.setVisible(false);
+
+        NativeComponent nativeComponent = browser.getNativeComponent();
+        nativeComponent.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
     }
 
     private class ScheduleSynchronization implements Runnable {

@@ -1,5 +1,6 @@
 package org.xblackcat.rojac;
 
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +49,11 @@ public final class RojacLauncher {
     }
 
     private static void launch(String[] args) throws Exception {
+        if (SWTUtils.isSwtEnabled) {
+            chrriis.common.UIUtils.setPreferredLookAndFeel();
+            NativeInterface.open();
+        }
+
         Thread.setDefaultUncaughtExceptionHandler(RojacUtils.GLOBAL_EXCEPTION_HANDLER);
 
         // Load and install core Rojac settings
@@ -99,6 +105,10 @@ public final class RojacLauncher {
         ShortCutUtils.loadShortCuts();
 
         SwingUtilities.invokeLater(new SwingPartInitializer(checker, postId));
+
+        if (SWTUtils.isSwtEnabled) {
+            NativeInterface.runEventPump();
+        }
     }
 
     private static void performShutdown(MainFrame mainFrame) {
@@ -241,6 +251,9 @@ public final class RojacLauncher {
                 WindowsUtils.toFront(mainFrame);
             }
 
+            if (SWTUtils.isSwtEnabled) {
+                mainFrame.installBrowser(SWTUtils.getBrowser());
+            }
 
             new DatabaseInstaller(
                     new Runnable() {
