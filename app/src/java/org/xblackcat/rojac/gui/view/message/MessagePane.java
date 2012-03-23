@@ -12,7 +12,6 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.i18n.JLOptionPane;
-import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
@@ -31,8 +30,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Iterator;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
@@ -194,8 +191,7 @@ public class MessagePane extends JPanel {
         messageTextPane.setText(converted);
         messageTextPane.setCaretPosition(0);
         userInfoLabel.setText(RSDN_USER_NAME.get());
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, LocaleControl.getInstance().getLocale());
-        messageDateLabel.setText(df.format(new Date()));
+        messageDateLabel.setText(MessageUtils.formatDate(0));
         answer.setEnabled(false);
         marks.setEnabled(false);
     }
@@ -228,8 +224,7 @@ public class MessagePane extends JPanel {
             } else {
                 userInfoLabel.setText(Message.UserName_Anonymous.get());
             }
-            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, LocaleControl.getInstance().getLocale());
-            messageDateLabel.setText(df.format(new Date(mes.getMessageDate())));
+            messageDateLabel.setText(MessageUtils.formatDate(mes.getMessageDate()));
             answer.setEnabled(true);
             marks.setEnabled(true);
         } else {

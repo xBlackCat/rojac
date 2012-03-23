@@ -118,4 +118,18 @@ public final class UIUtils {
         IconPack imagePack = Property.ROJAC_GUI_ICONPACK.get();
         return imagePack.getIcon(icon);
     }
+
+    public static void updateBackground(Component c, Color color) {
+        c.setBackground(color);
+
+        if (c instanceof Container) {
+            Container cont = (Container) c;
+            int i = 0;
+            int size = cont.getComponentCount();
+
+            while (i < size) {
+                updateBackground(cont.getComponent(i++), color);
+            }
+        }
+    }
 }

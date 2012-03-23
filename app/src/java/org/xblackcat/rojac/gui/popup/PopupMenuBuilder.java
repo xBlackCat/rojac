@@ -19,8 +19,6 @@ import org.xblackcat.rojac.util.RojacWorker;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -35,57 +33,33 @@ public final class PopupMenuBuilder {
     /**
      * Constructs a pop-up menu for link in message pane.
      *
-     * @param url        URL object of the link.
-     * @param stringUrl  Text representing of the link.
-     * @param text       Text associated with the link.
+     * @param messageId
      * @param appControl back link to main window control.
+     * @param postFound
      * @return new popup menu for the specified url.
      */
-    public static JPopupMenu getLinkMenu(URL url, String stringUrl, String text, IAppControl appControl) {
-        if (url == null) {
-            // Invalid url. Try to parse it from text.
-
-            try {
-                url = new URL(text);
-                // Url in the 'text' field, so assume that text in the 'description' field 
-                text = stringUrl;
-                stringUrl = url.toExternalForm();
-            } catch (MalformedURLException e) {
-                // url can not be obtained neither from text nor from description.
-            }
-        }
-
-        Integer messageId = LinkUtils.getMessageIdFromUrl(stringUrl);
-        if (messageId == null) {
-            messageId = LinkUtils.getMessageIdFromUrl(text);
-        }
-
+    public static JPopupMenu getPostMenu(int messageId, IAppControl appControl, boolean postFound) {
         // Build menu
         final JPopupMenu menu = new JPopupMenu();
 
-        String headerText = messageId == null ? text : "#" + messageId;
+        String headerText = "#" + messageId;
         JMenuItem headerItem = new JMenuItem(headerText);
         headerItem.setEnabled(false);
         menu.add(headerItem);
 
-        menu.addSeparator();
-        if (messageId != null) {
+        if (postFound) {
+            menu.addSeparator();
             menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInForum, OpenMessageMethod.InForum));
             menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInTab, OpenMessageMethod.NewTab));
             menu.add(new OpenMessageMenuItem(messageId, appControl, Message.Popup_Open_MessageInThread, OpenMessageMethod.InThread));
-
-            menu.addSeparator();
-            MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Message, stringUrl);
-            MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
-
-        } else {
-            MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser, stringUrl);
         }
 
-        menu.add(MenuHelper.copyToClipboard(stringUrl));
-        if (messageId != null) {
-            menu.add(MenuHelper.copyLinkSubmenu(messageId));
-        }
+        menu.addSeparator();
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Message, LinkUtils.buildMessageLink(messageId));
+        MenuHelper.addOpenLink(menu, Message.Popup_Link_Open_InBrowser_Thread, LinkUtils.buildThreadLink(messageId));
+
+        menu.add(MenuHelper.copyToClipboard(LinkUtils.buildMessageLink(messageId)));
+        menu.add(MenuHelper.copyLinkSubmenu(messageId));
 
         return menu;
     }
