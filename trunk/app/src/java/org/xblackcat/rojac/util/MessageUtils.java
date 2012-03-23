@@ -6,15 +6,12 @@ import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.RatingCache;
-import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.ViewId;
-import org.xblackcat.rojac.gui.view.model.Post;
-import org.xblackcat.rojac.gui.view.model.ReadStatus;
 import org.xblackcat.rojac.gui.view.thread.MessageReadFlagSetter;
+import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -25,7 +22,9 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.StringWriter;
+import java.text.DateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,8 +35,8 @@ import java.util.regex.Pattern;
 public final class MessageUtils {
     private static final Pattern SUBJ_PATTERN = Pattern.compile("^Re(?:\\[(\\d+)\\])?:\\s+(.+)$");
     private static final Pattern RESP_PATTERN = Pattern.compile("^([A-Z_]>)(.+)$");
-    protected static final Pattern TAGLINE_PATTERN = Pattern.compile("\\[tagline\\].+\\[/tagline\\]");
 
+    protected static final Pattern TAGLINE_PATTERN = Pattern.compile("\\[tagline\\].+\\[/tagline\\]");
     private static final TIntObjectHashMap<String> elements;
     public static final Pattern DOTS_PATTERN = Pattern.compile("\\.{2,}");
 
@@ -284,5 +283,15 @@ public final class MessageUtils {
         }
 
         return DOTS_PATTERN.matcher(result).replaceAll(".");
+    }
+
+    public static String formatDate(long messageDate) {
+        Date date;
+        if (messageDate > 0) {
+            date = new Date(messageDate);
+        } else {
+            date = new Date();
+        }
+        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, LocaleControl.getInstance().getLocale()).format(date);
     }
 }

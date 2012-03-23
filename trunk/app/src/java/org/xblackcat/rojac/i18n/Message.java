@@ -415,6 +415,8 @@ public enum Message {
     PreviewLink_Load,
     PreviewLink_Load_Tooltip,
     PreviewLink_Loading,
+    PreviewLink_MoreActions,
+    PreviewLink_PostNotFound,
     // --------
     ;
 

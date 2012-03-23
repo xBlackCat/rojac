@@ -8,10 +8,13 @@ import net.java.balloontip.styles.RoundedBalloonStyle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
-import org.xblackcat.rojac.gui.theme.PreviewIcon;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.*;
 
 import javax.swing.*;
@@ -26,8 +29,8 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 13.03.12 16:05
@@ -99,13 +102,7 @@ class HyperlinkHandler implements HyperlinkListener {
                     // TODO: show error dialog ???
                 }
             } else {
-                JPopupMenu menu = PopupMenuBuilder.getLinkMenu(
-                        e.getURL(),
-                        e.getDescription(),
-                        LinkUtils.getUrlText(element),
-                        appControl
-                );
-                menu.show(invoker, l.x, l.y);
+                appControl.openMessage(messageId, Property.OPEN_MESSAGE_BEHAVIOUR_GENERAL.get());
             }
         } else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED) {
 
@@ -114,13 +111,33 @@ class HyperlinkHandler implements HyperlinkListener {
             } else if (messageId == null) {
                 showHtmlPreviewBalloon(url, element, mouseY);
             } else {
-                showMessageBalloon(messageId);
+                showMessageBalloon(messageId, element, mouseY);
             }
         }
     }
 
-    private void showMessageBalloon(int messageId) {
+    private void showMessageBalloon(final int messageId, final Element element, final int mouseY) {
+        new RojacWorker<Void, MessageData>() {
+            @Override
+            protected Void perform() throws Exception {
+                publish(Storage.get(IMessageAH.class).getMessageData(messageId));
 
+                return null;
+            }
+
+            @Override
+            protected void process(List<MessageData> chunks) {
+                for (MessageData h : chunks) {
+                    JComponent postInfo;
+                    if (h == null) {
+                        postInfo = new NoPostInfoPane(messageId);
+                    } else {
+                        postInfo = new PostInfoPane(h);
+                    }
+                    setupBalloon(element, mouseY, postInfo, null);
+                }
+            }
+        }.execute();
     }
 
     private void showHtmlPreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
@@ -135,7 +152,7 @@ class HyperlinkHandler implements HyperlinkListener {
             }
         };
 
-        final HtmlPagePreview linkPreview = new HtmlPagePreview(url, onClose);
+        final UrlInfoPane linkPreview = new HtmlPagePreview(url, onClose);
 
         final BalloonTip balloonTip = setupBalloon(sourceElement, mouseY, linkPreview, onClose);
 
@@ -154,12 +171,13 @@ class HyperlinkHandler implements HyperlinkListener {
         Rectangle r = getElementRectangle(sourceElement, y);
 
         Color color = new Color(0xFFFFCC);
-        info.setBackground(color);
-        BalloonTipStyle tipStyle = new RoundedBalloonStyle(5, 5, info.getBackground(), Color.black);
+        BalloonTipStyle tipStyle = new RoundedBalloonStyle(5, 5, color, Color.black);
 
         JButton closeButton = WindowsUtils.balloonTipCloseButton(onClose);
         final BalloonTip balloonTip = new CustomBalloonTip(invoker, info, r, tipStyle, new LeftAbovePositioner(15, 15), closeButton);
         openBalloons.put(sourceElement, balloonTip);
+
+        UIUtils.updateBackground(info, color);
 
         balloonTip.addHierarchyListener(new HierarchyListener() {
             @Override
@@ -179,7 +197,9 @@ class HyperlinkHandler implements HyperlinkListener {
             public void focusLost(FocusEvent e) {
                 if (e.getOppositeComponent() != null) {
                     balloonTip.closeBalloon();
-                    onClose.run();
+                    if (onClose != null) {
+                        onClose.run();
+                    }
                 }
             }
         });
@@ -210,58 +230,62 @@ class HyperlinkHandler implements HyperlinkListener {
         return r;
     }
 
-    /**
-     * 13.03.12 16:54
-     *
-     * @author xBlackCat
-     */
-    class HtmlPagePreview extends JPanel {
-        private final JLabel previewImage;
-        private final JLabel label;
-        private BalloonTip balloonTip;
+    private class NoPostInfoPane extends UrlInfoPane {
+        public NoPostInfoPane(final int messageId) {
+            super(LinkUtils.buildThreadLink(messageId), "#" + messageId);
 
-        HtmlPagePreview(final URL url, final Runnable onClose) {
-            super(new BorderLayout());
+            add(new JLabel(Message.PreviewLink_PostNotFound.get(messageId)), BorderLayout.CENTER);
 
-            label = new JLabel("<html><body><a href='" + url + "'>" + url + "</a>", SwingConstants.CENTER);
-            label.setIcon(PreviewIcon.CopyToClipBoard);
-            label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            label.setToolTipText(Message.PreviewLink_CopyToClipboard_Tooltip.get());
-
-            add(label, BorderLayout.NORTH);
-            previewImage = new JLabel(Message.PreviewLink_Load.get(), SwingConstants.CENTER);
-            if (SWTUtils.isSwtEnabled) {
-                previewImage.setToolTipText(Message.PreviewLink_Load_Tooltip.get());
-                previewImage.setIcon(PreviewIcon.Load);
-                add(previewImage, BorderLayout.CENTER);
-                final MouseListener clickListener = new PreviewClickHandler(url, previewImage, balloonTip);
-
-                previewImage.addMouseListener(clickListener);
-            }
-
-            label.addMouseListener(new MouseAdapter() {
+            JLabel advancedOptions = new JLabel(Message.PreviewLink_MoreActions.get());
+            add(advancedOptions, BorderLayout.SOUTH);
+            advancedOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            advancedOptions.setHorizontalAlignment(SwingConstants.RIGHT);
+            advancedOptions.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    ClipboardUtils.copyToClipboard(url.toExternalForm());
-                    onClose.run();
-                    balloonTip.setContents(new JLabel(Message.PreviewLink_LinkCopied.get()));
-                    balloonTip.setVisible(true);
-
-                    Timer timer = new Timer((int) TimeUnit.SECONDS.toMillis(3), new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            balloonTip.closeBalloon();
-                        }
-                    });
-                    timer.setRepeats(false);
-                    timer.start();
+                    Point l = MouseInfo.getPointerInfo().getLocation();
+                    SwingUtilities.convertPointFromScreen(l, invoker);
+                    JPopupMenu menu = PopupMenuBuilder.getPostMenu(messageId, appControl, false);
+                    menu.show(invoker, l.x, l.y);
                 }
             });
-
-        }
-
-        public void setBalloonTip(BalloonTip balloonTip) {
-            this.balloonTip = balloonTip;
         }
     }
+
+    private class PostInfoPane extends UrlInfoPane {
+        public PostInfoPane(final MessageData h) {
+            super(LinkUtils.buildThreadLink(h.getMessageId()), h.getSubject());
+
+            JPanel cp = new JPanel(new BorderLayout(10, 10));
+            cp.setOpaque(true);
+
+            JLabel userInfo = new JLabel(h.getUserName());
+            cp.add(userInfo, BorderLayout.CENTER);
+
+            JLabel messageDate = new JLabel(MessageUtils.formatDate(h.getMessageDate()));
+            cp.add(messageDate, BorderLayout.EAST);
+
+            JLabel ratingInfo = new JLabel();
+            ratingInfo.setHorizontalAlignment(SwingConstants.CENTER);
+            ratingInfo.setIcon(MessageUtils.buildRateImage(h.getRating(), ratingInfo.getFont(), ratingInfo.getForeground()));
+            cp.add(ratingInfo, BorderLayout.SOUTH);
+
+            add(cp, BorderLayout.CENTER);
+
+            JLabel advancedOptions = new JLabel(Message.PreviewLink_MoreActions.get());
+            add(advancedOptions, BorderLayout.SOUTH);
+            advancedOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            advancedOptions.setHorizontalAlignment(SwingConstants.RIGHT);
+            advancedOptions.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    Point l = MouseInfo.getPointerInfo().getLocation();
+                    SwingUtilities.convertPointFromScreen(l, invoker);
+                    JPopupMenu menu = PopupMenuBuilder.getPostMenu(h.getMessageId(), appControl, true);
+                    menu.show(invoker, l.x, l.y);
+                }
+            });
+        }
+    }
+
 }
