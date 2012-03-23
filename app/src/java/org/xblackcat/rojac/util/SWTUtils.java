@@ -1,10 +1,12 @@
 package org.xblackcat.rojac.util;
 
+import chrriis.dj.nativeswing.swtimpl.NSPanelComponent;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -20,6 +22,8 @@ public class SWTUtils {
     private static final Log log = LogFactory.getLog(SWTUtils.class);
 
     public static final boolean isSwtEnabled;
+    private static JWebBrowser webBrowser;
+    public static final Dimension DEFAULT_BROWSER_SIZE = new Dimension(800, 600);
 
     static {
         try {
@@ -40,17 +44,24 @@ public class SWTUtils {
         isSwtEnabled = swtFound;
     }
 
-    public static JWebBrowser prepareBrowser() {
-        // Check and load correspond SWT library
+    public static JWebBrowser getBrowser() {
+        assert RojacUtils.checkThread(true);
 
-        final JWebBrowser webBrowser = new JWebBrowser();
-        webBrowser.setStatusBarVisible(false);
-        webBrowser.setMenuBarVisible(false);
-        webBrowser.setJavascriptEnabled(true);
-        webBrowser.setBarsVisible(false);
-        webBrowser.setDefaultPopupMenuRegistered(false);
-        webBrowser.setLocationBarVisible(false);
-        webBrowser.setButtonBarVisible(false);
+        if (webBrowser == null) {
+            // Check and load correspond SWT library
+
+            webBrowser = new JWebBrowser(NSPanelComponent.destroyOnFinalization());
+            webBrowser.setStatusBarVisible(false);
+            webBrowser.setMenuBarVisible(false);
+            webBrowser.setJavascriptEnabled(true);
+            webBrowser.setBarsVisible(false);
+            webBrowser.setDefaultPopupMenuRegistered(false);
+            webBrowser.setLocationBarVisible(false);
+            webBrowser.setButtonBarVisible(false);
+            webBrowser.setFocusable(false);
+            webBrowser.setRequestFocusEnabled(false);
+            webBrowser.getNativeComponent().setFocusable(false);
+        }
         return webBrowser;
     }
 

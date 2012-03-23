@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui;
 import net.infonode.docking.View;
 import org.xblackcat.rojac.gui.view.ViewId;
 
-import java.awt.*;
+import javax.swing.*;
 
 /**
  * @author xBlackCat
@@ -15,7 +15,7 @@ public interface IAppControl {
      *
      * @return main application window.
      */
-    Window getMainFrame();
+    JFrame getMainFrame();
 
     /**
      * Show edit dialog. Possible combinations are: <ul> <li>messageId is <code>null</code> and forumId specifies a

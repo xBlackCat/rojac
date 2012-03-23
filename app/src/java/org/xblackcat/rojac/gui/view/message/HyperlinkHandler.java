@@ -1,10 +1,5 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import chrriis.dj.nativeswing.swtimpl.NativeComponent;
-import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationEvent;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.CustomBalloonTip;
 import net.java.balloontip.positioners.LeftAbovePositioner;
@@ -17,10 +12,7 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.PreviewIcon;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.util.ClipboardUtils;
-import org.xblackcat.rojac.util.LinkUtils;
-import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.SWTUtils;
+import org.xblackcat.rojac.util.*;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -29,13 +21,11 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -134,9 +124,20 @@ class HyperlinkHandler implements HyperlinkListener {
     }
 
     private void showHtmlPreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
-        final HtmlPagePreview linkPreview = new HtmlPagePreview(url);
+        Runnable onClose = new Runnable() {
+            @Override
+            public void run() {
+                assert RojacUtils.checkThread(true);
 
-        final BalloonTip balloonTip = setupBalloon(sourceElement, mouseY, linkPreview);
+                if (SWTUtils.isSwtEnabled) {
+                    SWTUtils.getBrowser().stopLoading();
+                }
+            }
+        };
+
+        final HtmlPagePreview linkPreview = new HtmlPagePreview(url, onClose);
+
+        final BalloonTip balloonTip = setupBalloon(sourceElement, mouseY, linkPreview, onClose);
 
         linkPreview.setBalloonTip(balloonTip);
     }
@@ -147,22 +148,28 @@ class HyperlinkHandler implements HyperlinkListener {
      * @param sourceElement
      * @param y
      * @param info          @return
+     * @param onClose
      */
-    private BalloonTip setupBalloon(final Element sourceElement, int y, JComponent info) {
+    private BalloonTip setupBalloon(final Element sourceElement, int y, JComponent info, final Runnable onClose) {
         Rectangle r = getElementRectangle(sourceElement, y);
 
         Color color = new Color(0xFFFFCC);
         info.setBackground(color);
         BalloonTipStyle tipStyle = new RoundedBalloonStyle(5, 5, info.getBackground(), Color.black);
 
-        final BalloonTip balloonTip = new CustomBalloonTip(invoker, info, r, tipStyle, new LeftAbovePositioner(15, 15), null);
+        JButton closeButton = WindowsUtils.balloonTipCloseButton(onClose);
+        final BalloonTip balloonTip = new CustomBalloonTip(invoker, info, r, tipStyle, new LeftAbovePositioner(15, 15), closeButton);
         openBalloons.put(sourceElement, balloonTip);
 
         balloonTip.addHierarchyListener(new HierarchyListener() {
             @Override
             public void hierarchyChanged(HierarchyEvent e) {
                 if (HierarchyEvent.SHOWING_CHANGED == (HierarchyEvent.SHOWING_CHANGED & e.getChangeFlags())) {
-                    openBalloons.remove(sourceElement);
+                    if (balloonTip.isShowing()) {
+                        openBalloons.put(sourceElement, balloonTip);
+                    } else {
+                        openBalloons.remove(sourceElement);
+                    }
                 }
             }
         });
@@ -170,8 +177,10 @@ class HyperlinkHandler implements HyperlinkListener {
         balloonTip.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                balloonTip.closeBalloon();
-                openBalloons.remove(sourceElement);
+                if (e.getOppositeComponent() != null) {
+                    balloonTip.closeBalloon();
+                    onClose.run();
+                }
             }
         });
         balloonTip.requestFocus();
@@ -206,12 +215,12 @@ class HyperlinkHandler implements HyperlinkListener {
      *
      * @author xBlackCat
      */
-    static class HtmlPagePreview extends JPanel {
+    class HtmlPagePreview extends JPanel {
         private final JLabel previewImage;
         private final JLabel label;
         private BalloonTip balloonTip;
 
-        HtmlPagePreview(final URL url) {
+        HtmlPagePreview(final URL url, final Runnable onClose) {
             super(new BorderLayout());
 
             label = new JLabel("<html><body><a href='" + url + "'>" + url + "</a>", SwingConstants.CENTER);
@@ -221,70 +230,20 @@ class HyperlinkHandler implements HyperlinkListener {
 
             add(label, BorderLayout.NORTH);
             previewImage = new JLabel(Message.PreviewLink_Load.get(), SwingConstants.CENTER);
-            previewImage.setToolTipText(Message.PreviewLink_Load_Tooltip.get());
-            previewImage.setIcon(PreviewIcon.Load);
             if (SWTUtils.isSwtEnabled) {
+                previewImage.setToolTipText(Message.PreviewLink_Load_Tooltip.get());
+                previewImage.setIcon(PreviewIcon.Load);
                 add(previewImage, BorderLayout.CENTER);
+                final MouseListener clickListener = new PreviewClickHandler(url, previewImage, balloonTip);
+
+                previewImage.addMouseListener(clickListener);
             }
-
-            final MouseListener clickListener = new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    previewImage.removeMouseListener(this);
-                    previewImage.setToolTipText(null);
-                    previewImage.setText(Message.PreviewLink_Loading.get());
-                    previewImage.setIcon(PreviewIcon.Loading);
-
-                    new RojacWorker<Void, Image>() {
-                        @Override
-                        protected Void perform() throws Exception {
-                            final JWebBrowser webBrowser = SWTUtils.prepareBrowser();
-
-                            webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
-                                @Override
-                                public void locationChanged(WebBrowserNavigationEvent e) {
-                                    updateThumbnail();
-                                }
-
-                                @Override
-                                public void loadingProgressChanged(WebBrowserEvent e) {
-                                    updateThumbnail();
-                                }
-
-                                private void updateThumbnail() {
-                                    BufferedImage image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
-
-                                    NativeComponent nativeComponent = webBrowser.getNativeComponent();
-                                    nativeComponent.setSize(new Dimension(800, 600));
-                                    nativeComponent.paintComponent(image);
-
-                                    publish(image.getScaledInstance(400, 300, Image.SCALE_SMOOTH));
-                                }
-                            });
-
-                            boolean navigated = webBrowser.navigate(url.toExternalForm());
-
-                            return null;
-                        }
-
-                        @Override
-                        protected void process(List<Image> chunks) {
-                            for (Image image : chunks) {
-                                setPreview(image);
-                                balloonTip.refreshLocation();
-                            }
-                        }
-                    }.execute();
-
-                }
-            };
-
-            previewImage.addMouseListener(clickListener);
 
             label.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     ClipboardUtils.copyToClipboard(url.toExternalForm());
+                    onClose.run();
                     balloonTip.setContents(new JLabel(Message.PreviewLink_LinkCopied.get()));
                     balloonTip.setVisible(true);
 
@@ -299,11 +258,6 @@ class HyperlinkHandler implements HyperlinkListener {
                 }
             });
 
-        }
-
-        public void setPreview(Image image) {
-            previewImage.setText(null);
-            previewImage.setIcon(new ImageIcon(image));
         }
 
         public void setBalloonTip(BalloonTip balloonTip) {
