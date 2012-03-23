@@ -211,9 +211,9 @@
 
     <target name="build" description="Make distributive of the application. Generate scripts to run application"
             depends="compile, test">
-        <mkdir dir="${rojac-application.dist.dir}/lib"/>
         <mkdir dir="${rojac-application.dist.dir}/bin"/>
         <mkdir dir="${rojac-application.dist.dir}/conf"/>
+        <mkdir dir="${rojac-application.dist.dir}/lib"/>
 
         <fileset id="rojac.runtime.libs" dir="${rojac-application.lib.dir}">
             <include name="**/*.jar"/>
@@ -270,6 +270,8 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
 ]]>
         </echo>
 
+        <echo file="${rojac-application.dist.dir}/bin/build.txt">${svn.entry(revision)}</echo>
+
         <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.cmd" eol="dos"/>
         <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.bat" eol="dos"/>
         <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh" eol="unix"/>
@@ -310,8 +312,8 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         <launch4j configFile="${rojac-application.basedir}/classes/sender.launch4j.xml"/>
 
         <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.l4j.ini"><![CDATA[# Rojac JVM options
--Xms16M
--Xmx64M
+-Xms32M
+-Xmx80M
 ]]>
         </echo>
         <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.l4j.ini" eol="dos"/>
@@ -330,6 +332,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
              compress="yes">
             <fileset dir="${rojac-application.dist.dir}">
                 <include name="bin/${rojac.filename}*"/>
+                <include name="bin/build.txt"/>
                 <include name="bin/setclasspath.bat"/>
                 <include name="lib/**/*.jar"/>
                 <exclude name="lib/${rojac.filename}-tests.jar"/>
