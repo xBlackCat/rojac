@@ -19,24 +19,33 @@ import java.util.concurrent.TimeUnit;
  *
  * @author xBlackCat
  */
-public class UrlInfoPane extends JPanel {
-    protected BalloonTip balloonTip;
+class UrlInfoPane extends JPanel {
+    protected final JLabel copyLinkLabel;
+    protected final String urlString;
+    protected final Runnable onClose;
 
-    public UrlInfoPane(final String url, String text) {
-        this(url, text, null);
+    public UrlInfoPane(String urlString, String text) {
+        this(urlString, text, null);
     }
 
-    public UrlInfoPane(final String url, String text, final Runnable onClose) {
+    public UrlInfoPane(String urlString, String text, Runnable onClose) {
         super(new BorderLayout(10, 10));
+        this.urlString = urlString;
+        this.onClose = onClose;
 
-        final JLabel label = new JLabel("<html><body><a href='" + url + "'>" + StringEscapeUtils.escapeHtml4(text) + "</a>", SwingConstants.CENTER);
-        label.setIcon(PreviewIcon.CopyToClipBoard);
-        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        label.setToolTipText(Message.PreviewLink_CopyToClipboard_Tooltip.get());
-        label.addMouseListener(new MouseAdapter() {
+        copyLinkLabel = new JLabel("<html><body><a href='" + urlString + "'>" + StringEscapeUtils.escapeHtml4(text) + "</a>", SwingConstants.CENTER);
+        copyLinkLabel.setIcon(PreviewIcon.CopyToClipBoard);
+        copyLinkLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        copyLinkLabel.setToolTipText(Message.PreviewLink_CopyToClipboard_Tooltip.get());
+
+        add(copyLinkLabel, BorderLayout.NORTH);
+    }
+
+    public void initialize(final BalloonTip balloonTip) {
+        copyLinkLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                ClipboardUtils.copyToClipboard(url);
+                ClipboardUtils.copyToClipboard(urlString);
                 onClose.run();
                 balloonTip.setContents(new JLabel(Message.PreviewLink_LinkCopied.get()));
                 balloonTip.setVisible(true);
@@ -51,11 +60,9 @@ public class UrlInfoPane extends JPanel {
                 timer.start();
             }
         });
-
-        add(label, BorderLayout.NORTH);
     }
 
-    public void setBalloonTip(BalloonTip balloonTip) {
-        this.balloonTip = balloonTip;
+    public Runnable getOnClose() {
+        return onClose;
     }
 }

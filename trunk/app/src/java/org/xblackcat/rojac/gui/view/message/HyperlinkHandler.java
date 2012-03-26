@@ -138,20 +138,20 @@ class HyperlinkHandler implements HyperlinkListener {
             @Override
             protected void process(List<MessageData> chunks) {
                 for (MessageData h : chunks) {
-                    JComponent postInfo;
+                    UrlInfoPane postInfo;
                     if (h == null) {
                         postInfo = new NoPostInfoPane(messageId);
                     } else {
                         postInfo = new PostInfoPane(h);
                     }
-                    setupBalloon(element, mouseY, postInfo, null);
+                    setupBalloon(element, mouseY, postInfo);
                 }
             }
         }.execute();
     }
 
     private void showHtmlPreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
-        Runnable onClose = new Runnable() {
+        UrlInfoPane linkPreview = new HtmlPagePreview(url, new Runnable() {
             @Override
             public void run() {
                 assert RojacUtils.checkThread(true);
@@ -161,13 +161,9 @@ class HyperlinkHandler implements HyperlinkListener {
                     SWTUtils.getBrowser().navigate("about:blank");
                 }
             }
-        };
+        });
 
-        final UrlInfoPane linkPreview = new HtmlPagePreview(url, onClose);
-
-        final BalloonTip balloonTip = setupBalloon(sourceElement, mouseY, linkPreview, onClose);
-
-        linkPreview.setBalloonTip(balloonTip);
+        setupBalloon(sourceElement, mouseY, linkPreview);
     }
 
     private boolean showYoutubePreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
@@ -197,9 +193,7 @@ class HyperlinkHandler implements HyperlinkListener {
 
                     final UrlInfoPane linkPreview = new YoutubePagePreview(url, vi);
 
-                    final BalloonTip balloonTip = setupBalloon(sourceElement, mouseY, linkPreview, null);
-
-                    linkPreview.setBalloonTip(balloonTip);
+                    setupBalloon(sourceElement, mouseY, linkPreview);
                 }
             }
         }.execute();
@@ -212,13 +206,14 @@ class HyperlinkHandler implements HyperlinkListener {
      * @param sourceElement
      * @param y
      * @param info          @return
-     * @param onClose
      */
-    private BalloonTip setupBalloon(final Element sourceElement, int y, JComponent info, final Runnable onClose) {
+    private void setupBalloon(final Element sourceElement, int y, UrlInfoPane info) {
         Rectangle r = getElementRectangle(sourceElement, y);
 
         Color color = new Color(0xFFFFCC);
         BalloonTipStyle tipStyle = new RoundedBalloonStyle(5, 5, color, Color.black);
+
+        final Runnable onClose = info.getOnClose();
 
         JButton closeButton = WindowsUtils.balloonTipCloseButton(onClose);
         final BalloonTip balloonTip = new CustomBalloonTip(invoker, info, r, tipStyle, new LeftAbovePositioner(15, 15), closeButton);
@@ -251,7 +246,7 @@ class HyperlinkHandler implements HyperlinkListener {
             }
         });
         balloonTip.requestFocus();
-        return balloonTip;
+        info.initialize(balloonTip);
     }
 
     private Rectangle getElementRectangle(Element sourceElement, int y) {

@@ -26,9 +26,10 @@ import java.net.URL;
 class PreviewClickHandler extends MouseAdapter {
     private final URL url;
     private final JLabel previewImage;
-    private volatile BalloonTip balloonTip;
+    private BalloonTip balloonTip;
 
     public PreviewClickHandler(URL url, JLabel previewImage1, BalloonTip balloonTip) {
+        assert balloonTip != null;
         this.url = url;
         previewImage = previewImage1;
         this.balloonTip = balloonTip;
@@ -59,8 +60,6 @@ class PreviewClickHandler extends MouseAdapter {
                 updateThumbnail(webBrowser);
             }
         });
-
-        webBrowser.navigate("about:blank");
         webBrowser.navigate(url.toExternalForm());
     }
 
@@ -74,9 +73,7 @@ class PreviewClickHandler extends MouseAdapter {
 
         previewImage.setText(null);
         previewImage.setIcon(new ImageIcon(image.getScaledInstance(400, 300, Image.SCALE_SMOOTH)));
-        previewImage.invalidate();
-        if (balloonTip != null) {
-            balloonTip.refreshLocation();
-        }
+        previewImage.setPreferredSize(new Dimension(400, 300));
+        balloonTip.refreshLocation();
     }
 }
