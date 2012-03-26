@@ -26,7 +26,7 @@ import java.net.URL;
 class PreviewClickHandler extends MouseAdapter {
     private final URL url;
     private final JLabel previewImage;
-    private BalloonTip balloonTip;
+    private volatile BalloonTip balloonTip;
 
     public PreviewClickHandler(URL url, JLabel previewImage1, BalloonTip balloonTip) {
         this.url = url;
@@ -50,6 +50,8 @@ class PreviewClickHandler extends MouseAdapter {
             @Override
             public void locationChanged(WebBrowserNavigationEvent e) {
                 updateThumbnail(webBrowser);
+                webBrowser.removeWebBrowserListener(this);
+                webBrowser.navigate("about:blank");
             }
 
             @Override
@@ -65,12 +67,14 @@ class PreviewClickHandler extends MouseAdapter {
     private void updateThumbnail(JWebBrowser webBrowser) {
         BufferedImage image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
 
+        webBrowser.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
         NativeComponent nativeComponent = webBrowser.getNativeComponent();
         nativeComponent.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
         nativeComponent.paintComponent(image);
 
         previewImage.setText(null);
         previewImage.setIcon(new ImageIcon(image.getScaledInstance(400, 300, Image.SCALE_SMOOTH)));
+        previewImage.invalidate();
         if (balloonTip != null) {
             balloonTip.refreshLocation();
         }

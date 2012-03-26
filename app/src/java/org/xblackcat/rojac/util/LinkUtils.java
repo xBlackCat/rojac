@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +17,7 @@ public final class LinkUtils {
     private static final Log log = LogFactory.getLog(LinkUtils.class);
 
     private static final String URL_PREFIX = "http://((www|gzip)\\.)?rsdn\\.ru/";
+    private static final Pattern YOUTUBE_LINK = Pattern.compile("(&|^)v=([-\\w]+)($|&)");
 
     /**
      * Set of rsdn link to message patterns.
@@ -115,5 +117,40 @@ public final class LinkUtils {
 
     public static String buildMessageLink(int messageId) {
         return "http://rsdn.ru/forum/message/" + messageId + ".1.aspx";
+    }
+
+    public static boolean isYoutubeLink(URL url) {
+        String host = url.getHost();
+        if (host == null) {
+            return false;
+        }
+
+        if (host.endsWith("youtube.com")) {
+            return true;
+        } else if (host.endsWith("youtu.be")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static String getYoutubeVideoId(URL url) {
+        String host = url.getHost();
+        if (host == null) {
+            return null;
+        }
+
+        if (host.endsWith("youtube.com")) {
+            Matcher m = YOUTUBE_LINK.matcher(url.getQuery());
+            if (m.find()) {
+                return m.group(2);
+            }
+        }
+
+        if (host.endsWith("youtu.be")) {
+            return url.getPath().substring(1);
+        }
+
+        return null;
     }
 }

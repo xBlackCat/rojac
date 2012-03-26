@@ -294,4 +294,19 @@ public final class MessageUtils {
         }
         return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, LocaleControl.getInstance().getLocale()).format(date);
     }
+
+    public static String formatDuration(Long duration) {
+        if (duration == null) {
+            return "--:--:--";
+        }
+
+        long hours = duration;
+
+        int seconds = (int) hours % 60;
+        hours /= 60;
+        int minutes = (int) hours % 60;
+        hours /= 60;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
 }

@@ -417,6 +417,8 @@ public enum Message {
     PreviewLink_Loading,
     PreviewLink_MoreActions,
     PreviewLink_PostNotFound,
+    PreviewLink_Youtube_ViewCount,
+    PreviewLink_Youtube_Duration,
     // --------
     ;
 
