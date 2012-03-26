@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.message;
 
+import net.java.balloontip.BalloonTip;
 import org.xblackcat.rojac.gui.component.RojacCursor;
 import org.xblackcat.rojac.gui.theme.PreviewIcon;
 import org.xblackcat.rojac.i18n.Message;
@@ -17,19 +18,56 @@ import java.net.URL;
  * @author xBlackCat
  */
 class YoutubePagePreview extends UrlInfoPane {
-    YoutubePagePreview(final URL url, final YoutubeVideoInfo vi) {
-        super(url.toExternalForm(), vi.getVideoTitle());
+    private final JLabel thumbnail;
+    private final YoutubeVideoInfo videoInfo;
 
-        final JLabel thumbnail = new JLabel(vi.getThumbnail());
+    YoutubePagePreview(final URL url, final YoutubeVideoInfo videoInfo) {
+        super(url.toExternalForm(), videoInfo.getVideoTitle());
+        this.videoInfo = videoInfo;
+
+        thumbnail = new JLabel(videoInfo.getThumbnail());
+
+        add(thumbnail, BorderLayout.CENTER);
+
+        JPanel statisticPane = new JPanel(new BorderLayout(5, 5));
+
+        JPanel ratingPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 2));
+        JLabel likes = new JLabel(String.valueOf(videoInfo.getNumLikes()), PreviewIcon.ThumbUp, SwingConstants.CENTER);
+        JLabel dislikes = new JLabel(String.valueOf(videoInfo.getNumDislikes()), PreviewIcon.ThumbDown, SwingConstants.CENTER);
+        likes.setForeground(new Color(0, 192, 0));
+        dislikes.setForeground(new Color(255, 64, 64));
+        ratingPane.add(likes);
+        ratingPane.add(dislikes);
+
+        statisticPane.add(ratingPane, BorderLayout.EAST);
+
+        JLabel viewCount = new JLabel(Message.PreviewLink_Youtube_ViewCount.get(videoInfo.getViewCount()));
+        statisticPane.add(viewCount, BorderLayout.WEST);
+
+        JLabel duration = new JLabel(
+                Message.PreviewLink_Youtube_Duration.get(
+                        MessageUtils.formatDuration(videoInfo.getDuration())
+                ),
+                SwingConstants.CENTER
+        );
+        statisticPane.add(duration, BorderLayout.NORTH);
+
+        add(statisticPane, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public void initialize(final BalloonTip balloonTip) {
+        super.initialize(balloonTip);
+
         thumbnail.setCursor(RojacCursor.ZoomIn.get());
         thumbnail.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (thumbnail.getIcon() == vi.getThumbnail()) {
-                    thumbnail.setIcon(vi.getHqThumbnail());
+                if (thumbnail.getIcon() == videoInfo.getThumbnail()) {
+                    thumbnail.setIcon(videoInfo.getHqThumbnail());
                     thumbnail.setCursor(RojacCursor.ZoomOut.get());
                 } else {
-                    thumbnail.setIcon(vi.getThumbnail());
+                    thumbnail.setIcon(videoInfo.getThumbnail());
                     thumbnail.setCursor(RojacCursor.ZoomIn.get());
                 }
 
@@ -38,32 +76,5 @@ class YoutubePagePreview extends UrlInfoPane {
                 }
             }
         });
-
-        add(thumbnail, BorderLayout.CENTER);
-
-        JPanel statisticPane = new JPanel(new BorderLayout(5, 5));
-
-        JPanel ratingPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 2));
-        JLabel likes = new JLabel(String.valueOf(vi.getNumLikes()), PreviewIcon.ThumbUp, SwingConstants.CENTER);
-        JLabel dislikes = new JLabel(String.valueOf(vi.getNumDislikes()), PreviewIcon.ThumbDown, SwingConstants.CENTER);
-        likes.setForeground(new Color(0, 192, 0));
-        dislikes.setForeground(new Color(255, 64, 64));
-        ratingPane.add(likes);
-        ratingPane.add(dislikes);
-
-        statisticPane.add(ratingPane, BorderLayout.EAST);
-
-        JLabel viewCount = new JLabel(Message.PreviewLink_Youtube_ViewCount.get(vi.getViewCount()));
-        statisticPane.add(viewCount, BorderLayout.WEST);
-
-        JLabel duration = new JLabel(
-                Message.PreviewLink_Youtube_Duration.get(
-                        MessageUtils.formatDuration(vi.getDuration())
-                ),
-                SwingConstants.CENTER
-        );
-        statisticPane.add(duration, BorderLayout.NORTH);
-
-        add(statisticPane, BorderLayout.SOUTH);
     }
 }
