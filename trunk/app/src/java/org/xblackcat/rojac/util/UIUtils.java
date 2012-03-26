@@ -7,9 +7,12 @@ import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * @author xBlackCat
@@ -131,5 +134,17 @@ public final class UIUtils {
                 updateBackground(cont.getComponent(i++), color);
             }
         }
+    }
+
+    public static Icon loadRemoteIcon(String thumbnailUrl) {
+        Icon icon = null;
+        if (thumbnailUrl != null) {
+            try {
+                icon = new ImageIcon(ImageIO.read(new URL(thumbnailUrl)));
+            } catch (IOException e) {
+                // Icon can not be loaded
+            }
+        }
+        return icon;
     }
 }

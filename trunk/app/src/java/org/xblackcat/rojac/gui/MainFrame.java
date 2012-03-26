@@ -812,6 +812,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         pane.setVisible(false);
         window.setVisible(false);
 
+        browser.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
         NativeComponent nativeComponent = browser.getNativeComponent();
         nativeComponent.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
     }

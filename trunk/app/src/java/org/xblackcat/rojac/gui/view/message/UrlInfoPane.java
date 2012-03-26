@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.message;
 
 import net.java.balloontip.BalloonTip;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.xblackcat.rojac.gui.theme.PreviewIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.ClipboardUtils;
@@ -28,7 +29,7 @@ public class UrlInfoPane extends JPanel {
     public UrlInfoPane(final String url, String text, final Runnable onClose) {
         super(new BorderLayout(10, 10));
 
-        final JLabel label = new JLabel("<html><body><a href='" + url + "'>" + text + "</a>", SwingConstants.CENTER);
+        final JLabel label = new JLabel("<html><body><a href='" + url + "'>" + StringEscapeUtils.escapeHtml4(text) + "</a>", SwingConstants.CENTER);
         label.setIcon(PreviewIcon.CopyToClipBoard);
         label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         label.setToolTipText(Message.PreviewLink_CopyToClipboard_Tooltip.get());

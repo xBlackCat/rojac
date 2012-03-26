@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.util;
 
 import chrriis.dj.nativeswing.swtimpl.NSPanelComponent;
+import chrriis.dj.nativeswing.swtimpl.NativeComponent;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
@@ -61,6 +62,11 @@ public class SWTUtils {
             webBrowser.setFocusable(false);
             webBrowser.setRequestFocusEnabled(false);
             webBrowser.getNativeComponent().setFocusable(false);
+
+            webBrowser.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
+            NativeComponent nativeComponent = webBrowser.getNativeComponent();
+            nativeComponent.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
+
         }
         return webBrowser;
     }

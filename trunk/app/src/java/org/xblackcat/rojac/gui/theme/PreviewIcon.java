@@ -14,7 +14,11 @@ import java.awt.*;
 public enum PreviewIcon implements Icon {
     CopyToClipBoard("preview-copylink.png"),
     Load("preview-load.png"),
-    Loading("preview-loading.png");
+    Loading("preview-loading.png"),
+    ThumbDown("preview-thumb-down.png"),
+    ThumbUp("preview-thumb-up.png"),
+    // --------
+    ;
 
     private final IResourceIcon icon;
 

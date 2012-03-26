@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.message;
 
+import com.google.gdata.client.youtube.YouTubeService;
+import com.google.gdata.data.youtube.VideoEntry;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.CustomBalloonTip;
 import net.java.balloontip.positioners.LeftAbovePositioner;
@@ -29,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +112,13 @@ class HyperlinkHandler implements HyperlinkListener {
             if (url == null) {
                 // TODO: show error or standard dialog
             } else if (messageId == null) {
+                if (LinkUtils.isYoutubeLink(url)) {
+                    if (showYoutubePreviewBalloon(url, element, mouseY)) {
+                        // Youtube link is resolved
+                        return;
+                    }
+                }
+
                 showHtmlPreviewBalloon(url, element, mouseY);
             } else {
                 showMessageBalloon(messageId, element, mouseY);
@@ -148,6 +158,7 @@ class HyperlinkHandler implements HyperlinkListener {
 
                 if (SWTUtils.isSwtEnabled) {
                     SWTUtils.getBrowser().stopLoading();
+                    SWTUtils.getBrowser().navigate("about:blank");
                 }
             }
         };
@@ -157,6 +168,42 @@ class HyperlinkHandler implements HyperlinkListener {
         final BalloonTip balloonTip = setupBalloon(sourceElement, mouseY, linkPreview, onClose);
 
         linkPreview.setBalloonTip(balloonTip);
+    }
+
+    private boolean showYoutubePreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
+        final String videoId = LinkUtils.getYoutubeVideoId(url);
+        if (videoId == null) {
+            return false;
+        }
+
+        new RojacWorker<Void, YoutubeVideoInfo>() {
+            @Override
+            protected Void perform() throws Exception {
+                YouTubeService service = new YouTubeService(RojacUtils.VERSION_STRING);
+
+                String videoEntryUrl = "http://gdata.youtube.com/feeds/api/videos/" + videoId;
+                VideoEntry ve = service.getEntry(new URL(videoEntryUrl), VideoEntry.class);
+
+                publish(new YoutubeVideoInfo(ve));
+
+                return null;
+            }
+
+            @Override
+            protected void process(List<YoutubeVideoInfo> chunks) {
+                Iterator<YoutubeVideoInfo> iterator = chunks.iterator();
+                if (iterator.hasNext()) {
+                    YoutubeVideoInfo vi = iterator.next();
+
+                    final UrlInfoPane linkPreview = new YoutubePagePreview(url, vi);
+
+                    final BalloonTip balloonTip = setupBalloon(sourceElement, mouseY, linkPreview, null);
+
+                    linkPreview.setBalloonTip(balloonTip);
+                }
+            }
+        }.execute();
+        return true;
     }
 
     /**
