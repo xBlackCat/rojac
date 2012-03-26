@@ -46,7 +46,9 @@ class UrlInfoPane extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 ClipboardUtils.copyToClipboard(urlString);
-                onClose.run();
+                if (onClose != null) {
+                    onClose.run();
+                }
                 balloonTip.setContents(new JLabel(Message.PreviewLink_LinkCopied.get()));
                 balloonTip.setVisible(true);
 
