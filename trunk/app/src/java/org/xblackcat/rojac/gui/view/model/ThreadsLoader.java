@@ -1,13 +1,10 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import gnu.trove.list.array.TIntArrayList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.data.DiscussionStatistic;
-import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.ThreadData;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
-import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -23,9 +20,9 @@ import java.util.List;
 class ThreadsLoader extends RojacWorker<Void, Thread> {
     private static final Log log = LogFactory.getLog(ThreadsLoader.class);
 
-    private final int forumId;
-    private final ForumRoot rootItem;
-    private final boolean hideIgnored;
+    protected final int forumId;
+    protected final ForumRoot rootItem;
+    protected final SortedThreadsModel model;
 
     public ThreadsLoader(final Runnable postProcessor, final SortedThreadsModel model, int forumId) {
         super(new Runnable() {
@@ -40,36 +37,27 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
                 }
             }
         });
+        this.model = model;
         assert RojacUtils.checkThread(true);
 
-        hideIgnored = Property.HIDE_IGNORED_TOPICS.get(false);
         this.forumId = forumId;
         this.rootItem = (ForumRoot) model.getRoot();
     }
 
     @Override
     protected Void perform() throws Exception {
-        IStatisticAH mAH = Storage.get(IStatisticAH.class);
-        try {
-            Iterable<MessageData> threadPosts = Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId);
+        boolean hideIgnored = Property.HIDE_IGNORED_TOPICS.get(false);
 
-            // TODO: optimize the loop! Move to DB all grouping stuff
-            for (MessageData threadPost : threadPosts) {
-                if (hideIgnored && threadPost.isIgnored()) {
+        try {
+            int userId = Property.RSDN_USER_ID.get(-1);
+            Iterable<ThreadData> threadPosts = Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId, userId);
+
+            for (ThreadData threadPost : threadPosts) {
+                if (hideIgnored && threadPost.getMessageData().isIgnored()) {
                     continue;
                 }
 
-                int topicId = threadPost.getMessageId();
-
-                try {
-                    DiscussionStatistic statistic = mAH.getReplaysInThread(topicId, Property.RSDN_USER_ID.get(-1));
-
-                    publish(
-                            new Thread(threadPost, rootItem, statistic)
-                    );
-                } catch (StorageException e) {
-                    log.error("Can not load statistic for topic #" + topicId, e);
-                }
+                publish(new Thread(threadPost.getMessageData(), rootItem, threadPost.getReadStatistic()));
             }
         } catch (StorageException e) {
             log.error("Can not load topics for forum #" + forumId, e);
@@ -81,7 +69,7 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
     @Override
     protected void process(List<Thread> chunks) {
-        TIntArrayList updatedNodes = new TIntArrayList();
+//        TIntArrayList updatedNodes = new TIntArrayList();
 //        List<Post> addedNodes = new LinkedList<Post>();
         List<Post> threads = rootItem.childrenPosts;
 
@@ -92,7 +80,7 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
                 if (!realThread.isFilled()) {
                     threads.set(index, t);
                 }
-                updatedNodes.add(index);
+//                updatedNodes.add(index);
             } else {
                 threads.add(t);
 //                addedNodes.add(t);

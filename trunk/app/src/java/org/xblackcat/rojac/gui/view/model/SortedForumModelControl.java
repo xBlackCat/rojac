@@ -45,16 +45,7 @@ class SortedForumModelControl extends AThreadsModelControl {
 
         model.setRoot(rootItem);
 
-        final ForumInfoLoader infoLoader = new ForumInfoLoader(model, forumId) {
-            @Override
-            protected void done() {
-                super.done();
-                if (model.getRoot() != null) {
-                    new ThreadsLoader(postProcessor, model, forumId).execute();
-                }
-            }
-        };
-        infoLoader.execute();
+        new ForumInfoLoader(model, forumId).execute();
     }
 
     private void markForumRead(SortedThreadsModel model, boolean read) {

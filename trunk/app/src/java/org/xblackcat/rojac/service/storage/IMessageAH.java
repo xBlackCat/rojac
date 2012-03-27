@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage;
 
 import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.data.ThreadData;
 import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import ru.rsdn.Janus.JanusMessageInfo;
@@ -98,11 +99,13 @@ public interface IMessageAH extends AH {
     /**
      * Returns messages data for specified forum id.
      *
+     *
      * @param forumId target forum id
+     * @param userId
      * @return array of topic messages data.
      * @throws StorageException
      */
-    Iterable<MessageData> getTopicMessagesDataByForumId(int forumId) throws StorageException;
+    Iterable<ThreadData> getTopicMessagesDataByForumId(int forumId, int userId) throws StorageException;
 
     /**
      * Returns all a user posts.

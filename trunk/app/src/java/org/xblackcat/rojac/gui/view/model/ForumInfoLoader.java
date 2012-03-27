@@ -8,21 +8,21 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.util.RojacWorker;
+
+import javax.swing.*;
 
 /**
  * @author xBlackCat
  */
-class ForumInfoLoader extends RojacWorker<Void, Forum> {
+class ForumInfoLoader extends ThreadsLoader {
     private static final Log log = LogFactory.getLog(ForumInfoLoader.class);
 
     private final int forumId;
-    private SortedThreadsModel model;
     private Forum forum;
 
     public ForumInfoLoader(SortedThreadsModel model, int forumId) {
+        super(null, model, forumId);
         this.forumId = forumId;
-        this.model = model;
     }
 
     @Override
@@ -33,19 +33,27 @@ class ForumInfoLoader extends RojacWorker<Void, Forum> {
             forum = fah.getForumById(forumId);
         } catch (StorageException e) {
             log.error("Can not load forum information for forum id = " + forumId, e);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    model.setRoot(null);
+                }
+            });
+            return null;
         }
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                MessageData fd = new ForumMessageData(forum);
+                model.getRoot().setMessageData(fd);
+                model.nodeChanged(model.getRoot());
+            }
+        });
+
+        // Load threads
+        super.perform();
 
         return null;
-    }
-
-    @Override
-    protected void done() {
-        if (forum != null) {
-            MessageData fd = new ForumMessageData(forum);
-            model.getRoot().setMessageData(fd);
-            model.nodeChanged(model.getRoot());
-        } else {
-            model.setRoot(null);
-        }
     }
 }
