@@ -51,6 +51,11 @@ public class BoldTestTag implements ITag<BoldTestTag> {
                     public String getBody() {
                         return text.substring(startPos + OPEN_TAG.length(), endPos);
                     }
+
+                    @Override
+                    public boolean hasBody() {
+                        return startPos + OPEN_TAG.length() < endPos;
+                    }
                 };
             }
         };

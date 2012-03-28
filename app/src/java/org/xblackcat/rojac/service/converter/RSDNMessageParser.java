@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.service.converter;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.service.converter.tag.RsdnTagList;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.utils.ResourceUtils;
@@ -14,11 +13,14 @@ import java.util.regex.Pattern;
  */
 
 public class RSDNMessageParser implements IMessageParser {
+    private static final Pattern PRE_IMG_TAG_CLEANER_PATTERN = Pattern.compile("\\[img\\][\\n\\s]+");
+    private static final String PRE_IMG_TAG_CLEANER_REPLACEMENT = "[img]";
+
     private static final Pattern PRE_QUOTATION_PATTERN = Pattern.compile("^([[^\\s\\p{Punct}]_]*?)>(.*?)$", Pattern.MULTILINE);
     private static final String PRE_QUOTATION_REPLACEMENT = "[span]$1>$2[/span]";
 
-    private static final Pattern QUOTATION_PATTERN = Pattern.compile("^\\[span\\](.*)\\[/span\\]$", Pattern.MULTILINE);
-    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+?)[\\.,!:]?(\\[|\\]|\\s|$)", Pattern.MULTILINE);
+//    private static final Pattern QUOTATION_PATTERN = Pattern.compile("^\\[span\\](.*)\\[/span\\]$", Pattern.MULTILINE);
+    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+?)[\\.,!:]?(\\[|\\]|\\s|$)");
 
     private static final String HYPERLINKS_REPLACEMENT = "$1[url=$2]$2[/url]$4";
 
@@ -63,6 +65,7 @@ public class RSDNMessageParser implements IMessageParser {
      * @return a new string with highlighted quotation lines.
      */
     protected String preProcessText(String rsdn) {
+        rsdn = PRE_IMG_TAG_CLEANER_PATTERN.matcher(rsdn).replaceAll(PRE_IMG_TAG_CLEANER_REPLACEMENT);
         rsdn = HYPERLINKS_PATTERN.matcher(rsdn).replaceAll(HYPERLINKS_REPLACEMENT);
         rsdn = PRE_QUOTATION_PATTERN.matcher(rsdn).replaceAll(PRE_QUOTATION_REPLACEMENT);
         rsdn = MessageUtils.escapeHTML(rsdn);
@@ -111,7 +114,7 @@ public class RSDNMessageParser implements IMessageParser {
             // Add head of the tag (open tag)
             res.append(tagData.getHead());
             // Add processed body tags
-            if (StringUtils.isNotEmpty(tagData.getBody())) {
+            if (tagData.hasBody()) {
                 res.append(processText(tagData.getBody(), t));
             }
             // Add tail of the tag (close tag)

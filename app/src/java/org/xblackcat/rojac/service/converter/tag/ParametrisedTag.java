@@ -8,24 +8,24 @@ import org.xblackcat.rojac.service.converter.ITagInfo;
  * @author xBlackCat
  */
 
-public class ParameterizedTag extends SimpleTag {
+public class ParametrisedTag extends SimpleTag {
     private final String openTagEnd;
     private final String openTextTagEnd;
 
-    protected ParameterizedTag(String openTag, String openTagEnd, String closeTag, String openTextTag, String openTextTagEnd, String closeTextTag) {
+    protected ParametrisedTag(String openTag, String openTagEnd, String closeTag, String openTextTag, String openTextTagEnd, String closeTextTag) {
         super(openTag, closeTag, openTextTag, closeTextTag);
         this.openTagEnd = openTagEnd.toLowerCase();
         this.openTextTagEnd = openTextTagEnd;
     }
 
     protected ITagInfo<SimpleTag> getTagInfo(final String text, final String lower, final int startPos) {
-        return new ParameterizedTagInfo(startPos, lower, text);
+        return new ParametrisedTagInfo(startPos, lower, text);
     }
 
-    protected class ParameterizedTagData extends SimpleTagData {
+    protected class ParametrisedTagData extends SimpleTagData {
         private final int openEndPos;
 
-        public ParameterizedTagData(int startPos, int endPos, String text, int openEndPos) {
+        public ParametrisedTagData(int startPos, int endPos, String text, int openEndPos) {
             super(startPos, endPos, text);
             this.openEndPos = openEndPos;
         }
@@ -41,10 +41,15 @@ public class ParameterizedTag extends SimpleTag {
         public String getBody() {
             return text.substring(openEndPos + openTagEnd.length(), endPos);
         }
+
+        @Override
+        public boolean hasBody() {
+            return openEndPos + openTagEnd.length() < endPos;
+        }
     }
 
-    protected class ParameterizedTagInfo extends SimpleTagInfo {
-        public ParameterizedTagInfo(int startPos, String lower, String text) {
+    protected class ParametrisedTagInfo extends SimpleTagInfo {
+        public ParametrisedTagInfo(int startPos, String lower, String text) {
             super(startPos, lower, text);
         }
 
@@ -60,7 +65,7 @@ public class ParameterizedTag extends SimpleTag {
                 return null;
             }
 
-            return new ParameterizedTagData(startPos, endPos, text, openEndPos);
+            return new ParametrisedTagData(startPos, endPos, text, openEndPos);
         }
     }
 }
