@@ -5,13 +5,13 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.TablecellBalloonTip;
 import net.java.balloontip.styles.BalloonTipStyle;
-import net.java.balloontip.styles.RoundedBalloonStyle;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.gui.hint.UserInfoPane;
 import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.Storage;
+import org.xblackcat.rojac.util.BalloonTipUtils;
 import org.xblackcat.rojac.util.ColumnsAutoSizer;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -78,7 +78,7 @@ class RatingPane extends JPanel {
                         userInfo.setPreferredSize(new Dimension(300, 300));
 
 //                        BalloonTipStyle tipStyle = new LeftRightRoundedBalloonStyle(5, 5, userInfo.getBackground(), Color.black);
-                        BalloonTipStyle tipStyle = new RoundedBalloonStyle(5, 5, userInfo.getBackground(), Color.black);
+                        BalloonTipStyle tipStyle = BalloonTipUtils.createTipStyle(userInfo.getBackground());
 
                         LeftCenterPositioner positioner = new LeftCenterPositioner(15, 15);
                         final BalloonTip tip = new TablecellBalloonTip(marksList, userInfo, row, 1,

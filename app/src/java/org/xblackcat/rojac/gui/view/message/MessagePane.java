@@ -17,10 +17,7 @@ import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.storage.INewRatingAH;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.util.MessageUtils;
-import org.xblackcat.rojac.util.RojacWorker;
-import org.xblackcat.rojac.util.ShortCutUtils;
-import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
@@ -309,7 +306,7 @@ public class MessagePane extends JPanel {
                     LeftRightRoundedBalloonStyle tipStyle = new LeftRightRoundedBalloonStyle(5, 5, rd.getBackground(), Color.black);
 
                     LeftCenterPositioner positioner = new LeftCenterPositioner(15, 15);
-                    JButton closeButton = WindowsUtils.balloonTipCloseButton(null);
+                    JButton closeButton = BalloonTipUtils.balloonTipCloseButton(null);
                     final BalloonTip tip = new BalloonTip(marksButton, rd, tipStyle, positioner, closeButton);
                     tip.refreshLocation();
                     tip.setVisible(true);

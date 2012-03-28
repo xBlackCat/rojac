@@ -56,9 +56,7 @@ class YoutubePagePreview extends UrlInfoPane {
     }
 
     @Override
-    public void initialize(final BalloonTip balloonTip) {
-        super.initialize(balloonTip);
-
+    public void initializePreview(final BalloonTip balloonTip) {
         thumbnail.setCursor(RojacCursor.ZoomIn.get());
         thumbnail.addMouseListener(new MouseAdapter() {
             @Override

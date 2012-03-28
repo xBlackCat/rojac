@@ -8,6 +8,7 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationEvent;
 import net.java.balloontip.BalloonTip;
 import org.xblackcat.rojac.gui.theme.PreviewIcon;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.SWTUtils;
 
@@ -64,7 +65,10 @@ class PreviewClickHandler extends MouseAdapter {
     }
 
     private void updateThumbnail(JWebBrowser webBrowser) {
-        BufferedImage image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+        PreviewSize size = Property.LINK_PREVIEW_PAGE_SIZE.get();
+        PreviewSize previewSize = Property.LINK_PREVIEW_PAGE_THUMBNAIL_SIZE.get();
+
+        BufferedImage image = new BufferedImage(size.getWidth(), size.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
         webBrowser.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
         NativeComponent nativeComponent = webBrowser.getNativeComponent();
@@ -72,8 +76,8 @@ class PreviewClickHandler extends MouseAdapter {
         nativeComponent.paintComponent(image);
 
         previewImage.setText(null);
-        previewImage.setIcon(new ImageIcon(image.getScaledInstance(400, 300, Image.SCALE_SMOOTH)));
-        previewImage.setPreferredSize(new Dimension(400, 300));
+        previewImage.setIcon(new ImageIcon(image.getScaledInstance(previewSize.getWidth(), previewSize.getHeight(), Image.SCALE_SMOOTH)));
+        previewImage.setPreferredSize(new Dimension(previewSize.getWidth(), previewSize.getHeight()));
         balloonTip.refreshLocation();
     }
 }

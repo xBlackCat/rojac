@@ -2,9 +2,9 @@ package org.xblackcat.rojac.gui.dialog.options;
 
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.xblackcat.rojac.gui.component.AComplexEditor;
+import org.xblackcat.rojac.gui.theme.OptionsIcon;
 import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.util.WindowsUtils;
-import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -127,8 +127,8 @@ class TextStyleEditor extends AComplexEditor<TextStyle> {
             }
         });
 
-        JButton confirm = new JButton(ResourceUtils.loadIcon("/images/icons/button-confirm.png"));
-        JButton cancel = new JButton(ResourceUtils.loadIcon("/images/icons/button-cancel.png"));
+        JButton confirm = new JButton(OptionsIcon.Confirm);
+        JButton cancel = new JButton(OptionsIcon.Cancel);
 
         confirm.addActionListener(new ActionListener() {
             @Override

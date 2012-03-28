@@ -15,7 +15,7 @@ public class DimensionConverter implements IConverter<Dimension> {
         }
 
         try {
-            String[] axises = s.split("\\s*,\\s*");
+            String[] axises = s.split("\\d*,\\d*");
             if (axises.length == 2) {
                 return new Dimension(Integer.parseInt(axises[0]), Integer.parseInt(axises[1]));
             }
