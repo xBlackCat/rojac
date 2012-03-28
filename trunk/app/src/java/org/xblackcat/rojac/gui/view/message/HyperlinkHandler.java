@@ -6,7 +6,6 @@ import net.java.balloontip.BalloonTip;
 import net.java.balloontip.CustomBalloonTip;
 import net.java.balloontip.positioners.LeftAbovePositioner;
 import net.java.balloontip.styles.BalloonTipStyle;
-import net.java.balloontip.styles.RoundedBalloonStyle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
@@ -212,10 +211,24 @@ class HyperlinkHandler implements HyperlinkListener {
         new RojacWorker<Void, Icon>() {
             @Override
             protected Void perform() throws Exception {
+                PreviewSize size = Property.LINK_PREVIEW_IMAGE_SIZE.get();
+
                 Image image = ImageIO.read(url);
 
                 if (image != null) {
-                    publish(new ImageIcon(image.getScaledInstance(400, 300, Image.SCALE_SMOOTH)));
+                    Image thumb = image;
+                    int width = image.getWidth(null);
+                    int height = image.getHeight(null);
+
+                    if (height > size.getHeight() || width > size.getWidth()) {
+                        if (height * size.getWidth() > width * size.getHeight()) {
+                            thumb = image.getScaledInstance(-1, size.getHeight(), Image.SCALE_SMOOTH);
+                        } else {
+                            thumb = image.getScaledInstance(size.getWidth(), -1, Image.SCALE_SMOOTH);
+                        }
+                    }
+
+                    publish(new ImageIcon(thumb));
                 }
 
                 return null;
@@ -229,10 +242,8 @@ class HyperlinkHandler implements HyperlinkListener {
 
                     final UrlInfoPane linkPreview = new UrlInfoPane(url.toExternalForm(), url.toExternalForm()) {
                         @Override
-                        public void initialize(BalloonTip balloonTip) {
+                        protected void initializePreview(BalloonTip balloonTip) {
                             add(new JLabel(icon), BorderLayout.CENTER);
-
-                            super.initialize(balloonTip);
                         }
                     };
 
@@ -254,11 +265,11 @@ class HyperlinkHandler implements HyperlinkListener {
         Rectangle r = getElementRectangle(sourceElement, y);
 
         Color color = new Color(0xFFFFCC);
-        BalloonTipStyle tipStyle = new RoundedBalloonStyle(5, 5, color, Color.black);
+        BalloonTipStyle tipStyle = BalloonTipUtils.createTipStyle(color);
 
         final Runnable onClose = info.getOnClose();
 
-        JButton closeButton = WindowsUtils.balloonTipCloseButton(onClose);
+        JButton closeButton = BalloonTipUtils.balloonTipCloseButton(onClose);
         final BalloonTip balloonTip = new CustomBalloonTip(invoker, info, r, tipStyle, new LeftAbovePositioner(15, 15), closeButton);
         openBalloons.put(sourceElement, balloonTip);
 
@@ -326,15 +337,11 @@ class HyperlinkHandler implements HyperlinkListener {
             add(advancedOptions, BorderLayout.SOUTH);
             advancedOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             advancedOptions.setHorizontalAlignment(SwingConstants.RIGHT);
-            advancedOptions.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    Point l = MouseInfo.getPointerInfo().getLocation();
-                    SwingUtilities.convertPointFromScreen(l, invoker);
-                    JPopupMenu menu = PopupMenuBuilder.getPostMenu(messageId, appControl, false);
-                    menu.show(invoker, l.x, l.y);
-                }
-            });
+            advancedOptions.addMouseListener(new PopupMenuShower(messageId, false));
+        }
+
+        @Override
+        protected void initializePreview(BalloonTip balloonTip) {
         }
     }
 
@@ -362,16 +369,29 @@ class HyperlinkHandler implements HyperlinkListener {
             add(advancedOptions, BorderLayout.SOUTH);
             advancedOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             advancedOptions.setHorizontalAlignment(SwingConstants.RIGHT);
-            advancedOptions.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    Point l = MouseInfo.getPointerInfo().getLocation();
-                    SwingUtilities.convertPointFromScreen(l, invoker);
-                    JPopupMenu menu = PopupMenuBuilder.getPostMenu(h.getMessageId(), appControl, true);
-                    menu.show(invoker, l.x, l.y);
-                }
-            });
+            advancedOptions.addMouseListener(new PopupMenuShower(h.getMessageId(), true));
+        }
+
+        @Override
+        protected void initializePreview(BalloonTip balloonTip) {
         }
     }
 
+    private class PopupMenuShower extends MouseAdapter {
+        private final int messageId;
+        private final boolean found;
+
+        public PopupMenuShower(int messageId, boolean found) {
+            this.messageId = messageId;
+            this.found = found;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            Point l = MouseInfo.getPointerInfo().getLocation();
+            SwingUtilities.convertPointFromScreen(l, invoker);
+            JPopupMenu menu = PopupMenuBuilder.getPostMenu(messageId, appControl, found);
+            menu.show(invoker, l.x, l.y);
+        }
+    }
 }

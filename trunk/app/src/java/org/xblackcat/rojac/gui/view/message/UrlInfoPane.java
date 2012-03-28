@@ -4,6 +4,7 @@ import net.java.balloontip.BalloonTip;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.xblackcat.rojac.gui.theme.PreviewIcon;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.ClipboardUtils;
 
 import javax.swing.*;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author xBlackCat
  */
-class UrlInfoPane extends JPanel {
+abstract class UrlInfoPane extends JPanel {
     protected final JLabel copyLinkLabel;
     protected final String urlString;
     protected final Runnable onClose;
@@ -41,7 +42,7 @@ class UrlInfoPane extends JPanel {
         add(copyLinkLabel, BorderLayout.NORTH);
     }
 
-    public void initialize(final BalloonTip balloonTip) {
+    public final void initialize(final BalloonTip balloonTip) {
         copyLinkLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -62,7 +63,13 @@ class UrlInfoPane extends JPanel {
                 timer.start();
             }
         });
+
+        if (Property.LINK_PREVIEW_ENABLED.get()) {
+            initializePreview(balloonTip);
+        }
     }
+
+    protected abstract void initializePreview(BalloonTip balloonTip);
 
     public Runnable getOnClose() {
         return onClose;

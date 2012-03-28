@@ -8,7 +8,6 @@ import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 /**
  * @author xBlackCat
@@ -390,17 +389,4 @@ public final class WindowsUtils {
         });
     }
 
-    public static JButton balloonTipCloseButton(final Runnable onClose) {
-        JButton closeButton = setupImageButton("cancel", new AButtonAction(Message.Button_Close) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (onClose != null) {
-                    onClose.run();
-                }
-            }
-        });
-        closeButton.setBorder(null);
-        closeButton.setContentAreaFilled(false);
-        return closeButton;
-    }
 }

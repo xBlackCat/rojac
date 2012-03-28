@@ -32,9 +32,7 @@ class HtmlPagePreview extends UrlInfoPane {
     }
 
     @Override
-    public void initialize(BalloonTip balloonTip) {
-        super.initialize(balloonTip);
-
+    public void initializePreview(BalloonTip balloonTip) {
         final MouseListener clickListener = new PreviewClickHandler(url, centralPane, balloonTip);
 
         centralPane.addMouseListener(clickListener);
