@@ -43,6 +43,11 @@ public class SingleTag extends SimpleTag {
         public String getBody() {
             return "";  // The tag has no body
         }
+
+        @Override
+        public boolean hasBody() {
+            return false; // The tag has no body
+        }
     }
 
     protected class SingleTagInfo extends SimpleTagInfo {

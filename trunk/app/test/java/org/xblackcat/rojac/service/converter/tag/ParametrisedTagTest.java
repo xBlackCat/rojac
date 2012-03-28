@@ -6,9 +6,9 @@ import junit.framework.TestCase;
  * @author xBlackCat
  */
 
-public class ParameterizedTagTest extends TestCase {
+public class ParametrisedTagTest extends TestCase {
     public void testParameterizedTag() throws Exception {
-        ParameterizedTag urlTag = new ParameterizedTag(
+        ParametrisedTag urlTag = new ParametrisedTag(
                 "[url=",
                 "]",
                 "[/url]",

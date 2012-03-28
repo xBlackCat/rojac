@@ -39,4 +39,11 @@ public interface ITagData {
      * @return processed body/
      */
     String getBody();
+
+    /**
+     * Returns true if tag has not empty body
+     *
+     * @return true if tag has not empty body
+     */
+    boolean hasBody();
 }

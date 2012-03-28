@@ -131,5 +131,10 @@ public class SimpleTag implements ITag<SimpleTag> {
         public String getBody() {
             return text.substring(startPos + openTag.length(), endPos);
         }
+
+        @Override
+        public boolean hasBody() {
+            return startPos + openTag.length() < endPos;
+        }
     }
 }

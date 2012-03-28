@@ -47,6 +47,11 @@ public class SmileTestTag implements ITag<SmileTestTag> {
                     public String getBody() {
                         return "";
                     }
+
+                    @Override
+                    public boolean hasBody() {
+                        return false;
+                    }
                 };
             }
         };
