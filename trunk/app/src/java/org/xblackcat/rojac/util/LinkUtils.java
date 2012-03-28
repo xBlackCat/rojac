@@ -153,4 +153,17 @@ public final class LinkUtils {
 
         return null;
     }
+
+    public static boolean isImageLink(URL url) {
+        String path = url.getPath();
+        if (path == null) {
+            return false;
+        }
+
+        return path.endsWith(".png") ||
+                path.endsWith(".jpg") ||
+                path.endsWith(".jpeg") ||
+                path.endsWith(".gif") ||
+                path.endsWith(".bmp");
+    }
 }

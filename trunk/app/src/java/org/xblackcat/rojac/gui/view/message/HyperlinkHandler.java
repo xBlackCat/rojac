@@ -19,6 +19,7 @@ import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -119,6 +120,13 @@ class HyperlinkHandler implements HyperlinkListener {
                     }
                 }
 
+                if (LinkUtils.isImageLink(url)) {
+                    if (showImagePreviewBalloon(url, element, mouseY)) {
+                        // Youtube link is resolved
+                        return;
+                    }
+                }
+
                 showHtmlPreviewBalloon(url, element, mouseY);
             } else {
                 showMessageBalloon(messageId, element, mouseY);
@@ -200,6 +208,41 @@ class HyperlinkHandler implements HyperlinkListener {
         return true;
     }
 
+    private boolean showImagePreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
+        new RojacWorker<Void, Icon>() {
+            @Override
+            protected Void perform() throws Exception {
+                Image image = ImageIO.read(url);
+
+                if (image != null) {
+                    publish(new ImageIcon(image.getScaledInstance(400, 300, Image.SCALE_SMOOTH)));
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void process(List<Icon> chunks) {
+                Iterator<Icon> iterator = chunks.iterator();
+                if (iterator.hasNext()) {
+                    final Icon icon = iterator.next();
+
+                    final UrlInfoPane linkPreview = new UrlInfoPane(url.toExternalForm(), url.toExternalForm()) {
+                        @Override
+                        public void initialize(BalloonTip balloonTip) {
+                            add(new JLabel(icon), BorderLayout.CENTER);
+
+                            super.initialize(balloonTip);
+                        }
+                    };
+
+                    setupBalloon(sourceElement, mouseY, linkPreview);
+                }
+            }
+        }.execute();
+        return true;
+    }
+
     /**
      * Generate a balloon tip. Returns null if
      *
@@ -247,6 +290,7 @@ class HyperlinkHandler implements HyperlinkListener {
         });
         balloonTip.requestFocus();
         info.initialize(balloonTip);
+        balloonTip.refreshLocation();
     }
 
     private Rectangle getElementRectangle(Element sourceElement, int y) {
