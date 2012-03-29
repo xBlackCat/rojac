@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.gui.view.message;
 
-import com.google.gdata.client.youtube.YouTubeService;
-import com.google.gdata.data.youtube.VideoEntry;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.CustomBalloonTip;
 import net.java.balloontip.positioners.LeftAbovePositioner;
@@ -18,7 +16,6 @@ import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.*;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -31,7 +28,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -145,7 +141,7 @@ class HyperlinkHandler implements HyperlinkListener {
             @Override
             protected void process(List<MessageData> chunks) {
                 for (MessageData h : chunks) {
-                    UrlInfoPane postInfo;
+                    AnUrlInfoPane postInfo;
                     if (h == null) {
                         postInfo = new NoPostInfoPane(messageId);
                     } else {
@@ -158,7 +154,7 @@ class HyperlinkHandler implements HyperlinkListener {
     }
 
     private void showHtmlPreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
-        UrlInfoPane linkPreview = new HtmlPagePreview(url, new Runnable() {
+        AnUrlInfoPane linkPreview = new HtmlPagePreview(url, new Runnable() {
             @Override
             public void run() {
                 assert RojacUtils.checkThread(true);
@@ -179,78 +175,16 @@ class HyperlinkHandler implements HyperlinkListener {
             return false;
         }
 
-        new RojacWorker<Void, YoutubeVideoInfo>() {
-            @Override
-            protected Void perform() throws Exception {
-                YouTubeService service = new YouTubeService(RojacUtils.VERSION_STRING);
+        final AnUrlInfoPane linkPreview = new YoutubePagePreview(url, videoId);
 
-                String videoEntryUrl = "http://gdata.youtube.com/feeds/api/videos/" + videoId;
-                VideoEntry ve = service.getEntry(new URL(videoEntryUrl), VideoEntry.class);
-
-                publish(new YoutubeVideoInfo(ve));
-
-                return null;
-            }
-
-            @Override
-            protected void process(List<YoutubeVideoInfo> chunks) {
-                Iterator<YoutubeVideoInfo> iterator = chunks.iterator();
-                if (iterator.hasNext()) {
-                    YoutubeVideoInfo vi = iterator.next();
-
-                    final UrlInfoPane linkPreview = new YoutubePagePreview(url, vi);
-
-                    setupBalloon(sourceElement, mouseY, linkPreview);
-                }
-            }
-        }.execute();
+        setupBalloon(sourceElement, mouseY, linkPreview);
         return true;
     }
 
     private boolean showImagePreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
-        new RojacWorker<Void, Icon>() {
-            @Override
-            protected Void perform() throws Exception {
-                PreviewSize size = Property.LINK_PREVIEW_IMAGE_SIZE.get();
+        final AnUrlInfoPane linkPreview = new ImagePreviewPane(url);
 
-                Image image = ImageIO.read(url);
-
-                if (image != null) {
-                    Image thumb = image;
-                    int width = image.getWidth(null);
-                    int height = image.getHeight(null);
-
-                    if (height > size.getHeight() || width > size.getWidth()) {
-                        if (height * size.getWidth() > width * size.getHeight()) {
-                            thumb = image.getScaledInstance(-1, size.getHeight(), Image.SCALE_SMOOTH);
-                        } else {
-                            thumb = image.getScaledInstance(size.getWidth(), -1, Image.SCALE_SMOOTH);
-                        }
-                    }
-
-                    publish(new ImageIcon(thumb));
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void process(List<Icon> chunks) {
-                Iterator<Icon> iterator = chunks.iterator();
-                if (iterator.hasNext()) {
-                    final Icon icon = iterator.next();
-
-                    final UrlInfoPane linkPreview = new UrlInfoPane(url.toExternalForm(), url.toExternalForm()) {
-                        @Override
-                        protected void initializePreview(BalloonTip balloonTip) {
-                            add(new JLabel(icon), BorderLayout.CENTER);
-                        }
-                    };
-
-                    setupBalloon(sourceElement, mouseY, linkPreview);
-                }
-            }
-        }.execute();
+        setupBalloon(sourceElement, mouseY, linkPreview);
         return true;
     }
 
@@ -261,7 +195,7 @@ class HyperlinkHandler implements HyperlinkListener {
      * @param y
      * @param info          @return
      */
-    private void setupBalloon(final Element sourceElement, int y, UrlInfoPane info) {
+    private void setupBalloon(final Element sourceElement, int y, AnUrlInfoPane info) {
         Rectangle r = getElementRectangle(sourceElement, y);
 
         Color color = new Color(0xFFFFCC);
@@ -327,11 +261,19 @@ class HyperlinkHandler implements HyperlinkListener {
         return r;
     }
 
-    private class NoPostInfoPane extends UrlInfoPane {
-        public NoPostInfoPane(final int messageId) {
-            super(LinkUtils.buildThreadLink(messageId), "#" + messageId);
+    private class NoPostInfoPane extends AnUrlInfoPane {
+        private final int messageId;
 
-            add(new JLabel(Message.PreviewLink_PostNotFound.get(messageId)), BorderLayout.CENTER);
+        public NoPostInfoPane(int messageId) {
+            super(LinkUtils.buildThreadLink(messageId), "#" + messageId);
+            this.messageId = messageId;
+        }
+
+        @Override
+        protected void loadUrlInfo(BalloonTip balloonTip) {
+            infoLabel.setText(Message.PreviewLink_PostNotFound.get(messageId));
+            infoLabel.setIcon(null);
+            infoLabel.setToolTipText(null);
 
             JLabel advancedOptions = new JLabel(Message.PreviewLink_MoreActions.get());
             add(advancedOptions, BorderLayout.SOUTH);
@@ -339,28 +281,32 @@ class HyperlinkHandler implements HyperlinkListener {
             advancedOptions.setHorizontalAlignment(SwingConstants.RIGHT);
             advancedOptions.addMouseListener(new PopupMenuShower(messageId, false));
         }
-
-        @Override
-        protected void initializePreview(BalloonTip balloonTip) {
-        }
     }
 
-    private class PostInfoPane extends UrlInfoPane {
-        public PostInfoPane(final MessageData h) {
-            super(LinkUtils.buildThreadLink(h.getMessageId()), h.getSubject());
+    private class PostInfoPane extends AnUrlInfoPane {
+        private final MessageData messageData;
+
+        public PostInfoPane(MessageData messageData) {
+            super(LinkUtils.buildThreadLink(messageData.getMessageId()), messageData.getSubject());
+            this.messageData = messageData;
+        }
+
+        @Override
+        protected void loadUrlInfo(BalloonTip balloonTip) {
+            remove(infoLabel);
 
             JPanel cp = new JPanel(new BorderLayout(10, 10));
             cp.setOpaque(true);
 
-            JLabel userInfo = new JLabel(h.getUserName());
+            JLabel userInfo = new JLabel(messageData.getUserName());
             cp.add(userInfo, BorderLayout.CENTER);
 
-            JLabel messageDate = new JLabel(MessageUtils.formatDate(h.getMessageDate()));
+            JLabel messageDate = new JLabel(MessageUtils.formatDate(messageData.getMessageDate()));
             cp.add(messageDate, BorderLayout.EAST);
 
             JLabel ratingInfo = new JLabel();
             ratingInfo.setHorizontalAlignment(SwingConstants.CENTER);
-            ratingInfo.setIcon(MessageUtils.buildRateImage(h.getRating(), ratingInfo.getFont(), ratingInfo.getForeground()));
+            ratingInfo.setIcon(MessageUtils.buildRateImage(messageData.getRating(), ratingInfo.getFont(), ratingInfo.getForeground()));
             cp.add(ratingInfo, BorderLayout.SOUTH);
 
             add(cp, BorderLayout.CENTER);
@@ -369,11 +315,9 @@ class HyperlinkHandler implements HyperlinkListener {
             add(advancedOptions, BorderLayout.SOUTH);
             advancedOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             advancedOptions.setHorizontalAlignment(SwingConstants.RIGHT);
-            advancedOptions.addMouseListener(new PopupMenuShower(h.getMessageId(), true));
-        }
+            advancedOptions.addMouseListener(new PopupMenuShower(messageData.getMessageId(), true));
 
-        @Override
-        protected void initializePreview(BalloonTip balloonTip) {
+            UIUtils.updateBackground(this, getBackground());
         }
     }
 
