@@ -17,6 +17,8 @@ public enum PreviewIcon implements Icon {
     Loading("preview-loading.png"),
     ThumbDown("preview-thumb-down.png"),
     ThumbUp("preview-thumb-up.png"),
+    WaitingLarge("preview-waiting-large.png"),
+    DisabledLarge("preview-disabled-large.png"),
     // --------
     ;
 
