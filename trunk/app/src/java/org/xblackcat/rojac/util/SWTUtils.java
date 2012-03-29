@@ -1,13 +1,11 @@
 package org.xblackcat.rojac.util;
 
 import chrriis.dj.nativeswing.swtimpl.NSPanelComponent;
-import chrriis.dj.nativeswing.swtimpl.NativeComponent;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -24,7 +22,6 @@ public class SWTUtils {
 
     public static final boolean isSwtEnabled;
     private static JWebBrowser webBrowser;
-    public static final Dimension DEFAULT_BROWSER_SIZE = new Dimension(800, 600);
 
     static {
         try {
@@ -62,10 +59,6 @@ public class SWTUtils {
             webBrowser.setFocusable(false);
             webBrowser.setRequestFocusEnabled(false);
             webBrowser.getNativeComponent().setFocusable(false);
-
-            webBrowser.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
-            NativeComponent nativeComponent = webBrowser.getNativeComponent();
-            nativeComponent.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
 
         }
         return webBrowser;

@@ -75,9 +75,12 @@ abstract class AnUrlInfoPane extends JPanel {
         add(infoLabel, BorderLayout.CENTER);
         if (Property.LINK_PREVIEW_ENABLED.get()) {
             infoLabel.setIcon(PreviewIcon.WaitingLarge);
+            infoLabel.setText(Message.PreviewLink_Loading.get());
             loadUrlInfo(balloonTip);
         } else {
             infoLabel.setIcon(PreviewIcon.DisabledLarge);
+            infoLabel.setText(Message.PreviewLink_Disabled.get());
+            infoLabel.setToolTipText(Message.PreviewLink_Disabled_Tooltip.get());
         }
 
         balloonTip.refreshLocation();

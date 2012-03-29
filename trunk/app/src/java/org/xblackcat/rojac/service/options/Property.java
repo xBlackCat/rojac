@@ -6,6 +6,7 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.dialog.ignoreunread.TopicIgnoringSelection;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.view.message.PreviewSize;
+import org.xblackcat.rojac.gui.view.message.YoutubePreviewSize;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.UIUtils;
@@ -79,7 +80,7 @@ public final class Property<T> {
     public static final Property<PreviewSize> LINK_PREVIEW_PAGE_SIZE = create("rojac.behaviour.link_preview.page_size", PreviewSize.S_800, new PreviewSizeChecker());
     public static final Property<PreviewSize> LINK_PREVIEW_PAGE_THUMBNAIL_SIZE = create("rojac.behaviour.link_preview.page_thumbnail_size", PreviewSize.S_400, new PreviewSizeChecker());
     public static final Property<PreviewSize> LINK_PREVIEW_IMAGE_SIZE = create("rojac.behaviour.link_preview.image_size", PreviewSize.S_400, new PreviewSizeChecker());
-//    public static final Property<YoutubePreviewSize> LINK_PREVIEW_YOUTUBE_SIZE = create("rojac.behaviour.link_preview.youtube_size", YoutubePreviewSize.Normal);
+    public static final Property<YoutubePreviewSize> LINK_PREVIEW_YOUTUBE_SIZE = create("rojac.behaviour.link_preview.youtube_size", YoutubePreviewSize.Normal);
 
     // Progress dialog properties
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.synchronizer.progress.autoshow", Boolean.TRUE);

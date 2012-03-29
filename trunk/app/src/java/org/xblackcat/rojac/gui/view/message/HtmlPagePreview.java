@@ -26,10 +26,15 @@ import java.net.URL;
  */
 class HtmlPagePreview extends AnUrlInfoPane {
     private final URL url;
+    private final JLabel pageLoading = new JLabel(null, PreviewIcon.Loading, SwingConstants.CENTER);
 
     HtmlPagePreview(final URL url, final Runnable onClose) {
         super(url.toExternalForm(), url.toString(), onClose);
         this.url = url;
+
+        add(pageLoading, BorderLayout.WEST);
+        pageLoading.setVisible(false);
+        pageLoading.setToolTipText(Message.PreviewLink_Loading.get());
     }
 
     @Override
@@ -42,8 +47,8 @@ class HtmlPagePreview extends AnUrlInfoPane {
             infoLabel.addMouseListener(new PreviewClickHandler(balloonTip));
         } else {
             infoLabel.setIcon(PreviewIcon.DisabledLarge);
-            infoLabel.setText("Browser component is not installed");
-            infoLabel.setToolTipText("Browser component is not installed");
+            infoLabel.setText(Message.PreviewLink_BrowserNotFound.get());
+            infoLabel.setToolTipText(Message.PreviewLink_BrowserNotFound_Tooltip.get());
         }
         balloonTip.refreshLocation();
     }
@@ -74,6 +79,7 @@ class HtmlPagePreview extends AnUrlInfoPane {
             webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
                 @Override
                 public void locationChanged(WebBrowserNavigationEvent e) {
+                    pageLoading.setVisible(false);
                     updateThumbnail(webBrowser);
                     webBrowser.removeWebBrowserListener(this);
                     webBrowser.navigate("about:blank");
@@ -81,6 +87,7 @@ class HtmlPagePreview extends AnUrlInfoPane {
 
                 @Override
                 public void loadingProgressChanged(WebBrowserEvent e) {
+                    pageLoading.setVisible(true);
                     updateThumbnail(webBrowser);
                 }
             });
@@ -93,9 +100,9 @@ class HtmlPagePreview extends AnUrlInfoPane {
 
             BufferedImage image = new BufferedImage(size.getWidth(), size.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
-            webBrowser.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
+            webBrowser.setSize(size.getSize());
             NativeComponent nativeComponent = webBrowser.getNativeComponent();
-            nativeComponent.setSize(SWTUtils.DEFAULT_BROWSER_SIZE);
+            nativeComponent.setSize(size.getSize());
             nativeComponent.paintComponent(image);
 
             infoLabel.setText(null);
