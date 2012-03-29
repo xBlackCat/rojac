@@ -24,7 +24,7 @@ public class BalloonTipUtils {
     }
 
     public static JButton balloonTipCloseButton(final Runnable onClose) {
-        JButton closeButton = WindowsUtils.setupImageButton("cancel", new AButtonAction(Message.Button_Close) {
+        JButton closeButton = WindowsUtils.setupImageButton("close", new AButtonAction(Message.Button_Close) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (onClose != null) {
