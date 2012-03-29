@@ -352,6 +352,8 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
                 <exclude name="**/.svn"/>
             </fileset>
         </zip>
+
+        <echo file="${rojac-application.archive.dir}/last-revision.txt">${svn.entry(revision)}</echo>
     </target>
 
     <target name="rebuild" description="Rebuild application" depends="clean, compile, build, build.exe"/>
