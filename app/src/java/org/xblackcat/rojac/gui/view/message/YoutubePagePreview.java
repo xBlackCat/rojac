@@ -6,6 +6,7 @@ import net.java.balloontip.BalloonTip;
 import org.xblackcat.rojac.gui.component.RojacCursor;
 import org.xblackcat.rojac.gui.theme.PreviewIcon;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -57,7 +58,12 @@ class YoutubePagePreview extends AnUrlInfoPane {
             }
 
             private void showInfo(final YoutubeVideoInfo videoInfo) {
-                infoLabel.setIcon(videoInfo.getThumbnail());
+                if (Property.LINK_PREVIEW_YOUTUBE_SIZE.get() == YoutubePreviewSize.Normal) {
+                    infoLabel.setIcon(videoInfo.getThumbnail());
+                } else {
+                    infoLabel.setIcon(videoInfo.getHqThumbnail());
+                }
+
                 infoLabel.setText(null);
                 infoLabel.setToolTipText(videoInfo.getVideoTitle());
                 updateDescription(videoInfo.getVideoTitle());

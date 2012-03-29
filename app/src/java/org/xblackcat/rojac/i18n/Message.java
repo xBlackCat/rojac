@@ -419,6 +419,12 @@ public enum Message {
     PreviewLink_PostNotFound,
     PreviewLink_Youtube_ViewCount,
     PreviewLink_Youtube_Duration,
+    PreviewLink_Disabled,
+    PreviewLink_Disabled_Tooltip,
+    PreviewLink_BrowserNotFound,
+    PreviewLink_BrowserNotFound_Tooltip,
+    PreviewLink_Youtube_SizeNormal,
+    PreviewLink_Youtube_SizeHq
     // --------
     ;
 

@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.message;
 
+import java.awt.*;
+
 /**
  * 28.03.12 17:48
  *
@@ -36,6 +38,10 @@ public enum PreviewSize {
 
     public int getHeight() {
         return height;
+    }
+
+    public Dimension getSize() {
+        return new Dimension(width, height);
     }
 
     public String asString() {

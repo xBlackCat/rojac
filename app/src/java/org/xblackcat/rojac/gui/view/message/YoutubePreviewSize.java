@@ -9,8 +9,8 @@ import org.xblackcat.rojac.i18n.Message;
  * @author xBlackCat
  */
 public enum YoutubePreviewSize implements IDescribable {
-    Normal(null),
-    HighQuality(null);
+    Normal(Message.PreviewLink_Youtube_SizeNormal),
+    HighQuality(Message.PreviewLink_Youtube_SizeHq);
     private final Message msg;
 
     YoutubePreviewSize(Message msg) {
