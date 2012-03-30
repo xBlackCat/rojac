@@ -163,7 +163,7 @@ public class TreeTableThreadView extends AnItemView {
         threads.setToggleClickCount(2);
 
         threads.setDefaultRenderer(APostProxy.class, new PostTableCellRenderer());
-        threads.setTreeCellRenderer(new PostTreeCellRenderer());
+        threads.setTreeCellRenderer(new PostTreeCellRenderer(threads));
 
         threads.addTreeSelectionListener(new PostSelector());
         threads.addTreeExpansionListener(new ThreadExpander());

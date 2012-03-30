@@ -47,8 +47,9 @@ public abstract class APostProxy {
         if (ignored) {
             renderer.setForeground(UIUtils.brighter(renderer.getForeground(), .3));
         }
-        setValue(renderer);
+
+        setValue(renderer, ignored);
     }
 
-    protected abstract void setValue(PostTableCellRenderer renderer);
+    protected abstract void setValue(PostTableCellRenderer renderer, boolean ignored);
 }

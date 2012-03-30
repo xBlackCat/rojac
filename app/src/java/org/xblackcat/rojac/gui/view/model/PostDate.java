@@ -17,7 +17,7 @@ final class PostDate extends APostProxy {
     }
 
     @Override
-    protected void setValue(PostTableCellRenderer renderer) {
+    protected void setValue(PostTableCellRenderer renderer, boolean ignored) {
         DateFormat format = DateFormat.getDateTimeInstance(
                 DateFormat.MEDIUM,
                 DateFormat.MEDIUM,

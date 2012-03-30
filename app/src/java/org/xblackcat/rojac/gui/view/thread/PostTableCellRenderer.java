@@ -146,7 +146,7 @@ public class PostTableCellRenderer extends JLabel
             if (background == null || background instanceof javax.swing.plaf.UIResource) {
                 if (row % 2 == 0) {
                     Color alternateColor = LookupDelegate.getColor(this, ui, "Table.alternateRowColor");
-                    if (alternateColor != null) {
+                    if (alternateColor != null && row % 2 != 0) {
                         background = alternateColor;
                     }
                 }
@@ -274,18 +274,6 @@ public class PostTableCellRenderer extends JLabel
      * Overridden for performance reasons. See the <a href="#override">Implementation Note</a> for more information.
      */
     public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
-    }
-
-
-    /**
-     * Sets the <code>String</code> object for the cell being rendered to <code>value</code>.
-     *
-     * @param value the string value for this cell; if value is <code>null</code> it sets the text value to an empty
-     *              string
-     * @see javax.swing.JLabel#setText
-     */
-    protected void setValue(Object value) {
-        setText((value == null) ? "" : value.toString());
     }
 
 

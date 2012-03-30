@@ -16,7 +16,7 @@ final class PostUser extends APostProxy {
     }
 
     @Override
-    protected void setValue(PostTableCellRenderer renderer) {
+    protected void setValue(PostTableCellRenderer renderer, boolean ignored) {
         final String userName = post.getMessageData().getUserName();
         if (StringUtils.isNotEmpty(userName)) {
             renderer.setText(userName);
