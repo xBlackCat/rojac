@@ -21,12 +21,14 @@ import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.*;
+import org.xblackcat.schema.data.DataStreamHandlerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 
 import static org.xblackcat.rojac.service.options.Property.*;
 
@@ -41,6 +43,8 @@ public final class RojacLauncher {
     }
 
     public static void main(String... args) {
+        URL.setURLStreamHandlerFactory(new DataStreamHandlerFactory());
+
         try {
             launch(args);
         } catch (Exception e) {
