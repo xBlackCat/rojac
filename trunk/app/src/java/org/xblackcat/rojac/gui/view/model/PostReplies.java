@@ -13,7 +13,7 @@ final class PostReplies extends APostProxy {
     }
 
     @Override
-    protected void setValue(PostTableCellRenderer renderer) {
+    protected void setValue(PostTableCellRenderer renderer, boolean ignored) {
         String replies;
 
         int repliesAmount = post.getPostAmount();

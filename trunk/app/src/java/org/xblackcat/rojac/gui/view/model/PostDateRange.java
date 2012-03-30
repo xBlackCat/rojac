@@ -13,7 +13,7 @@ final class PostDateRange extends APostProxy {
     }
 
     @Override
-    protected void setValue(PostTableCellRenderer renderer) {
+    protected void setValue(PostTableCellRenderer renderer, boolean ignored) {
         renderer.setText("none");
     }
 }

@@ -42,7 +42,7 @@ public class NavigationView extends AView {
         infoColumn.setMinWidth(30);
         columnModel.addColumn(infoColumn);
 
-        viewTable.setTreeCellRenderer(new LabelCellRenderer());
+        viewTable.setTreeCellRenderer(new LabelCellRenderer(viewTable));
 
         viewTable.addMouseListener(new PopupMouseAdapter() {
             private AnItem getItem(Point point) {

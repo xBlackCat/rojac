@@ -9,15 +9,19 @@ import java.awt.*;
 class InfoCellRenderer extends DefaultTableCellRenderer {
     @Override
     protected void setValue(Object value) {
-        setHorizontalAlignment(RIGHT);
         AnItem v = (AnItem) value;
-        String text = v.getBriefInfo();
-        setText(text);
-        setToolTipText(text);
+        setInfo(v);
 
         Font f = getFont();
         if (f != null) {
             setFont(f.deriveFont(v.isExuded() ? Font.BOLD : Font.PLAIN));
         }
+    }
+
+    protected void setInfo(AnItem v) {
+        setHorizontalAlignment(RIGHT);
+        String text = v.getBriefInfo();
+        setText(text);
+        setToolTipText(text);
     }
 }
