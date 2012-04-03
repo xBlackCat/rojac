@@ -84,6 +84,8 @@ final class DBMessageAH extends AnAH implements IMessageAH {
             params[i++] = new Integer[]{iterator.next()};
         }
 
+        helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_REPLIES_AMOUNT, tracker, params);
+
         helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_ID, tracker, params);
 
         helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE, tracker, params);
