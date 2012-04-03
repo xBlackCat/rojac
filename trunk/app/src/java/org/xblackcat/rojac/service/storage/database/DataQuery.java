@@ -495,7 +495,9 @@ public enum DataQuery implements IPropertiable {
     GET_FORUM_STATISTIC,
 
     UPDATE_TOPIC_MESSAGES_SET_LASTPOST_ID,
-    UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE
+    UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE,
+    UPDATE_TOPIC_MESSAGES_SET_REPLIES_AMOUNT
+    // ----
     ;
 
     private final String propertyName = ResourceUtils.constantToProperty(this.name());
