@@ -233,10 +233,16 @@ class ForumDecorator extends ADecorator {
                 AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
 
                 int forumId = forum.getForumId();
-                ForumItem forumItem = new ForumItem(parent, forum, fd.getItemReadStatistic());
+                DiscussionStatistic statistic = fd.getItemReadStatistic();
 
-                modelControl.addChild(parent, forumItem);
-                viewedForums.put(forumId, forumItem);
+                ForumItem forumItem = new ForumItem(parent, forum, statistic);
+
+                if (statistic == null || statistic.getTotalMessages() > 0 || subscribed) {
+                    modelControl.addChild(parent, forumItem);
+                    viewedForums.put(forumId, forumItem);
+                } else {
+                    viewedForums.remove(forumId);
+                }
             }
         }
 
