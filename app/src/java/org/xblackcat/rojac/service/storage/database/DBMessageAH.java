@@ -6,8 +6,8 @@ import org.xblackcat.rojac.data.AffectedMessage;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.Role;
 import org.xblackcat.rojac.data.ThreadData;
-import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
+import org.xblackcat.rojac.service.storage.IBatchTracker;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
@@ -75,7 +75,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public void updateLastPostInfo(IProgressTracker tracker, TIntHashSet threadIds) throws StorageException {
+    public void updateLastPostInfo(IBatchTracker tracker, TIntHashSet threadIds) throws StorageException {
         Object[][] params = new Object[threadIds.size()][];
 
         TIntIterator iterator = threadIds.iterator();
@@ -84,10 +84,13 @@ final class DBMessageAH extends AnAH implements IMessageAH {
             params[i++] = new Integer[]{iterator.next()};
         }
 
+        tracker.setBatch(0, 3);
         helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_REPLIES_AMOUNT, tracker, params);
 
+        tracker.setBatch(1, 3);
         helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_ID, tracker, params);
 
+        tracker.setBatch(2, 3);
         helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE, tracker, params);
     }
 
