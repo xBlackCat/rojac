@@ -1,7 +1,10 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
@@ -76,4 +79,16 @@ final class DBForumAH extends AnAH implements IForumAH {
         return helper.executeSingle(Converters.TO_DISCUSSION_STATISTIC, DataQuery.GET_FORUM_STATISTIC, userId, forumId);
     }
 
+    @Override
+    public void updateForumStatistic(IProgressTracker tracker, TIntHashSet forumIds) throws StorageException {
+        Object[][] params = new Object[forumIds.size()][];
+
+        TIntIterator iterator = forumIds.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            params[i++] = new Integer[]{iterator.next()};
+        }
+
+        helper.updateBatch(DataQuery.UPDATE_FORUM_SET_STAT, tracker, params);
+    }
 }

@@ -29,10 +29,16 @@ class ForumInfoLoader extends ThreadsLoader {
     protected Void perform() throws Exception {
         IForumAH fah = Storage.get(IForumAH.class);
 
+        boolean failed = true;
         try {
             forum = fah.getForumById(forumId);
+
+            failed = false;
         } catch (StorageException e) {
             log.error("Can not load forum information for forum id = " + forumId, e);
+        }
+
+        if (failed || forum == null) {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
