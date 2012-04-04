@@ -4,6 +4,7 @@ import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -70,8 +71,8 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public Collection<Forum> getAllForums() throws StorageException {
-        return helper.execute(Converters.TO_FORUM, DataQuery.GET_OBJECTS_FORUM);
+    public Collection<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException {
+        return helper.execute(Converters.TO_FORUM_DATA, DataQuery.GET_OBJECTS_FORUM, userId);
     }
 
     @Override

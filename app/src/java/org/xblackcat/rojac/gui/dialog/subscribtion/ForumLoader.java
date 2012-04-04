@@ -3,6 +3,8 @@ package org.xblackcat.rojac.gui.dialog.subscribtion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.data.ItemStatisticData;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -26,8 +28,8 @@ class ForumLoader extends RojacWorker<Void, Forum> {
     @Override
     protected Void perform() throws Exception {
         try {
-            for (Forum f : Storage.get(IForumAH.class).getAllForums()) {
-                publish(f);
+            for (ItemStatisticData<Forum> f : Storage.get(IForumAH.class).getAllForums(Property.RSDN_USER_ID.get(-1))) {
+                publish(f.getItem());
             }
         } catch (StorageException e) {
             log.error("Can not load forum list", e);

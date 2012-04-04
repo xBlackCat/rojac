@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
@@ -209,45 +210,34 @@ class ForumDecorator extends ADecorator {
         }
     }
 
-    private class ForumReloadTask implements ILoadTask<Collection<Forum>> {
+    private class ForumReloadTask implements ILoadTask<Collection<ItemStatisticData<Forum>>> {
         @Override
-        public Collection<Forum> doBackground() throws Exception {
+        public Collection<ItemStatisticData<Forum>> doBackground() throws Exception {
             final IForumAH fah = Storage.get(IForumAH.class);
 
-            return fah.getAllForums();
+            return fah.getAllForums(Property.RSDN_USER_ID.get(-1));
         }
 
         @Override
-        public void doSwing(Collection<Forum> data) {
+        public void doSwing(Collection<ItemStatisticData<Forum>> data) {
             // Reload all forums
             modelControl.removeAllChildren(subscribedForums);
             modelControl.removeAllChildren(notSubscribedForums);
             viewedForums.clear();
 
-            for (Forum forum : data) {
+            for (ItemStatisticData<Forum> fd : data) {
+                Forum forum = fd.getItem();
                 forumsCache.put(forum.getForumId(), forum);
 
                 boolean subscribed = forum.isSubscribed();
                 AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
 
                 int forumId = forum.getForumId();
-                ForumItem forumItem = new ForumItem(parent, forum, null);
+                ForumItem forumItem = new ForumItem(parent, forum, fd.getItemReadStatistic());
 
                 modelControl.addChild(parent, forumItem);
                 viewedForums.put(forumId, forumItem);
             }
-
-            Collection<ILoadTask<DiscussionStatistic>> loadStatTasks = new ArrayList<>(forumsCache.size());
-
-            for (ForumItem i : subscribedForums.children) {
-                loadStatTasks.add(new ForumUpdateTask(i.getForum().getForumId()));
-            }
-
-            for (ForumItem i : notSubscribedForums.children) {
-                loadStatTasks.add(new ForumUpdateTask(i.getForum().getForumId()));
-            }
-
-            new LoadTaskExecutor(loadStatTasks).execute();
         }
 
     }

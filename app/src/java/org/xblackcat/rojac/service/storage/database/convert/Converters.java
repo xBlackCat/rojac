@@ -28,19 +28,10 @@ public final class Converters {
     public static final IToObjectConverter<Mark> TO_MARK = new ToMarkConverter();
     public static final IToObjectConverter<MarkStat> TO_MARK_STAT = new ToMarkStatConverter();
     public static final IToObjectConverter<MessageData> TO_MESSAGE_DATA = new ToMessageDataConverter();
-    public static final IToObjectConverter<ThreadData> TO_THREAD_DATA = new ToThreadDataConverter();
+    public static final IToObjectConverter<ItemStatisticData<MessageData>> TO_THREAD_DATA = new ToThreadDataConverter();
+    public static final IToObjectConverter<ItemStatisticData<Forum>> TO_FORUM_DATA = new ToForumDataConverter();
     public static final IToObjectConverter<Favorite> TO_FAVORITE = new ToFavoriteConverter();
     public static final IToObjectConverter<AffectedMessage> TO_AFFECTED_MESSAGE_CONVERTER = new ToAffectedMessageConverter();
-    public static final IToObjectConverter<ReadStatistic> TO_READ_STATISTIC = new IToObjectConverter<ReadStatistic>() {
-        @Override
-        public ReadStatistic convert(ResultSet rs) throws SQLException {
-            int totals = rs.getInt(1);
-            int unreadPosts = rs.getInt(2);
-            int unreadReplies = rs.getInt(3);
-
-            return new ReadStatistic(unreadReplies, unreadPosts, totals);
-        }
-    };
     public static final IToObjectConverter<DiscussionStatistic> TO_DISCUSSION_STATISTIC = new IToObjectConverter<DiscussionStatistic>() {
         @Override
         public DiscussionStatistic convert(ResultSet rs) throws SQLException {

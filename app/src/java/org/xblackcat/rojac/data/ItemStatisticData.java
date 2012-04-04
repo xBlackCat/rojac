@@ -5,20 +5,20 @@ package org.xblackcat.rojac.data;
  *
  * @author xBlackCat
  */
-public class ThreadData {
-    private final MessageData messageData;
+public class ItemStatisticData<T> {
+    private final T messageData;
     private final DiscussionStatistic readStatistic;
 
-    public ThreadData(MessageData messageData, DiscussionStatistic readStatistic) {
+    public ItemStatisticData(T messageData, DiscussionStatistic readStatistic) {
         this.messageData = messageData;
         this.readStatistic = readStatistic;
     }
 
-    public MessageData getMessageData() {
+    public T getItem() {
         return messageData;
     }
 
-    public DiscussionStatistic getReadStatistic() {
+    public DiscussionStatistic getItemReadStatistic() {
         return readStatistic;
     }
 }
