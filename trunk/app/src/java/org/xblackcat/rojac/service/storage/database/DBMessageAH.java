@@ -3,9 +3,9 @@ package org.xblackcat.rojac.service.storage.database;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.data.AffectedMessage;
+import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.Role;
-import org.xblackcat.rojac.data.ThreadData;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IBatchTracker;
 import org.xblackcat.rojac.service.storage.IMessageAH;
@@ -124,7 +124,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public Iterable<ThreadData> getTopicMessagesDataByForumId(int forumId, int userId) throws StorageException {
+    public Iterable<ItemStatisticData<MessageData>> getTopicMessagesDataByForumId(int forumId, int userId) throws StorageException {
         return helper.execute(
                 Converters.TO_THREAD_DATA,
                 DataQuery.GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
