@@ -129,8 +129,11 @@ public enum Message {
     Dialog_ImportProgress_Title,
     Dialog_ImportProgress_Label,
 
-    Dialog_CheckProgress_Title,
-    Dialog_CheckProgress_Label,
+    Dialog_CheckProgress_Structure_Title,
+    Dialog_CheckProgress_Structure_Label,
+
+    Dialog_CheckProgress_CacheUpdate_Title,
+    Dialog_CheckProgress_CacheUpdate_Label,
 
     /**
      * Parameters:
@@ -219,6 +222,12 @@ public enum Message {
     Dialog_Options_Title_Keymap,
     Dialog_Options_Description_General,
     Dialog_Options_Description_Keymap,
+    Dialog_Options_Action_RebuildCache_Title,
+    Dialog_Options_Action_RebuildCache_Info,
+    Dialog_Options_Action_RebuildCache_Button,
+    Dialog_Options_Action_Clean_Title,
+    Dialog_Options_Action_Clean_Info,
+    Dialog_Options_Action_Clean_Button,
 
     // Edit message dialog related texts
     ErrorDialog_MessageNotFound_Message,
