@@ -41,6 +41,7 @@ public class DBStorage implements IStorage {
         accessHelpers.put(INewModerateAH.class, new DBNewModerateAH(queryExecutor));
         accessHelpers.put(IFavoriteAH.class, new DBFavoriteAH(queryExecutor));
         accessHelpers.put(IStatisticAH.class, new DBStatisticAH(queryExecutor));
+        accessHelpers.put(IUtilAH.class, new DBUtilAH(queryExecutor));
     }
 
     @Override

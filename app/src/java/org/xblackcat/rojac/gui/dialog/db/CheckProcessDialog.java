@@ -14,30 +14,26 @@ import java.awt.*;
 public class CheckProcessDialog extends JDialog {
     private JProgressBar logProgress = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
 
-    public CheckProcessDialog(Window owner) {
+    public CheckProcessDialog(Window owner, Message title, Message progressInfoLabel) {
         super(owner, ModalityType.APPLICATION_MODAL);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
-        setTitle(Message.Dialog_CheckProgress_Title.get());
+        setTitle(title.get());
 
         logProgress.setStringPainted(false);
 
-        setContentPane(setupContentPane());
-        setSize(400, 120);
-        setMinimumSize(getSize());
-    }
-
-    private JComponent setupContentPane() {
         JPanel cp = new JPanel(new BorderLayout(5, 5));
 
         cp.setBorder(new EmptyBorder(5, 10, 5, 10));
 
-        JLabel infoLabel = new JLabel(Message.Dialog_CheckProgress_Label.get(), SwingConstants.CENTER);
+        JLabel infoLabel = new JLabel(progressInfoLabel.get(), SwingConstants.CENTER);
         cp.add(infoLabel, BorderLayout.CENTER);
 
         cp.add(logProgress, BorderLayout.SOUTH);
 
-        return cp;
+        setContentPane(cp);
+        setSize(400, 120);
+        setMinimumSize(getSize());
     }
 
     public void setProgress(int value, int bound) {
