@@ -6,7 +6,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
@@ -284,42 +283,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         }
 
         mAH.updateLastPostInfo(new BatchTracker(tracker), updatedTopics);
+        forumAH.updateForumStatistic(tracker, updatedForums);
     }
 
-    private static class BatchTracker implements IBatchTracker {
-        private final IProgressTracker tracker;
-        private int currentBatch;
-        private int totalBatch;
-
-        private int base;
-        private int progressTotal;
-        private int total;
-
-        public BatchTracker(IProgressTracker tracker) {
-            this.tracker = tracker;
-        }
-
-        @Override
-        public void setBatch(int current, int total) {
-            this.currentBatch = current;
-            this.totalBatch = total;
-            this.total = Integer.MIN_VALUE;
-        }
-
-        @Override
-        public void postException(Throwable t) {
-            tracker.postException(t);
-        }
-
-        @Override
-        public void updateProgress(int current, int total) {
-            if (this.total != total) {
-                this.total = total;
-                progressTotal = total * totalBatch;
-                this.base = total * currentBatch;
-            }
-
-            tracker.updateProgress(base + current, progressTotal);
-        }
-    }
 }

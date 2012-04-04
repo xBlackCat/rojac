@@ -1,7 +1,9 @@
 package org.xblackcat.rojac.service.storage;
 
+import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.service.IProgressTracker;
 import ru.rsdn.Janus.RequestForumInfo;
 
 import java.util.Collection;
@@ -38,4 +40,6 @@ public interface IForumAH extends AH {
     Collection<Forum> getAllForums() throws StorageException;
 
     DiscussionStatistic getForumStatistic(int forumId, int userId) throws StorageException;
+
+    void updateForumStatistic(IProgressTracker tracker, TIntHashSet forums) throws StorageException;
 }
