@@ -105,6 +105,8 @@ public class TreeTableThreadView extends AnItemView {
         splitPane.setDividerLocation(200);
         splitPane.setResizeWeight(.1);
 
+        messagePane.setupTitleAsDivider(splitPane);
+
         add(splitPane, BorderLayout.CENTER);
 
         ShortCutUtils.mergeInputMaps(this, messagePane);

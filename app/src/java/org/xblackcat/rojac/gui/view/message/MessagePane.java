@@ -24,9 +24,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.Iterator;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_NAME;
@@ -77,14 +75,15 @@ public class MessagePane extends JPanel {
 
     private JComponent createTitleBar() {
         JPanel titlePane = new JPanel(new BorderLayout(5, 5));
+        titlePane.setBorder(new EmptyBorder(1, 10, 1, 10));
 
         JPanel labelPane = new JPanel(new BorderLayout());
         titlePane.add(labelPane, BorderLayout.CENTER);
 
-        JPanel userInfoPane = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        labelPane.add(userInfoPane, BorderLayout.WEST);
-        userInfoPane.add(userLabel);
-        userInfoPane.add(userInfoLabel);
+        JPanel userInfoPane = new JPanel(new BorderLayout(5, 5));
+        labelPane.add(userInfoPane, BorderLayout.CENTER);
+        userInfoPane.add(userLabel, BorderLayout.WEST);
+        userInfoPane.add(userInfoLabel, BorderLayout.CENTER);
 
         JPanel messageInfoPane = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         titlePane.add(messageInfoPane, BorderLayout.EAST);
@@ -275,6 +274,61 @@ public class MessagePane extends JPanel {
         messageTextPane.setText(null);
         messageTextPane.setEnabled(false);
         titleBar.setVisible(false);
+    }
+
+    public void setupTitleAsDivider(final JSplitPane splitPane) {
+        final int defaultDividerSize = splitPane.getDividerSize();
+
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+            private Point curPoint = null;
+            private int offsetY = 0;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                curPoint = SwingUtilities.convertPoint(titleBar, e.getPoint(), splitPane);
+                offsetY = e.getY();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                curPoint = null;
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point p = SwingUtilities.convertPoint(titleBar, e.getPoint(), splitPane);
+
+                if (curPoint.y != p.y && p.y - offsetY + titleBar.getHeight() < splitPane.getHeight()) {
+                    splitPane.setDividerLocation(p.y - offsetY);
+                    curPoint = p;
+                }
+            }
+        };
+
+        titleBar.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                splitPane.setDividerSize(0);
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                splitPane.setDividerSize(defaultDividerSize);
+            }
+        });
+
+        dateLabel.addMouseListener(mouseAdapter);
+        userLabel.addMouseListener(mouseAdapter);
+        messageDateLabel.addMouseListener(mouseAdapter);
+        userInfoLabel.addMouseListener(mouseAdapter);
+        dateLabel.addMouseMotionListener(mouseAdapter);
+        userLabel.addMouseMotionListener(mouseAdapter);
+        messageDateLabel.addMouseMotionListener(mouseAdapter);
+        userInfoLabel.addMouseMotionListener(mouseAdapter);
+        dateLabel.setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
+        userLabel.setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
+        messageDateLabel.setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
+        userInfoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
     }
 
     private class ReplyAction extends AButtonAction {
