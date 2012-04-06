@@ -23,7 +23,6 @@ public enum Message {
     Button_Yes,
     Button_No,
     Button_ChangePassword,
-    Button_Import,
 
     Button_Reply_ToolTip,
 
@@ -228,6 +227,9 @@ public enum Message {
     Dialog_Options_Action_Clean_Title,
     Dialog_Options_Action_Clean_Info,
     Dialog_Options_Action_Clean_Button,
+    Dialog_Options_Action_Import_Title,
+    Dialog_Options_Action_Import_Info,
+    Dialog_Options_Action_Import_Button,
 
     // Edit message dialog related texts
     ErrorDialog_MessageNotFound_Message,

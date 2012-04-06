@@ -21,22 +21,34 @@ import java.awt.event.ActionEvent;
  *
  * @author xBlackCat
  */
-public class DBSettingsPage extends APage {
+class DBSettingsPage extends APage {
     private final DBSettingsPane settingsPane;
 
     public DBSettingsPage(final Window owner) {
         JPanel internalPane = new JPanel(new BorderLayout());
-        JButton migrateButton = WindowsUtils.setupButton(new ImportAction(owner));
-        settingsPane = new DBSettingsPane(migrateButton);
+        settingsPane = new DBSettingsPane();
 
         add(internalPane, BorderLayout.NORTH);
 
         internalPane.add(settingsPane, BorderLayout.NORTH);
 
+        JPanel importData = buildActionPane(
+                Message.Dialog_Options_Action_Import_Title,
+                Message.Dialog_Options_Action_Import_Info,
+                new AButtonAction(Message.Dialog_Options_Action_Import_Button) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        ImportDialog importDialog = new ImportDialog(owner);
+
+                        WindowsUtils.center(importDialog, owner);
+                        importDialog.setVisible(true);
+                    }
+                }
+        );
         JPanel rebuildCache = buildActionPane(
                 Message.Dialog_Options_Action_RebuildCache_Title,
                 Message.Dialog_Options_Action_RebuildCache_Info,
-                new AbstractAction(Message.Dialog_Options_Action_RebuildCache_Button.get()) {
+                new AButtonAction(Message.Dialog_Options_Action_RebuildCache_Button) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         new DatabaseCacheUpdater(owner).execute();
@@ -46,24 +58,32 @@ public class DBSettingsPage extends APage {
         JPanel cleanUpDatabase = buildActionPane(
                 Message.Dialog_Options_Action_Clean_Title,
                 Message.Dialog_Options_Action_Clean_Info,
-                new AbstractAction(Message.Dialog_Options_Action_Clean_Button.get()) {
+                new AButtonAction(Message.Dialog_Options_Action_Clean_Button) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                     }
                 }
         );
 
-        internalPane.add(WindowsUtils.createColumn(5, 5, rebuildCache, cleanUpDatabase), BorderLayout.CENTER);
+        JPanel panes = WindowsUtils.createColumn(
+                5,
+                5,
+                importData,
+                rebuildCache,
+                cleanUpDatabase
+        );
+        internalPane.add(panes, BorderLayout.CENTER);
     }
 
-    private static JPanel buildActionPane(Message title, Message description, Action action) {
+    private static JPanel buildActionPane(Message title, Message description, AButtonAction action) {
         JPanel maintenancePane = new JPanel(new BorderLayout(5, 5));
         maintenancePane.setBorder(new TitledBorder(null, title.get(), TitledBorder.LEFT, TitledBorder.TOP));
 
         JLabel hint = new JLabel(description.get());
         hint.setBorder(new EmptyBorder(5, 10, 5, 10));
         maintenancePane.add(hint, BorderLayout.NORTH);
-        maintenancePane.add(new JButton(action), BorderLayout.EAST);
+
+        maintenancePane.add(WindowsUtils.setupButton(action), BorderLayout.EAST);
         return maintenancePane;
     }
 
@@ -93,20 +113,4 @@ public class DBSettingsPage extends APage {
         settingsPane.requestFocusInField();
     }
 
-    private class ImportAction extends AButtonAction {
-        private final Window owner;
-
-        public ImportAction(Window owner) {
-            super(Message.Button_Import);
-            this.owner = owner;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ImportDialog importDialog = new ImportDialog(owner);
-
-            WindowsUtils.center(importDialog, owner);
-            importDialog.setVisible(true);
-        }
-    }
 }
