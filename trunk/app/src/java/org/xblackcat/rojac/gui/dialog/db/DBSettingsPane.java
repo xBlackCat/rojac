@@ -92,11 +92,11 @@ public class DBSettingsPane extends JPanel {
         Collections.sort(list);
         engineSelector = new JComboBox<>(new ListComboBoxModel<>(list));
 
-        fieldUrl = new JTextField();
-        fieldUserName = new JTextField();
-        fieldPassword = new JPasswordField();
-        fieldShutdownUrl = new JTextField();
-        fieldDriverName = new JTextField();
+        fieldUrl = new JTextField(50);
+        fieldUserName = new JTextField(50);
+        fieldPassword = new JPasswordField(50);
+        fieldShutdownUrl = new JTextField(50);
+        fieldDriverName = new JTextField(50);
 
         fieldDriverName.setEditable(false);
 

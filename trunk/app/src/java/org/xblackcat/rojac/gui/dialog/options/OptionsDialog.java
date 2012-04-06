@@ -35,13 +35,6 @@ public class OptionsDialog extends JDialog {
 
         setTitle(Message.Dialog_Options_Title.get());
 
-        initializeLayout();
-
-        pack();
-        setMinimumSize(getSize());
-    }
-
-    private void initializeLayout() {
         JPanel cp = new JPanel(new BorderLayout(5, 10));
         cp.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -63,7 +56,7 @@ public class OptionsDialog extends JDialog {
 
         cp.add(centerComp, BorderLayout.CENTER);
 
-        cp.add(WindowsUtils.createButtonsBar(
+        Component buttonsBar = WindowsUtils.createButtonsBar(
                 this,
                 Message.Button_Ok,
                 new AButtonAction(Message.Button_ChangePassword) {
@@ -94,10 +87,15 @@ public class OptionsDialog extends JDialog {
                         dispose();
                     }
                 }
-        ), BorderLayout.SOUTH);
+        );
+        cp.add(buttonsBar, BorderLayout.SOUTH);
 
         setContentPane(cp);
 
+        pack();
+        Dimension size = new Dimension(buttonsBar.getPreferredSize().width + 20, getSize().height);
+        setMinimumSize(size);
+        setSize(size);
     }
 
     private void applySettings() {
