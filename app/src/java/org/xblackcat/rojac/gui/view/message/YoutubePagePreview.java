@@ -88,15 +88,17 @@ class YoutubePagePreview extends AnUrlInfoPane {
 
                 JPanel statisticPane = new JPanel(new BorderLayout(5, 5));
 
-                JPanel ratingPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 2));
-                JLabel likes = new JLabel(String.valueOf(videoInfo.getNumLikes()), PreviewIcon.ThumbUp, SwingConstants.CENTER);
-                JLabel dislikes = new JLabel(String.valueOf(videoInfo.getNumDislikes()), PreviewIcon.ThumbDown, SwingConstants.CENTER);
-                likes.setForeground(new Color(0, 192, 0));
-                dislikes.setForeground(new Color(255, 64, 64));
-                ratingPane.add(likes);
-                ratingPane.add(dislikes);
+                if (videoInfo.hasRating()) {
+                    JPanel ratingPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 2));
+                    JLabel likes = new JLabel(String.valueOf(videoInfo.getNumLikes()), PreviewIcon.ThumbUp, SwingConstants.CENTER);
+                    JLabel dislikes = new JLabel(String.valueOf(videoInfo.getNumDislikes()), PreviewIcon.ThumbDown, SwingConstants.CENTER);
+                    likes.setForeground(new Color(0, 192, 0));
+                    dislikes.setForeground(new Color(255, 64, 64));
+                    ratingPane.add(likes);
+                    ratingPane.add(dislikes);
 
-                statisticPane.add(ratingPane, BorderLayout.EAST);
+                    statisticPane.add(ratingPane, BorderLayout.EAST);
+                }
 
                 JLabel viewCount = new JLabel(Message.PreviewLink_Youtube_ViewCount.get(videoInfo.getViewCount()));
                 statisticPane.add(viewCount, BorderLayout.WEST);
