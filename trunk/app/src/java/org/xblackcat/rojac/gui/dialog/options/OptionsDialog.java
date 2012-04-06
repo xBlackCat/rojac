@@ -26,11 +26,12 @@ public class OptionsDialog extends JDialog {
     private final APage[] pages = new APage[]{
             new PropertiesPage(),
             new ShortCutManagerPage() ,
-            new DBSettingsPage(this)
+            new DBSettingsPage(),
+            new MaintenancePage(this)
     };
 
-    public OptionsDialog(Window mainFrame) throws RojacException {
-        super(mainFrame, DEFAULT_MODALITY_TYPE);
+    public OptionsDialog(Window owner) throws RojacException {
+        super(owner, DEFAULT_MODALITY_TYPE);
 
         setTitle(Message.Dialog_Options_Title.get());
 

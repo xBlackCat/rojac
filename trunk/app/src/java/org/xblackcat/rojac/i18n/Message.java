@@ -219,6 +219,7 @@ public enum Message {
     Dialog_Options_Title,
     Dialog_Options_Title_General,
     Dialog_Options_Title_Keymap,
+    Dialog_Options_Title_Tools,
     Dialog_Options_Description_General,
     Dialog_Options_Description_Keymap,
     Dialog_Options_Action_RebuildCache_Title,
