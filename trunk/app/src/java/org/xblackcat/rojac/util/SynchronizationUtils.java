@@ -17,11 +17,11 @@ public final class SynchronizationUtils {
             return "";
         }
 
-        int size = e.getValue();
+        long size = e.getValue();
         String factors = " KMGTE";
         int idx = -1;
 
-        int lastSize;
+        long lastSize;
         do {
             lastSize = size;
             size >>= 10;

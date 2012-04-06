@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.dialog.db;
 
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
+import org.xblackcat.rojac.gui.dialog.AProcessDialog;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -15,17 +16,13 @@ import java.awt.event.ActionEvent;
  *
  * @author xBlackCat
  */
-public class ImportProcessDialog extends JDialog {
+public class ImportProcessDialog extends AProcessDialog {
     private JTextArea logArea = new JTextArea();
-    private JProgressBar logProgress = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
     private final JButton cancelButton;
     private final JButton okButton;
 
     public ImportProcessDialog(Window owner, final Runnable cancelAction) {
-        super(owner, ModalityType.APPLICATION_MODAL);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-
-        setTitle(Message.Dialog_ImportProgress_Title.get());
+        super(owner, Message.Dialog_ImportProgress_Title);
 
         logArea.setEditable(false);
         logProgress.setStringPainted(true);
@@ -78,12 +75,6 @@ public class ImportProcessDialog extends JDialog {
     public void done() {
         cancelButton.setVisible(false);
         okButton.setVisible(true);
-    }
-
-    public void setProgress(int value, int bound) {
-        logProgress.getModel().setMaximum(bound);
-        logProgress.getModel().setValue(value);
-        logProgress.setString(value + " / " + bound);
     }
 
     public void setStringPainted(boolean b) {

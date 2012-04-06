@@ -23,7 +23,7 @@ public class Windows7Bar {
     private static final Log log = LogFactory.getLog(Windows7Bar.class);
 
     private static final ITaskbarList3 list;
-    private static final Map<Window, Windows7Bar> taskBars = new ConcurrentHashMap<>();
+    private static final Map<Frame, Windows7Bar> taskBars = new ConcurrentHashMap<>();
 
     private Pointer<Integer> hwnd;
 
@@ -45,7 +45,15 @@ public class Windows7Bar {
         return list != null;
     }
 
-    public synchronized static Windows7Bar getWindowBar(final Window window) throws IllegalStateException {
+    public static Windows7Bar getWindowBar(Window window) throws IllegalStateException {
+        if (window instanceof  Frame) {
+            return getWindowBar((Frame) window);
+        } else {
+            return getWindowBar(window.getOwner());
+        }
+    }
+
+    public synchronized static Windows7Bar getWindowBar(final Frame window) throws IllegalStateException {
         if (!isSupported()) {
             return null;
         }
@@ -86,7 +94,7 @@ public class Windows7Bar {
         }
     }
 
-    public void setProgress(int completed, int total) {
+    public void setProgress(long completed, long total) {
         if (list != null && hwnd != null) {
             list.SetProgressValue(hwnd, completed, total);
         }

@@ -8,37 +8,37 @@ import java.util.EventObject;
 
 public class ProgressChangeEvent extends EventObject {
     private final ProgressState state;
-    private final Integer value;
-    private final Integer bound;
+    private final Long value;
+    private final Long bound;
     private final String text;
 
     private final Integer percents;
 
     public ProgressChangeEvent(Object source, ProgressState state) {
-        this(source, state, null, null, null, null);
+        this(source, state, null, null, null);
     }
 
-    public ProgressChangeEvent(Object source, ProgressState state, int value) {
-        this(source, state, value, null, null, null);
+    public ProgressChangeEvent(Object source, ProgressState state, long value) {
+        this(source, state, value, null, null);
     }
 
     public ProgressChangeEvent(Object source, ProgressState state, String text) {
-        this(source, state, null, null, text, null);
+        this(source, state, null, null, text);
     }
 
-    public ProgressChangeEvent(Object source, ProgressState state, int value, String text) {
-        this(source, state, value, null, text, null);
+    public ProgressChangeEvent(Object source, ProgressState state, String text, long value) {
+        this(source, state, value, null, text);
     }
 
-    public ProgressChangeEvent(Object source, ProgressState state, int value, int bound) {
-        this(source, state, value, bound, null);
+    public ProgressChangeEvent(Object source, ProgressState state, long value, long bound) {
+        this(source, state, null, value, bound);
     }
 
-    public ProgressChangeEvent(Object source, ProgressState state, int value, int bound, String text) {
-        this(source, state, value, bound, text, null);
+    public ProgressChangeEvent(Object source, ProgressState state, String text, long value, long bound) {
+        this(source, state, value, bound, text);
     }
 
-    private ProgressChangeEvent(Object source, ProgressState state, Integer value, Integer bound, String text, Void v) {
+    private ProgressChangeEvent(Object source, ProgressState state, Long value, Long bound, String text) {
         super(source);
         this.state = state;
         this.value = value;
@@ -66,7 +66,7 @@ public class ProgressChangeEvent extends EventObject {
      *
      * @return progress value.
      */
-    public Integer getValue() {
+    public Long getValue() {
         return value;
     }
 
@@ -88,20 +88,16 @@ public class ProgressChangeEvent extends EventObject {
         if (this == o) {
             return true;
         }
+
         if (!(o instanceof ProgressChangeEvent)) {
             return false;
         }
 
         ProgressChangeEvent that = (ProgressChangeEvent) o;
 
-        if (value != null ? !value.equals(that.value) : that.value != null) {
-            return false;
-        }
-        if (text != null ? !text.equals(that.text) : that.text != null) {
-            return false;
-        }
-
-        return state == that.state;
+        return state == that.state &&
+                (value == null ? that.value == null : value.equals(that.value)) &&
+                (text == null ? that.text == null : text.equals(that.text));
     }
 
     @Override
@@ -123,7 +119,7 @@ public class ProgressChangeEvent extends EventObject {
         return sb.toString();
     }
 
-    public Integer getBound() {
+    public Long getBound() {
         return bound;
     }
 }

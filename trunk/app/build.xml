@@ -22,6 +22,7 @@
     <property name="rojac-application.output.dir" value="${rojac-application.basedir}/classes/bin"/>
     <property name="rojac-application.testoutput.dir" value="${rojac-application.basedir}/classes/test"/>
     <property name="rojac-application.dist.dir" value="${rojac-application.basedir}/dist"/>
+    <property name="rojac-application.dist.dir-unpacked" value="${rojac-application.dist.dir}/Rojac"/>
 
     <!-- Revision number file is used to determine current build -->
     <property name="revision.number.file" value="${rojac-application.output.dir}/config/rojac.revision"/>
@@ -107,6 +108,7 @@
         <mkdir dir="${rojac-application.output.dir}"/>
         <mkdir dir="${rojac-application.testoutput.dir}"/>
         <mkdir dir="${rojac-application.dist.dir}"/>
+        <mkdir dir="${rojac-application.dist.dir-unpacked}"/>
     </target>
 
     <target name="get.revision" depends="prepare" if="get.source.revision">
@@ -211,35 +213,35 @@
 
     <target name="build" description="Make distributive of the application. Generate scripts to run application"
             depends="compile, test">
-        <mkdir dir="${rojac-application.dist.dir}/bin"/>
-        <mkdir dir="${rojac-application.dist.dir}/conf"/>
-        <mkdir dir="${rojac-application.dist.dir}/lib"/>
+        <mkdir dir="${rojac-application.dist.dir-unpacked}/bin"/>
+        <mkdir dir="${rojac-application.dist.dir-unpacked}/conf"/>
+        <mkdir dir="${rojac-application.dist.dir-unpacked}/lib"/>
 
         <fileset id="rojac.runtime.libs" dir="${rojac-application.lib.dir}">
             <include name="**/*.jar"/>
             <exclude name="**/junit*.jar"/>
         </fileset>
 
-        <copy todir="${rojac-application.dist.dir}/conf">
+        <copy todir="${rojac-application.dist.dir-unpacked}/conf">
             <fileset dir="${rojac-application.basedir}/src/res.ext">
                 <patternset refid="compiler.resources"/>
             </fileset>
         </copy>
 
-        <copy todir="${rojac-application.dist.dir}/lib">
+        <copy todir="${rojac-application.dist.dir-unpacked}/lib">
             <fileset refid="rojac.runtime.libs"/>
         </copy>
 
-        <jar jarfile="${rojac-application.dist.dir}/lib/${rojac.filename}.jar">
+        <jar jarfile="${rojac-application.dist.dir-unpacked}/lib/${rojac.filename}.jar">
             <fileset dir="${rojac-application.output.dir}"/>
         </jar>
 
-        <echo file="${rojac-application.dist.dir}/bin/setclasspath.bat"><![CDATA[
+        <echo file="${rojac-application.dist.dir-unpacked}/bin/setclasspath.bat"><![CDATA[
 @SET CLASSPATH=%CLASSPATH%;%1
 ]]>
         </echo>
 
-        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.cmd"><![CDATA[@echo off
+        <echo file="${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.cmd"><![CDATA[@echo off
 
 SET CLASSPATH=%CLASSPATH%;..\conf
 FOR /F %%j IN ('DIR /S /B ..\lib\*.jar') DO CALL setclasspath.bat "%%j"
@@ -248,7 +250,7 @@ javaw.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
 ]]>
         </echo>
 
-        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh"><![CDATA[#
+        <echo file="${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.sh"><![CDATA[#
 #!/bin/sh
 
 BASEDIR=`dirname $0`
@@ -261,7 +263,7 @@ java -cp "$CLASSPATH" ${rojac.launcher.class}
 ]]>
         </echo>
 
-        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.bat"><![CDATA[@echo off
+        <echo file="${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.bat"><![CDATA[@echo off
 
 SET CLASSPATH=%CLASSPATH%;..\conf
 FOR /F %%j IN ('DIR /S /B ..\lib\*.jar') DO CALL setclasspath.bat "%%j"
@@ -270,13 +272,13 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
 ]]>
         </echo>
 
-        <echo file="${rojac-application.dist.dir}/bin/build.txt">${svn.entry(revision)}</echo>
+        <echo file="${rojac-application.dist.dir-unpacked}/build.txt">${svn.entry(revision)}</echo>
 
-        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.cmd" eol="dos"/>
-        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.bat" eol="dos"/>
-        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh" eol="unix"/>
+        <fixcrlf file="${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.cmd" eol="dos"/>
+        <fixcrlf file="${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.bat" eol="dos"/>
+        <fixcrlf file="${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.sh" eol="unix"/>
 
-        <chmod file="${rojac-application.dist.dir}/bin/${rojac.filename}.sh" perm="755" failonerror="false"/>
+        <chmod file="${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.sh" perm="755" failonerror="false"/>
     </target>
 
     <target name="build.exe" if="launch4j.dir">
@@ -284,7 +286,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         <echo file="${rojac-application.basedir}/classes/sender.launch4j.xml"><![CDATA[
 <launch4jConfig>
     <headerType>gui</headerType>
-    <outfile>${rojac-application.dist.dir}/bin/${rojac.filename}.exe</outfile>
+    <outfile>${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.exe</outfile>
     <errTitle>Rojac</errTitle>
     <dontWrapJar>true</dontWrapJar>
     <customProcName>true</customProcName>
@@ -311,12 +313,12 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
         </taskdef>
         <launch4j configFile="${rojac-application.basedir}/classes/sender.launch4j.xml"/>
 
-        <echo file="${rojac-application.dist.dir}/bin/${rojac.filename}.l4j.ini"><![CDATA[# Rojac JVM options
+        <echo file="${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.l4j.ini"><![CDATA[# Rojac JVM options
 -Xms32M
 -Xmx80M
 ]]>
         </echo>
-        <fixcrlf file="${rojac-application.dist.dir}/bin/${rojac.filename}.l4j.ini" eol="dos"/>
+        <fixcrlf file="${rojac-application.dist.dir-unpacked}/bin/${rojac.filename}.l4j.ini" eol="dos"/>
     </target>
 
     <target name="make.name" unless="svn.entry(revision)">
@@ -330,9 +332,9 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
     <target name="pack" description="Make archive of the project" depends="rebuild, make.name, make.name.revision">
         <zip destfile="${rojac-application.archive.dir}/${rojac.pack.filename}.zip" level="9"
              compress="yes">
-            <fileset dir="${rojac-application.dist.dir}">
+            <fileset dir="${rojac-application.dist.dir-unpacked}">
+                <include name="build.txt"/>
                 <include name="bin/${rojac.filename}*"/>
-                <include name="bin/build.txt"/>
                 <include name="bin/setclasspath.bat"/>
                 <include name="lib/**/*.jar"/>
                 <exclude name="lib/${rojac.filename}-tests.jar"/>

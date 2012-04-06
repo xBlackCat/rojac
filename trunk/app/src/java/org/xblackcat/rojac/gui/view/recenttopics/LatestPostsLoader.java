@@ -35,6 +35,11 @@ class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
         for (int lastPostId : latestTopics) {
             final MessageData lastPost = messageAH.getMessageData(lastPostId);
 
+            if (lastPost == null) {
+                // Post is not found ???
+                continue;
+            }
+
             Forum f = forums.get(lastPost.getForumId());
             if (f == null) {
                 f = Storage.get(IForumAH.class).getForumById(lastPost.getForumId());
