@@ -58,24 +58,11 @@ public class DBSettingsPane extends JPanel {
         this(skipCurrentSettings, false);
     }
 
-    public DBSettingsPane(boolean skipCurrentSettings, boolean separateCurrent) {
-        this(null, skipCurrentSettings, separateCurrent);
-    }
-
-    public DBSettingsPane(JButton customButton) {
-        this(customButton, false);
-    }
-
-    public DBSettingsPane(JButton customButton, boolean skipCurrentSettings) {
-        this(customButton, skipCurrentSettings, false);
-    }
-
     /**
-     * @param customButton        add custom button to panel
      * @param skipCurrentSettings do not load current database settings
      * @param separateCurrent     show current settings as separate record in list.
      */
-    public DBSettingsPane(JButton customButton, boolean skipCurrentSettings, boolean separateCurrent) {
+    public DBSettingsPane(boolean skipCurrentSettings, boolean separateCurrent) {
         super(new BorderLayout(5, 5));
 
         String currentEngine;
@@ -89,9 +76,6 @@ public class DBSettingsPane extends JPanel {
         checkButton = WindowsUtils.setupButton(new CheckDBSettings());
         JPanel cover = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         cover.setBorder(null);
-        if (customButton != null) {
-            cover.add(customButton);
-        }
         cover.add(checkButton);
         cover.setBackground(getBackground());
         add(cover, BorderLayout.SOUTH);
