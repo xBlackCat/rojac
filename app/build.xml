@@ -330,6 +330,7 @@ java.exe -cp "%CLASSPATH%" ${rojac.launcher.class}
     </target>
 
     <target name="pack" description="Make archive of the project" depends="rebuild, make.name, make.name.revision">
+        <mkdir dir="${rojac-application.archive.dir}"/>
         <zip destfile="${rojac-application.archive.dir}/${rojac.pack.filename}.zip" level="9"
              compress="yes">
             <fileset dir="${rojac-application.dist.dir-unpacked}">
