@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.message;
 import com.google.gdata.data.media.mediarss.MediaThumbnail;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
+import com.google.gdata.data.youtube.YtRating;
 import org.xblackcat.rojac.util.UIUtils;
 
 import javax.swing.*;
@@ -17,8 +18,8 @@ class YoutubeVideoInfo {
     private final String videoId;
     private final String videoTitle;
     private final Long duration;
-    private final int numDislikes;
-    private final int numLikes;
+    private final Integer numDislikes;
+    private final Integer numLikes;
     private final long viewCount;
     private final Icon thumbnail;
     private final Icon hqThumbnail;
@@ -29,8 +30,14 @@ class YoutubeVideoInfo {
         videoId = mediaGroup.getVideoId();
         videoTitle = ve.getTitle().getPlainText();
         duration = mediaGroup.getDuration();
-        numDislikes = ve.getYtRating().getNumDislikes();
-        numLikes = ve.getYtRating().getNumLikes();
+        YtRating rating = ve.getYtRating();
+        if (rating != null) {
+            numDislikes = rating.getNumDislikes();
+            numLikes = rating.getNumLikes();
+        } else {
+            numDislikes = null;
+            numLikes = null;
+        }
         viewCount = ve.getStatistics().getViewCount();
 
         // Load thumbnail
@@ -61,6 +68,10 @@ class YoutubeVideoInfo {
 
     public Long getDuration() {
         return duration;
+    }
+
+    public boolean hasRating() {
+        return numLikes != null;
     }
 
     public int getNumDislikes() {
