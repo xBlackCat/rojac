@@ -207,4 +207,10 @@ public class ShortCutUtils {
             return;
         }
     }
+
+    public static void removeShortCuts(InputMap map) {
+        for (ShortCut sc : ShortCut.values()) {
+            map.remove(sc.getKeyStroke());
+        }
+    }
 }

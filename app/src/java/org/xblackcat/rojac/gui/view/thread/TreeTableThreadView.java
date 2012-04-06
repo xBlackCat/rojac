@@ -111,12 +111,18 @@ public class TreeTableThreadView extends AnItemView {
 
         ShortCutUtils.mergeInputMaps(this, messagePane);
 
+        InputMap map = threads.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        ShortCutUtils.removeShortCuts(map.getParent());
+
+        InputMap inputMap = ShortCutUtils.mergeInputMaps(
+                getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT),
+                map
+        );
+
         threads.setInputMap(
                 WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                ShortCutUtils.mergeInputMaps(
-                        getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT),
-                        threads.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                )
+                inputMap
         );
 
         // Install toolbar
