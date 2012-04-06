@@ -70,10 +70,8 @@ public class DBImportHelper implements IImportHelper {
         try {
             try (Connection con = connectionFactory.getConnection()) {
                 try (Statement st = con.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
+                    st.setFetchSize(Integer.MIN_VALUE);
                     try (ResultSet rs = st.executeQuery(queries.getTableDataQuery(item))) {
-                        rs.setFetchDirection(ResultSet.FETCH_FORWARD);
-                        rs.setFetchSize(2);
-
                         ResultSetMetaData metaData = rs.getMetaData();
                         int columnCount = metaData.getColumnCount();
                         String[] columnNames = new String[columnCount];
@@ -84,9 +82,9 @@ public class DBImportHelper implements IImportHelper {
 
                         rowHandler.initialize(columnNames);
 
-                        while (rs.next()) {
-                            Object[] row = new Object[columnCount];
+                        Object[] row = new Object[columnCount];
 
+                        while (rs.next()) {
                             for (int i = 0; i < columnCount; i++) {
                                 row[i] = rs.getObject(1 + i);
                             }

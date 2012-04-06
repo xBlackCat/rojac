@@ -43,7 +43,7 @@ public class ProgressController implements IProgressController {
 
     @Override
     public void fireJobProgressChanged(Message message, Object... arguments) {
-        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Work, 0, 1, message.get(arguments)));
+        fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Work, message.get(arguments), 0, 1));
     }
 
     @Override

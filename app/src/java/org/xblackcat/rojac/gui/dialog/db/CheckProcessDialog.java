@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.dialog.db;
 
+import org.xblackcat.rojac.gui.dialog.AProcessDialog;
 import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
@@ -11,14 +12,10 @@ import java.awt.*;
  *
  * @author xBlackCat
  */
-public class CheckProcessDialog extends JDialog {
-    private JProgressBar logProgress = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
+public class CheckProcessDialog extends AProcessDialog {
 
     public CheckProcessDialog(Window owner, Message title, Message progressInfoLabel) {
-        super(owner, ModalityType.APPLICATION_MODAL);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-
-        setTitle(title.get());
+        super(owner, title);
 
         logProgress.setStringPainted(false);
 
@@ -36,9 +33,4 @@ public class CheckProcessDialog extends JDialog {
         setMinimumSize(getSize());
     }
 
-    public void setProgress(int value, int bound) {
-        logProgress.getModel().setMaximum(bound);
-        logProgress.getModel().setValue(value);
-        logProgress.setString(value + " / " + bound);
-    }
 }
