@@ -123,6 +123,7 @@
 
         <xmlproperty file="${rojac-application.output.dir}/svninfo.xml" prefix="svn" keepRoot="no"/>
         <delete file="${rojac-application.output.dir}/svninfo.xml" failonerror="false"/>
+        <echo>Revision: ${svn.entry(revision)}</echo>
     </target>
 
     <target name="compile" description="Compile application" depends="prepare, get.revision">
