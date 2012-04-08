@@ -140,8 +140,8 @@ class FavoritesDecorator extends ADecorator {
     private class FavoritesLoadTask implements ILoadTask<Collection<FavoriteItem>> {
         @Override
         public Collection<FavoriteItem> doBackground() throws Exception {
-            Collection<Favorite> favorites = Storage.get(IFavoriteAH.class).getFavorites();
-            Collection<FavoriteItem> items = new ArrayList<>(favorites.size());
+            Iterable<Favorite> favorites = Storage.get(IFavoriteAH.class).getFavorites();
+            Collection<FavoriteItem> items = new ArrayList<>();
 
             for (Favorite f : favorites) {
                 FavoriteType type = f.getType();

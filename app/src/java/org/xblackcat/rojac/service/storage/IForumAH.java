@@ -7,8 +7,6 @@ import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.service.IProgressTracker;
 import ru.rsdn.Janus.RequestForumInfo;
 
-import java.util.Collection;
-
 /**
  * @author ASUS
  */
@@ -18,7 +16,7 @@ public interface IForumAH extends AH {
 
     Forum getForumById(int forumId) throws StorageException;
 
-    Collection<RequestForumInfo> getSubscribedForums() throws StorageException;
+    Iterable<RequestForumInfo> getSubscribedForums() throws StorageException;
 
     /**
      * Updates forum information. Notice that <code>isSubscribed</code>  field is not changed during operation.
@@ -35,13 +33,15 @@ public interface IForumAH extends AH {
     /**
      * Returns list of all available forums.
      *
+     * @param userId
      * @return list of all available forums.
      * @throws StorageException
-     * @param userId
      */
-    Collection<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException;
+    Iterable<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException;
 
     DiscussionStatistic getForumStatistic(int forumId, int userId) throws StorageException;
 
     void updateForumStatistic(IProgressTracker tracker, TIntHashSet forums) throws StorageException;
+
+    boolean hasSubscribedForums() throws StorageException;
 }

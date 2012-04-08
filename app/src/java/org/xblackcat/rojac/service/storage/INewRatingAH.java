@@ -12,11 +12,11 @@ public interface INewRatingAH extends AH {
 
     boolean removeNewRating(int id) throws StorageException;
 
-    NewRating[] getNewRatingsByMessageId(int messageId) throws StorageException;
+    Iterable<NewRating> getNewRatingsByMessageId(int messageId) throws StorageException;
 
-    NewRating[] getAllNewRatings() throws StorageException;
+    Iterable<NewRating> getAllNewRatings() throws StorageException;
 
     void clearRatings() throws StorageException;
 
-    Mark[] getNewRatingMarksByMessageId(int messageId) throws StorageException;
+    Iterable<Mark> getNewRatingMarksByMessageId(int messageId) throws StorageException;
 }

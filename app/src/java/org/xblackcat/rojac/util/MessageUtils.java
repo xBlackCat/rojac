@@ -23,7 +23,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.StringWriter;
 import java.text.DateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -132,7 +131,7 @@ public final class MessageUtils {
         IMessageAH mAH = Storage.get(IMessageAH.class);
         IRatingAH rAH = Storage.get(IRatingAH.class);
 
-        Collection<MarkStat> marks = rAH.getMarkStatByMessageId(id);
+        Iterable<MarkStat> marks = rAH.getMarkStatByMessageId(id);
         RatingCache ratingCache = new RatingCache(marks);
         if (!ratingCache.isEmpty()) {
             mAH.updateMessageRatingCache(id, ratingCache.asString());

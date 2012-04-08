@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 import gnu.trove.impl.sync.TSynchronizedIntObjectMap;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.DiscussionStatistic;
@@ -215,7 +216,10 @@ class ForumDecorator extends ADecorator {
         public Collection<ItemStatisticData<Forum>> doBackground() throws Exception {
             final IForumAH fah = Storage.get(IForumAH.class);
 
-            return fah.getAllForums(Property.RSDN_USER_ID.get(-1));
+            Collection<ItemStatisticData<Forum>> datas = new ArrayList<>();
+            CollectionUtils.addAll(datas, fah.getAllForums(Property.RSDN_USER_ID.get(-1)).iterator());
+
+            return datas;
         }
 
         @Override

@@ -12,6 +12,6 @@ public interface IModerateAH extends AH {
 
     boolean removeModerateInfosByMessageId(int id) throws StorageException;
 
-    Moderate[] getModeratesByMessageId(int messageId) throws StorageException;
+    Iterable<Moderate> getModeratesByMessageId(int messageId) throws StorageException;
 
 }

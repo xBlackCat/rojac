@@ -11,6 +11,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import ru.rsdn.Janus.RequestForumInfo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -40,7 +41,7 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public Collection<RequestForumInfo> getSubscribedForums() throws StorageException {
+    public Iterable<RequestForumInfo> getSubscribedForums() throws StorageException {
         return helper.execute(Converters.TO_SUBSCRIBED_FORUM, DataQuery.GET_SUBSCRIBED_FORUMS);
     }
 
@@ -71,7 +72,7 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public Collection<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException {
+    public Iterable<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException {
         return helper.execute(Converters.TO_FORUM_DATA, DataQuery.GET_OBJECTS_FORUM, userId);
     }
 
@@ -82,14 +83,18 @@ final class DBForumAH extends AnAH implements IForumAH {
 
     @Override
     public void updateForumStatistic(IProgressTracker tracker, TIntHashSet forumIds) throws StorageException {
-        Object[][] params = new Object[forumIds.size()][];
+        Collection<Object[]> params = new ArrayList<>();
 
         TIntIterator iterator = forumIds.iterator();
-        int i = 0;
         while (iterator.hasNext()) {
-            params[i++] = new Integer[]{iterator.next()};
+            params.add(new Integer[]{iterator.next()});
         }
 
         helper.updateBatch(DataQuery.UPDATE_FORUM_SET_STAT, tracker, params);
+    }
+
+    @Override
+    public boolean hasSubscribedForums() throws StorageException {
+        return true;
     }
 }

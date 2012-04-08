@@ -10,8 +10,6 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.util.RojacUtils;
 
-import java.util.Collection;
-
 /**
  * @author xBlackCat
  */
@@ -28,7 +26,7 @@ public enum FavoriteType {
                 throw new StorageDataException("Thread root not found #" + itemId);
             }
 
-            Collection<MessageData> messages = messageAH.getMessagesDataByTopicId(itemId, messageData.getForumId());
+            Iterable<MessageData> messages = messageAH.getMessagesDataByTopicId(itemId, messageData.getForumId());
             Thread root = new Thread(messageData, null);
             root.fillThread(messages);
             root.setLoadingState(LoadingState.Loaded);
@@ -107,7 +105,7 @@ public enum FavoriteType {
             assert RojacUtils.checkThread(false);
 
             PostList root = new PostList(itemId);
-            Collection<MessageData> messages = Storage.get(IMessageAH.class).getUserReplies(itemId);
+            Iterable<MessageData> messages = Storage.get(IMessageAH.class).getUserReplies(itemId);
             root.fillList(messages);
             root.setLoadingState(LoadingState.Loaded);
 

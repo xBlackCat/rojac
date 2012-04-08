@@ -45,7 +45,6 @@ import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.utils.ResourceUtils;
-import ru.rsdn.Janus.RequestForumInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,8 +55,10 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static org.xblackcat.rojac.service.options.Property.*;
 
@@ -766,8 +767,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
             protected Void perform() throws Exception {
                 IForumAH forumAH = Storage.get(IForumAH.class);
 
-                Collection<RequestForumInfo> subscribedForumIds = forumAH.getSubscribedForums();
-                publish(!subscribedForumIds.isEmpty());
+                publish(forumAH.hasSubscribedForums());
                 return null;
             }
 

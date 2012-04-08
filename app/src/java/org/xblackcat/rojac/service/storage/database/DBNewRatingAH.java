@@ -6,8 +6,6 @@ import org.xblackcat.rojac.service.storage.INewRatingAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
-import java.util.Collection;
-
 /**
  * @author ASUS
  */
@@ -34,29 +32,26 @@ final class DBNewRatingAH extends AnAH implements INewRatingAH {
         return helper.update(DataQuery.REMOVE_OBJECT_NEW_RATING, id) > 0;
     }
 
-    public NewRating[] getNewRatingsByMessageId(int messageId) throws StorageException {
-        Collection<NewRating> rates = helper.execute(
+    public Iterable<NewRating> getNewRatingsByMessageId(int messageId) throws StorageException {
+        return helper.execute(
                 Converters.TO_NEW_RATING,
                 DataQuery.GET_OBJECTS_NEW_RATING_BY_MESSAGE_ID,
                 messageId);
-        return rates.toArray(new NewRating[rates.size()]);
     }
 
-    public NewRating[] getAllNewRatings() throws StorageException {
-        Collection<NewRating> newRatings = helper.execute(Converters.TO_NEW_RATING, DataQuery.GET_OBJECTS_NEW_RATING);
-        return newRatings.toArray(new NewRating[newRatings.size()]);
+    public Iterable<NewRating> getAllNewRatings() throws StorageException {
+        return helper.execute(Converters.TO_NEW_RATING, DataQuery.GET_OBJECTS_NEW_RATING);
     }
 
     public void clearRatings() throws StorageException {
         helper.update(DataQuery.REMOVE_ALL_OBJECTS_NEW_RATING);
     }
 
-    public Mark[] getNewRatingMarksByMessageId(int messageId) throws StorageException {
-        Collection<Mark> rating = helper.execute(
+    public Iterable<Mark> getNewRatingMarksByMessageId(int messageId) throws StorageException {
+        return helper.execute(
                 Converters.TO_MARK,
                 DataQuery.GET_OBJECTS_NEW_RATING_MARK_BY_MESSAGE_ID,
                 messageId
         );
-        return rating.toArray(new Mark[rating.size()]);
     }
 }

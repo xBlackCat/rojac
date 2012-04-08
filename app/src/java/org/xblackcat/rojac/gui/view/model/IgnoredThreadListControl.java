@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
@@ -17,6 +18,7 @@ import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -85,7 +87,7 @@ class IgnoredThreadListControl extends MessageListControl {
     }
 
     private class PostListLoader extends RojacWorker<Void, Void> {
-        private Collection<MessageData> messages;
+        private Collection<MessageData> messages = new ArrayList<>();
         private final SortedThreadsModel model;
 
         public PostListLoader(Runnable postProcessor, SortedThreadsModel model) {
@@ -95,7 +97,7 @@ class IgnoredThreadListControl extends MessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            messages = Storage.get(IMessageAH.class).getIgnoredTopicsList();
+            CollectionUtils.addAll(messages, Storage.get(IMessageAH.class).getIgnoredTopicsList().iterator());
             return null;
         }
 

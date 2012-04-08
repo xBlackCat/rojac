@@ -15,9 +15,9 @@ interface IQueryHolder {
 
     <T> T executeSingle(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException;
 
-    <T> Collection<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException;
+    <T> Iterable<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException;
 
     int[] getIds(DataQuery sql, Object... params) throws StorageException;
 
-    void updateBatch(DataQuery sql, IProgressTracker tracker, Object[]... params) throws StorageException;
+    void updateBatch(DataQuery sql, IProgressTracker tracker, Collection<Object[]> params) throws StorageException;
 }

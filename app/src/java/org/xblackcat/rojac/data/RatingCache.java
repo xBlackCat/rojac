@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Collection;
 import java.util.EnumMap;
 
 /**
@@ -16,7 +15,7 @@ public class RatingCache {
 
     private final EnumMap<Mark, Integer> rating = new EnumMap<>(Mark.class);
 
-    public RatingCache(Collection<MarkStat> marks) {
+    public RatingCache(Iterable<MarkStat> marks) {
         for (MarkStat m : marks) {
             rating.put(m.getMark(), m.getAmount());
         }

@@ -13,6 +13,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import ru.rsdn.Janus.JanusMessageInfo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -76,12 +77,11 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
     @Override
     public void updateLastPostInfo(IBatchTracker tracker, TIntHashSet threadIds) throws StorageException {
-        Object[][] params = new Object[threadIds.size()][];
+        Collection<Object[]> params = new ArrayList<>();
 
         TIntIterator iterator = threadIds.iterator();
-        int i = 0;
         while (iterator.hasNext()) {
-            params[i++] = new Integer[]{iterator.next()};
+            params.add(new Integer[]{iterator.next()});
         }
 
         tracker.setBatch(0, 3);
@@ -107,7 +107,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public Collection<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException {
+    public Iterable<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA,
@@ -141,7 +141,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public Collection<MessageData> getUserReplies(int userId) throws StorageException {
+    public Iterable<MessageData> getUserReplies(int userId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_REPLIES,
@@ -269,7 +269,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public Collection<MessageData> getIgnoredTopicsList() throws StorageException {
+    public Iterable<MessageData> getIgnoredTopicsList() throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_IGNORED_TOPIC_MESSAGE_DATA

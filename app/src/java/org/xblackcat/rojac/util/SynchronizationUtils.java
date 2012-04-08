@@ -1,7 +1,11 @@
 package org.xblackcat.rojac.util;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author xBlackCat
@@ -31,4 +35,10 @@ public final class SynchronizationUtils {
         return Message.ProgressControl_AffectedBytes.get(lastSize, factors.charAt(idx));
     }
 
+    public static <T> Collection<T> collect(Iterable<T> it) {
+        Collection<T> col = new ArrayList<>();
+        CollectionUtils.addAll(col, it.iterator());
+        CollectionUtils.addAll(col, it.iterator());
+        return col;
+    }
 }

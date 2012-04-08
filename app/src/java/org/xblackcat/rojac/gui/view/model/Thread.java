@@ -1,12 +1,16 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
+import org.apache.commons.collections.CollectionUtils;
 import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.service.options.Property;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -206,8 +210,9 @@ public class Thread extends Post {
         filled = false;
     }
 
-    public void fillThread(Collection<MessageData> po) {
-        List<MessageData> posts = new ArrayList<>(po);
+    public void fillThread(Iterable<MessageData> po) {
+        List<MessageData> posts = new ArrayList<>();
+        CollectionUtils.addAll(posts, po.iterator());
         Collections.sort(posts, SORT_BY_PARENTS);
 
         for (MessageData post : posts) {

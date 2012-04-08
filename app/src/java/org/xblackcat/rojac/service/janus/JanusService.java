@@ -127,7 +127,7 @@ public class JanusService implements IJanusService {
     }
 
     @Override
-    public void postChanges(Collection<NewMessage> messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException {
+    public void postChanges(Collection<NewMessage> messages, Collection<NewRating> ratings, Collection<NewModerate> moderates) throws JanusServiceException {
         log.info("Post the changes to the Janus WS.");
 
         try {
@@ -135,8 +135,8 @@ public class JanusService implements IJanusService {
                     userName,
                     password,
                     RojacUtils.getRSDNObject(messages.toArray(new NewMessage[messages.size()])),
-                    RojacUtils.getRSDNObject(ratings),
-                    RojacUtils.getRSDNObject(moderates));
+                    RojacUtils.getRSDNObject(ratings.toArray(new NewRating[ratings.size()])),
+                    RojacUtils.getRSDNObject(moderates.toArray(new NewModerate[moderates.size()])));
             soap.postChange(postRequest);
         } catch (RemoteException e) {
             throw new JanusServiceException("Can not post changes to RSDN.", e);

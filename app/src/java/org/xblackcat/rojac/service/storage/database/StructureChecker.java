@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +21,8 @@ import org.xblackcat.rojac.util.DatabaseUtils;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -124,7 +127,7 @@ public class StructureChecker implements IStructureChecker {
 
                             queries = ArrayUtils.subarray(queries, 1, queries.length);
 
-                            List<Object[]> rowsList = helper.execute(new IToObjectConverter<Object[]>() {
+                            Iterable<Object[]> rowsList = helper.execute(new IToObjectConverter<Object[]>() {
                                 @Override
                                 public Object[] convert(ResultSet rs) throws SQLException {
                                     int columnCount = rs.getMetaData().getColumnCount();
@@ -138,7 +141,8 @@ public class StructureChecker implements IStructureChecker {
                                 }
                             }, getRowsQuery);
 
-                            Object[][] rows = rowsList.toArray(new Object[rowsList.size()][]);
+                            Collection<Object[]> rows = new ArrayList<>();
+                            CollectionUtils.addAll(rows, rowsList.iterator());
 
                             for (String query : queries) {
                                 helper.updateBatch(query, null, rows);

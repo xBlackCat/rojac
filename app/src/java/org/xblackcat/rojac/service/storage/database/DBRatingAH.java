@@ -8,8 +8,6 @@ import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import ru.rsdn.Janus.JanusRatingInfo;
 
-import java.util.Collection;
-
 /**
  * @author ASUS
  */
@@ -29,12 +27,11 @@ final class DBRatingAH extends AnAH implements IRatingAH {
                 r.getRateDate().getTimeInMillis());
     }
 
-    public Rating[] getRatingsByMessageId(int messageId) throws StorageException {
-        Collection<Rating> ratings = helper.execute(Converters.TO_RATING, DataQuery.GET_OBJECTS_RATING_BY_MESSAGE_ID, messageId);
-        return ratings.toArray(new Rating[ratings.size()]);
+    public Iterable<Rating> getRatingsByMessageId(int messageId) throws StorageException {
+        return helper.execute(Converters.TO_RATING, DataQuery.GET_OBJECTS_RATING_BY_MESSAGE_ID, messageId);
     }
 
-    public Collection<MarkStat> getMarkStatByMessageId(int messageId) throws StorageException {
+    public Iterable<MarkStat> getMarkStatByMessageId(int messageId) throws StorageException {
         return helper.execute(
                 Converters.TO_MARK_STAT,
                 DataQuery.GET_OBJECTS_MARK_STAT_BY_MESSAGE_ID,

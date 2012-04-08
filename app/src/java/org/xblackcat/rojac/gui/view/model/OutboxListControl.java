@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
@@ -13,6 +14,7 @@ import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -96,7 +98,7 @@ class OutboxListControl extends MessageListControl {
     }
 
     private class PostListLoader extends RojacWorker<Void, Void> {
-        private Collection<NewMessage> messages;
+        private Collection<NewMessage> messages = new ArrayList<>();
         private final SortedThreadsModel model;
 
         public PostListLoader(Runnable postProcessor, SortedThreadsModel model) {
@@ -106,7 +108,7 @@ class OutboxListControl extends MessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            messages = Storage.get(INewMessageAH.class).getAllNewMessages();
+            CollectionUtils.addAll(messages, Storage.get(INewMessageAH.class).getAllNewMessages().iterator());
             return null;
         }
 

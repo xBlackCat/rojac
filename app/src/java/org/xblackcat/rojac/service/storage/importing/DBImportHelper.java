@@ -70,7 +70,12 @@ public class DBImportHelper implements IImportHelper {
         try {
             try (Connection con = connectionFactory.getConnection()) {
                 try (Statement st = con.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
-                    st.setFetchSize(Integer.MIN_VALUE);
+                    try {
+                        // Set streaming mode for ResultSet (MySQL only!)
+                        st.setFetchSize(Integer.MIN_VALUE);
+                    } catch (SQLException e) {
+                        // For now only MySQL supports streaming mode in JDBC
+                    }
                     try (ResultSet rs = st.executeQuery(queries.getTableDataQuery(item))) {
                         ResultSetMetaData metaData = rs.getMetaData();
                         int columnCount = metaData.getColumnCount();
