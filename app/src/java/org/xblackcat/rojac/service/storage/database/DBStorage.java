@@ -2,10 +2,8 @@ package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
-import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
-import org.xblackcat.rojac.service.storage.database.connection.SimplePooledConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
-import org.xblackcat.rojac.service.storage.database.helper.QueryHelper;
+import org.xblackcat.rojac.service.storage.database.helper.QueryHelperFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,16 +14,13 @@ import java.util.Map;
 
 public class DBStorage implements IStorage {
     private final IQueryHelper helper;
-    private final IQueryHolder queryExecutor;
 
     private final Map<Class<? extends AH>, AH> accessHelpers = new HashMap<>();
 
     public DBStorage(DatabaseSettings settings) throws StorageException {
-        IConnectionFactory connectionFactory = new SimplePooledConnectionFactory(settings);
+        helper = QueryHelperFactory.createHelper(settings);
 
-        helper = new QueryHelper(connectionFactory);
-
-        queryExecutor = new QueryHolder(helper);
+        IQueryHolder queryExecutor = new QueryHolder(helper);
 
         // Initialize the object AHs
         accessHelpers.put(IForumAH.class, new DBForumAH(queryExecutor));

@@ -19,7 +19,7 @@ import java.util.*;
  * @author ASUS
  */
 
-public final class QueryHelper implements IQueryHelper {
+final class QueryHelper implements IQueryHelper {
     private static final Log log = LogFactory.getLog(QueryHelper.class);
 
     private final IConnectionFactory connectionFactory;

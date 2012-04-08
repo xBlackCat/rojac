@@ -11,11 +11,10 @@ import org.xblackcat.rojac.service.storage.StorageCheckException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
-import org.xblackcat.rojac.service.storage.database.connection.SimpleConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
-import org.xblackcat.rojac.service.storage.database.helper.QueryHelper;
+import org.xblackcat.rojac.service.storage.database.helper.QueryHelperFactory;
 import org.xblackcat.rojac.util.DatabaseUtils;
 
 import java.io.IOException;
@@ -38,7 +37,7 @@ public class StructureChecker implements IStructureChecker {
     private final IQueryHelper helper;
 
     public StructureChecker(DatabaseSettings settings) throws StorageInitializationException {
-        this.helper = new QueryHelper(new SimpleConnectionFactory(settings));
+        this.helper = QueryHelperFactory.createHelper(settings);
         try {
             initializationQueries = DatabaseUtils.loadInitializeSQLs(helper.getEngine());
         } catch (IOException e) {
