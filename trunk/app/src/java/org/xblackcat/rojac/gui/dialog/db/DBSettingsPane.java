@@ -14,11 +14,9 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
-import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
-import org.xblackcat.rojac.service.storage.database.connection.SimpleConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
-import org.xblackcat.rojac.service.storage.database.helper.QueryHelper;
+import org.xblackcat.rojac.service.storage.database.helper.QueryHelperFactory;
 import org.xblackcat.rojac.util.DatabaseUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -296,8 +294,7 @@ public class DBSettingsPane extends JPanel {
                 @Override
                 protected Void perform() throws Exception {
                     try {
-                        IConnectionFactory factory = new SimpleConnectionFactory(curSet);
-                        IQueryHelper queryHelper = new QueryHelper(factory);
+                        IQueryHelper queryHelper = QueryHelperFactory.createHelper(curSet);
 
                         Number answer = queryHelper.executeSingle(Converters.TO_NUMBER, "SELECT 21+21");
 
