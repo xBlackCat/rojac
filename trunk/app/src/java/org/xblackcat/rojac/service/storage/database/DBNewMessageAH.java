@@ -5,8 +5,6 @@ import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
-import java.util.Collection;
-
 /**
  * @author ASUS
  */
@@ -57,7 +55,7 @@ final class DBNewMessageAH extends AnAH implements INewMessageAH {
     }
 
     @Override
-    public Collection<NewMessage> getNewMessagesToSend() throws StorageException {
+    public Iterable<NewMessage> getNewMessagesToSend() throws StorageException {
         return helper.execute(Converters.TO_NEW_MESSAGE, DataQuery.GET_OBJECTS_NEW_MESSAGE_TO_SEND);
     }
 
@@ -70,7 +68,7 @@ final class DBNewMessageAH extends AnAH implements INewMessageAH {
         );
     }
 
-    public Collection<NewMessage> getAllNewMessages() throws StorageException {
+    public Iterable<NewMessage> getAllNewMessages() throws StorageException {
         return helper.execute(Converters.TO_NEW_MESSAGE, DataQuery.GET_OBJECTS_NEW_MESSAGE);
     }
 }

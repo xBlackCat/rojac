@@ -2,7 +2,6 @@ package org.xblackcat.rojac.service.janus.commands;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.NewMessage;
@@ -15,6 +14,7 @@ import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.PostException;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
 import org.xblackcat.rojac.service.storage.*;
+import org.xblackcat.rojac.util.SynchronizationUtils;
 
 import java.util.Collection;
 
@@ -33,20 +33,20 @@ class PostChangesRequest extends ARequest<IPacket> {
             INewMessageAH nmeAH = Storage.get(INewMessageAH.class);
             INewModerateAH nmoAH = Storage.get(INewModerateAH.class);
 
-            NewRating[] newRatings;
+            Collection<NewRating> newRatings;
             Collection<NewMessage> newMessages;
-            NewModerate[] newModerates;
+            Collection<NewModerate> newModerates;
             try {
-                newRatings = nrAH.getAllNewRatings();
-                newMessages = nmeAH.getNewMessagesToSend();
-                newModerates = nmoAH.getAllNewModerates();
+                newRatings = SynchronizationUtils.collect(nrAH.getAllNewRatings());
+                newMessages = SynchronizationUtils.collect(nmeAH.getNewMessagesToSend());
+                newModerates = SynchronizationUtils.collect(nmoAH.getAllNewModerates());
             } catch (StorageException e) {
                 throw new RsdnProcessorException("Can not load your changes.", e);
             }
 
-            if (ArrayUtils.isEmpty(newRatings) &&
+            if (CollectionUtils.isEmpty(newRatings) &&
                     CollectionUtils.isEmpty(newMessages) &&
-                    ArrayUtils.isEmpty(newModerates)) {
+                    CollectionUtils.isEmpty(newModerates)) {
 
                 if (log.isDebugEnabled()) {
                     log.debug("Nothing to post.");

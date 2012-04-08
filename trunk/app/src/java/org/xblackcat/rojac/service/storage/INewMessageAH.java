@@ -2,8 +2,6 @@ package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.NewMessage;
 
-import java.util.Collection;
-
 /**
  * @author ASUS
  */
@@ -19,9 +17,9 @@ public interface INewMessageAH extends AH {
 
     NewMessage getNewMessageById(int id) throws StorageException;
 
-    Collection<NewMessage> getAllNewMessages() throws StorageException;
+    Iterable<NewMessage> getAllNewMessages() throws StorageException;
 
-    Collection<NewMessage> getNewMessagesToSend() throws StorageException;
+    Iterable<NewMessage> getNewMessagesToSend() throws StorageException;
 
     void setDraftFlag(boolean draft, int messageId) throws StorageException;
 }

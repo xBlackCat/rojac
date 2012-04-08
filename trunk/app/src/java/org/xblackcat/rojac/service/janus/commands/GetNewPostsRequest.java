@@ -12,6 +12,7 @@ import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.storage.StorageException;
 import ru.rsdn.Janus.RequestForumInfo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_MESSAGES_PORTION;
@@ -24,22 +25,23 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
     protected int loadData(ILogTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
-        Collection<RequestForumInfo> forumInfo = forumAH.getSubscribedForums();
+        Iterable<RequestForumInfo> forumInfo = forumAH.getSubscribedForums();
 
-        if (forumInfo.isEmpty()) {
+        StringBuilder idsListBuilder = new StringBuilder();
+        Collection<RequestForumInfo> forumInfos = new ArrayList<>();
+        for (RequestForumInfo rfi : forumInfo) {
+            forumInfos.add(rfi);
+            idsListBuilder.append(", ");
+            idsListBuilder.append(rfi.getForumId());
+        }
+
+        if (forumInfos.isEmpty()) {
             if (log.isWarnEnabled()) {
                 log.warn("You should select at least one forum to start synchronization.");
             }
             return 0;
         }
 
-        RequestForumInfo[] forumInfos = forumInfo.toArray(new RequestForumInfo[forumInfo.size()]);
-
-        StringBuilder idsListBuilder = new StringBuilder();
-        for (RequestForumInfo rfi : forumInfos) {
-            idsListBuilder.append(", ");
-            idsListBuilder.append(rfi.getForumId());
-        }
         String idsList = idsListBuilder.substring(2);
 
         tracker.addLodMessage(Message.Synchronize_Command_Name_NewPosts, idsList);
@@ -66,7 +68,7 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
             NewData data;
             try {
                 data = janusService.getNewData(
-                        forumInfos,
+                        forumInfos.toArray(new RequestForumInfo[forumInfos.size()]),
                         ratingsVersion,
                         messagesVersion,
                         moderatesVersion,

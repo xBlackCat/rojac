@@ -13,10 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author ASUS
@@ -32,10 +29,10 @@ public final class QueryHelper implements IQueryHelper {
     }
 
     @Override
-    public <T> List<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
+    public <T> Iterable<T> execute(final IToObjectConverter<T> c, final String sql, final Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
-        String debugAnchor = Property.ROJAC_SQL_DEBUG.get() ? RojacUtils.generateHash() : null;
+        final String debugAnchor = Property.ROJAC_SQL_DEBUG.get() ? RojacUtils.generateHash() : null;
         if (debugAnchor != null) {
             if (log.isTraceEnabled()) {
                 log.trace("[" + debugAnchor + "] Execute query " + RojacUtils.constructDebugSQL(sql, parameters));
@@ -88,18 +85,19 @@ public final class QueryHelper implements IQueryHelper {
     }
 
     @Override
-    public void updateBatch(String sql, IProgressTracker tracker, Object[]... params) throws StorageException {
+    public void updateBatch(String sql, IProgressTracker tracker, Collection<Object[]> params) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
         try {
             try (Connection con = connectionFactory.getConnection()) {
                 try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
-                    int i = 0, paramsLength = params.length;
-                    while (i < paramsLength) {
+                    int i = 0;
+                    int paramsLength = params.size();
+                    for (Object[] param : params) {
                         if (tracker != null) {
                             tracker.updateProgress(i, paramsLength);
                         }
-                        fillStatement(preparedStatement, params[i]);
+                        fillStatement(preparedStatement, param);
 
                         preparedStatement.executeUpdate();
                         i++;
@@ -122,13 +120,15 @@ public final class QueryHelper implements IQueryHelper {
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
-        Collection<T> col = execute(c, sql, parameters);
-        assert col.size() < 2 : "Expected one or zero but got " + col.size() + " results on query " + RojacUtils.constructDebugSQL(sql, parameters);
-        if (col.isEmpty()) {
+        Iterator<T> col = execute(c, sql, parameters).iterator();
+
+        if (!col.hasNext()) {
             return null;
-        } else {
-            return col.iterator().next();
         }
+
+        T object = col.next();
+        assert !col.hasNext() : "Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters);
+        return object;
     }
 
     @Override

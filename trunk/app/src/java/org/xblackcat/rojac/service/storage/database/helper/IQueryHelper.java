@@ -4,14 +4,14 @@ import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author ASUS
  */
 
 public interface IQueryHelper {
-    <T> List<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException;
+    <T> Iterable<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException;
 
     <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException;
 
@@ -21,5 +21,5 @@ public interface IQueryHelper {
 
     String getEngine();
 
-    void updateBatch(String query, IProgressTracker tracker, Object[]... params) throws StorageException;
+    void updateBatch(String query, IProgressTracker tracker, Collection<Object[]> params) throws StorageException;
 }

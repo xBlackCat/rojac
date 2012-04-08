@@ -54,12 +54,13 @@ public interface IJanusService {
      * Posts the changes to the RSDN forum.
      *
      *
+     *
      * @param messages  new messages to post.
      * @param ratings   new ratings to post.
      * @param moderates new moderate actions to post.
      * @throws JanusServiceException throws if any errors occurs.
      */
-    void postChanges(Collection<NewMessage> messages, NewRating[] ratings, NewModerate[] moderates) throws JanusServiceException;
+    void postChanges(Collection<NewMessage> messages, Collection<NewRating> ratings, Collection<NewModerate> moderates) throws JanusServiceException;
 
     /**
      * Gets new messages from Janus WS.

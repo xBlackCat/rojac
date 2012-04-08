@@ -117,15 +117,17 @@ class PersonalDecorator extends ADecorator {
     private class OutboxReloadTask implements ILoadTask<ReadStatistic> {
         @Override
         public ReadStatistic doBackground() throws Exception {
-            Collection<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages();
+            Iterable<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages();
             int toSend = 0;
+            int total = 0;
             for (NewMessage nm : newMessages) {
+                total ++;
                 if (!nm.isDraft()) {
                     ++toSend;
                 }
             }
 
-            return new ReadStatistic(0, toSend, newMessages.size());
+            return new ReadStatistic(0, toSend, total);
         }
 
         @Override

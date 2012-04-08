@@ -17,14 +17,11 @@ import java.sql.SQLException;
  */
 
 public class SimplePooledConnectionFactory extends AConnectionFactory {
-    private final ObjectPool connectionPool = new GenericObjectPool(null, 20, GenericObjectPool.WHEN_EXHAUSTED_GROW, 0, true, true);
-    private final String poolName;
     private final String connectionUrl;
-    private final PoolingDriver driver;
 
     public SimplePooledConnectionFactory(DatabaseSettings databaseSettings) throws StorageInitializationException {
         super(databaseSettings);
-        poolName = "rojacdb." + System.currentTimeMillis();
+        String poolName = "rojacdb." + System.currentTimeMillis();
 
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(
                 databaseSettings.getUrl(),
@@ -32,6 +29,7 @@ public class SimplePooledConnectionFactory extends AConnectionFactory {
                 databaseSettings.getPassword()
         );
 
+        ObjectPool connectionPool = new GenericObjectPool<Object>(null, 20, GenericObjectPool.WHEN_EXHAUSTED_GROW, 0, true, true);
         new PoolableConnectionFactory(
                 connectionFactory,
                 connectionPool,
@@ -47,7 +45,7 @@ public class SimplePooledConnectionFactory extends AConnectionFactory {
         }
 
         try {
-            driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp:");
+            PoolingDriver driver = (PoolingDriver) DriverManager.getDriver("jdbc:apache:commons:dbcp:");
 
             driver.registerPool(poolName, connectionPool);
         } catch (SQLException e) {

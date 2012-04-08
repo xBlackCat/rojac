@@ -5,8 +5,6 @@ import org.xblackcat.rojac.service.storage.INewModerateAH;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
-import java.util.Collection;
-
 /**
  * @author ASUS
  */
@@ -35,8 +33,7 @@ final class DBNewModerateAH extends AnAH implements INewModerateAH {
         return helper.executeSingle(Converters.TO_NEW_MODERATE, DataQuery.GET_OBJECT_NEW_MODERATE, id);
     }
 
-    public NewModerate[] getAllNewModerates() throws StorageException {
-        Collection<NewModerate> newModerates = helper.execute(Converters.TO_NEW_MODERATE, DataQuery.GET_OBJECTS_NEW_MODERATES);
-        return newModerates.toArray(new NewModerate[newModerates.size()]);
+    public Iterable<NewModerate> getAllNewModerates() throws StorageException {
+        return helper.execute(Converters.TO_NEW_MODERATE, DataQuery.GET_OBJECTS_NEW_MODERATES);
     }
 }

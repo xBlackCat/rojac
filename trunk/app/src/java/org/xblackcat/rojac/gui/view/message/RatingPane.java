@@ -138,7 +138,7 @@ class RatingPane extends JPanel {
         protected Void perform() throws Exception {
             IUserAH userAH = Storage.get(IUserAH.class);
 
-            Rating[] ratings = Storage.get(IRatingAH.class).getRatingsByMessageId(messageId);
+            Iterable<Rating> ratings = Storage.get(IRatingAH.class).getRatingsByMessageId(messageId);
 
 //            NewRating[] ownRatings = Storage.get(INewRatingAH.class).getNewRatingsByMessageId(messageId);
 

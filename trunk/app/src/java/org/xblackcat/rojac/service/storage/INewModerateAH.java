@@ -13,5 +13,5 @@ public interface INewModerateAH extends AH {
 
     NewModerate getNewModerateById(int id) throws StorageException;
 
-    NewModerate[] getAllNewModerates() throws StorageException;
+    Iterable<NewModerate> getAllNewModerates() throws StorageException;
 }

@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import gnu.trove.list.array.TIntArrayList;
 import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
@@ -41,31 +42,28 @@ class QueryHolder implements IQueryHolder {
     }
 
     @Override
-    public void updateBatch(DataQuery sql, IProgressTracker tracker, Object[]... params) throws StorageException {
+    public void updateBatch(DataQuery sql, IProgressTracker tracker, Collection<Object[]> params) throws StorageException {
         helper.updateBatch(getQuery(sql), tracker, params);
     }
 
     @Override
-    public <T> Collection<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
+    public <T> Iterable<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.execute(c, getQuery(sql), params);
     }
 
     @Override
     public int[] getIds(DataQuery sql, Object... params) throws StorageException {
-        Collection<Number> objIds = execute(Converters.TO_NUMBER, sql, params);
-        int[] ids;
+        Iterable<Number> objIds = execute(Converters.TO_NUMBER, sql, params);
+        TIntArrayList ids = new TIntArrayList();
 
         try {
-            ids = new int[objIds.size()];
-
-            int i = 0;
             for (Number id : objIds) {
-                ids[i++] = id.intValue();
+                ids.add(id.intValue());
             }
         } catch (NullPointerException e) {
             throw new StorageDataException("Got null instead of real value.", e);
         }
 
-        return ids;
+        return ids.toArray();
     }
 }

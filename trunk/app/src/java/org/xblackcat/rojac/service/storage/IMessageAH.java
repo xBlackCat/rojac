@@ -6,8 +6,6 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import ru.rsdn.Janus.JanusMessageInfo;
 
-import java.util.Collection;
-
 /**
  * @author ASUS
  */
@@ -80,12 +78,13 @@ public interface IMessageAH extends AH {
     /**
      * Loads messages of the specified thread.
      *
+     *
      * @param threadId
      * @param forumId
      * @return array of messages data.
      * @throws StorageException
      */
-    Collection<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException;
+    Iterable<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException;
 
     /**
      * Loads latest N topics.
@@ -119,11 +118,12 @@ public interface IMessageAH extends AH {
     /**
      * Returns all replies on the user post
      *
+     *
      * @param userId
      * @return
      * @throws StorageException
      */
-    Collection<MessageData> getUserReplies(int userId) throws StorageException;
+    Iterable<MessageData> getUserReplies(int userId) throws StorageException;
 
     MessageData getMessageData(int messageId) throws StorageException;
 
@@ -157,5 +157,5 @@ public interface IMessageAH extends AH {
 
     SetReadExPacket setReadAfterDate(long dateline, boolean read) throws StorageException;
 
-    Collection<MessageData> getIgnoredTopicsList() throws StorageException;
+    Iterable<MessageData> getIgnoredTopicsList() throws StorageException;
 }
