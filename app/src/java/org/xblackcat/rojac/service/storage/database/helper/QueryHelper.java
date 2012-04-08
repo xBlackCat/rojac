@@ -42,7 +42,8 @@ final class QueryHelper implements IQueryHelper {
         try {
             try (Connection con = connectionFactory.getConnection()) {
                 long start = System.currentTimeMillis();
-                try (PreparedStatement st = constructSql(con, sql, parameters)) {
+                try (PreparedStatement st = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
+                    DBUtils.fillStatement(st, parameters);
                     if (debugAnchor != null) {
                         if (log.isTraceEnabled()) {
                             log.trace("[" + debugAnchor + "] Query was built in " + (System.currentTimeMillis() - start) + " ms");
@@ -97,7 +98,7 @@ final class QueryHelper implements IQueryHelper {
                         if (tracker != null) {
                             tracker.updateProgress(i, paramsLength);
                         }
-                        fillStatement(preparedStatement, param);
+                        DBUtils.fillStatement(preparedStatement, param);
 
                         preparedStatement.executeUpdate();
                         i++;
@@ -146,7 +147,8 @@ final class QueryHelper implements IQueryHelper {
         try {
             try (Connection con = connectionFactory.getConnection()) {
                 long start = System.currentTimeMillis();
-                try (PreparedStatement st = constructSql(con, sql, parameters)) {
+                try (PreparedStatement st = con.prepareStatement(sql)) {
+                    DBUtils.fillStatement(st, parameters);
                     if (debugAnchor != null) {
                         if (log.isTraceEnabled()) {
                             log.trace("[" + debugAnchor + "] Update was prepared in " + (System.currentTimeMillis() - start) + " ms");
@@ -166,26 +168,6 @@ final class QueryHelper implements IQueryHelper {
 
         } catch (SQLException e) {
             throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
-        }
-    }
-
-    private static PreparedStatement constructSql(Connection con, String sql, Object... parameters) throws SQLException {
-        PreparedStatement preparedStatement = con.prepareStatement(sql);
-        fillStatement(preparedStatement, parameters);
-
-        return preparedStatement;
-    }
-
-    private static void fillStatement(PreparedStatement preparedStatement, Object... parameters) throws SQLException {
-        // Fill parameters if any
-        if (parameters != null) {
-            for (int i = 0; i < parameters.length; i++) {
-                if (parameters[i] instanceof Boolean) {
-                    preparedStatement.setInt(i + 1, ((Boolean) (parameters[i])) ? 1 : 0);
-                } else {
-                    preparedStatement.setObject(i + 1, parameters[i]);
-                }
-            }
         }
     }
 }
