@@ -21,6 +21,6 @@ public class QueryHelperFactory {
             return new StreamingQueryHelper(connectionFactory, new MySqlStreamingResultFactory());
         }
 
-        return new QueryHelper(connectionFactory);
+        return new StreamingQueryHelper(connectionFactory, new StreamingResultFactory());
     }
 }
