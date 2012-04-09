@@ -11,7 +11,7 @@ import ru.rsdn.Janus.JanusRatingInfo;
 public interface IRatingAH extends AH {
     void storeRating(JanusRatingInfo ri) throws StorageException;
 
-    Iterable<Rating> getRatingsByMessageId(int messageId) throws StorageException;
+    org.xblackcat.rojac.service.storage.IResult<Rating> getRatingsByMessageId(int messageId) throws StorageException;
 
-    Iterable<MarkStat> getMarkStatByMessageId(int messageId) throws StorageException;
+    org.xblackcat.rojac.service.storage.IResult<MarkStat> getMarkStatByMessageId(int messageId) throws StorageException;
 }

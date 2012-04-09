@@ -17,9 +17,9 @@ public interface INewMessageAH extends AH {
 
     NewMessage getNewMessageById(int id) throws StorageException;
 
-    Iterable<NewMessage> getAllNewMessages() throws StorageException;
+    org.xblackcat.rojac.service.storage.IResult<NewMessage> getAllNewMessages() throws StorageException;
 
-    Iterable<NewMessage> getNewMessagesToSend() throws StorageException;
+    org.xblackcat.rojac.service.storage.IResult<NewMessage> getNewMessagesToSend() throws StorageException;
 
     void setDraftFlag(boolean draft, int messageId) throws StorageException;
 }

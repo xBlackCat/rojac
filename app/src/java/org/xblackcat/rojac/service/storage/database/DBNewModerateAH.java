@@ -33,7 +33,7 @@ final class DBNewModerateAH extends AnAH implements INewModerateAH {
         return helper.executeSingle(Converters.TO_NEW_MODERATE, DataQuery.GET_OBJECT_NEW_MODERATE, id);
     }
 
-    public Iterable<NewModerate> getAllNewModerates() throws StorageException {
+    public org.xblackcat.rojac.service.storage.IResult<NewModerate> getAllNewModerates() throws StorageException {
         return helper.execute(Converters.TO_NEW_MODERATE, DataQuery.GET_OBJECTS_NEW_MODERATES);
     }
 }

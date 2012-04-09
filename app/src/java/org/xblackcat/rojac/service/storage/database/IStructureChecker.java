@@ -13,14 +13,15 @@ public interface IStructureChecker {
      * Checks and initialize database structure.
      *
      * @throws org.xblackcat.rojac.service.storage.StorageCheckException
+     *
      */
     void check() throws StorageCheckException;
 
     /**
      * Checks and initialize database structure.
      *
-     * @throws StorageCheckException
      * @param progressListener
+     * @throws StorageCheckException
      */
     void check(IProgressListener progressListener) throws StorageCheckException;
 
@@ -28,7 +29,8 @@ public interface IStructureChecker {
      * Check database structure and initialize it if onlyTest is false.
      *
      * @param onlyTest if true perform only check without initialization.
-     * @throws org.xblackcat.rojac.service.storage.StorageCheckException thrown if database check not passed.
+     * @throws org.xblackcat.rojac.service.storage.StorageCheckException
+     *          thrown if database check not passed.
      */
     void check(boolean onlyTest) throws StorageCheckException;
 

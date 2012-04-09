@@ -37,9 +37,15 @@ class PostChangesRequest extends ARequest<IPacket> {
             Collection<NewMessage> newMessages;
             Collection<NewModerate> newModerates;
             try {
-                newRatings = SynchronizationUtils.collect(nrAH.getAllNewRatings());
-                newMessages = SynchronizationUtils.collect(nmeAH.getNewMessagesToSend());
-                newModerates = SynchronizationUtils.collect(nmoAH.getAllNewModerates());
+                try (IResult<NewRating> allNewRatings = nrAH.getAllNewRatings()) {
+                    newRatings = SynchronizationUtils.collect(allNewRatings);
+                }
+                try (IResult<NewMessage> newMessagesToSend = nmeAH.getNewMessagesToSend()) {
+                    newMessages = SynchronizationUtils.collect(newMessagesToSend);
+                }
+                try (IResult<NewModerate> allNewModerates = nmoAH.getAllNewModerates()) {
+                    newModerates = SynchronizationUtils.collect(allNewModerates);
+                }
             } catch (StorageException e) {
                 throw new RsdnProcessorException("Can not load your changes.", e);
             }

@@ -9,6 +9,7 @@ import org.xblackcat.rojac.data.Role;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IBatchTracker;
 import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import ru.rsdn.Janus.JanusMessageInfo;
@@ -107,7 +108,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public Iterable<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException {
+    public IResult<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA,
@@ -124,7 +125,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public Iterable<ItemStatisticData<MessageData>> getTopicMessagesDataByForumId(int forumId, int userId) throws StorageException {
+    public org.xblackcat.rojac.service.storage.IResult<ItemStatisticData<MessageData>> getTopicMessagesDataByForumId(int forumId, int userId) throws StorageException {
         return helper.execute(
                 Converters.TO_THREAD_DATA,
                 DataQuery.GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
@@ -133,7 +134,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public Iterable<MessageData> getUserPosts(int userId) throws StorageException {
+    public IResult<MessageData> getUserPosts(int userId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_POSTS,
@@ -141,7 +142,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public Iterable<MessageData> getUserReplies(int userId) throws StorageException {
+    public IResult<MessageData> getUserReplies(int userId) throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_OBJECTS_MESSAGE_DATA_USER_REPLIES,
@@ -172,7 +173,8 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
 
     public SetReadExPacket setThreadReadBeforeDate(long dateline, boolean read, int forumId, int threadId) throws StorageException {
-        Iterable<AffectedMessage> toUpdate = helper.execute(
+        SetReadExPacket result;
+        try (IResult<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_TOPIC_MESSAGES_READ_FLAG_BEFORE,
                 read,
@@ -180,8 +182,9 @@ final class DBMessageAH extends AnAH implements IMessageAH {
                 forumId,
                 threadId,
                 threadId
-        );
-        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
+        )) {
+            result = new SetReadExPacket(read, toUpdate);
+        }
 
         helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_READ_FLAG_BEFORE, read, dateline, forumId, threadId, threadId);
 
@@ -190,7 +193,8 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
     @Override
     public SetReadExPacket setThreadReadAfterDate(long dateline, boolean read, int forumId, int threadId) throws StorageException {
-        Iterable<AffectedMessage> toUpdate = helper.execute(
+        SetReadExPacket result;
+        try (IResult<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_TOPIC_MESSAGES_READ_FLAG_AFTER,
                 read,
@@ -198,8 +202,9 @@ final class DBMessageAH extends AnAH implements IMessageAH {
                 forumId,
                 threadId,
                 threadId
-        );
-        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
+        )) {
+            result = new SetReadExPacket(read, toUpdate);
+        }
 
         helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_READ_FLAG_AFTER, read, dateline, forumId, threadId, threadId);
 
@@ -208,14 +213,16 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
     @Override
     public SetReadExPacket setForumReadBeforeDate(long dateline, boolean read, int forumId) throws StorageException {
-        Iterable<AffectedMessage> toUpdate = helper.execute(
+        SetReadExPacket result;
+        try (IResult<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_FORUM_MESSAGES_READ_FLAG_BEFORE,
                 read,
                 dateline,
                 forumId
-        );
-        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
+        )) {
+            result = new SetReadExPacket(read, toUpdate);
+        }
 
         helper.update(DataQuery.UPDATE_FORUM_MESSAGES_READ_FLAG_BEFORE, read, dateline, forumId);
 
@@ -224,14 +231,17 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
     @Override
     public SetReadExPacket setForumReadAfterDate(long dateline, boolean read, int forumId) throws StorageException {
-        Iterable<AffectedMessage> toUpdate = helper.execute(
+        SetReadExPacket result;
+
+        try (IResult<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_FORUM_MESSAGES_READ_FLAG_AFTER,
                 read,
                 dateline,
                 forumId
-        );
-        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
+        )) {
+            result = new SetReadExPacket(read, toUpdate);
+        }
 
         helper.update(DataQuery.UPDATE_FORUM_MESSAGES_READ_FLAG_AFTER, read, dateline, forumId);
 
@@ -240,13 +250,15 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
     @Override
     public SetReadExPacket setReadBeforeDate(long dateline, boolean read) throws StorageException {
-        Iterable<AffectedMessage> toUpdate = helper.execute(
+        SetReadExPacket result;
+        try (IResult<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_MESSAGES_READ_FLAG_BEFORE,
                 read,
                 dateline
-        );
-        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
+        )) {
+            result = new SetReadExPacket(read, toUpdate);
+        }
 
         helper.update(DataQuery.UPDATE_MESSAGES_READ_FLAG_BEFORE, read, dateline);
 
@@ -255,13 +267,15 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
     @Override
     public SetReadExPacket setReadAfterDate(long dateline, boolean read) throws StorageException {
-        Iterable<AffectedMessage> toUpdate = helper.execute(
+        SetReadExPacket result;
+        try (IResult<AffectedMessage> toUpdate = helper.execute(
                 Converters.TO_AFFECTED_MESSAGE_CONVERTER,
                 DataQuery.GET_MESSAGES_READ_FLAG_AFTER,
                 read,
                 dateline
-        );
-        SetReadExPacket result = new SetReadExPacket(read, toUpdate);
+        )) {
+            result = new SetReadExPacket(read, toUpdate);
+        }
 
         helper.update(DataQuery.UPDATE_MESSAGES_READ_FLAG_AFTER, read, dateline);
 
@@ -269,7 +283,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public Iterable<MessageData> getIgnoredTopicsList() throws StorageException {
+    public IResult<MessageData> getIgnoredTopicsList() throws StorageException {
         return helper.execute(
                 Converters.TO_MESSAGE_DATA,
                 DataQuery.GET_IGNORED_TOPIC_MESSAGE_DATA

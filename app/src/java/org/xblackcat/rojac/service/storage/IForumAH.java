@@ -16,7 +16,7 @@ public interface IForumAH extends AH {
 
     Forum getForumById(int forumId) throws StorageException;
 
-    Iterable<RequestForumInfo> getSubscribedForums() throws StorageException;
+    IResult<RequestForumInfo> getSubscribedForums() throws StorageException;
 
     /**
      * Updates forum information. Notice that <code>isSubscribed</code>  field is not changed during operation.
@@ -37,7 +37,7 @@ public interface IForumAH extends AH {
      * @return list of all available forums.
      * @throws StorageException
      */
-    Iterable<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException;
+    IResult<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException;
 
     DiscussionStatistic getForumStatistic(int forumId, int userId) throws StorageException;
 

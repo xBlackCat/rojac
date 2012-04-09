@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 
@@ -55,7 +56,7 @@ final class DBNewMessageAH extends AnAH implements INewMessageAH {
     }
 
     @Override
-    public Iterable<NewMessage> getNewMessagesToSend() throws StorageException {
+    public IResult<NewMessage> getNewMessagesToSend() throws StorageException {
         return helper.execute(Converters.TO_NEW_MESSAGE, DataQuery.GET_OBJECTS_NEW_MESSAGE_TO_SEND);
     }
 
@@ -68,7 +69,7 @@ final class DBNewMessageAH extends AnAH implements INewMessageAH {
         );
     }
 
-    public Iterable<NewMessage> getAllNewMessages() throws StorageException {
+    public IResult<NewMessage> getAllNewMessages() throws StorageException {
         return helper.execute(Converters.TO_NEW_MESSAGE, DataQuery.GET_OBJECTS_NEW_MESSAGE);
     }
 }

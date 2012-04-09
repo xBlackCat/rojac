@@ -13,5 +13,5 @@ public interface INewModerateAH extends AH {
 
     NewModerate getNewModerateById(int id) throws StorageException;
 
-    Iterable<NewModerate> getAllNewModerates() throws StorageException;
+    org.xblackcat.rojac.service.storage.IResult<NewModerate> getAllNewModerates() throws StorageException;
 }

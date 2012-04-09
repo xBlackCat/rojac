@@ -8,10 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
-* 09.04.12 11:39
-*
-* @author xBlackCat
-*/
+ * 09.04.12 11:39
+ *
+ * @author xBlackCat
+ */
 class PreloadedResult<T> implements IResult<T> {
     private final Iterable<T> res;
 

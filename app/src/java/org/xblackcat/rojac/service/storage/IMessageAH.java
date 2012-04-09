@@ -49,8 +49,6 @@ public interface IMessageAH extends AH {
     /**
      * Update last post info in specified threads
      *
-     *
-     *
      * @param tracker
      * @param threadIds
      * @throws StorageException
@@ -78,13 +76,12 @@ public interface IMessageAH extends AH {
     /**
      * Loads messages of the specified thread.
      *
-     *
      * @param threadId
      * @param forumId
      * @return array of messages data.
      * @throws StorageException
      */
-    Iterable<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException;
+    IResult<MessageData> getMessagesDataByTopicId(int threadId, int forumId) throws StorageException;
 
     /**
      * Loads latest N topics.
@@ -98,13 +95,12 @@ public interface IMessageAH extends AH {
     /**
      * Returns messages data for specified forum id.
      *
-     *
      * @param forumId target forum id
      * @param userId
      * @return array of topic messages data.
      * @throws StorageException
      */
-    Iterable<ItemStatisticData<MessageData>> getTopicMessagesDataByForumId(int forumId, int userId) throws StorageException;
+    IResult<ItemStatisticData<MessageData>> getTopicMessagesDataByForumId(int forumId, int userId) throws StorageException;
 
     /**
      * Returns all a user posts.
@@ -113,17 +109,16 @@ public interface IMessageAH extends AH {
      * @return user posts.
      * @throws StorageException
      */
-    Iterable<MessageData> getUserPosts(int userId) throws StorageException;
+    IResult<MessageData> getUserPosts(int userId) throws StorageException;
 
     /**
      * Returns all replies on the user post
-     *
      *
      * @param userId
      * @return
      * @throws StorageException
      */
-    Iterable<MessageData> getUserReplies(int userId) throws StorageException;
+    IResult<MessageData> getUserReplies(int userId) throws StorageException;
 
     MessageData getMessageData(int messageId) throws StorageException;
 
@@ -157,5 +152,5 @@ public interface IMessageAH extends AH {
 
     SetReadExPacket setReadAfterDate(long dateline, boolean read) throws StorageException;
 
-    Iterable<MessageData> getIgnoredTopicsList() throws StorageException;
+    IResult<MessageData> getIgnoredTopicsList() throws StorageException;
 }

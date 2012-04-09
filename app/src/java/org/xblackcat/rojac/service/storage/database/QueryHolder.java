@@ -54,17 +54,18 @@ class QueryHolder implements IQueryHolder {
 
     @Override
     public int[] getIds(DataQuery sql, Object... params) throws StorageException {
-        Iterable<Number> objIds = execute(Converters.TO_NUMBER, sql, params);
-        TIntArrayList ids = new TIntArrayList();
+        try (IResult<Number> objIds = execute(Converters.TO_NUMBER, sql, params)) {
+            TIntArrayList ids = new TIntArrayList();
 
-        try {
-            for (Number id : objIds) {
-                ids.add(id.intValue());
+            try {
+                for (Number id : objIds) {
+                    ids.add(id.intValue());
+                }
+            } catch (NullPointerException e) {
+                throw new StorageDataException("Got null instead of real value.", e);
             }
-        } catch (NullPointerException e) {
-            throw new StorageDataException("Got null instead of real value.", e);
-        }
 
-        return ids.toArray();
+            return ids.toArray();
+        }
     }
 }

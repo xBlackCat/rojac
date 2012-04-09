@@ -9,6 +9,7 @@ import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.gui.hint.UserInfoPane;
 import org.xblackcat.rojac.service.storage.IRatingAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.BalloonTipUtils;
@@ -136,28 +137,30 @@ class RatingPane extends JPanel {
 
         @Override
         protected Void perform() throws Exception {
+            TIntObjectMap<MarkItem> userMarks = new TIntObjectHashMap<>();
+
             IUserAH userAH = Storage.get(IUserAH.class);
 
-            Iterable<Rating> ratings = Storage.get(IRatingAH.class).getRatingsByMessageId(messageId);
+            try (IResult<Rating> ratings = Storage.get(IRatingAH.class).getRatingsByMessageId(messageId)) {
+
+                for (Rating r : ratings) {
+                    int userId = r.getUserId();
+
+                    MarkItem item = userMarks.get(userId);
+
+                    if (item == null) {
+                        User user = userAH.getUserById(userId);
+
+                        item = new MarkItem(userId, user);
+                        userMarks.put(userId, item);
+                    }
+
+                    item.addMark(r.getRate());
+                }
+            }
 
 //            NewRating[] ownRatings = Storage.get(INewRatingAH.class).getNewRatingsByMessageId(messageId);
 
-            TIntObjectMap<MarkItem> userMarks = new TIntObjectHashMap<>();
-
-            for (Rating r : ratings) {
-                int userId = r.getUserId();
-
-                MarkItem item = userMarks.get(userId);
-
-                if (item == null) {
-                    User user = userAH.getUserById(userId);
-
-                    item = new MarkItem(userId, user);
-                    userMarks.put(userId, item);
-                }
-
-                item.addMark(r.getRate());
-            }
 
 //            int i = 0;
 //            while (i < ownRatings.length) {

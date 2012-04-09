@@ -12,10 +12,7 @@ import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
-import org.xblackcat.rojac.service.storage.IMessageAH;
-import org.xblackcat.rojac.service.storage.IRatingAH;
-import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -131,11 +128,14 @@ public final class MessageUtils {
         IMessageAH mAH = Storage.get(IMessageAH.class);
         IRatingAH rAH = Storage.get(IRatingAH.class);
 
-        Iterable<MarkStat> marks = rAH.getMarkStatByMessageId(id);
-        RatingCache ratingCache = new RatingCache(marks);
+        RatingCache ratingCache;
+        try (IResult<MarkStat> marks = rAH.getMarkStatByMessageId(id)) {
+            ratingCache = new RatingCache(marks);
+        }
         if (!ratingCache.isEmpty()) {
             mAH.updateMessageRatingCache(id, ratingCache.asString());
         }
+
         return ratingCache;
     }
 

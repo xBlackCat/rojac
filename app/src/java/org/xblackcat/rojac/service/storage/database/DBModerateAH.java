@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.data.Moderate;
 import org.xblackcat.rojac.service.storage.IModerateAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import ru.rsdn.Janus.JanusModerateInfo;
@@ -27,7 +28,7 @@ final class DBModerateAH extends AnAH implements IModerateAH {
         return helper.update(DataQuery.REMOVE_OBJECTS_MODERATE, messageId) > 0;
     }
 
-    public Iterable<Moderate> getModeratesByMessageId(int messageId) throws StorageException {
+    public IResult<Moderate> getModeratesByMessageId(int messageId) throws StorageException {
         return helper.execute(Converters.TO_MODERATE, DataQuery.GET_OBJECTS_MODERATE_BY_MESSAGE_ID, messageId);
     }
 

@@ -12,7 +12,7 @@ public interface IMiscAH extends AH {
     void addToIgnoredTopicList(int topicId) throws StorageException;
 
     void removeFromIgnoredTopicList(int topicId) throws StorageException;
-    
+
     void addToIgnoredUserList(int userId) throws StorageException;
 
     void removeFromIgnoredUserList(int userId) throws StorageException;
