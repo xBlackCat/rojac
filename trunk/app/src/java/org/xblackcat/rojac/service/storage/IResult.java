@@ -5,6 +5,6 @@ package org.xblackcat.rojac.service.storage;
  *
  * @author xBlackCat
  */
-public interface IResult<T> extends Iterable<T> {
-    <T> T[] toArray();
+public interface IResult<T> extends Iterable<T>, AutoCloseable {
+    void close() throws StorageException;
 }

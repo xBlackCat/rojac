@@ -1,9 +1,8 @@
 package org.xblackcat.rojac.service.storage.database.helper;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.options.Property;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
@@ -13,23 +12,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author ASUS
  */
 
-final class QueryHelper implements IQueryHelper {
-    private static final Log log = LogFactory.getLog(QueryHelper.class);
-
-    private final IConnectionFactory connectionFactory;
+final class QueryHelper extends AQueryHelper {
 
     public QueryHelper(IConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+        super(connectionFactory);
     }
 
     @Override
-    public <T> Iterable<T> execute(final IToObjectConverter<T> c, final String sql, final Object... parameters) throws StorageException {
+    public <T> IResult<T> execute(final IToObjectConverter<T> c, final String sql, final Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
         final String debugAnchor = Property.ROJAC_SQL_DEBUG.get() ? RojacUtils.generateHash() : null;
@@ -60,7 +58,7 @@ final class QueryHelper implements IQueryHelper {
                         }
 
 
-                        List<T> res = new ArrayList<>();
+                        final List<T> res = new ArrayList<>();
                         while (rs.next()) {
                             res.add(c.convert(rs));
                         }
@@ -70,7 +68,7 @@ final class QueryHelper implements IQueryHelper {
                                 log.trace("[" + debugAnchor + "] " + res.size() + " row(s) fetched in " + (System.currentTimeMillis() - start) + " ms");
                             }
                         }
-                        return Collections.unmodifiableList(res);
+                        return new PreloadedResult<>(res);
                     }
                 }
             }
@@ -78,11 +76,6 @@ final class QueryHelper implements IQueryHelper {
         } catch (SQLException e) {
             throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
         }
-    }
-
-    @Override
-    public final String getEngine() {
-        return connectionFactory.getEngine();
     }
 
     @Override
@@ -110,26 +103,6 @@ final class QueryHelper implements IQueryHelper {
         } catch (SQLException e) {
             throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql), e);
         }
-    }
-
-    @Override
-    public void shutdown() {
-        connectionFactory.shutdown();
-    }
-
-    @Override
-    public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
-        assert RojacUtils.checkThread(false, QueryHelper.class);
-
-        Iterator<T> col = execute(c, sql, parameters).iterator();
-
-        if (!col.hasNext()) {
-            return null;
-        }
-
-        T object = col.next();
-        assert !col.hasNext() : "Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters);
-        return object;
     }
 
     @Override
@@ -170,4 +143,5 @@ final class QueryHelper implements IQueryHelper {
             throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
         }
     }
+
 }
