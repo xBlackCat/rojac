@@ -101,7 +101,7 @@ public class DBSettingsPane extends JPanel {
         JLabel labelEngine = new JLabel(Dialog_DbSettings_Label_Engine.get());
         JLabel labelUrl = new JLabel(Dialog_DbSettings_Label_Url.get());
         JLabel labelUserName = new JLabel(Dialog_DbSettings_Label_UserName.get());
-        JLabel labelPassword = new JLabel(Dialog_DbSettings_Label_Passord.get());
+        JLabel labelPassword = new JLabel(Dialog_DbSettings_Label_Password.get());
         JLabel labelShutdownUrl = new JLabel(Dialog_DbSettings_Label_ShutdownUrl.get());
         JLabel labelDriverName = new JLabel(Dialog_DbSettings_Label_DriverName.get());
 

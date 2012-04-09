@@ -181,7 +181,7 @@ public enum Message {
     Dialog_DbSettings_Label_Engine,
     Dialog_DbSettings_Label_Url,
     Dialog_DbSettings_Label_UserName,
-    Dialog_DbSettings_Label_Passord,
+    Dialog_DbSettings_Label_Password,
     Dialog_DbSettings_Label_ShutdownUrl,
     Dialog_DbSettings_Label_DriverName,
     Dialog_DbSettings_CurrentEngine,
