@@ -19,7 +19,6 @@ import org.xblackcat.rojac.service.storage.database.IRowHandler;
 import org.xblackcat.rojac.service.storage.database.IStructureChecker;
 import org.xblackcat.rojac.service.storage.database.StructureChecker;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
-import org.xblackcat.rojac.service.storage.database.connection.SimpleConnectionFactory;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -110,8 +109,8 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
 
             dlg.setStringPainted(true);
             // Copy data
-            IImportHelper sourceStorage = new DBImportHelper(new SimpleConnectionFactory(source));
-            final IImportHelper destinationStorage = new DBImportHelper(new SimpleConnectionFactory(destination));
+            IImportHelper sourceStorage = ImportHelperFactory.createImportHelper(source);
+            final IImportHelper destinationStorage = ImportHelperFactory.createImportHelper(destination);
 
             Collection<String> itemsList = sourceStorage.getItemsList();
             String[] tableNames = itemsList.toArray(new String[itemsList.size()]);

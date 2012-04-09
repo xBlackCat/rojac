@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author xBlackCat
  */
-public class DBImportHelper implements IImportHelper {
+class DBImportHelper implements IImportHelper {
     private static final Log log = LogFactory.getLog(DBImportHelper.class);
 
     private final IConnectionFactory connectionFactory;
@@ -69,13 +69,7 @@ public class DBImportHelper implements IImportHelper {
 
         try {
             try (Connection con = connectionFactory.getConnection()) {
-                try (Statement st = con.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
-                    try {
-                        // Set streaming mode for ResultSet (MySQL only!)
-                        st.setFetchSize(Integer.MIN_VALUE);
-                    } catch (SQLException e) {
-                        // For now only MySQL supports streaming mode in JDBC
-                    }
+                try (Statement st = prepareStatement(con)) {
                     try (ResultSet rs = st.executeQuery(queries.getTableDataQuery(item))) {
                         ResultSetMetaData metaData = rs.getMetaData();
                         int columnCount = metaData.getColumnCount();
@@ -106,6 +100,10 @@ public class DBImportHelper implements IImportHelper {
         } catch (SQLException e) {
             throw new StorageException("Can not read row", e);
         }
+    }
+
+    protected Statement prepareStatement(Connection con) throws SQLException {
+        return con.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
     }
 
     @Override
