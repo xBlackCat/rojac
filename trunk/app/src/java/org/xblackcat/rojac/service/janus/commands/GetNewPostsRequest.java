@@ -9,6 +9,7 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.NewData;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import ru.rsdn.Janus.RequestForumInfo;
 
@@ -25,14 +26,15 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
     private static final Log log = LogFactory.getLog(GetNewPostsRequest.class);
 
     protected int loadData(ILogTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
-        Iterable<RequestForumInfo> forumInfo = forumAH.getSubscribedForums();
-
         StringBuilder idsListBuilder = new StringBuilder();
         Collection<RequestForumInfo> forumInfos = new ArrayList<>();
-        for (RequestForumInfo rfi : forumInfo) {
-            forumInfos.add(rfi);
-            idsListBuilder.append(", ");
-            idsListBuilder.append(rfi.getForumId());
+
+        try (IResult<RequestForumInfo> forumInfo = forumAH.getSubscribedForums()) {
+            for (RequestForumInfo rfi : forumInfo) {
+                forumInfos.add(rfi);
+                idsListBuilder.append(", ");
+                idsListBuilder.append(rfi.getForumId());
+            }
         }
 
         if (forumInfos.isEmpty()) {

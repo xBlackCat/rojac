@@ -6,10 +6,7 @@ import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.IMiscAH;
-import org.xblackcat.rojac.service.storage.INewMessageAH;
-import org.xblackcat.rojac.service.storage.IStatisticAH;
-import org.xblackcat.rojac.service.storage.Storage;
+import org.xblackcat.rojac.service.storage.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,7 +76,7 @@ class PersonalDecorator extends ADecorator {
 
         @Override
         public void doSwing(Void data) {
-            ReadStatistic  stat = item.getStat();
+            ReadStatistic stat = item.getStat();
             int unread = stat.getUnreadMessages() + adjustDelta;
             if (unread < 0) {
                 unread = 0;
@@ -117,13 +114,15 @@ class PersonalDecorator extends ADecorator {
     private class OutboxReloadTask implements ILoadTask<ReadStatistic> {
         @Override
         public ReadStatistic doBackground() throws Exception {
-            Iterable<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages();
             int toSend = 0;
             int total = 0;
-            for (NewMessage nm : newMessages) {
-                total ++;
-                if (!nm.isDraft()) {
-                    ++toSend;
+
+            try (IResult<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages()) {
+                for (NewMessage nm : newMessages) {
+                    total++;
+                    if (!nm.isDraft()) {
+                        ++toSend;
+                    }
                 }
             }
 

@@ -490,7 +490,7 @@ public enum DataQuery implements IPropertiable {
     GET_BROKEN_TOPIC_IDS,
     GET_USER_REPLIES_NUMBER,
     GET_USER_POSTS_NUMBER,
-    
+
     GET_MESSAGES_STATISTIC_IN_THREAD,
     GET_FORUM_STATISTIC,
 

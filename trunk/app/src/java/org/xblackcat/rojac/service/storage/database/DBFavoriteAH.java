@@ -32,7 +32,7 @@ final class DBFavoriteAH extends AnAH implements IFavoriteAH {
     }
 
     @Override
-    public Iterable<Favorite> getFavorites() throws StorageException {
+    public org.xblackcat.rojac.service.storage.IResult<Favorite> getFavorites() throws StorageException {
         return helper.execute(
                 Converters.TO_FAVORITE,
                 DataQuery.GET_OBJECTS_FAVORITE

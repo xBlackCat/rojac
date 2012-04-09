@@ -26,9 +26,11 @@ public enum FavoriteType {
                 throw new StorageDataException("Thread root not found #" + itemId);
             }
 
-            Iterable<MessageData> messages = messageAH.getMessagesDataByTopicId(itemId, messageData.getForumId());
             Thread root = new Thread(messageData, null);
-            root.fillThread(messages);
+
+            try (IResult<MessageData> messages = messageAH.getMessagesDataByTopicId(itemId, messageData.getForumId())) {
+                root.fillThread(messages);
+            }
             root.setLoadingState(LoadingState.Loaded);
 
             return root;
@@ -54,8 +56,9 @@ public enum FavoriteType {
             assert RojacUtils.checkThread(false);
 
             PostList root = new PostList(itemId);
-            Iterable<MessageData> messages = Storage.get(IMessageAH.class).getUserPosts(itemId);
-            root.fillList(messages);
+            try (IResult<MessageData> messages = Storage.get(IMessageAH.class).getUserPosts(itemId)) {
+                root.fillList(messages);
+            }
             root.setLoadingState(LoadingState.Loaded);
 
             return root;
@@ -105,8 +108,9 @@ public enum FavoriteType {
             assert RojacUtils.checkThread(false);
 
             PostList root = new PostList(itemId);
-            Iterable<MessageData> messages = Storage.get(IMessageAH.class).getUserReplies(itemId);
-            root.fillList(messages);
+            try (IResult<MessageData> messages = Storage.get(IMessageAH.class).getUserReplies(itemId)) {
+                root.fillList(messages);
+            }
             root.setLoadingState(LoadingState.Loaded);
 
             return root;

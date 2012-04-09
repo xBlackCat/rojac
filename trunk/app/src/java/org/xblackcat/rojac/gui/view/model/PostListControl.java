@@ -11,6 +11,7 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -190,8 +191,7 @@ class PostListControl extends MessageListControl {
         ).dispatch(p);
     }
 
-    private class PostListLoader extends RojacWorker<Void, Void> {
-        private Iterable<MessageData> messages;
+    private class PostListLoader extends RojacWorker<Void, MessageData> {
         private final int itemId;
         private final SortedThreadsModel model;
 
@@ -207,19 +207,28 @@ class PostListControl extends MessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            if (replies) {
-                messages = Storage.get(IMessageAH.class).getUserReplies(itemId);
-            } else {
-                messages = Storage.get(IMessageAH.class).getUserPosts(itemId);
+            try (IResult<MessageData> messages = replies ?
+                    Storage.get(IMessageAH.class).getUserReplies(itemId) :
+                    Storage.get(IMessageAH.class).getUserPosts(itemId)
+            ) {
+                for (MessageData md : messages) {
+                    publish(md);
+                }
             }
+
             return null;
+        }
+
+        @Override
+        protected void process(List<MessageData> chunks) {
+            PostList root = (PostList) model.getRoot();
+
+            root.fillList(chunks);
         }
 
         @Override
         protected void done() {
             PostList root = (PostList) model.getRoot();
-
-            root.fillList(messages);
             root.setLoadingState(LoadingState.Loaded);
             model.markInitialized();
             model.nodeStructureChanged(root);

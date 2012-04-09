@@ -13,6 +13,7 @@ import org.xblackcat.rojac.service.datahandler.IgnoreUserUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -97,7 +98,9 @@ class IgnoredThreadListControl extends MessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            CollectionUtils.addAll(messages, Storage.get(IMessageAH.class).getIgnoredTopicsList().iterator());
+            try (IResult<MessageData> ignoredTopicsList = Storage.get(IMessageAH.class).getIgnoredTopicsList()) {
+                CollectionUtils.addAll(messages, ignoredTopicsList.iterator());
+            }
             return null;
         }
 

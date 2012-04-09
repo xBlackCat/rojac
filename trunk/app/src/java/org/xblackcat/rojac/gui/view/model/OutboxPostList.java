@@ -81,9 +81,6 @@ class OutboxPostList extends Post {
     }
 
     void fillList(Iterable<NewMessage> posts) {
-        childrenPosts.clear();
-        listPosts.clear();
-
         for (NewMessage post : posts) {
             // New post
             Post newPost = new Post(new NewMessageData(post), this, null);

@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -31,9 +32,10 @@ class ThreadLoader extends RojacWorker<Void, MessageData> {
         int forumId = item.getForumId();
 
         try {
-            Iterable<MessageData> datas = Storage.get(IMessageAH.class).getMessagesDataByTopicId(itemId, forumId);
-            for (MessageData md : datas) {
-                publish(md);
+            try (IResult<MessageData> result = Storage.get(IMessageAH.class).getMessagesDataByTopicId(itemId, forumId)) {
+                for (MessageData md : result) {
+                    publish(md);
+                }
             }
         } catch (StorageException e) {
             log.error("Can not load message children for id = " + itemId + " (forum #" + forumId + ")", e);

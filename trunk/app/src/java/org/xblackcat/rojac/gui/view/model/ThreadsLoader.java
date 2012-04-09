@@ -6,6 +6,7 @@ import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -51,14 +52,14 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
         try {
             int userId = Property.RSDN_USER_ID.get(-1);
-            Iterable<ItemStatisticData<MessageData>> threadPosts = Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId, userId);
+            try (IResult<ItemStatisticData<MessageData>> threadPosts = Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId, userId)) {
+                for (ItemStatisticData<MessageData> threadPost : threadPosts) {
+                    if (hideIgnored && threadPost.getItem().isIgnored()) {
+                        continue;
+                    }
 
-            for (ItemStatisticData<MessageData> threadPost : threadPosts) {
-                if (hideIgnored && threadPost.getItem().isIgnored()) {
-                    continue;
+                    publish(new Thread(threadPost.getItem(), rootItem, threadPost.getItemReadStatistic()));
                 }
-
-                publish(new Thread(threadPost.getItem(), rootItem, threadPost.getItemReadStatistic()));
             }
         } catch (StorageException e) {
             log.error("Can not load topics for forum #" + forumId, e);

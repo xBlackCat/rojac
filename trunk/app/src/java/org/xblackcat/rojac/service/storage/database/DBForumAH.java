@@ -41,7 +41,7 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public Iterable<RequestForumInfo> getSubscribedForums() throws StorageException {
+    public org.xblackcat.rojac.service.storage.IResult<RequestForumInfo> getSubscribedForums() throws StorageException {
         return helper.execute(Converters.TO_SUBSCRIBED_FORUM, DataQuery.GET_SUBSCRIBED_FORUMS);
     }
 
@@ -72,7 +72,7 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public Iterable<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException {
+    public org.xblackcat.rojac.service.storage.IResult<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException {
         return helper.execute(Converters.TO_FORUM_DATA, DataQuery.GET_OBJECTS_FORUM, userId);
     }
 

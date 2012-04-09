@@ -12,7 +12,7 @@ import java.util.Collection;
  */
 public interface IImportHelper {
     Collection<String> getItemsList() throws StorageException;
-    
+
     void getData(IRowHandler rowHandler, String item) throws StorageException;
 
     IRowWriter getRowWriter(String item, boolean merge) throws StorageException;

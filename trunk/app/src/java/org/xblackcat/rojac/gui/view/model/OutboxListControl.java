@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.xblackcat.rojac.data.NewMessage;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
@@ -9,13 +8,13 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * @author xBlackCat
@@ -97,8 +96,8 @@ class OutboxListControl extends MessageListControl {
         ).dispatch(p);
     }
 
-    private class PostListLoader extends RojacWorker<Void, Void> {
-        private Collection<NewMessage> messages = new ArrayList<>();
+    private class PostListLoader extends RojacWorker<Void, NewMessage> {
+        private boolean firstLoad = true;
         private final SortedThreadsModel model;
 
         public PostListLoader(Runnable postProcessor, SortedThreadsModel model) {
@@ -108,15 +107,30 @@ class OutboxListControl extends MessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            CollectionUtils.addAll(messages, Storage.get(INewMessageAH.class).getAllNewMessages().iterator());
+            try (IResult<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages()) {
+                for (NewMessage nm : newMessages) {
+                    publish(nm);
+                }
+            }
             return null;
+        }
+
+        @Override
+        protected void process(List<NewMessage> chunks) {
+            OutboxPostList root = (OutboxPostList) model.getRoot();
+            if (firstLoad) {
+                firstLoad = false;
+
+                root.childrenPosts.clear();
+                root.listPosts.clear();
+            }
+            root.fillList(chunks);
         }
 
         @Override
         protected void done() {
             OutboxPostList root = (OutboxPostList) model.getRoot();
 
-            root.fillList(messages);
             root.setLoadingState(LoadingState.Loaded);
             model.markInitialized();
             model.nodeChanged(root);

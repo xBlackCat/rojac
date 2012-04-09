@@ -7,6 +7,7 @@ import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ class FavoritesDecorator extends ADecorator {
                     break;
                 case Thread:
                     if (f.getItemId() == post.getThreadRootId()) {
-                            tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
+                        tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
                     }
                     break;
                 case UserResponses:
@@ -79,10 +80,10 @@ class FavoritesDecorator extends ADecorator {
                     }
                     break;
                 case UserPosts:
-                if (f.getItemId() == post.getUserId()) {
+                    if (f.getItemId() == post.getUserId()) {
                         tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
                     }
-                break;
+                    break;
                 default:
                     tasks.add(new FavoriteAdjustUnreadTask(fd, read ? -1 : 1));
                     break;
@@ -140,19 +141,19 @@ class FavoritesDecorator extends ADecorator {
     private class FavoritesLoadTask implements ILoadTask<Collection<FavoriteItem>> {
         @Override
         public Collection<FavoriteItem> doBackground() throws Exception {
-            Iterable<Favorite> favorites = Storage.get(IFavoriteAH.class).getFavorites();
             Collection<FavoriteItem> items = new ArrayList<>();
 
-            for (Favorite f : favorites) {
-                FavoriteType type = f.getType();
-                int itemId = f.getItemId();
+            try (IResult<Favorite> favorites = Storage.get(IFavoriteAH.class).getFavorites()) {
+                for (Favorite f : favorites) {
+                    FavoriteType type = f.getType();
+                    int itemId = f.getItemId();
 
-                ReadStatistic newStatistic = type.loadStatistic(itemId);
-                String name = type.loadName(itemId);
+                    ReadStatistic newStatistic = type.loadStatistic(itemId);
+                    String name = type.loadName(itemId);
 
-                items.add(new FavoriteItem(f.setName(name), newStatistic));
+                    items.add(new FavoriteItem(f.setName(name), newStatistic));
+                }
             }
-
 
             return items;
         }

@@ -12,6 +12,6 @@ public interface IModerateAH extends AH {
 
     boolean removeModerateInfosByMessageId(int id) throws StorageException;
 
-    Iterable<Moderate> getModeratesByMessageId(int messageId) throws StorageException;
+    org.xblackcat.rojac.service.storage.IResult<Moderate> getModeratesByMessageId(int messageId) throws StorageException;
 
 }
