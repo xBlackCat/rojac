@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 public class OptionsDialog extends JDialog {
     private final APage[] pages = new APage[]{
             new PropertiesPage(),
-            new ShortCutManagerPage() ,
+            new ShortCutManagerPage(),
             new DBSettingsPage(),
             new MaintenancePage(this)
     };
@@ -93,9 +93,14 @@ public class OptionsDialog extends JDialog {
         setContentPane(cp);
 
         pack();
-        Dimension size = new Dimension(buttonsBar.getPreferredSize().width + 20, getSize().height);
-        setMinimumSize(size);
-        setSize(size);
+        Dimension cpSize = cp.getSize();
+        Dimension size = getSize();
+        Insets cpInsets = cp.getInsets();
+
+        int minWidth = buttonsBar.getPreferredSize().width + (size.width - cpSize.width) + cpInsets.left + cpInsets.right;
+        Dimension newSize = new Dimension(minWidth, getSize().height);
+        setMinimumSize(newSize);
+        setSize(newSize);
     }
 
     private void applySettings() {
