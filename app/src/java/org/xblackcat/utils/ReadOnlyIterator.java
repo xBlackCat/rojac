@@ -26,6 +26,6 @@ public class ReadOnlyIterator<T> implements Iterator<T> {
 
     @Override
     public void remove() {
-        throw new UnsupportedOperationException("");
+        throw new UnsupportedOperationException("Can't remove from read-only iterator");
     }
 }

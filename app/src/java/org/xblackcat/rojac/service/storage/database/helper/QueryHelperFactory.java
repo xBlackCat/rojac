@@ -17,6 +17,10 @@ public class QueryHelperFactory {
     public static IQueryHelper createHelper(DatabaseSettings settings) throws StorageInitializationException {
         IConnectionFactory connectionFactory = new SimplePooledConnectionFactory(settings);
 
+        if ("com.mysql.jdbc.Driver".equals(settings.getJdbcDriverClass().getName())) {
+            return new StreamingQueryHelper(connectionFactory, new MySqlStreamingResultFactory());
+        }
+
         return new QueryHelper(connectionFactory);
     }
 }
