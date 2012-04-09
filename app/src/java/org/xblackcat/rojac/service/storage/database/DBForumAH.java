@@ -95,6 +95,6 @@ final class DBForumAH extends AnAH implements IForumAH {
 
     @Override
     public boolean hasSubscribedForums() throws StorageException {
-        return true;
+        return helper.executeSingle(Converters.TO_BOOLEAN, DataQuery.HAS_SUBSCRIBED_FORUMS);
     }
 }

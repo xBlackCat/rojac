@@ -462,6 +462,7 @@ public enum DataQuery implements IPropertiable {
      */
     GET_IGNORED_TOPIC_MESSAGE_DATA,
     GET_SUBSCRIBED_FORUMS,
+    HAS_SUBSCRIBED_FORUMS,
     GET_IGNORED_TOPIC_COUNT,
     /**
      * Returns unread messages number.
