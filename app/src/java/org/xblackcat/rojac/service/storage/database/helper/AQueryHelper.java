@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database.helper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
@@ -36,15 +37,16 @@ public abstract class AQueryHelper implements IQueryHelper {
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
-        Iterable<T> result = execute(c, sql, parameters);
-        Iterator<T> col = result.iterator();
+        try (IResult<T> result = execute(c, sql, parameters)) {
+            Iterator<T> col = result.iterator();
 
-        if (!col.hasNext()) {
-            return null;
+            if (!col.hasNext()) {
+                return null;
+            }
+
+            T object = col.next();
+            assert !col.hasNext() : "Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters);
+            return object;
         }
-
-        T object = col.next();
-        assert !col.hasNext() : "Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters);
-        return object;
     }
 }

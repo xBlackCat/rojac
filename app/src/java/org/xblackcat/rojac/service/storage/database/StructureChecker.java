@@ -7,19 +7,17 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageCheckException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
-import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
 import org.xblackcat.rojac.service.storage.database.helper.QueryHelperFactory;
 import org.xblackcat.rojac.util.DatabaseUtils;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -126,22 +124,11 @@ public class StructureChecker implements IStructureChecker {
 
                             queries = ArrayUtils.subarray(queries, 1, queries.length);
 
-                            Iterable<Object[]> rowsList = helper.execute(new IToObjectConverter<Object[]>() {
-                                @Override
-                                public Object[] convert(ResultSet rs) throws SQLException {
-                                    int columnCount = rs.getMetaData().getColumnCount();
-                                    Object[] row = new Object[columnCount];
-
-                                    for (int i = 0; i < columnCount; i++) {
-                                        row[i] = rs.getObject(i + 1);
-                                    }
-
-                                    return row;
-                                }
-                            }, getRowsQuery);
-
                             Collection<Object[]> rows = new ArrayList<>();
-                            CollectionUtils.addAll(rows, rowsList.iterator());
+
+                            try (IResult<Object[]> rowsList = helper.execute(Converters.TO_OBJECT_ROW_CONVERTER, getRowsQuery)) {
+                                CollectionUtils.addAll(rows, rowsList.iterator());
+                            }
 
                             for (String query : queries) {
                                 helper.updateBatch(query, null, rows);
@@ -174,4 +161,5 @@ public class StructureChecker implements IStructureChecker {
             checkIdx++;
         }
     }
+
 }

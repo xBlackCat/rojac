@@ -3,9 +3,6 @@ package org.xblackcat.rojac.service.storage.database.convert;
 import org.xblackcat.rojac.data.*;
 import ru.rsdn.Janus.RequestForumInfo;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 /**
  * @author xBlackCat
  */
@@ -32,31 +29,11 @@ public final class Converters {
     public static final IToObjectConverter<ItemStatisticData<Forum>> TO_FORUM_DATA = new ToForumDataConverter();
     public static final IToObjectConverter<Favorite> TO_FAVORITE = new ToFavoriteConverter();
     public static final IToObjectConverter<AffectedMessage> TO_AFFECTED_MESSAGE_CONVERTER = new ToAffectedMessageConverter();
-    public static final IToObjectConverter<DiscussionStatistic> TO_DISCUSSION_STATISTIC = new IToObjectConverter<DiscussionStatistic>() {
-        @Override
-        public DiscussionStatistic convert(ResultSet rs) throws SQLException {
-            int totals = rs.getInt(1);
-            int unreadPosts = rs.getInt(2);
-            int unreadReplies = rs.getInt(3);
-            Long lastPostDate = rs.getLong(4);
-            if (rs.wasNull()) {
-                lastPostDate = null;
-            }
-
-            return new DiscussionStatistic(totals, unreadPosts, lastPostDate, unreadReplies);
-        }
-    };
-
-    public static final IToObjectConverter<RequestForumInfo> TO_SUBSCRIBED_FORUM = new IToObjectConverter<RequestForumInfo>() {
-        @Override
-        public RequestForumInfo convert(ResultSet rs) throws SQLException {
-            int forumId = rs.getInt(1);
-            boolean empty = rs.getBoolean(2);
-
-            return new RequestForumInfo(forumId, empty);
-        }
-    };
+    public static final IToObjectConverter<DiscussionStatistic> TO_DISCUSSION_STATISTIC = new ToDiscussionStatisticConverter();
+    public static final IToObjectConverter<RequestForumInfo> TO_SUBSCRIBED_FORUM = new ToRequestForumInfoConverter();
+    public static final ToObjectRowConverter TO_OBJECT_ROW_CONVERTER = new ToObjectRowConverter();
 
     private Converters() {
     }
+
 }
