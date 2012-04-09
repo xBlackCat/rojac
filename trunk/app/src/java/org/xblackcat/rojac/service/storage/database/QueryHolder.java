@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database;
 
 import gnu.trove.list.array.TIntArrayList;
 import org.xblackcat.rojac.service.IProgressTracker;
+import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
@@ -47,7 +48,7 @@ class QueryHolder implements IQueryHolder {
     }
 
     @Override
-    public <T> Iterable<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
+    public <T> IResult<T> execute(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.execute(c, getQuery(sql), params);
     }
 
