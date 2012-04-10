@@ -16,9 +16,9 @@ import org.xblackcat.rojac.service.datahandler.DataDispatcher;
 import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
-import org.xblackcat.rojac.service.storage.DatabaseInstaller;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.rojac.service.storage.StorageInstaller;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.schema.data.DataStreamHandlerFactory;
@@ -259,7 +259,7 @@ public final class RojacLauncher {
                 mainFrame.installBrowser(SWTUtils.getBrowser());
             }
 
-            new DatabaseInstaller(
+            new StorageInstaller(
                     new Runnable() {
                         @Override
                         public void run() {

@@ -14,10 +14,9 @@ import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressChangeEventEx;
 import org.xblackcat.rojac.service.progress.ProgressState;
+import org.xblackcat.rojac.service.storage.IStructureChecker;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.service.storage.database.IRowHandler;
-import org.xblackcat.rojac.service.storage.database.IStructureChecker;
-import org.xblackcat.rojac.service.storage.database.StructureChecker;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
@@ -87,8 +86,8 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
         });
 
         try {
-            IStructureChecker sourceChecker = new StructureChecker(source);
-            IStructureChecker destinationChecker = new StructureChecker(destination);
+            IStructureChecker sourceChecker = Storage.getChecker(source);
+            IStructureChecker destinationChecker = Storage.getChecker(destination);
 
             dlg.setStringPainted(false);
             publish(new ProgressChangeEvent(this, ProgressState.Work, Message.Log_ImportProgress_CheckSource.get(source.getEngine(), source.getUrl())));

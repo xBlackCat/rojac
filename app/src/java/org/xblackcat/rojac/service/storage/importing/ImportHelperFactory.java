@@ -9,7 +9,7 @@ import org.xblackcat.rojac.service.storage.database.connection.SimpleConnectionF
  *
  * @author xBlackCat
  */
-public class ImportHelperFactory {
+class ImportHelperFactory {
     private ImportHelperFactory() {
     }
 

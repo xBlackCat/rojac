@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.dialog.options;
 import org.xblackcat.rojac.gui.dialog.db.DBSettingsPane;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.DatabaseInstaller;
+import org.xblackcat.rojac.service.storage.StorageInstaller;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 
 import java.awt.*;
@@ -34,7 +34,7 @@ class DBSettingsPage extends APage {
         if (!currentSettings.equals(newSettings)) {
             Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(newSettings);
 
-            new DatabaseInstaller(newSettings, mainFrame).execute();
+            new StorageInstaller(newSettings, mainFrame).execute();
         }
     }
 

@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.storage.database;
+package org.xblackcat.rojac.service.storage.importing;
 
 import org.xblackcat.rojac.service.storage.StorageException;
 
@@ -7,7 +7,7 @@ import org.xblackcat.rojac.service.storage.StorageException;
  *
  * @author xBlackCat
  */
-public interface IRowHandler {
+interface IRowHandler {
     boolean handleRow(Object[] row);
 
     void initialize(String[] columnNames) throws StorageException;

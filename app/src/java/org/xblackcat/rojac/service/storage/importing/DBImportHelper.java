@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.storage.MigrationQueries;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.service.storage.database.IRowHandler;
 import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.rojac.util.DatabaseUtils;
 import org.xblackcat.rojac.util.RojacUtils;

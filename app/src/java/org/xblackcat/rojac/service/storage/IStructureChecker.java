@@ -1,7 +1,6 @@
-package org.xblackcat.rojac.service.storage.database;
+package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.service.progress.IProgressListener;
-import org.xblackcat.rojac.service.storage.StorageCheckException;
 
 /**
  * 27.09.11 17:17
@@ -38,7 +37,7 @@ public interface IStructureChecker {
      * Check database structure and initialize it if onlyTest is false.
      *
      * @param onlyTest if true perform only check without initialization.
-     * @param l
+     * @param progressListener
      * @throws StorageCheckException thrown if database check not passed.
      */
     void check(boolean onlyTest, IProgressListener progressListener) throws StorageCheckException;
