@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui.dialog.db;
 
-import org.xblackcat.rojac.gui.dialog.AProcessDialog;
+import org.xblackcat.rojac.gui.dialog.ProcessDialog;
 import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
@@ -12,12 +12,15 @@ import java.awt.*;
  *
  * @author xBlackCat
  */
-public class CheckProcessDialog extends AProcessDialog {
-
+public class CheckProcessDialog extends ProcessDialog {
     public CheckProcessDialog(Window owner, Message title, Message progressInfoLabel) {
+        this(owner, title, progressInfoLabel, false);
+    }
+
+    public CheckProcessDialog(Window owner, Message title, Message progressInfoLabel, boolean stringPainted) {
         super(owner, title);
 
-        logProgress.setStringPainted(false);
+        logProgress.setStringPainted(stringPainted);
 
         JPanel cp = new JPanel(new BorderLayout(5, 5));
 
