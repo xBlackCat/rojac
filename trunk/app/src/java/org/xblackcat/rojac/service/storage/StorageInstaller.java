@@ -8,9 +8,6 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
-import org.xblackcat.rojac.service.storage.database.DBStorage;
-import org.xblackcat.rojac.service.storage.database.IStructureChecker;
-import org.xblackcat.rojac.service.storage.database.StructureChecker;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.DialogHelper;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -23,15 +20,15 @@ import java.awt.*;
  *
  * @author xBlackCat
  */
-public class DatabaseInstaller extends DatabaseWorker {
+public class StorageInstaller extends DatabaseWorker {
     private final DatabaseSettings settings;
     private final Runnable shutDownAction;
 
-    public DatabaseInstaller(DatabaseSettings settings, Window window) {
+    public StorageInstaller(DatabaseSettings settings, Window window) {
         this(null, null, settings, window);
     }
 
-    public DatabaseInstaller(Runnable postProcessor, Runnable shutDownAction, DatabaseSettings settings, Window owner) {
+    public StorageInstaller(Runnable postProcessor, Runnable shutDownAction, DatabaseSettings settings, Window owner) {
         super(postProcessor, owner, new CheckProcessDialog(owner, Message.Dialog_CheckProgress_Structure_Title, Message.Dialog_CheckProgress_Structure_Label));
         this.shutDownAction = shutDownAction;
 
@@ -49,7 +46,7 @@ public class DatabaseInstaller extends DatabaseWorker {
                 throw new StorageInitializationException("No settings");
             }
 
-            IStructureChecker structureChecker = new StructureChecker(settings);
+            IStructureChecker structureChecker = Storage.getChecker(settings);
             structureChecker.check(new IProgressListener() {
                 @Override
                 public void progressChanged(ProgressChangeEvent e) {
@@ -82,14 +79,14 @@ public class DatabaseInstaller extends DatabaseWorker {
                     Property.ROJAC_DATABASE_CONNECTION_SETTINGS.set(settings);
 
                     // Restart database installer
-                    new DatabaseInstaller(postProcessor, shutDownAction, settings, owner).execute();
+                    new StorageInstaller(postProcessor, shutDownAction, settings, owner).execute();
                 }
             });
             return false;
         }
         publish(new ProgressChangeEvent(this, ProgressState.Work, 1, 1));
 
-        Storage.setStorage(new DBStorage(settings));
+        Storage.setStorage(settings);
         return true;
     }
 

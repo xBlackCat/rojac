@@ -1,13 +1,13 @@
 package org.xblackcat.rojac.service.storage.database.connection;
 
+import org.xblackcat.rojac.service.storage.StorageSettings;
+
 /**
  * 09.09.11 12:15
  *
  * @author xBlackCat
  */
-public class DatabaseSettings {
-    protected final String engineName;
-    protected final String engine;
+public class DatabaseSettings extends StorageSettings {
     protected final String url;
     protected final String shutdownUrl;
     protected final String userName;
@@ -15,21 +15,12 @@ public class DatabaseSettings {
     protected final Class<?> jdbcDriverClass;
 
     public DatabaseSettings(String engineName, String engine, String url, String shutdownUrl, String userName, String password, Class<?> jdbcDriverClass) {
-        this.engineName = engineName;
-        this.engine = engine;
+        super(engine, engineName);
         this.url = url;
         this.shutdownUrl = shutdownUrl;
         this.userName = userName;
         this.password = password;
         this.jdbcDriverClass = jdbcDriverClass;
-    }
-
-    public String getEngineName() {
-        return engineName;
-    }
-
-    public String getEngine() {
-        return engine;
     }
 
     public String getUrl() {

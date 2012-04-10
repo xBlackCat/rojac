@@ -1,5 +1,8 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.xblackcat.rojac.service.storage.database.DBStorage;
+import org.xblackcat.rojac.service.storage.database.DBStructureChecker;
+import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -23,13 +26,15 @@ public final class Storage {
         }
     }
 
-    static void setStorage(IStorage newStorage) throws StorageException {
+    static void setStorage(StorageSettings settings) throws StorageException {
         assert RojacUtils.checkThread(false);
 
-        IStorage oldStorage = storage;
+        IStorage newStorage = initializeStorage(settings);
+        IStorage oldStorage;
 
         lock.writeLock().lock();
         try {
+            oldStorage = storage;
             storage = newStorage;
         } finally {
             lock.writeLock().unlock();
@@ -50,5 +55,21 @@ public final class Storage {
             lock.writeLock().unlock();
         }
 
+    }
+
+    private static IStorage initializeStorage(StorageSettings settings) throws StorageException {
+        if (settings instanceof DatabaseSettings) {
+            return new DBStorage((DatabaseSettings) settings);
+        }
+
+        throw new IllegalArgumentException("Unknown storage type: " + settings.getEngineName() + " (" + settings.getEngine() + ")");
+    }
+
+    public static IStructureChecker getChecker(StorageSettings settings) throws StorageInitializationException {
+        if (settings instanceof DatabaseSettings) {
+            return new DBStructureChecker((DatabaseSettings) settings);
+        }
+
+        throw new IllegalArgumentException("Unknown storage type: " + settings.getEngineName() + " (" + settings.getEngine() + ")");
     }
 }

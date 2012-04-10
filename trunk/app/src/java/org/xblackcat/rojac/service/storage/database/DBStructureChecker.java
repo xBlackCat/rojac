@@ -7,10 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
-import org.xblackcat.rojac.service.storage.IResult;
-import org.xblackcat.rojac.service.storage.StorageCheckException;
-import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.service.storage.StorageInitializationException;
+import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
@@ -28,13 +25,13 @@ import java.util.Map;
  *
  * @author xBlackCat
  */
-public class StructureChecker implements IStructureChecker {
-    private static final Log log = LogFactory.getLog(StructureChecker.class);
+public class DBStructureChecker implements IStructureChecker {
+    private static final Log log = LogFactory.getLog(DBStructureChecker.class);
 
     private final Map<SQL, List<SQL>> initializationQueries;
     private final IQueryHelper helper;
 
-    public StructureChecker(DatabaseSettings settings) throws StorageInitializationException {
+    public DBStructureChecker(DatabaseSettings settings) throws StorageInitializationException {
         this.helper = QueryHelperFactory.createHelper(settings);
         try {
             initializationQueries = DatabaseUtils.loadInitializeSQLs(helper.getEngine());
