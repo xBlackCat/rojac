@@ -92,15 +92,7 @@ public class OptionsDialog extends JDialog {
 
         setContentPane(cp);
 
-        pack();
-        Dimension cpSize = cp.getSize();
-        Dimension size = getSize();
-        Insets cpInsets = cp.getInsets();
-
-        int minWidth = buttonsBar.getPreferredSize().width + (size.width - cpSize.width) + cpInsets.left + cpInsets.right;
-        Dimension newSize = new Dimension(minWidth, getSize().height);
-        setMinimumSize(newSize);
-        setSize(newSize);
+        WindowsUtils.setDialogMinimumWidth(this, buttonsBar);
     }
 
     private void applySettings() {

@@ -4,6 +4,7 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.dialog.db.ImportDialog;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.DatabaseCacheUpdater;
+import org.xblackcat.rojac.service.storage.DatabaseCleaner;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -48,6 +49,12 @@ class MaintenancePage extends APage {
                 new AButtonAction(Message.Dialog_Options_Action_Clean_Button) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        CleanSettingsDialog dialog = new CleanSettingsDialog(owner);
+                        Long period = dialog.getPeriod();
+                        dialog.dispose();
+                        if (period != null) {
+                            new DatabaseCleaner(owner, period).execute();
+                        }
                     }
                 }
         );
@@ -87,4 +94,5 @@ class MaintenancePage extends APage {
     @Override
     public void placeFocus() {
     }
+
 }

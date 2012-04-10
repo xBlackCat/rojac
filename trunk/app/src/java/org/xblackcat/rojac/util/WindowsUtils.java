@@ -388,4 +388,24 @@ public final class WindowsUtils {
             }
         });
     }
+
+    /**
+     * Set to a dialog a minimum size depending on preferred size of target component to disallow hide the target component by resizing.
+     *
+     * @param dialog          dialog to be altered
+     * @param targetComponent component to be always visible in full width
+     */
+    public static void setDialogMinimumWidth(JDialog dialog, Component targetComponent) {
+        dialog.pack();
+        Container cp = dialog.getContentPane();
+
+        Dimension cpSize = cp.getSize();
+        Dimension size = dialog.getSize();
+        Insets cpInsets = cp.getInsets();
+
+        int minWidth = targetComponent.getPreferredSize().width + (size.width - cpSize.width) + cpInsets.left + cpInsets.right;
+        Dimension newSize = new Dimension(minWidth, dialog.getSize().height);
+        dialog.setMinimumSize(newSize);
+        dialog.setSize(newSize);
+    }
 }
