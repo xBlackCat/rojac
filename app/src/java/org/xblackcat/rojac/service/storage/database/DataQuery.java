@@ -500,6 +500,13 @@ public enum DataQuery implements IPropertiable {
     UPDATE_TOPIC_MESSAGES_SET_REPLIES_AMOUNT,
     UPDATE_FORUM_SET_STAT,
 
+    // Database clean queries
+    GET_OLD_TOPIC_IDS,
+    GET_OLD_TOPIC_AMOUNT,
+    REMOVE_TOPIC_RATING,
+    REMOVE_TOPIC_MODERATES,
+    REMOVE_WHOLE_TOPIC,
+
     // Cache update methods
     CACHE_UPDATE_FORUMS_STAT,
     CACHE_UPDATE_THREADS_STAT,
