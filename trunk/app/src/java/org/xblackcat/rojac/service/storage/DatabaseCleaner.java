@@ -17,7 +17,16 @@ public class DatabaseCleaner extends DatabaseWorker {
     private final long period;
 
     public DatabaseCleaner(Window owner, long period) {
-        super(null, owner, new CheckProcessDialog(owner, Message.Dialog_ImportProgress_Title, Message.Dialog_ImportProgress_Label));
+        super(
+                null,
+                owner,
+                new CheckProcessDialog(
+                        owner,
+                        Message.Dialog_ImportProgress_Title,
+                        Message.Dialog_ImportProgress_Label,
+                        true
+                )
+        );
         this.period = period;
     }
 
@@ -26,6 +35,9 @@ public class DatabaseCleaner extends DatabaseWorker {
         publish(new ProgressChangeEvent(this, ProgressState.Work, 0));
 
         IUtilAH utilAH = Storage.get(IUtilAH.class);
+
+        utilAH.updateLastPostId();
+        utilAH.updateLastPostId();
 
         int total = utilAH.getTopicsAmountToClean(period, false, false);
 
@@ -36,6 +48,8 @@ public class DatabaseCleaner extends DatabaseWorker {
                 utilAH.removeTopic(topicId);
             }
         }
+
+        utilAH.updateForumsStat();
 
         return true;
     }

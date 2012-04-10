@@ -59,7 +59,9 @@ class QueryHolder implements IQueryHolder {
 
             try {
                 for (Number id : objIds) {
-                    ids.add(id.intValue());
+                    if (id != null) { // Skip null values
+                        ids.add(id.intValue());
+                    }
                 }
             } catch (NullPointerException e) {
                 throw new StorageDataException("Got null instead of real value.", e);

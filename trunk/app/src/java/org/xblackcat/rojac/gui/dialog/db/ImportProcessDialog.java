@@ -2,7 +2,7 @@ package org.xblackcat.rojac.gui.dialog.db;
 
 import org.xblackcat.rojac.gui.component.ACancelAction;
 import org.xblackcat.rojac.gui.component.AnOkAction;
-import org.xblackcat.rojac.gui.dialog.AProcessDialog;
+import org.xblackcat.rojac.gui.dialog.ProcessDialog;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.WindowsUtils;
 
@@ -16,7 +16,7 @@ import java.awt.event.ActionEvent;
  *
  * @author xBlackCat
  */
-public class ImportProcessDialog extends AProcessDialog {
+public class ImportProcessDialog extends ProcessDialog {
     private JTextArea logArea = new JTextArea();
     private final JButton cancelButton;
     private final JButton okButton;

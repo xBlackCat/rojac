@@ -62,11 +62,18 @@ public abstract class DatabaseWorker extends RojacWorker<Void, ProgressChangeEve
                 }
 
                 onSuccess();
-            } else if (e.getBound() != null && e.getValue() != null) {
-                processDialog.setProgress(e.getValue(), e.getBound());
-                if (win7bar != null) {
-                    win7bar.setState(ITaskbarList3.TbpFlag.TBPF_PAUSED);
-                    win7bar.setProgress(e.getValue(), e.getBound());
+            } else if (e.getValue() != null) {
+                if (e.getBound() != null) {
+                    processDialog.setProgress(e.getValue(), e.getBound());
+                    if (win7bar != null) {
+                        win7bar.setState(ITaskbarList3.TbpFlag.TBPF_PAUSED);
+                        win7bar.setProgress(e.getValue(), e.getBound());
+                    }
+                } else {
+                    processDialog.setIndeterminate();
+                    if (win7bar != null) {
+                        win7bar.setState(ITaskbarList3.TbpFlag.TBPF_INDETERMINATE);
+                    }
                 }
             }
         }

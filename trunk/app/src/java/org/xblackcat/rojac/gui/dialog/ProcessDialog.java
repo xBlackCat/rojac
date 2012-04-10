@@ -10,10 +10,10 @@ import java.awt.*;
  *
  * @author xBlackCat
  */
-public class AProcessDialog extends JDialog {
+public class ProcessDialog extends JDialog {
     protected final JProgressBar logProgress = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
 
-    public AProcessDialog(Window owner, Message title) {
+    public ProcessDialog(Window owner, Message title) {
         super(owner, ModalityType.APPLICATION_MODAL);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
@@ -30,8 +30,13 @@ public class AProcessDialog extends JDialog {
     }
 
     public void setProgress(int value, int bound) {
+        logProgress.setIndeterminate(false);
         logProgress.getModel().setMaximum(bound);
         logProgress.getModel().setValue(value);
         logProgress.setString(value + " / " + bound);
+    }
+
+    public void setIndeterminate() {
+        logProgress.setIndeterminate(true);
     }
 }
