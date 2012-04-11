@@ -47,9 +47,9 @@ final class DBUtilAH extends AnAH implements IUtilAH {
 
     @Override
     public void removeTopic(int topicId) throws StorageException {
-        helper.update(DataQuery.REMOVE_TOPIC_MODERATES, topicId, topicId);
-        helper.update(DataQuery.REMOVE_TOPIC_RATING, topicId, topicId);
-        helper.update(DataQuery.REMOVE_WHOLE_TOPIC, topicId, topicId);
+        helper.update(DataQuery.REMOVE_TOPIC_MODERATES, topicId);
+        helper.update(DataQuery.REMOVE_TOPIC_RATING, topicId);
+        helper.update(DataQuery.REMOVE_WHOLE_TOPIC, topicId);
     }
 
     @Override
