@@ -34,7 +34,7 @@ public final class WindowsUtils {
      * @param comp component to cover.
      * @return covered component.
      */
-    public static Component coverComponent(Component comp) {
+    public static JComponent coverComponent(Component comp) {
         return coverComponent(comp, FlowLayout.CENTER, comp.getBackground());
     }
 
@@ -45,7 +45,7 @@ public final class WindowsUtils {
      * @param align aling type. See {@linkplain java.awt.FlowLayout#FlowLayout(int)} for available values.
      * @return covered component.
      */
-    public static Component coverComponent(Component comp, int align) {
+    public static JComponent coverComponent(Component comp, int align) {
         return coverComponent(comp, align, comp.getBackground());
     }
 
@@ -57,7 +57,7 @@ public final class WindowsUtils {
      * @param background
      * @return covered component.
      */
-    public static Component coverComponent(Component comp, int align, Color background) {
+    public static JComponent coverComponent(Component comp, int align, Color background) {
         JPanel cover = new JPanel(new FlowLayout(align, 0, 0));
         cover.add(comp);
         cover.setBackground(background);
@@ -317,7 +317,7 @@ public final class WindowsUtils {
      * @param buttons   button properties to be placed to buttons container.
      * @return container with constructed buttons.
      */
-    public static Component createButtonsBar(JDialog dlg, Message defAction, int align, AButtonAction... buttons) {
+    public static JComponent createButtonsBar(JDialog dlg, Message defAction, int align, AButtonAction... buttons) {
         if (dlg == null && defAction != null) {
             throw new IllegalArgumentException("Can not set default action if target dialog is not specified.");
         }
