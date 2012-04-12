@@ -38,7 +38,6 @@ public final class SynchronizationUtils {
     public static <T> Collection<T> collect(Iterable<T> it) {
         Collection<T> col = new ArrayList<>();
         CollectionUtils.addAll(col, it.iterator());
-        CollectionUtils.addAll(col, it.iterator());
         return col;
     }
 }
