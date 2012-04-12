@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.util;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.swing.*;
@@ -31,6 +33,32 @@ class ExceptionDialog extends JDialog {
         JPanel cp = new JPanel(new BorderLayout());
 
         StringBuilder str = new StringBuilder();
+        // Add system info.
+        str.append(RojacUtils.VERSION_STRING);
+        str.append("\nSystem: ");
+        str.append(SystemUtils.OS_NAME);
+        str.append(" ");
+        str.append(SystemUtils.OS_ARCH);
+        str.append(" ");
+        str.append(SystemUtils.OS_VERSION);
+        try {
+            String osPatchLevel = System.getProperty("sun.os.patch.level");
+            if (StringUtils.isNotBlank(osPatchLevel)) {
+                str.append(" (");
+                str.append(osPatchLevel);
+                str.append(")");
+            }
+        } catch (SecurityException e) {
+            // Ignore patch level
+        }
+        str.append("\n");
+        str.append(SystemUtils.JAVA_RUNTIME_NAME);
+        str.append(" ");
+        str.append(SystemUtils.JAVA_RUNTIME_VERSION);
+        str.append(" (");
+        str.append(SystemUtils.JAVA_VENDOR);
+        str.append(")\n\n");
+
         str.append(thread);
         str.append("\n\n");
         str.append(ExceptionUtils.getStackTrace(t));
