@@ -18,6 +18,15 @@ class NavigationModel implements TreeTableModel, IModelControl {
     private final AnItem root;
 
     private final PacketDispatcher packetDispatcher = new PacketDispatcher(
+            new IPacketProcessor<IgnoreUserUpdatedPacket>() {
+                @Override
+                public void process(IgnoreUserUpdatedPacket p) {
+                    new LoadTaskExecutor(
+                            forumDecorator.reloadForums(),
+                            personalDecorator.reloadInfo(false)
+                    ).execute();
+                }
+            },
             new IPacketProcessor<FavoritesUpdatedPacket>() {
                 @Override
                 public void process(FavoritesUpdatedPacket p) {
@@ -46,6 +55,8 @@ class NavigationModel implements TreeTableModel, IModelControl {
                 @Override
                 public void process(IgnoreUpdatedPacket p) {
                     new LoadTaskExecutor(
+                            forumDecorator.loadForumStatistic(p.getForumId()),
+                            personalDecorator.reloadInfo(false),
                             personalDecorator.reloadIgnored()
                     ).execute();
                 }
