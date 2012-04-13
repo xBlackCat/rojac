@@ -444,7 +444,8 @@ public enum Message {
     PreviewLink_BrowserNotFound,
     PreviewLink_BrowserNotFound_Tooltip,
     PreviewLink_Youtube_SizeNormal,
-    PreviewLink_Youtube_SizeHq
+    PreviewLink_Youtube_SizeHq,
+    PreviewLink_Youtube_VideoNotFound
     // --------
     ;
 
