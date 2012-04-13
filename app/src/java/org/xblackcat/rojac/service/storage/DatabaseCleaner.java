@@ -22,8 +22,8 @@ public class DatabaseCleaner extends DatabaseWorker {
                 owner,
                 new CheckProcessDialog(
                         owner,
-                        Message.Dialog_ImportProgress_Title,
-                        Message.Dialog_ImportProgress_Label,
+                        Message.Dialog_CleanProgress_Title,
+                        Message.Dialog_CleanProgress_Label,
                         true
                 )
         );

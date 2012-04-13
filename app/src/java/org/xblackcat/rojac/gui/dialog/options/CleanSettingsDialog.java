@@ -36,7 +36,7 @@ class CleanSettingsDialog extends JDialog {
 
     public CleanSettingsDialog(Window owner) {
         super(owner, ModalityType.DOCUMENT_MODAL);
-        setTitle("Clean database");
+        setTitle(Message.Dialog_CleanDb_Title.get());
 
         JPanel cp = new JPanel(new BorderLayout(5, 5));
         cp.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -59,13 +59,13 @@ class CleanSettingsDialog extends JDialog {
         topicsAge.addChangeListener(dateTrackListener);
 
         JPanel datePane = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        datePane.add(new JLabel("Remove forum topics not updated since"));
+        datePane.add(new JLabel(Message.Dialog_CleanDb_Label_RemoveTopicsSince.get()));
         datePane.add(chooser);
 
         JPanel agePane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
-        agePane.add(new JLabel("(older than"));
+        agePane.add(new JLabel(Message.Dialog_CleanDb_Label_OlderThan.get()));
         agePane.add(new JSpinner(topicsAge));
-        agePane.add(new JLabel("days)"));
+        agePane.add(new JLabel(Message.Dialog_CleanDb_Label_Days.get()));
 
         cp.add(
                 WindowsUtils.createColumn(
