@@ -269,6 +269,14 @@ public enum Message {
     Dialog_Updater_NoUpdate,
     Dialog_Updater_NoUpdate_Title,
 
+    Dialog_CleanDb_Title,
+    Dialog_CleanDb_Label_RemoveTopicsSince,
+    Dialog_CleanDb_Label_OlderThan,
+    Dialog_CleanDb_Label_Days,
+
+    Dialog_CleanProgress_Title,
+    Dialog_CleanProgress_Label,
+
     // Progress control related
     ProgressControl_AffectedBytes,
 
