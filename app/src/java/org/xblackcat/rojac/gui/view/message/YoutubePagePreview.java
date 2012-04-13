@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.message;
 
 import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.youtube.VideoEntry;
+import com.google.gdata.util.ServiceException;
 import net.java.balloontip.BalloonTip;
 import org.xblackcat.rojac.gui.component.RojacCursor;
 import org.xblackcat.rojac.gui.theme.PreviewIcon;
@@ -41,10 +42,15 @@ class YoutubePagePreview extends AnUrlInfoPane {
             protected Void perform() throws Exception {
                 YouTubeService service = new YouTubeService(RojacUtils.VERSION_STRING);
 
-                String videoEntryUrl = "http://gdata.youtube.com/feeds/api/videos/" + videoId;
-                VideoEntry ve = service.getEntry(new URL(videoEntryUrl), VideoEntry.class);
+                try {
+                    String videoEntryUrl = "http://gdata.youtube.com/feeds/api/videos/" + videoId;
+                    VideoEntry ve = service.getEntry(new URL(videoEntryUrl), VideoEntry.class);
 
-                publish(new YoutubeVideoInfo(ve));
+                    publish(new YoutubeVideoInfo(ve));
+                } catch (ServiceException e) {
+                    // Can not load video
+                    publish((YoutubeVideoInfo) null);
+                }
 
                 return null;
             }
@@ -58,6 +64,12 @@ class YoutubePagePreview extends AnUrlInfoPane {
             }
 
             private void showInfo(final YoutubeVideoInfo videoInfo) {
+                if (videoInfo == null) {
+                    infoLabel.setText(Message.PreviewLink_Youtube_VideoNotFound.get());
+                    infoLabel.setIcon(PreviewIcon.DisabledLarge);
+                    return;
+                }
+
                 if (Property.LINK_PREVIEW_YOUTUBE_SIZE.get() == YoutubePreviewSize.Normal) {
                     infoLabel.setIcon(videoInfo.getThumbnail());
                 } else {
