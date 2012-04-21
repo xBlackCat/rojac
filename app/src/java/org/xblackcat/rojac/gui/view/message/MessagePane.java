@@ -11,6 +11,7 @@ import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
+import org.xblackcat.rojac.gui.hint.HintContainer;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
@@ -56,12 +57,59 @@ public class MessagePane extends JPanel {
     private final IAppControl appControl;
 
     private MessageData messageData;
+    private final HintContainer hintContainer = new HintContainer();
 
     public MessagePane(IAppControl appControl, Runnable onScrollEnd) {
         super(new BorderLayout());
         this.appControl = appControl;
 
-        initialize();
+        messageTextPane.setEditorKit(new HTMLEditorKit());
+        messageTextPane.setEditable(false);
+        messageTextPane.addHyperlinkListener(new HyperlinkHandler(this.appControl, messageTextPane));
+
+        add(titleBar, BorderLayout.NORTH);
+        final JScrollPane scrollPane = new JScrollPane(messageTextPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        final JPanel centerContainer = new JPanel(new BorderLayout());
+
+        centerContainer.add(scrollPane, BorderLayout.CENTER);
+        centerContainer.add(hintContainer, BorderLayout.NORTH);
+
+        add(centerContainer, BorderLayout.CENTER);
+
+        ShortCutUtils.registerShortCuts(messageTextPane);
+
+        // Handle keyboard events to emulate tree navigation in TreeTable
+        getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "spaceScroll");
+
+        getActionMap().put("spaceScroll", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (messageData == null) {
+                    return;
+                }
+
+                JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+
+                int oldValue = scrollBar.getValue();
+                if (!scrollBar.isVisible() || oldValue + scrollBar.getHeight() >= scrollBar.getMaximum()) {
+                    if (MessagePane.this.onScrollEnd != null) {
+                        MessagePane.this.onScrollEnd.run();
+                    }
+                    return;
+                }
+
+                int blockSize = (int) (scrollBar.getHeight() * .8);
+
+                int newValue = oldValue + blockSize;
+
+                if (newValue < oldValue) {
+                    newValue = scrollBar.getMaximum();
+                }
+
+                scrollBar.setValue(newValue);
+            }
+        });
 
         answer.setToolTipText(Message.Button_Reply_ToolTip.get());
         userLabel.setText(Message.Panel_Message_Label_User.get());
@@ -137,48 +185,8 @@ public class MessagePane extends JPanel {
         return titlePane;
     }
 
-    private void initialize() {
-        messageTextPane.setEditorKit(new HTMLEditorKit());
-        messageTextPane.setEditable(false);
-        messageTextPane.addHyperlinkListener(new HyperlinkHandler(MessagePane.this.appControl, messageTextPane));
-
-        add(titleBar, BorderLayout.NORTH);
-        final JScrollPane scrollPane = new JScrollPane(messageTextPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        add(scrollPane, BorderLayout.CENTER);
-
-        ShortCutUtils.registerShortCuts(messageTextPane);
-
-        // Handle keyboard events to emulate tree navigation in TreeTable
-        getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "spaceScroll");
-
-        getActionMap().put("spaceScroll", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (messageData == null) {
-                    return;
-                }
-
-                JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
-
-                int oldValue = scrollBar.getValue();
-                if (!scrollBar.isVisible() || oldValue + scrollBar.getHeight() >= scrollBar.getMaximum()) {
-                    if (onScrollEnd != null) {
-                        onScrollEnd.run();
-                    }
-                    return;
-                }
-
-                int blockSize = (int) (scrollBar.getHeight() * .8);
-
-                int newValue = oldValue + blockSize;
-
-                if (newValue < oldValue) {
-                    newValue = scrollBar.getMaximum();
-                }
-
-                scrollBar.setValue(newValue);
-            }
-        });
+    public HintContainer getHintContainer() {
+        return hintContainer;
     }
 
     protected void fillFrame(NewMessage mes) {

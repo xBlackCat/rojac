@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * 22.02.12 21:55
+ * Post reputation icon. Group all marks set to the post.
  *
  * @author xBlackCat
  */

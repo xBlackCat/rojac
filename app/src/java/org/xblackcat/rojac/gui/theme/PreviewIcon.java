@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Definition of available icons to be used in thread view for posts.
+ * Definition of available icons to be used in link preview hints.
  *
  * @author xBlackCat
  */

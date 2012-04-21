@@ -6,20 +6,19 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Definition of available icons to be used in options dialog.
+ * Definition of available icons to be used in link preview hints.
  *
  * @author xBlackCat
  */
 
-public enum OptionsIcon implements Icon {
-    Confirm("button-confirm.png"),
-    Cancel("button-cancel.png"),
-    Enabled("option-enabled.png"),
-    Disabled("option-disabled.png");
+public enum HintIcon implements Icon {
+    Info("hint-info.png"),
+    // --------
+    ;
 
     private final IResourceIcon icon;
 
-    private OptionsIcon(String filename) {
+    private HintIcon(String filename) {
         icon = new SimpleIcon(filename);
     }
 
