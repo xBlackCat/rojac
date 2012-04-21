@@ -13,6 +13,7 @@ import java.awt.*;
 
 public enum HintIcon implements Icon {
     Info("hint-info.png"),
+    ThreadChanged("hint-thread-changed.png"),
     // --------
     ;
 

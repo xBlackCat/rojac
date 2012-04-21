@@ -14,6 +14,7 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.dialog.ignoreunread.IgnoreTopicsDialog;
 import org.xblackcat.rojac.gui.dialog.ignoreunread.TopicIgnoringSelection;
+import org.xblackcat.rojac.gui.theme.HintIcon;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ThreadState;
@@ -314,7 +315,7 @@ public class TreeTableThreadView extends AnItemView {
         threads.scrollPathToVisible(path);
     }
 
-    protected Post getSelectedItem() {
+    protected Post getSelectedPost() {
         int selectedRow = threads.getSelectedRow();
         if (selectedRow < 0) {
             return null;
@@ -458,8 +459,10 @@ public class TreeTableThreadView extends AnItemView {
     protected final void selectItem(Post post, boolean showTopicHint) {
         selectPost(post, false);
 
-        if (showTopicHint) {
-            // TODO: show hint "Topic changed"
+        if (post != null && showTopicHint) {
+            JLabel hint = new JLabel("Topic changed to " + post.getMessageData().getSubject());
+            hint.setToolTipText(post.getMessageData().getSubject());
+            messagePane.getHintContainer().addHint(HintIcon.ThreadChanged, hint);
         }
     }
 
@@ -489,10 +492,10 @@ public class TreeTableThreadView extends AnItemView {
     }
 
     private void selectNextPost(Post currentPost, boolean unread) {
-        selectNextPost(currentPost, unread, new LinkedList<Post>());
+        selectNextPost(currentPost, unread, new LinkedList<Post>(), false);
     }
 
-    private void selectNextPost(Post currentPost, boolean unread, Collection<Post> toCollapse) {
+    private void selectNextPost(Post currentPost, boolean unread, Collection<Post> toCollapse, boolean showHint) {
         Post next = currentPost;
         boolean skip;
         do {
@@ -501,7 +504,7 @@ public class TreeTableThreadView extends AnItemView {
             skip = PostUtils.isPostIgnoredByUser(next);
         } while (skip);
         if (next != null) {
-            selectItem(next, true);
+            selectItem(next, showHint || next.getMessageData().getThreadRootId() != currentPost.getMessageData().getThreadRootId());
 
             if (!toCollapse.isEmpty()) {
                 for (Post post : toCollapse) {
@@ -523,7 +526,7 @@ public class TreeTableThreadView extends AnItemView {
         } while (skip);
 
         if (prev != null) {
-            selectItem(prev, false);
+            selectItem(prev, prev.getTopicId() != currentPost.getTopicId());
         }
     }
 
@@ -544,7 +547,7 @@ public class TreeTableThreadView extends AnItemView {
         if (post.getLoadingState() == LoadingState.NotLoaded) {
             if (!unread || post.isRead() != ReadStatus.Read) {
                 // Has unread children but their have not loaded yet.
-                modelControl.loadThread(model, post, new LoadNextPost(post, unread, toCollapse));
+                modelControl.loadThread(model, post, new LoadNextPost(post, unread, toCollapse, false));
                 // Change post selection when children are loaded
                 return null;
             }
@@ -583,7 +586,7 @@ public class TreeTableThreadView extends AnItemView {
                             post = p;
                             break;
                         case NotLoaded:
-                            modelControl.loadThread(model, p, new LoadNextPost(p, unread, toCollapse));
+                            modelControl.loadThread(model, p, new LoadNextPost(p, unread, toCollapse, true));
                         case Loading:
                             return null;
                     }
@@ -764,11 +767,11 @@ public class TreeTableThreadView extends AnItemView {
         }
 
         // Just in case store a current selection
-        final Post curSelection = getSelectedItem();
+        final Post curSelection = getSelectedPost();
         Runnable postProcessor = new Runnable() {
             public void run() {
                 if (curSelection != null &&
-                        !curSelection.equals(getSelectedItem())) {
+                        !curSelection.equals(getSelectedPost())) {
                     selectItem(curSelection, false);
                 } else {
                     selectItem(null, false);
@@ -827,7 +830,7 @@ public class TreeTableThreadView extends AnItemView {
         }
 
         public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
+            Post currentPost = getSelectedPost();
             selectPrevPost(currentPost, true);
         }
     }
@@ -838,7 +841,7 @@ public class TreeTableThreadView extends AnItemView {
         }
 
         public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
+            Post currentPost = getSelectedPost();
             selectNextPost(currentPost, true);
         }
     }
@@ -849,7 +852,7 @@ public class TreeTableThreadView extends AnItemView {
         }
 
         public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
+            Post currentPost = getSelectedPost();
             selectPrevPost(currentPost, false);
         }
     }
@@ -860,7 +863,7 @@ public class TreeTableThreadView extends AnItemView {
         }
 
         public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
+            Post currentPost = getSelectedPost();
             selectNextPost(currentPost, false);
         }
     }
@@ -872,7 +875,7 @@ public class TreeTableThreadView extends AnItemView {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Post post = getSelectedItem();
+            Post post = getSelectedPost();
             if (post == null) {
                 return;
             }
@@ -895,7 +898,7 @@ public class TreeTableThreadView extends AnItemView {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Post post = getSelectedItem();
+            Post post = getSelectedPost();
             if (post == null) {
                 return;
             }
@@ -911,7 +914,7 @@ public class TreeTableThreadView extends AnItemView {
         }
 
         public void actionPerformed(ActionEvent e) {
-            Post currentPost = getSelectedItem();
+            Post currentPost = getSelectedPost();
             if (currentPost != null) {
                 selectPost(modelControl.getTreeRoot(currentPost), true);
             }
@@ -1001,16 +1004,18 @@ public class TreeTableThreadView extends AnItemView {
         private final Post item;
         private final boolean unread;
         private Collection<Post> toCollapse;
+        private final boolean showHint;
 
-        public LoadNextPost(Post item, boolean unread, Collection<Post> toCollapse) {
+        public LoadNextPost(Post item, boolean unread, Collection<Post> toCollapse, boolean showHint) {
             this.item = item;
             this.unread = unread;
             this.toCollapse = toCollapse;
+            this.showHint = showHint;
         }
 
         @Override
         public void run() {
-            selectNextPost(item, unread, toCollapse);
+            selectNextPost(item, unread, toCollapse, showHint);
         }
     }
 
@@ -1027,7 +1032,7 @@ public class TreeTableThreadView extends AnItemView {
         public void run() {
             Post prevUnread = findLastPost(item, unread);
             if (prevUnread != null) {
-                selectItem(prevUnread, false);
+                selectItem(prevUnread, true);
             }
         }
     }

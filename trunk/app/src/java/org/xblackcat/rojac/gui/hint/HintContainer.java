@@ -1,10 +1,8 @@
 package org.xblackcat.rojac.gui.hint;
 
 import org.xblackcat.rojac.gui.theme.HintIcon;
-import org.xblackcat.rojac.util.BalloonTipUtils;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -85,25 +83,4 @@ public class HintContainer extends JPanel {
         revalidate();
     }
 
-    /**
-     * 21.04.12 13:16
-     *
-     * @author xBlackCat
-     */
-    public static class MessageHint extends JPanel {
-        public MessageHint(Icon icon, JComponent comp, Runnable onClose) {
-            super(new BorderLayout(5, 0));
-
-            Color color = new Color(0xFFFFCC);
-            setBackground(color);
-            setAlignmentX(0);
-
-            final JLabel iconLabel = new JLabel(icon);
-            add(iconLabel, BorderLayout.WEST);
-
-            add(comp, BorderLayout.CENTER);
-
-            add(BalloonTipUtils.balloonTipCloseButton(onClose), BorderLayout.EAST);
-        }
-    }
 }
