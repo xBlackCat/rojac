@@ -18,7 +18,6 @@ import java.util.Iterator;
  * @author xBlackCat
  */
 class StreamingResult<T> implements IResult<T> {
-    private final Log log = LogFactory.getLog(getClass());
 
     protected final Connection connection;
     protected final IToObjectConverter<T> converter;
@@ -33,6 +32,7 @@ class StreamingResult<T> implements IResult<T> {
         DBUtils.fillStatement(statement, parameters);
 
         if (debugAnchor != null) {
+            Log log = LogFactory.getLog(getClass());
             if (log.isTraceEnabled()) {
                 log.trace("[" + debugAnchor + "] Query was built in " + (System.currentTimeMillis() - start) + " ms");
             }
