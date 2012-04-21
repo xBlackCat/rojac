@@ -94,12 +94,11 @@ public class TreeTableThreadView extends AnItemView {
         messagePane = new MessagePane(appControl, onScrollEnd);
         threads = getThreadsContainer();
         // Initialize tree
-        JScrollPane threadsScroll = new JScrollPane(threads);
 
         splitPane = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,
                 true,
-                threadsScroll,
+                new JScrollPane(threads),
                 messagePane
         );
         splitPane.setDividerLocation(200);
@@ -276,7 +275,7 @@ public class TreeTableThreadView extends AnItemView {
         return threads;
     }
 
-    protected void selectItem(Post post, boolean collapseChildren) {
+    protected void selectPost(Post post, boolean collapseChildren) {
         if (post != null) {
             TreePath path = model.getPathToRoot(post);
 
@@ -293,6 +292,7 @@ public class TreeTableThreadView extends AnItemView {
                 }
 
                 selectedItem = post.getMessageData();
+                threads.getTreeSelectionModel().setSelectionPath(path);
                 return;
             }
         }
@@ -455,8 +455,12 @@ public class TreeTableThreadView extends AnItemView {
 
     }
 
-    protected final void selectItem(Post post) {
-        selectItem(post, false);
+    protected final void selectItem(Post post, boolean showTopicHint) {
+        selectPost(post, false);
+
+        if (showTopicHint) {
+            // TODO: show hint "Topic changed"
+        }
     }
 
     public void selectNextPost(int postId) {
@@ -497,7 +501,7 @@ public class TreeTableThreadView extends AnItemView {
             skip = PostUtils.isPostIgnoredByUser(next);
         } while (skip);
         if (next != null) {
-            selectItem(next);
+            selectItem(next, true);
 
             if (!toCollapse.isEmpty()) {
                 for (Post post : toCollapse) {
@@ -519,7 +523,7 @@ public class TreeTableThreadView extends AnItemView {
         } while (skip);
 
         if (prev != null) {
-            selectItem(prev);
+            selectItem(prev, false);
         }
     }
 
@@ -720,7 +724,7 @@ public class TreeTableThreadView extends AnItemView {
         // Check for threads
         Post post = model.getRoot().getMessageById(messageId);
         if (post != null) {
-            selectItem(post);
+            selectItem(post, false);
         } else {
             new ThreadChecker(messageId).execute();
         }
@@ -744,15 +748,16 @@ public class TreeTableThreadView extends AnItemView {
 
         if (selectedItem != null) {
             Post selected = model.getRoot().getMessageById(selectedItem.getMessageId());
-            selectItem(selected);
+            selectItem(selected, false);
         } else {
-            selectItem(null);
+            selectItem(null, false);
         }
     }
 
     @Override
     public final void processPacket(IPacket packet) {
         if (packet instanceof ReloadDataPacket) {
+            messagePane.getHintContainer().clearHints();
             loadItem(getId().getId());
 
             return;
@@ -764,9 +769,9 @@ public class TreeTableThreadView extends AnItemView {
             public void run() {
                 if (curSelection != null &&
                         !curSelection.equals(getSelectedItem())) {
-                    selectItem(curSelection);
+                    selectItem(curSelection, false);
                 } else {
-                    selectItem(null);
+                    selectItem(null, false);
                 }
             }
         };
@@ -908,7 +913,7 @@ public class TreeTableThreadView extends AnItemView {
         public void actionPerformed(ActionEvent e) {
             Post currentPost = getSelectedItem();
             if (currentPost != null) {
-                selectItem(modelControl.getTreeRoot(currentPost), true);
+                selectPost(modelControl.getTreeRoot(currentPost), true);
             }
 
         }
@@ -1022,7 +1027,7 @@ public class TreeTableThreadView extends AnItemView {
         public void run() {
             Post prevUnread = findLastPost(item, unread);
             if (prevUnread != null) {
-                selectItem(prevUnread);
+                selectItem(prevUnread, false);
             }
         }
     }
@@ -1041,7 +1046,7 @@ public class TreeTableThreadView extends AnItemView {
                     modelControl.loadThread(model, rootMessage, new Runnable() {
                         @Override
                         public void run() {
-                            selectItem(root.getMessageById(messageId));
+                            selectItem(root.getMessageById(messageId), false);
                         }
                     });
                 }
@@ -1208,7 +1213,7 @@ public class TreeTableThreadView extends AnItemView {
                 if (messageId != 0) {
                     expandThread(messageId);
                 } else {
-                    selectItem(null);
+                    selectItem(null, false);
                 }
             }
         }
