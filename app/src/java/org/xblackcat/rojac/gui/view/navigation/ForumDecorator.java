@@ -92,6 +92,9 @@ class ForumDecorator extends ADecorator {
         } else {
             viewedForums.remove(forumId);
         }
+
+        modelControl.itemUpdated(subscribedForums);
+        modelControl.itemUpdated(notSubscribedForums);
     }
 
     public ILoadTask updateSubscribed(int forumId, boolean subscribed) {
@@ -252,6 +255,9 @@ class ForumDecorator extends ADecorator {
                     viewedForums.remove(forumId);
                 }
             }
+
+            modelControl.itemUpdated(subscribedForums);
+            modelControl.itemUpdated(notSubscribedForums);
         }
 
     }
