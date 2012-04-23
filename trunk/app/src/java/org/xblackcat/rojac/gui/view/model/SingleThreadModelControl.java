@@ -218,7 +218,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
         Post root = model.getRoot();
 
         if (root != null) {
-            int userId = Property.RSDN_USER_ID.get(0);
+            int userId = Property.RSDN_USER_ID.get();
             if (userId > 0 && hasUnreadReplies(userId, root)) {
                 threadIcon = ReadStatusIcon.ThreadHasResponse.getIcon(ReadStatus.Unread);
             } else {

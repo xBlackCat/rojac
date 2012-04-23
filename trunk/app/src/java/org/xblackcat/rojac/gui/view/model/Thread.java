@@ -192,7 +192,7 @@ public class Thread extends Post {
 
         unreadPosts = 0;
         unreadReplies = 0;
-        int myId = Property.RSDN_USER_ID.get(-1);
+        int myId = Property.RSDN_USER_ID.get();
 
         for (Post p : threadPosts.valueCollection()) {
             if (p != this && !p.messageData.isRead()) {

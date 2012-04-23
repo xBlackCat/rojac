@@ -22,13 +22,13 @@ public final class PostUtils {
             return true;
         }
 
-        if (Property.SKIP_IGNORED_USER_REPLY.get(false)) {
+        if (Property.SKIP_IGNORED_USER_REPLY.get()) {
             if (post.getParent() != null && post.getParent().isIgnoredUser()) {
                 return true;
             }
         }
 
-        if (Property.SKIP_IGNORED_USER_THREAD.get(false)) {
+        if (Property.SKIP_IGNORED_USER_THREAD.get()) {
             Post parent;
             while ((parent = post.getParent()) != null) {
                 if (parent.isIgnoredUser()) {
@@ -58,10 +58,10 @@ public final class PostUtils {
     }
 
     public static Icon getPostIcon(Post post) {
-        final int userId = Property.RSDN_USER_ID.get(-1);
+        final int userId = Property.RSDN_USER_ID.get();
 
         boolean isOwnPost = post.getMessageData().getUserId() == userId;
-        boolean isResponse = post.isReply(Property.RSDN_USER_ID.get(-1));
+        boolean isResponse = post.isReply(Property.RSDN_USER_ID.get());
         boolean hasUnreadReply = post.hasUnreadReply();
 
         ReadStatus readStatus = post.isRead();

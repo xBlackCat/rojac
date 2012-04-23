@@ -31,7 +31,7 @@ class ThreadStatisticLoader extends RojacWorker<Void, ReadStatistic> {
     protected Void perform() throws Exception {
         IStatisticAH mAH = Storage.get(IStatisticAH.class);
         try {
-            ReadStatistic unreadPosts = mAH.getReplaysInThread(topic.getMessageId(), Property.RSDN_USER_ID.get(-1));
+            ReadStatistic unreadPosts = mAH.getReplaysInThread(topic.getMessageId(), Property.RSDN_USER_ID.get());
 
             publish(unreadPosts);
         } catch (StorageException e) {

@@ -37,6 +37,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
+import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.progress.IProgressController;
 
 import javax.xml.soap.MimeHeader;
@@ -402,7 +403,7 @@ class JanusHTTPSender extends BasicHandler {
     protected HostConfiguration getHostConfiguration(HttpClient client,
                                                      URL targetURL) {
         int port = targetURL.getPort();
-        boolean useProxy = SYNCHRONIZER_PROXY_ENABLED.get(false);
+        boolean useProxy = SYNCHRONIZER_PROXY_ENABLED.get();
 
         HostConfiguration config = new HostConfiguration();
 
@@ -415,17 +416,18 @@ class JanusHTTPSender extends BasicHandler {
         }
 
         config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
-        if (!useProxy) {
-        } else {
-            String pHost = SYNCHRONIZER_PROXY_HOST.get("");
-            Integer pPort = SYNCHRONIZER_PROXY_PORT.get(0);
+        if (useProxy) {
+            String pHost = SYNCHRONIZER_PROXY_HOST.get();
+            int pPort = SYNCHRONIZER_PROXY_PORT.get();
+
             if (pHost.length() == 0 || pPort == 0) {
                 config.setHost(targetURL.getHost(), port, targetURL.getProtocol());
             } else {
                 progressController.fireJobProgressChanged(Synchronize_Message_ProxyUsed, pHost, pPort);
-                String pUser = SYNCHRONIZER_PROXY_USER.get("");
+                String pUser = SYNCHRONIZER_PROXY_USER.get();
                 if (pUser.length() != 0) {
-                    String pPass = SYNCHRONIZER_PROXY_PASSWORD.get().toString();
+                    final Password password = SYNCHRONIZER_PROXY_PASSWORD.get();
+                    String pPass = password == null ? "" : password.toString();
                     Credentials proxyCred =
                             new UsernamePasswordCredentials(pUser, pPass);
                     // if the username is in the form "user\domain"

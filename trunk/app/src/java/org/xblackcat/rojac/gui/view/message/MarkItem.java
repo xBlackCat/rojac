@@ -19,7 +19,7 @@ final class MarkItem {
     private final int userId;
 
     MarkItem(NewRating r) {
-        this(r.getId(), Property.RSDN_USER_ID.get(-1), null);
+        this(r.getId(), Property.RSDN_USER_ID.get(), null);
     }
 
     MarkItem(int userId, User user) {

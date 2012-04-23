@@ -935,7 +935,7 @@ public class TreeTableThreadView extends AnItemView {
 
             assert root instanceof ForumRoot : "Only forum view can use the action";
 
-            if (Property.IGNORE_TOPICS_DIALOG_SHOW.get(true) ||
+            if (Property.IGNORE_TOPICS_DIALOG_SHOW.get() ||
                     !Property.IGNORE_TOPICS_SELECT_METHOD.isSet()) {
                 IgnoreTopicsDialog dlg = new IgnoreTopicsDialog(appControl.getMainFrame());
 
