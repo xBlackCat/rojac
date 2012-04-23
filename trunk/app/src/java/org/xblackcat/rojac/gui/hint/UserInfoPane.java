@@ -3,6 +3,7 @@ package org.xblackcat.rojac.gui.hint;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.util.BalloonTipUtils;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.SpringUtilities;
 
@@ -45,7 +46,7 @@ public class UserInfoPane extends JPanel {
 
         setMinimumSize(new Dimension(100, 50));
 
-        Color color = new Color(0xFFFFCC);
+        Color color = BalloonTipUtils.TIP_BACKGROUND;
         setBackground(color);
 
         for (Component c : getComponents()) {

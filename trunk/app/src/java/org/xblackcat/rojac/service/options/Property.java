@@ -76,7 +76,7 @@ public final class Property<T> {
 
     // Links preview behaviour
     public static final Property<Boolean> LINK_PREVIEW_ENABLED = create("rojac.behaviour.link_preview", Boolean.TRUE);
-//    public static final Property<Integer> LINK_PREVIEW_DELAY = create("rojac.behaviour.link_preview.delay", Integer.valueOf(0));
+    public static final Property<Integer> LINK_PREVIEW_DELAY = create("rojac.behaviour.link_preview.delay", Integer.valueOf(500));
     public static final Property<PreviewSize> LINK_PREVIEW_PAGE_SIZE = create("rojac.behaviour.link_preview.page_size", PreviewSize.S_800, new PreviewSizeChecker());
     public static final Property<PreviewSize> LINK_PREVIEW_PAGE_THUMBNAIL_SIZE = create("rojac.behaviour.link_preview.page_thumbnail_size", PreviewSize.S_400, new PreviewSizeChecker());
     public static final Property<PreviewSize> LINK_PREVIEW_IMAGE_SIZE = create("rojac.behaviour.link_preview.image_size", PreviewSize.S_400, new PreviewSizeChecker());
