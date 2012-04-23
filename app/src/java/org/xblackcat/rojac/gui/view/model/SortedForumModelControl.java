@@ -257,7 +257,7 @@ class SortedForumModelControl extends AThreadsModelControl {
                         
                         int threadId = p.getThreadId();
 
-                        if (Property.HIDE_IGNORED_TOPICS.get(false)) {
+                        if (Property.HIDE_IGNORED_TOPICS.get()) {
                             if (p.isIgnored()) {
                                 ForumRoot root = (ForumRoot) model.getRoot();
 

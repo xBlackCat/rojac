@@ -245,7 +245,7 @@ public final class RojacUtils {
      * @throws RojacException thrown if version can not be obtained.
      */
     public static Integer getLastBuild() throws RojacException {
-        CheckUpdatesEnum period = Property.UPDATER_PERIOD.get(CheckUpdatesEnum.EveryWeek);
+        CheckUpdatesEnum period = Property.UPDATER_PERIOD.get();
         try {
             if (period.shouldCheck(Property.UPDATER_LAST_CHECK.get())) {
                 // Load revision info.

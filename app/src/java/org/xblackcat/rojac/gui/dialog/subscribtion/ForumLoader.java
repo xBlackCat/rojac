@@ -29,7 +29,7 @@ class ForumLoader extends RojacWorker<Void, Forum> {
     @Override
     protected Void perform() throws Exception {
         try {
-            try (IResult<ItemStatisticData<Forum>> allForums = Storage.get(IForumAH.class).getAllForums(Property.RSDN_USER_ID.get(-1))) {
+            try (IResult<ItemStatisticData<Forum>> allForums = Storage.get(IForumAH.class).getAllForums(Property.RSDN_USER_ID.get())) {
                 for (ItemStatisticData<Forum> f : allForums) {
                     publish(f.getItem());
                 }

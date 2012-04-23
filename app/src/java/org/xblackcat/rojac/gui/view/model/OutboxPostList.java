@@ -30,7 +30,7 @@ class OutboxPostList extends Post {
     private LoadingState loadingState = LoadingState.NotLoaded;
 
     public OutboxPostList() {
-        super(new MessageData(-1, -1, -1, -1, Property.RSDN_USER_ID.get(-1), "", Property.RSDN_USER_NAME.get(), -1, -1, true, null, false, 0, false), null, null);
+        super(new MessageData(-1, -1, -1, -1, Property.RSDN_USER_ID.get(), "", Property.RSDN_USER_NAME.get(), -1, -1, true, null, false, 0, false), null, null);
     }
 
     @Override

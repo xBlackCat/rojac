@@ -14,7 +14,7 @@ public class NewMessageData extends MessageData {
                 -1,
                 md.getParentId(),
                 md.getForumId(),
-                Property.RSDN_USER_ID.get(-1),
+                Property.RSDN_USER_ID.get(),
                 md.getSubject(),
                 Property.RSDN_USER_NAME.get(),
                 -1,

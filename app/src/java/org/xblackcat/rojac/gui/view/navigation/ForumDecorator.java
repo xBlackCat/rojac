@@ -170,7 +170,7 @@ class ForumDecorator extends ADecorator {
 
             final IForumAH fah = Storage.get(IForumAH.class);
 
-            DiscussionStatistic forumStatistic = fah.getForumStatistic(forumId, Property.RSDN_USER_ID.get(-1));
+            DiscussionStatistic forumStatistic = fah.getForumStatistic(forumId, Property.RSDN_USER_ID.get());
 
             if (forumStatistic == null) {
                 forumStatistic = DiscussionStatistic.NO_STAT;
@@ -222,7 +222,7 @@ class ForumDecorator extends ADecorator {
 
             Collection<ItemStatisticData<Forum>> forums = new ArrayList<>();
             
-            try (IResult<ItemStatisticData<Forum>> allForums = fah.getAllForums(Property.RSDN_USER_ID.get(-1))) {
+            try (IResult<ItemStatisticData<Forum>> allForums = fah.getAllForums(Property.RSDN_USER_ID.get())) {
                 CollectionUtils.addAll(forums, allForums.iterator());
             }
 

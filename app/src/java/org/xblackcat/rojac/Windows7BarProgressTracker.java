@@ -55,7 +55,7 @@ class Windows7BarProgressTracker implements IProgressListener {
                 new RojacWorker<Void, Integer>() {
                     @Override
                     protected Void perform() throws Exception {
-                        Integer ownId = Property.RSDN_USER_ID.get(-1);
+                        int ownId = Property.RSDN_USER_ID.get();
 
                         ReadStatistic userRepliesStat = Storage.get(IStatisticAH.class).getUserRepliesStat(ownId);
                         publish(userRepliesStat.getUnreadMessages());

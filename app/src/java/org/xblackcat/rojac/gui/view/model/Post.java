@@ -81,7 +81,7 @@ public class Post implements Comparable<Post> {
     }
 
     public boolean hasUnreadReply() {
-        return hasUnreadReply(Property.RSDN_USER_ID.get(-1));
+        return hasUnreadReply(Property.RSDN_USER_ID.get());
     }
 
     protected boolean hasUnreadReply(int userId) {

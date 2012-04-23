@@ -179,7 +179,7 @@ public class RojacTray {
         protected Void perform() throws Exception {
             IStatisticAH mAH = Storage.get(IStatisticAH.class);
 
-            Integer userId = Property.RSDN_USER_ID.get(-1);
+            int userId = Property.RSDN_USER_ID.get();
             publish(mAH.getTotals(userId));
 
             return null;
@@ -248,7 +248,7 @@ public class RojacTray {
                 new IPacketProcessor<SetPostReadPacket>() {
                     @Override
                     public void process(SetPostReadPacket p) {
-                        final Integer ownId = Property.RSDN_USER_ID.get(-1);
+                        final int ownId = Property.RSDN_USER_ID.get();
                         final int adjust = p.isRead() ? -1 : 1;
                         final boolean isReply = p.getPost().getParentUserId() == ownId &&
                                 p.getPost().getUserId() != ownId;

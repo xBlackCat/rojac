@@ -488,7 +488,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private DockingWindowTitleProvider getTabTitleProvider() {
-        int tabTitleLimit = VIEW_THREAD_TAB_TITLE_LIMIT.get(0);
+        int tabTitleLimit = VIEW_THREAD_TAB_TITLE_LIMIT.get();
 
         if (tabTitleLimit > 0) {
             return new TrimingDockingWindowTitleProvider(tabTitleLimit);

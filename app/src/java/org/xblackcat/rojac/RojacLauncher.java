@@ -245,7 +245,7 @@ public final class RojacLauncher {
                 }
             });
 
-            if (!Property.ROJAC_DEBUG_DONT_RESTORE_LAYOUT.get(false)) {
+            if (!Property.ROJAC_DEBUG_DONT_RESTORE_LAYOUT.get()) {
                 mainFrame.applySettings();
             }
 
