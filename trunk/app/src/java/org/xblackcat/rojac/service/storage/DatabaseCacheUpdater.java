@@ -15,7 +15,7 @@ import java.awt.*;
  */
 public class DatabaseCacheUpdater extends DatabaseWorker {
     public DatabaseCacheUpdater(Window owner) {
-        super(null, owner, new CheckProcessDialog(owner, Message.Dialog_CheckProgress_Structure_Title, Message.Dialog_CheckProgress_Structure_Label));
+        super(null, owner, new CheckProcessDialog(owner, Message.Dialog_CheckProgress_CacheUpdate_Title, Message.Dialog_CheckProgress_CacheUpdate_Label));
     }
 
     @Override
