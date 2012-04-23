@@ -23,6 +23,7 @@ import org.xblackcat.rojac.gui.view.message.MessageDataHolder;
 import org.xblackcat.rojac.gui.view.message.MessagePane;
 import org.xblackcat.rojac.gui.view.model.*;
 import org.xblackcat.rojac.gui.view.model.Thread;
+import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IgnoreUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
@@ -460,8 +461,9 @@ public class TreeTableThreadView extends AnItemView {
         selectPost(post, false);
 
         if (post != null && showTopicHint) {
-            JLabel hint = new JLabel("Topic changed to " + post.getMessageData().getSubject());
-            hint.setToolTipText(post.getMessageData().getSubject());
+            String hintStr = Message.Hint_TopicChangedTo.get(post.getMessageData().getSubject());
+            JLabel hint = new JLabel(hintStr);
+            hint.setToolTipText(hintStr);
             messagePane.getHintContainer().addHint(HintIcon.ThreadChanged, hint);
         }
     }
