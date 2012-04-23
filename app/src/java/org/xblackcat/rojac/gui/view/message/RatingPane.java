@@ -54,7 +54,7 @@ class RatingPane extends JPanel {
     }
 
     private void initializeLayout() {
-        Color color = new Color(0xFFFFCC);
+        Color color = BalloonTipUtils.TIP_BACKGROUND;
         setBackground(color);
 
         final ListSelectionModel selectionModel = marksList.getSelectionModel();

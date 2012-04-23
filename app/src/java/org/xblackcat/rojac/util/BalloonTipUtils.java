@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
  * @author xBlackCat
  */
 public class BalloonTipUtils {
+    public static final Color TIP_BACKGROUND = new Color(0xFFFFCC);
+
     public static BalloonTipStyle createTipStyle(Color color) {
         return new RoundedBalloonStyle(5, 5, color, Color.black);
     }

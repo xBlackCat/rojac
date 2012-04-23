@@ -17,7 +17,7 @@ class MessageHint extends JPanel {
 
         setBorder(new EmptyBorder(2, 5, 2, 5));
 
-        Color color = new Color(0xFFFFCC);
+        Color color = BalloonTipUtils.TIP_BACKGROUND;
         setBackground(color);
         setAlignmentX(0);
 
