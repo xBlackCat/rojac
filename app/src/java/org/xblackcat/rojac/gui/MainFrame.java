@@ -322,13 +322,13 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 new SplitWindow(
                         true,
                         0.75f,
+                        threadsView,
                         new SplitWindow(
-                                true,
-                                0.2f,
-                                viewNavigation,
-                                threadsView
-                        ),
-                        viewRecentTopics
+                                false,
+                                0.3f,
+                                viewRecentTopics,
+                                viewNavigation
+                        )
                 )
         );
 
@@ -534,8 +534,19 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 log.info("Load previous layout");
             }
             try {
+                final ByteArrayOutputStream rootBackup = new ByteArrayOutputStream();
+
                 try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+                    final ObjectOutputStream stream = new ObjectOutputStream(rootBackup);
+                    rootWindow.write(stream, false);
+                    stream.close();
+
                     rootWindow.read(in, false);
+                    if (SwingUtilities.getWindowAncestor(threadsRootWindow) == null) {
+                        // Restore default layout
+                        rootWindow.read(new ObjectInputStream(new ByteArrayInputStream(rootBackup.toByteArray())), false);
+                    }
+
                     threadsRootWindow.read(in, false);
 
                     for (View v : mainViews) {
