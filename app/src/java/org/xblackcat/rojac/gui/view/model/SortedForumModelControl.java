@@ -15,6 +15,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
+import java.util.Iterator;
 
 /**
  * Control class of all threads of the specified forum.
@@ -144,6 +145,14 @@ class SortedForumModelControl extends AThreadsModelControl {
                                 p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
                             model.subTreeNodesChanged(model.getRoot());
                         }
+
+                        if (p.isPropertyAffected(Property.VIEW_THREAD_HIDE_READ_THREADS)) {
+                            if (Property.VIEW_THREAD_HIDE_READ_THREADS.get()) {
+                                hideReadThreads(model);
+                            } else {
+                                new ThreadsLoader(postProcessor, model, forumId).execute();
+                            }
+                        }
                     }
                 },
                 new IPacketProcessor<SetForumReadPacket>() {
@@ -214,6 +223,10 @@ class SortedForumModelControl extends AThreadsModelControl {
                 new IPacketProcessor<SynchronizationCompletePacket>() {
                     @Override
                     public void process(SynchronizationCompletePacket p) {
+                        if (Property.VIEW_THREAD_HIDE_READ_THREADS.get()) {
+                            hideReadThreads(model);
+                        }
+
                         if (!p.isForumAffected(forumId)) {
                             // Current forum is not changed - have a rest
                             return;
@@ -293,6 +306,23 @@ class SortedForumModelControl extends AThreadsModelControl {
                     }
                 }
         ).dispatch(p);
+    }
+
+    private static void hideReadThreads(SortedThreadsModel model) {
+        ForumRoot root = (ForumRoot) model.getRoot();
+
+        Iterator<Post> iterator = root.childrenPosts.iterator();
+        int idx = 0;
+        while (iterator.hasNext()) {
+            Post threadRoot = iterator.next();
+
+            if (threadRoot.isRead() == ReadStatus.Read) {
+                iterator.remove();
+                model.fireNodeRemoved(root, idx, threadRoot);
+            } else {
+                idx++;
+            }
+        }
     }
 
     @Override

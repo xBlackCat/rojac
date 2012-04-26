@@ -166,9 +166,28 @@ public class Thread extends Post {
     @Override
     public boolean hasUnreadReply() {
         if (filled) {
-            return super.hasUnreadReply();
+            return getUnreadReplies() > 0;
         } else {
             return unreadReplies > 0;
+        }
+    }
+
+    public int getUnreadReplies() {
+        int myId = Property.RSDN_USER_ID.get();
+
+        if (filled) {
+            int unreadReplies = 0;
+            for (Post p : threadPosts.valueCollection()) {
+                if (p != this && !p.messageData.isRead()) {
+                    if (p.messageData.getParentUserId() == myId) {
+                        unreadReplies++;
+                    }
+                }
+            }
+
+            return unreadReplies;
+        } else {
+            return unreadReplies;
         }
     }
 
@@ -183,7 +202,18 @@ public class Thread extends Post {
     }
 
     public int getUnreadPosts() {
-        return unreadPosts;
+        if (filled) {
+            int unreadPosts = 0;
+            for (Post p : threadPosts.valueCollection()) {
+                if (p != this && !p.messageData.isRead()) {
+                    unreadPosts++;
+                }
+            }
+
+            return unreadPosts;
+        } else {
+            return unreadPosts;
+        }
     }
 
     public void clearThread() {

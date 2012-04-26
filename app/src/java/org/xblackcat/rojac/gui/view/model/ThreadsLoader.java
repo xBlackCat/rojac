@@ -49,12 +49,17 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     @Override
     protected Void perform() throws Exception {
         boolean hideIgnored = Property.HIDE_IGNORED_TOPICS.get();
+        boolean hideRead = Property.VIEW_THREAD_HIDE_READ_THREADS.get();
 
         try {
             int userId = Property.RSDN_USER_ID.get();
             try (IResult<ItemStatisticData<MessageData>> threadPosts = Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId, userId)) {
                 for (ItemStatisticData<MessageData> threadPost : threadPosts) {
                     if (hideIgnored && threadPost.getItem().isIgnored()) {
+                        continue;
+                    }
+
+                    if (hideRead && threadPost.getItemReadStatistic().getUnreadMessages() == 0) {
                         continue;
                     }
 
