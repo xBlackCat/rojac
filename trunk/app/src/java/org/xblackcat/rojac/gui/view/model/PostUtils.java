@@ -42,18 +42,18 @@ public final class PostUtils {
     }
 
     public static void setIgnoreUserFlag(SortedThreadsModel model, int userId, boolean ignored) {
-        updateIgnoreUserFlag(model, model.getRoot(), userId, ignored);
+        updateIgnoreUserFlag(model.getRoot(), userId, ignored);
 
         model.subTreeNodesChanged(model.getRoot());
     }
 
-    private static void updateIgnoreUserFlag(SortedThreadsModel model, Post root, int userId, boolean ignored) {
+    private static void updateIgnoreUserFlag(Post root, int userId, boolean ignored) {
         if (root.getMessageData().getUserId() == userId && root.isIgnoredUser() != ignored) {
             root.setMessageData(root.getMessageData().setIgnoredUser(ignored));
         }
 
         for (Post p : root.childrenPosts) {
-            updateIgnoreUserFlag(model, p, userId, ignored);
+            updateIgnoreUserFlag(p, userId, ignored);
         }
     }
 

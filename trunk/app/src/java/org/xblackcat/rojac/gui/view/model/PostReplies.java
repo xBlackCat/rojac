@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.gui.view.thread.PostTableCellRenderer;
+import org.xblackcat.rojac.i18n.Message;
 
 /**
  * Delegate class to identify replies amount on the post for a table renderer.
@@ -18,11 +19,45 @@ final class PostReplies extends APostProxy {
 
         int repliesAmount = post.getPostAmount();
 
-        if (repliesAmount == 0 && post.getThreadRoot() != post) {
-            // Do not show zeroes for non-root posts.
-            replies = "";
+        if (post.getThreadRoot() != post) {
+            if (repliesAmount == 0) {
+                // Do not show zeroes for non-root posts.
+                replies = "";
+            } else {
+                replies = String.valueOf(repliesAmount);
+            }
         } else {
-            replies = String.valueOf(repliesAmount);
+            Thread t = (Thread) post;
+
+            int unreadPosts = t.getUnreadPosts();
+            int unreadReplies = t.getUnreadReplies();
+            
+            if (unreadPosts == 0) {
+                replies = String.valueOf(repliesAmount);
+            } else if (unreadPosts == repliesAmount) {
+                if (unreadReplies == 0) {
+                    replies = String.valueOf(repliesAmount);
+                } else {
+                    replies = Message.View_Navigation_Item_ForumInfo_Full.get(
+                            unreadReplies,
+                            unreadPosts,
+                            repliesAmount
+                    );
+                }
+            } else {
+                if (unreadReplies == 0) {
+                    replies = Message.View_Navigation_Item_ForumInfo.get(
+                            unreadPosts,
+                            repliesAmount
+                    );
+                } else {
+                    replies = Message.View_Navigation_Item_ForumInfo_Full.get(
+                            unreadReplies,
+                            unreadPosts,
+                            repliesAmount
+                    );
+                }
+            }
         }
 
         renderer.setText(replies);
