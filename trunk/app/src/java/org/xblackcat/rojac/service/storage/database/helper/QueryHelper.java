@@ -28,7 +28,7 @@ final class QueryHelper extends AQueryHelper {
     public <T> IResult<T> execute(final IToObjectConverter<T> c, final String sql, final Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
-        final String debugAnchor = Property.ROJAC_SQL_DEBUG.get() ? RojacUtils.generateHash() : null;
+        final String debugAnchor = Property.ROJAC_DEBUG_SQL.get() ? RojacUtils.generateHash() : null;
         if (debugAnchor != null) {
             if (log.isTraceEnabled()) {
                 log.trace("[" + debugAnchor + "] Execute query " + RojacUtils.constructDebugSQL(sql, parameters));
@@ -37,24 +37,23 @@ final class QueryHelper extends AQueryHelper {
 
         try {
             try (Connection con = connectionFactory.getConnection()) {
-                long start = System.currentTimeMillis();
                 try (PreparedStatement st = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
                     DBUtils.fillStatement(st, parameters);
-                    if (debugAnchor != null) {
-                        if (log.isTraceEnabled()) {
-                            log.trace("[" + debugAnchor + "] Query was built in " + (System.currentTimeMillis() - start) + " ms");
-                            start = System.currentTimeMillis();
-                        }
-                    }
+                    long start = System.currentTimeMillis();
 
                     try (ResultSet rs = st.executeQuery()) {
                         if (debugAnchor != null) {
-                            if (log.isTraceEnabled()) {
-                                log.trace("[" + debugAnchor + "] Query was executed in " + (System.currentTimeMillis() - start) + " ms");
-                                start = System.currentTimeMillis();
-                            }
-                        }
+                            long executionTime = System.currentTimeMillis() - start;
 
+                            Integer timeLine = Property.ROJAC_DEBUG_SQL_RUN_TIME_TRACK.get();
+                            if (timeLine == null ||
+                                    timeLine * 1000 <= executionTime) {
+                                if (log.isTraceEnabled()) {
+                                    log.trace("[" + debugAnchor + "] Query was executed in " + (System.currentTimeMillis() - start) + " ms");
+                                }
+                            }
+                            start = System.currentTimeMillis();
+                        }
 
                         final List<T> res = new ArrayList<>();
                         while (rs.next()) {

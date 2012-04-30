@@ -87,7 +87,7 @@ abstract class AQueryHelper implements IQueryHelper {
     public int update(String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, getClass());
 
-        String debugAnchor = Property.ROJAC_SQL_DEBUG.get() ? RojacUtils.generateHash() : null;
+        String debugAnchor = Property.ROJAC_DEBUG_SQL.get() ? RojacUtils.generateHash() : null;
         if (debugAnchor != null) {
             if (log.isTraceEnabled()) {
                 log.trace("[" + debugAnchor + "] Execute update " + RojacUtils.constructDebugSQL(sql, parameters));
@@ -97,19 +97,21 @@ abstract class AQueryHelper implements IQueryHelper {
 
         try {
             try (Connection con = connectionFactory.getConnection()) {
-                long start = System.currentTimeMillis();
                 try (PreparedStatement st = con.prepareStatement(sql)) {
                     DBUtils.fillStatement(st, parameters);
-                    if (debugAnchor != null) {
-                        if (log.isTraceEnabled()) {
-                            log.trace("[" + debugAnchor + "] Update was prepared in " + (System.currentTimeMillis() - start) + " ms");
-                            start = System.currentTimeMillis();
-                        }
-                    }
+                    long start = System.currentTimeMillis();
+
                     int rows = st.executeUpdate();
+
                     if (debugAnchor != null) {
-                        if (log.isTraceEnabled()) {
-                            log.trace("[" + debugAnchor + "] Update was executed in " + (System.currentTimeMillis() - start) + " ms");
+                        final long executionTime = System.currentTimeMillis() - start;
+
+                        final Integer timeLine = Property.ROJAC_DEBUG_SQL_RUN_TIME_TRACK.get();
+                        if (timeLine == null ||
+                                timeLine * 1000 <= executionTime) {
+                            if (log.isTraceEnabled()) {
+                                log.trace("[" + debugAnchor + "] Update was executed in " + executionTime + " ms. " + rows + " row(s) affected.");
+                            }
                         }
                     }
                     return rows;
