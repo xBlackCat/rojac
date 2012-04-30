@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import java.net.URL;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -140,6 +141,8 @@ public final class LinkUtils {
             return null;
         }
 
+        host = host.toLowerCase(Locale.ROOT);
+
         if (host.endsWith("youtube.com")) {
             Matcher m = YOUTUBE_LINK.matcher(url.getQuery());
             if (m.find()) {
@@ -159,6 +162,8 @@ public final class LinkUtils {
         if (path == null) {
             return false;
         }
+
+        path = path.toLowerCase(Locale.ROOT);
 
         return path.endsWith(".png") ||
                 path.endsWith(".jpg") ||
