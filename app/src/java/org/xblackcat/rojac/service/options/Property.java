@@ -36,7 +36,9 @@ public final class Property<T> {
 
     // Debug variables
     public static final Property<Boolean> ROJAC_DEBUG_MODE = createPrivate("rojac.global.debug.mode", Boolean.FALSE);
-    public static final Property<Boolean> ROJAC_SQL_DEBUG = createPrivate("rojac.sql.debug", Boolean.FALSE);
+    public static final Property<Boolean> ROJAC_DEBUG_SQL = createPrivate("rojac.sql.debug", Boolean.FALSE);
+    public static final Property<Integer> ROJAC_DEBUG_SQL_RUN_TIME_TRACK = createPrivate("rojac.sql.query.time", Integer.class);
+
     public static final Property<Boolean> ROJAC_DEBUG_DONT_RESTORE_LAYOUT = createPrivate("rojac.global.debug.reset_layout", Boolean.FALSE);
     public static final Property<Boolean> ROJAC_DEBUG_SHUTDOWN_OTHER = createPrivate("rojac.global.debug.shutdown_others", Boolean.FALSE);
 

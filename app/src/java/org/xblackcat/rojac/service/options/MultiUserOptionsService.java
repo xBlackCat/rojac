@@ -23,7 +23,8 @@ public final class MultiUserOptionsService extends AnOptionsService {
     @SuppressWarnings({"unchecked"})
     private static final Collection<Property<?>> DO_NOT_STORE = new HashSet<Property<?>>(Arrays.asList(
             Property.ROJAC_DEBUG_MODE,
-            Property.ROJAC_SQL_DEBUG,
+            Property.ROJAC_DEBUG_SQL,
+            Property.ROJAC_DEBUG_SQL_RUN_TIME_TRACK,
             Property.ROJAC_DEBUG_DONT_RESTORE_LAYOUT,
             Property.ROJAC_DEBUG_SHUTDOWN_OTHER
     ));

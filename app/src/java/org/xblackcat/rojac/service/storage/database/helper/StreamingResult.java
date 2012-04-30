@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database.helper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
@@ -18,25 +19,20 @@ import java.util.Iterator;
  * @author xBlackCat
  */
 class StreamingResult<T> implements IResult<T> {
+    private static final Log log = LogFactory.getLog(StreamingResult.class);
 
     protected final Connection connection;
+    private final String debugAnchor;
     protected final IToObjectConverter<T> converter;
     protected final PreparedStatement statement;
 
     StreamingResult(String debugAnchor, IToObjectConverter<T> converter, Connection connection, String sql, Object... parameters) throws SQLException {
+        this.debugAnchor = debugAnchor;
         this.converter = converter;
 
         this.connection = connection;
-        long start = System.currentTimeMillis();
         statement = prepareStatement(sql);
         DBUtils.fillStatement(statement, parameters);
-
-        if (debugAnchor != null) {
-            Log log = LogFactory.getLog(getClass());
-            if (log.isTraceEnabled()) {
-                log.trace("[" + debugAnchor + "] Query was built in " + (System.currentTimeMillis() - start) + " ms");
-            }
-        }
     }
 
     protected PreparedStatement prepareStatement(String sql) throws SQLException {
@@ -67,7 +63,19 @@ class StreamingResult<T> implements IResult<T> {
         private IToObjectConverter<T> converter;
 
         private StreamingResultIterator(IToObjectConverter<T> converter) throws SQLException {
+            long start = System.currentTimeMillis();
             rs = statement.executeQuery();
+            if (debugAnchor != null) {
+                long executionTime = System.currentTimeMillis() - start;
+
+                Integer timeLine = Property.ROJAC_DEBUG_SQL_RUN_TIME_TRACK.get();
+                if (timeLine == null ||
+                        timeLine * 1000 <= executionTime) {
+                    if (log.isTraceEnabled()) {
+                        log.trace("[" + debugAnchor + "] Query was executed in " + (System.currentTimeMillis() - start) + " ms");
+                    }
+                }
+            }
             this.converter = converter;
         }
 

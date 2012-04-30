@@ -27,7 +27,7 @@ class StreamingQueryHelper extends AQueryHelper {
     public <T> IResult<T> execute(final IToObjectConverter<T> c, final String sql, final Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, getClass());
 
-        final String debugAnchor = Property.ROJAC_SQL_DEBUG.get() ? RojacUtils.generateHash() : null;
+        final String debugAnchor = Property.ROJAC_DEBUG_SQL.get() ? RojacUtils.generateHash() : null;
         if (debugAnchor != null) {
             if (log.isTraceEnabled()) {
                 log.trace("[" + debugAnchor + "] Execute query " + RojacUtils.constructDebugSQL(sql, parameters));
