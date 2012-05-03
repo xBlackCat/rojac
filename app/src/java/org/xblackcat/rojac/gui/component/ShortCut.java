@@ -22,6 +22,10 @@ public enum ShortCut {
     NewThread(Message.View_Thread_Button_NewThread, KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK),
     MarkSubTreeRead(Message.Popup_View_ThreadsTree_Mark_ThreadRead, KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
     MarkWholeThreadRead(Message.Popup_View_ThreadsTree_Mark_WholeThreadRead, KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
+    IgnoreTopic(Message.View_Thread_Button_IgnoreTopic, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK),
+    FollowTopic(Message.View_Thread_Button_FollowTopic, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK),
+    IgnoreUser(Message.View_Thread_Button_IgnoreUser, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
+    FollowUser(Message.View_Thread_Button_FollowUser, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
     IgnoreUnread(Message.View_Thread_Button_IgnoreUnread, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK),
     // Main frame related
     Synchronization(Message.MainFrame_Button_Update, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, 0),
@@ -40,6 +44,7 @@ public enum ShortCut {
     ReplyOnMessage(Message.Button_Reply_ToolTip, KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK),
     ShowMessageMarks(Message.Panel_Message_Toolbar_Rating, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK),
     SetMarkOnMessage(Message.Description_Mark_Select, KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK),
+//    ----
     ;
     private static final String ACTION_PREFIX = "Action:";
 

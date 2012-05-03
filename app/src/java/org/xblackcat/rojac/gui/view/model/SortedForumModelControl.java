@@ -35,6 +35,11 @@ class SortedForumModelControl extends AThreadsModelControl {
             null,
             ThreadToolbarActions.MarkSubTreeRead,
             ThreadToolbarActions.MarkThreadRead,
+            null,
+            ThreadToolbarActions.IgnoreTopic,
+            ThreadToolbarActions.FollowTopic,
+            ThreadToolbarActions.IgnoreUser,
+            ThreadToolbarActions.FollowUser,
             ThreadToolbarActions.IgnoreUnread
     };
 
