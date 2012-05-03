@@ -14,6 +14,8 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
 import org.xblackcat.rojac.gui.dialog.ignoreunread.IgnoreTopicsDialog;
 import org.xblackcat.rojac.gui.dialog.ignoreunread.TopicIgnoringSelection;
+import org.xblackcat.rojac.gui.popup.TopicIgnoreSetter;
+import org.xblackcat.rojac.gui.popup.UserIgnoreFlagSetter;
 import org.xblackcat.rojac.gui.theme.HintIcon;
 import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.MessageChecker;
@@ -999,6 +1001,51 @@ public class TreeTableThreadView extends AnItemView {
                     }
                 }
             }.execute();
+        }
+    }
+
+    class ToggleIgnoreTopicAction extends AButtonAction {
+        private final boolean ignore;
+
+        ToggleIgnoreTopicAction(boolean ignore) {
+            super(ignore ? ShortCut.IgnoreTopic : ShortCut.FollowTopic);
+            this.ignore = ignore;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Post post = getSelectedPost();
+
+            if (post == null) {
+                return;
+            }
+
+            new TopicIgnoreSetter(!ignore, post.getThreadRoot().getMessageId(), post.getForumId()).execute();
+        }
+    }
+
+    class ToggleIgnoreUserAction extends AButtonAction {
+        private final boolean ignore;
+
+        ToggleIgnoreUserAction(boolean ignore) {
+            super(ignore ? ShortCut.IgnoreUser : ShortCut.FollowUser);
+            this.ignore = ignore;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Post root = getSelectedPost();
+
+            if (root == null) {
+                return;
+            }
+
+            final int userId = root.getMessageData().getUserId();
+            if (userId <= 0) {
+                return;
+            }
+
+            new UserIgnoreFlagSetter(!ignore, userId).execute();
         }
     }
 

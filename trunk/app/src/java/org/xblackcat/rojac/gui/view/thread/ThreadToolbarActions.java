@@ -56,12 +56,38 @@ public enum ThreadToolbarActions {
             return WindowsUtils.registerImageButton(view, "mark_read_thread", view.new MarkWholeThreadReadAction());
         }
     },
+    IgnoreTopic {
+        @Override
+        JButton makeButton(TreeTableThreadView view) {
+            return WindowsUtils.registerImageButton(view, "ignore_topic", view.new ToggleIgnoreTopicAction(true));
+        }
+    },
+    FollowTopic {
+        @Override
+        JButton makeButton(TreeTableThreadView view) {
+            return WindowsUtils.registerImageButton(view, "follow_topic", view.new ToggleIgnoreTopicAction(false));
+        }
+    },
+    IgnoreUser {
+        @Override
+        JButton makeButton(TreeTableThreadView view) {
+            return WindowsUtils.registerImageButton(view, "ignore_user", view.new ToggleIgnoreUserAction(true));
+        }
+    },
+    FollowUser {
+        @Override
+        JButton makeButton(TreeTableThreadView view) {
+            return WindowsUtils.registerImageButton(view, "follow_user", view.new ToggleIgnoreUserAction(false));
+        }
+    },
     IgnoreUnread {
         @Override
         JButton makeButton(TreeTableThreadView view) {
             return WindowsUtils.registerImageButton(view, "ignore_unread", view.new IgnoreUnreadAction());
         }
-    };
+    },
+//  ---
+    ;
 
     abstract JButton makeButton(TreeTableThreadView view);
 }

@@ -83,6 +83,10 @@ public enum Message {
     View_Thread_Button_PreviousUnread,
     View_Thread_Button_NextUnread,
     View_Thread_Button_ToThreadRoot,
+    View_Thread_Button_IgnoreTopic,
+    View_Thread_Button_IgnoreUser,
+    View_Thread_Button_FollowTopic,
+    View_Thread_Button_FollowUser,
     View_Thread_Button_IgnoreUnread,
 
     // Tray texts
