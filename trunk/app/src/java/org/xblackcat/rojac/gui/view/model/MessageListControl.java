@@ -50,6 +50,11 @@ abstract class MessageListControl implements IModelControl {
     }
 
     @Override
+    public boolean isToolBarButtonVisible(ThreadToolbarActions action, Post post) {
+        return true;
+    }
+
+    @Override
     public void unloadThread(SortedThreadsModel model, Post item) {
         // Nothing to do
     }

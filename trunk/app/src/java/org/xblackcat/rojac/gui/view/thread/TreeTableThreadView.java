@@ -43,9 +43,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -335,15 +333,21 @@ public class TreeTableThreadView extends AnItemView {
             return null;
         }
 
+        Map<ThreadToolbarActions, JComponent> toolbarButtons = new EnumMap<>(ThreadToolbarActions.class);
+
         JToolBar toolBar = new JToolBar();
 
-        for (ThreadToolbarActions c : actions) {
-            if (c != null) {
-                toolBar.add(c.makeButton(this));
+        for (ThreadToolbarActions action : actions) {
+            if (action != null) {
+                JButton button = action.makeButton(this);
+                toolBar.add(button);
+                toolbarButtons.put(action, button);
             } else {
                 toolBar.addSeparator();
             }
         }
+
+        threads.getTreeSelectionModel().addTreeSelectionListener(new ToolbarTracker(toolbarButtons));
 
         return toolBar;
     }
@@ -1144,6 +1148,32 @@ public class TreeTableThreadView extends AnItemView {
                 }
 
                 fireInfoChanged();
+            }
+        }
+    }
+
+    protected class ToolbarTracker implements TreeSelectionListener {
+        private final Map<ThreadToolbarActions, JComponent> toolbarButtons;
+
+        public ToolbarTracker(Map<ThreadToolbarActions, JComponent> toolbarButtons) {
+            this.toolbarButtons = toolbarButtons;
+        }
+
+        @Override
+        public void valueChanged(TreeSelectionEvent e) {
+            if (!resortingModel) {
+                TreePath newLeadSelectionPath = e.getNewLeadSelectionPath();
+
+                if (newLeadSelectionPath != null) {
+                    if (newLeadSelectionPath.getLastPathComponent() != null) {
+                        Post post = (Post) newLeadSelectionPath.getLastPathComponent();
+
+                        for (Map.Entry<ThreadToolbarActions, JComponent> button : toolbarButtons.entrySet()) {
+                            button.getValue().setVisible(modelControl.isToolBarButtonVisible(button.getKey(), post));
+                            button.getValue().setVisible(modelControl.isToolBarButtonVisible(button.getKey(), post));
+                        }
+                    }
+                }
             }
         }
     }

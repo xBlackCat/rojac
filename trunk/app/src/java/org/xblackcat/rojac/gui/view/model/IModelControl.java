@@ -104,4 +104,14 @@ public interface IModelControl {
      * @param item  target thread to clean up.
      */
     void unloadThread(SortedThreadsModel model, Post item);
+
+    /**
+     * Return true if the toolbar action should be visible depend on current message data
+     *
+     *
+     * @param action action to check
+     * @param post
+     * @return true if button should be visible
+     */
+    boolean isToolBarButtonVisible(ThreadToolbarActions action, Post post);
 }

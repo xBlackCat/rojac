@@ -272,7 +272,7 @@ class SortedForumModelControl extends AThreadsModelControl {
                         if (p.getForumId() != forumId) {
                             return;
                         }
-                        
+
                         int threadId = p.getThreadId();
 
                         if (Property.HIDE_IGNORED_TOPICS.get()) {
@@ -287,7 +287,7 @@ class SortedForumModelControl extends AThreadsModelControl {
                                 }
 
                                 int idx = root.removeThread(threadId);
-                                if (idx == -1 ) {
+                                if (idx == -1) {
                                     // No thread (Again?!)
                                     assert false : "Ignore non-existed thread #" + threadId + " in forum #" + forumId;
                                     return;
@@ -304,7 +304,7 @@ class SortedForumModelControl extends AThreadsModelControl {
                             if (threadRoot != null) {
                                 MessageData data = threadRoot.getMessageData();
                                 threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
-                                
+
                                 model.subTreeNodesChanged(threadRoot);
                             }
                         }
@@ -352,10 +352,37 @@ class SortedForumModelControl extends AThreadsModelControl {
         return null;
     }
 
-
     @Override
     public ThreadToolbarActions[] getToolbar() {
         return TOOLBAR_CONFIG;
+    }
+
+    @Override
+    public boolean isToolBarButtonVisible(ThreadToolbarActions action, Post post) {
+        switch (action) {
+            case ToThreadRoot:
+                return post != null;
+            case MarkSubTreeRead:
+                return post != null;
+            case MarkThreadRead:
+                return post != null;
+            case IgnoreTopic:
+                return post != null && !post.getThreadRoot().isIgnored();
+            case FollowTopic:
+                return post != null && post.getThreadRoot().isIgnored();
+            case IgnoreUser:
+                return post != null && !post.isIgnoredUser();
+            case FollowUser:
+                return post != null && post.isIgnoredUser();
+            case IgnoreUnread:
+            case PreviousPost:
+            case NextPost:
+            case PreviousUnread:
+            case NextUnread:
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
