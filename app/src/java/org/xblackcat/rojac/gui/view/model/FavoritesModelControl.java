@@ -119,6 +119,11 @@ class FavoritesModelControl implements IModelControl {
     }
 
     @Override
+    public boolean isToolBarButtonVisible(ThreadToolbarActions action, Post post) {
+        return delegatedControl != null && delegatedControl.isToolBarButtonVisible(action, post);
+    }
+
+    @Override
     public void unloadThread(SortedThreadsModel model, Post item) {
         if (delegatedControl != null) {
             delegatedControl.unloadThread(model, item);

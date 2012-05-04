@@ -184,7 +184,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
                             Post threadRoot = model.getRoot();
                             MessageData data = threadRoot.getMessageData();
                             threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
-                            
+
                             model.subTreeNodesChanged(threadRoot);
                         }
                     }
@@ -246,6 +246,24 @@ class SingleThreadModelControl extends AThreadsModelControl {
         return TOOLBAR_CONFIG;
     }
 
+    @Override
+    public boolean isToolBarButtonVisible(ThreadToolbarActions action, Post post) {
+        switch (action) {
+            case ToThreadRoot:
+                return post != null;
+            case MarkSubTreeRead:
+                return post != null;
+            case MarkThreadRead:
+                return post != null;
+            case PreviousPost:
+            case NextPost:
+            case PreviousUnread:
+            case NextUnread:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     private boolean hasUnreadReplies(int userId, Post post) {
         boolean ownPost = post.getMessageData().getUserId() == userId;
