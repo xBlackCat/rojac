@@ -43,7 +43,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.*;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -56,7 +58,7 @@ public class TreeTableThreadView extends AnItemView {
     protected final SortedThreadsModel model = new SortedThreadsModel();
     private final IModelControl modelControl;
 
-    private JToolBar toolbar;
+    private RojacToolBar toolbar;
     private final JXTreeTable threads;
     private final MessagePane messagePane;
 
@@ -326,28 +328,26 @@ public class TreeTableThreadView extends AnItemView {
         return path == null ? null : (Post) path.getLastPathComponent();
     }
 
-    private JToolBar createToolBar() {
+    private RojacToolBar createToolBar() {
         ThreadToolbarActions[] actions = modelControl.getToolbar();
 
         if (actions == null) {
             return null;
         }
 
-        Map<ThreadToolbarActions, JComponent> toolbarButtons = new EnumMap<>(ThreadToolbarActions.class);
 
-        JToolBar toolBar = new JToolBar();
+        RojacToolBar toolBar = new RojacToolBar();
 
         for (ThreadToolbarActions action : actions) {
             if (action != null) {
-                JButton button = action.makeButton(this);
-                toolBar.add(button);
-                toolbarButtons.put(action, button);
+                toolBar.add(action, this);
             } else {
                 toolBar.addSeparator();
             }
         }
 
-        threads.getTreeSelectionModel().addTreeSelectionListener(new ToolbarTracker(toolbarButtons));
+        threads.getTreeSelectionModel().addTreeSelectionListener(new ToolbarTracker());
+        toolBar.updateButtons(null, modelControl);
 
         return toolBar;
     }
@@ -787,8 +787,21 @@ public class TreeTableThreadView extends AnItemView {
             }
         };
 
+
         if (model.isInitialized()) {
-            modelControl.processPacket(model, packet, null);
+            Runnable statusUpdater = new Runnable() {
+                @Override
+                public void run() {
+                    if (toolbar != null) {
+                        toolbar.updateButtons(getSelectedPost(), modelControl);
+                    }
+
+                    fireInfoChanged();
+                }
+            };
+            modelControl.processPacket(model, packet, statusUpdater);
+
+            statusUpdater.run();
         }
     }
 
@@ -1153,27 +1166,14 @@ public class TreeTableThreadView extends AnItemView {
     }
 
     protected class ToolbarTracker implements TreeSelectionListener {
-        private final Map<ThreadToolbarActions, JComponent> toolbarButtons;
-
-        public ToolbarTracker(Map<ThreadToolbarActions, JComponent> toolbarButtons) {
-            this.toolbarButtons = toolbarButtons;
-        }
-
         @Override
         public void valueChanged(TreeSelectionEvent e) {
             if (!resortingModel) {
                 TreePath newLeadSelectionPath = e.getNewLeadSelectionPath();
 
-                if (newLeadSelectionPath != null) {
-                    if (newLeadSelectionPath.getLastPathComponent() != null) {
-                        Post post = (Post) newLeadSelectionPath.getLastPathComponent();
+                Post post = newLeadSelectionPath != null ? (Post) newLeadSelectionPath.getLastPathComponent() : null;
 
-                        for (Map.Entry<ThreadToolbarActions, JComponent> button : toolbarButtons.entrySet()) {
-                            button.getValue().setVisible(modelControl.isToolBarButtonVisible(button.getKey(), post));
-                            button.getValue().setVisible(modelControl.isToolBarButtonVisible(button.getKey(), post));
-                        }
-                    }
-                }
+                toolbar.updateButtons(post, modelControl);
             }
         }
     }

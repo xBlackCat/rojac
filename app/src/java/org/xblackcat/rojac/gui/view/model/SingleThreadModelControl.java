@@ -130,9 +130,15 @@ class SingleThreadModelControl extends AThreadsModelControl {
                 new IPacketProcessor<SetPostReadPacket>() {
                     @Override
                     public void process(SetPostReadPacket p) {
-                        MessageData post = p.getPost();
-                        if (post.getForumId() == forumId && post.getThreadRootId() == threadId) {
-                            markPostRead(model, post.getMessageId(), p.isRead());
+                        MessageData md = p.getPost();
+                        if (md.getForumId() == forumId && md.getThreadRootId() == threadId) {
+                            assert RojacUtils.checkThread(true);
+
+                            final Post post = model.getRoot().getMessageById(md.getMessageId());
+                            if (post != null) {
+                                post.setRead(p.isRead());
+                                model.pathToNodeChanged(post);
+                            }
                         }
                     }
                 },
@@ -198,7 +204,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
         root.setLoadingState(LoadingState.Loading);
 
         // Thread always filled in.
-        new ThreadLoader(model, root, new Runnable() {
+        new ThreadPostsLoader(model, root, new Runnable() {
             @Override
             public void run() {
                 model.markInitialized();

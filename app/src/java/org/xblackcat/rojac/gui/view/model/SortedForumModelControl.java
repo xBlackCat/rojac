@@ -180,7 +180,27 @@ class SortedForumModelControl extends AThreadsModelControl {
                     @Override
                     public void process(SetPostReadPacket p) {
                         if (p.getPost().getForumId() == forumId) {
-                            markPostRead(model, p.getPost().getMessageId(), p.isRead());
+                            assert RojacUtils.checkThread(true);
+
+                            final Post post = model.getRoot().getMessageById(p.getPost().getMessageId());
+                            if (post != null) {
+                                post.setRead(p.isRead());
+                                model.pathToNodeChanged(post);
+                            } else {
+                                Post threadRoot = model.getRoot().getMessageById(p.getPost().getTopicId());
+
+                                if (threadRoot != null) {
+                                    assert threadRoot instanceof Thread : "Expected a Thread class instance but got " + threadRoot.getClass().getName();
+                                    Thread thread = (Thread) threadRoot;
+                                    assert !thread.isFilled() : "Expecting not loaded thread";
+
+                                    // Update not-yet-loaded thread statistics
+                                    new ThreadStatisticLoader(thread, model, postProcessor).execute();
+                                } else {
+                                    // Try to load hidden thread if any
+                                    new ThreadsLoader(postProcessor, model, forumId).execute();
+                                }
+                            }
                         }
                     }
                 },
@@ -210,7 +230,7 @@ class SortedForumModelControl extends AThreadsModelControl {
 
                             if (!topic.isFilled()) {
                                 // Queue update stat data.
-                                new ThreadStatisticLoader(topic, model).execute();
+                                new ThreadStatisticLoader(topic, model, postProcessor).execute();
                             }
                         }
 
