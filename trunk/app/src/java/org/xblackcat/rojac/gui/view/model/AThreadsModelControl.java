@@ -45,16 +45,6 @@ abstract class AThreadsModelControl implements IModelControl {
         }
     }
 
-    protected void markPostRead(SortedThreadsModel model, int postId, boolean read) {
-        assert RojacUtils.checkThread(true);
-
-        final Post post = model.getRoot().getMessageById(postId);
-        if (post != null) {
-            post.setRead(read);
-            model.pathToNodeChanged(post);
-        }
-    }
-
     @Override
     public void loadThread(final SortedThreadsModel threadModel, Post p, Runnable postProcessor) {
         assert RojacUtils.checkThread(true);
@@ -66,7 +56,7 @@ abstract class AThreadsModelControl implements IModelControl {
 
         item.setLoadingState(LoadingState.Loading);
 
-        new ThreadLoader(threadModel, item, postProcessor).execute();
+        new ThreadPostsLoader(threadModel, item, postProcessor).execute();
     }
 
     @Override

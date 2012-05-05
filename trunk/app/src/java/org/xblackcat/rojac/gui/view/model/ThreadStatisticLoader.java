@@ -22,7 +22,8 @@ class ThreadStatisticLoader extends RojacWorker<Void, ReadStatistic> {
     private final Thread topic;
     private final SortedThreadsModel model;
 
-    public ThreadStatisticLoader(Thread topic, SortedThreadsModel model) {
+    public ThreadStatisticLoader(Thread topic, SortedThreadsModel model, Runnable postProcessor) {
+        super(postProcessor);
         this.topic = topic;
         this.model = model;
     }

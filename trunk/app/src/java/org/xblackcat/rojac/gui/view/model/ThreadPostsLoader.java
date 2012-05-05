@@ -14,13 +14,13 @@ import java.util.List;
 /**
  * @author xBlackCat
  */
-class ThreadLoader extends RojacWorker<Void, MessageData> {
-    private static final Log log = LogFactory.getLog(ThreadLoader.class);
+class ThreadPostsLoader extends RojacWorker<Void, MessageData> {
+    private static final Log log = LogFactory.getLog(ThreadPostsLoader.class);
 
     private final Thread item;
     private SortedThreadsModel model;
 
-    public ThreadLoader(SortedThreadsModel model, Thread item, Runnable postProcessor) {
+    public ThreadPostsLoader(SortedThreadsModel model, Thread item, Runnable postProcessor) {
         super(postProcessor);
         this.item = item;
         this.model = model;
