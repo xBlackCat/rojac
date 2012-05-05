@@ -44,7 +44,9 @@ final class DBMessageAH extends AnAH implements IMessageAH {
                 fm.getUserNick(),
                 fm.getUserTitle(),
                 fm.getMessage(),
-                read);
+                read,
+                fm.getParentId()
+        );
     }
 
     public String getMessageBodyById(int messageId) throws StorageException {

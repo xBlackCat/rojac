@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.gui.dialog.db.CheckProcessDialog;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
@@ -54,6 +56,9 @@ public class StorageInstaller extends DatabaseWorker {
                 }
             });
         } catch (final StorageException e) {
+            final Log log = LogFactory.getLog(StorageInstaller.class);
+            log.error("Can't check database structure.", e);
+
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
