@@ -40,7 +40,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
         }
 
         @Override
-        public void updateProgress(int current, int total) {
+        public void updateProgress(long current, long total) {
             progressController.fireJobProgressChanged(current, total);
         }
     };

@@ -282,8 +282,14 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
             tracker.updateProgress(i, forUpdateLength);
         }
 
-        mAH.updateLastPostInfo(new BatchTracker(tracker), updatedTopics);
-        forumAH.updateForumStatistic(tracker, updatedForums);
+        final BatchTracker batchTracker = new BatchTracker(tracker, 3);
+        batchTracker.setBatch(0, 1);
+        mAH.updateParentPostUserId(batchTracker, updatedMessages);
+        batchTracker.nextSuperBatch();
+        mAH.updateLastPostInfo(batchTracker, updatedTopics);
+        batchTracker.nextSuperBatch();
+        batchTracker.setBatch(0, 1);
+        forumAH.updateForumStatistic(batchTracker, updatedForums);
     }
 
 }

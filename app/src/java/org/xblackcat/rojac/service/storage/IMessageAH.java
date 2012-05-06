@@ -1,8 +1,9 @@
 package org.xblackcat.rojac.service.storage;
 
-import gnu.trove.set.hash.TIntHashSet;
+import gnu.trove.set.TIntSet;
 import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import ru.rsdn.Janus.JanusMessageInfo;
 
@@ -49,11 +50,15 @@ public interface IMessageAH extends AH {
     /**
      * Update last post info in specified threads
      *
+     *
      * @param tracker
      * @param threadIds
      * @throws StorageException
      */
-    void updateLastPostInfo(IBatchTracker tracker, TIntHashSet threadIds) throws StorageException;
+    void updateLastPostInfo(IBatchTracker tracker, TIntSet threadIds) throws StorageException;
+
+
+    void updateParentPostUserId(IProgressTracker tracker, TIntSet messages) throws StorageException;
 
     /**
      * Updates read flag of the specified message.

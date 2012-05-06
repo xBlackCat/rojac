@@ -1,11 +1,12 @@
 package org.xblackcat.rojac.service.storage.database;
 
 import gnu.trove.iterator.TIntIterator;
-import gnu.trove.set.hash.TIntHashSet;
+import gnu.trove.set.TIntSet;
 import org.xblackcat.rojac.data.AffectedMessage;
 import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.Role;
+import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
 import org.xblackcat.rojac.service.storage.IBatchTracker;
 import org.xblackcat.rojac.service.storage.IMessageAH;
@@ -44,8 +45,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
                 fm.getUserNick(),
                 fm.getUserTitle(),
                 fm.getMessage(),
-                read,
-                fm.getParentId()
+                read
         );
     }
 
@@ -79,7 +79,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public void updateLastPostInfo(IBatchTracker tracker, TIntHashSet threadIds) throws StorageException {
+    public void updateLastPostInfo(IBatchTracker tracker, TIntSet threadIds) throws StorageException {
         Collection<Object[]> params = new ArrayList<>();
 
         TIntIterator iterator = threadIds.iterator();
@@ -95,6 +95,18 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
         tracker.setBatch(2, 3);
         helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE, tracker, params);
+    }
+
+    @Override
+    public void updateParentPostUserId(IProgressTracker tracker, TIntSet messageIds) throws StorageException {
+        Collection<Object[]> params = new ArrayList<>();
+
+        TIntIterator iterator = messageIds.iterator();
+        while (iterator.hasNext()) {
+            params.add(new Integer[]{iterator.next()});
+        }
+
+        helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_PARENT_USER_ID, tracker, params);
     }
 
     public void updateMessageReadFlag(int messageId, boolean read) throws StorageException {
