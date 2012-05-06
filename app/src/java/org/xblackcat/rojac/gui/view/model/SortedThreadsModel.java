@@ -15,12 +15,30 @@ import javax.swing.tree.TreePath;
  */
 
 public class SortedThreadsModel implements TreeModel, TreeTableModel {
+    public static final Header[] NORMAL_MODE = new Header[]{
+            Header.ID,
+            Header.SUBJECT,
+            Header.USER,
+            Header.REPLIES,
+            Header.RATING,
+            Header.DATE
+    };
+
+    public static final Header[] COMPACT_MODE = new Header[]{
+            Header.ID,
+            Header.SUBJECT_USER,
+            Header.REPLIES,
+            Header.RATING,
+            Header.DATE
+    };
+
     protected boolean initialized;
     protected Post root;
     /**
      * Provides support for event dispatching.
      */
     protected TreeModelSupport modelSupport = new TreeModelSupport(this);
+    private final Header[] headers = NORMAL_MODE;
 
     public Post getChild(Object parent, int index) {
         return ((Post) parent).getChild(index);
@@ -47,16 +65,20 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
         throw new NotImplementedException();
     }
 
+    public Header[] getHeaders() {
+        return headers;
+    }
+
     public Class<?> getColumnClass(int columnIndex) {
-        return Header.values()[columnIndex].getObjectClass();
+        return headers[columnIndex].getObjectClass();
     }
 
     public int getColumnCount() {
-        return Header.values().length;
+        return headers.length;
     }
 
     public String getColumnName(int column) {
-        return Header.values()[column].getTitle();
+        return headers[column].getTitle();
     }
 
     public int getHierarchicalColumn() {
@@ -65,7 +87,7 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
 
     public Object getValueAt(Object node, int column) {
         try {
-            return Header.values()[column].getObjectData(node);
+            return headers[column].getObjectData(node);
         } catch (RojacException e) {
             throw new IllegalArgumentException("Can not convert node for column " + column + ". Node: " + node);
         }
