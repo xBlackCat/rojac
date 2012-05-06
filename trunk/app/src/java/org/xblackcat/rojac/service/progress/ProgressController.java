@@ -32,12 +32,12 @@ public class ProgressController implements IProgressController {
     }
 
     @Override
-    public void fireJobProgressChanged(int progress, int total) {
+    public void fireJobProgressChanged(long progress, long total) {
         fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Work, progress, total));
     }
 
     @Override
-    public void fireJobProgressChanged(int amount) {
+    public void fireJobProgressChanged(long amount) {
         fireProgressChanged(new ProgressChangeEvent(this, ProgressState.Work, amount));
     }
 

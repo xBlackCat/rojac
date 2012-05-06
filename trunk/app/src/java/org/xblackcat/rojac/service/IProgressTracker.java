@@ -8,5 +8,5 @@ package org.xblackcat.rojac.service;
 public interface IProgressTracker {
     void postException(Throwable t);
 
-    void updateProgress(int current, int total);
+    void updateProgress(long current, long total);
 }
