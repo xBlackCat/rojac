@@ -85,7 +85,7 @@ public class DBStructureChecker implements IStructureChecker {
             try {
                 Boolean c = helper.executeSingle(Converters.TO_BOOLEAN, check.getSql());
                 success = Boolean.TRUE.equals(c);
-            } catch (StorageException e) {
+            } catch (StorageException | IllegalStateException e) {
                 if (log.isTraceEnabled()) {
                     log.trace(check + " check failed. Reason: " + e.getLocalizedMessage());
                 }
@@ -131,7 +131,7 @@ public class DBStructureChecker implements IStructureChecker {
                                 helper.updateBatch(query, null, rows);
                             }
                         }
-                    } catch (StorageException e) {
+                    } catch (StorageException | IllegalStateException e) {
                         log.error("Can not perform initialization procedure " + sql, e);
                         throw new StorageCheckException("Can not execute " + sql, e);
                     }

@@ -43,16 +43,27 @@ abstract class AQueryHelper implements IQueryHelper {
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, QueryHelper.class);
 
-        try (IResult<T> result = execute(c, sql, parameters)) {
-            Iterator<T> col = result.iterator();
+        try {
+            try (IResult<T> result = execute(c, sql, parameters)) {
+                Iterator<T> col = result.iterator();
 
-            if (!col.hasNext()) {
-                return null;
+                if (!col.hasNext()) {
+                    return null;
+                }
+
+                T object = col.next();
+                assert !col.hasNext() : "Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters);
+                return object;
             }
-
-            T object = col.next();
-            assert !col.hasNext() : "Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters);
-            return object;
+        } catch (IllegalStateException e) {
+            if (e.getCause() instanceof StorageException) {
+                throw (StorageException) e.getCause();
+            } else if (e.getCause() instanceof SQLException) {
+                throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters));
+            } else {
+                // Another runtime exception
+                throw e;
+            }
         }
     }
 
