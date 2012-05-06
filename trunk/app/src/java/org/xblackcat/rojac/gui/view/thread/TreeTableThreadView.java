@@ -184,17 +184,9 @@ public class TreeTableThreadView extends AnItemView {
         threads.getModel().addTableModelListener(new SelectionHolder());
 
         threads.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        for (Header h : Header.values()) {
-            TableColumnExt column = new TableColumnExt(h.ordinal());
-            if (h.getWidth() > 0) {
-                column.setPreferredWidth(h.getWidth());
-                column.setMaxWidth(h.getWidth() << 2);
-            }
-            column.setMinWidth(10);
-            column.setIdentifier(h);
-            column.setToolTipText(h.getTitle());
-            threads.addColumn(column);
-        }
+        Header[] values = model.getHeaders();
+        TableColumnModel columnModel = threads.getColumnModel();
+        setupColumns(columnModel, values);
 
         // Handle keyboard events to emulate tree navigation in TreeTable
         threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "parentOrCollapse");
@@ -277,6 +269,29 @@ public class TreeTableThreadView extends AnItemView {
         });
 
         return threads;
+    }
+
+    private void setupColumns(TableColumnModel columnModel, Header[] values) {
+        while (columnModel.getColumnCount() > 0) {
+            columnModel.removeColumn(columnModel.getColumn(0));
+        }
+
+        int i = 0;
+        int valuesLength = values.length;
+        while (i < valuesLength) {
+            Header h = values[i];
+            TableColumnExt column = new TableColumnExt(i);
+            if (h.getWidth() > 0) {
+                column.setPreferredWidth(h.getWidth());
+                column.setMaxWidth(h.getWidth() << 2);
+            }
+            column.setMinWidth(10);
+            column.setIdentifier(h);
+            column.setToolTipText(h.getTitle());
+            column.setTitle(h.getTitle());
+            columnModel.addColumn(column);
+            i++;
+        }
     }
 
     protected void selectPost(Post post, boolean collapseChildren) {
@@ -417,17 +432,21 @@ public class TreeTableThreadView extends AnItemView {
     @Override
     public TableThreadViewLayout storeLayout() {
         TableColumnModel cm = threads.getColumnModel();
+        final Header[] headers = model.getHeaders();
+        int headersLength = headers.length;
 
-        TableThreadViewLayout.Column[] columns = new TableThreadViewLayout.Column[Header.values().length];
+        TableThreadViewLayout.Column[] columns = new TableThreadViewLayout.Column[headersLength];
+
         int i = 0;
+        while (i < headersLength) {
+            Header h = headers[i];
 
-        for (Header h : Header.values()) {
-            TableColumn c = cm.getColumn(h.ordinal());
-
-            int width = c.getWidth();
             int columnIndex = cm.getColumnIndex(h);
+            TableColumn c = cm.getColumn(columnIndex);
+            int width = c.getWidth();
 
-            columns[i++] = new TableThreadViewLayout.Column(h, columnIndex, width);
+            columns[i] = new TableThreadViewLayout.Column(h, columnIndex, width);
+            i++;
         }
 
         return new TableThreadViewLayout(
@@ -452,12 +471,40 @@ public class TreeTableThreadView extends AnItemView {
 
             TableColumnModel cm = threads.getColumnModel();
 
-            for (TableThreadViewLayout.Column c : layout.getColumns()) {
-                int idx = cm.getColumnIndex(c.getAnchor());
+            while (cm.getColumnCount() > 0) {
+                cm.removeColumn(cm.getColumn(0));
+            }
 
-                cm.getColumn(idx).setWidth(c.getWidth());
-                cm.getColumn(idx).setPreferredWidth(c.getWidth());
-                cm.moveColumn(idx, c.getIndex());
+            TableThreadViewLayout.Column[] columns = layout.getColumns();
+
+            int i = 0;
+            int columns1Length = columns.length;
+
+            while (i < columns1Length) {
+                TableThreadViewLayout.Column c = columns[i];
+                Header h = c.getAnchor();
+                TableColumnExt column = new TableColumnExt(i);
+                if (h.getWidth() > 0) {
+                    column.setPreferredWidth(h.getWidth());
+                    column.setMaxWidth(h.getWidth() << 2);
+                }
+
+                column.setMinWidth(10);
+                column.setIdentifier(h);
+                column.setToolTipText(h.getTitle());
+                column.setTitle(h.getTitle());
+                column.setWidth(c.getWidth());
+                cm.addColumn(column);
+                i++;
+            }
+
+             i = 0;
+
+            while (i < columns1Length) {
+                TableThreadViewLayout.Column c = columns[i++];
+                Header h = c.getAnchor();
+
+                cm.moveColumn(cm.getColumnIndex(h), c.getIndex());
             }
         }
 
