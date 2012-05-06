@@ -86,6 +86,12 @@ public enum ThreadToolbarActions {
             return WindowsUtils.registerImageButton(view, "ignore_unread", view.new IgnoreUnreadAction());
         }
     },
+    ShowHidden {
+        @Override
+        JButton makeButton(TreeTableThreadView view) {
+            return WindowsUtils.registerImageButton(view, "show_hidden", view.new ShowHiddenTopicsAction());
+        }
+    }
 //  ---
     ;
 

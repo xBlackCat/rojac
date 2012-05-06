@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.xblackcat.rojac.NotImplementedException;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
@@ -287,6 +288,11 @@ class SingleThreadModelControl extends AThreadsModelControl {
     @Override
     public void unloadThread(SortedThreadsModel model, Post item) {
         // Single-thread views shouldn't clean the thread info.
+    }
+
+    @Override
+    public void loadHiddenItems(SortedThreadsModel model, int itemId) {
+        throw new NotImplementedException("The method shouldn't be used.");
     }
 
     @Override

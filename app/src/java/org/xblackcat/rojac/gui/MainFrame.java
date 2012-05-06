@@ -497,6 +497,11 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         }
     }
 
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+    }
+
     /**
      * Method for delegating changes to all sub containers.
      *

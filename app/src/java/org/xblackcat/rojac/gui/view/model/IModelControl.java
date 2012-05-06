@@ -11,6 +11,8 @@ import javax.swing.*;
  */
 
 public interface IModelControl {
+    void loadHiddenItems(SortedThreadsModel model, int itemId);
+
     /**
      * (Re-)initializes threads model according to type of thread view.
      *

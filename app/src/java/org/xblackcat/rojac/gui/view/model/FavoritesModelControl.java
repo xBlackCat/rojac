@@ -26,6 +26,13 @@ class FavoritesModelControl implements IModelControl {
     private ReadStatusIcon statusIcons = ReadStatusIcon.Favorite;
 
     @Override
+    public void loadHiddenItems(SortedThreadsModel model, int itemId) {
+        if (delegatedControl != null) {
+            delegatedControl.loadHiddenItems(model, itemId);
+        }
+    }
+
+    @Override
     public void fillModelByItemId(SortedThreadsModel model, int itemId) {
         assert RojacUtils.checkThread(true);
 

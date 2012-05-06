@@ -33,6 +33,7 @@ class SortedForumModelControl extends AThreadsModelControl {
             ThreadToolbarActions.PreviousUnread,
             ThreadToolbarActions.NextUnread,
             null,
+            ThreadToolbarActions.ShowHidden,
             ThreadToolbarActions.MarkSubTreeRead,
             ThreadToolbarActions.MarkThreadRead,
             null,
@@ -52,6 +53,11 @@ class SortedForumModelControl extends AThreadsModelControl {
         model.setRoot(rootItem);
 
         new ForumInfoLoader(model, forumId).execute();
+    }
+
+    @Override
+    public void loadHiddenItems(SortedThreadsModel model, int itemId) {
+        new ThreadsLoader(null, model, model.getRoot().getForumId(), true).execute();
     }
 
     private void markForumRead(SortedThreadsModel model, boolean read) {
@@ -151,10 +157,13 @@ class SortedForumModelControl extends AThreadsModelControl {
                             model.subTreeNodesChanged(model.getRoot());
                         }
 
-                        if (p.isPropertyAffected(Property.VIEW_THREAD_HIDE_READ_THREADS)) {
-                            if (Property.VIEW_THREAD_HIDE_READ_THREADS.get()) {
+                        if (p.isPropertyAffected(Property.VIEW_THREAD_HIDE_READ_THREADS) ||
+                                p.isPropertyAffected(Property.HIDE_IGNORED_TOPICS)) {
+                            if (Property.VIEW_THREAD_HIDE_READ_THREADS.get() || Property.HIDE_IGNORED_TOPICS.get()) {
                                 hideReadThreads(model);
-                            } else {
+                            }
+
+                            if (!Property.VIEW_THREAD_HIDE_READ_THREADS.get() || !Property.HIDE_IGNORED_TOPICS.get()) {
                                 new ThreadsLoader(postProcessor, model, forumId).execute();
                             }
                         }
@@ -248,7 +257,7 @@ class SortedForumModelControl extends AThreadsModelControl {
                 new IPacketProcessor<SynchronizationCompletePacket>() {
                     @Override
                     public void process(SynchronizationCompletePacket p) {
-                        if (Property.VIEW_THREAD_HIDE_READ_THREADS.get()) {
+                        if (Property.VIEW_THREAD_HIDE_READ_THREADS.get() || Property.HIDE_IGNORED_TOPICS.get()) {
                             hideReadThreads(model);
                         }
 
@@ -334,6 +343,9 @@ class SortedForumModelControl extends AThreadsModelControl {
     }
 
     private static void hideReadThreads(SortedThreadsModel model) {
+        boolean hideIgnored = Property.HIDE_IGNORED_TOPICS.get();
+        boolean hideRead = Property.VIEW_THREAD_HIDE_READ_THREADS.get();
+
         ForumRoot root = (ForumRoot) model.getRoot();
 
         Iterator<Post> iterator = root.childrenPosts.iterator();
@@ -341,7 +353,10 @@ class SortedForumModelControl extends AThreadsModelControl {
         while (iterator.hasNext()) {
             Post threadRoot = iterator.next();
 
-            if (threadRoot.isRead() == ReadStatus.Read) {
+            if (hideRead && threadRoot.isRead() == ReadStatus.Read) {
+                iterator.remove();
+                model.fireNodeRemoved(root, idx, threadRoot);
+            } else if (hideIgnored && threadRoot.isIgnored()) {
                 iterator.remove();
                 model.fireNodeRemoved(root, idx, threadRoot);
             } else {
@@ -394,6 +409,8 @@ class SortedForumModelControl extends AThreadsModelControl {
                 return post != null && !post.isIgnoredUser();
             case FollowUser:
                 return post != null && post.isIgnoredUser();
+            case ShowHidden:
+                return Property.VIEW_THREAD_HIDE_READ_THREADS.get();
             case IgnoreUnread:
             case PreviousPost:
             case NextPost:

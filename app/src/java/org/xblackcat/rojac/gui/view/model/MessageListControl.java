@@ -17,6 +17,11 @@ abstract class MessageListControl implements IModelControl {
     };
 
     @Override
+    public void loadHiddenItems(SortedThreadsModel model, int itemId) {
+        throw new NotImplementedException("The method shouldn't be used.");
+    }
+
+    @Override
     public void loadThread(SortedThreadsModel model, Post item, Runnable postProcessor) {
         throw new NotImplementedException("The method shouldn't be used.");
     }
