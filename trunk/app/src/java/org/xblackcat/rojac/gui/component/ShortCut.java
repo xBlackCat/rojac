@@ -27,6 +27,7 @@ public enum ShortCut {
     IgnoreUser(Message.View_Thread_Button_IgnoreUser, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
     FollowUser(Message.View_Thread_Button_FollowUser, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
     IgnoreUnread(Message.View_Thread_Button_IgnoreUnread, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK),
+    ShowHiddenThreads(Message.View_Thread_Button_ShowHiddenThreads, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK),
     // Main frame related
     Synchronization(Message.MainFrame_Button_Update, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, 0),
     LoadExtraMessages(Message.MainFrame_Button_LoadMessage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F9, KeyEvent.SHIFT_DOWN_MASK),

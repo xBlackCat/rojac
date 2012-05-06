@@ -25,8 +25,13 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     protected final int forumId;
     protected final ForumRoot rootItem;
     protected final SortedThreadsModel model;
+    protected final boolean forceShowHidden;
 
     public ThreadsLoader(final Runnable postProcessor, final SortedThreadsModel model, int forumId) {
+        this(postProcessor, model, forumId, false);
+    }
+
+    public ThreadsLoader(final Runnable postProcessor, final SortedThreadsModel model, int forumId, boolean forceShowHidden) {
         super(new Runnable() {
             @Override
             public void run() {
@@ -44,12 +49,13 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
         this.forumId = forumId;
         this.rootItem = (ForumRoot) model.getRoot();
+        this.forceShowHidden = forceShowHidden;
     }
 
     @Override
     protected Void perform() throws Exception {
-        boolean hideIgnored = Property.HIDE_IGNORED_TOPICS.get();
-        boolean hideRead = Property.VIEW_THREAD_HIDE_READ_THREADS.get();
+        boolean hideIgnored = !forceShowHidden && Property.HIDE_IGNORED_TOPICS.get();
+        boolean hideRead = !forceShowHidden && Property.VIEW_THREAD_HIDE_READ_THREADS.get();
 
         try {
             int userId = Property.RSDN_USER_ID.get();

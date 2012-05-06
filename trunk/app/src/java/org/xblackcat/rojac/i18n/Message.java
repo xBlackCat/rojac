@@ -88,6 +88,7 @@ public enum Message {
     View_Thread_Button_FollowTopic,
     View_Thread_Button_FollowUser,
     View_Thread_Button_IgnoreUnread,
+    View_Thread_Button_ShowHiddenThreads,
 
     // Tray texts
     // Note that the first parameter is always a version string.

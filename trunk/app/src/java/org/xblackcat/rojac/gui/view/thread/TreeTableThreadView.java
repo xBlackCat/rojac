@@ -1066,6 +1066,17 @@ public class TreeTableThreadView extends AnItemView {
         }
     }
 
+    class ShowHiddenTopicsAction extends AButtonAction {
+        ShowHiddenTopicsAction() {
+            super(ShortCut.ShowHiddenThreads);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            modelControl.loadHiddenItems(model, rootItemId);
+        }
+    }
+
     private class LoadNextPost implements Runnable {
         private final Post item;
         private final boolean unread;
@@ -1304,21 +1315,15 @@ public class TreeTableThreadView extends AnItemView {
     }
 
     private class PostLoader extends RojacWorker<Void, MessageDataHolder> {
-        private final int messageId;
         private final MessageData messageData;
 
-        public PostLoader(int messageId) {
-            this.messageId = messageId;
-            messageData = null;
-        }
-
         public PostLoader(MessageData messageData) {
-            this.messageId = messageData.getMessageId();
             this.messageData = messageData;
         }
 
         @Override
         protected Void perform() throws Exception {
+            int messageId = messageData.getMessageId();
             if (messageId != 0) {
                 String messageBody;
                 MessageData messageData = this.messageData;
@@ -1326,13 +1331,7 @@ public class TreeTableThreadView extends AnItemView {
                     if (messageId > 0) {
                         // Regular message
                         IMessageAH messageAH = Storage.get(IMessageAH.class);
-                        if (messageData == null) { // Not yet loaded
-                            messageData = messageAH.getMessageData(messageId);
-                            if (messageData == null) {
-                                // Somehow message is not found - do not load it
-                                return null;
-                            }
-                        }
+
                         messageBody = messageAH.getMessageBodyById(messageId);
                     } else {
                         // Local message
