@@ -15,30 +15,17 @@ import javax.swing.tree.TreePath;
  */
 
 public class SortedThreadsModel implements TreeModel, TreeTableModel {
-    public static final Header[] NORMAL_MODE = new Header[]{
-            Header.ID,
-            Header.SUBJECT,
-            Header.USER,
-            Header.REPLIES,
-            Header.RATING,
-            Header.DATE
-    };
-
-    public static final Header[] COMPACT_MODE = new Header[]{
-            Header.ID,
-            Header.SUBJECT_USER,
-            Header.REPLIES,
-            Header.RATING,
-            Header.DATE
-    };
-
-    protected boolean initialized;
+    private boolean initialized;
     protected Post root;
     /**
      * Provides support for event dispatching.
      */
-    protected TreeModelSupport modelSupport = new TreeModelSupport(this);
-    private final Header[] headers = NORMAL_MODE;
+    protected final TreeModelSupport modelSupport = new TreeModelSupport(this);
+    private ViewMode mode;
+
+    public SortedThreadsModel(ViewMode mode) {
+        this.mode = mode;
+    }
 
     public Post getChild(Object parent, int index) {
         return ((Post) parent).getChild(index);
@@ -65,29 +52,34 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
         throw new NotImplementedException();
     }
 
-    public Header[] getHeaders() {
-        return headers;
+    public ViewMode getMode() {
+        return mode;
+    }
+
+    public void setMode(ViewMode mode) {
+        this.mode = mode;
+        fireResortModel();
     }
 
     public Class<?> getColumnClass(int columnIndex) {
-        return headers[columnIndex].getObjectClass();
+        return getMode().getHeaders()[columnIndex].getObjectClass();
     }
 
     public int getColumnCount() {
-        return headers.length;
+        return getMode().getHeaders().length;
     }
 
     public String getColumnName(int column) {
-        return headers[column].getTitle();
+        return getMode().getHeaders()[column].getTitle();
     }
 
     public int getHierarchicalColumn() {
-        return 1;
+        return getMode().getHierarchicalColumn();
     }
 
     public Object getValueAt(Object node, int column) {
         try {
-            return headers[column].getObjectData(node);
+            return getMode().getHeaders()[column].getObjectData(node);
         } catch (RojacException e) {
             throw new IllegalArgumentException("Can not convert node for column " + column + ". Node: " + node);
         }

@@ -55,7 +55,7 @@ import java.util.List;
 public class TreeTableThreadView extends AnItemView {
     private static final Log log = LogFactory.getLog(TreeTableThreadView.class);
 
-    protected final SortedThreadsModel model = new SortedThreadsModel();
+    protected final SortedThreadsModel model;
     private final IModelControl modelControl;
 
     private RojacToolBar toolbar;
@@ -71,11 +71,12 @@ public class TreeTableThreadView extends AnItemView {
     private TableThreadViewLayout layout;
     private final JSplitPane splitPane;
 
-    public TreeTableThreadView(ViewId id, IAppControl appControl, ModelControl modelControl) {
+    public TreeTableThreadView(ViewId id, IAppControl appControl, ModelControl modelControlType) {
         super(id, appControl);
 
-        this.modelControl = modelControl.get();
+        this.modelControl = modelControlType.get();
 
+        model = new SortedThreadsModel(modelControl.getViewMode());
         model.addTreeModelListener(new DataIntegrityMonitor());
 
         Runnable onScrollEnd = new Runnable() {
@@ -184,9 +185,8 @@ public class TreeTableThreadView extends AnItemView {
         threads.getModel().addTableModelListener(new SelectionHolder());
 
         threads.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        Header[] values = model.getHeaders();
-        TableColumnModel columnModel = threads.getColumnModel();
-        setupColumns(columnModel, values);
+        final TableColumnModel columnModel = threads.getColumnModel();
+        setupColumns(columnModel, model.getMode());
 
         // Handle keyboard events to emulate tree navigation in TreeTable
         threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "parentOrCollapse");
@@ -268,14 +268,24 @@ public class TreeTableThreadView extends AnItemView {
             }
         });
 
+        threads.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getFirstRow() == TableModelEvent.HEADER_ROW) {
+                    setupColumns(columnModel, model.getMode());
+                }
+            }
+        });
+
         return threads;
     }
 
-    private void setupColumns(TableColumnModel columnModel, Header[] values) {
+    private void setupColumns(TableColumnModel columnModel, ViewMode mode) {
         while (columnModel.getColumnCount() > 0) {
             columnModel.removeColumn(columnModel.getColumn(0));
         }
 
+        Header[] values = mode.getHeaders();
         int i = 0;
         int valuesLength = values.length;
         while (i < valuesLength) {
@@ -432,7 +442,7 @@ public class TreeTableThreadView extends AnItemView {
     @Override
     public TableThreadViewLayout storeLayout() {
         TableColumnModel cm = threads.getColumnModel();
-        final Header[] headers = model.getHeaders();
+        final Header[] headers = model.getMode().getHeaders();
         int headersLength = headers.length;
 
         TableThreadViewLayout.Column[] columns = new TableThreadViewLayout.Column[headersLength];
@@ -498,7 +508,7 @@ public class TreeTableThreadView extends AnItemView {
                 i++;
             }
 
-             i = 0;
+            i = 0;
 
             while (i < columns1Length) {
                 TableThreadViewLayout.Column c = columns[i++];

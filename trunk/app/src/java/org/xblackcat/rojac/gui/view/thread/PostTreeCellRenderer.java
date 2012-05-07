@@ -2,6 +2,8 @@ package org.xblackcat.rojac.gui.view.thread;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.xblackcat.rojac.gui.view.model.Post;
+import org.xblackcat.rojac.gui.view.model.SortedThreadsModel;
+import org.xblackcat.rojac.gui.view.model.ViewMode;
 
 import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;
@@ -22,6 +24,8 @@ class PostTreeCellRenderer extends PostTableCellRenderer implements TreeCellRend
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         Post post = (Post) value;
 
-        return getTableCellRendererComponent(treeTable, new TreeCellPostProxy(post), sel, hasFocus, row, treeTable.getHierarchicalColumn());
+        ViewMode mode = ((SortedThreadsModel) treeTable.getTreeTableModel()).getMode();
+
+        return getTableCellRendererComponent(treeTable, new TreeCellPostProxy(mode == ViewMode.Compact, post), sel, hasFocus, row, treeTable.getHierarchicalColumn());
     }
 }

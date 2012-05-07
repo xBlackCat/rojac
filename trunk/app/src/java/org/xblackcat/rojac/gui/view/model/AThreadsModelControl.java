@@ -29,6 +29,11 @@ abstract class AThreadsModelControl implements IModelControl {
     }
 
     @Override
+    public ViewMode getViewMode() {
+        return Property.VIEW_THREAD_COMPACT_MODE.get();
+    }
+
+    @Override
     public boolean allowSearch() {
         return true;
     }

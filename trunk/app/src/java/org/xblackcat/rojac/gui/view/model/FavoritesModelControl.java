@@ -131,6 +131,11 @@ class FavoritesModelControl implements IModelControl {
     }
 
     @Override
+    public ViewMode getViewMode() {
+        return delegatedControl != null ? delegatedControl.getViewMode() : ViewMode.Normal;
+    }
+
+    @Override
     public void unloadThread(SortedThreadsModel model, Post item) {
         if (delegatedControl != null) {
             delegatedControl.unloadThread(model, item);
@@ -192,6 +197,7 @@ class FavoritesModelControl implements IModelControl {
 
             // Fill model with correspond data.
             model.setRoot(root);
+            model.setMode(getViewMode());
         }
     }
 }
