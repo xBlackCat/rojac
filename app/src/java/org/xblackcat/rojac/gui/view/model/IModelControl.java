@@ -110,10 +110,16 @@ public interface IModelControl {
     /**
      * Return true if the toolbar action should be visible depend on current message data
      *
-     *
      * @param action action to check
      * @param post
      * @return true if button should be visible
      */
     boolean isToolBarButtonVisible(ThreadToolbarActions action, Post post);
+
+    /**
+     * Returns a true if a view should be shown in compact mode: merged subject and username columns
+     *
+     * @return true if a view should be created in compact mode
+     */
+    ViewMode getViewMode();
 }

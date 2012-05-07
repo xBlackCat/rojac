@@ -81,6 +81,11 @@ class PostListControl extends MessageListControl {
     }
 
     @Override
+    public ViewMode getViewMode() {
+        return replies ? ViewMode.Normal : ViewMode.OwnPosts;
+    }
+
+    @Override
     public Icon getTitleIcon(SortedThreadsModel model) {
         Post root = model.getRoot();
         if (root == null) {

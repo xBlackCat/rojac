@@ -47,6 +47,11 @@ class IgnoredThreadListControl extends MessageListControl {
     }
 
     @Override
+    public ViewMode getViewMode() {
+        return ViewMode.Normal;
+    }
+
+    @Override
     public Icon getTitleIcon(SortedThreadsModel model) {
         return ReadStatusIcon.IgnoredThreads.getIcon(ReadStatus.Read);
     }

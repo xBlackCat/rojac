@@ -46,6 +46,21 @@ public final class MessageUtils {
     private MessageUtils() {
     }
 
+    public static boolean isSubjectSimilar(String subj1, String subj2) {
+        Matcher m1 = SUBJ_PATTERN.matcher(subj1);
+        Matcher m2 = SUBJ_PATTERN.matcher(subj2);
+
+        if (m1.matches()) {
+            subj1 = m1.group(2);
+        }
+
+        if (m2.matches()) {
+            subj2 = m2.group(2);
+        }
+
+        return subj1.equalsIgnoreCase(subj2);
+    }
+
     public static String correctSubject(String subj) {
         subj = subj.trim();
 

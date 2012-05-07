@@ -41,6 +41,11 @@ class OutboxListControl extends MessageListControl {
     }
 
     @Override
+    public ViewMode getViewMode() {
+        return ViewMode.OwnPosts;
+    }
+
+    @Override
     public Icon getTitleIcon(SortedThreadsModel model) {
         if (model.getRoot() != null) {
             return ReadStatusIcon.OutboxItem.getIcon(model.getRoot().isRead());
