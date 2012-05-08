@@ -65,7 +65,7 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
                         continue;
                     }
 
-                    if (hideRead && threadPost.getItemReadStatistic().getUnreadMessages() == 0) {
+                    if (hideRead && threadPost.getItemReadStatistic().getUnreadMessages() == 0 && threadPost.getItem().isRead()) {
                         continue;
                     }
 
