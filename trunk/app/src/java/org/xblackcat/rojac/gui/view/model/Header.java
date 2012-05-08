@@ -16,7 +16,7 @@ public enum Header {
     REPLIES(PostReplies.class, Message.Panel_Thread_Header_Replies, 30),
     RATING(PostRating.class, Message.Panel_Thread_Header_Rating, 70),
     DATE(PostDate.class, Message.Panel_Thread_Header_Date, 140),
-    SUBJECT_USER(Post.class, Message.Panel_Thread_Header_Subject, 600),
+    SUBJECT_USER(Post.class, Message.Panel_Thread_Header_SubjectUser, 600),
     ;
 
     private final Class<?> aClass;

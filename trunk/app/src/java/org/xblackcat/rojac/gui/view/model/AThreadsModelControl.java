@@ -30,7 +30,7 @@ abstract class AThreadsModelControl implements IModelControl {
 
     @Override
     public ViewMode getViewMode() {
-        return Property.VIEW_THREAD_COMPACT_MODE.get();
+        return Property.VIEW_THREAD_VIEW_MODE.get();
     }
 
     @Override

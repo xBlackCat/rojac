@@ -28,6 +28,7 @@ import org.xblackcat.rojac.gui.view.model.Thread;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IgnoreUpdatedPacket;
+import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
@@ -43,9 +44,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -268,19 +267,19 @@ public class TreeTableThreadView extends AnItemView {
             }
         });
 
-        threads.getModel().addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                if (e.getFirstRow() == TableModelEvent.HEADER_ROW) {
-                    setupColumns(columnModel, model.getMode());
-                }
-            }
-        });
-
         return threads;
     }
 
     private void setupColumns(TableColumnModel columnModel, ViewMode mode) {
+        Map<Header, Integer> widths = new EnumMap<>(Header.class);
+
+        Enumeration<TableColumn> columns = columnModel.getColumns();
+        while (columns.hasMoreElements()) {
+            TableColumn column = columns.nextElement();
+            Header header = (Header) column.getIdentifier();
+            widths.put(header, column.getWidth());
+        }
+
         while (columnModel.getColumnCount() > 0) {
             columnModel.removeColumn(columnModel.getColumn(0));
         }
@@ -292,7 +291,11 @@ public class TreeTableThreadView extends AnItemView {
             Header h = values[i];
             TableColumnExt column = new TableColumnExt(i);
             if (h.getWidth() > 0) {
-                column.setPreferredWidth(h.getWidth());
+                if (widths.containsKey(h)) {
+                    column.setWidth(widths.get(h));
+                } else {
+                    column.setPreferredWidth(h.getWidth());
+                }
                 column.setMaxWidth(h.getWidth() << 2);
             }
             column.setMinWidth(10);
@@ -481,40 +484,20 @@ public class TreeTableThreadView extends AnItemView {
 
             TableColumnModel cm = threads.getColumnModel();
 
-            while (cm.getColumnCount() > 0) {
-                cm.removeColumn(cm.getColumn(0));
-            }
-
             TableThreadViewLayout.Column[] columns = layout.getColumns();
 
             int i = 0;
-            int columns1Length = columns.length;
-
-            while (i < columns1Length) {
+            while (i < columns.length) {
                 TableThreadViewLayout.Column c = columns[i];
                 Header h = c.getAnchor();
-                TableColumnExt column = new TableColumnExt(i);
-                if (h.getWidth() > 0) {
-                    column.setPreferredWidth(h.getWidth());
-                    column.setMaxWidth(h.getWidth() << 2);
-                }
 
-                column.setMinWidth(10);
-                column.setIdentifier(h);
-                column.setToolTipText(h.getTitle());
-                column.setTitle(h.getTitle());
-                column.setWidth(c.getWidth());
-                cm.addColumn(column);
+                int idx = cm.getColumnIndex(h);
+
+                cm.getColumn(idx).setWidth(c.getWidth());
+                cm.getColumn(idx).setPreferredWidth(c.getWidth());
+                cm.moveColumn(idx, c.getIndex());
+
                 i++;
-            }
-
-            i = 0;
-
-            while (i < columns1Length) {
-                TableThreadViewLayout.Column c = columns[i++];
-                Header h = c.getAnchor();
-
-                cm.moveColumn(cm.getColumnIndex(h), c.getIndex());
             }
         }
 
@@ -829,6 +812,14 @@ public class TreeTableThreadView extends AnItemView {
             loadItem(getId().getId());
 
             return;
+        } else if (packet instanceof OptionsUpdatedPacket) {
+            OptionsUpdatedPacket oup = (OptionsUpdatedPacket) packet;
+            if (oup.isPropertyAffected(Property.VIEW_THREAD_VIEW_MODE)) {
+                ViewMode newMode = Property.VIEW_THREAD_VIEW_MODE.get();
+
+                setupColumns(threads.getColumnModel(), newMode);
+                model.setMode(newMode);
+            }
         }
 
         // Just in case store a current selection
