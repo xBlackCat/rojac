@@ -185,7 +185,7 @@ public class TreeTableThreadView extends AnItemView {
 
         threads.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         final TableColumnModel columnModel = threads.getColumnModel();
-        setupColumns(columnModel, model.getMode());
+        setupColumns(columnModel, modelControl.getViewMode());
 
         // Handle keyboard events to emulate tree navigation in TreeTable
         threads.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "parentOrCollapse");
@@ -815,10 +815,13 @@ public class TreeTableThreadView extends AnItemView {
         } else if (packet instanceof OptionsUpdatedPacket) {
             OptionsUpdatedPacket oup = (OptionsUpdatedPacket) packet;
             if (oup.isPropertyAffected(Property.VIEW_THREAD_VIEW_MODE)) {
-                ViewMode newMode = Property.VIEW_THREAD_VIEW_MODE.get();
+                ViewMode newMode = modelControl.getViewMode();
 
-                setupColumns(threads.getColumnModel(), newMode);
-                model.setMode(newMode);
+                if (newMode != model.getMode()) {
+                    // Affect only on forum/thread/replies views
+                    setupColumns(threads.getColumnModel(), newMode);
+                    model.setMode(newMode);
+                }
             }
         }
 
