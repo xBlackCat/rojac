@@ -455,6 +455,7 @@ public enum DataQuery implements IPropertiable {
      * where_from (String), origin (String), id (int)
      */
     UPDATE_OBJECT_USER,
+    GET_FORUM_LIST,
 
     GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
     /**

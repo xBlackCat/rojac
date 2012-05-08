@@ -44,4 +44,6 @@ public interface IForumAH extends AH {
     void updateForumStatistic(IProgressTracker tracker, TIntHashSet forums) throws StorageException;
 
     boolean hasSubscribedForums() throws StorageException;
+
+    IResult<Forum> getForumLists() throws StorageException;
 }
