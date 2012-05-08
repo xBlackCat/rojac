@@ -30,6 +30,7 @@ public enum Message {
 
     Panel_Thread_Header_Id,
     Panel_Thread_Header_Subject,
+    Panel_Thread_Header_SubjectUser,
     Panel_Thread_Header_User,
     Panel_Thread_Header_Replies,
     Panel_Thread_Header_Rating,
@@ -89,6 +90,9 @@ public enum Message {
     View_Thread_Button_FollowUser,
     View_Thread_Button_IgnoreUnread,
     View_Thread_Button_ShowHiddenThreads,
+
+    View_Thread_Mode_Normal,
+    View_Thread_Mode_Compact,
 
     // Tray texts
     // Note that the first parameter is always a version string.
