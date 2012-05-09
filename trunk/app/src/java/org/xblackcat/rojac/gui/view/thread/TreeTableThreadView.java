@@ -1242,7 +1242,12 @@ public class TreeTableThreadView extends AnItemView {
         if (root.getSize() == 0) {
             Post parent = root.getParent();
 
-            selectNearestPost(parent, parent.getIndex(root));
+            if (parent != null) {
+                selectNearestPost(parent, parent.getIndex(root));
+            } else {
+                selectItem(null, false);
+                return;
+            }
         }
 
         if (root.getSize() <= searchIdx) {
