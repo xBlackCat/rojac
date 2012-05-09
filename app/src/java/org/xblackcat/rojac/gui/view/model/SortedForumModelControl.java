@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.set.hash.TIntHashSet;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.data.Forum;
@@ -15,7 +17,9 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Control class of all threads of the specified forum.
@@ -348,20 +352,27 @@ class SortedForumModelControl extends AThreadsModelControl {
 
         ForumRoot root = (ForumRoot) model.getRoot();
 
+        TIntList indexes = new TIntArrayList();
+        List<Post> posts = new ArrayList<>();
+
         Iterator<Post> iterator = root.childrenPosts.iterator();
         int idx = 0;
         while (iterator.hasNext()) {
             Post threadRoot = iterator.next();
 
-            if (hideRead && threadRoot.isRead() == ReadStatus.Read) {
+            if (
+                    hideRead && threadRoot.isRead() == ReadStatus.Read ||
+                            hideIgnored && threadRoot.isIgnored()
+                    ) {
                 iterator.remove();
-                model.fireNodeRemoved(root, idx, threadRoot);
-            } else if (hideIgnored && threadRoot.isIgnored()) {
-                iterator.remove();
-                model.fireNodeRemoved(root, idx, threadRoot);
-            } else {
-                idx++;
+                indexes.add(idx);
+                posts.add(threadRoot);
             }
+            idx++;
+        }
+
+        if (indexes.size() > 0) {
+            model.fireNodesRemoved(root, indexes.toArray(), posts.toArray(new Post[posts.size()]));
         }
     }
 

@@ -331,6 +331,7 @@ public class TreeTableThreadView extends AnItemView {
 
         selectedItem = null;
         threads.clearSelection();
+        messagePane.fillFrame(null, null);
     }
 
     protected void scrollPathToVisible(TreePath path) {

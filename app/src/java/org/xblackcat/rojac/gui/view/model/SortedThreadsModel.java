@@ -305,9 +305,9 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
         return true;
     }
 
-    public void fireNodeRemoved(Post root, int idx, Post node) {
+    public void fireNodesRemoved(Post root, int[] idx, Post[] node) {
         final TreePath pathToRoot = getPathToRoot(root);
 
-        modelSupport.fireChildRemoved(pathToRoot, idx, node);
+        modelSupport.fireChildrenRemoved(pathToRoot, idx, node);
     }
 }
