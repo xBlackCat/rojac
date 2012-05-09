@@ -1207,6 +1207,12 @@ public class TreeTableThreadView extends AnItemView {
 
         @Override
         public void treeNodesRemoved(TreeModelEvent e) {
+            Post root = (Post) e.getTreePath().getLastPathComponent();
+            int row = e.getChildIndices()[0];
+
+            if (selectedItem != null && model.getRoot().getMessageById(selectedItem.getMessageId()) == null) {
+                selectNearestPost(root, row);
+            }
         }
 
         @Override
@@ -1225,6 +1231,24 @@ public class TreeTableThreadView extends AnItemView {
                 fireInfoChanged();
             }
         }
+    }
+
+    private void selectNearestPost(Post root, int searchIdx) {
+        if (root == null) {
+            selectItem(null, false);
+            return;
+        }
+
+        if (root.getSize() == 0) {
+            Post parent = root.getParent();
+
+            selectNearestPost(parent, parent.getIndex(root));
+        }
+
+        if (root.getSize() <= searchIdx) {
+            searchIdx = root.getSize() - 1;
+        }
+        selectItem(root.getChild(searchIdx), true);
     }
 
     protected class ToolbarTracker implements TreeSelectionListener {
