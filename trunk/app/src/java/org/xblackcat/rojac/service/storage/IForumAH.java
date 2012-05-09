@@ -33,11 +33,10 @@ public interface IForumAH extends AH {
     /**
      * Returns list of all available forums.
      *
-     * @param userId
      * @return list of all available forums.
      * @throws StorageException
      */
-    IResult<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException;
+    IResult<ItemStatisticData<Forum>> getAllForums() throws StorageException;
 
     DiscussionStatistic getForumStatistic(int forumId, int userId) throws StorageException;
 

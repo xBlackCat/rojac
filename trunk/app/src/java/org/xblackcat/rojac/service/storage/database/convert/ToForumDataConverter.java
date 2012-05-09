@@ -16,14 +16,14 @@ class ToForumDataConverter implements IToObjectConverter<ItemStatisticData<Forum
         Forum forum = Converters.TO_FORUM.convert(rs);
 
         int totals = rs.getInt(9);
-        int unreadPosts = rs.getInt(10);
-        int unreadReplies = rs.getInt(11);
+//        int unreadPosts = rs.getInt(10);
+//        int unreadReplies = rs.getInt(11);
         Long lastPostDate = rs.getLong(12);
         if (rs.wasNull()) {
             lastPostDate = null;
         }
 
-        DiscussionStatistic discussionStatistic = new DiscussionStatistic(totals, unreadPosts, lastPostDate, unreadReplies);
+        DiscussionStatistic discussionStatistic = new DiscussionStatistic(totals, 0, lastPostDate, 0);
 
         return new ItemStatisticData<>(forum, discussionStatistic);
     }
