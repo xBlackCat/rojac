@@ -73,8 +73,8 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public IResult<ItemStatisticData<Forum>> getAllForums(int userId) throws StorageException {
-        return helper.execute(Converters.TO_FORUM_DATA, DataQuery.GET_OBJECTS_FORUM, userId);
+    public IResult<ItemStatisticData<Forum>> getAllForums() throws StorageException {
+        return helper.execute(Converters.TO_FORUM_DATA, DataQuery.GET_OBJECTS_FORUM);
     }
 
     @Override

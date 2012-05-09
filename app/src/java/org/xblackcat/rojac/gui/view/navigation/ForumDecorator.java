@@ -222,7 +222,7 @@ class ForumDecorator extends ADecorator {
 
             Collection<ItemStatisticData<Forum>> forums = new ArrayList<>();
             
-            try (IResult<ItemStatisticData<Forum>> allForums = fah.getAllForums(Property.RSDN_USER_ID.get())) {
+            try (IResult<ItemStatisticData<Forum>> allForums = fah.getAllForums()) {
                 CollectionUtils.addAll(forums, allForums.iterator());
             }
 
@@ -231,6 +231,8 @@ class ForumDecorator extends ADecorator {
 
         @Override
         public void doSwing(Collection<ItemStatisticData<Forum>> data) {
+            Collection<ForumUpdateTask> updateTasks = new ArrayList<>();
+
             // Reload all forums
             modelControl.removeAllChildren(subscribedForums);
             modelControl.removeAllChildren(notSubscribedForums);
@@ -251,6 +253,7 @@ class ForumDecorator extends ADecorator {
                 if (statistic == null || statistic.getTotalMessages() > 0 || subscribed) {
                     modelControl.addChild(parent, forumItem);
                     viewedForums.put(forumId, forumItem);
+                    updateTasks.add(new ForumUpdateTask(forumId));
                 } else {
                     viewedForums.remove(forumId);
                 }
@@ -258,6 +261,8 @@ class ForumDecorator extends ADecorator {
 
             modelControl.itemUpdated(subscribedForums);
             modelControl.itemUpdated(notSubscribedForums);
+
+            new LoadTaskExecutor(updateTasks).execute();
         }
 
     }
