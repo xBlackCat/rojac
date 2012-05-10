@@ -10,6 +10,9 @@ public class ItemStatisticData<T> {
     private final DiscussionStatistic readStatistic;
 
     public ItemStatisticData(T messageData, DiscussionStatistic readStatistic) {
+        assert messageData != null;
+        assert readStatistic != null;
+
         this.messageData = messageData;
         this.readStatistic = readStatistic;
     }

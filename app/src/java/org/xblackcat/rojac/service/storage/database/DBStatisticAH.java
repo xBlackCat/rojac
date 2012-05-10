@@ -21,10 +21,14 @@ final class DBStatisticAH extends AnAH implements IStatisticAH {
 
     @Override
     public ReadStatistic getTotals(int userId) throws StorageException {
-        // TODO: make single request instead of triple
         final int messages = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_MESSAGES_NUMBER).intValue();
         final int unreadMessages = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_MESSAGES_NUMBER).intValue();
-        final int unreadReplies = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_REPLIES_NUMBER, userId).intValue();
+        final int unreadReplies;
+        if (unreadMessages > 0) {
+            unreadReplies = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_REPLIES_NUMBER, userId).intValue();
+        } else {
+            unreadReplies = 0;
+        }
 
         return new ReadStatistic(unreadReplies, unreadMessages, messages);
     }

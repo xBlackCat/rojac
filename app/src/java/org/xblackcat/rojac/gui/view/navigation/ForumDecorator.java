@@ -250,10 +250,13 @@ class ForumDecorator extends ADecorator {
 
                 ForumItem forumItem = new ForumItem(parent, forum, statistic);
 
-                if (statistic == null || statistic.getTotalMessages() > 0 || subscribed) {
+                boolean notEmpty = statistic.getTotalMessages() > 0;
+                if (subscribed || notEmpty) {
                     modelControl.addChild(parent, forumItem);
                     viewedForums.put(forumId, forumItem);
-                    updateTasks.add(new ForumUpdateTask(forumId));
+                    if (notEmpty) {
+                        updateTasks.add(new ForumUpdateTask(forumId));
+                    }
                 } else {
                     viewedForums.remove(forumId);
                 }
