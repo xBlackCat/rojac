@@ -84,7 +84,7 @@ class PersonalDecorator extends ADecorator {
                 unread = stat.getTotalMessages();
             }
 
-            final ReadStatistic newStat = new ReadStatistic(0, unread, stat.getTotalMessages());
+            final ReadStatistic newStat = new ReadStatistic(stat.getTotalMessages(), unread, 0);
             item.setStat(newStat);
 
             modelControl.itemUpdated(item);
@@ -126,7 +126,7 @@ class PersonalDecorator extends ADecorator {
                 }
             }
 
-            return new ReadStatistic(0, toSend, total);
+            return new ReadStatistic(total, toSend, 0);
         }
 
         @Override
@@ -148,7 +148,7 @@ class PersonalDecorator extends ADecorator {
         @Override
         public void doSwing(Integer data) {
             if (data != null) {
-                ignoredTopics.setStat(new ReadStatistic(0, 0, data));
+                ignoredTopics.setStat(new ReadStatistic(data, 0, 0));
 
                 modelControl.itemUpdated(ignoredTopics);
             }

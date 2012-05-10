@@ -6,12 +6,15 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.IViewLayout;
 import org.xblackcat.rojac.gui.PopupMouseAdapter;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
+import org.xblackcat.rojac.gui.tray.IStatisticListener;
 import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -162,4 +165,30 @@ public class NavigationView extends AView {
         model.dispatch(packet);
     }
 
+    public void setStatisticListener(final IStatisticListener statisticListener) {
+        model.addTreeModelListener(new TreeModelListener() {
+            @Override
+            public void treeNodesChanged(TreeModelEvent e) {
+                updateGlobalStatistic();
+            }
+
+            @Override
+            public void treeNodesInserted(TreeModelEvent e) {
+                updateGlobalStatistic();
+            }
+
+            @Override
+            public void treeNodesRemoved(TreeModelEvent e) {
+                updateGlobalStatistic();
+            }
+
+            @Override
+            public void treeStructureChanged(TreeModelEvent e) {
+            }
+
+            private void updateGlobalStatistic() {
+                statisticListener.setStatistic(model.getGlobalStatistic());
+            }
+        });
+    }
 }

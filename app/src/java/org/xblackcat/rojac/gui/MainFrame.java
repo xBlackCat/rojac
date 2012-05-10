@@ -23,6 +23,7 @@ import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialog.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialog.OpenMessageDialog;
 import org.xblackcat.rojac.gui.dialog.ProgressTrackerDialog;
+import org.xblackcat.rojac.gui.tray.IStatisticListener;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.ViewType;
@@ -167,6 +168,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
     private final Map<ViewId, IViewLayout> storedLayouts = new HashMap<>();
     private View[] mainViews;
+    private final NavigationView navigationView;
 
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
@@ -175,6 +177,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
         ProgressTrackerDialog progressTrackerDialog = new ProgressTrackerDialog(this);
         progressInToolbar = new ProgressComponent(progressTrackerDialog);
+
+        navigationView = new NavigationView(this);
 
         initialize();
 
@@ -271,7 +275,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private void initialize() {
-        final NavigationView navigationView = new NavigationView(this);
         final RecentTopicsView recentTopicsView = new RecentTopicsView(this);
 
         JPanel cp = new JPanel(new BorderLayout());
@@ -826,6 +829,10 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         pane.setPreferredSize(new Dimension(0, 0));
         pane.setVisible(false);
         window.setVisible(false);
+    }
+
+    public void setStatisticListener(IStatisticListener listener) {
+        navigationView.setStatisticListener(listener);
     }
 
     private class ScheduleSynchronization implements Runnable {

@@ -177,7 +177,7 @@ class FavoritesDecorator extends ADecorator {
         public void doSwing(Void data) {
             ReadStatistic stat = item.getStatistic();
 
-            item.setStatistic(new ReadStatistic(0, stat.getUnreadMessages() + adjustDelta, stat.getTotalMessages()));
+            item.setStatistic(new ReadStatistic(stat.getTotalMessages(), stat.getUnreadMessages() + adjustDelta, 0));
 
             modelControl.itemUpdated(item);
         }

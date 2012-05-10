@@ -21,6 +21,6 @@ class ToDiscussionStatisticConverter implements IToObjectConverter<DiscussionSta
             lastPostDate = null;
         }
 
-        return new DiscussionStatistic(totals, unreadPosts, lastPostDate, unreadReplies);
+        return new DiscussionStatistic(totals, unreadPosts, unreadReplies, lastPostDate);
     }
 }

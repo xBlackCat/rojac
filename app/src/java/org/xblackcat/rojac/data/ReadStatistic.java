@@ -10,7 +10,11 @@ public class ReadStatistic {
     protected final int unreadMessages;
     protected final int unreadReplies;
 
-    public ReadStatistic(int unreadReplies, int unreadMessages, int totalMessages) {
+    public ReadStatistic() {
+        this(0, 0, 0);
+    }
+
+    public ReadStatistic(int totalMessages, int unreadMessages, int unreadReplies) {
         this.unreadReplies = unreadReplies;
         this.unreadMessages = unreadMessages < 0 ? 0 : unreadMessages > totalMessages ? totalMessages : unreadMessages;
         this.totalMessages = totalMessages;

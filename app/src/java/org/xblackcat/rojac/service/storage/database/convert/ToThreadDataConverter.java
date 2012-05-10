@@ -23,7 +23,7 @@ class ToThreadDataConverter implements IToObjectConverter<ItemStatisticData<Mess
             lastPostDate = null;
         }
 
-        DiscussionStatistic discussionStatistic = new DiscussionStatistic(totals, unreadPosts, lastPostDate, unreadReplies);
+        DiscussionStatistic discussionStatistic = new DiscussionStatistic(totals, unreadPosts, unreadReplies, lastPostDate);
 
         return new ItemStatisticData<>(messageData, discussionStatistic);
     }
