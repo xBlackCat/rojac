@@ -8,5 +8,5 @@ import org.xblackcat.rojac.data.DiscussionStatistic;
  * @author xBlackCat
  */
 public interface IStatisticListener {
-    void setStatistic(DiscussionStatistic stat);
+    void statisticUpdated(DiscussionStatistic stat);
 }

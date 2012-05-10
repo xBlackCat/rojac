@@ -149,7 +149,7 @@ public class RojacTray implements IStatisticListener {
     }
 
     @Override
-    public void setStatistic(DiscussionStatistic statistic) {
+    public void statisticUpdated(DiscussionStatistic statistic) {
         RojacState state = RojacState.NoUnreadMessages;
 
         if (statistic.getUnreadReplies() > 0) {
@@ -187,7 +187,7 @@ public class RojacTray implements IStatisticListener {
                 case Stop:
                     setState(RojacState.Initialization);
 
-                    setStatistic(DiscussionStatistic.NO_STAT);
+                    statisticUpdated(DiscussionStatistic.NO_STAT);
                     break;
             }
         }

@@ -36,6 +36,7 @@ class TreeCellPostProxy extends APostProxy {
 
         renderer.setIcon(icon);
 
+        String text;
         String subject = post.getMessageData().getSubject();
         if (mergeSubjectUser) {
             Post parent = post.getParent();
@@ -46,17 +47,20 @@ class TreeCellPostProxy extends APostProxy {
                 if (StringUtils.isBlank(userName)) {
                     userName = Message.UserName_Anonymous.get();
                 }
-                renderer.setText("[" + userName + "] " + subject);
+                text = "[" + userName + "] " + subject;
             } else {
                 if (StringUtils.isBlank(userName)) {
                     renderer.setForeground(UIUtils.brighter(renderer.getForeground(), 0.33));
-                    renderer.setText(Message.UserName_Anonymous.get());
+                    text = Message.UserName_Anonymous.get();
                 } else {
-                    renderer.setText(userName);
+                    text = userName;
                 }
             }
         } else {
-            renderer.setText(subject);
+            text = subject;
         }
+
+        renderer.setText(text);
+        renderer.setToolTipText(subject);
     }
 }

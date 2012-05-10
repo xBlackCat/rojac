@@ -13,8 +13,6 @@ import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -24,13 +22,15 @@ import java.awt.event.MouseEvent;
  * @author xBlackCat Date: 15.07.11
  */
 public class NavigationView extends AView {
-    private NavigationModel model;
+    private final NavigationModel model = new NavigationModel();
+    private final StatisticUpdateListener statisticUpdateListener = new StatisticUpdateListener(model);
     private JXTreeTable viewTable;
 
     public NavigationView(IAppControl appControl) {
         super(appControl);
 
-        model = new NavigationModel();
+        model.addTreeModelListener(statisticUpdateListener);
+
         viewTable = new JXTreeTable();
         viewTable.setAutoCreateColumnsFromModel(false);
         viewTable.setTreeTableModel(model);
@@ -165,30 +165,7 @@ public class NavigationView extends AView {
         model.dispatch(packet);
     }
 
-    public void setStatisticListener(final IStatisticListener statisticListener) {
-        model.addTreeModelListener(new TreeModelListener() {
-            @Override
-            public void treeNodesChanged(TreeModelEvent e) {
-                updateGlobalStatistic();
-            }
-
-            @Override
-            public void treeNodesInserted(TreeModelEvent e) {
-                updateGlobalStatistic();
-            }
-
-            @Override
-            public void treeNodesRemoved(TreeModelEvent e) {
-                updateGlobalStatistic();
-            }
-
-            @Override
-            public void treeStructureChanged(TreeModelEvent e) {
-            }
-
-            private void updateGlobalStatistic() {
-                statisticListener.setStatistic(model.getGlobalStatistic());
-            }
-        });
+    public void addStatisticListener(IStatisticListener statisticListener) {
+        statisticUpdateListener.addStatisticListener(statisticListener);
     }
 }

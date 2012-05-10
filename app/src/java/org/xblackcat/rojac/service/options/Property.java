@@ -72,6 +72,7 @@ public final class Property<T> {
     public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_FORUM_VIEW = create("rojac.behaviour.open_message.from_forum_view", OpenMessageMethod.InThread, GeneralEnumChecker.except(OpenMessageMethod.InForum));
     public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_TOPIC_VIEW = create("rojac.behaviour.open_message.from_topic_view", OpenMessageMethod.InForum, GeneralEnumChecker.except(OpenMessageMethod.InThread));
     public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_POST_LIST = create("rojac.behaviour.open_message.from_post_list", OpenMessageMethod.InForum);
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_UNREAD_REPLY = create("rojac.behaviour.open_message.unread_reply", OpenMessageMethod.InForum);
 
     // Behaviour of dropping url to main frame
     public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_OTHERS = create("rojac.behaviour.drop_url.general", OpenMessageMethod.InForum);

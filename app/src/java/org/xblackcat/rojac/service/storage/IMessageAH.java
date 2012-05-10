@@ -158,4 +158,6 @@ public interface IMessageAH extends AH {
     SetReadExPacket setReadAfterDate(long dateline, boolean read) throws StorageException;
 
     IResult<MessageData> getIgnoredTopicsList() throws StorageException;
+
+    Integer getFirstUnreadReply(int userId) throws StorageException;
 }

@@ -457,6 +457,7 @@ public enum Message {
     PreviewLink_Youtube_VideoNotFound,
 
     Hint_TopicChangedTo,
+    Hint_YouHaveUnreadReplies,
     // --------
     ;
 
