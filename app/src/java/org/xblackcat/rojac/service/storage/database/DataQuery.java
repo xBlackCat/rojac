@@ -514,6 +514,7 @@ public enum DataQuery implements IPropertiable {
     CACHE_UPDATE_THREADS_STAT,
     CACHE_UPDATE_LASTPOST_ID,
     CACHE_UPDATE_LASTPOST_DATE,
+    CACHE_UPDATE_PARENT_USER_ID,
     // ----
     ;
 

@@ -35,6 +35,11 @@ final class DBUtilAH extends AnAH implements IUtilAH {
     }
 
     @Override
+    public void updateParentUserId() throws StorageException {
+        helper.update(DataQuery.CACHE_UPDATE_PARENT_USER_ID);
+    }
+
+    @Override
     public IResult<Integer> getTopicIdsToClean(long timeLine, boolean onlyRead, boolean onlyIgnored) throws StorageException {
         return helper.execute(
                 Converters.TO_INTEGER,
