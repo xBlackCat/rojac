@@ -165,16 +165,19 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
     public void pathToNodeChanged(Post node) {
         if (node != null) {
             TreePath toRoot = getPathToRoot(node);
-            do {
+            while (toRoot != null) {
                 nodeChanged((Post) toRoot.getLastPathComponent());
                 toRoot = toRoot.getParentPath();
-            } while (toRoot != null);
+            }
         }
     }
 
     public void subTreeNodesChanged(Post node) {
         if (node != null) {
-            subTreeChanged(getPathToRoot(node));
+            final TreePath path = getPathToRoot(node);
+            if (path != null) {
+                subTreeChanged(path);
+            }
         }
     }
 
@@ -219,7 +222,10 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
     }
 
     public void nodeRemoved(Post parent, int childIdx, Post child) {
-        modelSupport.fireChildRemoved(getPathToRoot(parent), childIdx, child);
+        final TreePath path = getPathToRoot(parent);
+        if (path != null) {
+            modelSupport.fireChildRemoved(path, childIdx, child);
+        }
     }
 
     /**
@@ -230,21 +236,28 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
      * @param childIndexes list of changed child indexes
      */
     public void nodesChanged(Post node, int... childIndexes) {
-        if (node != null) {
-            if (!ArrayUtils.isEmpty(childIndexes)) {
-                int cCount = childIndexes.length;
+        if (node == null) {
+            return;
+        }
 
-                if (cCount > 0) {
-                    Object[] cChildren = new Object[cCount];
+        final TreePath path = getPathToRoot(node);
+        if (path == null) {
+            return;
+        }
 
-                    for (int counter = 0; counter < cCount; counter++) {
-                        cChildren[counter] = node.getChild(childIndexes[counter]);
-                    }
-                    modelSupport.fireChildrenChanged(getPathToRoot(node), childIndexes, cChildren);
+        if (!ArrayUtils.isEmpty(childIndexes)) {
+            int cCount = childIndexes.length;
+
+            if (cCount > 0) {
+                Object[] cChildren = new Object[cCount];
+
+                for (int counter = 0; counter < cCount; counter++) {
+                    cChildren[counter] = node.getChild(childIndexes[counter]);
                 }
-            } else if (node == getRoot()) {
-                modelSupport.firePathChanged(getPathToRoot(node));
+                modelSupport.fireChildrenChanged(path, childIndexes, cChildren);
             }
+        } else if (node == getRoot()) {
+            modelSupport.firePathChanged(path);
         }
     }
 
@@ -256,7 +269,10 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
      */
     public void nodeStructureChanged(Post node) {
         if (node != null) {
-            modelSupport.fireTreeStructureChanged(getPathToRoot(node));
+            final TreePath path = getPathToRoot(node);
+            if (path != null) {
+                modelSupport.fireTreeStructureChanged(path);
+            }
         }
     }
 
@@ -275,7 +291,12 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
      * @return TreePath object with all subsequent nodes to reach the specified node from root.
      */
     public TreePath getPathToRoot(Post aNode) {
-        return new TreePath(getPathToRoot(aNode, 0));
+        final Post[] path = getPathToRoot(aNode, 0);
+        if (path == null || path.length == 0) {
+            return null;
+        } else {
+            return new TreePath(path);
+        }
     }
 
     public boolean isPathValid(TreePath treePath) {
@@ -308,6 +329,8 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
     public void fireNodesRemoved(Post root, int[] idx, Post[] node) {
         final TreePath pathToRoot = getPathToRoot(root);
 
-        modelSupport.fireChildrenRemoved(pathToRoot, idx, node);
+        if (pathToRoot != null) {
+            modelSupport.fireChildrenRemoved(pathToRoot, idx, node);
+        }
     }
 }

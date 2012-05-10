@@ -240,12 +240,7 @@ public class MessageView extends AnItemView {
                 messageTitle = messageData.getSubject();
                 fireInfoChanged();
 
-                if (!messageData.isRead()) {
-                    Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
-                    if (delay != null && delay >= 0) {
-                        MessageUtils.markMessageRead(getId(), messageData, delay);
-                    }
-                }
+                MessageUtils.setupReadTimer(getId(), messageData);
             }
         }
     }

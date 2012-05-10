@@ -12,6 +12,7 @@ import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
+import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
 
 import javax.swing.*;
@@ -266,10 +267,11 @@ public final class MessageUtils {
 
         MessageReadFlagSetter target = new MessageReadFlagSetter(true, data);
         IExecutor executor = ServiceFactory.getInstance().getExecutor();
+        executor.killTimer(id.getAnchor());
+
         if (delay > 0) {
             executor.setupTimer(id.getAnchor(), target, delay);
         } else {
-            executor.killTimer(id.getAnchor());
             executor.execute(target);
         }
     }
@@ -322,5 +324,14 @@ public final class MessageUtils {
         hours /= 60;
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    public static void setupReadTimer(ViewId viewId, MessageData messageData) {
+        if (!messageData.isRead()) {
+            Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
+            if (delay != null && delay >= 0) {
+                markMessageRead(viewId, messageData, delay);
+            }
+        }
     }
 }
