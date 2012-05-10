@@ -23,6 +23,7 @@ import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialog.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialog.OpenMessageDialog;
 import org.xblackcat.rojac.gui.dialog.ProgressTrackerDialog;
+import org.xblackcat.rojac.gui.hint.HintContainer;
 import org.xblackcat.rojac.gui.tray.IStatisticListener;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
@@ -382,19 +383,19 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private View createThreadsView(DockingWindow threads) {
-        JPanel threadsPane = new JPanel(new BorderLayout(0, 0));
+        JPanel readingPane = new JPanel(new BorderLayout(0, 0));
 
         // Setup toolbar
-        navigationBackButton = WindowsUtils.registerImageButton(threadsPane, "nav_back", new GoBackAction());
-        navigationForwardButton = WindowsUtils.registerImageButton(threadsPane, "nav_forward", new GoForwardAction());
+        navigationBackButton = WindowsUtils.registerImageButton(readingPane, "nav_back", new GoBackAction());
+        navigationForwardButton = WindowsUtils.registerImageButton(readingPane, "nav_forward", new GoForwardAction());
 
-        JButton goToMessageButton = WindowsUtils.registerImageButton(threadsPane, "goto_message", new GoToMessageAction());
+        JButton goToMessageButton = WindowsUtils.registerImageButton(readingPane, "goto_message", new GoToMessageAction());
 
-        JButton updateButton = WindowsUtils.registerImageButton(threadsPane, "update", new SynchronizationAction());
-        JButton loadMessageButton = WindowsUtils.registerImageButton(threadsPane, "extramessage", new LoadExtraMessagesAction());
-        JButton subscribeButton = WindowsUtils.registerImageButton(threadsPane, "forum_manage", new SubscribeForum());
-        JButton settingsButton = WindowsUtils.registerImageButton(threadsPane, "settings", new SettingsAction());
-        JButton aboutButton = WindowsUtils.registerImageButton(threadsPane, "about", new AboutAction());
+        JButton updateButton = WindowsUtils.registerImageButton(readingPane, "update", new SynchronizationAction());
+        JButton loadMessageButton = WindowsUtils.registerImageButton(readingPane, "extramessage", new LoadExtraMessagesAction());
+        JButton subscribeButton = WindowsUtils.registerImageButton(readingPane, "forum_manage", new SubscribeForum());
+        JButton settingsButton = WindowsUtils.registerImageButton(readingPane, "settings", new SettingsAction());
+        JButton aboutButton = WindowsUtils.registerImageButton(readingPane, "about", new AboutAction());
 
         final JToolBar toolBar = WindowsUtils.createToolBar(
                 navigationBackButton,
@@ -418,10 +419,15 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
             }
         });
 
-        threadsPane.add(toolBar, BorderLayout.NORTH);
-        threadsPane.add(threads, BorderLayout.CENTER);
+        readingPane.add(toolBar, BorderLayout.NORTH);
 
-        View view = new View(null, null, threadsPane);
+        JPanel threadsPane = new JPanel(new BorderLayout());
+        threadsPane.add(threads, BorderLayout.CENTER);
+        threadsPane.add(setupHintContainer(), BorderLayout.NORTH);
+
+        readingPane.add(threadsPane, BorderLayout.CENTER);
+
+        View view = new View(null, null, readingPane);
 
         DockingWindowProperties props = view.getWindowProperties();
         props.setCloseEnabled(false);
@@ -438,6 +444,14 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         updateNavigationButtons();
 
         return view;
+    }
+
+    private HintContainer setupHintContainer() {
+        final HintContainer hintContainer = new HintContainer();
+
+        addStatisticUpdateListener(new UnreadRepliesHintController(this, hintContainer));
+
+        return hintContainer;
     }
 
     private View createView(IView itemView) {
@@ -831,8 +845,8 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         window.setVisible(false);
     }
 
-    public void setStatisticListener(IStatisticListener listener) {
-        navigationView.setStatisticListener(listener);
+    public void addStatisticUpdateListener(IStatisticListener listener) {
+        navigationView.addStatisticListener(listener);
     }
 
     private class ScheduleSynchronization implements Runnable {
@@ -1125,4 +1139,5 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
             }
         }
     }
+
 }

@@ -303,4 +303,9 @@ final class DBMessageAH extends AnAH implements IMessageAH {
                 DataQuery.GET_IGNORED_TOPIC_MESSAGE_DATA
         );
     }
+
+    @Override
+    public Integer getFirstUnreadReply(int userId) throws StorageException {
+        return helper.executeSingle(Converters.TO_INTEGER, DataQuery.GET_FIRST_UNREAD_REPLY_ID, userId);
+    }
 }

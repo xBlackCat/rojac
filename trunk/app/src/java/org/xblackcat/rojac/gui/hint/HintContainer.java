@@ -15,6 +15,8 @@ import java.util.Map;
  * @author xBlackCat
  */
 public class HintContainer extends JPanel {
+    public static final int DEFAULT_TIMEOUT = 5000;
+
     private final Map<HintInfo, JComponent> hints = new HashMap<>();
 
     public HintContainer() {
@@ -30,7 +32,16 @@ public class HintContainer extends JPanel {
     }
 
     public HintInfo addHint(Icon hintIcon, JComponent hint, final Runnable onClose) {
-        final Timer timer = new Timer(5000, null);
+        return addHint(hintIcon, hint, onClose, DEFAULT_TIMEOUT);
+    }
+
+    public HintInfo addHint(Icon hintIcon, JComponent hint, final Runnable onClose, int timeout) {
+        final Timer timer;
+        if (timeout > 0) {
+            timer = new Timer(timeout, null);
+        } else {
+            timer = null;
+        }
         final HintInfo info = new HintInfo(timer);
 
         final Runnable closeTarget = new Runnable() {
@@ -44,15 +55,17 @@ public class HintContainer extends JPanel {
         };
         MessageHint hintComp = new MessageHint(hintIcon, hint, closeTarget);
 
-        timer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeHint(info);
-            }
-        });
+        if (timer != null) {
+            timer.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    removeHint(info);
+                }
+            });
 
-        timer.setRepeats(false);
-        timer.start();
+            timer.setRepeats(false);
+            timer.start();
+        }
 
         hints.put(info, hintComp);
         add(hintComp);
@@ -65,8 +78,11 @@ public class HintContainer extends JPanel {
         hintInfo.stopTimer();
         JComponent component = hints.remove(hintInfo);
 
-        remove(component);
-        revalidate();
+        if (component != null) {
+            // If not already removed
+            remove(component);
+            revalidate();
+        }
     }
 
     // Remove all shown hints

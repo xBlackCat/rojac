@@ -15,6 +15,8 @@ public final class HintInfo {
     }
 
     void stopTimer() {
-        timer.stop();
+        if (timer != null) {
+            timer.stop();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage.database;
 
+import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.storage.IResult;
@@ -55,7 +56,7 @@ class QueryHolder implements IQueryHolder {
     @Override
     public int[] getIds(DataQuery sql, Object... params) throws StorageException {
         try (IResult<Number> objIds = execute(Converters.TO_NUMBER, sql, params)) {
-            TIntArrayList ids = new TIntArrayList();
+            TIntList ids = new TIntArrayList();
 
             try {
                 for (Number id : objIds) {
