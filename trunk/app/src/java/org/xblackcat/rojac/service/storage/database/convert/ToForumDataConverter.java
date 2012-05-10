@@ -23,7 +23,7 @@ class ToForumDataConverter implements IToObjectConverter<ItemStatisticData<Forum
             lastPostDate = null;
         }
 
-        DiscussionStatistic discussionStatistic = new DiscussionStatistic(totals, 0, lastPostDate, 0);
+        DiscussionStatistic discussionStatistic = new DiscussionStatistic(totals, 0, 0, lastPostDate);
 
         return new ItemStatisticData<>(forum, discussionStatistic);
     }

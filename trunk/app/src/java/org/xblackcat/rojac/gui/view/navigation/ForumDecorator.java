@@ -156,6 +156,20 @@ class ForumDecorator extends ADecorator {
         return Collections.emptySet();
     }
 
+    public DiscussionStatistic getForumReadStatistic() {
+        DiscussionStatistic total = DiscussionStatistic.NO_STAT;
+
+        for (ForumItem fi : subscribedForums.children) {
+            total = total.add(fi.getStatistic());
+        }
+
+        for (ForumItem fi : notSubscribedForums.children) {
+            total = total.add(fi.getStatistic());
+        }
+
+        return total;
+    }
+
 
     private class ForumUpdateTask implements ILoadTask<DiscussionStatistic> {
         protected final int forumId;
@@ -288,8 +302,7 @@ class ForumDecorator extends ADecorator {
             statistic = new DiscussionStatistic(
                     statistic.getTotalMessages(),
                     statistic.getUnreadMessages() + adjustDelta,
-                    statistic.getLastMessageDate(),
-                    statistic.getUnreadReplies() + (reply ? adjustDelta : 0)
+                    statistic.getUnreadReplies() + (reply ? adjustDelta : 0), statistic.getLastMessageDate()
             );
             item.setStatistic(statistic);
             modelControl.itemUpdated(item);

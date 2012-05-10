@@ -30,7 +30,7 @@ final class DBStatisticAH extends AnAH implements IStatisticAH {
             unreadReplies = 0;
         }
 
-        return new ReadStatistic(unreadReplies, unreadMessages, messages);
+        return new ReadStatistic(messages, unreadMessages, unreadReplies);
     }
 
     @Override
@@ -38,7 +38,7 @@ final class DBStatisticAH extends AnAH implements IStatisticAH {
         // TODO: make single request instead of double
         int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_REPLIES_NUMBER, userId).intValue();
         int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_REPLIES_NUMBER, userId).intValue();
-        return new ReadStatistic(0, unread, total);
+        return new ReadStatistic(total, unread, 0);
     }
 
     @Override
@@ -46,6 +46,6 @@ final class DBStatisticAH extends AnAH implements IStatisticAH {
         // TODO: make single request instead of double
         int unread = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_UNREAD_USER_POSTS_NUMBER, userId).intValue();
         int total = helper.executeSingle(Converters.TO_NUMBER, DataQuery.GET_USER_POSTS_NUMBER, userId).intValue();
-        return new ReadStatistic(0, unread, total);
+        return new ReadStatistic(total, unread, 0);
     }
 }

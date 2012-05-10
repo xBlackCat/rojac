@@ -204,6 +204,8 @@ public final class RojacLauncher {
                 if (log.isInfoEnabled()) {
                     log.info("Tray is not supported by the system.");
                 }
+            } else {
+                mainFrame.setStatisticListener(tray);
             }
 
             mainFrame.addWindowListener(new WindowAdapter() {

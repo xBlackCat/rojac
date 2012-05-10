@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.navigation;
 
 import org.jdesktop.swingx.tree.TreeModelSupport;
 import org.jdesktop.swingx.treetable.TreeTableModel;
+import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.service.datahandler.*;
 
@@ -143,7 +144,6 @@ class NavigationModel implements TreeTableModel, IModelControl {
     final PersonalDecorator personalDecorator = new PersonalDecorator(this);
 
     NavigationModel() {
-
         root = new RootItem(
                 personalDecorator,
                 forumDecorator,
@@ -320,5 +320,9 @@ class NavigationModel implements TreeTableModel, IModelControl {
 
     public void dispatch(IPacket packet) {
         packetDispatcher.dispatch(packet);
+    }
+
+    public DiscussionStatistic getGlobalStatistic() {
+        return forumDecorator.getForumReadStatistic();
     }
 }
