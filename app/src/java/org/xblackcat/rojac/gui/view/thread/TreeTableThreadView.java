@@ -562,10 +562,16 @@ public class TreeTableThreadView extends AnItemView {
 
             if (!toCollapse.isEmpty()) {
                 for (Post post : toCollapse) {
-                    threads.collapsePath(model.getPathToRoot(post));
+                    final TreePath path = model.getPathToRoot(post);
+                    if (path != null) {
+                        threads.collapsePath(path);
+                    }
                 }
 
-                scrollPathToVisible(model.getPathToRoot(next));
+                final TreePath path = model.getPathToRoot(next);
+                if (path != null) {
+                    scrollPathToVisible(path);
+                }
             }
         }
     }
@@ -790,8 +796,13 @@ public class TreeTableThreadView extends AnItemView {
     private void resortAndReloadModel() {
         boolean skipSaveState = Property.VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC.get();
 
-        @SuppressWarnings("unchecked")
-        Enumeration<TreePath> expanded = skipSaveState ? null : (Enumeration<TreePath>) threads.getExpandedDescendants(model.getPathToRoot(model.getRoot()));
+        Enumeration expanded = null;
+        if (!skipSaveState) {
+            final TreePath path = model.getPathToRoot(model.getRoot());
+            if (path != null) {
+                expanded = threads.getExpandedDescendants(path);
+            }
+        }
 
         resortingModel = true;
         modelControl.resortModel(model);
@@ -799,7 +810,8 @@ public class TreeTableThreadView extends AnItemView {
 
         if (expanded != null) {
             while (expanded.hasMoreElements()) {
-                threads.expandPath(expanded.nextElement());
+//                @SuppressWarnings("unchecked")
+                threads.expandPath((TreePath) expanded.nextElement());
             }
         }
 
@@ -831,24 +843,17 @@ public class TreeTableThreadView extends AnItemView {
             }
         }
 
-        // Just in case store a current selection
-        final Post curSelection = getSelectedPost();
-        Runnable postProcessor = new Runnable() {
-            public void run() {
-                if (curSelection != null &&
-                        !curSelection.equals(getSelectedPost())) {
-                    selectItem(curSelection, false);
-                } else {
-                    selectItem(null, false);
-                }
-            }
-        };
-
-
         if (model.isInitialized()) {
             Runnable statusUpdater = new Runnable() {
                 @Override
                 public void run() {
+                    // Update selected post info
+                    if (selectedItem != null) {
+                        Post post = model.getRoot().getMessageById(selectedItem.getMessageId());
+
+                        selectedItem = post == null ? null : post.getMessageData();
+                    }
+
                     if (toolbar != null) {
                         toolbar.updateButtons(getSelectedPost(), modelControl);
                     }
@@ -883,11 +888,13 @@ public class TreeTableThreadView extends AnItemView {
             }
 
             final TreePath pathToRoot = model.getPathToRoot(post);
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    scrollPathToVisible(pathToRoot);
-                }
-            });
+            if (pathToRoot != null) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        scrollPathToVisible(pathToRoot);
+                    }
+                });
+            }
         }
     }
 
@@ -1216,7 +1223,7 @@ public class TreeTableThreadView extends AnItemView {
             Post root = (Post) e.getTreePath().getLastPathComponent();
             int row = e.getChildIndices()[0];
 
-            if (selectedItem != null && model.getRoot().getMessageById(selectedItem.getMessageId()) == null) {
+            if (!isShownPostIsSelected()) {
                 selectNearestPost(root, row);
             }
         }
@@ -1237,6 +1244,30 @@ public class TreeTableThreadView extends AnItemView {
                 fireInfoChanged();
             }
         }
+    }
+
+    public boolean isShownPostIsSelected() {
+        if (selectedItem == null) {
+            return false;
+        }
+
+        Post post = model.getRoot().getMessageById(selectedItem.getMessageId());
+        if (post == null) {
+            // Post not loaded at all
+            return false;
+        }
+
+        TreePath pathToRoot = model.getPathToRoot(post);
+        if (pathToRoot == null) {
+            return false;
+        }
+
+        if (threads.getRowForPath(pathToRoot) == -1) {
+            return false;
+        }
+
+        // Post found and visible
+        return true;
     }
 
     private void selectNearestPost(Post root, int searchIdx) {
@@ -1329,6 +1360,10 @@ public class TreeTableThreadView extends AnItemView {
 
                     modelControl.unloadThread(model, item);
                 }
+            }
+
+            if (!isShownPostIsSelected()) {
+                selectItem(item, false);
             }
         }
     }
@@ -1452,13 +1487,9 @@ public class TreeTableThreadView extends AnItemView {
                     continue;
                 }
 
-                if (!messageData.isRead()) {
-                    Long delay = Property.VIEW_THREAD_AUTOSET_READ.get();
-                    if (delay != null && delay >= 0) {
-                        MessageUtils.markMessageRead(getId(), messageData, delay);
-                    }
-                }
+                MessageUtils.setupReadTimer(getId(), messageData);
             }
         }
+
     }
 }

@@ -54,37 +54,36 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
     public void setupTimer(String id, Runnable target, long delay) {
         ScheduledFuture<?> taskId = scheduler.schedule(new ScheduleTaskCleaner(id, target), delay, TimeUnit.MILLISECONDS);
 
-        synchronized (scheduledTasks) {
-            ScheduledFuture<?> oldTask = scheduledTasks.get(id);
-            if (oldTask != null) {
-                oldTask.cancel(false);
-            }
-
-            scheduledTasks.put(id, taskId);
-        }
+        replaceTask(id, taskId);
     }
 
     @Override
     public void setupPeriodicTask(String id, Runnable target, int period) {
         ScheduledFuture<?> taskId = scheduler.scheduleWithFixedDelay(target, period, period, TimeUnit.SECONDS);
 
-        synchronized (scheduledTasks) {
-            ScheduledFuture<?> oldTask = scheduledTasks.get(id);
-            if (oldTask != null) {
-                oldTask.cancel(false);
-            }
+        replaceTask(id, taskId);
+    }
 
-            scheduledTasks.put(id, taskId);
+    private void replaceTask(String id, ScheduledFuture<?> taskId) {
+        ScheduledFuture<?> oldTask;
+        synchronized (scheduledTasks) {
+            oldTask = scheduledTasks.put(id, taskId);
+        }
+
+        if (oldTask != null) {
+            oldTask.cancel(false);
         }
     }
 
     @Override
     public boolean killTimer(String id) {
+        ScheduledFuture<?> oldTask;
         synchronized (scheduledTasks) {
-            ScheduledFuture<?> oldTask = scheduledTasks.remove(id);
-            if (oldTask != null) {
-                return oldTask.cancel(false);
-            }
+            oldTask = scheduledTasks.remove(id);
+        }
+
+        if (oldTask != null) {
+            return oldTask.cancel(false);
         }
 
         return false;

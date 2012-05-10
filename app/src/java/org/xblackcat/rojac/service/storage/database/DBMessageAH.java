@@ -139,7 +139,7 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
-    public org.xblackcat.rojac.service.storage.IResult<ItemStatisticData<MessageData>> getTopicMessagesDataByForumId(int forumId, int userId) throws StorageException {
+    public IResult<ItemStatisticData<MessageData>> getTopicMessagesDataByForumId(int forumId, int userId) throws StorageException {
         return helper.execute(
                 Converters.TO_THREAD_DATA,
                 DataQuery.GET_TOPIC_MESSAGE_DATA_BY_FORUM_ID,
