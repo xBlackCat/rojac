@@ -124,6 +124,13 @@ class ForumDecorator extends ADecorator {
         Collection<ILoadTask> tasks = new ArrayList<>(forumIds.length);
 
         for (int forumId : forumIds) {
+            if (forumId <= 0) {
+                if (log.isWarnEnabled()) {
+                    log.warn("Got strange forum id: " + forumId);
+                }
+                continue;
+            }
+
             if (viewedForums.containsKey(forumId)) {
                 // Existing forum
                 tasks.add(new ForumUpdateTask(forumId));
