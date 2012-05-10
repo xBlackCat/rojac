@@ -487,6 +487,11 @@ public class TreeTableThreadView extends AnItemView {
 
             TableThreadViewLayout.Column[] columns = layout.getColumns();
 
+            if (cm.getColumnCount() != columns.length) {
+                // Layout is not matched - use default
+                return;
+            }
+
             int i = 0;
             while (i < columns.length) {
                 TableThreadViewLayout.Column c = columns[i];
