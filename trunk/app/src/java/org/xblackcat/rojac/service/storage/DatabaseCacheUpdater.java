@@ -24,15 +24,17 @@ public class DatabaseCacheUpdater extends DatabaseWorker {
 
         // Replace storage engine before updating data in views.
 
-        publish(new ProgressChangeEvent(this, ProgressState.Work, 0, 4));
+        publish(new ProgressChangeEvent(this, ProgressState.Work, 0, 5));
+        uah.updateParentUserId();
+        publish(new ProgressChangeEvent(this, ProgressState.Work, 1, 5));
         uah.updateForumsStat();
-        publish(new ProgressChangeEvent(this, ProgressState.Work, 1, 4));
+        publish(new ProgressChangeEvent(this, ProgressState.Work, 2, 5));
         uah.updateThreadsStat();
-        publish(new ProgressChangeEvent(this, ProgressState.Work, 2, 4));
+        publish(new ProgressChangeEvent(this, ProgressState.Work, 3, 5));
         uah.updateLastPostId();
-        publish(new ProgressChangeEvent(this, ProgressState.Work, 3, 4));
+        publish(new ProgressChangeEvent(this, ProgressState.Work, 4, 5));
         uah.updateLastPostDate();
-        publish(new ProgressChangeEvent(this, ProgressState.Work, 4, 4));
+        publish(new ProgressChangeEvent(this, ProgressState.Work, 5, 5));
 
         return true;
     }

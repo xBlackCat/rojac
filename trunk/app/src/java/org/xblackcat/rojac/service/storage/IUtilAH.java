@@ -14,6 +14,8 @@ public interface IUtilAH extends AH {
 
     void updateLastPostDate() throws StorageException;
 
+    void updateParentUserId() throws StorageException;
+
     void removeTopic(int topicId) throws StorageException;
 
     int getTopicsAmountToClean(long timeLine, boolean onlyRead, boolean onlyIgnored) throws StorageException;
