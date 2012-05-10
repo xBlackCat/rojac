@@ -25,6 +25,7 @@ public final class MultiUserOptionsService extends AnOptionsService {
             Property.ROJAC_DEBUG_MODE,
             Property.ROJAC_DEBUG_SQL,
             Property.ROJAC_DEBUG_SQL_RUN_TIME_TRACK,
+            Property.ROJAC_DEBUG_USE_FORK_IN_DECORATORS,
             Property.ROJAC_DEBUG_DONT_RESTORE_LAYOUT,
             Property.ROJAC_DEBUG_SHUTDOWN_OTHER
     ));
