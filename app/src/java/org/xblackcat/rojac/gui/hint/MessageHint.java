@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.gui.hint;
 
 import org.xblackcat.rojac.util.BalloonTipUtils;
+import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -26,6 +27,7 @@ class MessageHint extends JPanel {
 
         add(comp, BorderLayout.CENTER);
 
-        add(BalloonTipUtils.balloonTipCloseButton(onClose), BorderLayout.EAST);
+        JButton button = BalloonTipUtils.balloonTipCloseButton(onClose);
+        add(WindowsUtils.coverComponent(button, FlowLayout.CENTER, color), BorderLayout.EAST);
     }
 }
