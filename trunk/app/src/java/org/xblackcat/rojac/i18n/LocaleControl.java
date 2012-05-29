@@ -5,7 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.options.Property;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -17,6 +17,8 @@ public class LocaleControl {
     private static final Log log = LogFactory.getLog(LocaleControl.class);
 
     private static final LocaleControl INSTANCE = new LocaleControl();
+    private static final Charset SOURCE_CHARSET = Charset.forName("ISO-8859-1");
+    private static final Charset REAL_CHARSET = Charset.forName("UTF-8");
 
     public static LocaleControl getInstance() {
         return INSTANCE;
@@ -125,11 +127,8 @@ public class LocaleControl {
         }
 
         if (mes != null) {
-            try {
-                mes = new String(mes.getBytes("ISO-8859-1"), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("Invalid encoding for string of key " + key, e);
-            }
+            mes = new String(mes.getBytes(SOURCE_CHARSET), REAL_CHARSET);
+
             return String.format(locale, mes, arguments);
         } else {
             return key;
