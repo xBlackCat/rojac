@@ -49,7 +49,7 @@ class DBImportHelper implements IImportHelper {
                     try (ResultSet rs = st.executeQuery(queries.getTablesQuery())) {
                         List<String> res = new ArrayList<>();
                         while (rs.next()) {
-                            res.add(rs.getString(1));
+                            res.add(rs.getString(1).toLowerCase());
                         }
 
                         return Collections.unmodifiableList(res);
