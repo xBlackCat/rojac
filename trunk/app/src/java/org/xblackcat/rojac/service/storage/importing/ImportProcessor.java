@@ -23,8 +23,9 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 11.10.11 10:37
@@ -111,7 +112,8 @@ public class ImportProcessor extends RojacWorker<Void, ProgressChangeEvent> {
             IImportHelper sourceStorage = ImportHelperFactory.createImportHelper(source);
             final IImportHelper destinationStorage = ImportHelperFactory.createImportHelper(destination);
 
-            Collection<String> itemsList = sourceStorage.getItemsList();
+            Set<String> itemsList = new HashSet<>(sourceStorage.getItemsList());
+            itemsList.retainAll(destinationStorage.getItemsList());
             String[] tableNames = itemsList.toArray(new String[itemsList.size()]);
 
             int idx = 0;
