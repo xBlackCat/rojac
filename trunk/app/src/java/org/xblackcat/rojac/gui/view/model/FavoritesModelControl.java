@@ -8,6 +8,8 @@ import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.theme.ViewIcon;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -152,6 +154,7 @@ class FavoritesModelControl implements IModelControl {
     /**
      * Util class to determine favorite type and the control behaviour.
      */
+    @TaskType(TaskTypeEnum.Initialization)
     private class FavoriteLoader extends RojacWorker<Void, Void> {
         private final SortedThreadsModel model;
         private final int favoriteId;

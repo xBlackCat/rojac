@@ -79,6 +79,13 @@ final class DBMessageAH extends AnAH implements IMessageAH {
     }
 
     @Override
+    public void updateLastPostInfo(int threadId) throws StorageException {
+        helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_SET_REPLIES_AMOUNT, threadId);
+        helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_ID, threadId);
+        helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE, threadId);
+    }
+
+    @Override
     public void updateLastPostInfo(IBatchTracker tracker, TIntSet threadIds) throws StorageException {
         Collection<Object[]> params = new ArrayList<>();
 
@@ -95,6 +102,11 @@ final class DBMessageAH extends AnAH implements IMessageAH {
 
         tracker.setBatch(2, 3);
         helper.updateBatch(DataQuery.UPDATE_TOPIC_MESSAGES_SET_LASTPOST_DATE, tracker, params);
+    }
+
+    @Override
+    public void updateParentPostUserId(int messageId) throws StorageException {
+        helper.update(DataQuery.UPDATE_TOPIC_MESSAGES_SET_PARENT_USER_ID, messageId);
     }
 
     @Override

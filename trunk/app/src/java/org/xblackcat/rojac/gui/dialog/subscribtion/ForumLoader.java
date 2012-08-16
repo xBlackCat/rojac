@@ -3,6 +3,8 @@ package org.xblackcat.rojac.gui.dialog.subscribtion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Forum;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -14,6 +16,7 @@ import java.util.List;
 /**
  * @author xBlackCat
  */
+@TaskType(TaskTypeEnum.Initialization)
 class ForumLoader extends RojacWorker<Void, Forum> {
     private static final Log log = LogFactory.getLog(ForumLoader.class);
 

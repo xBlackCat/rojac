@@ -141,8 +141,26 @@ public final class MessageUtils {
     }
 
     public static RatingCache updateRatingCache(int id) throws StorageException {
-        IMessageAH mAH = Storage.get(IMessageAH.class);
-        IRatingAH rAH = Storage.get(IRatingAH.class);
+        try (IBatch batch = Storage.startBatch()) {
+            boolean done = false;
+            try {
+                RatingCache cache = updateRatingCache(batch, id);
+                batch.commit();
+                done = true;
+                return cache;
+            } finally {
+                if (done) {
+                    batch.commit();
+                } else {
+                    batch.rollback();
+                }
+            }
+        }
+    }
+
+    public static RatingCache updateRatingCache(IBatch batch, int id) throws StorageException {
+        IMessageAH mAH = batch.get(IMessageAH.class);
+        IRatingAH rAH = batch.get(IRatingAH.class);
 
         RatingCache ratingCache;
         try (IResult<MarkStat> marks = rAH.getMarkStatByMessageId(id)) {
@@ -308,7 +326,11 @@ public final class MessageUtils {
         } else {
             date = new Date();
         }
-        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, LocaleControl.getInstance().getLocale()).format(date);
+        return DateFormat.getDateTimeInstance(
+                DateFormat.MEDIUM,
+                DateFormat.MEDIUM,
+                LocaleControl.getInstance().getLocale()
+        ).format(date);
     }
 
     public static String formatDuration(Long duration) {

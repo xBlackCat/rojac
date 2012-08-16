@@ -4,12 +4,15 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.Version;
+import org.xblackcat.rojac.data.VersionInfo;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.NewData;
 import org.xblackcat.rojac.service.storage.IResult;
+import org.xblackcat.rojac.service.storage.IVersionAH;
+import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 import ru.rsdn.Janus.RequestForumInfo;
 
@@ -56,9 +59,10 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
 
         tracker.addLodMessage(Message.Synchronize_Message_Portion, limit);
 
-        Version messagesVersion = DataHelper.getVersion(VersionType.MESSAGE_ROW_VERSION);
-        Version moderatesVersion = DataHelper.getVersion(VersionType.MODERATE_ROW_VERSION);
-        Version ratingsVersion = DataHelper.getVersion(VersionType.RATING_ROW_VERSION);
+        IVersionAH vAH = Storage.get(IVersionAH.class);
+        Version messagesVersion = getVersion(vAH, VersionType.MESSAGE_ROW_VERSION);
+        Version moderatesVersion = getVersion(vAH, VersionType.MODERATE_ROW_VERSION);
+        Version ratingsVersion = getVersion(vAH, VersionType.RATING_ROW_VERSION);
 
         int ownUserId = 0;
         int portionSize;
@@ -94,14 +98,19 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
             messagesVersion = data.getForumRowVersion();
             moderatesVersion = data.getModerateRowVersion();
 
-            DataHelper.setVersion(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
-            DataHelper.setVersion(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
-            DataHelper.setVersion(VersionType.RATING_ROW_VERSION, ratingsVersion);
+            vAH.updateVersionInfo(new VersionInfo(messagesVersion, VersionType.MESSAGE_ROW_VERSION));
+            vAH.updateVersionInfo(new VersionInfo(moderatesVersion, VersionType.MODERATE_ROW_VERSION));
+            vAH.updateVersionInfo(new VersionInfo(ratingsVersion, VersionType.RATING_ROW_VERSION));
 
         } while (portionSize == limit);
 
         super.loadData(tracker, janusService);
 
         return ownUserId;
+    }
+
+    private static Version getVersion(IVersionAH vAH, VersionType type) throws StorageException {
+        VersionInfo versionInfo = vAH.getVersionInfo(type);
+        return versionInfo == null ? new Version() : versionInfo.getVersion();
     }
 }

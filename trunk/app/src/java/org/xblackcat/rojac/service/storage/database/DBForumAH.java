@@ -83,6 +83,10 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
+    public void updateForumStatistic(int forumId) throws StorageException {
+        helper.update(DataQuery.UPDATE_FORUM_SET_STAT, forumId);
+    }
+    @Override
     public void updateForumStatistic(IProgressTracker tracker, TIntHashSet forumIds) throws StorageException {
         Collection<Object[]> params = new ArrayList<>();
 

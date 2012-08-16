@@ -26,6 +26,15 @@ public final class Storage {
         }
     }
 
+    public static IBatch startBatch() throws StorageException {
+        try {
+            lock.readLock().lock();
+            return storage.startBatch();
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
     static void setStorage(StorageSettings settings) throws StorageException {
         assert RojacUtils.checkThread(false);
 

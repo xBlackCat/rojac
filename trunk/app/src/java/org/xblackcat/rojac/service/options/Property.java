@@ -39,7 +39,7 @@ public final class Property<T> {
     public static final Property<Boolean> ROJAC_DEBUG_MODE = createPrivate("rojac.debug.mode", Boolean.FALSE);
     public static final Property<Boolean> ROJAC_DEBUG_SQL = createPrivate("rojac.debug.sql", Boolean.FALSE);
     public static final Property<Integer> ROJAC_DEBUG_SQL_RUN_TIME_TRACK = createPrivate("rojac.sql.query.time", Integer.class);
-    public static final Property<Boolean> ROJAC_DEBUG_USE_FORK_IN_DECORATORS = createPrivate("rojac.use.forks", Boolean.TRUE);
+    public static final Property<Boolean> ROJAC_DEBUG_USE_FORK_IN_DECORATORS = createPrivate("rojac.use.forks", Boolean.FALSE);
 
     public static final Property<Boolean> ROJAC_DEBUG_DONT_RESTORE_LAYOUT = createPrivate("rojac.debug.reset_layout", Boolean.FALSE);
     public static final Property<Boolean> ROJAC_DEBUG_SHUTDOWN_OTHER = createPrivate("rojac.debug.shutdown_others", Boolean.FALSE);

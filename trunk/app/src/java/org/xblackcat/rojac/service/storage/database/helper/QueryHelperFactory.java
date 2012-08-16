@@ -14,13 +14,16 @@ public class QueryHelperFactory {
     private QueryHelperFactory() {
     }
 
-    public static IQueryHelper createHelper(DatabaseSettings settings) throws StorageInitializationException {
+    public static IManagingQueryHelper createHelper(DatabaseSettings settings) throws StorageInitializationException {
         IConnectionFactory connectionFactory = new SimplePooledConnectionFactory(settings);
 
+        IResultFactory resultFactory;
         if ("com.mysql.jdbc.Driver".equals(settings.getJdbcDriverClass().getName())) {
-            return new StreamingQueryHelper(connectionFactory, new MySqlStreamingResultFactory());
+            resultFactory = new MySqlStreamingResultFactory();
+        } else {
+            resultFactory = new StreamingResultFactory();
         }
 
-        return new StreamingQueryHelper(connectionFactory, new StreamingResultFactory());
+        return new ManagingQueryHelper(connectionFactory, new StreamingDataFetcher(resultFactory));
     }
 }

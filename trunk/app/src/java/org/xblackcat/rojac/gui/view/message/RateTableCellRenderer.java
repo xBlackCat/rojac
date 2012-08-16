@@ -39,7 +39,7 @@ class RateTableCellRenderer extends DefaultTableCellRenderer {
         } else {
             User u = mi.getUser();
             if (u != null) {
-                setText(u.getUserNick());
+                setText(u.getUserName());
             } else if (mi.getUserId().equals(Property.RSDN_USER_ID.get())) {
                 setText(Property.RSDN_USER_NAME.get());
             } else {

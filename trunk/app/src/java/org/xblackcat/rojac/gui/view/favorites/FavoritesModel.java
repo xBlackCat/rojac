@@ -3,6 +3,8 @@ package org.xblackcat.rojac.gui.view.favorites;
 import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.table.AbstractTableModel;
@@ -63,6 +65,7 @@ class FavoritesModel extends AbstractTableModel {
         updateFavoriteData(null);
     }
 
+    @TaskType(TaskTypeEnum.Initialization)
     private class FavoriteInfoLoader extends RojacWorker<Void, Void> {
         private ReadStatistic newStatistic;
         private String newName;

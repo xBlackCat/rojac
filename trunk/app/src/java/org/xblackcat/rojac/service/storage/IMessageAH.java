@@ -160,4 +160,8 @@ public interface IMessageAH extends AH {
     IResult<MessageData> getIgnoredTopicsList() throws StorageException;
 
     Integer getFirstUnreadReply(int userId) throws StorageException;
+
+    void updateLastPostInfo(int threadId) throws StorageException;
+
+    void updateParentPostUserId(int messageId) throws StorageException;
 }

@@ -2,46 +2,48 @@ package org.xblackcat.rojac.service.storage.database.helper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * 09.04.12 11:22
+ * 14.08.12 16:27
  *
  * @author xBlackCat
  */
-abstract class AQueryHelper implements IQueryHelper {
+public abstract class AQueryHelper implements IQueryHelper {
     protected final Log log = LogFactory.getLog(getClass());
-    protected final IConnectionFactory connectionFactory;
+    protected final IDataFetcher dataFetcher;
 
-    public AQueryHelper(IConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    public AQueryHelper(IDataFetcher dataFetcher) {
+        this.dataFetcher = dataFetcher;
     }
 
     @Override
-    public final String getEngine() {
-        return connectionFactory.getEngine();
-    }
-
-    @Override
-    public void shutdown() {
-        connectionFactory.shutdown();
+    public <T> IResult<T> execute(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
+        Connection connection = getConnection();
+        try {
+            return dataFetcher.execute(connection, c, sql, parameters);
+        } catch (SQLException e) {
+            try {
+                connection.close();
+            } catch (SQLException e1) {
+                log.error("Can't close connection", e1);
+            }
+            throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
+        }
     }
 
     @Override
     public <T> T executeSingle(IToObjectConverter<T> c, String sql, Object... parameters) throws StorageException {
-        assert RojacUtils.checkThread(false, QueryHelper.class);
+        assert RojacUtils.checkThread(false, AQueryHelper.class);
 
         try {
             try (IResult<T> result = execute(c, sql, parameters)) {
@@ -52,7 +54,11 @@ abstract class AQueryHelper implements IQueryHelper {
                 }
 
                 T object = col.next();
-                assert !col.hasNext() : "Expected one or zero results on query " + RojacUtils.constructDebugSQL(sql, parameters);
+                assert !col.hasNext() : "Expected one or zero results on query " +
+                        RojacUtils.constructDebugSQL(
+                                sql,
+                                parameters
+                        );
                 return object;
             }
         } catch (IllegalStateException e) {
@@ -68,33 +74,6 @@ abstract class AQueryHelper implements IQueryHelper {
     }
 
     @Override
-    public void updateBatch(String sql, IProgressTracker tracker, Collection<Object[]> params) throws StorageException {
-        assert RojacUtils.checkThread(false, getClass());
-
-        try {
-            try (Connection con = connectionFactory.getConnection()) {
-                try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
-                    int i = 0;
-                    int paramsLength = params.size();
-                    for (Object[] param : params) {
-                        if (tracker != null) {
-                            tracker.updateProgress(i, paramsLength);
-                        }
-                        DBUtils.fillStatement(preparedStatement, param);
-
-                        preparedStatement.executeUpdate();
-                        i++;
-                    }
-                }
-
-            }
-
-        } catch (SQLException e) {
-            throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql), e);
-        }
-    }
-
-    @Override
     public int update(String sql, Object... parameters) throws StorageException {
         assert RojacUtils.checkThread(false, getClass());
 
@@ -106,32 +85,31 @@ abstract class AQueryHelper implements IQueryHelper {
         }
 
 
-        try {
-            try (Connection con = connectionFactory.getConnection()) {
-                try (PreparedStatement st = con.prepareStatement(sql)) {
-                    DBUtils.fillStatement(st, parameters);
-                    long start = System.currentTimeMillis();
+        try (Connection con = getConnection()) {
+            try (PreparedStatement st = con.prepareStatement(sql)) {
+                DBUtils.fillStatement(st, parameters);
+                long start = System.currentTimeMillis();
 
-                    int rows = st.executeUpdate();
+                int rows = st.executeUpdate();
 
-                    if (debugAnchor != null) {
-                        final long executionTime = System.currentTimeMillis() - start;
+                if (debugAnchor != null) {
+                    final long executionTime = System.currentTimeMillis() - start;
 
-                        final Integer timeLine = Property.ROJAC_DEBUG_SQL_RUN_TIME_TRACK.get();
-                        if (timeLine == null ||
-                                timeLine * 1000 <= executionTime) {
-                            if (log.isTraceEnabled()) {
-                                log.trace("[" + debugAnchor + "] Update was executed in " + executionTime + " ms. " + rows + " row(s) affected.");
-                            }
+                    final Integer timeLine = Property.ROJAC_DEBUG_SQL_RUN_TIME_TRACK.get();
+                    if (timeLine == null ||
+                            timeLine * 1000 <= executionTime) {
+                        if (log.isTraceEnabled()) {
+                            log.trace("[" + debugAnchor + "] Update was executed in " + executionTime + " ms. " + rows + " row(s) affected.");
                         }
                     }
-                    return rows;
                 }
-
+                return rows;
             }
 
         } catch (SQLException e) {
             throw new StorageException("Can not execute query " + RojacUtils.constructDebugSQL(sql, parameters), e);
         }
     }
+
+    protected abstract Connection getConnection() throws StorageException;
 }

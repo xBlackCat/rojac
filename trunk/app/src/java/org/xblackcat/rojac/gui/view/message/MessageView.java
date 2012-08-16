@@ -13,6 +13,8 @@ import org.xblackcat.rojac.gui.view.IPostEvent;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.model.PostUtils;
 import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
@@ -182,6 +184,7 @@ public class MessageView extends AnItemView {
         packetDispatcher.dispatch(packet);
     }
 
+    @TaskType(TaskTypeEnum.Initialization)
     private class MessageLoader extends RojacWorker<Void, MessageDataHolder> {
         private final int messageId;
 

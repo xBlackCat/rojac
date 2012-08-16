@@ -45,4 +45,6 @@ public interface IForumAH extends AH {
     boolean hasSubscribedForums() throws StorageException;
 
     IResult<Forum> getForumLists() throws StorageException;
+
+    void updateForumStatistic(int forumId) throws StorageException;
 }

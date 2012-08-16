@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacException;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.data.Version;
+import org.xblackcat.rojac.data.VersionInfo;
 import org.xblackcat.rojac.data.VersionType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -12,6 +13,7 @@ import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.service.storage.IUserAH;
+import org.xblackcat.rojac.service.storage.IVersionAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
 
@@ -35,7 +37,9 @@ class GetUsersRequest extends ARequest<IPacket> {
         tracker.addLodMessage(Message.Synchronize_Message_Portion, limit);
 
         try {
-            Version localUsersVersion = DataHelper.getVersion(VersionType.USERS_ROW_VERSION);
+            IVersionAH vAH1 = Storage.get(IVersionAH.class);
+            VersionInfo versionInfo = vAH1.getVersionInfo(VersionType.USERS_ROW_VERSION);
+            Version localUsersVersion = versionInfo == null ? new Version() : versionInfo.getVersion();
 
             int totalUsersNumber = 0;
 
@@ -62,7 +66,8 @@ class GetUsersRequest extends ARequest<IPacket> {
                     tracker.updateProgress(count++, loaded);
                 }
                 localUsersVersion = users.getVersion();
-                DataHelper.setVersion(VersionType.USERS_ROW_VERSION, localUsersVersion);
+                IVersionAH vAH = Storage.get(IVersionAH.class);
+                vAH.updateVersionInfo(new VersionInfo(localUsersVersion, VersionType.USERS_ROW_VERSION));
             } while (loaded > 0);
 
             tracker.addLodMessage(Message.Synchronize_Message_GotUsers, totalUsersNumber);

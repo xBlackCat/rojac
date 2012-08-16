@@ -3,6 +3,8 @@ package org.xblackcat.rojac.gui.view.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.data.ReadStatistic;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IStatisticAH;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -16,6 +18,7 @@ import java.util.List;
  *
  * @author xBlackCat
  */
+@TaskType(TaskTypeEnum.Initialization)
 class ThreadStatisticLoader extends RojacWorker<Void, ReadStatistic> {
     private static final Log log = LogFactory.getLog(ThreadStatisticLoader.class);
 

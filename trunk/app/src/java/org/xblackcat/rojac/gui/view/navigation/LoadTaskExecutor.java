@@ -2,6 +2,8 @@ package org.xblackcat.rojac.gui.view.navigation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -14,6 +16,7 @@ import java.util.concurrent.ForkJoinTask;
 /**
  * @author xBlackCat
  */
+@TaskType(TaskTypeEnum.Initialization)
 class LoadTaskExecutor extends RojacWorker<Void, LoadTaskExecutor.TaskResult<?>> {
     private static final Log log = LogFactory.getLog(LoadTaskExecutor.class);
 

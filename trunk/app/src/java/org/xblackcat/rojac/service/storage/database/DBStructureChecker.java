@@ -10,7 +10,7 @@ import org.xblackcat.rojac.service.progress.ProgressState;
 import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
-import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
+import org.xblackcat.rojac.service.storage.database.helper.IManagingQueryHelper;
 import org.xblackcat.rojac.service.storage.database.helper.QueryHelperFactory;
 import org.xblackcat.rojac.util.DatabaseUtils;
 
@@ -29,7 +29,7 @@ public class DBStructureChecker implements IStructureChecker {
     private static final Log log = LogFactory.getLog(DBStructureChecker.class);
 
     private final Map<SQL, List<SQL>> initializationQueries;
-    private final IQueryHelper helper;
+    private final IManagingQueryHelper helper;
 
     public DBStructureChecker(DatabaseSettings settings) throws StorageInitializationException {
         this.helper = QueryHelperFactory.createHelper(settings);
