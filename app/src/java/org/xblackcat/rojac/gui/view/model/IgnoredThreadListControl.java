@@ -11,6 +11,8 @@ import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.datahandler.IgnoreUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.IgnoreUserUpdatedPacket;
 import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IResult;
@@ -92,6 +94,7 @@ class IgnoredThreadListControl extends MessageListControl {
         }
     }
 
+    @TaskType(TaskTypeEnum.Initialization)
     private class PostListLoader extends RojacWorker<Void, Void> {
         private Collection<MessageData> messages = new ArrayList<>();
         private final SortedThreadsModel model;

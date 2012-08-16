@@ -17,4 +17,8 @@ public enum TaskTypeEnum {
      * Tasks to be performed in background but not related to GUI.
      */
     Background,
+    /**
+     * Initialization tasks. Should be performed sequentially. Probably in forked threads
+     */
+    Initialization
 }

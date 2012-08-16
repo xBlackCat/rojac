@@ -3,6 +3,8 @@ package org.xblackcat.rojac.gui.view.recenttopics;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.MessageData;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IMessageAH;
@@ -15,6 +17,7 @@ import java.util.List;
  * @author xBlackCat
  */
 
+@TaskType(TaskTypeEnum.Initialization)
 class LatestPostsLoader extends RojacWorker<Void, LastPostInfo> {
     private final RecentThreadsModel model;
 

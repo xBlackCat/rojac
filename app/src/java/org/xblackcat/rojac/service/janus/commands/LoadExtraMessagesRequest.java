@@ -40,8 +40,8 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
     private final TIntHashSet updatedTopics = new TIntHashSet();
     private final TIntHashSet updatedForums = new TIntHashSet();
     private final TIntHashSet updatedMessages = new TIntHashSet();
-    private final TIntHashSet ratingCacheUpdate = new TIntHashSet();
 
+    private final TIntHashSet ratingCacheUpdate = new TIntHashSet();
     private final TIntObjectHashMap<String> nonExistUsers = new TIntObjectHashMap<>();
     private final TIntHashSet existUsers = new TIntHashSet();
     private final TIntHashSet nonExistRatingUsers = new TIntHashSet();
@@ -55,7 +55,11 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         userAH = Storage.get(IUserAH.class);
     }
 
-    public void process(IResultHandler<IPacket> handler, ILogTracker tracker, IJanusService janusService) throws RojacException {
+    public void process(
+            IResultHandler<IPacket> handler,
+            ILogTracker tracker,
+            IJanusService janusService
+    ) throws RojacException {
         int ownUserId = loadData(tracker, janusService);
 
         if (ownUserId > 0) {
@@ -73,53 +77,81 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         handler.process(new SynchronizationCompletePacket(updatedForums, updatedTopics, updatedMessages));
     }
 
-    protected int loadData(ILogTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
+    protected int loadData(
+            ILogTracker tracker,
+            IJanusService janusService
+    ) throws StorageException, RsdnProcessorException {
         int portion = Property.SYNCHRONIZER_LOAD_TOPICS_PORTION.get();
 
-        int[] messageIds = miscAH.getExtraMessages();
+        try (IBatch batch = Storage.startBatch()) {
+            IMiscAH miscAH = batch.get(IMiscAH.class);
+            IMessageAH mAH = batch.get(IMessageAH.class);
 
-        if (ArrayUtils.isNotEmpty(messageIds)) {
-            int offset = 0;
-            while (offset < messageIds.length) {
-                final int[] portionIds = ArrayUtils.subarray(messageIds, offset, offset + portion);
+            int[] messageIds = miscAH.getExtraMessages();
 
-                tracker.addLodMessage(Message.Synchronize_Command_Name_ExtraPosts, Arrays.toString(portionIds));
-                loadTopics(portionIds, janusService, tracker);
+            try {
+                if (ArrayUtils.isNotEmpty(messageIds)) {
+                    int offset = 0;
+                    while (offset < messageIds.length) {
+                        final int[] portionIds = ArrayUtils.subarray(messageIds, offset, offset + portion);
 
-                offset += portionIds.length;
-            }
+                        tracker.addLodMessage(Message.Synchronize_Command_Name_ExtraPosts, Arrays.toString(portionIds));
 
-            miscAH.clearExtraMessages();
-        }
+                        storeNewPosts(batch, tracker, janusService.getTopicByMessage(portionIds));
 
-        int[] brokenTopicIds = mAH.getBrokenTopicIds();
-        if (ArrayUtils.isNotEmpty(brokenTopicIds)) {
-            int offset = 0;
-            while (offset < brokenTopicIds.length) {
-                final int[] portionIds = ArrayUtils.subarray(brokenTopicIds, offset, offset + portion);
+                        offset += portionIds.length;
+                    }
 
-                tracker.addLodMessage(Message.Synchronize_Command_Name_BrokenTopics, Arrays.toString(portionIds));
-                loadTopics(portionIds, janusService, tracker);
+                    miscAH.clearExtraMessages();
+                }
 
-                offset += portionIds.length;
+                int[] brokenTopicIds = mAH.getBrokenTopicIds();
+                if (ArrayUtils.isNotEmpty(brokenTopicIds)) {
+                    int offset = 0;
+                    while (offset < brokenTopicIds.length) {
+                        final int[] portionIds = ArrayUtils.subarray(brokenTopicIds, offset, offset + portion);
+
+                        tracker.addLodMessage(
+                                Message.Synchronize_Command_Name_BrokenTopics,
+                                Arrays.toString(portionIds)
+                        );
+
+                        storeNewPosts(batch, tracker, janusService.getTopicByMessage(portionIds));
+
+                        offset += portionIds.length;
+                    }
+                }
+
+                batch.commit();
+            } catch (JanusServiceException e) {
+                throw new RsdnProcessorException("Can not load extra messages.", e);
             }
         }
 
         return 0;
     }
 
-    private void loadTopics(int[] messageIds, IJanusService janusService, ILogTracker tracker) throws RsdnProcessorException, StorageException {
-        TopicMessages extra;
-        try {
-            extra = janusService.getTopicByMessage(messageIds);
-        } catch (JanusServiceException e) {
-            throw new RsdnProcessorException("Can not load extra messages.", e);
+    protected void storeNewPosts(ILogTracker tracker, TopicMessages newPosts) throws StorageException {
+        try (IBatch batch = Storage.startBatch()) {
+            boolean done = false;
+            try {
+                storeNewPosts(batch, tracker, newPosts);
+                done = true;
+            } finally {
+                if (done) {
+                    batch.commit();
+                } else {
+                    batch.rollback();
+                }
+            }
         }
-
-        storeNewPosts(tracker, extra);
     }
 
-    protected void storeNewPosts(ILogTracker tracker, TopicMessages newPosts) throws StorageException {
+    private void storeNewPosts(IBatch batch, ILogTracker tracker, TopicMessages newPosts) throws StorageException {
+        IModerateAH modAH = batch.get(IModerateAH.class);
+        IMessageAH mAH = batch.get(IMessageAH.class);
+        IRatingAH rAH = batch.get(IRatingAH.class);
+
         JanusMessageInfo[] messages = newPosts.getMessages();
         JanusModerateInfo[] moderates = newPosts.getModerates();
         JanusRatingInfo[] ratings = newPosts.getRatings();
@@ -133,7 +165,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         for (JanusMessageInfo mes : newPosts.getMessages()) {
             tracker.updateProgress(count++, newPosts.getMessages().length);
 
-            boolean read = setMessageRead(mes);
+            boolean read = shouldTheMessageRead(mes);
 
             int mId = mes.getMessageId();
             if (mAH.isExist(mId)) {
@@ -213,7 +245,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         }
     }
 
-    private boolean setMessageRead(JanusMessageInfo mes) {
+    private boolean shouldTheMessageRead(JanusMessageInfo mes) {
         if (Property.SYNCHRONIZER_MARK_MY_POST_READ.get() && Property.RSDN_USER_ID.isSet()) {
             if (mes.getUserId() == Property.RSDN_USER_ID.get()) {
                 // Own posts mark as read
@@ -226,7 +258,10 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         return false;
     }
 
-    protected void postProcessing(ILogTracker tracker, IJanusService janusService) throws StorageException, RsdnProcessorException {
+    protected void postProcessing(
+            ILogTracker tracker,
+            IJanusService janusService
+    ) throws StorageException, RsdnProcessorException {
         if (!nonExistUsers.isEmpty() || !nonExistRatingUsers.isEmpty()) {
             int[] userIds;
             if (Property.SYNCHRONIZER_LOAD_USERS.get()) {
@@ -235,61 +270,97 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
 
                 // Try to loads users from JanusAT
                 userIds = usersToLoad.toArray();
-                try {
-                    int portion = Property.SYNCHRONIZER_LOAD_USERS_PORTION.get();
-                    int offset = 0;
+                try (IBatch batch = Storage.startBatch()) {
+                    IUserAH userAH = batch.get(IUserAH.class);
+                    try {
+                        int portion = Property.SYNCHRONIZER_LOAD_USERS_PORTION.get();
+                        int offset = 0;
 
-                    while (offset < userIds.length) {
-                        int[] portionIds = ArrayUtils.subarray(userIds, offset, offset + portion);
-                        tracker.addLodMessage(Message.Synchronize_Command_Name_Users, Arrays.toString(portionIds));
+                        while (offset < userIds.length) {
+                            int[] portionIds = ArrayUtils.subarray(userIds, offset, offset + portion);
+                            tracker.addLodMessage(Message.Synchronize_Command_Name_Users, Arrays.toString(portionIds));
 
-                        UsersList usersByIds = janusService.getUsersByIds(portionIds);
+                            UsersList usersByIds = janusService.getUsersByIds(portionIds);
 
-                        tracker.addLodMessage(Message.Synchronize_Message_StoreFullUserInfo);
-                        User[] users = usersByIds.getUsers();
-                        for (int i = 0, usersLength = users.length; i < usersLength; i++) {
-                            User user = users[i];
-                            userAH.storeUser(user);
-                            nonExistUsers.remove(user.getId());
-                            nonExistRatingUsers.remove(user.getId());
-                            tracker.updateProgress(i, usersLength);
+                            tracker.addLodMessage(Message.Synchronize_Message_StoreFullUserInfo);
+                            User[] users = usersByIds.getUsers();
+                            for (int i = 0, usersLength = users.length; i < usersLength; i++) {
+                                User user = users[i];
+                                userAH.storeUser(user);
+                                nonExistUsers.remove(user.getId());
+                                nonExistRatingUsers.remove(user.getId());
+                                tracker.updateProgress(i, usersLength);
+                            }
+
+                            offset += portionIds.length;
                         }
 
-                        offset += portionIds.length;
+                        // If we still have unresolved users?
+                        // Process only users we could resolve names from posts
+                        if (!nonExistUsers.isEmpty()) {
+                            userIds = nonExistUsers.keys();
+                            tracker.addLodMessage(Message.Synchronize_Message_StoreUserInfo);
+                            for (int i = 0, userIdsLength = userIds.length; i < userIdsLength; i++) {
+                                int userId = userIds[i];
+                                userAH.storeUserInfo(userId, nonExistUsers.get(userId));
+                                tracker.updateProgress(i, userIdsLength);
+                            }
+                        }
+
+                        batch.commit();
+                    } catch (JanusServiceException e) {
+                        tracker.postException(e);
+                        batch.rollback();
                     }
-                } catch (JanusServiceException e) {
-                    tracker.postException(e);
-                }
-            }
-
-            // If we still have unresolved users?
-            // Process only users we could resolve names from posts
-            if (!nonExistUsers.isEmpty()) {
-                userIds = nonExistUsers.keys();
-                tracker.addLodMessage(Message.Synchronize_Message_StoreUserInfo);
-                for (int i = 0, userIdsLength = userIds.length; i < userIdsLength; i++) {
-                    int userId = userIds[i];
-                    userAH.storeUserInfo(userId, nonExistUsers.get(userId));
-                    tracker.updateProgress(i, userIdsLength);
                 }
             }
         }
 
-        int[] forUpdate = ratingCacheUpdate.toArray();
+        int idx = 0;
+        int total = ratingCacheUpdate.size();
         tracker.addLodMessage(Message.Synchronize_Message_UpdateCaches);
-        for (int i = 0, forUpdateLength = forUpdate.length; i < forUpdateLength; i++) {
-            MessageUtils.updateRatingCache(forUpdate[i]);
-            tracker.updateProgress(i, forUpdateLength);
+        try (IBatch batch = Storage.startBatch()) {
+            try {
+                for (int anInt : ratingCacheUpdate.toArray()) {
+                    MessageUtils.updateRatingCache(batch, anInt);
+                    tracker.updateProgress(idx++, total);
+                }
+
+                IMessageAH mAH = batch.get(IMessageAH.class);
+                IForumAH forumAH = batch.get(IForumAH.class);
+
+                final BatchTracker batchTracker = new BatchTracker(tracker, 3);
+                batchTracker.setBatch(0, 1);
+                idx = 0;
+                total = updatedMessages.size();
+                for (int messageId : updatedMessages.toArray()) {
+                    mAH.updateParentPostUserId(messageId);
+                    batchTracker.updateProgress(idx++, total);
+                }
+
+                batchTracker.nextSuperBatch();
+                idx = 0;
+                total = updatedTopics.size();
+                for (int topicId : updatedTopics.toArray()) {
+                    mAH.updateLastPostInfo(topicId);
+                    batchTracker.updateProgress(idx++, total);
+                }
+
+                batchTracker.nextSuperBatch();
+                idx = 0;
+                total = updatedForums.size();
+                for (int forumId : updatedForums.toArray()) {
+                    forumAH.updateForumStatistic(forumId);
+                    batchTracker.updateProgress(idx++, total);
+                }
+
+                batch.commit();
+            } catch (StorageException e) {
+                batch.rollback();
+                tracker.postException(e);
+            }
         }
 
-        final BatchTracker batchTracker = new BatchTracker(tracker, 3);
-        batchTracker.setBatch(0, 1);
-        mAH.updateParentPostUserId(batchTracker, updatedMessages);
-        batchTracker.nextSuperBatch();
-        mAH.updateLastPostInfo(batchTracker, updatedTopics);
-        batchTracker.nextSuperBatch();
-        batchTracker.setBatch(0, 1);
-        forumAH.updateForumStatistic(batchTracker, updatedForums);
     }
 
 }

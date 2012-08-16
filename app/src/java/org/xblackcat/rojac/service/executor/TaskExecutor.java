@@ -27,10 +27,15 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
         pools.put(TaskTypeEnum.Background, setupCommonExecutor());
         pools.put(TaskTypeEnum.DataLoading, setupMessageLoadingExecutor());
         pools.put(TaskTypeEnum.Synchronization, setupServerSynchronizationExecutor());
+        pools.put(TaskTypeEnum.Initialization, setupInitializatorsExecutor());
 
         this.pools = Collections.unmodifiableMap(pools);
 
         scheduler = new ScheduledThreadPoolExecutor(1);
+    }
+
+    private ExecutorService setupInitializatorsExecutor() {
+        return new ForkJoinPool();
     }
 
     private ExecutorService setupServerSynchronizationExecutor() {

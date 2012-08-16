@@ -36,6 +36,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
 
         @Override
         public void postException(Throwable t) {
+            log.warn("Got exception during synchronization", t);
             progressController.fireException(Message.Synchronize_Message_Exception, ExceptionUtils.getStackTrace(t));
         }
 

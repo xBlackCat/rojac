@@ -2,36 +2,26 @@ package org.xblackcat.rojac.service.storage.database;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
-import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageDataException;
 import org.xblackcat.rojac.service.storage.StorageException;
-import org.xblackcat.rojac.service.storage.StorageInitializationException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
 import org.xblackcat.rojac.service.storage.database.convert.IToObjectConverter;
 import org.xblackcat.rojac.service.storage.database.helper.IQueryHelper;
-import org.xblackcat.rojac.util.DatabaseUtils;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
- * 27.09.11 16:17
+ * 14.08.12 16:10
  *
  * @author xBlackCat
  */
-class QueryHolder implements IQueryHolder {
-    private final Map<DataQuery, String> queries;
-    private final IQueryHelper helper;
+public abstract class AQueryHolder<I extends IQueryHelper> implements IQueryHolder {
+    protected final I helper;
 
-    public QueryHolder(IQueryHelper helper) throws StorageInitializationException {
-        this.helper = helper;
-        queries = DatabaseUtils.loadSQLs(helper.getEngine(), DataQuery.class);
+    public AQueryHolder(I queryHelper) {
+        helper = queryHelper;
     }
 
-    protected String getQuery(DataQuery q) {
-        return queries.get(q);
-    }
+    protected abstract String getQuery(DataQuery q);
 
     @Override
     public int update(DataQuery sql, Object... params) throws StorageException {
@@ -41,11 +31,6 @@ class QueryHolder implements IQueryHolder {
     @Override
     public <T> T executeSingle(IToObjectConverter<T> c, DataQuery sql, Object... params) throws StorageException {
         return helper.executeSingle(c, getQuery(sql), params);
-    }
-
-    @Override
-    public void updateBatch(DataQuery sql, IProgressTracker tracker, Collection<Object[]> params) throws StorageException {
-        helper.updateBatch(getQuery(sql), tracker, params);
     }
 
     @Override

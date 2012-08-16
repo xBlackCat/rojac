@@ -6,6 +6,8 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.IResult;
@@ -101,6 +103,7 @@ class OutboxListControl extends MessageListControl {
         ).dispatch(p);
     }
 
+    @TaskType(TaskTypeEnum.Initialization)
     private class PostListLoader extends RojacWorker<Void, NewMessage> {
         private boolean firstLoad = true;
         private final SortedThreadsModel model;

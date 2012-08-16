@@ -12,6 +12,8 @@ import org.xblackcat.rojac.gui.view.message.EditMessagePane;
 import org.xblackcat.rojac.gui.view.message.PreviewMessagePane;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.service.datahandler.NewMessagesUpdatedPacket;
+import org.xblackcat.rojac.service.executor.TaskType;
+import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -244,6 +246,7 @@ public class EditMessageDialog extends JDialog {
 
     }
 
+    @TaskType(TaskTypeEnum.Initialization)
     private abstract class MessageLoader extends RojacWorker<Void, MessageInfo> {
         protected final int messageId;
         protected int parentMessageId;
