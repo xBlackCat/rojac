@@ -23,6 +23,7 @@ public enum Message {
     Button_Yes,
     Button_No,
     Button_ChangePassword,
+    Button_Update,
 
     Button_Reply_ToolTip,
 
