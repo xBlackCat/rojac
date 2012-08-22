@@ -89,6 +89,7 @@
     <path id="rojac-application.module.sourcepath">
         <dirset dir="${rojac-application.basedir}">
             <include name="src/java"/>
+            <include name="src/wsdl"/>
         </dirset>
     </path>
 
