@@ -28,6 +28,7 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
         pools.put(TaskTypeEnum.DataLoading, setupMessageLoadingExecutor());
         pools.put(TaskTypeEnum.Synchronization, setupServerSynchronizationExecutor());
         pools.put(TaskTypeEnum.Initialization, setupInitializatorsExecutor());
+        pools.put(TaskTypeEnum.InitializationHeavy, setupHeavyInitializatorsExecutor());
 
         this.pools = Collections.unmodifiableMap(pools);
 
@@ -36,6 +37,10 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
 
     private ExecutorService setupInitializatorsExecutor() {
         return new ForkJoinPool();
+    }
+
+    private ExecutorService setupHeavyInitializatorsExecutor() {
+        return Executors.newSingleThreadExecutor();
     }
 
     private ExecutorService setupServerSynchronizationExecutor() {

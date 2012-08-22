@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author xBlackCat
  */
-@TaskType(TaskTypeEnum.Initialization)
+@TaskType(TaskTypeEnum.InitializationHeavy)
 class ThreadsLoader extends RojacWorker<Void, Thread> {
     private static final Log log = LogFactory.getLog(ThreadsLoader.class);
 
