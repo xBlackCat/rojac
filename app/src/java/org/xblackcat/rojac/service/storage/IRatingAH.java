@@ -2,7 +2,7 @@ package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.Rating;
-import ru.rsdn.Janus.JanusRatingInfo;
+import ru.rsdn.janus.JanusRatingInfo;
 
 /**
  * @author ASUS

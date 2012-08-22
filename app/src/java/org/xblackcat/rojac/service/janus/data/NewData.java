@@ -1,9 +1,11 @@
 package org.xblackcat.rojac.service.janus.data;
 
 import org.xblackcat.rojac.data.Version;
-import ru.rsdn.Janus.JanusMessageInfo;
-import ru.rsdn.Janus.JanusModerateInfo;
-import ru.rsdn.Janus.JanusRatingInfo;
+import ru.rsdn.janus.JanusMessageInfo;
+import ru.rsdn.janus.JanusModerateInfo;
+import ru.rsdn.janus.JanusRatingInfo;
+
+import java.util.List;
 
 /**
  * @author ASUS
@@ -16,7 +18,7 @@ public class NewData extends TopicMessages {
     private final Version ratingRowVersion;
     private final Version moderateRowVersion;
 
-    public NewData(int ownUserId, Version forumRowVersion, Version ratingRowVersion, Version moderateRowVersion, JanusMessageInfo[] mes, JanusModerateInfo[] mod, JanusRatingInfo[] r) {
+    public NewData(int ownUserId, Version forumRowVersion, Version ratingRowVersion, Version moderateRowVersion, List<JanusMessageInfo> mes, List<JanusModerateInfo> mod, List<JanusRatingInfo> r) {
         super(mes, mod, r);
         this.ownUserId = ownUserId;
         this.forumRowVersion = forumRowVersion;

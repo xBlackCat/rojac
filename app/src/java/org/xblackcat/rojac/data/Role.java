@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.data;
 
 import org.apache.commons.logging.LogFactory;
-import ru.rsdn.Janus.UserRole;
+import ru.rsdn.janus.UserRole;
 
 /**
  * @author ASUS
@@ -18,9 +18,9 @@ public enum Role {
 
     public static Role getUserType(UserRole ur) {
         try {
-            return valueOf(ur.getValue());
+            return valueOf(ur.value());
         } catch (IllegalArgumentException e) {
-            LogFactory.getLog(Role.class).warn("Unknown user role " + ur.getValue());
+            LogFactory.getLog(Role.class).warn("Unknown user role " + ur.value());
 
             return User;
         }

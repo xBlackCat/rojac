@@ -5,7 +5,7 @@ import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.service.IProgressTracker;
-import ru.rsdn.Janus.RequestForumInfo;
+import ru.rsdn.janus.RequestForumInfo;
 
 /**
  * @author ASUS

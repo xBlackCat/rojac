@@ -5,7 +5,7 @@ import org.xblackcat.rojac.data.NewModerate;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.data.Version;
 import org.xblackcat.rojac.service.janus.data.*;
-import ru.rsdn.Janus.RequestForumInfo;
+import ru.rsdn.janus.RequestForumInfo;
 
 import java.util.Collection;
 
@@ -65,6 +65,7 @@ public interface IJanusService {
     /**
      * Gets new messages from Janus WS.
      *
+     *
      * @param requestForumInfos
      * @param ratingVer         last rating row version.
      * @param messageVer        last messages row version.
@@ -75,7 +76,7 @@ public interface IJanusService {
      * @return new messages and other information.
      * @throws JanusServiceException throws if any errors occurs.
      */
-    NewData getNewData(RequestForumInfo[] requestForumInfos, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
+    NewData getNewData(Collection<RequestForumInfo> requestForumInfos, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
 
     UsersList getUsersByIds(int ... ids) throws JanusServiceException;
 }

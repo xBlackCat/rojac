@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.data;
 
-import ru.rsdn.Janus.JanusForumGroupInfo;
+import ru.rsdn.janus.JanusForumGroupInfo;
 
 /**
  * @author Alexey

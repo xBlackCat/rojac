@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.data;
 
-import ru.rsdn.Janus.JanusModerateInfo;
+import ru.rsdn.janus.JanusModerateInfo;
 
 import java.util.Date;
 
@@ -22,7 +22,7 @@ public final class Moderate {
     }
 
     public Moderate(JanusModerateInfo i) {
-        this(i.getMessageId(), i.getUserId(), i.getForumId(), i.getCreate().getTimeInMillis());
+        this(i.getMessageId(), i.getUserId(), i.getForumId(), i.getCreate().toGregorianCalendar().getTimeInMillis());
     }
 
     public int getMessageId() {

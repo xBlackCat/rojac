@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Moderate;
-import ru.rsdn.Janus.JanusModerateInfo;
+import ru.rsdn.janus.JanusModerateInfo;
 
 /**
  * @author ASUS

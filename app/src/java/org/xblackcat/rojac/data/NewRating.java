@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.data;
 
-import ru.rsdn.Janus.PostRatingInfo;
+import ru.rsdn.janus.PostRatingInfo;
 
 /**
  * @author ASUS
@@ -30,7 +30,11 @@ public final class NewRating implements IRSDNable<PostRatingInfo> {
     }
 
     public PostRatingInfo getRSDNObject() {
-        return new PostRatingInfo(id, messageId, rate.getValue());
+        PostRatingInfo pri = new PostRatingInfo();
+        pri.setMessageId(id);
+        pri.setMessageId(messageId);
+        pri.setLocalRatingId(rate.getValue());
+        return pri;
     }
 
     public String toString() {

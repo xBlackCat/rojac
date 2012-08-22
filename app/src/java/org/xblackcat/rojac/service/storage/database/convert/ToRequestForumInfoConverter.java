@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.storage.database.convert;
 
-import ru.rsdn.Janus.RequestForumInfo;
+import ru.rsdn.janus.RequestForumInfo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +16,9 @@ class ToRequestForumInfoConverter implements IToObjectConverter<RequestForumInfo
         int forumId = rs.getInt(1);
         boolean empty = rs.getBoolean(2);
 
-        return new RequestForumInfo(forumId, empty);
+        RequestForumInfo info = new RequestForumInfo();
+        info.setForumId(forumId);
+        info.setIsFirstRequest(empty);
+        return info;
     }
 }
