@@ -1,6 +1,9 @@
 package org.xblackcat.rojac.service.janus.data;
 
-import ru.rsdn.Janus.PostExceptionInfo;
+import org.apache.commons.lang3.ArrayUtils;
+import ru.rsdn.janus.PostExceptionInfo;
+
+import java.util.List;
 
 /**
  * @author ASUS
@@ -10,12 +13,13 @@ public class PostInfo {
     private final int[] commited;
     private final PostException[] exceptions;
 
-    public PostInfo(int[] commited, PostExceptionInfo[] exceptions) {
-        this.commited = commited;
+    public PostInfo(List<Integer> commited, List<PostExceptionInfo> exceptions) {
+        this.commited = ArrayUtils.toPrimitive(commited.toArray(new Integer[commited.size()]));
 
-        this.exceptions = new PostException[exceptions.length];
-        for (int i = 0; i < exceptions.length; i++) {
-            this.exceptions[i] = new PostException(exceptions[i]);
+        this.exceptions = new PostException[exceptions.size()];
+        int i = 0;
+        for (PostExceptionInfo pe : exceptions) {
+            this.exceptions[i++] = new PostException(pe);
         }
     }
 

@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.data;
 
-import ru.rsdn.Janus.JanusRatingInfo;
+import ru.rsdn.janus.JanusRatingInfo;
 
 import java.util.Date;
 
@@ -26,7 +26,14 @@ public final class Rating {
     }
 
     public Rating(JanusRatingInfo i) {
-        this(i.getMessageId(), i.getTopicId(), i.getUserId(), i.getUserRating(), i.getRate(), i.getRateDate().getTimeInMillis());
+        this(
+                i.getMessageId(),
+                i.getTopicId(),
+                i.getUserId(),
+                i.getUserRating(),
+                i.getRate(),
+                i.getRateDate().toGregorianCalendar().getTimeInMillis()
+        );
     }
 
     public int getMessageId() {

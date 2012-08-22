@@ -13,7 +13,7 @@ import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
-import ru.rsdn.Janus.JanusMessageInfo;
+import ru.rsdn.janus.JanusMessageInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,9 +37,9 @@ final class DBMessageAH extends AnAH implements IMessageAH {
                 fm.getArticleId(),
                 fm.getUserTitleColor(),
                 Role.getUserType(fm.getUserRole()).ordinal(),
-                fm.getMessageDate().getTimeInMillis(),
-                fm.getUpdateDate().getTimeInMillis(),
-                fm.getLastModerated().getTimeInMillis(),
+                fm.getMessageDate().toGregorianCalendar().getTimeInMillis(),
+                fm.getUpdateDate().toGregorianCalendar().getTimeInMillis(),
+                fm.getLastModerated().toGregorianCalendar().getTimeInMillis(),
                 fm.getSubject(),
                 fm.getMessageName(),
                 fm.getUserNick(),
@@ -66,9 +66,9 @@ final class DBMessageAH extends AnAH implements IMessageAH {
                 m.getArticleId(),
                 m.getUserTitleColor(),
                 Role.getUserType(m.getUserRole()).ordinal(),
-                m.getMessageDate().getTimeInMillis(),
-                m.getUpdateDate().getTimeInMillis(),
-                m.getLastModerated().getTimeInMillis(),
+                m.getMessageDate().toGregorianCalendar().getTimeInMillis(),
+                m.getUpdateDate().toGregorianCalendar().getTimeInMillis(),
+                m.getLastModerated().toGregorianCalendar().getTimeInMillis(),
                 m.getSubject(),
                 m.getMessageName(),
                 m.getUserNick(),

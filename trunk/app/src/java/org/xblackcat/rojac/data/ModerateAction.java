@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.data;
 
-import ru.rsdn.Janus.ModerateActionType;
+import ru.rsdn.janus.ModerateActionType;
 
 /**
  * @author xBlackCat
@@ -19,7 +19,7 @@ public enum ModerateAction {
 
     ModerateAction(int code) {
         this.code = code;
-        type = ModerateActionType.fromString(name());
+        type = ModerateActionType.fromValue(name());
     }
 
     public static ModerateAction getAction(int action) {

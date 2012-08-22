@@ -15,7 +15,7 @@ public class PostException {
         this.info = info;
     }
 
-    public PostException(ru.rsdn.Janus.PostExceptionInfo i) {
+    public PostException(ru.rsdn.janus.PostExceptionInfo i) {
         this(i.getException(), i.getLocalMessageId(), i.getInfo());
     }
 

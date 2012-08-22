@@ -10,7 +10,7 @@ import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
-import ru.rsdn.Janus.RequestForumInfo;
+import ru.rsdn.janus.RequestForumInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;

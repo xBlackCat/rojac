@@ -5,7 +5,7 @@ import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.IProgressTracker;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
-import ru.rsdn.Janus.JanusMessageInfo;
+import ru.rsdn.janus.JanusMessageInfo;
 
 /**
  * @author ASUS

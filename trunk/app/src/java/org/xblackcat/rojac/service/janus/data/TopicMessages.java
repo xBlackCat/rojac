@@ -1,41 +1,48 @@
 package org.xblackcat.rojac.service.janus.data;
 
-import ru.rsdn.Janus.JanusMessageInfo;
-import ru.rsdn.Janus.JanusModerateInfo;
-import ru.rsdn.Janus.JanusRatingInfo;
+import ru.rsdn.janus.JanusMessageInfo;
+import ru.rsdn.janus.JanusModerateInfo;
+import ru.rsdn.janus.JanusRatingInfo;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author ASUS
  */
 
 public class TopicMessages {
-    public static final JanusMessageInfo[] NO_MESSAGES = new JanusMessageInfo[0];
-    public static final JanusModerateInfo[] NO_MODERATES = new JanusModerateInfo[0];
-    public static final JanusRatingInfo[] NO_RATINGS = new JanusRatingInfo[0];
+    public static final List<JanusMessageInfo> NO_MESSAGES = Collections.emptyList();
+    public static final List<JanusModerateInfo> NO_MODERATES = Collections.emptyList();
+    public static final List<JanusRatingInfo> NO_RATINGS = Collections.emptyList();
 
-    protected final JanusMessageInfo[] messages;
-    protected final JanusModerateInfo[] moderates;
-    protected final JanusRatingInfo[] ratings;
+    protected final List<JanusMessageInfo> messages;
+    protected final List<JanusModerateInfo> moderates;
+    protected final List<JanusRatingInfo> ratings;
 
-    public TopicMessages(JanusMessageInfo[] messages, JanusModerateInfo[] moderates, JanusRatingInfo[] ratings) {
+    public TopicMessages(
+            List<JanusMessageInfo> messages,
+            List<JanusModerateInfo> moderates,
+            List<JanusRatingInfo> ratings
+    ) {
         this.messages = messages == null ? NO_MESSAGES : messages;
         this.moderates = moderates == null ? NO_MODERATES : moderates;
         this.ratings = ratings == null ? NO_RATINGS : ratings;
     }
 
-    public JanusMessageInfo[] getMessages() {
+    public List<JanusMessageInfo> getMessages() {
         return messages;
     }
 
-    public JanusModerateInfo[] getModerates() {
+    public List<JanusModerateInfo> getModerates() {
         return moderates;
     }
 
-    public JanusRatingInfo[] getRatings() {
+    public List<JanusRatingInfo> getRatings() {
         return ratings;
     }
 
     public int getTotalRecords() {
-        return messages.length + moderates.length + ratings.length;
+        return messages.size() + moderates.size() + ratings.size();
     }
 }

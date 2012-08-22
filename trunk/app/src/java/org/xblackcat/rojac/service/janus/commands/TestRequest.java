@@ -9,7 +9,10 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.NewData;
-import ru.rsdn.Janus.RequestForumInfo;
+import ru.rsdn.janus.RequestForumInfo;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Dumb request to Janus service to check if the user is really registered.
@@ -20,9 +23,14 @@ import ru.rsdn.Janus.RequestForumInfo;
 class TestRequest extends ARequest<Integer> {
     private static final Log log = LogFactory.getLog(TestRequest.class);
 
-    private static final RequestForumInfo[] DUMMY_REQUEST_INFO = new RequestForumInfo[]{
-            new RequestForumInfo(-1, true)
-    };
+    private static final Collection<RequestForumInfo> DUMMY_REQUEST_INFO ;
+
+    static {
+        RequestForumInfo rfi = new RequestForumInfo();
+        rfi.setForumId(-1);
+        rfi.setIsFirstRequest(true);
+        DUMMY_REQUEST_INFO = Collections.singleton(rfi);
+    }
 
     @Override
     public void process(IResultHandler<Integer> handler, ILogTracker trac, IJanusService janusService) throws RojacException {

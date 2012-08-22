@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.storage.database.convert;
 
 import org.xblackcat.rojac.data.*;
-import ru.rsdn.Janus.RequestForumInfo;
+import ru.rsdn.janus.RequestForumInfo;
 
 /**
  * @author xBlackCat

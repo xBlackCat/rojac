@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.data;
 
-import ru.rsdn.Janus.PostModerateInfo;
+import ru.rsdn.janus.PostModerateInfo;
 
 /**
  * @author xBlackCat
@@ -49,12 +49,14 @@ public class NewModerate implements IRSDNable<PostModerateInfo> {
 
     public PostModerateInfo getRSDNObject() {
         return new PostModerateInfo(
+/*
                 id,
                 messageId,
                 action.getType(),
                 forumId,
                 description,
                 asModerator
+*/
         );
     }
 }

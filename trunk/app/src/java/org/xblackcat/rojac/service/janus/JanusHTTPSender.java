@@ -15,42 +15,6 @@
  */
 package org.xblackcat.rojac.service.janus;
 
-import org.apache.axis.AxisFault;
-import org.apache.axis.Constants;
-import org.apache.axis.Message;
-import org.apache.axis.MessageContext;
-import org.apache.axis.components.logger.LogFactory;
-import org.apache.axis.components.net.CommonsHTTPClientProperties;
-import org.apache.axis.components.net.CommonsHTTPClientPropertiesFactory;
-import org.apache.axis.handlers.BasicHandler;
-import org.apache.axis.soap.SOAP12Constants;
-import org.apache.axis.soap.SOAPConstants;
-import org.apache.axis.transport.http.HTTPConstants;
-import org.apache.axis.utils.JavaUtils;
-import org.apache.axis.utils.Messages;
-import org.apache.axis.utils.NetworkUtils;
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.logging.Log;
-import org.xblackcat.rojac.service.options.Password;
-import org.xblackcat.rojac.service.progress.IProgressController;
-
-import javax.xml.soap.MimeHeader;
-import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPException;
-import java.io.*;
-import java.net.URL;
-import java.util.*;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
-import static org.xblackcat.rojac.i18n.Message.*;
-import static org.xblackcat.rojac.service.options.Property.*;
 
 /**
  * This class uses Jakarta Commons's HttpClient to call a SOAP server. Modification of CommonsHTTPSender to fit Janus WS
@@ -62,12 +26,12 @@ import static org.xblackcat.rojac.service.options.Property.*;
  *         HttpState. Also we need to setCookiePolicy on HttpState to CookiePolicy.COMPATIBILITY else it is defaulting
  *         to RFC2109Spec and adding Version information to it and tomcat server not recognizing it
  */
-class JanusHTTPSender extends BasicHandler {
-    private final IProgressController progressController;
+class JanusHTTPSender /*extends BasicHandler */{
+/*    private final IProgressController progressController;
 
-    /**
+    *//**
      * Field log
-     */
+     *//*
     protected static Log log =
             LogFactory.getLog(JanusHTTPSender.class.getName());
 
@@ -97,13 +61,13 @@ class JanusHTTPSender extends BasicHandler {
         this.connectionManager = cm;
     }
 
-    /**
+    *//**
      * invoke creates a socket connection, sends the request SOAP message and then reads the response SOAP message back
      * from the SOAP server
      *
      * @param msgContext the messsage context
      * @throws org.apache.axis.AxisFault
-     */
+     *//*
     public void invoke(MessageContext msgContext) throws AxisFault {
         HttpMethodBase method;
         if (log.isDebugEnabled()) {
@@ -298,14 +262,14 @@ class JanusHTTPSender extends BasicHandler {
         }
     }
 
-    /**
+    *//**
      * little helper function for cookies. fills up the message context with a string or an array of strings (if there
      * are more than one Set-Cookie)
      *
      * @param cookieName
      * @param cookie
      * @param msgContext
-     */
+     *//*
     public void handleCookie(String cookieName, String cookie,
                              MessageContext msgContext) {
 
@@ -347,7 +311,7 @@ class JanusHTTPSender extends BasicHandler {
         }
     }
 
-    /**
+    *//**
      * Add cookies from message context
      *
      * @param msgContext
@@ -356,7 +320,7 @@ class JanusHTTPSender extends BasicHandler {
      * @param host
      * @param path
      * @param secure
-     */
+     *//*
     private void fillHeaders(MessageContext msgContext, HttpState state, String header, String host, String path, boolean secure) {
         Object ck1 = msgContext.getProperty(header);
         if (ck1 != null) {
@@ -371,12 +335,12 @@ class JanusHTTPSender extends BasicHandler {
         }
     }
 
-    /**
+    *//**
      * add cookie to state
      *
      * @param state
      * @param cookie
-     */
+     *//*
     private void addCookie(HttpState state, String cookie, String host, String path, boolean secure) {
         int index = cookie.indexOf('=');
         state.addCookie(new Cookie(host, cookie.substring(0, index),
@@ -384,12 +348,12 @@ class JanusHTTPSender extends BasicHandler {
                 null, secure));
     }
 
-    /**
+    *//**
      * cleanup the cookie value.
      *
      * @param cookie initial cookie value
      * @return a cleaned up cookie value.
-     */
+     *//*
     private String cleanupCookie(String cookie) {
         cookie = cookie.trim();
         // chop after first ; a la Apache SOAP (see HTTPUtils.java there)
@@ -448,7 +412,7 @@ class JanusHTTPSender extends BasicHandler {
         return config;
     }
 
-    /**
+    *//**
      * Extracts info from message context.
      *
      * @param method     Post method
@@ -456,7 +420,7 @@ class JanusHTTPSender extends BasicHandler {
      * @param msgContext the message context
      * @param tmpURL     the url to post to.
      * @throws Exception
-     */
+     *//*
     private void addContextInfo(HttpMethodBase method,
                                 HttpClient httpClient,
                                 MessageContext msgContext,
@@ -465,8 +429,8 @@ class JanusHTTPSender extends BasicHandler {
 
         // optionally set a timeout for the request
         if (msgContext.getTimeout() != 0) {
-            /* ISSUE: these are not the same, but MessageContext has only one
-                      definition of timeout */
+            *//* ISSUE: these are not the same, but MessageContext has only one
+                      definition of timeout *//*
             // SO_TIMEOUT -- timeout for blocking reads
             httpClient.getHttpConnectionManager().getParams().setSoTimeout(msgContext.getTimeout());
             // timeout for initial connection
@@ -582,23 +546,23 @@ class JanusHTTPSender extends BasicHandler {
         }
     }
 
-    /**
+    *//**
      * Check if the specified host is in the list of non proxy hosts.
      *
      * @param host          host name
      * @param nonProxyHosts string containing the list of non proxy hosts
      * @return true/false
-     */
+     *//*
     protected boolean isHostInNonProxyList(String host, String nonProxyHosts) {
 
         if ((nonProxyHosts == null) || (host == null)) {
             return false;
         }
 
-        /*
+        *//*
          * The http.nonProxyHosts system property is a list enclosed in
          * double quotes with items separated by a vertical bar.
-         */
+         *//*
         StringTokenizer tokenizer = new StringTokenizer(nonProxyHosts, "|\"");
 
         while (tokenizer.hasMoreTokens()) {
@@ -617,14 +581,14 @@ class JanusHTTPSender extends BasicHandler {
         return false;
     }
 
-    /**
+    *//**
      * Matches a string against a pattern. The pattern contains two special characters: '*' which means zero or more
      * characters,
      *
      * @param pattern the (non-null) pattern to match against
      * @param str     the (non-null) string that must be matched against the pattern
      * @return <code>true</code> when the string matches against the pattern, <code>false</code> otherwise.
-     */
+     *//*
     protected static boolean match(String pattern, String str) {
 
         char[] patArr = pattern.toCharArray();
@@ -817,7 +781,7 @@ class JanusHTTPSender extends BasicHandler {
                     // Ignore
                 }
             }
-            return -1; /* -1 for chunked */
+            return -1; *//* -1 for chunked *//*
         }
 
         public String getContentType() {
@@ -949,5 +913,5 @@ class JanusHTTPSender extends BasicHandler {
             logRead(l);
             return l;
         }
-    }
+    }*/
 }

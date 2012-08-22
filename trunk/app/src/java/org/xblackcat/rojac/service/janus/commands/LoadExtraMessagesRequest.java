@@ -15,11 +15,12 @@ import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.util.MessageUtils;
-import ru.rsdn.Janus.JanusMessageInfo;
-import ru.rsdn.Janus.JanusModerateInfo;
-import ru.rsdn.Janus.JanusRatingInfo;
+import ru.rsdn.janus.JanusMessageInfo;
+import ru.rsdn.janus.JanusModerateInfo;
+import ru.rsdn.janus.JanusRatingInfo;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.xblackcat.rojac.service.options.Property.RSDN_USER_ID;
 
@@ -152,18 +153,22 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         IMessageAH mAH = batch.get(IMessageAH.class);
         IRatingAH rAH = batch.get(IRatingAH.class);
 
-        JanusMessageInfo[] messages = newPosts.getMessages();
-        JanusModerateInfo[] moderates = newPosts.getModerates();
-        JanusRatingInfo[] ratings = newPosts.getRatings();
+        List<JanusMessageInfo> messages = newPosts.getMessages();
+        List<JanusModerateInfo> moderates = newPosts.getModerates();
+        List<JanusRatingInfo> ratings = newPosts.getRatings();
 
-        tracker.addLodMessage(Message.Synchronize_Message_GotPosts, messages.length, moderates.length, ratings.length);
+        int messagesAmount = messages.size();
+        int moderatesAmount = moderates.size();
+        int ratings1Amount = ratings.size();
+
+        tracker.addLodMessage(Message.Synchronize_Message_GotPosts, messagesAmount, moderatesAmount, ratings1Amount);
 
         tracker.addLodMessage(Message.Synchronize_Message_UpdateDatabase);
 
         tracker.addLodMessage(Message.Synchronize_Message_StoreMessages);
         int count = 0;
-        for (JanusMessageInfo mes : newPosts.getMessages()) {
-            tracker.updateProgress(count++, newPosts.getMessages().length);
+        for (JanusMessageInfo mes : messages) {
+            tracker.updateProgress(count++, messagesAmount);
 
             boolean read = shouldTheMessageRead(mes);
 
@@ -205,9 +210,9 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         }
 
         tracker.addLodMessage(Message.Synchronize_Message_StoreModerates);
-        for (int i = 0, moderatesLength = moderates.length; i < moderatesLength; i++) {
-            JanusModerateInfo mod = moderates[i];
-            tracker.updateProgress(i, moderatesLength);
+        count = 0;
+        for (JanusModerateInfo mod : moderates) {
+            tracker.updateProgress(count++, moderatesAmount);
 
             modAH.storeModerateInfo(mod);
             updatedForums.add(mod.getForumId());
@@ -215,9 +220,9 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         }
 
         tracker.addLodMessage(Message.Synchronize_Message_StoreRatings);
-        for (int i = 0, ratings1Length = ratings.length; i < ratings1Length; i++) {
-            JanusRatingInfo r = ratings[i];
-            tracker.updateProgress(i, ratings1Length);
+        count = 0;
+        for (JanusRatingInfo r : ratings) {
+            tracker.updateProgress(count++, ratings1Amount);
 
             rAH.storeRating(r);
             updatedMessages.add(r.getMessageId());

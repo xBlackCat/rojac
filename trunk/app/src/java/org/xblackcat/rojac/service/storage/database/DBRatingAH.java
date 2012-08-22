@@ -7,7 +7,7 @@ import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
-import ru.rsdn.Janus.JanusRatingInfo;
+import ru.rsdn.janus.JanusRatingInfo;
 
 /**
  * @author ASUS
@@ -25,7 +25,7 @@ final class DBRatingAH extends AnAH implements IRatingAH {
                 r.getUserId(),
                 r.getUserRating(),
                 Mark.getMark(r.getRate()).getValue(),
-                r.getRateDate().getTimeInMillis());
+                r.getRateDate().toGregorianCalendar().getTimeInMillis());
     }
 
     public IResult<Rating> getRatingsByMessageId(int messageId) throws StorageException {

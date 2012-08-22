@@ -14,7 +14,7 @@ import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.IVersionAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageException;
-import ru.rsdn.Janus.RequestForumInfo;
+import ru.rsdn.janus.RequestForumInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,7 +74,7 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
             NewData data;
             try {
                 data = janusService.getNewData(
-                        forumInfos.toArray(new RequestForumInfo[forumInfos.size()]),
+                        forumInfos,
                         ratingsVersion,
                         messagesVersion,
                         moderatesVersion,
@@ -90,7 +90,7 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
                 ownUserId = data.getOwnUserId();
             }
 
-            portionSize = data.getMessages().length;
+            portionSize = data.getMessages().size();
 
             storeNewPosts(tracker, data);
 

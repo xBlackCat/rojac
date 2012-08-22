@@ -3,8 +3,10 @@ package org.xblackcat.rojac.service.janus.data;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ForumGroup;
 import org.xblackcat.rojac.data.Version;
-import ru.rsdn.Janus.JanusForumGroupInfo;
-import ru.rsdn.Janus.JanusForumInfo;
+import ru.rsdn.janus.JanusForumGroupInfo;
+import ru.rsdn.janus.JanusForumInfo;
+
+import java.util.List;
 
 /**
  * Class for holding forums list.
@@ -18,16 +20,18 @@ public class ForumsList {
     private final ForumGroup[] fourumGroups;
     private final Version version;
 
-    public ForumsList(JanusForumInfo[] infos, JanusForumGroupInfo[] groups, Version version) {
+    public ForumsList(List<JanusForumInfo> infos, List<JanusForumGroupInfo> groups, Version version) {
         this.version = version;
-        forums = new Forum[infos.length];
-        for (int i = 0; i < infos.length; i++) {
-            forums[i] = new Forum(infos[i]);
+        forums = new Forum[infos.size()];
+        int i = 0;
+        for (JanusForumInfo jfi : infos) {
+            forums[i++] = new Forum(jfi);
         }
 
-        fourumGroups = new ForumGroup[groups.length];
-        for (int i = 0; i < groups.length; i++) {
-            fourumGroups[i] = new ForumGroup(groups[i]);
+        fourumGroups = new ForumGroup[groups.size()];
+        i=0;
+        for (JanusForumGroupInfo fgi : groups) {
+            fourumGroups[i++] = new ForumGroup(fgi);
         }
     }
 

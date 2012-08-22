@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.data;
 
-import ru.rsdn.Janus.PostMessageInfo;
+import ru.rsdn.janus.PostMessageInfo;
 
 /**
  * @author ASUS
@@ -46,13 +46,13 @@ public final class NewMessage implements IRSDNable<PostMessageInfo> {
     public PostMessageInfo getRSDNObject() {
         assert !draft : "Got draft as message to send";
 
-        return new PostMessageInfo(
-                localMessageId,
-                parentId,
-                forumId,
-                subject,
-                message
-        );
+        PostMessageInfo pmi = new PostMessageInfo();
+        pmi.setLocalMessageId(localMessageId);
+        pmi.setParentId(parentId);
+        pmi.setForumId(forumId);
+        pmi.setSubject(subject);
+        pmi.setMessage(message);
+        return pmi;
     }
 
     public String toString() {

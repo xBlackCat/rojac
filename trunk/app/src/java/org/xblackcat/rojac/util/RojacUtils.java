@@ -16,10 +16,14 @@ import org.xblackcat.rojac.service.options.CheckUpdatesEnum;
 import org.xblackcat.rojac.service.options.Password;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.utils.ResourceUtils;
+import ru.rsdn.janus.ArrayOfInt;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -128,7 +132,18 @@ public final class RojacUtils {
     }
 
     @SuppressWarnings({"unchecked"})
-    public static <T extends Serializable> T[] getRSDNObject(IRSDNable<T>... ar) {
+    public static <T> List<T> getRSDNObject(Collection<? extends IRSDNable<T>> col, Class<T> c) {
+        List<T> res = new ArrayList<>(col.size());
+
+        for (IRSDNable<T> o : col) {
+            res.add(o.getRSDNObject());
+        }
+
+        return res;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public static <T> T[] getRSDNObject(IRSDNable<T>... ar) {
         Class<T> c = getGenericClass(ar.getClass().getComponentType());
 
         List<T> res = new ArrayList<>(ar.length);
@@ -145,6 +160,7 @@ public final class RojacUtils {
     public static <T> Class<T> getGenericClass(Class<?> type) {
         return (Class<T>) ((ParameterizedType) type.getGenericInterfaces()[0]).getActualTypeArguments()[0];
     }
+
 
     public static String constructDebugSQL(String sql, Object... parameters) {
         String query = sql;
@@ -312,9 +328,10 @@ public final class RojacUtils {
             }
 
             if (log.isWarnEnabled()) {
-                log.warn(swing ?
-                        "The method is not executed in EventQueue!" :
-                        "The method is executed in EventQueue!",
+                log.warn(
+                        swing ?
+                                "The method is not executed in EventQueue!" :
+                                "The method is executed in EventQueue!",
                         stack
                 );
             }
@@ -453,7 +470,9 @@ public final class RojacUtils {
         if (StringUtils.isBlank(home)) {
             String userHome = mainProperties.getProperty("rojac.home");
             if (StringUtils.isBlank(userHome)) {
-                throw new RojacInitializationException("{$rojac.home} is not defined either property in file or system property.");
+                throw new RojacInitializationException(
+                        "{$rojac.home} is not defined either property in file or system property."
+                );
             }
 
             home = ResourceUtils.putSystemProperties(userHome);
@@ -469,7 +488,14 @@ public final class RojacUtils {
             }
             mainProperties.setProperty("rojac.db.home", home);
         }
-        installProperties(mainProperties, "rojac.home", "rojac.db.home", "rojac.db.host", "rojac.db.user", "rojac.db.password");
+        installProperties(
+                mainProperties,
+                "rojac.home",
+                "rojac.db.home",
+                "rojac.db.host",
+                "rojac.db.user",
+                "rojac.db.password"
+        );
 
         checkPath(mainProperties.getProperty("rojac.home"));
         checkPath(mainProperties.getProperty("rojac.db.home"));
@@ -525,6 +551,15 @@ public final class RojacUtils {
         return String.format("%h", new Object[]{str});
     }
 
+    public static ArrayOfInt toIntArray(int[] messageIds) {
+        ArrayOfInt arrayOfInt = new ArrayOfInt();
+        List<Integer> list = arrayOfInt.getInt();
+        for (int id : messageIds) {
+            list.add(id);
+        }
+        return arrayOfInt;
+    }
+
     private static class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
         @Override
         public void uncaughtException(final Thread t, final Throwable e) {
@@ -533,12 +568,14 @@ public final class RojacUtils {
             if (EventQueue.isDispatchThread()) {
                 DialogHelper.showExceptionDialog(t, e);
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        DialogHelper.showExceptionDialog(t, e);
-                    }
-                });
+                SwingUtilities.invokeLater(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                DialogHelper.showExceptionDialog(t, e);
+                            }
+                        }
+                );
             }
         }
     }

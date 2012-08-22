@@ -3,12 +3,9 @@ package org.xblackcat.rojac.util;
 import junit.framework.TestCase;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.NewRating;
-import ru.rsdn.Janus.PostRatingInfo;
+import ru.rsdn.janus.PostRatingInfo;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author xBlackCat
@@ -16,7 +13,7 @@ import java.util.Set;
 
 @SuppressWarnings({"unchecked"})
 public class RojacUtilsTest extends TestCase {
-    public void testArrayConvertor() {
+    public void testArrayConverter() {
         NewRating[] r = new NewRating[]{
                 new NewRating(0, 0, Mark.Agree.getValue()),
                 new NewRating(1, 1, Mark.Agree.getValue()),
@@ -26,6 +23,21 @@ public class RojacUtilsTest extends TestCase {
         PostRatingInfo[] oo = RojacUtils.getRSDNObject(r);
 
         assertEquals(oo.length, r.length);
+        for (PostRatingInfo o : oo) {
+            assertEquals(o.getClass(), PostRatingInfo.class);
+        }
+    }
+
+    public void testCollectionConverter() {
+        List<NewRating> r = Arrays.asList(
+                new NewRating(0, 0, Mark.Agree.getValue()),
+                new NewRating(1, 1, Mark.Agree.getValue()),
+                new NewRating(2, 2, Mark.Agree.getValue())
+        );
+
+        List<PostRatingInfo> oo = RojacUtils.getRSDNObject(r, PostRatingInfo.class);
+
+        assertEquals(oo.size(), r.size());
         for (PostRatingInfo o : oo) {
             assertEquals(o.getClass(), PostRatingInfo.class);
         }
