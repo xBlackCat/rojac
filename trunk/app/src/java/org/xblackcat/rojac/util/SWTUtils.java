@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.regex.Pattern;
 
 /**
  * 19.03.12 16:00
@@ -22,6 +23,7 @@ public class SWTUtils {
 
     public static final boolean isSwtEnabled;
     private static JWebBrowser webBrowser;
+    private static final String BASE_LIBRARY = "DJNativeSwing-SWT.jar";
 
     static {
         try {
@@ -70,7 +72,7 @@ public class SWTUtils {
 
             // Search for rojac.jar
             for (URL url : classLoader.getURLs()) {
-                if (url.getFile().contains("DJNativeSwing-SWT.jar")) {
+                if (url.getFile().contains(BASE_LIBRARY)) {
                     Method addUrlMethod = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                     addUrlMethod.setAccessible(true);
 
@@ -88,7 +90,7 @@ public class SWTUtils {
                     String bit = SystemUtils.OS_ARCH.contains("64") ? "x64" : "x86";
 
                     String swtLibrary = "swt/swt-" + os + "-" + bit + ".jar";
-                    URL swtLibUrl = new URL(url.toExternalForm().replaceFirst("axis\\.jar", swtLibrary));
+                    URL swtLibUrl = new URL(url.toExternalForm().replaceFirst(Pattern.quote(BASE_LIBRARY), swtLibrary));
                     addUrlMethod.invoke(classLoader, swtLibUrl);
                     break;
                 }
