@@ -70,9 +70,7 @@ public class SWTUtils {
 
             // Search for rojac.jar
             for (URL url : classLoader.getURLs()) {
-                if (url.getFile().contains("axis.jar")) {
-                    String urlFile = url.getPath();
-
+                if (url.getFile().contains("DJNativeSwing-SWT.jar")) {
                     Method addUrlMethod = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                     addUrlMethod.setAccessible(true);
 
