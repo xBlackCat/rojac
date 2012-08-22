@@ -49,6 +49,8 @@ class BatchedQueryHelper extends AQueryHelper implements IBatchedQueryHelper {
 
     @Override
     public void close() throws SQLException {
+        assert done : "Batch is closed neither committed or rolled back";
+
         if (connection.isClosed()) {
             return;
         }

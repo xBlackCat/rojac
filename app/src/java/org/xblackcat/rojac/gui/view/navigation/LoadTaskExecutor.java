@@ -16,7 +16,7 @@ import java.util.concurrent.ForkJoinTask;
 /**
  * @author xBlackCat
  */
-@TaskType(TaskTypeEnum.Initialization)
+@TaskType(TaskTypeEnum.InitializationHeavy)
 class LoadTaskExecutor extends RojacWorker<Void, LoadTaskExecutor.TaskResult<?>> {
     private static final Log log = LogFactory.getLog(LoadTaskExecutor.class);
 

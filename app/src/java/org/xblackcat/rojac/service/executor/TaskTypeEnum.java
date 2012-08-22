@@ -20,5 +20,9 @@ public enum TaskTypeEnum {
     /**
      * Initialization tasks. Should be performed sequentially. Probably in forked threads
      */
-    Initialization
+    Initialization,
+    /**
+     * Heavy initialization tasks. Should be performed sequentially. Probably in forked threads
+     */
+    InitializationHeavy,
 }
