@@ -79,4 +79,8 @@ public interface IJanusService {
     NewData getNewData(Collection<RequestForumInfo> requestForumInfos, Version ratingVer, Version messageVer, Version moderateVer, int[] breakMsgIds, int[] breakTopicIds, int maxOutput) throws JanusServiceException;
 
     UsersList getUsersByIds(int ... ids) throws JanusServiceException;
+
+    void fixCookies();
+
+    void clearCookies();
 }
