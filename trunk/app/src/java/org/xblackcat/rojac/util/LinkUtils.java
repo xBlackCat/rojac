@@ -40,6 +40,7 @@ public final class LinkUtils {
             Pattern.compile(URL_PREFIX + "forum/[\\w\\.]+/(\\d+)\\.(.+\\.)?aspx(\\?.+)?", Pattern.CASE_INSENSITIVE),
             Pattern.compile(URL_PREFIX + "forum/message.aspx\\?mid=(\\d+).*?", Pattern.CASE_INSENSITIVE)
     };
+    private static final Pattern YOUTUBE_EMBED_LINK = Pattern.compile("/embed/([-\\w]+)(/|$)");
 
     private LinkUtils() {
     }
@@ -144,13 +145,19 @@ public final class LinkUtils {
         host = host.toLowerCase(Locale.ROOT);
 
         if (host.endsWith("youtube.com")) {
-            Matcher m = YOUTUBE_LINK.matcher(url.getQuery());
-            if (m.find()) {
-                return m.group(2);
+            if (url.getQuery() != null) {
+                Matcher m = YOUTUBE_LINK.matcher(url.getQuery());
+                if (m.find()) {
+                    return m.group(2);
+                }
+            } else {
+                // is embed?
+                Matcher m = YOUTUBE_EMBED_LINK.matcher(url.getFile());
+                if (m.find()) {
+                    return m.group(1);
+                }
             }
-        }
-
-        if (host.endsWith("youtu.be")) {
+        } else if (host.endsWith("youtu.be")) {
             return url.getPath().substring(1);
         }
 
