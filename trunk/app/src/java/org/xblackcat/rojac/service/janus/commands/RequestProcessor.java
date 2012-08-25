@@ -76,6 +76,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
                     log.debug("Process request: " + r.getName());
                 }
 
+                janusService.clearCookies();
                 r.newInstance().process(handler, tracker, janusService);
             }
         } catch (Exception e) {

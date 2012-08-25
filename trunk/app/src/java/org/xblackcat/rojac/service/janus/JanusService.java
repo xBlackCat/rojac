@@ -13,6 +13,7 @@ import ru.rsdn.janus.*;
 
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.MessageContext;
+import java.net.HttpCookie;
 import java.util.*;
 
 /**
@@ -243,7 +244,6 @@ public class JanusService implements IJanusService {
             );
 //                soap._setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
         }
-        requestContext.put(BindingProvider.SESSION_MAINTAIN_PROPERTY, Boolean.TRUE);
         httpHeaders.put(
                 HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED,
                 Collections.singletonList(Boolean.FALSE.toString())
@@ -256,5 +256,45 @@ public class JanusService implements IJanusService {
         requestContext.put(MessageContext.HTTP_REQUEST_HEADERS, httpHeaders);
 
         log.info("Initialization has done.");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void fixCookies() {
+        Map<String, Object> responseContext = ((BindingProvider) soap).getResponseContext();
+
+        List<HttpCookie> cookies = new ArrayList<>();
+        if (responseContext != null) {
+            Map<String, List<String>> headers = (Map<String, List<String>>) responseContext.get(MessageContext.HTTP_RESPONSE_HEADERS);
+            if (headers.containsKey(HTTPConstants.HEADER_SET_COOKIE)) {
+                for (String cookie : headers.get(HTTPConstants.HEADER_SET_COOKIE)) {
+                    cookies.addAll(HttpCookie.parse(HTTPConstants.HEADER_SET_COOKIE + ": " + cookie));
+                }
+            }
+            if (headers.containsKey(HTTPConstants.HEADER_SET_COOKIE2)) {
+                for (String cookie : headers.get(HTTPConstants.HEADER_SET_COOKIE2)) {
+                    cookies.addAll(HttpCookie.parse(HTTPConstants.HEADER_SET_COOKIE2 + ": " + cookie));
+                }
+            }
+        }
+
+        StringBuilder cookiesStr = new StringBuilder();
+        for (HttpCookie c : cookies) {
+            c.setVersion(0);
+            cookiesStr.append(c);
+            cookiesStr.append("; ");
+        }
+
+        Map<String, Object> requestContext = ((BindingProvider) soap).getRequestContext();
+        Map<String, List<String>> headers = (Map<String, List<String>>) requestContext.get(MessageContext.HTTP_REQUEST_HEADERS);
+        headers.put(HTTPConstants.HEADER_COOKIE, Collections.singletonList(cookiesStr.toString()));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void clearCookies() {
+        Map<String, Object> requestContext = ((BindingProvider) soap).getRequestContext();
+        Map<String, List<String>> headers = (Map<String, List<String>>) requestContext.get(MessageContext.HTTP_REQUEST_HEADERS);
+        headers.remove(HTTPConstants.HEADER_COOKIE);
     }
 }

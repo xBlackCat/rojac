@@ -70,6 +70,7 @@ class PostChangesRequest extends ARequest<IPacket> {
             PostInfo postInfo;
             try {
                 janusService.postChanges(newMessages, newRatings, newModerates);
+                janusService.fixCookies();
                 postInfo = janusService.commitChanges();
             } catch (JanusServiceException e) {
                 throw new RsdnProcessorException("Can not post your changes to the RSDN.", e);
