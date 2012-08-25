@@ -265,6 +265,7 @@ class SingleThreadModelControl extends AThreadsModelControl {
             case PreviousPost:
             case NextPost:
             case PreviousUnread:
+            case NewThread:
             case NextUnread:
                 return true;
             default:

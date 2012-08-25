@@ -87,15 +87,14 @@ public class DBStorage extends AQueryHolder<IManagingQueryHelper> implements ISt
             super(queryHelper);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public <T extends AH> T get(Class<T> base) {
-            @SuppressWarnings({"unchecked"})
             T accessHelper = (T) batchAccessHelpers.get(base);
             if (accessHelper != null) {
                 return accessHelper;
             }
 
-            //noinspection unchecked
             accessHelper = (T) accessHelpers.get(base);
 
             assert accessHelper != null : "Access helper is not registered: " + base.getSimpleName();
@@ -103,7 +102,6 @@ public class DBStorage extends AQueryHolder<IManagingQueryHelper> implements ISt
             try {
                 Constructor<? extends AH> ahConstructor = accessHelper.getClass().getDeclaredConstructor(IQueryHolder.class);
 
-                @SuppressWarnings({"unchecked"})
                 T ah = (T) ahConstructor.newInstance(this);
 
                 batchAccessHelpers.put(base, ah);

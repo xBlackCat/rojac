@@ -427,6 +427,7 @@ class SortedForumModelControl extends AThreadsModelControl {
             case NextPost:
             case PreviousUnread:
             case NextUnread:
+            case NewThread:
                 return true;
             default:
                 return false;
