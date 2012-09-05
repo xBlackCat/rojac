@@ -41,6 +41,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
     private final TIntHashSet updatedTopics = new TIntHashSet();
     private final TIntHashSet updatedForums = new TIntHashSet();
     private final TIntHashSet updatedMessages = new TIntHashSet();
+    private final TIntHashSet newPostsMessages = new TIntHashSet();
 
     private final TIntHashSet ratingCacheUpdate = new TIntHashSet();
     private final TIntObjectHashMap<String> nonExistUsers = new TIntObjectHashMap<>();
@@ -175,8 +176,10 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
             int mId = mes.getMessageId();
             if (mAH.isExist(mId)) {
                 mAH.updateMessage(mes, read);
+                updatedMessages.add(mId);
             } else {
                 mAH.storeMessage(mes, read);
+                newPostsMessages.add(mId);
             }
 
             if (mes.getTopicId() == 0) {
@@ -337,8 +340,8 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
                 final BatchTracker batchTracker = new BatchTracker(tracker, 3);
                 batchTracker.setBatch(0, 1);
                 idx = 0;
-                total = updatedMessages.size();
-                for (int messageId : updatedMessages.toArray()) {
+                total = newPostsMessages.size();
+                for (int messageId : newPostsMessages.toArray()) {
                     mAH.updateParentPostUserId(messageId);
                     batchTracker.updateProgress(idx++, total);
                 }
