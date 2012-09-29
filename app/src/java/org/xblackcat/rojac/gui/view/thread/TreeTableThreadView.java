@@ -1185,22 +1185,44 @@ public class TreeTableThreadView extends AnItemView {
 
         @Override
         protected void done() {
-            if (data != null) {
-                final Post root = model.getRoot();
-                Post rootMessage = root.getMessageById(data.getThreadRootId());
-                if (rootMessage != null) {
-                    modelControl.loadThread(model, rootMessage, new Runnable() {
-                        @Override
-                        public void run() {
-                            selectItem(root.getMessageById(messageId), false);
-                        }
-                    });
-                }
-            } else {
+            final int targetMessageId = messageId;
+            if (data == null) {
                 if (sourceStackTrace != null) {
-                    log.error("Can't load message #" + messageId, sourceStackTrace);
+                    log.error("Can't load message #" + targetMessageId, sourceStackTrace);
                 }
                 appControl.closeTab(getId());
+                return;
+            }
+
+            final Post root = model.getRoot();
+            int threadRootId = data.getThreadRootId();
+            Post rootMessage = root.getMessageById(threadRootId);
+            if (rootMessage != null) {
+                modelControl.loadThread(model, rootMessage, new Runnable() {
+                    @Override
+                    public void run() {
+                        selectItem(root.getMessageById(targetMessageId), false);
+                    }
+                });
+            } else {
+                new MessageChecker(threadRootId) {
+                    @Override
+                    protected void done() {
+                        if (data == null) {
+                            return;
+                        }
+
+                        Post rootMessage = modelControl.addPost(model, root, data);
+                        modelControl.loadThread(model, rootMessage, new Runnable() {
+                            @Override
+                            public void run() {
+                                resortAndReloadModel();
+                                selectItem(root.getMessageById(targetMessageId), false);
+                            }
+                        });
+                    }
+                }.execute();
+                // Add hidden thread to view and navigate to target post
             }
         }
     }

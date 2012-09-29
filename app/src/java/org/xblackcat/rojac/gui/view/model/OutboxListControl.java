@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * @author xBlackCat
  */
-class OutboxListControl extends MessageListControl {
+class OutboxListControl extends AMessageListControl {
     /**
      * Creates a post list control. All posts a linked with the specified user. If parameter is <code>true</code> - the
      * control loads all replies on the user posts. If parameter is <code>false</code> - the control loads all posts of

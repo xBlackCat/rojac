@@ -27,7 +27,7 @@ import java.util.Collection;
 /**
  * @author xBlackCat
  */
-class IgnoredThreadListControl extends MessageListControl {
+class IgnoredThreadListControl extends AMessageListControl {
     /**
      * Creates a post list control. All posts a linked with the specified user. If parameter is <code>true</code> - the
      * control loads all replies on the user posts. If parameter is <code>false</code> - the control loads all posts of

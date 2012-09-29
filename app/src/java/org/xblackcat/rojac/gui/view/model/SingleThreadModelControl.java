@@ -13,6 +13,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
+import java.util.Collections;
 
 /**
  * Control class of all threads of the specified forum.
@@ -294,6 +295,19 @@ class SingleThreadModelControl extends AThreadsModelControl {
     @Override
     public void loadHiddenItems(SortedThreadsModel model, int itemId) {
         throw new NotImplementedException("The method shouldn't be used.");
+    }
+
+    @Override
+    public Post addPost(SortedThreadsModel model, Post root, MessageData data) {
+        Post p = new Post(data, root);
+        root.childrenPosts.add(p);
+
+        Collections.sort(root.childrenPosts);
+
+        model.nodeAdded(root, p);
+
+        return p;
+
     }
 
     @Override
