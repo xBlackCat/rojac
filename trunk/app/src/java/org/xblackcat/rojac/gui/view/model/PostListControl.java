@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author xBlackCat
  */
-class PostListControl extends MessageListControl {
+class PostListControl extends AMessageListControl {
     private final boolean replies;
 
     /**

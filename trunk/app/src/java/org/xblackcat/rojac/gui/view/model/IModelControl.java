@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.gui.view.model;
 
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -122,4 +123,6 @@ public interface IModelControl {
      * @return true if a view should be created in compact mode
      */
     ViewMode getViewMode();
+
+    Post addPost(SortedThreadsModel model, Post root, MessageData data);
 }

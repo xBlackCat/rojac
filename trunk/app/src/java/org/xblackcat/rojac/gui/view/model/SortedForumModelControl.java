@@ -18,6 +18,7 @@ import org.xblackcat.rojac.util.RojacUtils;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -445,5 +446,23 @@ class SortedForumModelControl extends AThreadsModelControl {
     @Override
     public Property<OpenMessageMethod> getOpenMessageMethod() {
         return Property.OPEN_MESSAGE_BEHAVIOUR_FORUM_VIEW;
+    }
+
+    @Override
+    public Post addPost(SortedThreadsModel model, Post root, MessageData data) {
+        Post p;
+        if (data.getTopicId() == 0) {
+            assert root instanceof ForumRoot;
+            p = new Thread(data, (ForumRoot) root);
+        } else {
+            p = new Post(data, root);
+        }
+        root.childrenPosts.add(p);
+
+        Collections.sort(root.childrenPosts);
+
+        model.nodeAdded(root, p);
+
+        return p;
     }
 }

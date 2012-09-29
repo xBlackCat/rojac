@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.NotImplementedException;
 import org.xblackcat.rojac.data.Favorite;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
@@ -135,6 +136,15 @@ class FavoritesModelControl implements IModelControl {
     @Override
     public ViewMode getViewMode() {
         return delegatedControl != null ? delegatedControl.getViewMode() : ViewMode.Normal;
+    }
+
+    @Override
+    public Post addPost(SortedThreadsModel model, Post root, MessageData data) {
+        if (delegatedControl == null) {
+            return null;
+        } else {
+            return delegatedControl.addPost(model, root, data);
+        }
     }
 
     @Override

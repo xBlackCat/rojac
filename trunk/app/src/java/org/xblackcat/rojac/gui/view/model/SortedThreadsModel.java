@@ -228,6 +228,13 @@ public class SortedThreadsModel implements TreeModel, TreeTableModel {
         }
     }
 
+    public void nodeAdded(Post parent, Post child) {
+        final TreePath path = getPathToRoot(parent);
+        if (path != null) {
+            modelSupport.fireChildAdded(path, parent.getIndex(child), child);
+        }
+    }
+
     /**
      * Invoke this method after you've changed how the children identified by childIndexes are to be represented in the
      * tree.

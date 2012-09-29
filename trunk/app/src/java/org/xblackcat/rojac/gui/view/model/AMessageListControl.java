@@ -1,14 +1,17 @@
 package org.xblackcat.rojac.gui.view.model;
 
 import org.xblackcat.rojac.NotImplementedException;
+import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
 import org.xblackcat.rojac.util.RojacUtils;
+
+import java.util.Collections;
 
 /**
  * @author xBlackCat
  */
 
-abstract class MessageListControl implements IModelControl {
+abstract class AMessageListControl implements IModelControl {
     private static final ThreadToolbarActions[] TOOLBAR_CONFIG = new ThreadToolbarActions[]{
             ThreadToolbarActions.PreviousPost,
             ThreadToolbarActions.NextPost,
@@ -64,6 +67,18 @@ abstract class MessageListControl implements IModelControl {
         // Nothing to do
     }
 
+    @Override
+    public Post addPost(SortedThreadsModel model, Post root, MessageData data) {
+        Post p = new Post(data, root);
+        root.childrenPosts.add(p);
+
+        Collections.sort(root.childrenPosts);
+
+        model.nodeAdded(root, p);
+
+        return p;
+
+    }
 
     protected void markPostRead(SortedThreadsModel model, int postId, boolean read) {
         assert RojacUtils.checkThread(true);
