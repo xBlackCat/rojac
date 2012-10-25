@@ -58,6 +58,10 @@ class HyperlinkHandler implements HyperlinkListener {
         final int mouseY = l.y;
 
         final Element element = e.getSourceElement();
+        if (element == null) {
+            return;
+        }
+
         {
             BalloonTip balloonTip = openBalloons.get(element);
             if (balloonTip != null) {

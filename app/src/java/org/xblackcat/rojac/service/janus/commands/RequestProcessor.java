@@ -9,6 +9,7 @@ import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.janus.JanusService;
+import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -61,7 +62,11 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
 
         progressController.fireJobProgressChanged(Message.Synchronize_Message_Start);
         Boolean useCompression = SYNCHRONIZER_USE_GZIP.get();
-        janusService.init(useCompression);
+        try {
+            janusService.init(useCompression);
+        } catch (JanusServiceException e) {
+            log.error("Can't initialize web service client", e);
+        }
         progressController.fireJobProgressChanged(
                 useCompression ?
                         Message.Synchronize_Message_CompressionUsed :
