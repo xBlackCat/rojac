@@ -228,34 +228,38 @@ public class JanusService implements IJanusService {
 //        SimpleProvider provider = new SimpleProvider();
 //
 //        provider.deployTransport("http", new JanusHTTPSender(ServiceFactory.getInstance().getProgressControl()));
-        JanusAT jl = new JanusAT();
+        try {
+            JanusAT jl = new JanusAT();
 
-        soap = jl.getJanusATSoap();
+            soap = jl.getJanusATSoap();
 
-        Map<String, Object> requestContext = ((BindingProvider) soap).getRequestContext();
-        Map<String, List<String>> httpHeaders = new Hashtable();
-        // Compress the request
-        if (useCompression) {
-            log.info("Data compression is enabled.");
-            // Tell the server it can compress the response
+            Map<String, Object> requestContext = ((BindingProvider) soap).getRequestContext();
+            Map<String, List<String>> httpHeaders = new Hashtable();
+            // Compress the request
+            if (useCompression) {
+                log.info("Data compression is enabled.");
+                // Tell the server it can compress the response
+                httpHeaders.put(
+                        HTTPConstants.HEADER_ACCEPT_ENCODING,
+                        Collections.singletonList(HTTPConstants.COMPRESSION_GZIP)
+                );
+    //                soap._setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
+            }
             httpHeaders.put(
-                    HTTPConstants.HEADER_ACCEPT_ENCODING,
-                    Collections.singletonList(HTTPConstants.COMPRESSION_GZIP)
+                    HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED,
+                    Collections.singletonList(Boolean.FALSE.toString())
             );
-//                soap._setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
-        }
-        httpHeaders.put(
-                HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED,
-                Collections.singletonList(Boolean.FALSE.toString())
-        );
-        httpHeaders.put(
-                HTTPConstants.HEADER_CONNECTION,
-                Collections.singletonList(HTTPConstants.HEADER_CONNECTION_CLOSE)
-        );
-        httpHeaders.put(HTTPConstants.HEADER_USER_AGENT, Collections.singletonList(RojacUtils.VERSION_STRING));
-        requestContext.put(MessageContext.HTTP_REQUEST_HEADERS, httpHeaders);
+            httpHeaders.put(
+                    HTTPConstants.HEADER_CONNECTION,
+                    Collections.singletonList(HTTPConstants.HEADER_CONNECTION_CLOSE)
+            );
+            httpHeaders.put(HTTPConstants.HEADER_USER_AGENT, Collections.singletonList(RojacUtils.VERSION_STRING));
+            requestContext.put(MessageContext.HTTP_REQUEST_HEADERS, httpHeaders);
 
-        log.info("Initialization has done.");
+            log.info("Initialization has done.");
+        } catch (RuntimeException e) {
+            throw new JanusServiceException("Failed to initialize service", e);
+        }
     }
 
     @SuppressWarnings("unchecked")
