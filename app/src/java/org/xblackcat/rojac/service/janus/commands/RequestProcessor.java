@@ -9,7 +9,6 @@ import org.xblackcat.rojac.service.UserHelper;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.janus.JanusService;
-import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -64,16 +63,12 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
         Boolean useCompression = SYNCHRONIZER_USE_GZIP.get();
         try {
             janusService.init(useCompression);
-        } catch (JanusServiceException e) {
-            log.error("Can't initialize web service client", e);
-        }
-        progressController.fireJobProgressChanged(
-                useCompression ?
-                        Message.Synchronize_Message_CompressionUsed :
-                        Message.Synchronize_Message_CompressionNotUsed
-        );
+            progressController.fireJobProgressChanged(
+                    useCompression ?
+                            Message.Synchronize_Message_CompressionUsed :
+                            Message.Synchronize_Message_CompressionNotUsed
+            );
 
-        try {
             janusService.testConnection();
 
             for (Class<? extends IRequest<T>> r : requests) {
@@ -86,7 +81,7 @@ public class RequestProcessor<T> extends RojacWorker<Void, Void> {
             }
         } catch (Exception e) {
             // Just in case
-            log.debug("There is an exception in one of commands", e);
+            log.debug("There is an exception during execute commands", e);
 
             tracker.postException(e);
         }
