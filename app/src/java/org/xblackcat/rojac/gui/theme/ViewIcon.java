@@ -15,7 +15,8 @@ public enum ViewIcon implements Icon {
     RecentTopics,
     ForumList,
     Navigation,
-    Favorites;
+    Favorites,
+    StartPage;
 
     private final IResourceIcon icon;
 

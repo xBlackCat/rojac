@@ -43,6 +43,7 @@ public enum Message {
     MainFrame_Button_GoToMessage,
     MainFrame_Button_Settings,
     MainFrame_Button_About,
+    MainFrame_Button_GoHome,
     MainFrame_Button_GoBack,
     MainFrame_Button_GoForward,
     MainFrame_Button_ForumManage,
@@ -57,6 +58,9 @@ public enum Message {
 
     // Recent topics view
     View_RecentTopics_Title,
+
+    // Start page
+    View_StartPage_Title,
 
     // Favorites view
     View_Favorites_Title,
