@@ -9,8 +9,6 @@ import net.infonode.docking.properties.RootWindowProperties;
 import net.infonode.docking.properties.TabWindowProperties;
 import net.infonode.docking.title.DockingWindowTitleProvider;
 import net.infonode.docking.title.SimpleDockingWindowTitleProvider;
-import net.infonode.docking.util.StringViewMap;
-import net.infonode.docking.util.WindowMenuUtil;
 import net.infonode.gui.UIManagerUtil;
 import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
@@ -29,8 +27,7 @@ import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.factory.ViewHelper;
-import org.xblackcat.rojac.gui.view.navigation.NavigationView;
-import org.xblackcat.rojac.gui.view.recenttopics.RecentTopicsView;
+import org.xblackcat.rojac.gui.view.startpage.StartPageView;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.LocaleControl;
 import org.xblackcat.rojac.i18n.Message;
@@ -74,17 +71,12 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
     private static final int ICON_TEXT_GAP = 3;
     private static final int WINDOW_BAR_BORDER_WIDTH = 2;
-    private static final int DRAG_RECTANGLE_BORDER_WIDTH = 1;
 
     // Data tracking
     private Map<ViewId, View> openedViews = new HashMap<>();
     protected RootWindow threadsRootWindow;
 
-    private static final String RECENT_TOPICS_VIEW_ID = "lastPosts_view";
-    private static final String THREADS_VIEW_ID = "threads_view_id";
-    private static final String NAVIGATION_VIEW_ID = "navigation_view_id";
-
-    private final Map<String, ILayoutful> layoutMap = new HashMap<>();
+    private final StartPageView startPageView = new StartPageView(this);
 
     protected final DropFilter noAuxViewsFilter = new DropFilter() {
         @Override
@@ -115,7 +107,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         }
     };
 
-    private RootWindow rootWindow;
     private JButton navigationBackButton;
     private JButton navigationForwardButton;
     private ProgressComponent progressInToolbar;
@@ -168,8 +159,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private MainFrameState frameState;
 
     private final Map<ViewId, IViewLayout> storedLayouts = new HashMap<>();
-    private View[] mainViews;
-    private final NavigationView navigationView;
 
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
@@ -178,8 +167,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
         ProgressTrackerDialog progressTrackerDialog = new ProgressTrackerDialog(this);
         progressInToolbar = new ProgressComponent(progressTrackerDialog);
-
-        navigationView = new NavigationView(this);
 
         initialize();
 
@@ -195,24 +182,28 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
         WindowsUtils.centerOnScreen(this);
 
-        addWindowStateListener(new WindowStateListener() {
-            @Override
-            public void windowStateChanged(WindowEvent e) {
-                storeWindowState();
-            }
-        });
+        addWindowStateListener(
+                new WindowStateListener() {
+                    @Override
+                    public void windowStateChanged(WindowEvent e) {
+                        storeWindowState();
+                    }
+                }
+        );
 
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                storeWindowState();
-            }
+        addComponentListener(
+                new ComponentAdapter() {
+                    @Override
+                    public void componentResized(ComponentEvent e) {
+                        storeWindowState();
+                    }
 
-            @Override
-            public void componentMoved(ComponentEvent e) {
-                storeWindowState();
-            }
-        });
+                    @Override
+                    public void componentMoved(ComponentEvent e) {
+                        storeWindowState();
+                    }
+                }
+        );
     }
 
     private void extraMessagesDialog(Integer id, final OpenMessageMethod method) {
@@ -243,18 +234,22 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     if (loadAtOnce) {
                         if (method != null) {
                             // Open a message after loading.
-                            Request.EXTRA_MESSAGES.process(MainFrame.this,
+                            Request.EXTRA_MESSAGES.process(
+                                    MainFrame.this,
                                     Request.PACKET_HANDLER,
                                     new ASwingThreadedHandler<IPacket>() {
                                         @Override
                                         protected void execute(IPacket data) {
-                                            SwingUtilities.invokeLater(new Runnable() {
-                                                public void run() {
-                                                    openMessage(messageId, method);
-                                                }
-                                            });
+                                            SwingUtilities.invokeLater(
+                                                    new Runnable() {
+                                                        public void run() {
+                                                            openMessage(messageId, method);
+                                                        }
+                                                    }
+                                            );
                                         }
-                                    });
+                                    }
+                            );
                         } else {
                             Request.EXTRA_MESSAGES.process(MainFrame.this, Request.PACKET_HANDLER);
                         }
@@ -276,14 +271,9 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private void initialize() {
-        final RecentTopicsView recentTopicsView = new RecentTopicsView(this);
 
         JPanel cp = new JPanel(new BorderLayout());
         setContentPane(cp);
-
-        View viewRecentTopics = createView(recentTopicsView);
-
-        View viewNavigation = createView(navigationView);
 
         // Set up main tabbed window for forum views
         threadsRootWindow = new RootWindow(false, new ThreadViewSerializer());
@@ -308,68 +298,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         threadsTabWindowProperties.getMinimizeButtonProperties().setVisible(false);
         threadsTabWindowProperties.getMaximizeButtonProperties().setVisible(false);
 
-        View threadsView = createThreadsView(threadsRootWindow);
-        mainViews = new View[]{
-                viewRecentTopics,
-                viewNavigation
-        };
-
-        StringViewMap viewMap = new StringViewMap();
-        viewMap.addView(RECENT_TOPICS_VIEW_ID, viewRecentTopics);
-        viewMap.addView(NAVIGATION_VIEW_ID, viewNavigation);
-        viewMap.addView(THREADS_VIEW_ID, threadsView);
-
-        layoutMap.put(RECENT_TOPICS_VIEW_ID, recentTopicsView);
-        layoutMap.put(NAVIGATION_VIEW_ID, navigationView);
-
-        rootWindow = new RootWindow(false, viewMap,
-                new SplitWindow(
-                        true,
-                        0.75f,
-                        threadsView,
-                        new SplitWindow(
-                                false,
-                                0.3f,
-                                viewRecentTopics,
-                                viewNavigation
-                        )
-                )
-        );
-
-        rootWindow.getWindowProperties().setCloseEnabled(false);
-        rootWindow.getWindowProperties().setMaximizeEnabled(false);
-
-        RootWindowProperties rootWindowProperties = rootWindow.getRootWindowProperties();
-
-        rootWindowProperties.getDockingWindowProperties().setCloseEnabled(false);
-        rootWindowProperties.getDockingWindowProperties().setUndockEnabled(false);
-        rootWindowProperties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
-
-        TabWindowProperties tabWindowProperties = rootWindowProperties.getTabWindowProperties();
-        tabWindowProperties.getMaximizeButtonProperties().setVisible(false);
-        tabWindowProperties.getMinimizeButtonProperties().setVisible(false);
-        tabWindowProperties.getCloseButtonProperties().setVisible(false);
-        tabWindowProperties.getUndockButtonProperties().setVisible(false);
-        tabWindowProperties.getDockButtonProperties().setVisible(false);
-
-        rootWindow.getWindowBar(Direction.LEFT).setEnabled(true);
-        rootWindow.getWindowBar(Direction.LEFT).getWindowBarProperties().setMinimumWidth(WINDOW_BAR_BORDER_WIDTH);
-        rootWindow.getWindowBar(Direction.RIGHT).setEnabled(true);
-        rootWindow.getWindowBar(Direction.RIGHT).getWindowBarProperties().setMinimumWidth(WINDOW_BAR_BORDER_WIDTH);
-        rootWindow.getWindowBar(Direction.DOWN).setEnabled(true);
-        rootWindow.getWindowBar(Direction.DOWN).getWindowBarProperties().setMinimumWidth(WINDOW_BAR_BORDER_WIDTH);
-
-        rootWindowProperties.setDragRectangleBorderWidth(DRAG_RECTANGLE_BORDER_WIDTH);
-        rootWindowProperties.setRecursiveTabsEnabled(false);
-
-        for (View view : mainViews) {
-            rootWindow.getWindowBar(Direction.RIGHT).addTab(view);
-            view.restore();
-        }
-
-        rootWindow.setPopupMenuFactory(WindowMenuUtil.createWindowMenuFactory(viewMap, true));
-
-        cp.add(rootWindow);
+        cp.add(createThreadsView(threadsRootWindow));
 
         // Setup DnD
         DropTarget target = new DropTarget(
@@ -382,22 +311,34 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         setDropTarget(target);
     }
 
-    private View createThreadsView(DockingWindow threads) {
+    private JPanel createThreadsView(DockingWindow threads) {
         JPanel readingPane = new JPanel(new BorderLayout(0, 0));
 
         // Setup toolbar
+        JButton showHome = WindowsUtils.registerImageButton(readingPane, "home", new GoHomeAction());
+
         navigationBackButton = WindowsUtils.registerImageButton(readingPane, "nav_back", new GoBackAction());
         navigationForwardButton = WindowsUtils.registerImageButton(readingPane, "nav_forward", new GoForwardAction());
 
-        JButton goToMessageButton = WindowsUtils.registerImageButton(readingPane, "goto_message", new GoToMessageAction());
+        JButton goToMessageButton = WindowsUtils.registerImageButton(
+                readingPane,
+                "goto_message",
+                new GoToMessageAction()
+        );
 
         JButton updateButton = WindowsUtils.registerImageButton(readingPane, "update", new SynchronizationAction());
-        JButton loadMessageButton = WindowsUtils.registerImageButton(readingPane, "extramessage", new LoadExtraMessagesAction());
+        JButton loadMessageButton = WindowsUtils.registerImageButton(
+                readingPane,
+                "extramessage",
+                new LoadExtraMessagesAction()
+        );
         JButton subscribeButton = WindowsUtils.registerImageButton(readingPane, "forum_manage", new SubscribeForum());
         JButton settingsButton = WindowsUtils.registerImageButton(readingPane, "settings", new SettingsAction());
         JButton aboutButton = WindowsUtils.registerImageButton(readingPane, "about", new AboutAction());
 
         final JToolBar toolBar = WindowsUtils.createToolBar(
+                showHome,
+                null,
                 navigationBackButton,
                 navigationForwardButton,
                 goToMessageButton,
@@ -412,12 +353,14 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 aboutButton
         );
 
-        toolBar.addPropertyChangeListener("orientation", new PropertyChangeListener() {
+        toolBar.addPropertyChangeListener(
+                "orientation", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 progressInToolbar.setOrientation(toolBar.getOrientation());
             }
-        });
+        }
+        );
 
         readingPane.add(toolBar, BorderLayout.NORTH);
 
@@ -427,23 +370,9 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
         readingPane.add(threadsPane, BorderLayout.CENTER);
 
-        View view = new View(null, null, readingPane);
-
-        DockingWindowProperties props = view.getWindowProperties();
-        props.setCloseEnabled(false);
-        props.setMaximizeEnabled(false);
-        props.setMinimizeEnabled(false);
-        props.setUndockEnabled(false);
-        props.setDragEnabled(false);
-        props.setDockEnabled(false);
-
-        view.getViewProperties().setAlwaysShowTitle(false);
-
-        view.addListener(new CloseViewTabListener());
-
         updateNavigationButtons();
 
-        return view;
+        return readingPane;
     }
 
     private HintContainer setupHintContainer() {
@@ -452,25 +381,6 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         addStatisticUpdateListener(new UnreadRepliesHintController(this, hintContainer));
 
         return hintContainer;
-    }
-
-    private View createView(IView itemView) {
-        APacket.getDispatcher().addDataHandler(itemView);
-
-        final View view = new View(
-                itemView.getTabTitle(),
-                itemView.getTabTitleIcon(),
-                itemView.getComponent()
-        );
-
-        DockingWindowProperties props = view.getWindowProperties();
-        props.getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(ICON_TEXT_GAP);
-        props.setCloseEnabled(false);
-        props.setMaximizeEnabled(false);
-
-        view.setPopupMenuFactory(new ItemViewPopupFactory(itemView));
-
-        return view;
     }
 
     private View makeViewWindow(final IItemView itemView) {
@@ -556,40 +466,11 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 log.info("Load previous layout");
             }
             try {
-                final ByteArrayOutputStream rootBackup = new ByteArrayOutputStream();
-
                 try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-                    final ObjectOutputStream stream = new ObjectOutputStream(rootBackup);
-                    rootWindow.write(stream, false);
-                    stream.close();
-
-                    rootWindow.read(in, false);
-                    if (SwingUtilities.getWindowAncestor(threadsRootWindow) == null) {
-                        // Restore default layout
-                        rootWindow.read(new ObjectInputStream(new ByteArrayInputStream(rootBackup.toByteArray())), false);
-                    }
-
                     threadsRootWindow.read(in, false);
-
-                    for (View v : mainViews) {
-                        if (v.getRootWindow() == null) {
-                            rootWindow.getWindowBar(Direction.RIGHT).addTab(v);
-                        }
-                    }
 
                     try {
                         setObjectState((IState) in.readObject());
-
-                        // Null means end of list
-                        String panelId;
-                        while ((panelId = (String) in.readObject()) != null) {
-                            IViewLayout layout = (IViewLayout) in.readObject();
-
-                            ILayoutful panel = layoutMap.get(panelId);
-                            if (panel != null) {
-                                panel.setupLayout(layout);
-                            }
-                        }
 
                         // Null means end of list
                         ViewId viewId;
@@ -601,6 +482,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     }
                 }
 
+                return;
             } catch (ClassNotFoundException e) {
                 log.error("Main frame state class is not found", e);
             } catch (IOException | RuntimeException e) {
@@ -611,23 +493,18 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 log.info("No previous layout is found - use default.");
             }
         }
+
+        // Setup default layout
+        threadsRootWindow.setWindow(new TabWindow(makeViewWindow(startPageView)));
     }
 
     public void storeSettings() {
         File file = RojacUtils.getLayoutFile();
         try {
             try (ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-                rootWindow.write(out, false);
                 threadsRootWindow.write(out, false);
                 // Last item - main frame state
                 out.writeObject(getObjectState());
-
-                // Store panel's layout
-                for (Map.Entry<String, ILayoutful> element : layoutMap.entrySet()) {
-                    out.writeObject(element.getKey()); // Identifier
-                    out.writeObject(element.getValue().storeLayout()); // Panel layout
-                }
-                out.writeObject(null);
 
                 // Write forum layouts only
                 for (Map.Entry<ViewId, IViewLayout> element : storedLayouts.entrySet()) {
@@ -818,19 +695,27 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                             JOptionPane.YES_NO_OPTION
                     );
                     if (response == JOptionPane.YES_OPTION) {
-                        DialogHelper.openForumSubscriptionDialog(MainFrame.this, new Runnable() {
-                            @Override
-                            public void run() {
-                                assert RojacUtils.checkThread(true);
+                        DialogHelper.openForumSubscriptionDialog(
+                                MainFrame.this,
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        assert RojacUtils.checkThread(true);
 
-                                // Check again for forum changes
-                                startSynchronization();
-                            }
-                        });
+                                        // Check again for forum changes
+                                        startSynchronization();
+                                    }
+                                }
+                        );
                     }
                 }
             }
         }.execute();
+    }
+
+    @Override
+    public StartPageView getStartPageView() {
+        return startPageView;
     }
 
     public void installBrowser(final JWebBrowser browser) {
@@ -846,17 +731,19 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     public void addStatisticUpdateListener(IStatisticListener listener) {
-        navigationView.addStatisticListener(listener);
+        startPageView.addStatisticListener(listener);
     }
 
     private class ScheduleSynchronization implements Runnable {
         @Override
         public void run() {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    startSynchronization();
-                }
-            });
+            SwingUtilities.invokeLater(
+                    new Runnable() {
+                        public void run() {
+                            startSynchronization();
+                        }
+                    }
+            );
         }
     }
 
@@ -873,11 +760,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
             try {
                 IItemView v = ViewHelper.initializeView(in, MainFrame.this);
 
-                View view = makeViewWindow(v);
-
-//                v.loadItem(v.getId().getId());
-
-                return view;
+                return makeViewWindow(v);
             } catch (ClassNotFoundException e) {
                 log.error("Can not obtain state object.", e);
                 throw new IOException("Can not obtain state object.", e);
@@ -1017,6 +900,17 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                 goToView(i.getViewId(), i.getState());
                 updateNavigationButtons();
             }
+        }
+    }
+
+    private class GoHomeAction extends AButtonAction {
+        private GoHomeAction() {
+            super(ShortCut.GoHome);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            openTab(ViewType.StartPage.makeId(0));
         }
     }
 

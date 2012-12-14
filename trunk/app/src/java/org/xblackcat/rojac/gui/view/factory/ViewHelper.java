@@ -35,6 +35,7 @@ public final class ViewHelper {
         map.put(ViewType.ReplyList, new SplitViewFactory(ModelControl.UserReplies));
         map.put(ViewType.OutBox, new SplitViewFactory(ModelControl.Outbox));
         map.put(ViewType.IgnoredThreadList, new SplitViewFactory(ModelControl.IgnoredThreadList));
+        map.put(ViewType.StartPage, new StartPageViewFactory());
 
         for (ViewType t : ViewType.values()) {
             if (map.get(t) == null) {
@@ -49,7 +50,7 @@ public final class ViewHelper {
      * Stores a view state for future restoring docking layout.
      *
      * @param out      output stream to store a view state
-     * @param itemView
+     * @param itemView target view a layout to be stored.
      * @throws IOException exception will be thrown if write can not be performed.
      */
     public static void storeView(ObjectOutputStream out, IItemView itemView) throws IOException {
@@ -76,7 +77,10 @@ public final class ViewHelper {
      * @throws IOException            will be thrown if read from stream can not be performed.
      * @throws ClassNotFoundException will be thrown if object from stream can not be identified.
      */
-    public static IItemView initializeView(ObjectInputStream in, IAppControl appControl) throws IOException, ClassNotFoundException {
+    public static IItemView initializeView(
+            ObjectInputStream in,
+            IAppControl appControl
+    ) throws IOException, ClassNotFoundException {
         ViewId id = (ViewId) in.readObject();
         IItemView view = makeView(id, appControl);
 

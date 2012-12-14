@@ -34,6 +34,7 @@ public enum ShortCut {
     GoToMessage(Message.MainFrame_Button_GoToMessage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK),
     Settings(Message.MainFrame_Button_Settings, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK),
     About(Message.MainFrame_Button_About, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F1, 0),
+    GoHome(Message.MainFrame_Button_GoHome, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_H, KeyEvent.CTRL_DOWN_MASK),
     GoBack(Message.MainFrame_Button_GoBack, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK),
     GoForward(Message.MainFrame_Button_GoForward, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK),
     ForumManage(Message.MainFrame_Button_ForumManage, JComponent.WHEN_IN_FOCUSED_WINDOW, KeyEvent.VK_F, KeyEvent.ALT_DOWN_MASK),

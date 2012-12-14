@@ -2,6 +2,7 @@ package org.xblackcat.rojac.gui;
 
 import net.infonode.docking.View;
 import org.xblackcat.rojac.gui.view.ViewId;
+import org.xblackcat.rojac.gui.view.startpage.StartPageView;
 
 import javax.swing.*;
 
@@ -51,4 +52,6 @@ public interface IAppControl {
      * @param viewId target tab content id.
      */
     void closeTab(ViewId viewId);
+
+    StartPageView getStartPageView();
 }
