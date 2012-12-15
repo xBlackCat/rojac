@@ -16,11 +16,17 @@ public class RSDNMessageParser implements IMessageParser {
     private static final Pattern PRE_IMG_TAG_CLEANER_PATTERN = Pattern.compile("\\[img\\][\\n\\s]+");
     private static final String PRE_IMG_TAG_CLEANER_REPLACEMENT = "[img]";
 
-    private static final Pattern PRE_QUOTATION_PATTERN = Pattern.compile("^([[^\\s\\p{Punct}]_]*?)>(.*?)$", Pattern.MULTILINE);
+    private static final Pattern PRE_QUOTATION_PATTERN = Pattern.compile(
+            "^([[^\\s\\p{Punct}]_]*?)>(.*?)$",
+            Pattern.MULTILINE
+    );
     private static final String PRE_QUOTATION_REPLACEMENT = "[span]$1>$2[/span]";
 
-//    private static final Pattern QUOTATION_PATTERN = Pattern.compile("^\\[span\\](.*)\\[/span\\]$", Pattern.MULTILINE);
-    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile("([^\\]=]|^)(http(s?)://\\S+?)[\\.,!:]?(\\[|\\]|\\s|$)", Pattern.MULTILINE);
+    //    private static final Pattern QUOTATION_PATTERN = Pattern.compile("^\\[span\\](.*)\\[/span\\]$", Pattern.MULTILINE);
+    private static final Pattern HYPERLINKS_PATTERN = Pattern.compile(
+            "([^\\]=]|^)(http(s?)://\\S+?)[\\.,!:]?(\\[|\\]|\\s|$)",
+            Pattern.MULTILINE
+    );
 
     private static final String HYPERLINKS_REPLACEMENT = "$1[url=$2]$2[/url]$4";
 
@@ -61,17 +67,18 @@ public class RSDNMessageParser implements IMessageParser {
     /**
      * Searches and highlight all the quotation lines in message. Does not converts line breaks or tags.
      *
-     * @param rsdn
+     *
+     * @param bbtext text with RSDN BB tags
      * @return a new string with highlighted quotation lines.
      */
-    protected String preProcessText(String rsdn) {
-        rsdn = PRE_IMG_TAG_CLEANER_PATTERN.matcher(rsdn).replaceAll(PRE_IMG_TAG_CLEANER_REPLACEMENT);
-        rsdn = HYPERLINKS_PATTERN.matcher(rsdn).replaceAll(HYPERLINKS_REPLACEMENT);
-        rsdn = PRE_QUOTATION_PATTERN.matcher(rsdn).replaceAll(PRE_QUOTATION_REPLACEMENT);
-        rsdn = MessageUtils.escapeHTML(rsdn);
-//        rsdn = QUOTATION_PATTERN.matcher(rsdn).replaceAll("<span class='lineQuote'>$1</span>");
+    protected String preProcessText(String bbtext) {
+        bbtext = PRE_IMG_TAG_CLEANER_PATTERN.matcher(bbtext).replaceAll(PRE_IMG_TAG_CLEANER_REPLACEMENT);
+        bbtext = HYPERLINKS_PATTERN.matcher(bbtext).replaceAll(HYPERLINKS_REPLACEMENT);
+        bbtext = PRE_QUOTATION_PATTERN.matcher(bbtext).replaceAll(PRE_QUOTATION_REPLACEMENT);
+        bbtext = MessageUtils.escapeHTML(bbtext);
+//        bbtext = QUOTATION_PATTERN.matcher(bbtext).replaceAll("<span class='lineQuote'>$1</span>");
 
-        return rsdn;
+        return bbtext;
     }
 
     private ITag[] mergeAvailableTags(ITag currentTag, ITag... parentTags) {
