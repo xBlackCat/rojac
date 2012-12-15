@@ -11,6 +11,8 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.i18n.Message;
+import org.xblackcat.rojac.service.ServiceFactory;
+import org.xblackcat.rojac.service.converter.IMessageParser;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -120,27 +122,38 @@ class HyperlinkHandler implements HyperlinkListener {
 
                     JButton closeButton = BalloonTipUtils.balloonTipCloseButton();
                     final JLabel label = new JLabel(Message.PreviewLink_LinkCopied.get());
-                    final BalloonTip balloonTip = new CustomBalloonTip(invoker, label, r, tipStyle, new LeftAbovePositioner(15, 15), closeButton);
+                    final BalloonTip balloonTip = new CustomBalloonTip(
+                            invoker,
+                            label,
+                            r,
+                            tipStyle,
+                            new LeftAbovePositioner(15, 15),
+                            closeButton
+                    );
                     openBalloons.put(element, balloonTip);
 
-                    balloonTip.addHierarchyListener(new HierarchyListener() {
-                        @Override
-                        public void hierarchyChanged(HierarchyEvent e) {
-                            if (HierarchyEvent.SHOWING_CHANGED == (HierarchyEvent.SHOWING_CHANGED & e.getChangeFlags())) {
-                                if (balloonTip.isShowing()) {
-                                    openBalloons.put(element, balloonTip);
-                                } else {
-                                    openBalloons.remove(element);
+                    balloonTip.addHierarchyListener(
+                            new HierarchyListener() {
+                                @Override
+                                public void hierarchyChanged(HierarchyEvent e) {
+                                    if (HierarchyEvent.SHOWING_CHANGED == (HierarchyEvent.SHOWING_CHANGED & e.getChangeFlags())) {
+                                        if (balloonTip.isShowing()) {
+                                            openBalloons.put(element, balloonTip);
+                                        } else {
+                                            openBalloons.remove(element);
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    });
-                    Timer timer = new Timer((int) TimeUnit.SECONDS.toMillis(3), new ActionListener() {
+                    );
+                    Timer timer = new Timer(
+                            (int) TimeUnit.SECONDS.toMillis(3), new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             balloonTip.closeBalloon();
                         }
-                    });
+                    }
+                    );
                     timer.setRepeats(false);
                     timer.start();
                 }
@@ -160,13 +173,15 @@ class HyperlinkHandler implements HyperlinkListener {
                 // Set up timer
                 final Timer timer = new Timer(delay, null);
                 timer.setRepeats(false);
-                timer.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        aimedTimers.remove(element);
-                        showBalloonAction.run();
-                    }
-                });
+                timer.addActionListener(
+                        new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                aimedTimers.remove(element);
+                                showBalloonAction.run();
+                            }
+                        }
+                );
                 aimedTimers.put(element, timer);
                 timer.start();
             } else {
@@ -176,17 +191,30 @@ class HyperlinkHandler implements HyperlinkListener {
     }
 
     private void showMessageBalloon(final int messageId, final Element element, final int mouseY) {
-        new RojacWorker<Void, MessageData>() {
+        new RojacWorker<Void, FullMessage>() {
             @Override
             protected Void perform() throws Exception {
-                publish(Storage.get(IMessageAH.class).getMessageData(messageId));
+                final IMessageAH messageAH = Storage.get(IMessageAH.class);
+                final String body = messageAH.getMessageBodyById(messageId);
+                if (body != null) {
+                    final MessageData messageData = messageAH.getMessageData(messageId);
+                    if (messageData != null) {
+                        IMessageParser parser = ServiceFactory.getInstance().getMessageConverter();
+                        final String html = parser.convert(body);
+                        String teaser = MessageUtils.teaserHtml(html, 200) + "...";
+
+                        publish(new FullMessage(messageData, teaser));
+                        return null;
+                    }
+                }
+                publish((FullMessage) null);
 
                 return null;
             }
 
             @Override
-            protected void process(List<MessageData> chunks) {
-                for (MessageData h : chunks) {
+            protected void process(List<FullMessage> chunks) {
+                for (FullMessage h : chunks) {
                     AnUrlInfoPane postInfo;
                     if (h == null) {
                         postInfo = new NoPostInfoPane(messageId);
@@ -200,7 +228,8 @@ class HyperlinkHandler implements HyperlinkListener {
     }
 
     private void showHtmlPreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
-        AnUrlInfoPane linkPreview = new HtmlPagePreview(url, new Runnable() {
+        AnUrlInfoPane linkPreview = new HtmlPagePreview(
+                url, new Runnable() {
             @Override
             public void run() {
                 assert RojacUtils.checkThread(true);
@@ -210,7 +239,8 @@ class HyperlinkHandler implements HyperlinkListener {
                     SWTUtils.getBrowser().navigate("about:blank");
                 }
             }
-        });
+        }
+        );
 
         setupBalloon(sourceElement, mouseY, linkPreview);
     }
@@ -250,35 +280,46 @@ class HyperlinkHandler implements HyperlinkListener {
         final Runnable onClose = info.getOnClose();
 
         JButton closeButton = BalloonTipUtils.balloonTipCloseButton(onClose);
-        final BalloonTip balloonTip = new CustomBalloonTip(invoker, info, r, tipStyle, new LeftAbovePositioner(15, 15), closeButton);
+        final BalloonTip balloonTip = new CustomBalloonTip(
+                invoker,
+                info,
+                r,
+                tipStyle,
+                new LeftAbovePositioner(15, 15),
+                closeButton
+        );
         openBalloons.put(sourceElement, balloonTip);
 
         UIUtils.updateBackground(info, color);
 
-        balloonTip.addHierarchyListener(new HierarchyListener() {
-            @Override
-            public void hierarchyChanged(HierarchyEvent e) {
-                if (HierarchyEvent.SHOWING_CHANGED == (HierarchyEvent.SHOWING_CHANGED & e.getChangeFlags())) {
-                    if (balloonTip.isShowing()) {
-                        openBalloons.put(sourceElement, balloonTip);
-                    } else {
-                        openBalloons.remove(sourceElement);
+        balloonTip.addHierarchyListener(
+                new HierarchyListener() {
+                    @Override
+                    public void hierarchyChanged(HierarchyEvent e) {
+                        if (HierarchyEvent.SHOWING_CHANGED == (HierarchyEvent.SHOWING_CHANGED & e.getChangeFlags())) {
+                            if (balloonTip.isShowing()) {
+                                openBalloons.put(sourceElement, balloonTip);
+                            } else {
+                                openBalloons.remove(sourceElement);
+                            }
+                        }
                     }
                 }
-            }
-        });
+        );
 
-        balloonTip.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (e.getOppositeComponent() != null) {
-                    balloonTip.closeBalloon();
-                    if (onClose != null) {
-                        onClose.run();
+        balloonTip.addFocusListener(
+                new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        if (e.getOppositeComponent() != null) {
+                            balloonTip.closeBalloon();
+                            if (onClose != null) {
+                                onClose.run();
+                            }
+                        }
                     }
                 }
-            }
-        });
+        );
         balloonTip.requestFocus();
         info.initialize(balloonTip);
         balloonTip.refreshLocation();
@@ -330,11 +371,11 @@ class HyperlinkHandler implements HyperlinkListener {
     }
 
     private class PostInfoPane extends AnUrlInfoPane {
-        private final MessageData messageData;
+        private final FullMessage data;
 
-        public PostInfoPane(MessageData messageData) {
-            super(LinkUtils.buildThreadLink(messageData.getMessageId()), messageData.getSubject());
-            this.messageData = messageData;
+        public PostInfoPane(FullMessage messageData) {
+            super(LinkUtils.buildThreadLink(messageData.data.getMessageId()), messageData.data.getSubject());
+            this.data = messageData;
         }
 
         @Override
@@ -344,16 +385,28 @@ class HyperlinkHandler implements HyperlinkListener {
             JPanel cp = new JPanel(new BorderLayout(10, 10));
             cp.setOpaque(true);
 
+            MessageData messageData = data.data;
             JLabel userInfo = new JLabel(messageData.getUserName());
+            userInfo.setHorizontalAlignment(SwingConstants.CENTER);
             cp.add(userInfo, BorderLayout.CENTER);
 
             JLabel messageDate = new JLabel(MessageUtils.formatDate(messageData.getMessageDate()));
-            cp.add(messageDate, BorderLayout.EAST);
+            cp.add(messageDate, BorderLayout.WEST);
 
             JLabel ratingInfo = new JLabel();
             ratingInfo.setHorizontalAlignment(SwingConstants.CENTER);
-            ratingInfo.setIcon(MessageUtils.buildRateImage(messageData.getRating(), ratingInfo.getFont(), ratingInfo.getForeground()));
-            cp.add(ratingInfo, BorderLayout.SOUTH);
+            ratingInfo.setIcon(
+                    MessageUtils.buildRateImage(
+                            messageData.getRating(),
+                            ratingInfo.getFont(),
+                            ratingInfo.getForeground()
+                    )
+            );
+            cp.add(ratingInfo, BorderLayout.EAST);
+
+            JLabel messageTeaser = new JLabel();
+            cp.add(messageTeaser, BorderLayout.SOUTH);
+            messageTeaser.setText(data.message);
 
             add(cp, BorderLayout.CENTER);
 
@@ -420,6 +473,16 @@ class HyperlinkHandler implements HyperlinkListener {
             } else {
                 showMessageBalloon(messageId, element, mouseY);
             }
+        }
+    }
+
+    private static class FullMessage {
+        private final MessageData data;
+        private final String message;
+
+        private FullMessage(MessageData data, String message) {
+            this.data = data;
+            this.message = message;
         }
     }
 }

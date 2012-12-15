@@ -45,4 +45,12 @@ public class MessageUtilsTest extends TestCase {
             assertEquals(expectred, MessageUtils.correctSubject(was));
         }
     }
+
+    public void testTeaserMaker() {
+        String html = "<html><body><p>Hello, folks! This is a teaser</p></body></html>";
+        assertEquals("<html><body><p>Hello, folks!</p></body></html>", MessageUtils.teaserHtml(html, 10));
+
+        html = "<html><body><p>Hello, <span style='color: red'>folks</span>! <b>This is a</b> teaser</p></body></html>";
+        assertEquals("<html><body><p>Hello, <span style='color: red'>folks</span>! <b>This</b></p></body></html>", MessageUtils.teaserHtml(html, 15));
+    }
 }

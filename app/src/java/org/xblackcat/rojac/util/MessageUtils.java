@@ -21,7 +21,9 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.StringWriter;
 import java.text.DateFormat;
+import java.util.ArrayDeque;
 import java.util.Date;
+import java.util.Deque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -355,5 +357,99 @@ public final class MessageUtils {
                 markMessageRead(viewId, messageData, delay);
             }
         }
+    }
+
+    public static String teaserHtml(String html, int limit) {
+        final StringBuilder teaser = new StringBuilder();
+
+        final Deque<String> tags = new ArrayDeque<>();
+        boolean isTag = false;
+        boolean isTagName = false;
+        boolean isCloseTag = false;
+        boolean space = false;
+
+        final StringBuilder tagName = new StringBuilder();
+
+        int length = 0;
+
+        int i = 0;
+        while (i < html.length()) {
+            char c = html.charAt(i++);
+
+            if (isTag) {
+                if (c == '/') {
+                    isCloseTag = true;
+                    teaser.append(c);
+                } else if (Character.isLetter(c)) {
+                    if (isTagName) {
+                        tagName.append(c);
+                    }
+                    teaser.append(c);
+                } else {
+                    if (isTagName) {
+                        String curTagName = tagName.toString();
+                        if (StringUtils.isBlank(curTagName)) {
+                            continue;
+                        }
+                        isTagName = false;
+
+                        if (isCloseTag) {
+                            // Purge cached tags until found correct one
+                            String tag;
+                            while ((tag = tags.pollFirst()) != null) {
+                                if (tag.equalsIgnoreCase(curTagName)) {
+                                    break;
+                                }
+                            }
+                        } else {
+                            tags.addFirst(curTagName);
+                        }
+
+                        tagName.setLength(0);
+                    }
+
+                    teaser.append(c);
+
+                    if (c == '>') {
+                        isTag = false;
+                        if (limit < length) {
+                            break;
+                        }
+                    }
+                }
+            } else {
+                if (c == '<') {
+                    isTag = true;
+                    isCloseTag = false;
+                    isTagName = true;
+                    space = false;
+                    teaser.append(c);
+                } else if (Character.isSpaceChar(c)) {
+                    if (!space) {
+                        if (limit < length) {
+                            break;
+                        }
+                        space = true;
+                        teaser.append(' ');
+                    }
+                } else {
+                    if (space) {
+                        ++length;
+                        space = false;
+                    }
+                    teaser.append(c);
+                    ++length;
+                }
+            }
+        }
+
+        String tag;
+        while ((tag = tags.pollFirst()) != null) {
+            teaser.append("</");
+            teaser.append(tag);
+            teaser.append('>');
+        }
+
+        return teaser.toString();
     }
 }
