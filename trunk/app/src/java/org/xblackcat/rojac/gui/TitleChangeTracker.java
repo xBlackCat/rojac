@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.gui;
 
-import net.infonode.docking.View;
-import net.infonode.docking.properties.ViewProperties;
+import bibliothek.gui.dock.dockable.AbstractDockable;
 
 import javax.swing.*;
 
@@ -10,9 +9,9 @@ import javax.swing.*;
  */
 class TitleChangeTracker implements IInfoChangeListener {
     private final IView itemView;
-    private final View view;
+    private final AbstractDockable view;
 
-    public TitleChangeTracker(IView itemView, View view) {
+    public TitleChangeTracker(IView itemView, AbstractDockable view) {
         this.itemView = itemView;
         this.view = view;
     }
@@ -22,10 +21,8 @@ class TitleChangeTracker implements IInfoChangeListener {
         String title = itemView.getTabTitle();
         Icon icon = itemView.getTabTitleIcon();
 
-        ViewProperties viewProperties = view.getViewProperties();
-
-        viewProperties.setTitle(title);
-        viewProperties.setIcon(icon);
-        view.getWindowProperties().getTabProperties().getTitledTabProperties().getNormalProperties().setToolTipText(title);
+        view.setTitleText(title);
+        view.setTitleToolTip(title);
+        view.setTitleIcon(icon);
     }
 }

@@ -1,22 +1,26 @@
 package org.xblackcat.rojac.gui;
 
+import bibliothek.gui.DockController;
+import bibliothek.gui.DockFrontend;
+import bibliothek.gui.DockStation;
+import bibliothek.gui.Dockable;
+import bibliothek.gui.dock.DefaultDockable;
+import bibliothek.gui.dock.SplitDockStation;
+import bibliothek.gui.dock.event.DockFrontendAdapter;
+import bibliothek.gui.dock.event.VetoableDockFrontendEvent;
+import bibliothek.gui.dock.event.VetoableDockFrontendListener;
+import bibliothek.gui.dock.station.split.SplitDockProperty;
+import bibliothek.gui.dock.themes.basic.BasicDockTitleFactory;
+import bibliothek.gui.dock.title.DockTitleFactory;
+import bibliothek.gui.dock.title.DockTitleManager;
+import bibliothek.gui.dock.util.Priority;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
-import net.infonode.docking.*;
-import net.infonode.docking.drop.DropFilter;
-import net.infonode.docking.drop.DropInfo;
-import net.infonode.docking.properties.DockingWindowProperties;
-import net.infonode.docking.properties.RootWindowProperties;
-import net.infonode.docking.properties.TabWindowProperties;
-import net.infonode.docking.title.DockingWindowTitleProvider;
-import net.infonode.docking.title.SimpleDockingWindowTitleProvider;
-import net.infonode.gui.UIManagerUtil;
-import net.infonode.util.Direction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.RojacDebugException;
 import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.gui.component.ShortCut;
-import org.xblackcat.rojac.gui.component.TrimingDockingWindowTitleProvider;
+import org.xblackcat.rojac.gui.component.TrimmedDockTitleFactory;
 import org.xblackcat.rojac.gui.dialog.EditMessageDialog;
 import org.xblackcat.rojac.gui.dialog.LoadMessageDialog;
 import org.xblackcat.rojac.gui.dialog.OpenMessageDialog;
@@ -53,7 +57,6 @@ import java.awt.dnd.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -69,30 +72,11 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private static final Log log = LogFactory.getLog(MainFrame.class);
     private static final String SCHEDULED_TASK_ID = "SCHEDULED_SYNCHRONIZER";
 
-    private static final int ICON_TEXT_GAP = 3;
-    private static final int WINDOW_BAR_BORDER_WIDTH = 2;
-
     // Data tracking
-    private Map<ViewId, View> openedViews = new HashMap<>();
-    protected RootWindow threadsRootWindow;
+    private Map<ViewId, DefaultDockable> openedViews = new HashMap<>();
+    protected SplitDockStation threadsRootWindow;
 
     private final StartPageView startPageView = new StartPageView(this);
-
-    protected final DropFilter noAuxViewsFilter = new DropFilter() {
-        @Override
-        public boolean acceptDrop(DropInfo dropInfo) {
-            DockingWindow dw = dropInfo.getWindow();
-
-            if (dw instanceof View) {
-                View v = (View) dw;
-                if (v.getComponent() instanceof IView) {
-                    return dropInfo.getDropWindow().getRootWindow() == threadsRootWindow;
-                }
-            }
-
-            return true;
-        }
-    };
 
     protected final NavigationHistoryTracker history = new NavigationHistoryTracker();
     protected final IStateListener navigationListener = new IStateListener() {
@@ -118,9 +102,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     if (p.isPropertyAffected(VIEW_THREAD_TAB_TITLE_LIMIT)) {
                         // Update title providers for all message tabs
 
-                        DockingWindowTitleProvider newTitleProvider = getTabTitleProvider();
-
-                        updateTitleProvider(newTitleProvider, threadsRootWindow);
+                        updateTitleProvider(getTabTitleProvider());
                     }
 
                     // Load changed properties.
@@ -146,19 +128,18 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     }
                 }
 
-                private void updateTitleProvider(DockingWindowTitleProvider newTitleProvider, DockingWindow view) {
-                    view.getWindowProperties().setTitleProvider(newTitleProvider);
-
-                    int i = 0;
-                    while (i < view.getChildWindowCount()) {
-                        updateTitleProvider(newTitleProvider, view.getChildWindow(i++));
-                    }
+                private void updateTitleProvider(DockTitleFactory newTitleProvider) {
+                    final DockTitleManager titleManager = dockController.getDockTitleManager();
+                    titleManager.clearThemeFactories();
+                    titleManager.register("", newTitleProvider, Priority.DEFAULT);
                 }
             }
     );
     private MainFrameState frameState;
 
     private final Map<ViewId, IViewLayout> storedLayouts = new HashMap<>();
+    private DockController dockController;
+    private DockFrontend dockFrontend;
 
     public MainFrame() {
         super(RojacUtils.VERSION_STRING);
@@ -271,34 +252,80 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private void initialize() {
+        dockController = new DockController();
+        dockController.setPopupMenuFactory(new ItemViewPopupFactory());
+
+        dockFrontend = new DockFrontend(dockController, getMainFrame());
+        dockFrontend.addVetoableListener(
+                new VetoableDockFrontendListener() {
+                    @Override
+                    public void showing(VetoableDockFrontendEvent event) {
+                    }
+
+                    @Override
+                    public void shown(VetoableDockFrontendEvent event) {
+                        final DockFrontend frontend = event.getFrontend();
+
+                        for (Dockable d : event.getDockables()) {
+                            if (d instanceof DefaultDockable) {
+                                DefaultDockable dd = (DefaultDockable) d;
+                                IItemView iv = (IItemView) dd.getClientComponent();
+                                frontend.addDockable(iv.getId().getAnchor(), d);
+                                frontend.setHideable(d, true);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void hiding(VetoableDockFrontendEvent event) {
+                    }
+
+                    @Override
+                    public void hidden(VetoableDockFrontendEvent event) {
+                        final DockFrontend frontend = event.getFrontend();
+
+                        for (Dockable d : event.getDockables()) {
+                            if (!(d instanceof DefaultDockable)) {
+                                continue;
+                            }
+
+                            IItemView itemView = (IItemView) ((DefaultDockable) d).getClientComponent();
+                            if (openedViews.values().remove(d)) {
+                                storedLayouts.put(itemView.getId(), itemView.storeLayout());
+                            }
+
+                            frontend.remove(d);
+                        }
+                    }
+                }
+        );
+
+        threadsRootWindow = new SplitDockStation(false);
+
+        dockFrontend.addRoot("threads", threadsRootWindow);
 
         JPanel cp = new JPanel(new BorderLayout());
         setContentPane(cp);
 
-        // Set up main tabbed window for forum views
-        threadsRootWindow = new RootWindow(false, new ThreadViewSerializer());
-        threadsRootWindow.addListener(new CloseViewTabListener());
+        threadsRootWindow.setExpandOnDoubleclick(false);
 
-        Color backgroundColor = UIManagerUtil.getColor("Panel.background", "control");
+        dockFrontend.addFrontendListener(
+                new DockFrontendAdapter() {
+                    @Override
+                    public void removed(DockFrontend frontend, Dockable dockable) {
+                        super.removed(frontend, dockable);
+                    }
 
-        RootWindowProperties threadsRootWindowProperties = threadsRootWindow.getRootWindowProperties();
-        threadsRootWindowProperties.setDragRectangleBorderWidth(WINDOW_BAR_BORDER_WIDTH);
-        threadsRootWindowProperties.setRecursiveTabsEnabled(false);
-        threadsRootWindowProperties.getWindowAreaProperties().setBackgroundColor(backgroundColor);
+                    @Override
+                    public void hidden(DockFrontend fronend, Dockable dockable) {
+                        super.hidden(fronend, dockable);
+                    }
 
-        threadsRootWindowProperties
-                .getDockingWindowProperties()
-                .getDropFilterProperties()
-                .setInsertTabDropFilter(noAuxViewsFilter)
-                .setInteriorDropFilter(noAuxViewsFilter)
-                .setChildDropFilter(noAuxViewsFilter)
-                .setSplitDropFilter(noAuxViewsFilter);
 
-        TabWindowProperties threadsTabWindowProperties = threadsRootWindowProperties.getTabWindowProperties();
-        threadsTabWindowProperties.getMinimizeButtonProperties().setVisible(false);
-        threadsTabWindowProperties.getMaximizeButtonProperties().setVisible(false);
+                }
+        );
 
-        cp.add(createThreadsView(threadsRootWindow));
+        cp.add(createThreadsView(threadsRootWindow), BorderLayout.CENTER);
 
         // Setup DnD
         DropTarget target = new DropTarget(
@@ -311,7 +338,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         setDropTarget(target);
     }
 
-    private JPanel createThreadsView(DockingWindow threads) {
+    private JPanel createThreadsView(DockStation threads) {
         JPanel readingPane = new JPanel(new BorderLayout(0, 0));
 
         // Setup toolbar
@@ -365,7 +392,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         readingPane.add(toolBar, BorderLayout.NORTH);
 
         JPanel threadsPane = new JPanel(new BorderLayout());
-        threadsPane.add(threads, BorderLayout.CENTER);
+        threadsPane.add(threads.asDockable().getComponent(), BorderLayout.CENTER);
         threadsPane.add(setupHintContainer(), BorderLayout.NORTH);
 
         readingPane.add(threadsPane, BorderLayout.CENTER);
@@ -383,26 +410,18 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         return hintContainer;
     }
 
-    private View makeViewWindow(final IItemView itemView) {
-        final View view = new View(
+    private DefaultDockable makeViewWindow(final IItemView itemView) {
+        final DefaultDockable view = new DefaultDockable(
+                itemView.getComponent(),
                 itemView.getTabTitle(),
-                itemView.getTabTitleIcon(),
-                itemView.getComponent()
+                itemView.getTabTitleIcon()
         );
 
         itemView.addStateChangeListener(navigationListener);
 
-        ShortCutUtils.mergeInputMaps(view, itemView.getComponent());
-
-        DockingWindowProperties props = view.getWindowProperties();
-        props.setMinimizeEnabled(false);
-        props.setTitleProvider(getTabTitleProvider());
-
-        props.getTabProperties().getTitledTabProperties().getNormalProperties().setIconTextGap(ICON_TEXT_GAP);
+        ShortCutUtils.mergeInputMaps((JComponent) view.getComponent(), itemView.getComponent());
 
         itemView.addInfoChangeListener(new TitleChangeTracker(itemView, view));
-
-        view.setPopupMenuFactory(new ItemViewPopupFactory(itemView));
 
         ViewId viewId = itemView.getId();
         openedViews.put(viewId, view);
@@ -414,13 +433,13 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         return view;
     }
 
-    private DockingWindowTitleProvider getTabTitleProvider() {
+    private DockTitleFactory getTabTitleProvider() {
         int tabTitleLimit = VIEW_THREAD_TAB_TITLE_LIMIT.get();
 
         if (tabTitleLimit > 0) {
-            return new TrimingDockingWindowTitleProvider(tabTitleLimit);
+            return new TrimmedDockTitleFactory(tabTitleLimit);
         } else {
-            return SimpleDockingWindowTitleProvider.INSTANCE;
+            return new BasicDockTitleFactory();
         }
     }
 
@@ -437,9 +456,13 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     @Override
     public void processPacket(IPacket packet) {
         mainDispatcher.dispatch(packet);
+        startPageView.processPacket(packet);
 
-        for (View v : openedViews.values()) {
-            ((IView) v.getComponent()).processPacket(packet);
+        for (DefaultDockable v : openedViews.values()) {
+            final IView view = (IView) v.getClientComponent();
+            if (view != startPageView) {
+                view.processPacket(packet);
+            }
         }
     }
 
@@ -460,67 +483,67 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     public void applySettings() {
-        File file = RojacUtils.getLayoutFile();
-        if (file.isFile()) {
-            if (log.isInfoEnabled()) {
-                log.info("Load previous layout");
-            }
-            try {
-                try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-                    threadsRootWindow.read(in, false);
-
-                    try {
-                        setObjectState((IState) in.readObject());
-
-                        // Null means end of list
-                        ViewId viewId;
-                        while ((viewId = (ViewId) in.readObject()) != null) {
-                            storedLayouts.put(viewId, (IViewLayout) in.readObject());
-                        }
-                    } catch (EOFException e) {
-                        // Ignore to support previous revisions
-                    }
-                }
-
-                return;
-            } catch (ClassNotFoundException e) {
-                log.error("Main frame state class is not found", e);
-            } catch (IOException | RuntimeException e) {
-                log.error("Can not load views layout.", e);
-            }
-        } else {
-            if (log.isInfoEnabled()) {
-                log.info("No previous layout is found - use default.");
-            }
-        }
+//        File file = RojacUtils.getLayoutFile();
+//        if (file.isFile()) {
+//            if (log.isInfoEnabled()) {
+//                log.info("Load previous layout");
+//            }
+//            try {
+//                try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+//                    threadsRootWindow.read(in, false);
+//
+//                    try {
+//                        setObjectState((IState) in.readObject());
+//
+//                        // Null means end of list
+//                        ViewId viewId;
+//                        while ((viewId = (ViewId) in.readObject()) != null) {
+//                            storedLayouts.put(viewId, (IViewLayout) in.readObject());
+//                        }
+//                    } catch (EOFException e) {
+//                        // Ignore to support previous revisions
+//                    }
+//                }
+//
+//                return;
+//            } catch (ClassNotFoundException e) {
+//                log.error("Main frame state class is not found", e);
+//            } catch (IOException | RuntimeException e) {
+//                log.error("Can not load views layout.", e);
+//            }
+//        } else {
+//            if (log.isInfoEnabled()) {
+//                log.info("No previous layout is found - use default.");
+//            }
+//        }
 
         // Setup default layout
-        threadsRootWindow.setWindow(new TabWindow(makeViewWindow(startPageView)));
+        openTab(startPageView.getId());
     }
 
     public void storeSettings() {
-        File file = RojacUtils.getLayoutFile();
-        try {
-            try (ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-                threadsRootWindow.write(out, false);
-                // Last item - main frame state
-                out.writeObject(getObjectState());
-
-                // Write forum layouts only
-                for (Map.Entry<ViewId, IViewLayout> element : storedLayouts.entrySet()) {
-                    if (element.getKey().getType() == ViewType.Forum ||
-                            element.getKey().getType() == ViewType.OutBox ||
-                            element.getKey().getType() == ViewType.Favorite) {
-                        out.writeObject(element.getKey()); // Identifier
-                        out.writeObject(element.getValue()); // Panel layout
-                    }
-                }
-                out.writeObject(null);
-            }
-
-        } catch (IOException e) {
-            log.error("Can not store views layout.", e);
-        }
+//        File file = RojacUtils.getLayoutFile();
+//        try {
+//            try (ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+//                threadsRootWindow.write(out, false);
+//                // Last item - main frame state
+//                out.writeObject(getObjectState());
+//
+//                // Write forum layouts only
+//                for (Map.Entry<ViewId, IViewLayout> element : storedLayouts.entrySet()) {
+//                    if (element.getKey().getType() == ViewType.Forum ||
+//                            element.getKey().getType() == ViewType.OutBox ||
+//                            element.getKey().getType() == ViewType.Favorite) {
+//                        out.writeObject(element.getKey()); // Identifier
+//                        out.writeObject(element.getValue()); // Panel layout
+//                    }
+//                }
+//                out.writeObject(null);
+//            }
+//
+//        } catch (IOException e) {
+//            log.error("Can not store views layout.", e);
+//        }
     }
 
     private void storeWindowState() {
@@ -534,31 +557,22 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     @Override
-    public View openTab(ViewId viewId) {
-        View c = openedViews.get(viewId);
-        if (c != null && c.getParent() != null) {
-            c.makeVisible();
-            return c;
+    public DefaultDockable openTab(ViewId viewId) {
+        final DefaultDockable dockable = openedViews.get(viewId);
+        if (dockable != null) {
+            dockFrontend.getController().setFocusedDockable(dockable, true);
+            return dockable;
         }
 
         IItemView v = ViewHelper.makeView(viewId, this);
 
-        final View view = makeViewWindow(v);
+        final DefaultDockable view = makeViewWindow(v);
 
-        DockingWindow rootWindow = threadsRootWindow.getWindow();
-        if (rootWindow != null) {
-            if (rootWindow instanceof TabWindow) {
-                ((TabWindow) rootWindow).addTab(view);
-            } else {
-                TabWindow tw = searchForTabWindow(rootWindow);
-                if (tw != null) {
-                    tw.addTab(view);
-                } else {
-                    rootWindow.split(view, Direction.RIGHT, 0.5f);
-                }
-            }
+        final Dockable frontDockable = threadsRootWindow.getFrontDockable();
+        if (frontDockable == null) {
+            threadsRootWindow.drop(view, SplitDockProperty.EAST);
         } else {
-            threadsRootWindow.setWindow(new TabWindow(view));
+            threadsRootWindow.drop(view, threadsRootWindow.getDockablePathProperty(frontDockable));
         }
 
         v.loadItem(viewId.getId());
@@ -569,27 +583,10 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     @Override
     public void closeTab(ViewId viewId) {
         if (openedViews.containsKey(viewId)) {
-            openedViews.remove(viewId).close();
+            final Dockable dockable = openedViews.remove(viewId);
+
+            dockFrontend.remove(dockable);
         }
-    }
-
-    private TabWindow searchForTabWindow(DockingWindow rootWindow) {
-        TabWindow w = null;
-
-        for (int i = 0; i < rootWindow.getChildWindowCount(); i++) {
-            DockingWindow dw = rootWindow.getChildWindow(i);
-            if (dw instanceof TabWindow) {
-                w = (TabWindow) dw;
-                break;
-            }
-
-            w = searchForTabWindow(dw);
-            if (w != null) {
-                break;
-            }
-        }
-
-        return w;
     }
 
     @Override
@@ -616,11 +613,11 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
             throw new RojacDebugException("Open message type can not be null");
         }
 
-        Iterator<View> iterator = openedViews.values().iterator();
+        Iterator<DefaultDockable> iterator = openedViews.values().iterator();
         while (iterator.hasNext()) {
-            View v = iterator.next();
+            DefaultDockable v = iterator.next();
             if (v.getComponent() instanceof IItemView) {
-                if (v.getParent() == null) {
+                if (v.asDockable().getDockParent() == null) {
                     iterator.remove();
                     continue;
                 }
@@ -631,7 +628,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     if (itemView.containsItem(messageId)) {
                         // Item found in the view.
                         // Make the view visible and open it.
-                        v.makeVisible();
+                        dockFrontend.getController().setFocusedDockable(v, true);
                         itemView.makeVisible(messageId);
                         return;
                     }
@@ -643,7 +640,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private void goToView(ViewId id, IState state) {
-        View v = openTab(id);
+        Dockable v = openTab(id);
 
         if (state != null) {
             ((IStateful) v.getComponent()).setObjectState(state);
@@ -747,56 +744,27 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         }
     }
 
-    private class ThreadViewSerializer implements ViewSerializer {
-        @Override
-        public void writeView(View view, ObjectOutputStream out) throws IOException {
-            assert view.getComponent() instanceof IItemView;
-
-            ViewHelper.storeView(out, (IItemView) view.getComponent());
-        }
-
-        @Override
-        public View readView(ObjectInputStream in) throws IOException {
-            try {
-                IItemView v = ViewHelper.initializeView(in, MainFrame.this);
-
-                return makeViewWindow(v);
-            } catch (ClassNotFoundException e) {
-                log.error("Can not obtain state object.", e);
-                throw new IOException("Can not obtain state object.", e);
-            }
-        }
-    }
-
-    private class CloseViewTabListener extends DockingWindowAdapter {
-        @Override
-        public void windowClosed(DockingWindow window) {
-            unregisterWindow(window);
-        }
-
-        @SuppressWarnings({"SuspiciousMethodCalls"})
-        private void unregisterWindow(DockingWindow dw) {
-            if (dw == null) {
-                return;
-            }
-
-            if (openedViews.containsValue(dw)) {
-                openedViews.values().remove(dw);
-                if (dw instanceof View) {
-                    IItemView itemView = (IItemView) ((View) dw).getComponent();
-                    storedLayouts.put(itemView.getId(), itemView.storeLayout());
-                }
-            }
-
-            int views = dw.getChildWindowCount();
-
-            for (int i = 0; i < views; i++) {
-                DockingWindow w = dw.getChildWindow(i);
-
-                unregisterWindow(w);
-            }
-        }
-    }
+//    private class ThreadViewSerializer implements ViewSerializer {
+//        @Override
+//        public void writeView(View view, ObjectOutputStream out) throws IOException {
+//            assert view.getComponent() instanceof IItemView;
+//
+//            ViewHelper.storeView(out, (IItemView) view.getComponent());
+//        }
+//
+//        @Override
+//        public View readView(ObjectInputStream in) throws IOException {
+//            try {
+//                IItemView v = ViewHelper.initializeView(in, MainFrame.this);
+//
+//                return makeViewWindow(v);
+//            } catch (ClassNotFoundException e) {
+//                log.error("Can not obtain state object.", e);
+//                throw new IOException("Can not obtain state object.", e);
+//            }
+//        }
+//    }
+//
 
     private class MessageNavigator extends MessageChecker {
         private final OpenMessageMethod openMessageMethod;
@@ -819,11 +787,12 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
 
             ViewId viewId = openMessageMethod.getAssociatedViewType().makeId(data);
 
-            View c = openTab(viewId);
+            DefaultDockable c = openTab(viewId);
             if (c != null) {
+
                 // Just in case :)
-                c.makeVisible();
-                IItemView itemView = (IItemView) c.getComponent();
+                dockController.setFocusedDockable(c, true);
+                IItemView itemView = (IItemView) c.getClientComponent();
                 itemView.makeVisible(messageId);
             } else {
                 DialogHelper.showExceptionDialog(new RuntimeException("F*cka-morgana! Forum view is not loaded!"));
@@ -1033,5 +1002,4 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
             }
         }
     }
-
 }
