@@ -28,7 +28,6 @@ public abstract class AnItemView extends AView implements IItemView {
         listenerList.remove(IStateListener.class, l);
     }
 
-
     protected void fireViewStateChanged() {
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
@@ -38,4 +37,8 @@ public abstract class AnItemView extends AView implements IItemView {
         }
     }
 
+    @Override
+    public String toString() {
+        return id.getType() + ": " + getTabTitle();
+    }
 }

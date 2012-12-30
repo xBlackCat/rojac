@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.gui;
 
-import net.infonode.docking.View;
+import bibliothek.gui.dock.DefaultDockable;
 import org.xblackcat.rojac.gui.view.ViewId;
 import org.xblackcat.rojac.gui.view.startpage.StartPageView;
 
@@ -44,7 +44,7 @@ public interface IAppControl {
      * @param viewId identify of view to open or create.
      * @return opened view (created or already existed)
      */
-    View openTab(ViewId viewId);
+    DefaultDockable openTab(ViewId viewId);
 
     /**
      * Closes a tab with specified type and id.
