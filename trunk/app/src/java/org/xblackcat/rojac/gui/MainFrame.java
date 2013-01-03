@@ -616,13 +616,13 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         Iterator<DefaultDockable> iterator = openedViews.values().iterator();
         while (iterator.hasNext()) {
             DefaultDockable v = iterator.next();
-            if (v.getComponent() instanceof IItemView) {
+            if (v.getClientComponent() instanceof IItemView) {
                 if (v.asDockable().getDockParent() == null) {
                     iterator.remove();
                     continue;
                 }
 
-                IItemView itemView = (IItemView) v.getComponent();
+                IItemView itemView = (IItemView) v.getClientComponent();
 
                 if (openMessageMethod.getAssociatedViewType() == itemView.getId().getType()) {
                     if (itemView.containsItem(messageId)) {
@@ -640,10 +640,10 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     }
 
     private void goToView(ViewId id, IState state) {
-        Dockable v = openTab(id);
+        DefaultDockable v = openTab(id);
 
         if (state != null) {
-            ((IStateful) v.getComponent()).setObjectState(state);
+            ((IStateful) v.getClientComponent()).setObjectState(state);
         }
     }
 
