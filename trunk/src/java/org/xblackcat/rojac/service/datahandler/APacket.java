@@ -13,17 +13,24 @@ public abstract class APacket implements IPacket {
     public static void setDispatcher(IDataDispatcher dispatcher) {
         assert RojacUtils.isMainThread();
 
-        APacket.dispatcher = dispatcher;
+        synchronized (APacket.class) {
+            APacket.dispatcher = dispatcher;
+        }
     }
 
     @Override
     public void dispatch() {
+        assert RojacUtils.checkThread(true);
+        IDataDispatcher dispatcher = getDispatcher();
+
         assert dispatcher != null;
 
         dispatcher.processPacket(this);
     }
 
     public static IDataDispatcher getDispatcher() {
-        return dispatcher;
+        synchronized (APacket.class) {
+            return dispatcher;
+        }
     }
 }

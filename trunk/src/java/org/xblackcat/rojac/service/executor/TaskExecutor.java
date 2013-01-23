@@ -13,6 +13,7 @@ import java.util.concurrent.*;
  * @author xBlackCat
  */
 
+@SuppressWarnings("NullableProblems")
 public final class TaskExecutor implements IExecutor, ExecutorService {
     private static final Log log = LogFactory.getLog(TaskExecutor.class);
 

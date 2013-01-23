@@ -57,8 +57,16 @@ class ForumDecorator extends ADecorator {
     public ForumDecorator(IModelControl modelControl) {
         super(modelControl);
 
-        subscribedForums = new GroupItem<>(Message.View_Navigation_Item_SubscribedForums, FORUM_LIST_COMPARATOR, ReadStatusIcon.ForumSubscribed);
-        notSubscribedForums = new GroupItem<>(Message.View_Navigation_Item_NotSubscribedForums, FORUM_LIST_COMPARATOR, ReadStatusIcon.Forum);
+        subscribedForums = new GroupItem<>(
+                Message.View_Navigation_Item_SubscribedForums,
+                FORUM_LIST_COMPARATOR,
+                ReadStatusIcon.ForumSubscribed
+        );
+        notSubscribedForums = new GroupItem<>(
+                Message.View_Navigation_Item_NotSubscribedForums,
+                FORUM_LIST_COMPARATOR,
+                ReadStatusIcon.Forum
+        );
     }
 
     @Override
@@ -69,22 +77,30 @@ class ForumDecorator extends ADecorator {
         };
     }
 
-    void updateForum(int forumId, DiscussionStatistic statistic) {
-        Forum forum = forumsCache.get(forumId);
+    private void updateForum(int forumId, DiscussionStatistic statistic) {
+        final Forum forum = forumsCache.get(forumId);
 
         if (forum == null) {
             assert false : "Unknown forum id: " + forumId;
             return;
         }
 
+        updateForum(forum, statistic, true);
+    }
+
+    private void updateForum(Forum forum, DiscussionStatistic statistic, boolean update) {
+        int forumId = forum.getForumId();
+
         boolean subscribed = forum.isSubscribed();
         AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
 
         ForumItem forumItem = new ForumItem(parent, forum, statistic);
 
-        // Remove forum from list if any
-        modelControl.safeRemoveChild(subscribedForums, forumItem);
-        modelControl.safeRemoveChild(notSubscribedForums, forumItem);
+        if (update) {
+            // Remove forum from list if any
+            modelControl.safeRemoveChild(subscribedForums, forumItem);
+            modelControl.safeRemoveChild(notSubscribedForums, forumItem);
+        }
 
         if (statistic == null || statistic.getTotalMessages() > 0 || subscribed) {
             modelControl.addChild(parent, forumItem);
@@ -93,8 +109,10 @@ class ForumDecorator extends ADecorator {
             viewedForums.remove(forumId);
         }
 
-        modelControl.itemUpdated(subscribedForums);
-        modelControl.itemUpdated(notSubscribedForums);
+        if (update) {
+            modelControl.itemUpdated(subscribedForums);
+            modelControl.itemUpdated(notSubscribedForums);
+        }
     }
 
     public ILoadTask updateSubscribed(int forumId, boolean subscribed) {
@@ -150,11 +168,10 @@ class ForumDecorator extends ADecorator {
     public Collection<ILoadTask<Void>> alterReadStatus(MessageData messageData, boolean read) {
         ForumItem navItem = viewedForums.get(messageData.getForumId());
         if (navItem != null) {
-            Integer ownId = Property.RSDN_USER_ID.get();
             ILoadTask<Void> task = new ForumUnreadAdjustTask(
                     navItem,
                     read ? -1 : 1,
-                    messageData.getParentUserId() == ownId && messageData.getUserId() != ownId
+                    messageData.isReply2Me()
             );
 
             return Collections.singleton(task);
@@ -202,7 +219,11 @@ class ForumDecorator extends ADecorator {
 
         @Override
         public void doSwing(DiscussionStatistic data) {
-            updateForum(forumId, data);
+            if (data == null) {
+                updateForum(forumId, data);
+            } else {
+                // TODO: show notification to update forum list
+            }
         }
     }
 
@@ -221,7 +242,7 @@ class ForumDecorator extends ADecorator {
                 f = fah.getForumById(forumId);
 
                 if (f == null) {
-                    assert false : "Unknown forum id: " + forumId;
+                    // Possibly a new forum on site
                     return null;
                 }
 
@@ -242,7 +263,7 @@ class ForumDecorator extends ADecorator {
             final IForumAH fah = Storage.get(IForumAH.class);
 
             Collection<ItemStatisticData<Forum>> forums = new ArrayList<>();
-            
+
             try (IResult<ItemStatisticData<Forum>> allForums = fah.getAllForums()) {
                 CollectionUtils.addAll(forums, allForums.iterator());
             }
@@ -252,41 +273,17 @@ class ForumDecorator extends ADecorator {
 
         @Override
         public void doSwing(Collection<ItemStatisticData<Forum>> data) {
-            Collection<ForumUpdateTask> updateTasks = new ArrayList<>();
-
             // Reload all forums
             modelControl.removeAllChildren(subscribedForums);
             modelControl.removeAllChildren(notSubscribedForums);
             viewedForums.clear();
 
             for (ItemStatisticData<Forum> fd : data) {
-                Forum forum = fd.getItem();
-                forumsCache.put(forum.getForumId(), forum);
-
-                boolean subscribed = forum.isSubscribed();
-                AGroupItem<ForumItem> parent = subscribed ? subscribedForums : notSubscribedForums;
-
-                int forumId = forum.getForumId();
-                DiscussionStatistic statistic = fd.getItemReadStatistic();
-
-                ForumItem forumItem = new ForumItem(parent, forum, statistic);
-
-                boolean notEmpty = statistic.getTotalMessages() > 0;
-                if (subscribed || notEmpty) {
-                    modelControl.addChild(parent, forumItem);
-                    viewedForums.put(forumId, forumItem);
-                    if (notEmpty) {
-                        updateTasks.add(new ForumUpdateTask(forumId));
-                    }
-                } else {
-                    viewedForums.remove(forumId);
-                }
+                updateForum(fd.getItem(), fd.getItemReadStatistic(), true);
             }
 
             modelControl.itemUpdated(subscribedForums);
             modelControl.itemUpdated(notSubscribedForums);
-
-            new LoadTaskExecutor(updateTasks).execute();
         }
 
     }

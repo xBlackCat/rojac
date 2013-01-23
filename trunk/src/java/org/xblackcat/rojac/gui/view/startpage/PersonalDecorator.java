@@ -62,7 +62,7 @@ class PersonalDecorator extends ADecorator {
 
     public Collection<ILoadTask> alterReadStatus(MessageData post, boolean read) {
         Collection<ILoadTask> tasks = new ArrayList<>(4);
-        if (post.getParentUserId() == Property.RSDN_USER_ID.get()) {
+        if (post.isReply2Me()) {
             tasks.add(new AdjustResponsesTask(myResponses, read ? -1 : 1));
         }
 

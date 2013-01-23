@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.data;
 
+import org.xblackcat.rojac.service.options.Property;
+
 /**
  * @author xBlackCat
  */
@@ -38,21 +40,24 @@ public class MessageData {
      * @param parentUserId author of previous message by hierarchy. Zero for anonymous or topic head messages.
      * @param ignoredUser  flag is author of the message is ignored
      */
-    public MessageData(int messageId,
-                       int topicId,
-                       int parentId,
-                       int forumId,
-                       int userId,
-                       String subject,
-                       String userName,
-                       long messageDate,
-                       long updateDate,
-                       boolean read,
-                       String rating,
-                       boolean ignored,
-                       int parentUserId,
-                       boolean ignoredUser) {
-        this(messageId,
+    public MessageData(
+            int messageId,
+            int topicId,
+            int parentId,
+            int forumId,
+            int userId,
+            String subject,
+            String userName,
+            long messageDate,
+            long updateDate,
+            boolean read,
+            String rating,
+            boolean ignored,
+            int parentUserId,
+            boolean ignoredUser
+    ) {
+        this(
+                messageId,
                 topicId,
                 parentId,
                 forumId,
@@ -65,23 +70,26 @@ public class MessageData {
                 new RatingCache(rating),
                 ignored,
                 parentUserId,
-                ignoredUser);
+                ignoredUser
+        );
     }
 
-    private MessageData(int messageId,
-                        int topicId,
-                        int parentId,
-                        int forumId,
-                        int userId,
-                        String subject,
-                        String userName,
-                        long messageDate,
-                        long updateDate,
-                        boolean read,
-                        RatingCache rating,
-                        boolean ignored,
-                        int parentUserId,
-                        boolean ignoredUser) {
+    private MessageData(
+            int messageId,
+            int topicId,
+            int parentId,
+            int forumId,
+            int userId,
+            String subject,
+            String userName,
+            long messageDate,
+            long updateDate,
+            boolean read,
+            RatingCache rating,
+            boolean ignored,
+            int parentUserId,
+            boolean ignoredUser
+    ) {
         this.messageId = messageId;
         this.topicId = topicId;
         this.parentId = parentId;
@@ -264,5 +272,13 @@ public class MessageData {
                 parentUserId,
                 ignoredUser  // Not a field
         );
+    }
+
+    public boolean isReply2Me() {
+        return isReply2User(Property.RSDN_USER_ID.get());
+    }
+
+    public boolean isReply2User(int ownUserId) {
+        return topicId != 0 && userId != ownUserId && parentUserId == ownUserId;
     }
 }
