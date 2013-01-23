@@ -102,14 +102,10 @@ public final class Forum {
     }
 
     public String toString() {
-        StringBuilder str = new StringBuilder("Forum[");
-        str.append("forumId=").append(forumId).append(", ");
-        str.append("forumGroupId=").append(forumGroupId).append(", ");
-        str.append("shortForumName=").append(shortForumName).append(", ");
-        str.append("forumName=").append(forumName).append(", ");
-        str.append("rated=").append(rated).append(", ");
-        str.append("inTop=").append(inTop).append(", ");
-        str.append("rateLimit=").append(rateLimit).append(']');
+        StringBuilder str = new StringBuilder();
+        str.append(forumName).append("[");
+        str.append(forumId).append(": ");
+        str.append(shortForumName).append("]");
         return str.toString();
     }
 }

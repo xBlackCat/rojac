@@ -60,4 +60,8 @@ public class ReadStatistic {
             }
         }
     }
+
+    public String toString() {
+        return "[" + totalMessages + "/" + unreadMessages + "/" + unreadReplies + "]";
+    }
 }

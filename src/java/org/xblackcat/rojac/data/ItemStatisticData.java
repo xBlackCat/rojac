@@ -24,4 +24,9 @@ public class ItemStatisticData<T> {
     public DiscussionStatistic getItemReadStatistic() {
         return readStatistic;
     }
+
+    @Override
+    public String toString() {
+        return messageData + " " + readStatistic;
+    }
 }

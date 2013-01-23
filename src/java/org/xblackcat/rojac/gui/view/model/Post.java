@@ -77,7 +77,7 @@ public class Post implements Comparable<Post> {
     }
 
     public boolean isReply(int userId) {
-        return messageData != null && messageData.getParentUserId() == userId;
+        return messageData != null && messageData.isReply2User(userId);
     }
 
     public boolean hasUnreadReply() {
