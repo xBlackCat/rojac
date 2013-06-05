@@ -7,7 +7,7 @@ import ru.rsdn.janus.UserRole;
  * @author ASUS
  */
 
-public enum Role {
+public enum Role implements IIdentifable {
     Admin,
     Moderator,
     TeamMember,
@@ -28,5 +28,10 @@ public enum Role {
 
     public String toString() {
         return "UserRole[" + name() + ']';
+    }
+
+    @Override
+    public int getId() {
+        return ordinal();
     }
 }

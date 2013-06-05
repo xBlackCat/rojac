@@ -9,7 +9,7 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-public enum Mark {
+public enum Mark implements IIdentifable {
     PlusOne(-3, Message.Description_Mark_PlusOne, "plus_one.gif"),
     Agree(-4, Message.Description_Mark_Agree, "plus.gif"),
     Disagree(0, Message.Description_Mark_Disagree, "minus.gif"),
@@ -23,7 +23,7 @@ public enum Mark {
 
     public static Mark getMark(int code) throws IllegalArgumentException {
         for (Mark m : values()) {
-            if (m.getValue() == code) {
+            if (m.getId() == code) {
                 return m;
             }
         }
@@ -44,7 +44,7 @@ public enum Mark {
         markIcon = ResourceUtils.loadImageIcon("/images/" + IMAGES_MARKS_PATH + imgName);
     }
 
-    public int getValue() {
+    public int getId() {
         return value;
     }
 

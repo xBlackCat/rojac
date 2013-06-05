@@ -15,9 +15,9 @@ import java.util.*;
 public class RojacUtilsTest extends TestCase {
     public void testArrayConverter() {
         NewRating[] r = new NewRating[]{
-                new NewRating(0, 0, Mark.Agree.getValue()),
-                new NewRating(1, 1, Mark.Agree.getValue()),
-                new NewRating(2, 2, Mark.Agree.getValue()),
+                new NewRating(0, 0, Mark.Agree.getId()),
+                new NewRating(1, 1, Mark.Agree.getId()),
+                new NewRating(2, 2, Mark.Agree.getId()),
         };
 
         PostRatingInfo[] oo = RojacUtils.getRSDNObject(r);
@@ -30,9 +30,9 @@ public class RojacUtilsTest extends TestCase {
 
     public void testCollectionConverter() {
         List<NewRating> r = Arrays.asList(
-                new NewRating(0, 0, Mark.Agree.getValue()),
-                new NewRating(1, 1, Mark.Agree.getValue()),
-                new NewRating(2, 2, Mark.Agree.getValue())
+                new NewRating(0, 0, Mark.Agree.getId()),
+                new NewRating(1, 1, Mark.Agree.getId()),
+                new NewRating(2, 2, Mark.Agree.getId())
         );
 
         List<PostRatingInfo> oo = RojacUtils.getRSDNObject(r, PostRatingInfo.class);

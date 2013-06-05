@@ -25,7 +25,7 @@ final class DBNewRatingAH extends AnAH implements INewRatingAH {
                 DataQuery.STORE_OBJECT_NEW_RATING,
                 nextId,
                 messageId,
-                rate.getValue()
+                rate.getId()
         );
     }
 

@@ -18,7 +18,7 @@ final class DBNewModerateAH extends AnAH implements INewModerateAH {
         helper.update(DataQuery.STORE_OBJECT_NEW_MODERATE,
                 nm.getId(),
                 nm.getMessageId(),
-                nm.getAction().getCode(),
+                nm.getAction().getId(),
                 nm.getForumId(),
                 nm.getDescription(),
                 nm.isAsModerator()

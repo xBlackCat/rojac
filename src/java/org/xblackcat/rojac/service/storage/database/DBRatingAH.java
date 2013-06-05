@@ -24,7 +24,7 @@ final class DBRatingAH extends AnAH implements IRatingAH {
                 r.getTopicId(),
                 r.getUserId(),
                 r.getUserRating(),
-                Mark.getMark(r.getRate()).getValue(),
+                Mark.getMark(r.getRate()).getId(),
                 r.getRateDate().toGregorianCalendar().getTimeInMillis());
     }
 
