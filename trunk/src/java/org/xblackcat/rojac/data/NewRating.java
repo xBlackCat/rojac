@@ -33,7 +33,7 @@ public final class NewRating implements IRSDNable<PostRatingInfo> {
         PostRatingInfo pri = new PostRatingInfo();
         pri.setMessageId(id);
         pri.setMessageId(messageId);
-        pri.setLocalRatingId(rate.getValue());
+        pri.setLocalRatingId(rate.getId());
         return pri;
     }
 

@@ -6,7 +6,7 @@ import ru.rsdn.janus.ModerateActionType;
  * @author xBlackCat
  */
 
-public enum ModerateAction {
+public enum ModerateAction implements IIdentifable {
     MoveMessage(0),
     DeleteMessage(1),
     DeleteThread(2),
@@ -24,14 +24,14 @@ public enum ModerateAction {
 
     public static ModerateAction getAction(int action) {
         for (ModerateAction m : values()) {
-            if (m.getCode() == action) {
+            if (m.getId() == action) {
                 return m;
             }
         }
         throw new IllegalArgumentException("Unknown moderator action: " + action);
     }
 
-    public int getCode() {
+    public int getId() {
         return code;
     }
 

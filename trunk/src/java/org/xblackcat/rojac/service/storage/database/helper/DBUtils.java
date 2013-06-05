@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.service.storage.database.helper;
 
+import org.xblackcat.rojac.data.IIdentifable;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -13,7 +15,9 @@ public class DBUtils {
         // Fill parameters if any
         if (parameters != null) {
             for (int i = 0; i < parameters.length; i++) {
-                if (parameters[i] instanceof Boolean) {
+                if (parameters[i] instanceof IIdentifable) {
+                    preparedStatement.setInt(i + 1, ((IIdentifable) (parameters[i])).getId());
+                } else if (parameters[i] instanceof Boolean) {
                     preparedStatement.setInt(i + 1, ((Boolean) (parameters[i])) ? 1 : 0);
                 } else {
                     preparedStatement.setObject(i + 1, parameters[i]);

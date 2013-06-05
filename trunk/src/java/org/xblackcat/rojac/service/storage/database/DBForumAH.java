@@ -24,16 +24,27 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public void storeForum(Forum f) throws StorageException {
-        helper.update(DataQuery.STORE_OBJECT_FORUM,
-                f.getForumId(),
-                f.getForumGroupId(),
-                f.getRated(),
-                f.getInTop(),
-                f.getRateLimit(),
-                f.isSubscribed(),
-                f.getShortForumName(),
-                f.getForumName());
+    public void storeForum(
+            int forumId,
+            int forumGroupId,
+            int rated,
+            int inTop,
+            int rateLimit,
+            boolean subscribed,
+            String shortForumName,
+            String forumName
+    ) throws StorageException {
+        helper.update(
+                DataQuery.STORE_OBJECT_FORUM,
+                forumId,
+                forumGroupId,
+                rated,
+                inTop,
+                rateLimit,
+                subscribed,
+                shortForumName,
+                forumName
+        );
     }
 
     @Override
@@ -47,29 +58,41 @@ final class DBForumAH extends AnAH implements IForumAH {
     }
 
     @Override
-    public void updateForum(Forum f) throws StorageException {
-        helper.update(DataQuery.UPDATE_OBJECT_FORUM,
-                f.getForumGroupId(),
-                f.getRated(),
-                f.getInTop(),
-                f.getRateLimit(),
-                f.getShortForumName(),
-                f.getForumName(),
-                f.getForumId());
+    public void updateForum(
+            int forumGroupId,
+            int rated,
+            int inTop,
+            int rateLimit,
+            String shortForumName, String forumName, int forumId
+    ) throws StorageException {
+        helper.update(
+                DataQuery.UPDATE_OBJECT_FORUM,
+                forumGroupId,
+                rated,
+                inTop,
+                rateLimit,
+                shortForumName,
+                forumName,
+                forumId
+        );
     }
 
     @Override
     public void setSubscribeForum(int forumId, boolean subscribe) throws StorageException {
-        helper.update(DataQuery.UPDATE_OBJECT_FORUM_SUBSCRIBE,
+        helper.update(
+                DataQuery.UPDATE_OBJECT_FORUM_SUBSCRIBE,
                 subscribe,
-                forumId);
+                forumId
+        );
     }
 
     @Override
     public void setForumRead(int forumId, boolean read) throws StorageException {
-        helper.update(DataQuery.UPDATE_FORUM_MESSAGES_READ_FLAG,
+        helper.update(
+                DataQuery.UPDATE_FORUM_MESSAGES_READ_FLAG,
                 read,
-                forumId);
+                forumId
+        );
     }
 
     @Override
@@ -86,6 +109,7 @@ final class DBForumAH extends AnAH implements IForumAH {
     public void updateForumStatistic(int forumId) throws StorageException {
         helper.update(DataQuery.UPDATE_FORUM_SET_STAT, forumId);
     }
+
     @Override
     public void updateForumStatistic(IProgressTracker tracker, TIntHashSet forumIds) throws StorageException {
         Collection<Object[]> params = new ArrayList<>();

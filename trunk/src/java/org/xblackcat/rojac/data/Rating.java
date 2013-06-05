@@ -98,7 +98,7 @@ public final class Rating {
         result = 31 * result + topicId;
         result = 31 * result + userId;
         result = 31 * result + userRating;
-        result = 31 * result + rate.getValue();
+        result = 31 * result + rate.getId();
         result = 31 * result + (int) (rateDate ^ (rateDate >>> 32));
         return result;
     }

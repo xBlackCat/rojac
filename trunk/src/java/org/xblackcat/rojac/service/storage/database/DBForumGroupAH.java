@@ -14,11 +14,13 @@ final class DBForumGroupAH extends AnAH implements IForumGroupAH {
         super(helper);
     }
 
-    public void storeForumGroup(ForumGroup fg) throws StorageException {
-        helper.update(DataQuery.STORE_OBJECT_FORUM_GROUP,
-                fg.getForumGroupId(),
-                fg.getForumGroupName(),
-                fg.getSortOrder());
+    public void storeForumGroup(int forumGroupId, String forumGroupName, int sortOrder) throws StorageException {
+        helper.update(
+                DataQuery.STORE_OBJECT_FORUM_GROUP,
+                forumGroupId,
+                forumGroupName,
+                sortOrder
+        );
     }
 
     public boolean removeForumGroup(int id) throws StorageException {
@@ -33,10 +35,12 @@ final class DBForumGroupAH extends AnAH implements IForumGroupAH {
         return helper.getIds(DataQuery.GET_IDS_FORUM_GROUP);
     }
 
-    public void updateForumGroup(ForumGroup fg) throws StorageException {
-        helper.update(DataQuery.UPDATE_OBJECT_FORUM_GROUP,
-                fg.getForumGroupName(),
-                fg.getSortOrder(),
-                fg.getForumGroupId());
+    public void updateForumGroup(String forumGroupName, int sortOrder, int forumGroupId) throws StorageException {
+        helper.update(
+                DataQuery.UPDATE_OBJECT_FORUM_GROUP,
+                forumGroupName,
+                sortOrder,
+                forumGroupId
+        );
     }
 }

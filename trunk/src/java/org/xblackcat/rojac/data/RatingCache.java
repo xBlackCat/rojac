@@ -50,7 +50,7 @@ public class RatingCache {
         StringBuilder res = new StringBuilder();
         for (Mark m : rating.keySet()) {
             res.append(';');
-            res.append(m.getValue());
+            res.append(m.getId());
             res.append(':');
             res.append(rating.get(m));
         }

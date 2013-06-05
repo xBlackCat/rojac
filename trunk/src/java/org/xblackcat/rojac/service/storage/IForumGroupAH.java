@@ -7,7 +7,7 @@ import org.xblackcat.rojac.data.ForumGroup;
  */
 
 public interface IForumGroupAH extends AH {
-    void storeForumGroup(ForumGroup fg) throws StorageException;
+    void storeForumGroup(int forumGroupId, String forumGroupName, int sortOrder) throws StorageException;
 
     boolean removeForumGroup(int id) throws StorageException;
 
@@ -15,5 +15,5 @@ public interface IForumGroupAH extends AH {
 
     int[] getAllForumGroupIds() throws StorageException;
 
-    void updateForumGroup(ForumGroup fg) throws StorageException;
+    void updateForumGroup(String forumGroupName, int sortOrder, int forumGroupId) throws StorageException;
 }

@@ -4,7 +4,7 @@ package org.xblackcat.rojac.data;
  * @author ASUS
  */
 
-public enum VersionType {
+public enum VersionType implements IIdentifable {
     MESSAGE_ROW_VERSION(0),
     MODERATE_ROW_VERSION(1),
     RATING_ROW_VERSION(2),
@@ -17,6 +17,7 @@ public enum VersionType {
         this.id = id;
     }
 
+    @Override
     public int getId() {
         return id;
     }

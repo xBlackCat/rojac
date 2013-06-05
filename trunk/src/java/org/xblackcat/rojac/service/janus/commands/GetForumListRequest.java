@@ -39,9 +39,9 @@ class GetForumListRequest extends ARequest<IPacket> {
             for (ForumGroup fg : forumsList.getForumGroups()) {
                 tracker.updateProgress(count++, total);
                 if (gAH.getForumGroupById(fg.getForumGroupId()) == null) {
-                    gAH.storeForumGroup(fg);
+                    gAH.storeForumGroup(fg.getForumGroupId(), fg.getForumGroupName(), fg.getSortOrder());
                 } else {
-                    gAH.updateForumGroup(fg);
+                    gAH.updateForumGroup(fg.getForumGroupName(), fg.getSortOrder(), fg.getForumGroupId());
                 }
 
             }
@@ -49,9 +49,15 @@ class GetForumListRequest extends ARequest<IPacket> {
             for (Forum f : forumsList.getForums()) {
                 tracker.updateProgress(count++, total);
                 if (fAH.getForumById(f.getForumId()) == null) {
-                    fAH.storeForum(f);
+                    fAH.storeForum(
+                            f.getForumId(), f.getForumGroupId(), f.getRated(), f.getInTop(), f.getRateLimit(),
+                                   f.isSubscribed(), f.getShortForumName(), f.getForumName()
+                    );
                 } else {
-                    fAH.updateForum(f);
+                    fAH.updateForum(
+                            f.getForumGroupId(), f.getRated(), f.getInTop(), f.getRateLimit(),
+                                    f.getShortForumName(), f.getForumName(), f.getForumId()
+                    );
                 }
             }
 

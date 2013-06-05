@@ -1,11 +1,9 @@
 package org.xblackcat.rojac.service.storage;
 
-import gnu.trove.set.TIntSet;
 import org.xblackcat.rojac.data.ItemStatisticData;
 import org.xblackcat.rojac.data.MessageData;
-import org.xblackcat.rojac.service.IProgressTracker;
+import org.xblackcat.rojac.data.Role;
 import org.xblackcat.rojac.service.datahandler.SetReadExPacket;
-import ru.rsdn.janus.JanusMessageInfo;
 
 /**
  * @author ASUS
@@ -15,11 +13,42 @@ public interface IMessageAH extends AH {
     /**
      * Stores a message record by id.
      *
-     * @param fm   message data to be stored into database.
+     *
+     * @param messageId
+     * @param topicId
+     * @param parentId
+     * @param userId
+     * @param forumId
+     * @param articleId
+     * @param userTitleColor
+     * @param userType
+     * @param messageDate
+     * @param updateDate
+     * @param lastModeratedDate
+     * @param subject
+     * @param messageName
+     * @param userNick
+     * @param userTitle
+     * @param message
      * @param read read state of the message. <code>true</code> - message is read and <code>false</code> otherwise.
      * @throws StorageException
      */
-    void storeMessage(JanusMessageInfo fm, boolean read) throws StorageException;
+    void storeMessage(
+            int messageId,
+            int topicId,
+            int parentId,
+            int userId,
+            int forumId,
+            int articleId,
+            int userTitleColor,
+            Role userType,
+            long messageDate,
+            long updateDate,
+            long lastModeratedDate,
+            String subject,
+            String messageName,
+            String userNick, String userTitle, String message, boolean read
+    ) throws StorageException;
 
     /**
      * Loads a message body for specified message id.
@@ -41,24 +70,43 @@ public interface IMessageAH extends AH {
     /**
      * Updates a message record by id.
      *
-     * @param mes  message data to be stored into database.
+     *
+     * @param topicId
+     * @param parentId
+     * @param userId
+     * @param forumId
+     * @param articleId
+     * @param userTitleColor
+     * @param userType
+     * @param messageDate
+     * @param updateDate
+     * @param lastModeratedDate
+     * @param subject
+     * @param messageName
+     * @param userNick
+     * @param userTitle
+     * @param message
      * @param read read state of the message. <code>true</code> - message is read and <code>false</code> otherwise.
+     * @param messageId
      * @throws StorageException
      */
-    void updateMessage(JanusMessageInfo mes, boolean read) throws StorageException;
+    void updateMessage(
+            int topicId,
+            int parentId,
+            int userId,
+            int forumId,
+            int articleId,
+            int userTitleColor,
+            Role userType,
+            long messageDate,
+            long updateDate,
+            long lastModeratedDate,
+            String subject,
+            String messageName,
+            String userNick,
+            String userTitle, String message, boolean read, int messageId
+    ) throws StorageException;
 
-    /**
-     * Update last post info in specified threads
-     *
-     *
-     * @param tracker
-     * @param threadIds
-     * @throws StorageException
-     */
-    void updateLastPostInfo(IBatchTracker tracker, TIntSet threadIds) throws StorageException;
-
-
-    void updateParentPostUserId(IProgressTracker tracker, TIntSet messages) throws StorageException;
 
     /**
      * Updates read flag of the specified message.

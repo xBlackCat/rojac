@@ -4,6 +4,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 import org.apache.commons.lang3.ArrayUtils;
 import org.xblackcat.rojac.RojacException;
+import org.xblackcat.rojac.data.Role;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.IPacket;
@@ -175,10 +176,45 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
 
             int mId = mes.getMessageId();
             if (mAH.isExist(mId)) {
-                mAH.updateMessage(mes, read);
+                mAH.updateMessage(
+                        mes.getTopicId(),
+                                  mes.getParentId(),
+                                  mes.getUserId(),
+                                  mes.getForumId(),
+                                  mes.getArticleId(),
+                                  mes.getUserTitleColor(),
+                                  Role.getUserType(mes.getUserRole()),
+                                  mes.getMessageDate().toGregorianCalendar().getTimeInMillis(),
+                                  mes.getUpdateDate().toGregorianCalendar().getTimeInMillis(),
+                                  mes.getLastModerated().toGregorianCalendar().getTimeInMillis(),
+                                  mes.getSubject(),
+                                  mes.getMessageName(),
+                                  mes.getUserNick(),
+                                  mes.getUserTitle(),
+                                  mes.getMessage(),
+                                  read, mes.getMessageId()
+                );
                 updatedMessages.add(mId);
             } else {
-                mAH.storeMessage(mes, read);
+                mAH.storeMessage(
+                        mes.getMessageId(),
+                        mes.getTopicId(),
+                        mes.getParentId(),
+                        mes.getUserId(),
+                        mes.getForumId(),
+                        mes.getArticleId(),
+                        mes.getUserTitleColor(),
+                        Role.getUserType(mes.getUserRole()),
+                        mes.getMessageDate().toGregorianCalendar().getTimeInMillis(),
+                        mes.getUpdateDate().toGregorianCalendar().getTimeInMillis(),
+                        mes.getLastModerated().toGregorianCalendar().getTimeInMillis(),
+                        mes.getSubject(),
+                        mes.getMessageName(),
+                        mes.getUserNick(),
+                        mes.getUserTitle(),
+                        mes.getMessage(),
+                        read
+                );
                 newPostsMessages.add(mId);
             }
 
@@ -217,7 +253,10 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         for (JanusModerateInfo mod : moderates) {
             tracker.updateProgress(count++, moderatesAmount);
 
-            modAH.storeModerateInfo(mod);
+            modAH.storeModerateInfo(
+                    mod.getMessageId(), mod.getUserId(), mod.getForumId(),
+                    mod.getCreate().toGregorianCalendar().getTimeInMillis()
+            );
             updatedForums.add(mod.getForumId());
             updatedMessages.add(mod.getMessageId());
         }

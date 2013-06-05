@@ -12,7 +12,15 @@ import ru.rsdn.janus.RequestForumInfo;
  */
 
 public interface IForumAH extends AH {
-    void storeForum(Forum f) throws StorageException;
+    void storeForum(
+            int forumId,
+            int forumGroupId,
+            int rated,
+            int inTop,
+            int rateLimit,
+            boolean subscribed,
+            String shortForumName, String forumName
+    ) throws StorageException;
 
     Forum getForumById(int forumId) throws StorageException;
 
@@ -21,10 +29,23 @@ public interface IForumAH extends AH {
     /**
      * Updates forum information. Notice that <code>isSubscribed</code>  field is not changed during operation.
      *
-     * @param f Forum object to store
+     * @param forumGroupId
+     * @param rated
+     * @param inTop
+     * @param rateLimit
+     * @param shortForumName
+     * @param forumName
+     * @param forumId
      * @throws StorageException
      */
-    void updateForum(Forum f) throws StorageException;
+    void updateForum(
+            int forumGroupId,
+            int rated,
+            int inTop,
+            int rateLimit,
+            String shortForumName,
+            String forumName, int forumId
+    ) throws StorageException;
 
     void setSubscribeForum(int forumId, boolean subscribe) throws StorageException;
 

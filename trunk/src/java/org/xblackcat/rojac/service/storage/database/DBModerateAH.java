@@ -5,7 +5,6 @@ import org.xblackcat.rojac.service.storage.IModerateAH;
 import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.database.convert.Converters;
-import ru.rsdn.janus.JanusModerateInfo;
 
 /**
  * @author ASUS
@@ -16,12 +15,14 @@ final class DBModerateAH extends AnAH implements IModerateAH {
         super(helper);
     }
 
-    public void storeModerateInfo(JanusModerateInfo mi) throws StorageException {
-        helper.update(DataQuery.STORE_OBJECT_MODERATE,
-                mi.getMessageId(),
-                mi.getUserId(),
-                mi.getForumId(),
-                mi.getCreate().toGregorianCalendar().getTimeInMillis());
+    public void storeModerateInfo(int messageId, int userId, int forumId, long createDate) throws StorageException {
+        helper.update(
+                DataQuery.STORE_OBJECT_MODERATE,
+                messageId,
+                userId,
+                forumId,
+                createDate
+        );
     }
 
     public boolean removeModerateInfosByMessageId(int messageId) throws StorageException {
