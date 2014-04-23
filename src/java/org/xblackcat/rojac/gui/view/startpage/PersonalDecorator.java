@@ -6,7 +6,10 @@ import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.*;
+import org.xblackcat.rojac.service.storage.IMiscAH;
+import org.xblackcat.rojac.service.storage.INewMessageAH;
+import org.xblackcat.rojac.service.storage.IStatisticAH;
+import org.xblackcat.rojac.service.storage.Storage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,7 +104,7 @@ class PersonalDecorator extends ADecorator {
         @Override
         public ReadStatistic doBackground() throws Exception {
             IStatisticAH statisticAH = Storage.get(IStatisticAH.class);
-            return statisticAH.getUserRepliesStat(userId);
+            return new ReadStatistic();// statisticAH.getUserRepliesStat(userId);
         }
 
         @Override
@@ -117,14 +120,12 @@ class PersonalDecorator extends ADecorator {
             int toSend = 0;
             int total = 0;
 
-            try (IResult<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages()) {
-                for (NewMessage nm : newMessages) {
+            for (NewMessage nm : Storage.get(INewMessageAH.class).getAllNewMessages()) {
                     total++;
                     if (!nm.isDraft()) {
                         ++toSend;
                     }
                 }
-            }
 
             return new ReadStatistic(total, toSend, 0);
         }

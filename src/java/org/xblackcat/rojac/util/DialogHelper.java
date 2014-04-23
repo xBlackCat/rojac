@@ -6,7 +6,7 @@ import org.xblackcat.rojac.gui.dialog.AboutDialog;
 import org.xblackcat.rojac.gui.dialog.db.DBSettingsDialog;
 import org.xblackcat.rojac.gui.dialog.options.OptionsDialog;
 import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.DBConfig;
 
 import java.awt.*;
 
@@ -89,7 +89,7 @@ public class DialogHelper {
         dlg.setVisible(true);
     }
 
-    public static DatabaseSettings showDBSettingsDialog(Window mainFrame) {
+    public static DBConfig showDBSettingsDialog(Window mainFrame) {
         DBSettingsDialog dlg = new DBSettingsDialog(mainFrame);
 
         WindowsUtils.center(dlg);

@@ -5,6 +5,7 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import java.awt.*;
 

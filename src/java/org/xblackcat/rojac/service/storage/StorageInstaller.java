@@ -10,9 +10,10 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.DialogHelper;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,14 +24,14 @@ import java.awt.*;
  * @author xBlackCat
  */
 public class StorageInstaller extends DatabaseWorker {
-    private final DatabaseSettings settings;
+    private final StorageSettings settings;
     private final Runnable shutDownAction;
 
-    public StorageInstaller(DatabaseSettings settings, Window window) {
+    public StorageInstaller(DBConfig settings, Window window) {
         this(null, null, settings, window);
     }
 
-    public StorageInstaller(Runnable postProcessor, Runnable shutDownAction, DatabaseSettings settings, Window owner) {
+    public StorageInstaller(Runnable postProcessor, Runnable shutDownAction, DBConfig settings, Window owner) {
         super(postProcessor, owner, new CheckProcessDialog(owner, Message.Dialog_CheckProgress_Structure_Title, Message.Dialog_CheckProgress_Structure_Label));
         this.shutDownAction = shutDownAction;
 
@@ -69,7 +70,7 @@ public class StorageInstaller extends DatabaseWorker {
                         return;
                     }
 
-                    DatabaseSettings settings = DialogHelper.showDBSettingsDialog(owner);
+                    DBConfig settings = DialogHelper.showDBSettingsDialog(owner);
 
                     if (settings == null) {
                         JLOptionPane.showMessageDialog(

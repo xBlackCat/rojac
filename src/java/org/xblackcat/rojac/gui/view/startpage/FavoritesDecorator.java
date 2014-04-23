@@ -7,7 +7,6 @@ import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
-import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
 
 import java.util.ArrayList;
@@ -143,8 +142,7 @@ class FavoritesDecorator extends ADecorator {
         public Collection<FavoriteItem> doBackground() throws Exception {
             Collection<FavoriteItem> items = new ArrayList<>();
 
-            try (IResult<Favorite> favorites = Storage.get(IFavoriteAH.class).getFavorites()) {
-                for (Favorite f : favorites) {
+            for (Favorite f : Storage.get(IFavoriteAH.class).getFavorites()) {
                     FavoriteType type = f.getType();
                     int itemId = f.getItemId();
 
@@ -153,7 +151,6 @@ class FavoritesDecorator extends ADecorator {
 
                     items.add(new FavoriteItem(f.setName(name), newStatistic));
                 }
-            }
 
             return items;
         }

@@ -8,6 +8,7 @@ import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.Storage;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import java.util.Arrays;
 
@@ -33,9 +34,23 @@ public class LoadUserInfo extends ARequest<IPacket> {
         User[] users = usersByIds.getUsers();
 
         if (users.length > 0) {
-            User user = users[0];
-            Storage.get(IUserAH.class).storeUser(user);
-            tracker.updateProgress(1, 1);
+            try {
+                User user = users[0];
+                Storage.get(IUserAH.class).storeUser(
+                        user.getId(),
+                        user.getUserName(),
+                        user.getUserNick(),
+                        user.getRealName(),
+                        user.getPublicEmail(),
+                        user.getHomePage(),
+                        user.getSpecialization(),
+                        user.getWhereFrom(),
+                        user.getOrigin()
+                );
+                tracker.updateProgress(1, 1);
+            } catch (StorageException e) {
+                throw new RojacException("failed to store user information", e);
+            }
         }
     }
 }

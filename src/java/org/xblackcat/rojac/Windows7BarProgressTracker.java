@@ -1,7 +1,6 @@
 package org.xblackcat.rojac;
 
 import org.bridj.cpp.com.shell.ITaskbarList3;
-import org.xblackcat.rojac.data.ReadStatistic;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.component.Windows7Bar;
 import org.xblackcat.rojac.service.options.Property;
@@ -57,8 +56,7 @@ class Windows7BarProgressTracker implements IProgressListener {
                     protected Void perform() throws Exception {
                         int ownId = Property.RSDN_USER_ID.get();
 
-                        ReadStatistic userRepliesStat = Storage.get(IStatisticAH.class).getUserRepliesStat(ownId);
-                        publish(userRepliesStat.getUnreadMessages());
+                        publish(Storage.get(IStatisticAH.class).getUserReplies(ownId));
 
                         return null;
                     }

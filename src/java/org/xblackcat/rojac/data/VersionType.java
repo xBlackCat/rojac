@@ -4,7 +4,7 @@ package org.xblackcat.rojac.data;
  * @author ASUS
  */
 
-public enum VersionType implements IIdentifable {
+public enum VersionType implements IDictionary {
     MESSAGE_ROW_VERSION(0),
     MODERATE_ROW_VERSION(1),
     RATING_ROW_VERSION(2),

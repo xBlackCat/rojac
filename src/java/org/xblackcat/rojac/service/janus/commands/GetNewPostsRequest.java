@@ -10,10 +10,9 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.NewData;
-import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.IVersionAH;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.sjpu.storage.StorageException;
 import ru.rsdn.janus.RequestForumInfo;
 
 import java.util.ArrayList;
@@ -32,13 +31,11 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
         StringBuilder idsListBuilder = new StringBuilder();
         Collection<RequestForumInfo> forumInfos = new ArrayList<>();
 
-        try (IResult<RequestForumInfo> forumInfo = forumAH.getSubscribedForums()) {
-            for (RequestForumInfo rfi : forumInfo) {
+        for (RequestForumInfo rfi : forumAH.getSubscribedForums()) {
                 forumInfos.add(rfi);
                 idsListBuilder.append(", ");
                 idsListBuilder.append(rfi.getForumId());
             }
-        }
 
         if (forumInfos.isEmpty()) {
             if (log.isWarnEnabled()) {
@@ -98,9 +95,12 @@ class GetNewPostsRequest extends LoadExtraMessagesRequest {
             messagesVersion = data.getForumRowVersion();
             moderatesVersion = data.getModerateRowVersion();
 
-            vAH.updateVersionInfo(new VersionInfo(messagesVersion, VersionType.MESSAGE_ROW_VERSION));
-            vAH.updateVersionInfo(new VersionInfo(moderatesVersion, VersionType.MODERATE_ROW_VERSION));
-            vAH.updateVersionInfo(new VersionInfo(ratingsVersion, VersionType.RATING_ROW_VERSION));
+            final VersionInfo v = new VersionInfo(VersionType.MESSAGE_ROW_VERSION, messagesVersion);
+            vAH.updateVersionInfo(v.getType(), v.getVersion());
+            final VersionInfo v1 = new VersionInfo(VersionType.MODERATE_ROW_VERSION, moderatesVersion);
+            vAH.updateVersionInfo(v1.getType(), v1.getVersion());
+            final VersionInfo v2 = new VersionInfo(VersionType.RATING_ROW_VERSION, ratingsVersion);
+            vAH.updateVersionInfo(v2.getType(), v2.getVersion());
 
         } while (portionSize == limit);
 

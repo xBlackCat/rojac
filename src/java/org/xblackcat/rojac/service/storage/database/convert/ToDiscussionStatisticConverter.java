@@ -1,6 +1,7 @@
 package org.xblackcat.rojac.service.storage.database.convert;
 
 import org.xblackcat.rojac.data.DiscussionStatistic;
+import org.xblackcat.sjpu.storage.converter.IToObjectConverter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
  *
  * @author xBlackCat
  */
-class ToDiscussionStatisticConverter implements IToObjectConverter<DiscussionStatistic> {
+public class ToDiscussionStatisticConverter implements IToObjectConverter<DiscussionStatistic> {
     @Override
     public DiscussionStatistic convert(ResultSet rs) throws SQLException {
         int totals = rs.getInt(1);

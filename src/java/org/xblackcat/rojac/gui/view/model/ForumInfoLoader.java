@@ -7,7 +7,7 @@ import org.xblackcat.rojac.data.ForumMessageData;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import javax.swing.*;
 

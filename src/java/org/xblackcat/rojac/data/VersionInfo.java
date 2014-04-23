@@ -8,7 +8,7 @@ public class VersionInfo {
     private final Version version;
     private final VersionType type;
 
-    public VersionInfo(Version version, VersionType type) {
+    public VersionInfo(VersionType type, Version version) {
         this.version = version;
         this.type = type;
     }

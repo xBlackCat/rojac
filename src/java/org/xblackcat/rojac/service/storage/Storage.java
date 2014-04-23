@@ -1,9 +1,12 @@
 package org.xblackcat.rojac.service.storage;
 
-import org.xblackcat.rojac.service.storage.database.DBStorage;
 import org.xblackcat.rojac.service.storage.database.DBStructureChecker;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.IDictMapper;
+import org.xblackcat.rojac.service.storage.database.IntArrayConsumer;
+import org.xblackcat.rojac.service.storage.database.VersionMapper;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.sjpu.storage.*;
+import org.xblackcat.sjpu.storage.connection.IDBConfig;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -17,7 +20,7 @@ public final class Storage {
 
     private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public static <T extends AH> T get(Class<T> ahClass) {
+    public static <T extends IAH> T get(Class<T> ahClass) {
         lock.readLock().lock();
         try {
             return storage.get(ahClass);
@@ -29,7 +32,7 @@ public final class Storage {
     public static IBatch startBatch() throws StorageException {
         try {
             lock.readLock().lock();
-            return storage.startBatch();
+            return storage.openTransaction();
         } finally {
             lock.readLock().unlock();
         }
@@ -67,16 +70,23 @@ public final class Storage {
     }
 
     private static IStorage initializeStorage(StorageSettings settings) throws StorageException {
-        if (settings instanceof DatabaseSettings) {
-            return new DBStorage((DatabaseSettings) settings);
+        if (settings instanceof IDBConfig) {
+            final StorageBuilder builder = new StorageBuilder(true, false);
+            // TODO: add mappers
+            builder.addMapper(new IDictMapper());
+            builder.addMapper(new VersionMapper());
+            builder.addRowSetConsumer(int[].class, IntArrayConsumer.class);
+            builder.setQueryHelper(StorageUtils.buildQueryHelper((IDBConfig) settings));
+
+            return builder.build();
         }
 
         throw new IllegalArgumentException("Unknown storage type: " + settings.getEngineName() + " (" + settings.getEngine() + ")");
     }
 
     public static IStructureChecker getChecker(StorageSettings settings) throws StorageInitializationException {
-        if (settings instanceof DatabaseSettings) {
-            return new DBStructureChecker((DatabaseSettings) settings);
+        if (settings instanceof IDBConfig) {
+            return new DBStructureChecker((IDBConfig) settings);
         }
 
         throw new IllegalArgumentException("Unknown storage type: " + settings.getEngineName() + " (" + settings.getEngine() + ")");

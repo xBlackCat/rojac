@@ -14,10 +14,9 @@ import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IForumAH;
-import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -264,9 +263,7 @@ class ForumDecorator extends ADecorator {
 
             Collection<ItemStatisticData<Forum>> forums = new ArrayList<>();
 
-            try (IResult<ItemStatisticData<Forum>> allForums = fah.getAllForums()) {
-                CollectionUtils.addAll(forums, allForums.iterator());
-            }
+            CollectionUtils.addAll(forums, fah.getAllForums().iterator());
 
             return forums;
         }

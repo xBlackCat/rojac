@@ -17,11 +17,11 @@ import org.xblackcat.rojac.service.options.MultiUserOptionsService;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInstaller;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.schema.data.DataStreamHandlerFactory;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -208,50 +208,52 @@ public final class RojacLauncher {
                 mainFrame.addStatisticUpdateListener(tray);
             }
 
-            mainFrame.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowIconified(WindowEvent e) {
-                    if (tray.isSupported()) {
-                        if (ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE.get()) {
-                            mainFrame.setVisible(false);
+            mainFrame.addWindowListener(
+                    new WindowAdapter() {
+                        @Override
+                        public void windowIconified(WindowEvent e) {
+                            if (tray.isSupported()) {
+                                if (ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE.get()) {
+                                    mainFrame.setVisible(false);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            // Hide to tray if such option is set.
+                            if (tray.isSupported() && e.getSource() != tray) {
+                                if (ROJAC_MAIN_FRAME_HIDE_ON_CLOSE.get()) {
+                                    mainFrame.setState(Frame.ICONIFIED);
+                                    mainFrame.setVisible(false);
+                                    return;
+                                }
+                            }
+
+                            if (ROJAC_MAIN_FRAME_ASK_ON_CLOSE.get()) {
+                                int answer = JLOptionPane.showConfirmDialog(
+                                        mainFrame,
+                                        Message.Dialog_ConfirmExit_Message.get(),
+                                        Message.Dialog_ConfirmExit_Title.get(),
+                                        JOptionPane.YES_NO_OPTION
+                                );
+
+                                if (answer == JOptionPane.NO_OPTION) {
+                                    return;
+                                }
+                            }
+                            shutDownAction.run();
+
+                            System.exit(0);
                         }
                     }
-                }
-
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    // Hide to tray if such option is set.
-                    if (tray.isSupported() && e.getSource() != tray) {
-                        if (ROJAC_MAIN_FRAME_HIDE_ON_CLOSE.get()) {
-                            mainFrame.setState(Frame.ICONIFIED);
-                            mainFrame.setVisible(false);
-                            return;
-                        }
-                    }
-
-                    if (ROJAC_MAIN_FRAME_ASK_ON_CLOSE.get()) {
-                        int answer = JLOptionPane.showConfirmDialog(
-                                mainFrame,
-                                Message.Dialog_ConfirmExit_Message.get(),
-                                Message.Dialog_ConfirmExit_Title.get(),
-                                JOptionPane.YES_NO_OPTION
-                        );
-
-                        if (answer == JOptionPane.NO_OPTION) {
-                            return;
-                        }
-                    }
-                    shutDownAction.run();
-
-                    System.exit(0);
-                }
-            });
+            );
 
             if (!Property.ROJAC_DEBUG_DONT_RESTORE_LAYOUT.get()) {
                 mainFrame.applySettings();
             }
 
-            DatabaseSettings settings = ROJAC_DATABASE_CONNECTION_SETTINGS.get();
+            DBConfig settings = ROJAC_DATABASE_CONNECTION_SETTINGS.get();
             boolean visible = mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported() || settings == null;
             if (visible) {
                 WindowsUtils.toFront(mainFrame);

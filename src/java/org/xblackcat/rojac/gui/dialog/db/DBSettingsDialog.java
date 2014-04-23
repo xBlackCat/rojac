@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.gui.dialog.db;
 
 import org.xblackcat.rojac.gui.component.AButtonAction;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import static org.xblackcat.rojac.i18n.Message.*;
  */
 public class DBSettingsDialog extends JDialog {
     private DBSettingsPane settingsPane;
-    private DatabaseSettings settings;
+    private DBConfig settings;
 
     public DBSettingsDialog(Window owner) {
         super(owner, Dialog_DbSettings_Title.get(), ModalityType.APPLICATION_MODAL);
@@ -60,7 +60,7 @@ public class DBSettingsDialog extends JDialog {
         setContentPane(cp);
     }
 
-    public DatabaseSettings getSettings() {
+    public DBConfig getSettings() {
         return settings;
     }
 }

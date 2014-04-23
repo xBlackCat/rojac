@@ -6,5 +6,5 @@ package org.xblackcat.rojac.service.storage;
  * @author xBlackCat
  */
 public interface IAccessFactory {
-    <T extends AH> T get(Class<T> base);
+    <T> T get(Class<T> base);
 }

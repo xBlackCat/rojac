@@ -15,7 +15,7 @@ import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.IVersionAH;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import static org.xblackcat.rojac.service.options.Property.SYNCHRONIZER_LOAD_USERS_PORTION;
 
@@ -59,15 +59,22 @@ class GetUsersRequest extends ARequest<IPacket> {
                         log.trace("Store the " + user + " in the storage.");
                     }
                     if (uAH.getUserById(user.getId()) == null) {
-                        uAH.storeUser(user);
+                        uAH.storeUser(
+                                user.getId(), user.getUserName(), user.getUserNick(), user.getRealName(), user.getPublicEmail(),
+                                      user.getHomePage(), user.getSpecialization(), user.getWhereFrom(), user.getOrigin()
+                        );
                     } else {
-                        uAH.updateUser(user);
+                        uAH.updateUser(
+                                user.getUserName(), user.getUserNick(), user.getRealName(), user.getPublicEmail(),
+                                       user.getHomePage(), user.getSpecialization(), user.getWhereFrom(), user.getOrigin(), user.getId()
+                        );
                     }
                     tracker.updateProgress(count++, loaded);
                 }
                 localUsersVersion = users.getVersion();
                 IVersionAH vAH = Storage.get(IVersionAH.class);
-                vAH.updateVersionInfo(new VersionInfo(localUsersVersion, VersionType.USERS_ROW_VERSION));
+                final VersionInfo v = new VersionInfo(VersionType.USERS_ROW_VERSION, localUsersVersion);
+                vAH.updateVersionInfo(v.getType(), v.getVersion());
             } while (loaded > 0);
 
             tracker.addLodMessage(Message.Synchronize_Message_GotUsers, totalUsersNumber);

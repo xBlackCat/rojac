@@ -11,15 +11,15 @@ import org.xblackcat.rojac.gui.component.AButtonAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
-import org.xblackcat.rojac.service.storage.database.convert.Converters;
-import org.xblackcat.rojac.service.storage.database.helper.IManagingQueryHelper;
-import org.xblackcat.rojac.service.storage.database.helper.QueryHelperFactory;
+import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.DatabaseUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.sjpu.storage.IQueryHelper;
+import org.xblackcat.sjpu.storage.StorageUtils;
+import org.xblackcat.sjpu.storage.consumer.SingletonConsumer;
+import org.xblackcat.sjpu.storage.converter.ToScalarConverter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -39,12 +39,12 @@ import static org.xblackcat.rojac.i18n.Message.*;
 public class DBSettingsPane extends JPanel {
     private static final Log log = LogFactory.getLog(DBSettingsPane.class);
 
-    private Map<String, DatabaseSettings> engines;
+    private Map<String, DBConfig> engines;
     private JComboBox<String> engineSelector;
     private JTextField fieldUrl;
     private JTextField fieldUserName;
     private JPasswordField fieldPassword;
-    private JTextField fieldShutdownUrl;
+    //    private JTextField fieldShutdownUrl;
     private JTextField fieldDriverName;
     private final JButton checkButton;
 
@@ -93,7 +93,7 @@ public class DBSettingsPane extends JPanel {
         fieldUrl = new JTextField(50);
         fieldUserName = new JTextField(50);
         fieldPassword = new JPasswordField(50);
-        fieldShutdownUrl = new JTextField(50);
+//        fieldShutdownUrl = new JTextField(50);
         fieldDriverName = new JTextField(50);
 
         fieldDriverName.setEditable(false);
@@ -102,7 +102,7 @@ public class DBSettingsPane extends JPanel {
         JLabel labelUrl = new JLabel(Dialog_DbSettings_Label_Url.get());
         JLabel labelUserName = new JLabel(Dialog_DbSettings_Label_UserName.get());
         JLabel labelPassword = new JLabel(Dialog_DbSettings_Label_Password.get());
-        JLabel labelShutdownUrl = new JLabel(Dialog_DbSettings_Label_ShutdownUrl.get());
+//        JLabel labelShutdownUrl = new JLabel(Dialog_DbSettings_Label_ShutdownUrl.get());
         JLabel labelDriverName = new JLabel(Dialog_DbSettings_Label_DriverName.get());
 
         engineSelector.setSelectedItem(null);
@@ -123,7 +123,7 @@ public class DBSettingsPane extends JPanel {
                                 .addComponent(labelUrl)
                                 .addComponent(labelUserName)
                                 .addComponent(labelPassword)
-                                .addComponent(labelShutdownUrl)
+//                                .addComponent(labelShutdownUrl)
                                 .addComponent(labelDriverName)
                 )
                 .addGroup(
@@ -132,7 +132,7 @@ public class DBSettingsPane extends JPanel {
                                 .addComponent(fieldUrl)
                                 .addComponent(fieldUserName)
                                 .addComponent(fieldPassword)
-                                .addComponent(fieldShutdownUrl)
+//                                .addComponent(fieldShutdownUrl)
                                 .addComponent(fieldDriverName)
                 );
 
@@ -157,11 +157,11 @@ public class DBSettingsPane extends JPanel {
                                 .addComponent(labelPassword)
                                 .addComponent(fieldPassword)
                 )
-                .addGroup(
-                        groupLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
-                                .addComponent(labelShutdownUrl)
-                                .addComponent(fieldShutdownUrl)
-                )
+//                .addGroup(
+//                        groupLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
+//                                .addComponent(labelShutdownUrl)
+//                                .addComponent(fieldShutdownUrl)
+//                )
                 .addGroup(
                         groupLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
                                 .addComponent(labelDriverName)
@@ -171,7 +171,7 @@ public class DBSettingsPane extends JPanel {
         return fieldsPane;
     }
 
-    public DatabaseSettings getCurrentSettings() {
+    public DBConfig getCurrentSettings() {
         String selectedItem = (String) engineSelector.getSelectedItem();
 
         return selectedItem == null ? null : updateSettings(selectedItem);
@@ -188,7 +188,7 @@ public class DBSettingsPane extends JPanel {
             int endIndex = path.length() - 20; // "/database.properties".length() == 20
             String engine = path.substring(path.lastIndexOf('/', endIndex - 1) + 1, endIndex);
             try {
-                DatabaseSettings settings = DatabaseUtils.readDefaults(engine);
+                DBConfig settings = DatabaseUtils.readDefaults(engine);
 
                 assert engine.equals(settings.getEngine());
 
@@ -200,7 +200,7 @@ public class DBSettingsPane extends JPanel {
         }
 
         if (!skipCurrentSettings || separateCurrent) {
-            DatabaseSettings settings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
+            DBConfig settings = Property.ROJAC_DATABASE_CONNECTION_SETTINGS.get();
             if (settings != null) {
                 final String engineName = separateCurrent ? Message.Dialog_DbSettings_CurrentEngine.get(settings.getEngineName()) : settings.getEngineName();
                 engines.put(engineName, settings);
@@ -213,20 +213,20 @@ public class DBSettingsPane extends JPanel {
         return null;
     }
 
-    private DatabaseSettings updateSettings(String engineName) {
-        DatabaseSettings current = engines.get(engineName);
+    private DBConfig updateSettings(String engineName) {
+        DBConfig current = engines.get(engineName);
         if (current == null) {
             return null;
         }
 
-        DatabaseSettings settings = new DatabaseSettings(
+        DBConfig settings = new DBConfig(
                 engineName,
                 current.getEngine(),
+                current.getDriver(),
                 fieldUrl.getText(),
-                fieldShutdownUrl.getText(),
+//                fieldShutdownUrl.getText(),
                 fieldUserName.getText(),
-                String.valueOf(fieldPassword.getPassword()),
-                current.getJdbcDriverClass()
+                String.valueOf(fieldPassword.getPassword())
         );
 
         engines.put(engineName, settings);
@@ -250,19 +250,19 @@ public class DBSettingsPane extends JPanel {
                 }
             } else if (e.getStateChange() == ItemEvent.SELECTED) {
                 fieldUrl.setEnabled(exists);
-                fieldShutdownUrl.setEnabled(exists);
+//                fieldShutdownUrl.setEnabled(exists);
                 fieldUserName.setEnabled(exists);
                 fieldPassword.setEnabled(exists);
                 fieldDriverName.setEnabled(exists);
 
                 if (exists) {
-                    DatabaseSettings settings = engines.get(e.getItem().toString());
+                    DBConfig settings = engines.get(e.getItem().toString());
 
                     fieldUrl.setText(settings.getUrl());
-                    fieldShutdownUrl.setText(settings.getShutdownUrl());
-                    fieldUserName.setText(settings.getUserName());
+//                    fieldShutdownUrl.setText(settings.getShutdownUrl());
+                    fieldUserName.setText(settings.getUser());
                     fieldPassword.setText(settings.getPassword());
-                    fieldDriverName.setText(settings.getJdbcDriverClass().getName());
+                    fieldDriverName.setText(settings.getDriver());
                 }
             }
         }
@@ -276,7 +276,7 @@ public class DBSettingsPane extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            final DatabaseSettings curSet = getCurrentSettings();
+            final DBConfig curSet = getCurrentSettings();
 
             if (curSet == null) {
                 return;
@@ -294,9 +294,11 @@ public class DBSettingsPane extends JPanel {
                 @Override
                 protected Void perform() throws Exception {
                     try {
-                        IManagingQueryHelper queryHelper = QueryHelperFactory.createHelper(curSet);
+                        IQueryHelper queryHelper = StorageUtils.buildQueryHelper(curSet);
 
-                        Number answer = queryHelper.executeSingle(Converters.TO_NUMBER, "SELECT 21+21");
+                        final SingletonConsumer<Number> consumer = new SingletonConsumer<>();
+                        queryHelper.execute(consumer, new ToScalarConverter<Number>(), "SELECT 21+21");
+                        Number answer = consumer.getRowsHolder();
 
                         if (answer != null && answer.intValue() == 42) {
                             publish((Throwable) null);
@@ -306,7 +308,7 @@ public class DBSettingsPane extends JPanel {
 
                         queryHelper.shutdown();
 
-                    } catch (StorageException e1) {
+                    } catch (Exception e1) {
                         publish(e1);
                     }
 

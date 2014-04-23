@@ -10,7 +10,6 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
-import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -115,10 +114,8 @@ class OutboxListControl extends AMessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            try (IResult<NewMessage> newMessages = Storage.get(INewMessageAH.class).getAllNewMessages()) {
-                for (NewMessage nm : newMessages) {
-                    publish(nm);
-                }
+            for (NewMessage nm : Storage.get(INewMessageAH.class).getAllNewMessages()) {
+                publish(nm);
             }
             return null;
         }

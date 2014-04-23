@@ -7,7 +7,7 @@ import ru.rsdn.janus.UserRole;
  * @author ASUS
  */
 
-public enum Role implements IIdentifable {
+public enum Role implements IDictionary {
     Admin,
     Moderator,
     TeamMember,

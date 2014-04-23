@@ -9,7 +9,6 @@ import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.gui.hint.UserInfoPane;
 import org.xblackcat.rojac.service.storage.IRatingAH;
-import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.BalloonTipUtils;
@@ -141,9 +140,7 @@ class RatingPane extends JPanel {
 
             IUserAH userAH = Storage.get(IUserAH.class);
 
-            try (IResult<Rating> ratings = Storage.get(IRatingAH.class).getRatingsByMessageId(messageId)) {
-
-                for (Rating r : ratings) {
+            for (Rating r : Storage.get(IRatingAH.class).getRatingsByMessageId(messageId)) {
                     int userId = r.getUserId();
 
                     MarkItem item = userMarks.get(userId);
@@ -157,7 +154,6 @@ class RatingPane extends JPanel {
 
                     item.addMark(r.getRate());
                 }
-            }
 
 //            NewRating[] ownRatings = Storage.get(INewRatingAH.class).getNewRatingsByMessageId(messageId);
 

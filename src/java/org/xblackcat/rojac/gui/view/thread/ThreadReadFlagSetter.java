@@ -21,7 +21,9 @@ public class ThreadReadFlagSetter extends RojacWorker<Void, Void> {
 
     @Override
     protected Void perform() throws Exception {
-        Storage.get(IMessageAH.class).updateThreadReadFlag(threadRoot.getMessageId(), read);
+        final IMessageAH messageAH = Storage.get(IMessageAH.class);
+        messageAH.updateMessageReadFlag(threadRoot.getMessageId(), read);
+        messageAH.updateThreadReadFlag(threadRoot.getMessageId(), read);
         return null;
     }
 

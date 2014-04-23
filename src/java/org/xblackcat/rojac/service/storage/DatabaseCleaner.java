@@ -5,6 +5,7 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.ReloadDataPacket;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import java.awt.*;
 
@@ -42,11 +43,9 @@ public class DatabaseCleaner extends DatabaseWorker {
         int total = utilAH.getTopicsAmountToClean(period, false, false);
 
         int current = 0;
-        try (IResult<Integer> idsToClean = utilAH.getTopicIdsToClean(period, false, false)) {
-            for (Integer topicId : idsToClean) {
-                publish(new ProgressChangeEvent(this, ProgressState.Work, current++, total));
-                utilAH.removeTopic(topicId);
-            }
+        for (Integer topicId : utilAH.getTopicIdsToClean(period, false, false)) {
+            publish(new ProgressChangeEvent(this, ProgressState.Work, current++, total));
+            utilAH.removeTopic(topicId);
         }
 
         utilAH.updateForumsStat();

@@ -8,11 +8,10 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
-import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import java.util.List;
 
@@ -35,18 +34,20 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
     }
 
     public ThreadsLoader(final Runnable postProcessor, final SortedThreadsModel model, int forumId, boolean forceShowHidden) {
-        super(new Runnable() {
-            @Override
-            public void run() {
-                model.markInitialized();
+        super(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        model.markInitialized();
 
-                model.fireResortModel();
+                        model.fireResortModel();
 
-                if (postProcessor != null) {
-                    postProcessor.run();
+                        if (postProcessor != null) {
+                            postProcessor.run();
+                        }
+                    }
                 }
-            }
-        });
+        );
         this.model = model;
         assert RojacUtils.checkThread(true);
 
@@ -62,18 +63,16 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
         try {
             int userId = Property.RSDN_USER_ID.get();
-            try (IResult<ItemStatisticData<MessageData>> threadPosts = Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId, userId)) {
-                for (ItemStatisticData<MessageData> threadPost : threadPosts) {
-                    if (hideIgnored && threadPost.getItem().isIgnored()) {
-                        continue;
-                    }
-
-                    if (hideRead && threadPost.getItemReadStatistic().getUnreadMessages() == 0 && threadPost.getItem().isRead()) {
-                        continue;
-                    }
-
-                    publish(new Thread(threadPost.getItem(), rootItem, threadPost.getItemReadStatistic()));
+            for (ItemStatisticData<MessageData> threadPost : Storage.get(IMessageAH.class).getTopicMessagesDataByForumId(forumId, userId)) {
+                if (hideIgnored && threadPost.getItem().isIgnored()) {
+                    continue;
                 }
+
+                if (hideRead && threadPost.getItemReadStatistic().getUnreadMessages() == 0 && threadPost.getItem().isRead()) {
+                    continue;
+                }
+
+                publish(new Thread(threadPost.getItem(), rootItem, threadPost.getItemReadStatistic()));
             }
         } catch (StorageException e) {
             log.error("Can not load topics for forum #" + forumId, e);

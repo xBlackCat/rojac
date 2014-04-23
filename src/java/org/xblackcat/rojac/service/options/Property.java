@@ -8,7 +8,7 @@ import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.view.message.PreviewSize;
 import org.xblackcat.rojac.gui.view.message.YoutubePreviewSize;
 import org.xblackcat.rojac.gui.view.model.ViewMode;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.UIUtils;
 
@@ -44,7 +44,7 @@ public final class Property<T> {
     public static final Property<Boolean> ROJAC_DEBUG_DONT_RESTORE_LAYOUT = createPrivate("rojac.debug.reset_layout", Boolean.FALSE);
     public static final Property<Boolean> ROJAC_DEBUG_SHUTDOWN_OTHER = createPrivate("rojac.debug.shutdown_others", Boolean.FALSE);
 
-    public static final Property<DatabaseSettings> ROJAC_DATABASE_CONNECTION_SETTINGS = createPrivate("rojac.database.connection", DatabaseSettings.class);
+    public static final Property<DBConfig> ROJAC_DATABASE_CONNECTION_SETTINGS = createPrivate("rojac.database.connection", DBConfig.class);
 
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());

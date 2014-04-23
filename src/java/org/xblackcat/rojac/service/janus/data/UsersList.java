@@ -15,11 +15,6 @@ public class UsersList {
     private final User[] users;
     private final Version version;
 
-    public UsersList(User[] users, Version version) {
-        this.users = users;
-        this.version = version;
-    }
-
     public UsersList(UserResponse r) {
         this.version = new Version(r.getLastRowVersion());
 
@@ -27,7 +22,17 @@ public class UsersList {
         JanusUserInfo[] users = janusUserInfo.toArray(new JanusUserInfo[janusUserInfo.size()]);
         this.users = new User[users.length];
         for (int i = 0; i < users.length; i++) {
-            this.users[i] = new User(users[i]);
+            this.users[i] = new User(
+                    users[i].getUserId(),
+                    users[i].getUserName(),
+                    users[i].getUserNick(),
+                    users[i].getRealName(),
+                    users[i].getPublicEmail(),
+                    users[i].getHomePage(),
+                    users[i].getSpecialization(),
+                    users[i].getWhereFrom(),
+                    users[i].getOrigin()
+            );
         }
     }
 
