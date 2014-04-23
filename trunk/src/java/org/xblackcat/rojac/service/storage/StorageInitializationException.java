@@ -1,5 +1,7 @@
 package org.xblackcat.rojac.service.storage;
 
+import org.xblackcat.sjpu.storage.StorageException;
+
 /**
  * @author ASUS
  */

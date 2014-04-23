@@ -5,17 +5,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xblackcat.rojac.service.storage.MigrationQueries;
 import org.xblackcat.rojac.service.storage.StorageInitializationException;
-import org.xblackcat.rojac.service.storage.database.IPropertiable;
+import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.service.storage.database.SQL;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
-import org.xblackcat.rojac.service.storage.database.connection.IConnectionFactory;
 import org.xblackcat.utils.ResourceUtils;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -34,41 +29,6 @@ public final class DatabaseUtils {
     private static final String DB_STORAGE_PASSWORD = "db.access.password";
 
     private DatabaseUtils() {
-    }
-
-    public static <T extends Enum<T> & IPropertiable> Map<T, String> loadSQLs(String propRoot, Class<T> type) throws StorageInitializationException {
-        String name = '/' + DBCONFIG_PACKAGE + propRoot + "/sql.data.properties";
-        Properties queries;
-        try {
-            queries = ResourceUtils.loadProperties(name);
-        } catch (IOException e) {
-            throw new StorageInitializationException("Can not load queries list", e);
-        }
-
-        Map<T, String> qs = new EnumMap<>(type);
-        for (T q : type.getEnumConstants()) {
-            String sql = (String) queries.remove(q.getPropertyName());
-            if (sql != null) {
-                if (log.isTraceEnabled()) {
-                    log.trace("Property '" + q.getPropertyName() + "' initialized with SQL: " + sql);
-                }
-                qs.put(q, sql);
-            } else {
-                throw new StorageInitializationException(q + " is not initialized.");
-            }
-        }
-
-        if (!queries.isEmpty()) {
-            if (log.isWarnEnabled()) {
-                log.warn("There are unused properties in " + name);
-                for (Map.Entry<Object, Object> entry : queries.entrySet()) {
-                    log.warn("Property: " + entry.getKey() + " = " + entry.getValue());
-                }
-            }
-            throw new StorageInitializationException("There are some excess properties in " + name);
-        }
-
-        return Collections.unmodifiableMap(qs);
     }
 
     /**
@@ -136,7 +96,7 @@ public final class DatabaseUtils {
         return Collections.unmodifiableMap(map);
     }
 
-    public static DatabaseSettings readDefaults(String engine) throws StorageInitializationException {
+    public static DBConfig readDefaults(String engine) throws StorageInitializationException {
         if (log.isTraceEnabled()) {
             log.trace("Loading database connection properties.");
         }
@@ -199,29 +159,28 @@ public final class DatabaseUtils {
             shutdownUrl = null;
         }
 
-        return new DatabaseSettings(
+        return new DBConfig(
                 engineName,
                 engine,
+                jdbcClass,
                 ResourceUtils.putSystemProperties(url),
-                ResourceUtils.putSystemProperties(shutdownUrl),
+//                ResourceUtils.putSystemProperties(shutdownUrl),
                 ResourceUtils.putSystemProperties(userName),
-                ResourceUtils.putSystemProperties(password),
-                jdbcDriverClass
+                ResourceUtils.putSystemProperties(password)
         );
     }
 
-    public static String convert(DatabaseSettings o) {
+    public static String convert(DBConfig o) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
 
             ObjectOutputStream datas = new ObjectOutputStream(outputStream);
 
             datas.writeObject(o.getEngine());
-            datas.writeObject(o.getJdbcDriverClass());
+            datas.writeObject(o.getDriver());
             datas.writeObject(o.getUrl());
-            datas.writeObject(o.getUserName());
+            datas.writeObject(o.getUser());
             datas.writeObject(o.getPassword());
-            datas.writeObject(o.getShutdownUrl());
             datas.writeObject(o.getEngineName());
             datas.flush();
 
@@ -235,7 +194,7 @@ public final class DatabaseUtils {
         }
     }
 
-    public static DatabaseSettings convert(String s) {
+    public static DBConfig convert(String s) {
         if (StringUtils.isBlank(s)) {
             return null;
         }
@@ -259,15 +218,14 @@ public final class DatabaseUtils {
                 return null;
             }
 
-            Class<?> jdbcClass = (Class<?>) inputStream.readObject();
+            String jdbcClass = (String) inputStream.readObject();
 
             String url = (String) inputStream.readObject();
             String userName = (String) inputStream.readObject();
             String password = (String) inputStream.readObject();
-            String shutdownUrl = (String) inputStream.readObject();
             String engineName = (String) inputStream.readObject();
 
-            return new DatabaseSettings(engineName, engine, url, shutdownUrl, userName, password, jdbcClass);
+            return new DBConfig(engineName, engine, jdbcClass, url, userName, password);
         } catch (IOException e) {
             if (log.isWarnEnabled()) {
                 log.warn("Can not load database settings.");
@@ -281,51 +239,4 @@ public final class DatabaseUtils {
         return null;
     }
 
-    public static MigrationQueries loadImportingQueries(String engine) throws IOException {
-        Properties properties = ResourceUtils.loadProperties('/' + DBCONFIG_PACKAGE + engine + "/sql.migration.properties");
-
-        String getTables = properties.getProperty("migration.get.tables");
-        String getTableData = properties.getProperty("migration.get.table.data");
-        String tableSizeQuery = properties.getProperty("migration.get.table.size");
-        String storeTableData = properties.getProperty("migration.store.table.data");
-        String mergeTableData = properties.getProperty("migration.merge.table.data");
-        String quoteName = properties.getProperty("migration.quote.name");
-
-        return new MigrationQueries(
-                getTables,
-                getTableData,
-                storeTableData,
-                mergeTableData,
-                StringUtils.isBlank(quoteName) ? "%1$s" : quoteName,
-                tableSizeQuery);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public static IConnectionFactory createConnectionFactory(String connectionFactoryName, DatabaseSettings databaseSettings) throws StorageInitializationException {
-
-        Class<?> connectionFactoryClass;
-        try {
-            connectionFactoryClass = Class.forName("org.xblackcat.rojac.service.storage.database.connection." + connectionFactoryName + "ConnectionFactory");
-        } catch (ClassNotFoundException e) {
-            try {
-                connectionFactoryClass = Class.forName(connectionFactoryName);
-            } catch (ClassNotFoundException e1) {
-                throw new StorageInitializationException("Connection factory " + connectionFactoryName + " is not found", e1);
-            }
-        }
-
-        try {
-            if (!IConnectionFactory.class.isAssignableFrom(connectionFactoryClass)) {
-                throw new StorageInitializationException("Connection factory should implements IConnectionFactory interface.");
-            }
-            Constructor<IConnectionFactory> connectionFactoryConstructor =
-                    ((Class<IConnectionFactory>) connectionFactoryClass).getConstructor(DatabaseSettings.class);
-
-            return connectionFactoryConstructor.newInstance(databaseSettings);
-        } catch (NoSuchMethodException e) {
-            throw new StorageInitializationException("Connection factory have no necessary constructor", e);
-        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-            throw new StorageInitializationException("Can not initialize connection factory", e);
-        }
-    }
 }

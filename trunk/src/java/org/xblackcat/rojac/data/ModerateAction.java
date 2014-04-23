@@ -6,7 +6,7 @@ import ru.rsdn.janus.ModerateActionType;
  * @author xBlackCat
  */
 
-public enum ModerateAction implements IIdentifable {
+public enum ModerateAction implements IDictionary {
     MoveMessage(0),
     DeleteMessage(1),
     DeleteThread(2),

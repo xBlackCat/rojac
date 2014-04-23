@@ -10,6 +10,7 @@ import org.xblackcat.rojac.service.progress.ProgressState;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import javax.swing.*;
 import java.awt.*;

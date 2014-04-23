@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.service.storage.database.convert;
 
+import org.xblackcat.sjpu.storage.converter.IToObjectConverter;
 import ru.rsdn.janus.RequestForumInfo;
 
 import java.sql.ResultSet;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
  *
  * @author xBlackCat
  */
-class ToRequestForumInfoConverter implements IToObjectConverter<RequestForumInfo> {
+public class ToRequestForumInfoConverter implements IToObjectConverter<RequestForumInfo> {
     @Override
     public RequestForumInfo convert(ResultSet rs) throws SQLException {
         int forumId = rs.getInt(1);

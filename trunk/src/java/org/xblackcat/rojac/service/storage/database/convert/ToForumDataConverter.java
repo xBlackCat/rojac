@@ -3,6 +3,7 @@ package org.xblackcat.rojac.service.storage.database.convert;
 import org.xblackcat.rojac.data.DiscussionStatistic;
 import org.xblackcat.rojac.data.Forum;
 import org.xblackcat.rojac.data.ItemStatisticData;
+import org.xblackcat.sjpu.storage.converter.IToObjectConverter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,10 +11,18 @@ import java.sql.SQLException;
 /**
  * @author xBlackCat
  */
-class ToForumDataConverter implements IToObjectConverter<ItemStatisticData<Forum>> {
+public class ToForumDataConverter implements IToObjectConverter<ItemStatisticData<Forum>> {
     @Override
     public ItemStatisticData<Forum> convert(ResultSet rs) throws SQLException {
-        Forum forum = Converters.TO_FORUM.convert(rs);
+        int id = rs.getInt(1);
+        int forumGroupId = rs.getInt(2);
+        int rated = rs.getInt(3);
+        int inTop = rs.getInt(4);
+        int rateLimit = rs.getInt(5);
+        boolean subscribed = rs.getBoolean(6);
+        String shortName = rs.getString(7);
+        String name = rs.getString(8);
+        Forum forum = new Forum(id, forumGroupId, rated, inTop, rateLimit, subscribed, shortName, name);
 
         int totals = rs.getInt(9);
 //        int unreadPosts = rs.getInt(10);

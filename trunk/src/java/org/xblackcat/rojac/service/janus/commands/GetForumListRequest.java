@@ -8,7 +8,11 @@ import org.xblackcat.rojac.service.datahandler.IPacket;
 import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.ForumsList;
-import org.xblackcat.rojac.service.storage.*;
+import org.xblackcat.rojac.service.storage.IForumAH;
+import org.xblackcat.rojac.service.storage.IForumGroupAH;
+import org.xblackcat.rojac.service.storage.IVersionAH;
+import org.xblackcat.rojac.service.storage.Storage;
+import org.xblackcat.sjpu.storage.StorageException;
 
 /**
  * @author xBlackCat
@@ -24,7 +28,9 @@ class GetForumListRequest extends ARequest<IPacket> {
             VersionInfo versionInfo = vAH.getVersionInfo(VersionType.FORUM_ROW_VERSION);
             forumsList = janusService.getForumsList(versionInfo == null ? new Version() : versionInfo.getVersion());
         } catch (JanusServiceException e) {
-            throw new RsdnProcessorException("Can not obtain forums list", e);
+            throw new RsdnProcessorException("Can't obtain forums list", e);
+        } catch (StorageException e) {
+            throw new RsdnProcessorException("Can't read current version", e);
         }
 
         IForumAH fAH = Storage.get(IForumAH.class);
@@ -51,18 +57,19 @@ class GetForumListRequest extends ARequest<IPacket> {
                 if (fAH.getForumById(f.getForumId()) == null) {
                     fAH.storeForum(
                             f.getForumId(), f.getForumGroupId(), f.getRated(), f.getInTop(), f.getRateLimit(),
-                                   f.isSubscribed(), f.getShortForumName(), f.getForumName()
+                            f.isSubscribed(), f.getShortForumName(), f.getForumName()
                     );
                 } else {
                     fAH.updateForum(
                             f.getForumGroupId(), f.getRated(), f.getInTop(), f.getRateLimit(),
-                                    f.getShortForumName(), f.getForumName(), f.getForumId()
+                            f.getShortForumName(), f.getForumName(), f.getForumId()
                     );
                 }
             }
 
             IVersionAH vAH = Storage.get(IVersionAH.class);
-            vAH.updateVersionInfo(new VersionInfo(forumsList.getVersion(), VersionType.FORUM_ROW_VERSION));
+            final VersionInfo v = new VersionInfo(VersionType.FORUM_ROW_VERSION, forumsList.getVersion());
+            vAH.updateVersionInfo(v.getType(), v.getVersion());
         } catch (StorageException e) {
             throw new RsdnProcessorException("Can not update forum list", e);
         }

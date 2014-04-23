@@ -19,10 +19,10 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.ShortCutUtils;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import javax.swing.*;
 import java.awt.*;

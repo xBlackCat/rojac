@@ -17,10 +17,10 @@ import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.INewMessageAH;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.MessageUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -116,9 +116,9 @@ public class EditMessageDialog extends JDialog {
                     INewMessageAH nmAH = Storage.get(INewMessageAH.class);
                     if (newMessageId == 0) {
                         // Create a new own message
-                        nmAH.storeNewMessage(nm);
+                        nmAH.storeNewMessage(nm.getParentId(), nm.getForumId(), nm.getSubject(), nm.getMessage(), nm.isDraft());
                     } else {
-                        nmAH.updateNewMessage(nm);
+                        nmAH.updateNewMessage(nm.getSubject(), nm.getMessage(), nm.isDraft(), nm.getLocalMessageId());
                     }
                 } catch (StorageException e) {
                     log.error("Can not store new message object: " + nm, e);

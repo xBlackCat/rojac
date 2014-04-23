@@ -45,8 +45,8 @@ import org.xblackcat.rojac.service.progress.IProgressController;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.IMiscAH;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.rojac.service.storage.StorageException;
 import org.xblackcat.rojac.util.*;
+import org.xblackcat.sjpu.storage.StorageException;
 import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;

@@ -1,6 +1,5 @@
 package org.xblackcat.rojac.gui.view.model;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.OpenMessageMethod;
@@ -15,7 +14,6 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
-import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -106,9 +104,7 @@ class IgnoredThreadListControl extends AMessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            try (IResult<MessageData> ignoredTopicsList = Storage.get(IMessageAH.class).getIgnoredTopicsList()) {
-                CollectionUtils.addAll(messages, ignoredTopicsList.iterator());
-            }
+            messages.addAll(Storage.get(IMessageAH.class).getIgnoredTopicsList());
             return null;
         }
 

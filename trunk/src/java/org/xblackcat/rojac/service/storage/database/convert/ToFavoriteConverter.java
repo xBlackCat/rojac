@@ -2,6 +2,7 @@ package org.xblackcat.rojac.service.storage.database.convert;
 
 import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
+import org.xblackcat.sjpu.storage.converter.IToObjectConverter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
  * @author xBlackCat
  */
 
-class ToFavoriteConverter implements IToObjectConverter<Favorite> {
+public class ToFavoriteConverter implements IToObjectConverter<Favorite> {
     @Override
     public Favorite convert(ResultSet rs) throws SQLException {
         int id = rs.getInt(1);

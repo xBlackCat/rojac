@@ -36,34 +36,34 @@ public class SetMessagesReadFlagEx extends RojacWorker<Void, SetReadExPacket> {
         final IMessageAH mAH = Storage.get(IMessageAH.class);
         SetReadExPacket result = null;
 
-        switch (dateDirection) {
-            case After:
-                switch (scope) {
-                    case All:
-                        result = mAH.setReadAfterDate(dateline, read);
-                        break;
-                    case Forum:
-                        result = mAH.setForumReadAfterDate(dateline, read, forumId);
-                        break;
-                    case Thread:
-                        result = mAH.setThreadReadAfterDate(dateline, read, forumId, threadId);
-                        break;
-                }
-                break;
-            case Before:
-                switch (scope) {
-                    case All:
-                        result = mAH.setReadBeforeDate(dateline, read);
-                        break;
-                    case Forum:
-                        result = mAH.setForumReadBeforeDate(dateline, read, forumId);
-                        break;
-                    case Thread:
-                        result = mAH.setThreadReadBeforeDate(dateline, read, forumId, threadId);
-                        break;
-                }
-                break;
-        }
+//        switch (dateDirection) {
+//            case After:
+//                switch (scope) {
+//                    case All:
+//                        result = mAH.setReadAfterDate(dateline, read);
+//                        break;
+//                    case Forum:
+//                        result = mAH.setForumReadAfterDate(dateline, read, forumId);
+//                        break;
+//                    case Thread:
+//                        result = mAH.setThreadReadAfterDate(dateline, read, forumId, threadId);
+//                        break;
+//                }
+//                break;
+//            case Before:
+//                switch (scope) {
+//                    case All:
+//                        result = mAH.setReadBeforeDate(dateline, read);
+//                        break;
+//                    case Forum:
+//                        result = mAH.setForumReadBeforeDate(dateline, read, forumId);
+//                        break;
+//                    case Thread:
+//                        result = mAH.setThreadReadBeforeDate(dateline, read, forumId, threadId);
+//                        break;
+//                }
+//                break;
+//        }
 
         publish(result);
 

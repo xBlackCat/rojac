@@ -13,8 +13,11 @@ import org.xblackcat.rojac.service.janus.IJanusService;
 import org.xblackcat.rojac.service.janus.JanusServiceException;
 import org.xblackcat.rojac.service.janus.data.PostException;
 import org.xblackcat.rojac.service.janus.data.PostInfo;
-import org.xblackcat.rojac.service.storage.*;
-import org.xblackcat.rojac.util.SynchronizationUtils;
+import org.xblackcat.rojac.service.storage.INewMessageAH;
+import org.xblackcat.rojac.service.storage.INewModerateAH;
+import org.xblackcat.rojac.service.storage.INewRatingAH;
+import org.xblackcat.rojac.service.storage.Storage;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import java.util.Collection;
 
@@ -33,19 +36,13 @@ class PostChangesRequest extends ARequest<IPacket> {
             INewMessageAH nmeAH = Storage.get(INewMessageAH.class);
             INewModerateAH nmoAH = Storage.get(INewModerateAH.class);
 
-            Collection<NewRating> newRatings;
-            Collection<NewMessage> newMessages;
-            Collection<NewModerate> newModerates;
+            final Collection<NewRating> newRatings;
+            final Collection<NewMessage> newMessages;
+            final Collection<NewModerate> newModerates;
             try {
-                try (IResult<NewRating> allNewRatings = nrAH.getAllNewRatings()) {
-                    newRatings = SynchronizationUtils.collect(allNewRatings);
-                }
-                try (IResult<NewMessage> newMessagesToSend = nmeAH.getNewMessagesToSend()) {
-                    newMessages = SynchronizationUtils.collect(newMessagesToSend);
-                }
-                try (IResult<NewModerate> allNewModerates = nmoAH.getAllNewModerates()) {
-                    newModerates = SynchronizationUtils.collect(allNewModerates);
-                }
+                newRatings = nrAH.getAllNewRatings();
+                newMessages = nmeAH.getNewMessagesToSend();
+                newModerates = nmoAH.getAllNewModerates();
             } catch (StorageException e) {
                 throw new RsdnProcessorException("Can not load your changes.", e);
             }

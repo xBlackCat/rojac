@@ -13,7 +13,6 @@ import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
-import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.IUserAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacUtils;
@@ -215,14 +214,11 @@ class PostListControl extends AMessageListControl {
 
         @Override
         protected Void perform() throws Exception {
-            try (IResult<MessageData> messages = replies ?
+            for (MessageData md : replies ?
                     Storage.get(IMessageAH.class).getUserReplies(itemId) :
-                    Storage.get(IMessageAH.class).getUserPosts(itemId)
-            ) {
-                for (MessageData md : messages) {
+                    Storage.get(IMessageAH.class).getUserPosts(itemId)) {
                     publish(md);
                 }
-            }
 
             return null;
         }

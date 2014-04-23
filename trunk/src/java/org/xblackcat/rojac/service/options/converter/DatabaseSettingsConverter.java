@@ -1,6 +1,6 @@
 package org.xblackcat.rojac.service.options.converter;
 
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.DatabaseUtils;
 
 /**
@@ -8,14 +8,14 @@ import org.xblackcat.rojac.util.DatabaseUtils;
  *
  * @author xBlackCat
  */
-public class DatabaseSettingsConverter implements IConverter<DatabaseSettings> {
+public class DatabaseSettingsConverter implements IConverter<DBConfig> {
     @Override
-    public DatabaseSettings convert(String s) {
+    public DBConfig convert(String s) {
         return DatabaseUtils.convert(s);
     }
 
     @Override
-    public String toString(DatabaseSettings o) {
+    public String toString(DBConfig o) {
         return DatabaseUtils.convert(o);
     }
 }

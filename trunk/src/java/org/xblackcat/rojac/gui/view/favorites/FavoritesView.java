@@ -13,7 +13,6 @@ import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
-import org.xblackcat.rojac.service.storage.IResult;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
 
@@ -83,28 +82,30 @@ public class FavoritesView extends AView {
 
         add(scrollPane);
 
-        favoritesList.addMouseListener(new PopupMouseAdapter() {
-            private Favorite getFavorite(MouseEvent e) {
-                int ind = favoritesList.rowAtPoint(e.getPoint());
+        favoritesList.addMouseListener(
+                new PopupMouseAdapter() {
+                    private Favorite getFavorite(MouseEvent e) {
+                        int ind = favoritesList.rowAtPoint(e.getPoint());
 
-                int modelInd = favoritesList.convertRowIndexToModel(ind);
+                        int modelInd = favoritesList.convertRowIndexToModel(ind);
 
-                return favoritesModel.getValueAt(modelInd, 0).getFavorite();
-            }
+                        return favoritesModel.getValueAt(modelInd, 0).getFavorite();
+                    }
 
-            @Override
-            protected void triggerDoubleClick(MouseEvent e) {
-                appControl.openTab(ViewType.Favorite.makeId(getFavorite(e).getId()));
-            }
+                    @Override
+                    protected void triggerDoubleClick(MouseEvent e) {
+                        appControl.openTab(ViewType.Favorite.makeId(getFavorite(e).getId()));
+                    }
 
-            @Override
-            protected void triggerPopup(MouseEvent e) {
-                JPopupMenu menu = PopupMenuBuilder.getFavoritesMenu(getFavorite(e), appControl);
+                    @Override
+                    protected void triggerPopup(MouseEvent e) {
+                        JPopupMenu menu = PopupMenuBuilder.getFavoritesMenu(getFavorite(e), appControl);
 
-                Point p = e.getPoint();
-                menu.show(e.getComponent(), p.x, p.y);
-            }
-        });
+                        Point p = e.getPoint();
+                        menu.show(e.getComponent(), p.x, p.y);
+                    }
+                }
+        );
 
         reloadFavorites();
     }
@@ -113,10 +114,8 @@ public class FavoritesView extends AView {
         new RojacWorker<Void, Favorite>() {
             @Override
             protected Void perform() throws Exception {
-                try (IResult<Favorite> favorites = Storage.get(IFavoriteAH.class).getFavorites()) {
-                    for (Favorite f : favorites) {
-                        publish(f);
-                    }
+                for (Favorite f : Storage.get(IFavoriteAH.class).getFavorites()) {
+                    publish(f);
                 }
 
                 return null;

@@ -6,7 +6,7 @@ import org.xblackcat.rojac.gui.dialog.options.PropertyUtils;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.service.options.converter.*;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
+import org.xblackcat.rojac.service.storage.database.DBConfig;
 
 import java.awt.*;
 import java.util.*;
@@ -42,7 +42,7 @@ abstract class AnOptionsService implements IOptionsService {
         map.put(Locale.class, new LocaleConverter());
         map.put(IconPack.class, new IconPackConverter());
         map.put(TextStyle.class, new TextStyleConverter());
-        map.put(DatabaseSettings.class, new DatabaseSettingsConverter());
+        map.put(DBConfig.class, new DatabaseSettingsConverter());
 
         converters = Collections.unmodifiableMap(map);
     }

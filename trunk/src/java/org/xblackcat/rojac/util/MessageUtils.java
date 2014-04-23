@@ -3,7 +3,6 @@ package org.xblackcat.rojac.util;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.xblackcat.rojac.data.Mark;
-import org.xblackcat.rojac.data.MarkStat;
 import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.data.RatingCache;
 import org.xblackcat.rojac.gui.view.ViewId;
@@ -13,7 +12,11 @@ import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.ServiceFactory;
 import org.xblackcat.rojac.service.executor.IExecutor;
 import org.xblackcat.rojac.service.options.Property;
-import org.xblackcat.rojac.service.storage.*;
+import org.xblackcat.rojac.service.storage.IMessageAH;
+import org.xblackcat.rojac.service.storage.IRatingAH;
+import org.xblackcat.rojac.service.storage.Storage;
+import org.xblackcat.sjpu.storage.IBatch;
+import org.xblackcat.sjpu.storage.StorageException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -164,10 +167,7 @@ public final class MessageUtils {
         IMessageAH mAH = batch.get(IMessageAH.class);
         IRatingAH rAH = batch.get(IRatingAH.class);
 
-        RatingCache ratingCache;
-        try (IResult<MarkStat> marks = rAH.getMarkStatByMessageId(id)) {
-            ratingCache = new RatingCache(marks);
-        }
+        RatingCache ratingCache = new RatingCache(rAH.getMarkStatByMessageId(id));
         if (!ratingCache.isEmpty()) {
             mAH.updateMessageRatingCache(id, ratingCache.asString());
         }

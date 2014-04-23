@@ -9,7 +9,7 @@ import javax.swing.*;
  * @author xBlackCat
  */
 
-public enum Mark implements IIdentifable {
+public enum Mark implements IDictionary {
     PlusOne(-3, Message.Description_Mark_PlusOne, "plus_one.gif"),
     Agree(-4, Message.Description_Mark_Agree, "plus.gif"),
     Disagree(0, Message.Description_Mark_Disagree, "minus.gif"),

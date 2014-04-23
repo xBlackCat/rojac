@@ -4,6 +4,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 import org.apache.commons.lang3.ArrayUtils;
 import org.xblackcat.rojac.RojacException;
+import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.Role;
 import org.xblackcat.rojac.data.User;
 import org.xblackcat.rojac.i18n.Message;
@@ -16,6 +17,8 @@ import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.util.MessageUtils;
+import org.xblackcat.sjpu.storage.IBatch;
+import org.xblackcat.sjpu.storage.StorageException;
 import ru.rsdn.janus.JanusMessageInfo;
 import ru.rsdn.janus.JanusModerateInfo;
 import ru.rsdn.janus.JanusRatingInfo;
@@ -63,21 +66,25 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
             ILogTracker tracker,
             IJanusService janusService
     ) throws RojacException {
-        int ownUserId = loadData(tracker, janusService);
+        try {
+            int ownUserId = loadData(tracker, janusService);
 
-        if (ownUserId > 0) {
-            RSDN_USER_ID.set(ownUserId);
-            tracker.addLodMessage(Message.Synchronize_Message_GotUserId, ownUserId);
+            if (ownUserId > 0) {
+                RSDN_USER_ID.set(ownUserId);
+                tracker.addLodMessage(Message.Synchronize_Message_GotUserId, ownUserId);
+            }
+
+            postProcessing(tracker, janusService);
+
+            // Do not update zero-identified objects
+            updatedForums.remove(0);
+            updatedTopics.remove(0);
+            updatedMessages.remove(0);
+
+            handler.process(new SynchronizationCompletePacket(updatedForums, updatedTopics, updatedMessages));
+        } catch (StorageException e) {
+            throw new RojacException(e.getMessage(), e);
         }
-
-        postProcessing(tracker, janusService);
-
-        // Do not update zero-identified objects
-        updatedForums.remove(0);
-        updatedTopics.remove(0);
-        updatedMessages.remove(0);
-
-        handler.process(new SynchronizationCompletePacket(updatedForums, updatedTopics, updatedMessages));
     }
 
     protected int loadData(
@@ -178,21 +185,21 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
             if (mAH.isExist(mId)) {
                 mAH.updateMessage(
                         mes.getTopicId(),
-                                  mes.getParentId(),
-                                  mes.getUserId(),
-                                  mes.getForumId(),
-                                  mes.getArticleId(),
-                                  mes.getUserTitleColor(),
-                                  Role.getUserType(mes.getUserRole()),
-                                  mes.getMessageDate().toGregorianCalendar().getTimeInMillis(),
-                                  mes.getUpdateDate().toGregorianCalendar().getTimeInMillis(),
-                                  mes.getLastModerated().toGregorianCalendar().getTimeInMillis(),
-                                  mes.getSubject(),
-                                  mes.getMessageName(),
-                                  mes.getUserNick(),
-                                  mes.getUserTitle(),
-                                  mes.getMessage(),
-                                  read, mes.getMessageId()
+                        mes.getParentId(),
+                        mes.getUserId(),
+                        mes.getForumId(),
+                        mes.getArticleId(),
+                        mes.getUserTitleColor(),
+                        Role.getUserType(mes.getUserRole()),
+                        mes.getMessageDate().toGregorianCalendar().getTimeInMillis(),
+                        mes.getUpdateDate().toGregorianCalendar().getTimeInMillis(),
+                        mes.getLastModerated().toGregorianCalendar().getTimeInMillis(),
+                        mes.getSubject(),
+                        mes.getMessageName(),
+                        mes.getUserNick(),
+                        mes.getUserTitle(),
+                        mes.getMessage(),
+                        read, mes.getMessageId()
                 );
                 updatedMessages.add(mId);
             } else {
@@ -254,7 +261,9 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
             tracker.updateProgress(count++, moderatesAmount);
 
             modAH.storeModerateInfo(
-                    mod.getMessageId(), mod.getUserId(), mod.getForumId(),
+                    mod.getMessageId(),
+                    mod.getUserId(),
+                    mod.getForumId(),
                     mod.getCreate().toGregorianCalendar().getTimeInMillis()
             );
             updatedForums.add(mod.getForumId());
@@ -266,7 +275,10 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         for (JanusRatingInfo r : ratings) {
             tracker.updateProgress(count++, ratings1Amount);
 
-            rAH.storeRating(r);
+            rAH.storeRating(
+                    r.getMessageId(), r.getTopicId(), r.getUserId(), r.getUserRating(), Mark.getMark(r.getRate()),
+                    r.getRateDate().toGregorianCalendar().getTimeInMillis()
+            );
             updatedMessages.add(r.getMessageId());
             ratingCacheUpdate.add(r.getMessageId());
 
@@ -333,7 +345,11 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
                             User[] users = usersByIds.getUsers();
                             for (int i = 0, usersLength = users.length; i < usersLength; i++) {
                                 User user = users[i];
-                                userAH.storeUser(user);
+                                userAH.storeUser(
+                                        user.getId(), user.getUserName(), user.getUserNick(), user.getRealName(),
+                                        user.getPublicEmail(), user.getHomePage(), user.getSpecialization(), user.getWhereFrom(),
+                                        user.getOrigin()
+                                );
                                 nonExistUsers.remove(user.getId());
                                 nonExistRatingUsers.remove(user.getId());
                                 tracker.updateProgress(i, usersLength);
@@ -349,7 +365,8 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
                             tracker.addLodMessage(Message.Synchronize_Message_StoreUserInfo);
                             for (int i = 0, userIdsLength = userIds.length; i < userIdsLength; i++) {
                                 int userId = userIds[i];
-                                userAH.storeUserInfo(userId, nonExistUsers.get(userId));
+                                final String userName = nonExistUsers.get(userId);
+                                userAH.storeUser(userId, userName, userName, null, null, null, null, null, null);
                                 tracker.updateProgress(i, userIdsLength);
                             }
                         }
@@ -389,7 +406,9 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
                 idx = 0;
                 total = updatedTopics.size();
                 for (int topicId : updatedTopics.toArray()) {
-                    mAH.updateLastPostInfo(topicId);
+                    mAH.updateRepliesAmountInfo(topicId);
+                    mAH.updateLastPostId(topicId);
+                    mAH.updateLastPostDate(topicId);
                     batchTracker.updateProgress(idx++, total);
                 }
 

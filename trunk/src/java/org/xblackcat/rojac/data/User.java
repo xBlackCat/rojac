@@ -1,7 +1,5 @@
 package org.xblackcat.rojac.data;
 
-import ru.rsdn.janus.JanusUserInfo;
-
 /**
  * @author Alexey
  */
@@ -27,11 +25,6 @@ public final class User {
         this.specialization = specialization;
         this.whereFrom = whereFrom;
         this.origin = origin;
-    }
-
-    public User(JanusUserInfo i) {
-        this(i.getUserId(), i.getUserName(), i.getUserNick(), i.getRealName(), i.getPublicEmail(),
-                i.getHomePage(), i.getSpecialization(), i.getWhereFrom(), i.getOrigin());
     }
 
     public int getId() {

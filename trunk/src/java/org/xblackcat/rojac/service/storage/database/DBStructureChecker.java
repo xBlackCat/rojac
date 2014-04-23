@@ -1,24 +1,20 @@
 package org.xblackcat.rojac.service.storage.database;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
-import org.xblackcat.rojac.service.storage.*;
-import org.xblackcat.rojac.service.storage.database.connection.DatabaseSettings;
-import org.xblackcat.rojac.service.storage.database.convert.Converters;
-import org.xblackcat.rojac.service.storage.database.helper.IManagingQueryHelper;
-import org.xblackcat.rojac.service.storage.database.helper.QueryHelperFactory;
-import org.xblackcat.rojac.util.DatabaseUtils;
+import org.xblackcat.rojac.service.storage.IStructureChecker;
+import org.xblackcat.rojac.service.storage.StorageCheckException;
+import org.xblackcat.rojac.service.storage.StorageInitializationException;
+import org.xblackcat.sjpu.storage.IQueryHelper;
+import org.xblackcat.sjpu.storage.StorageException;
+import org.xblackcat.sjpu.storage.StorageUtils;
+import org.xblackcat.sjpu.storage.connection.IDBConfig;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 27.09.11 17:16
@@ -29,13 +25,13 @@ public class DBStructureChecker implements IStructureChecker {
     private static final Log log = LogFactory.getLog(DBStructureChecker.class);
 
     private final Map<SQL, List<SQL>> initializationQueries;
-    private final IManagingQueryHelper helper;
+    private final IQueryHelper helper;
 
-    public DBStructureChecker(DatabaseSettings settings) throws StorageInitializationException {
-        this.helper = QueryHelperFactory.createHelper(settings);
+    public DBStructureChecker(IDBConfig settings) throws StorageInitializationException {
+        this.helper = StorageUtils.buildQueryHelper(settings);
         try {
-            initializationQueries = DatabaseUtils.loadInitializeSQLs(helper.getEngine());
-        } catch (IOException e) {
+            initializationQueries = new HashMap<>();//DatabaseUtils.loadInitializeSQLs(helper.getEngine());
+        } catch (Exception e) {
             throw new StorageInitializationException("Can not load initialization routines", e);
         }
     }
@@ -68,7 +64,7 @@ public class DBStructureChecker implements IStructureChecker {
         }
 
         if (log.isInfoEnabled()) {
-            log.info("Check database storage structure started [" + helper.getEngine() + "]");
+//            log.info("Check database storage structure started [" + helper.getEngine() + "]");
         }
 
         int amountChecks = initializationQueries.size();
@@ -83,9 +79,9 @@ public class DBStructureChecker implements IStructureChecker {
             progressListener.progressChanged(new ProgressChangeEvent(this, ProgressState.Start, checkIdx, amountChecks));
 
             try {
-                Boolean c = helper.executeSingle(Converters.TO_BOOLEAN, check.getSql());
-                success = Boolean.TRUE.equals(c);
-            } catch (StorageException | IllegalStateException e) {
+//                Boolean c = helper.executeSingle(Converters.TO_BOOLEAN, check.getSql());
+//                success = Boolean.TRUE.equals(c);
+            } catch (Exception e) {
                 if (log.isTraceEnabled()) {
                     log.trace(check + " check failed. Reason: " + e.getLocalizedMessage());
                 }
@@ -123,12 +119,12 @@ public class DBStructureChecker implements IStructureChecker {
 
                             Collection<Object[]> rows = new ArrayList<>();
 
-                            try (IResult<Object[]> rowsList = helper.execute(Converters.TO_OBJECT_ROW_CONVERTER, getRowsQuery)) {
-                                CollectionUtils.addAll(rows, rowsList.iterator());
-                            }
+//                            try (List<Object[]> rowsList = helper.execute(Converters.TO_OBJECT_ROW_CONVERTER, getRowsQuery)) {
+//                                CollectionUtils.addAll(rows, rowsList.iterator());
+//                            }
 
                             for (String query : queries) {
-                                helper.updateBatch(query, null, rows);
+//                                helper.updateBatch(query, null, rows);
                             }
                         }
                     } catch (StorageException | IllegalStateException e) {
@@ -144,9 +140,9 @@ public class DBStructureChecker implements IStructureChecker {
                     if (log.isTraceEnabled()) {
                         log.trace("Perform post-initialization check " + check);
                     }
-                    Boolean c = helper.executeSingle(Converters.TO_BOOLEAN, check.getSql());
-                    success = Boolean.TRUE.equals(c);
-                } catch (StorageException e) {
+//                    Boolean c = helper.executeSingle(Converters.TO_BOOLEAN, check.getSql());
+//                    success = Boolean.TRUE.equals(c);
+                } catch (Exception e) {
                     throw new StorageCheckException("Post check failed for " + check, e);
                 }
 

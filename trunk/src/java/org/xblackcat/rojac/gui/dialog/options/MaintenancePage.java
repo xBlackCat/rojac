@@ -1,7 +1,6 @@
 package org.xblackcat.rojac.gui.dialog.options;
 
 import org.xblackcat.rojac.gui.component.AButtonAction;
-import org.xblackcat.rojac.gui.dialog.db.ImportDialog;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.storage.DatabaseCacheUpdater;
 import org.xblackcat.rojac.service.storage.DatabaseCleaner;
@@ -20,19 +19,6 @@ import java.awt.event.ActionEvent;
  */
 class MaintenancePage extends APage {
     MaintenancePage(final Window owner) {
-        JPanel importData = buildActionPane(
-                Message.Dialog_Options_Action_Import_Title,
-                Message.Dialog_Options_Action_Import_Info,
-                new AButtonAction(Message.Dialog_Options_Action_Import_Button) {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        ImportDialog importDialog = new ImportDialog(owner);
-
-                        WindowsUtils.center(importDialog, owner);
-                        importDialog.setVisible(true);
-                    }
-                }
-        );
         JPanel rebuildCache = buildActionPane(
                 Message.Dialog_Options_Action_RebuildCache_Title,
                 Message.Dialog_Options_Action_RebuildCache_Info,
@@ -62,7 +48,6 @@ class MaintenancePage extends APage {
         JPanel panes = WindowsUtils.createColumn(
                 5,
                 5,
-                importData,
                 rebuildCache,
                 cleanUpDatabase
         );
