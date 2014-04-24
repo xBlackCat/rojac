@@ -8,9 +8,9 @@ import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.view.message.PreviewSize;
 import org.xblackcat.rojac.gui.view.message.YoutubePreviewSize;
 import org.xblackcat.rojac.gui.view.model.ViewMode;
-import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.UIUtils;
+import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import javax.swing.*;
 import java.lang.ref.SoftReference;
@@ -47,15 +47,27 @@ public final class Property<T> {
     public static final Property<DBConfig> ROJAC_DATABASE_CONNECTION_SETTINGS = createPrivate("rojac.database.connection", DBConfig.class);
 
     // Main GUI properties
-    public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create("rojac.gui.laf", LookAndFeel.class, UIUtils.getDefaultLAFClass(), new LAFValueChecker());
+    public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create(
+            "rojac.gui.laf",
+            LookAndFeel.class,
+            UIUtils.getDefaultLAFClass(),
+            new LAFValueChecker()
+    );
     public static final Property<Locale> ROJAC_GUI_LOCALE = create("rojac.gui.locale", getDefaultLocale(), localeChecker);
 
     // Main frame behaviour
-    public static final Property<Boolean> ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE = create("rojac.behaviour.frame.hide_on_minimize", Boolean.TRUE);
+    public static final Property<Boolean> ROJAC_MAIN_FRAME_HIDE_ON_MINIMIZE = create(
+            "rojac.behaviour.frame.hide_on_minimize",
+            Boolean.TRUE
+    );
     public static final Property<Boolean> ROJAC_MAIN_FRAME_HIDE_ON_CLOSE = create("rojac.behaviour.frame.hide_on_close", Boolean.FALSE);
     public static final Property<Boolean> ROJAC_MAIN_FRAME_ASK_ON_CLOSE = create("rojac.behaviour.question.on_close", Boolean.TRUE);
 
-    public static final Property<IconPack> ROJAC_GUI_ICONPACK = create("rojac.gui.iconpack", IconPackValueChecker.DEFAULT_ICON_PACK, new IconPackValueChecker());
+    public static final Property<IconPack> ROJAC_GUI_ICONPACK = create(
+            "rojac.gui.iconpack",
+            IconPackValueChecker.DEFAULT_ICON_PACK,
+            new IconPackValueChecker()
+    );
 
     // User properties (login dialog)
     public static final Property<String> RSDN_USER_NAME = createPrivate("rojac.rsdn.user.name", String.class);
@@ -67,40 +79,98 @@ public final class Property<T> {
     public static final Property<Long> UPDATER_LAST_CHECK = createPrivate("rojac.updater.last_check", Long.class);
 
     // Behaviour in opening message in tab
-    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_GENERAL = create("rojac.behaviour.open_message.general", OpenMessageMethod.InForum);
-    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_RECENT_TOPICS = create("rojac.behaviour.open_message.from_recent_topics", OpenMessageMethod.InThread, GeneralEnumChecker.except(OpenMessageMethod.NewTab));
-    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_FORUM_VIEW = create("rojac.behaviour.open_message.from_forum_view", OpenMessageMethod.InThread, GeneralEnumChecker.except(OpenMessageMethod.InForum));
-    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_TOPIC_VIEW = create("rojac.behaviour.open_message.from_topic_view", OpenMessageMethod.InForum, GeneralEnumChecker.except(OpenMessageMethod.InThread));
-    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_POST_LIST = create("rojac.behaviour.open_message.from_post_list", OpenMessageMethod.InForum);
-    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_UNREAD_REPLY = create("rojac.behaviour.open_message.unread_reply", OpenMessageMethod.InForum);
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_GENERAL = create(
+            "rojac.behaviour.open_message.general",
+            OpenMessageMethod.InForum
+    );
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_RECENT_TOPICS = create(
+            "rojac.behaviour.open_message.from_recent_topics",
+            OpenMessageMethod.InThread,
+            GeneralEnumChecker.except(OpenMessageMethod.NewTab)
+    );
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_FORUM_VIEW = create(
+            "rojac.behaviour.open_message.from_forum_view",
+            OpenMessageMethod.InThread,
+            GeneralEnumChecker.except(OpenMessageMethod.InForum)
+    );
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_TOPIC_VIEW = create(
+            "rojac.behaviour.open_message.from_topic_view",
+            OpenMessageMethod.InForum,
+            GeneralEnumChecker.except(OpenMessageMethod.InThread)
+    );
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_POST_LIST = create(
+            "rojac.behaviour.open_message.from_post_list",
+            OpenMessageMethod.InForum
+    );
+    public static final Property<OpenMessageMethod> OPEN_MESSAGE_BEHAVIOUR_UNREAD_REPLY = create(
+            "rojac.behaviour.open_message.unread_reply",
+            OpenMessageMethod.InForum
+    );
 
     // Behaviour of dropping url to main frame
-    public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_OTHERS = create("rojac.behaviour.drop_url.general", OpenMessageMethod.InForum);
-    public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_MESSAGE = create("rojac.behaviour.drop_url.message", OpenMessageMethod.NewTab);
-    public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_TOPIC = create("rojac.behaviour.drop_url.topic", OpenMessageMethod.InThread);
+    public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_OTHERS = create(
+            "rojac.behaviour.drop_url.general",
+            OpenMessageMethod.InForum
+    );
+    public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_MESSAGE = create(
+            "rojac.behaviour.drop_url.message",
+            OpenMessageMethod.NewTab
+    );
+    public static final Property<OpenMessageMethod> DROP_BEHAVIOUR_URL_TOPIC = create(
+            "rojac.behaviour.drop_url.topic",
+            OpenMessageMethod.InThread
+    );
 
     // Links preview behaviour
     public static final Property<Boolean> LINK_PREVIEW_ENABLED = create("rojac.behaviour.link_preview", Boolean.TRUE);
     public static final Property<Integer> LINK_PREVIEW_DELAY = create("rojac.behaviour.link_preview.delay", Integer.valueOf(500));
-    public static final Property<PreviewSize> LINK_PREVIEW_PAGE_SIZE = create("rojac.behaviour.link_preview.page_size", PreviewSize.S_800, new PreviewSizeChecker());
-    public static final Property<PreviewSize> LINK_PREVIEW_PAGE_THUMBNAIL_SIZE = create("rojac.behaviour.link_preview.page_thumbnail_size", PreviewSize.S_400, new PreviewSizeChecker());
-    public static final Property<PreviewSize> LINK_PREVIEW_IMAGE_SIZE = create("rojac.behaviour.link_preview.image_size", PreviewSize.S_400, new PreviewSizeChecker());
-    public static final Property<YoutubePreviewSize> LINK_PREVIEW_YOUTUBE_SIZE = create("rojac.behaviour.link_preview.youtube_size", YoutubePreviewSize.Normal);
+    public static final Property<PreviewSize> LINK_PREVIEW_PAGE_SIZE = create(
+            "rojac.behaviour.link_preview.page_size",
+            PreviewSize.S_800,
+            new PreviewSizeChecker()
+    );
+    public static final Property<PreviewSize> LINK_PREVIEW_PAGE_THUMBNAIL_SIZE = create(
+            "rojac.behaviour.link_preview.page_thumbnail_size",
+            PreviewSize.S_400,
+            new PreviewSizeChecker()
+    );
+    public static final Property<PreviewSize> LINK_PREVIEW_IMAGE_SIZE = create(
+            "rojac.behaviour.link_preview.image_size",
+            PreviewSize.S_400,
+            new PreviewSizeChecker()
+    );
+    public static final Property<YoutubePreviewSize> LINK_PREVIEW_YOUTUBE_SIZE = create(
+            "rojac.behaviour.link_preview.youtube_size",
+            YoutubePreviewSize.Normal
+    );
 
     // Progress dialog properties
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOSHOW = create("rojac.synchronizer.progress.autoshow", Boolean.TRUE);
     public static final Property<Boolean> DIALOGS_PROGRESS_AUTOHIDE = create("rojac.synchronizer.progress.autohide", Boolean.FALSE);
-    public static final Property<Boolean> DIALOGS_PROGRESS_SHOW_ON_EXCEPTION = create("rojac.synchronizer.progress.show_on_exception", Boolean.TRUE);
+    public static final Property<Boolean> DIALOGS_PROGRESS_SHOW_ON_EXCEPTION = create(
+            "rojac.synchronizer.progress.show_on_exception",
+            Boolean.TRUE
+    );
 
     // Forum view properties.
     public static final Property<Integer> VIEW_NAVIGATION_HISTORY_SIZE = create("rojac.view.history_size", 20);
     public static final Property<Long> VIEW_THREAD_AUTOSET_READ = create("rojac.view.message.read_delay", Long.valueOf(1000));
     public static final Property<Boolean> VIEW_THREAD_SET_READ_ON_SCROLL = create("rojac.view.message.read_on_scroll", Boolean.TRUE);
-    public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC = create("rojac.view.thread.collapse_threads_after_sync", Boolean.FALSE);
+    public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_SYNC = create(
+            "rojac.view.thread.collapse_threads_after_sync",
+            Boolean.FALSE
+    );
     public static final Property<Boolean> VIEW_THREAD_HIDE_READ_THREADS = create("rojac.view.thread.hide_read_threads", Boolean.FALSE);
-    public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT = create("rojac.view.thread.collapse_threads_after_go_to_next", Boolean.TRUE);
+    public static final Property<Boolean> VIEW_THREAD_COLLAPSE_THREADS_AFTER_GO2NEXT = create(
+            "rojac.view.thread.collapse_threads_after_go_to_next",
+            Boolean.TRUE
+    );
     public static final Property<Integer> VIEW_THREAD_TAB_TITLE_LIMIT = create("rojac.view.thread.tab_title_limit", Integer.valueOf(0));
-    public static final Property<ViewMode> VIEW_THREAD_VIEW_MODE = create("rojac.view.thread.view_mode", ViewMode.Compact, GeneralEnumChecker.only(ViewMode.Normal, ViewMode.Compact));
+    public static final Property<ViewMode> VIEW_THREAD_VIEW_MODE = create(
+            "rojac.view.thread.view_mode",
+            ViewMode.Compact,
+            GeneralEnumChecker.only(ViewMode.Normal, ViewMode.Compact)
+    );
 
     public static final Property<Boolean> VIEW_NAVIGATION_OPEN_ONE_CLICK = create("rojac.view.navigation.open_one_click", Boolean.FALSE);
 
@@ -109,11 +179,20 @@ public final class Property<T> {
 //    public static final Property<TextStyle> VIEW_THREAD_STYLE_PARTIAL_READ_POST = create("rojac.view.styles.partial_read_post", TextStyle.DEFAULT);
 
     public static final Property<Boolean> IGNORE_TOPICS_DIALOG_SHOW = create("rojac.view.thread.ignore_topics.show_dialog", Boolean.TRUE);
-    public static final Property<TopicIgnoringSelection> IGNORE_TOPICS_SELECT_METHOD = create("rojac.view.thread.ignore_topics.select_method", TopicIgnoringSelection.TotallyUnread);
+    public static final Property<TopicIgnoringSelection> IGNORE_TOPICS_SELECT_METHOD = create(
+            "rojac.view.thread.ignore_topics.select_method",
+            TopicIgnoringSelection.TotallyUnread
+    );
 
     public static final Property<Boolean> HIDE_IGNORED_TOPICS = create("rojac.view.thread.ignored.hide_ignored", Boolean.FALSE);
-    public static final Property<Boolean> SKIP_IGNORED_USER_REPLY = create("rojac.view.thread.ignored.skip_ignored_users_reply", Boolean.FALSE);
-    public static final Property<Boolean> SKIP_IGNORED_USER_THREAD = create("rojac.view.thread.ignored.skip_ignored_users_thread", Boolean.FALSE);
+    public static final Property<Boolean> SKIP_IGNORED_USER_REPLY = create(
+            "rojac.view.thread.ignored.skip_ignored_users_reply",
+            Boolean.FALSE
+    );
+    public static final Property<Boolean> SKIP_IGNORED_USER_THREAD = create(
+            "rojac.view.thread.ignored.skip_ignored_users_thread",
+            Boolean.FALSE
+    );
 
     public static final Property<Integer> VIEW_RECENT_TOPIC_LIST_SIZE = create("rojac.view.recent_topics.list_size", 20);
 
@@ -129,8 +208,15 @@ public final class Property<T> {
     public static final Property<Boolean> SYNCHRONIZER_LOAD_TOPICS_AT_ONCE = create("rojac.behaviour.topics.load_at_once", Boolean.FALSE);
     public static final Property<Integer> SYNCHRONIZER_LOAD_TOPICS_PORTION = create("rojac.behaviour.topics.portion", Integer.valueOf(8));
     public static final Property<Boolean> SYNCHRONIZER_LOAD_USERS = create("rojac.synchronizer.load.users", Boolean.TRUE);
-    public static final Property<Integer> SYNCHRONIZER_LOAD_USERS_PORTION = create("rojac.synchronizer.load.users.portion", Integer.valueOf(1000));
-    public static final Property<Integer> SYNCHRONIZER_LOAD_MESSAGES_PORTION = create("rojac.synchronizer.load.messages.portion", Integer.valueOf(100));
+    public static final Property<Integer> SYNCHRONIZER_LOAD_USERS_PORTION = create(
+            "rojac.synchronizer.load.users.portion", Integer.valueOf(
+                    1000
+            )
+    );
+    public static final Property<Integer> SYNCHRONIZER_LOAD_MESSAGES_PORTION = create(
+            "rojac.synchronizer.load.messages.portion",
+            Integer.valueOf(100)
+    );
 
     public static final Property<Boolean> SYNCHRONIZER_PROXY_ENABLED = create("rojac.synchronizer.proxy", Boolean.FALSE);
     public static final Property<String> SYNCHRONIZER_PROXY_HOST = create("rojac.synchronizer.proxy.host", "");
@@ -139,14 +225,23 @@ public final class Property<T> {
     public static final Property<Password> SYNCHRONIZER_PROXY_PASSWORD = create("rojac.synchronizer.proxy.pass", Password.class);
 
     public static final Property<Boolean> SYNCHRONIZER_MARK_MY_POST_READ = create("rojac.synchronizer.messages.my_as_read", Boolean.FALSE);
-    public static final Property<Boolean> SYNCHRONIZER_MARK_IGNORED_POST_READ = create("rojac.synchronizer.messages.ignored_as_read", Boolean.FALSE);
+    public static final Property<Boolean> SYNCHRONIZER_MARK_IGNORED_POST_READ = create(
+            "rojac.synchronizer.messages.ignored_as_read",
+            Boolean.FALSE
+    );
 
-    public static final Property<Boolean> TRAY_NOTIFICATION_SYNC_COMPLETE = create("rojac.behaviour.tray_notification.on_sync_complete", Boolean.TRUE);
+    public static final Property<Boolean> TRAY_NOTIFICATION_SYNC_COMPLETE = create(
+            "rojac.behaviour.tray_notification.on_sync_complete",
+            Boolean.TRUE
+    );
 
     public static final Property<Boolean> MAINTENANCE_DELETE_OLD_MESSAGES = create("rojac.maintenance.clean_db", Boolean.FALSE);
     public static final Property<Boolean> MAINTENANCE_DELETE_ONLY_IGNORED = create("rojac.maintenance.clean_db.only_ignored", Boolean.TRUE);
     public static final Property<Integer> MAINTENANCE_DELETE_OLDER_THAN = create("rojac.maintenance.clean_db.older_than_days", 14);
-    public static final Property<Boolean> MAINTENANCE_DELETE_AFTER_SYNCHRONIZATION = create("rojac.maintenance.clean_db.after_sync", Boolean.TRUE);
+    public static final Property<Boolean> MAINTENANCE_DELETE_AFTER_SYNCHRONIZATION = create(
+            "rojac.maintenance.clean_db.after_sync",
+            Boolean.TRUE
+    );
 
     private static IOptionsService optionsService;
 

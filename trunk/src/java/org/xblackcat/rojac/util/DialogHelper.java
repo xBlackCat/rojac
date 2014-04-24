@@ -6,7 +6,7 @@ import org.xblackcat.rojac.gui.dialog.AboutDialog;
 import org.xblackcat.rojac.gui.dialog.db.DBSettingsDialog;
 import org.xblackcat.rojac.gui.dialog.options.OptionsDialog;
 import org.xblackcat.rojac.gui.dialog.subscribtion.SubscriptionDialog;
-import org.xblackcat.rojac.service.storage.database.DBConfig;
+import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import java.awt.*;
 

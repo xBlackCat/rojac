@@ -4,7 +4,7 @@ import org.xblackcat.rojac.gui.dialog.db.DBSettingsPane;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.StorageInstaller;
-import org.xblackcat.rojac.service.storage.database.DBConfig;
+import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import java.awt.*;
 
@@ -45,7 +45,6 @@ class DBSettingsPage extends APage {
 
     @Override
     public void placeFocus() {
-        settingsPane.requestFocusInField();
     }
 
 }

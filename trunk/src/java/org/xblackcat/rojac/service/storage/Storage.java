@@ -6,7 +6,7 @@ import org.xblackcat.rojac.service.storage.database.IntArrayConsumer;
 import org.xblackcat.rojac.service.storage.database.VersionMapper;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.sjpu.storage.*;
-import org.xblackcat.sjpu.storage.connection.IDBConfig;
+import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -38,7 +38,7 @@ public final class Storage {
         }
     }
 
-    static void setStorage(StorageSettings settings) throws StorageException {
+    static void setStorage(DBConfig settings) throws StorageException {
         assert RojacUtils.checkThread(false);
 
         IStorage newStorage = initializeStorage(settings);
@@ -69,26 +69,18 @@ public final class Storage {
 
     }
 
-    private static IStorage initializeStorage(StorageSettings settings) throws StorageException {
-        if (settings instanceof IDBConfig) {
-            final StorageBuilder builder = new StorageBuilder(true, false);
-            // TODO: add mappers
-            builder.addMapper(new IDictMapper());
-            builder.addMapper(new VersionMapper());
-            builder.addRowSetConsumer(int[].class, IntArrayConsumer.class);
-            builder.setQueryHelper(StorageUtils.buildQueryHelper((IDBConfig) settings));
+    private static IStorage initializeStorage(DBConfig settings) throws StorageException {
+        final StorageBuilder builder = new StorageBuilder(true, false);
+        // TODO: add mappers
+        builder.addMapper(new IDictMapper());
+        builder.addMapper(new VersionMapper());
+        builder.addRowSetConsumer(int[].class, IntArrayConsumer.class);
+        builder.setQueryHelper(StorageUtils.buildQueryHelper(settings));
 
-            return builder.build();
-        }
-
-        throw new IllegalArgumentException("Unknown storage type: " + settings.getEngineName() + " (" + settings.getEngine() + ")");
+        return builder.build();
     }
 
-    public static IStructureChecker getChecker(StorageSettings settings) throws StorageInitializationException {
-        if (settings instanceof IDBConfig) {
-            return new DBStructureChecker((IDBConfig) settings);
-        }
-
-        throw new IllegalArgumentException("Unknown storage type: " + settings.getEngineName() + " (" + settings.getEngine() + ")");
+    public static IStructureChecker getChecker(DBConfig settings) throws StorageException {
+        return new DBStructureChecker(initializeStorage(settings));
     }
 }
