@@ -1,4 +1,4 @@
-package org.xblackcat.rojac.service.storage;
+package org.xblackcat.rojac.service.progress;
 
 import org.xblackcat.rojac.service.IProgressTracker;
 
