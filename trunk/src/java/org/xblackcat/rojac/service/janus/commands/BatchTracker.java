@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.janus.commands;
 
 import org.xblackcat.rojac.service.IProgressTracker;
-import org.xblackcat.rojac.service.storage.IBatchTracker;
+import org.xblackcat.rojac.service.progress.IBatchTracker;
 
 /**
  * 04.04.12 12:20
