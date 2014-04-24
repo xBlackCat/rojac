@@ -18,10 +18,10 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.LoggingProgressListener;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.service.storage.StorageInstaller;
-import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.*;
 import org.xblackcat.schema.data.DataStreamHandlerFactory;
 import org.xblackcat.sjpu.storage.StorageException;
+import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import javax.swing.*;
 import java.awt.*;

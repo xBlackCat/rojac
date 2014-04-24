@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.service.options.converter;
 
-import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.DatabaseUtils;
+import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 /**
  * 09.09.11 12:05

@@ -1,8 +1,8 @@
 package org.xblackcat.rojac.gui.dialog.db;
 
 import org.xblackcat.rojac.gui.component.AButtonAction;
-import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.WindowsUtils;
+import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

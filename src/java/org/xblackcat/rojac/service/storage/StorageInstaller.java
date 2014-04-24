@@ -10,10 +10,10 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.progress.IProgressListener;
 import org.xblackcat.rojac.service.progress.ProgressChangeEvent;
 import org.xblackcat.rojac.service.progress.ProgressState;
-import org.xblackcat.rojac.service.storage.database.DBConfig;
 import org.xblackcat.rojac.util.DialogHelper;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.sjpu.storage.StorageException;
+import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ import java.awt.*;
  * @author xBlackCat
  */
 public class StorageInstaller extends DatabaseWorker {
-    private final StorageSettings settings;
+    private final DBConfig settings;
     private final Runnable shutDownAction;
 
     public StorageInstaller(DBConfig settings, Window window) {

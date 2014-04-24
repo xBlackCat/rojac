@@ -6,7 +6,7 @@ import org.xblackcat.rojac.gui.dialog.options.PropertyUtils;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.service.options.converter.*;
-import org.xblackcat.rojac.service.storage.database.DBConfig;
+import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import java.awt.*;
 import java.util.*;
