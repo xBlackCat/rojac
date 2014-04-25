@@ -21,7 +21,7 @@ import java.util.Properties;
 public final class MultiUserOptionsService extends AnOptionsService {
     private static final Log log = LogFactory.getLog(MultiUserOptionsService.class);
     @SuppressWarnings({"unchecked"})
-    private static final Collection<Property<?>> DO_NOT_STORE = new HashSet<Property<?>>(Arrays.asList(
+    private static final Collection<Property<?>> DO_NOT_STORE = new HashSet<>(Arrays.asList(
             Property.ROJAC_DEBUG_MODE,
             Property.ROJAC_DEBUG_SQL,
             Property.ROJAC_DEBUG_SQL_RUN_TIME_TRACK,

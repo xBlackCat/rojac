@@ -51,7 +51,7 @@ public interface IForumAH extends IAH {
     List<RequestForumInfo> getSubscribedForums() throws StorageException;
 
     /**
-     * Updates forum information. Notice that <code>isSubscribed</code>  field is not changed during operation.
+     * Updates forum information. Notice that {@code isSubscribed}  field is not changed during operation.
      *
      * @param forumGroupId
      * @param rated

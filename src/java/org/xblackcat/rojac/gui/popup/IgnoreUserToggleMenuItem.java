@@ -4,8 +4,6 @@ import org.xblackcat.rojac.data.MessageData;
 import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author xBlackCat
@@ -19,12 +17,7 @@ class IgnoreUserToggleMenuItem extends JMenuItem {
 
         setText(message.get(post.getUserName()));
 
-        addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new UserIgnoreFlagSetter(ignored, userId).execute();
-            }
-        });
+        addActionListener(e -> new UserIgnoreFlagSetter(ignored, userId).execute());
     }
 
 }

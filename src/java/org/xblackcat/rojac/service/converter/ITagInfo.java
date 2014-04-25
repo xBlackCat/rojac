@@ -10,7 +10,7 @@ public interface ITagInfo<T extends ITag<T>> {
     T getTag();
 
     /**
-     * Processes tag. Returns <code>null</code> if tag has illegal format or incomplete
+     * Processes tag. Returns {@code null} if tag has illegal format or incomplete
      *
      * @return
      */

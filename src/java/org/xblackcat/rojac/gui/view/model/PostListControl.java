@@ -8,7 +8,8 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
@@ -28,8 +29,8 @@ class PostListControl extends AMessageListControl {
     private final boolean replies;
 
     /**
-     * Creates a post list control. All posts a linked with the specified user. If parameter is <code>true</code> - the
-     * control loads all replies on the user posts. If parameter is <code>false</code> - the control loads all posts of
+     * Creates a post list control. All posts a linked with the specified user. If parameter is {@code true} - the
+     * control loads all replies on the user posts. If parameter is {@code false} - the control loads all posts of
      * the user.
      *
      * @param replies set true to load replies of the user instead of user posts.
@@ -139,61 +140,30 @@ class PostListControl extends AMessageListControl {
     @Override
     public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
-                new IPacketProcessor<IgnoreUserUpdatedPacket>() {
-                    @Override
-                    public void process(IgnoreUserUpdatedPacket p) {
-                        PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored());
+                p1 -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
+                p1 -> {
+                    if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                            p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                        model.subTreeNodesChanged(model.getRoot());
                     }
                 },
-                new IPacketProcessor<OptionsUpdatedPacket>() {
-                    @Override
-                    public void process(OptionsUpdatedPacket p) {
-                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
-                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
-                            model.subTreeNodesChanged(model.getRoot());
+                p1 -> updateModel(model, postProcessor),
+                p1 -> updateModel(model, postProcessor),
+                p1 -> markPostRead(model, p1.getPost().getMessageId(), p1.isRead()),
+                p1 -> {
+                    Post root = model.getRoot();
+
+                    // Second - update already loaded posts.
+                    for (int postId : p1.getMessageIds()) {
+                        Post post = root.getMessageById(postId);
+
+                        if (post != null) {
+                            post.setRead(p1.isRead());
+                            model.pathToNodeChanged(post);
                         }
                     }
                 },
-                new IPacketProcessor<SetForumReadPacket>() {
-                    @Override
-                    public void process(SetForumReadPacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                },
-                new IPacketProcessor<SetSubThreadReadPacket>() {
-                    @Override
-                    public void process(SetSubThreadReadPacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                },
-                new IPacketProcessor<SetPostReadPacket>() {
-                    @Override
-                    public void process(SetPostReadPacket p) {
-                        markPostRead(model, p.getPost().getMessageId(), p.isRead());
-                    }
-                },
-                new IPacketProcessor<SetReadExPacket>() {
-                    @Override
-                    public void process(SetReadExPacket p) {
-                        Post root = model.getRoot();
-
-                        // Second - update already loaded posts.
-                        for (int postId : p.getMessageIds()) {
-                            Post post = root.getMessageById(postId);
-
-                            if (post != null) {
-                                post.setRead(p.isRead());
-                                model.pathToNodeChanged(post);
-                            }
-                        }
-                    }
-                },
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                }
+                p1 -> updateModel(model, postProcessor)
         ).dispatch(p);
     }
 

@@ -10,7 +10,9 @@ import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
+import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
@@ -38,137 +40,82 @@ public class StartPageView extends AnItemView {
     private final StatisticUpdateListener statisticUpdateListener = new StatisticUpdateListener(navigationModel);
 
     private final PacketDispatcher packetDispatcher = new PacketDispatcher(
-            new IPacketProcessor<OptionsUpdatedPacket>() {
-                @Override
-                public void process(OptionsUpdatedPacket p) {
-                    if (p.isPropertyAffected(Property.VIEW_RECENT_TOPIC_LIST_SIZE)) {
-                        reloadLastPosts();
-                    }
-                }
-            },
-            new IPacketProcessor<IgnoreUserUpdatedPacket>() {
-                @Override
-                public void process(IgnoreUserUpdatedPacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.forumDecorator.reloadForums(),
-                            navigationModel.personalDecorator.reloadInfo(false)
-                    ).execute();
+            p -> {
+                if (p.isPropertyAffected(Property.VIEW_RECENT_TOPIC_LIST_SIZE)) {
                     reloadLastPosts();
                 }
             },
-            new IPacketProcessor<FavoritesUpdatedPacket>() {
-                @Override
-                public void process(FavoritesUpdatedPacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.favoritesDecorator.reloadFavorites()
-                    ).execute();
-                }
+            p -> {
+                new LoadTaskExecutor(
+                        navigationModel.forumDecorator.reloadForums(),
+                        navigationModel.personalDecorator.reloadInfo(false)
+                ).execute();
+                reloadLastPosts();
             },
-            new IPacketProcessor<FavoriteCategoryUpdatedPacket>() {
-                @Override
-                public void process(FavoriteCategoryUpdatedPacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.favoritesDecorator.updateFavoriteData(FavoriteType.Category)
-                    ).execute();
-                }
+            p -> new LoadTaskExecutor(
+                    navigationModel.favoritesDecorator.reloadFavorites()
+            ).execute(),
+            p -> new LoadTaskExecutor(
+                    navigationModel.favoritesDecorator.updateFavoriteData(FavoriteType.Category)
+            ).execute(),
+            p -> new LoadTaskExecutor(
+                    navigationModel.personalDecorator.reloadOutbox()
+            ).execute(),
+            p -> new LoadTaskExecutor(
+                    navigationModel.forumDecorator.loadForumStatistic(p.getForumId()),
+                    navigationModel.personalDecorator.reloadInfo(false),
+                    navigationModel.personalDecorator.reloadIgnored()
+            ).execute(),
+            p -> new LoadTaskExecutor(
+                    navigationModel.personalDecorator.reloadInfo(false),
+                    navigationModel.favoritesDecorator.updateFavoriteData(null),
+                    navigationModel.forumDecorator.loadForumStatistic(p.getForumId())
+            ).execute(),
+            p -> new LoadTaskExecutor(
+                    navigationModel.forumDecorator.reloadForums()
+            ).execute(),
+            p -> {
+                new LoadTaskExecutor(
+                        navigationModel.personalDecorator.reloadInfo(true),
+                        navigationModel.favoritesDecorator.updateFavoriteData(null),
+                        navigationModel.forumDecorator.loadForumStatistic(p.getForumIds())
+                ).execute();
+                reloadLastPosts();
             },
-            new IPacketProcessor<NewMessagesUpdatedPacket>() {
-                @Override
-                public void process(NewMessagesUpdatedPacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.personalDecorator.reloadOutbox()
-                    ).execute();
-                }
-            },
-            new IPacketProcessor<IgnoreUpdatedPacket>() {
-                @Override
-                public void process(IgnoreUpdatedPacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.forumDecorator.loadForumStatistic(p.getForumId()),
-                            navigationModel.personalDecorator.reloadInfo(false),
-                            navigationModel.personalDecorator.reloadIgnored()
-                    ).execute();
-                }
-            },
-            new IPacketProcessor<SetForumReadPacket>() {
-                @Override
-                public void process(SetForumReadPacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.personalDecorator.reloadInfo(false),
-                            navigationModel.favoritesDecorator.updateFavoriteData(null),
-                            navigationModel.forumDecorator.loadForumStatistic(p.getForumId())
-                    ).execute();
-                }
-            },
-            new IPacketProcessor<ForumsUpdated>() {
-                @Override
-                public void process(ForumsUpdated p) {
-                    new LoadTaskExecutor(
-                            navigationModel.forumDecorator.reloadForums()
-                    ).execute();
-                }
-            },
-            new IPacketProcessor<IForumUpdatePacket>() {
-                @Override
-                public void process(IForumUpdatePacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.personalDecorator.reloadInfo(true),
-                            navigationModel.favoritesDecorator.updateFavoriteData(null),
-                            navigationModel.forumDecorator.loadForumStatistic(p.getForumIds())
-                    ).execute();
-                    reloadLastPosts();
-                }
-            },
-            new IPacketProcessor<SetSubThreadReadPacket>() {
-                @Override
-                public void process(SetSubThreadReadPacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.personalDecorator.reloadInfo(false),
-                            navigationModel.favoritesDecorator.updateFavoriteData(null),
-                            navigationModel.forumDecorator.loadForumStatistic(p.getForumId())
-                    ).execute();
-                }
-            },
-            new IPacketProcessor<SetPostReadPacket>() {
-                @Override
-                public void process(SetPostReadPacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.favoritesDecorator.alterReadStatus(p.getPost(), p.isRead()),
-                            navigationModel.forumDecorator.alterReadStatus(p.getPost(), p.isRead()),
-                            navigationModel.personalDecorator.alterReadStatus(p.getPost(), p.isRead())
-                    ).execute();
-                }
-            },
-            new IPacketProcessor<SubscriptionChangedPacket>() {
-                @Override
-                public void process(SubscriptionChangedPacket p) {
-                    Collection<ILoadTask> tasks = new ArrayList<>();
-                    for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
-                        ILoadTask task = navigationModel.forumDecorator.updateSubscribed(
-                                s.getForumId(),
-                                s.isSubscribed()
-                        );
-                        if (task != null) {
-                            tasks.add(task);
-                        }
+            p -> new LoadTaskExecutor(
+                    navigationModel.personalDecorator.reloadInfo(false),
+                    navigationModel.favoritesDecorator.updateFavoriteData(null),
+                    navigationModel.forumDecorator.loadForumStatistic(p.getForumId())
+            ).execute(),
+            p -> new LoadTaskExecutor(
+                    navigationModel.favoritesDecorator.alterReadStatus(p.getPost(), p.isRead()),
+                    navigationModel.forumDecorator.alterReadStatus(p.getPost(), p.isRead()),
+                    navigationModel.personalDecorator.alterReadStatus(p.getPost(), p.isRead())
+            ).execute(),
+            p -> {
+                Collection<ILoadTask> tasks = new ArrayList<>();
+                for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
+                    ILoadTask task = navigationModel.forumDecorator.updateSubscribed(
+                            s.getForumId(),
+                            s.isSubscribed()
+                    );
+                    if (task != null) {
+                        tasks.add(task);
                     }
+                }
 
-                    if (!tasks.isEmpty()) {
-                        new LoadTaskExecutor(tasks).execute();
-                    }
+                if (!tasks.isEmpty()) {
+                    new LoadTaskExecutor(tasks).execute();
                 }
             },
-            new IPacketProcessor<ReloadDataPacket>() {
-                @Override
-                public void process(ReloadDataPacket p) {
-                    new LoadTaskExecutor(
-                            navigationModel.personalDecorator.reloadIgnored(),
-                            navigationModel.personalDecorator.reloadInfo(true),
-                            navigationModel.forumDecorator.reloadForums(),
-                            navigationModel.favoritesDecorator.reloadFavorites()
-                    ).execute();
-                    reloadLastPosts();
-                }
+            p -> {
+                new LoadTaskExecutor(
+                        navigationModel.personalDecorator.reloadIgnored(),
+                        navigationModel.personalDecorator.reloadInfo(true),
+                        navigationModel.forumDecorator.reloadForums(),
+                        navigationModel.favoritesDecorator.reloadFavorites()
+                ).execute();
+                reloadLastPosts();
             }
     );
 

@@ -82,20 +82,17 @@ public class TreeTableThreadView extends AnItemView {
         model = new SortedThreadsModel(modelControl.getViewMode());
         model.addTreeModelListener(new DataIntegrityMonitor());
 
-        Runnable onScrollEnd = new Runnable() {
-            @Override
-            public void run() {
-                if (Property.VIEW_THREAD_SET_READ_ON_SCROLL.get()) {
-                    if (!selectedItem.isRead()) {
-                        MessageUtils.markMessageRead(getId(), selectedItem, 0);
-                        selectedItem = selectedItem.setRead(true);
-                    }
+        Runnable onScrollEnd = () -> {
+            if (Property.VIEW_THREAD_SET_READ_ON_SCROLL.get()) {
+                if (!selectedItem.isRead()) {
+                    MessageUtils.markMessageRead(getId(), selectedItem, 0);
+                    selectedItem = selectedItem.setRead(true);
                 }
+            }
 
-                // Go to next unread post
-                if (selectedItem != null) {
-                    selectNextPost(selectedItem.getMessageId());
-                }
+            // Go to next unread post
+            if (selectedItem != null) {
+                selectNextPost(selectedItem.getMessageId());
             }
         };
 
@@ -550,7 +547,7 @@ public class TreeTableThreadView extends AnItemView {
     }
 
     private void selectNextPost(Post currentPost, boolean unread) {
-        selectNextPost(currentPost, unread, new LinkedList<Post>(), false);
+        selectNextPost(currentPost, unread, new LinkedList<>(), false);
     }
 
     private void selectNextPost(Post currentPost, boolean unread, Collection<Post> toCollapse, boolean showHint) {
@@ -751,7 +748,7 @@ public class TreeTableThreadView extends AnItemView {
      *
      * @param post   root of sub-tree.
      * @param unread if set to true - unread post will be searched.
-     * @return last unread post in sub-tree or <code>null</code> if no unread post is exist in sub-tree.
+     * @return last unread post in sub-tree or {@code null} if no unread post is exist in sub-tree.
      * @throws RuntimeException will be thrown in case when data loading is needed to make correct search.
      */
     private Post findLastPost(Post post, boolean unread) throws RuntimeException {
@@ -848,22 +845,19 @@ public class TreeTableThreadView extends AnItemView {
         }
 
         if (model.isInitialized()) {
-            Runnable statusUpdater = new Runnable() {
-                @Override
-                public void run() {
-                    // Update selected post info
-                    if (selectedItem != null) {
-                        Post post = model.getRoot().getMessageById(selectedItem.getMessageId());
+            Runnable statusUpdater = () -> {
+                // Update selected post info
+                if (selectedItem != null) {
+                    Post post = model.getRoot().getMessageById(selectedItem.getMessageId());
 
-                        selectedItem = post == null ? null : post.getMessageData();
-                    }
-
-                    if (toolbar != null) {
-                        toolbar.updateButtons(getSelectedPost(), modelControl);
-                    }
-
-                    fireInfoChanged();
+                    selectedItem = post == null ? null : post.getMessageData();
                 }
+
+                if (toolbar != null) {
+                    toolbar.updateButtons(getSelectedPost(), modelControl);
+                }
+
+                fireInfoChanged();
             };
             modelControl.processPacket(model, packet, statusUpdater);
 
@@ -893,11 +887,7 @@ public class TreeTableThreadView extends AnItemView {
 
             final TreePath pathToRoot = model.getPathToRoot(post);
             if (pathToRoot != null) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        scrollPathToVisible(pathToRoot);
-                    }
-                });
+                SwingUtilities.invokeLater(() -> scrollPathToVisible(pathToRoot));
             }
         }
     }
@@ -1202,12 +1192,7 @@ public class TreeTableThreadView extends AnItemView {
             int threadRootId = data.getThreadRootId();
             Post rootMessage = root.getMessageById(threadRootId);
             if (rootMessage != null) {
-                modelControl.loadThread(model, rootMessage, new Runnable() {
-                    @Override
-                    public void run() {
-                        selectItem(root.getMessageById(targetMessageId), false);
-                    }
-                });
+                modelControl.loadThread(model, rootMessage, () -> selectItem(root.getMessageById(targetMessageId), false));
             } else {
                 new MessageChecker(threadRootId) {
                     @Override
@@ -1217,13 +1202,11 @@ public class TreeTableThreadView extends AnItemView {
                         }
 
                         Post rootMessage = modelControl.addPost(model, root, data);
-                        modelControl.loadThread(model, rootMessage, new Runnable() {
-                            @Override
-                            public void run() {
-                                resortAndReloadModel();
-                                selectItem(root.getMessageById(targetMessageId), false);
-                            }
-                        });
+                        modelControl.loadThread(model, rootMessage, () -> {
+                            resortAndReloadModel();
+                            selectItem(root.getMessageById(targetMessageId), false);
+                        }
+                        );
                     }
                 }.execute();
                 // Add hidden thread to view and navigate to target post
@@ -1358,12 +1341,7 @@ public class TreeTableThreadView extends AnItemView {
             Post item = (Post) path.getLastPathComponent();
 
             if (item.getLoadingState() == LoadingState.NotLoaded) {
-                modelControl.loadThread(model, item, new Runnable() {
-                    @Override
-                    public void run() {
-                        threads.expandPath(path);
-                    }
-                });
+                modelControl.loadThread(model, item, () -> threads.expandPath(path));
             }
 
             if (item.getLoadingState() == LoadingState.Loaded) {

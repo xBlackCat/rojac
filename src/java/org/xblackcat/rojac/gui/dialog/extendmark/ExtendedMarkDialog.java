@@ -50,9 +50,9 @@ public class ExtendedMarkDialog extends JDialog {
     }
 
     private void initialize() {
-        JComboBox<Scope> scopeSelector = new JComboBox<Scope>(scopeModel);
-        JComboBox<DateDirection> dateRangeSelector = new JComboBox<DateDirection>(dateRangeModel);
-        JComboBox<NewState> readStateSelector = new JComboBox<NewState>(readStateModel);
+        JComboBox<Scope> scopeSelector = new JComboBox<>(scopeModel);
+        JComboBox<DateDirection> dateRangeSelector = new JComboBox<>(dateRangeModel);
+        JComboBox<NewState> readStateSelector = new JComboBox<>(readStateModel);
 
         scopeSelector.setRenderer(new DescribableListRenderer() {
             @Override
@@ -160,7 +160,7 @@ public class ExtendedMarkDialog extends JDialog {
     /**
      * @param messageDate
      * @param scope
-     * @return <code>false</code> if dialog was canceled and <code>true</code> if date was successfully selected.
+     * @return {@code false} if dialog was canceled and {@code true} if date was successfully selected.
      */
     public boolean selectDate(Long messageDate, Scope scope) {
         if (messageDate != null) {

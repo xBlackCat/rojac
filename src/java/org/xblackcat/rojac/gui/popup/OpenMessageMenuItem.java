@@ -5,8 +5,6 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.i18n.Message;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author xBlackCat
@@ -14,12 +12,6 @@ import java.awt.event.ActionListener;
 class OpenMessageMenuItem extends JMenuItem {
     public OpenMessageMenuItem(final int messageId, final IAppControl appControl, Message text, final OpenMessageMethod type) {
         setText(text.get());
-        addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                appControl.openMessage(messageId, type);
-            }
-        });
+        addActionListener(e -> appControl.openMessage(messageId, type));
     }
 }

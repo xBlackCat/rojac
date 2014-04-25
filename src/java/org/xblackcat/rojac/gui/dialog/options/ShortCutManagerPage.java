@@ -7,8 +7,6 @@ import org.xblackcat.rojac.util.ShortCutUtils;
 import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -38,14 +36,12 @@ class ShortCutManagerPage extends APage {
         }
 
         final ListSelectionModel columnSelectionModel = table.getColumnModel().getSelectionModel();
-        columnSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    columnSelectionModel.setSelectionInterval(2, 2);
+        columnSelectionModel.addListSelectionListener(
+                e -> {
+                    if (!e.getValueIsAdjusting()) {
+                        columnSelectionModel.setSelectionInterval(2, 2);
+                    }
                 }
-            }
-        }
         );
 
         table.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);

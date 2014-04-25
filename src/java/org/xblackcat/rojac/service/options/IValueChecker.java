@@ -30,7 +30,7 @@ public interface IValueChecker<T> {
      * Checks if the value is valid one.
      *
      * @param v value to check.
-     * @return <code>true</code> if the value is valid and <code>false</code> elsewise.
+     * @return {@code true} if the value is valid and {@code false} elsewise.
      */
     boolean isValueCorrect(T v);
 

@@ -17,8 +17,6 @@ import org.xblackcat.rojac.util.LinkUtils;
 import org.xblackcat.rojac.util.RojacWorker;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -266,19 +264,12 @@ public final class PopupMenuBuilder {
         menu.add(new SendToggleMenuItem(post.getMessageData()));
 
         menu.addSeparator();
-        edit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                appControl.editMessage(null, -post.getMessageId());
-            }
-        });
+        edit.addActionListener(e -> appControl.editMessage(null, -post.getMessageId()));
         menu.add(edit);
         JMenuItem remove = new JMenuItem(Message.Popup_View_OutboxTree_Remove.get());
 
-        remove.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new RojacWorker<Void, Void>() {
+        remove.addActionListener(
+                e -> new RojacWorker<Void, Void>() {
                     @Override
                     protected Void perform() throws Exception {
                         Storage.get(INewMessageAH.class).removeNewMessage(-post.getMessageId());
@@ -291,16 +282,13 @@ public final class PopupMenuBuilder {
                     protected void process(List<Void> chunks) {
                         new NewMessagesUpdatedPacket().dispatch();
                     }
-                }.execute();
-            }
-        });
+                }.execute()
+        );
         menu.add(remove);
         menu.add(new JSeparator());
         JMenuItem removeAll = new JMenuItem(Message.Popup_View_OutboxTree_RemoveAll.get());
-        removeAll.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new RojacWorker<Void, Void>() {
+        removeAll.addActionListener(
+                e -> new RojacWorker<Void, Void>() {
                     @Override
                     protected Void perform() throws Exception {
                         Storage.get(INewMessageAH.class).purgeNewMessage();
@@ -313,9 +301,8 @@ public final class PopupMenuBuilder {
                     protected void process(List<Void> chunks) {
                         new NewMessagesUpdatedPacket().dispatch();
                     }
-                }.execute();
-            }
-        });
+                }.execute()
+        );
 
         menu.add(removeAll);
         return menu;

@@ -8,7 +8,10 @@ import org.xblackcat.rojac.util.WindowsUtils;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  * Created by IntelliJ IDEA. User: Alexey Date: 12.05.11 Time: 14:04 To change this template use File | Settings | File
@@ -29,19 +32,9 @@ class KeyStrokeEditor extends AComplexEditor<KeyStroke> {
         cancel.setBorder(null);
         setBorder(new EmptyBorder(0, 5, 0, 5));
 
-        confirm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireEditDone();
-            }
-        });
+        confirm.addActionListener(e -> fireEditDone());
 
-        cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireEditCancel();
-            }
-        });
+        cancel.addActionListener(e -> fireEditCancel());
 
         JPanel buttonsPane = WindowsUtils.createRow(
                 confirm,

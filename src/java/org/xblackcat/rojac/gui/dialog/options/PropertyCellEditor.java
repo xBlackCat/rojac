@@ -27,11 +27,11 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
      */
     protected JComponent editorComponent;
     /**
-     * The delegate class which handles all methods sent from the <code>CellEditor</code>.
+     * The delegate class which handles all methods sent from the {@code CellEditor}.
      */
     protected EditorDelegate delegate;
     /**
-     * An integer specifying the number of clicks needed to start editing. Even if <code>clickCountToStart</code> is
+     * An integer specifying the number of clicks needed to start editing. Even if {@code clickCountToStart} is
      * defined as zero, it will not initiate until a click occurs.
      */
     protected int clickCountToStart = 1;
@@ -41,9 +41,9 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
 //
 
     /**
-     * Constructs a <code>PropertyCellEditor</code> that uses a text field.
+     * Constructs a {@code PropertyCellEditor} that uses a text field.
      *
-     * @param component a <code>JTextField</code> object
+     * @param component a {@code JTextField} object
      */
     public PropertyCellEditor(final AComplexEditor component) {
         editorComponent = component;
@@ -73,9 +73,9 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
     }
 
     /**
-     * Constructs a <code>PropertyCellEditor</code> that uses a text field.
+     * Constructs a {@code PropertyCellEditor} that uses a text field.
      *
-     * @param textField a <code>JTextField</code> object
+     * @param textField a {@code JTextField} object
      */
     public PropertyCellEditor(final JTextField textField) {
         editorComponent = textField;
@@ -93,9 +93,9 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
     }
 
     /**
-     * Constructs a <code>PropertyCellEditor</code> object that uses a check box.
+     * Constructs a {@code PropertyCellEditor} object that uses a check box.
      *
-     * @param checkBox a <code>JCheckBox</code> object
+     * @param checkBox a {@code JCheckBox} object
      */
     public PropertyCellEditor(final JCheckBox checkBox) {
         editorComponent = checkBox;
@@ -119,9 +119,9 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
     }
 
     /**
-     * Constructs a <code>PropertyCellEditor</code> object that uses a combo box.
+     * Constructs a {@code PropertyCellEditor} object that uses a combo box.
      *
-     * @param comboBox a <code>JComboBox</code> object
+     * @param comboBox a {@code JComboBox} object
      */
     public PropertyCellEditor(final JComboBox comboBox) {
         editorComponent = comboBox;
@@ -223,7 +223,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
     /**
      * Returns a reference to the editor component.
      *
-     * @return the editor <code>Component</code>
+     * @return the editor {@code Component}
      */
     public Component getComponent() {
         return editorComponent;
@@ -258,7 +258,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
 //
 
     /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
+     * Forwards the message from the {@code CellEditor} to the {@code delegate}.
      *
      * @see EditorDelegate#getCellEditorValue
      */
@@ -267,7 +267,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
     }
 
     /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
+     * Forwards the message from the {@code CellEditor} to the {@code delegate}.
      *
      * @see EditorDelegate#isCellEditable(EventObject)
      */
@@ -276,7 +276,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
     }
 
     /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
+     * Forwards the message from the {@code CellEditor} to the {@code delegate}.
      *
      * @see EditorDelegate#shouldSelectCell(EventObject)
      */
@@ -285,7 +285,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
     }
 
     /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
+     * Forwards the message from the {@code CellEditor} to the {@code delegate}.
      *
      * @see EditorDelegate#stopCellEditing
      */
@@ -294,7 +294,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
     }
 
     /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
+     * Forwards the message from the {@code CellEditor} to the {@code delegate}.
      *
      * @see EditorDelegate#cancelCellEditing
      */
@@ -308,7 +308,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
 //
 
     /**
-     * The protected <code>EditorDelegate</code> class.
+     * The protected {@code EditorDelegate} class.
      */
     protected class EditorDelegate implements ActionListener, ItemListener, Serializable, ChangeListener {
 
@@ -336,7 +336,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
         }
 
         /**
-         * Returns true if <code>anEvent</code> is <b>not</b> a <code>MouseEvent</code>.  Otherwise, it returns true if
+         * Returns true if {@code anEvent} is <b>not</b> a {@code MouseEvent}.  Otherwise, it returns true if
          * the necessary number of clicks have occurred, and returns false otherwise.
          *
          * @param anEvent the event
@@ -370,7 +370,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
 
         /**
          * Stops editing and returns true to indicate that editing has stopped. This method calls
-         * <code>fireEditingStopped</code>.
+         * {@code fireEditingStopped}.
          *
          * @return true
          */
@@ -380,7 +380,7 @@ class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor, 
         }
 
         /**
-         * Cancels editing.  This method calls <code>fireEditingCanceled</code>.
+         * Cancels editing.  This method calls {@code fireEditingCanceled}.
          */
         public void cancelCellEditing() {
             fireEditingCanceled();

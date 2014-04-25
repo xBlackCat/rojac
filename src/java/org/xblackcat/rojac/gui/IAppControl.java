@@ -19,13 +19,13 @@ public interface IAppControl {
     JFrame getMainFrame();
 
     /**
-     * Show edit dialog. Possible combinations are: <ul> <li>messageId is <code>null</code> and forumId specifies a
+     * Show edit dialog. Possible combinations are: <ul> <li>messageId is {@code null} and forumId specifies a
      * forum - create a new thread in the specified forum. <li>messageId specifies a message and forumId specifies a
-     * forum - create an answer on specified message. <li>messageId specifies a message and forumId is <code>null</code>
+     * forum - create an answer on specified message. <li>messageId specifies a message and forumId is {@code null}
      * - edit specified un-posted message. </ul>
      *
-     * @param forumId   forum id or <code>null</code>.
-     * @param messageId message id or <code>null</code>.
+     * @param forumId   forum id or {@code null}.
+     * @param messageId message id or {@code null}.
      */
     void editMessage(Integer forumId, Integer messageId);
 
@@ -33,7 +33,7 @@ public interface IAppControl {
      * Opens a message by id
      *
      * @param messageId         target message id.
-     * @param openMessageMethod open message method. Specifing <code>null</code> means search the message though all
+     * @param openMessageMethod open message method. Specifing {@code null} means search the message though all
      *                          opened view before use default open method.
      */
     void openMessage(int messageId, OpenMessageMethod openMessageMethod);

@@ -22,13 +22,13 @@ import java.util.*;
 
 /**
  * Miscellaneous {@link String} utility methods.
- * <p/>
+ * <p>
  * <p>Mainly for internal use within the framework; consider
  * <a href="http://jakarta.apache.org/commons/lang/">Jakarta's Commons Lang</a>
  * for a more comprehensive suite of String utilities.
- * <p/>
+ * <p>
  * <p>This class delivers some simple functionality that should really
- * be provided by the core Java <code>String</code> and {@link StringBuffer}
+ * be provided by the core Java {@code String} and {@link StringBuffer}
  * classes, such as the ability to {@link #replace} all occurrences of a given
  * substring in a target string. It also provides easy-to-use methods to convert
  * between delimited strings, such as CSV strings, and collections and arrays.
@@ -57,8 +57,8 @@ public abstract class StringUtils {
     //---------------------------------------------------------------------
 
     /**
-     * Check that the given CharSequence is neither <code>null</code> nor of length 0.
-     * Note: Will return <code>true</code> for a CharSequence that purely consists of whitespace.
+     * Check that the given CharSequence is neither {@code null} nor of length 0.
+     * Note: Will return {@code true} for a CharSequence that purely consists of whitespace.
      * <p><pre>
      * StringUtils.hasLength(null) = false
      * StringUtils.hasLength("") = false
@@ -66,19 +66,19 @@ public abstract class StringUtils {
      * StringUtils.hasLength("Hello") = true
      * </pre>
      *
-     * @param str the CharSequence to check (may be <code>null</code>)
-     * @return <code>true</code> if the CharSequence is not null and has length
+     * @param str the CharSequence to check (may be {@code null})
+     * @return {@code true} if the CharSequence is not null and has length
      */
     public static boolean hasLength(CharSequence str) {
         return (str != null && str.length() > 0);
     }
 
     /**
-     * Check that the given String is neither <code>null</code> nor of length 0.
-     * Note: Will return <code>true</code> for a String that purely consists of whitespace.
+     * Check that the given String is neither {@code null} nor of length 0.
+     * Note: Will return {@code true} for a String that purely consists of whitespace.
      *
-     * @param str the String to check (may be <code>null</code>)
-     * @return <code>true</code> if the String is not null and has length
+     * @param str the String to check (may be {@code null})
+     * @return {@code true} if the String is not null and has length
      * @see #hasLength(CharSequence)
      */
     public static boolean hasLength(String str) {
@@ -99,7 +99,7 @@ public abstract class StringUtils {
         if (!hasLength(inString) || !hasLength(oldPattern) || newPattern == null) {
             return inString;
         }
-        StringBuffer sbuf = new StringBuffer();
+        StringBuilder sbuf = new StringBuilder();
         // output StringBuffer we'll build up
         int pos = 0; // our position in the old string
         int index = inString.indexOf(oldPattern);
@@ -128,7 +128,7 @@ public abstract class StringUtils {
         if (!hasLength(inString) || !hasLength(charsToDelete)) {
             return inString;
         }
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         for (int i = 0; i < inString.length(); i++) {
             char c = inString.charAt(i);
             if (charsToDelete.indexOf(c) == -1) {
@@ -147,8 +147,8 @@ public abstract class StringUtils {
      * Extract the filename from the given path,
      * e.g. "mypath/myfile.txt" -> "myfile.txt".
      *
-     * @param path the file path (may be <code>null</code>)
-     * @return the extracted filename, or <code>null</code> if none
+     * @param path the file path (may be {@code null})
+     * @return the extracted filename, or {@code null} if none
      */
     public static String getFilename(String path) {
         if (path == null) {
@@ -254,8 +254,8 @@ public abstract class StringUtils {
      * The Collection must contain String elements only.
      *
      * @param collection the Collection to copy
-     * @return the String array (<code>null</code> if the passed-in
-     *         Collection was <code>null</code>)
+     * @return the String array ({@code null} if the passed-in
+     * Collection was {@code null})
      */
     public static String[] toStringArray(Collection<String> collection) {
         if (collection == null) {
@@ -270,7 +270,7 @@ public abstract class StringUtils {
      * <p>The given delimiters string is supposed to consist of any number of
      * delimiter characters. Each of those characters can be used to separate
      * tokens. A delimiter is always a single character; for multi-character
-     * delimiters, consider using <code>delimitedListToStringArray</code>
+     * delimiters, consider using {@code delimitedListToStringArray}
      *
      * @param str        the String to tokenize
      * @param delimiters the delimiter characters, assembled as String
@@ -289,23 +289,24 @@ public abstract class StringUtils {
      * <p>The given delimiters string is supposed to consist of any number of
      * delimiter characters. Each of those characters can be used to separate
      * tokens. A delimiter is always a single character; for multi-character
-     * delimiters, consider using <code>delimitedListToStringArray</code>
+     * delimiters, consider using {@code delimitedListToStringArray}
      *
      * @param str               the String to tokenize
      * @param delimiters        the delimiter characters, assembled as String
      *                          (each of those characters is individually considered as delimiter)
-     * @param trimTokens        trim the tokens via String's <code>trim</code>
+     * @param trimTokens        trim the tokens via String's {@code trim}
      * @param ignoreEmptyTokens omit empty tokens from the result array
      *                          (only applies to tokens that are empty after trimming; StringTokenizer
      *                          will not consider subsequent delimiters as token in the first place).
-     * @return an array of the tokens (<code>null</code> if the input String
-     *         was <code>null</code>)
+     * @return an array of the tokens ({@code null} if the input String
+     * was {@code null})
      * @see java.util.StringTokenizer
      * @see java.lang.String#trim()
      * @see #delimitedListToStringArray
      */
     public static String[] tokenizeToStringArray(
-            String str, String delimiters, boolean trimTokens, boolean ignoreEmptyTokens) {
+            String str, String delimiters, boolean trimTokens, boolean ignoreEmptyTokens
+    ) {
 
         if (str == null) {
             return null;
@@ -328,7 +329,7 @@ public abstract class StringUtils {
      * Take a String which is a delimited list and convert it to a String array.
      * <p>A single delimiter can consists of more than one character: It will still
      * be considered as single delimiter string, rather than as bunch of potential
-     * delimiter characters - in contrast to <code>tokenizeToStringArray</code>.
+     * delimiter characters - in contrast to {@code tokenizeToStringArray}.
      *
      * @param str       the input String
      * @param delimiter the delimiter between elements (this is a single delimiter,
@@ -344,7 +345,7 @@ public abstract class StringUtils {
      * Take a String which is a delimited list and convert it to a String array.
      * <p>A single delimiter can consists of more than one character: It will still
      * be considered as single delimiter string, rather than as bunch of potential
-     * delimiter characters - in contrast to <code>tokenizeToStringArray</code>.
+     * delimiter characters - in contrast to {@code tokenizeToStringArray}.
      *
      * @param str           the input String
      * @param delimiter     the delimiter between elements (this is a single delimiter,
@@ -383,7 +384,7 @@ public abstract class StringUtils {
 
     /**
      * Convenience method to return a Collection as a delimited (e.g. CSV)
-     * String. E.g. useful for <code>toString()</code> implementations.
+     * String. E.g. useful for {@code toString()} implementations.
      *
      * @param coll   the Collection to display
      * @param delim  the delimiter to use (probably a ",")
@@ -395,7 +396,7 @@ public abstract class StringUtils {
         if (CollectionUtils.isEmpty(coll)) {
             return "";
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Iterator it = coll.iterator();
         while (it.hasNext()) {
             sb.append(prefix).append(it.next()).append(suffix);
@@ -408,7 +409,7 @@ public abstract class StringUtils {
 
     /**
      * Convenience method to return a Collection as a delimited (e.g. CSV)
-     * String. E.g. useful for <code>toString()</code> implementations.
+     * String. E.g. useful for {@code toString()} implementations.
      *
      * @param coll  the Collection to display
      * @param delim the delimiter to use (probably a ",")

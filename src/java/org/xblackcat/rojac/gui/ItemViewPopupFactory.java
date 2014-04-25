@@ -56,17 +56,7 @@ class ItemViewPopupFactory implements ActionPopupMenuFactory {
                     new PopupMenuListener() {
                         public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
                             EventQueue.invokeLater(
-                                    new Runnable() {
-                                        public void run() {
-//                      			// Delay destruction of handler to the time after the action is executed. This way
-//                      			// events depending on the view can still be processed, e.g. change the selection of
-//                      			// a SimpleDropDownButton
-//                      			handler.unbind();
-//                      			showing = false;
-
-                                            fireClosed();
-                                        }
-                                    }
+                                    () -> fireClosed()
                             );
                         }
 

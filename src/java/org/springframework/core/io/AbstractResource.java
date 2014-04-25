@@ -62,14 +62,14 @@ public abstract class AbstractResource implements Resource {
     }
 
     /**
-     * This implementation always returns <code>true</code>.
+     * This implementation always returns {@code true}.
      */
     public boolean isReadable() {
         return true;
     }
 
     /**
-     * This implementation always returns <code>false</code>.
+     * This implementation always returns {@code false}.
      */
     public boolean isOpen() {
         return false;
@@ -123,7 +123,7 @@ public abstract class AbstractResource implements Resource {
      * Determine the File to use for timestamp checking.
      * <p>The default implementation delegates to {@link #getFile()}.
      *
-     * @return the File to use for timestamp checking (never <code>null</code>)
+     * @return the File to use for timestamp checking (never {@code null})
      * @throws IOException if the resource cannot be resolved as absolute
      *                     file path, i.e. if the resource is not available in a file system
      */

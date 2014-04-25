@@ -40,12 +40,7 @@ public class MessageView extends AnItemView {
     private String messageTitle;
 
     private final PacketDispatcher packetDispatcher = new PacketDispatcher(
-            new IPacketProcessor<ReloadDataPacket>() {
-                @Override
-                public void process(ReloadDataPacket p) {
-                    loadItem(getId().getId());
-                }
-            },
+            p -> loadItem(getId().getId()),
             new IPacketProcessor<IMessageUpdatePacket>() {
                 @Override
                 public void process(IMessageUpdatePacket p) {
@@ -93,19 +88,16 @@ public class MessageView extends AnItemView {
             messageTitle = "#";
         }
 
-        Runnable onScrollEnd = new Runnable() {
-            @Override
-            public void run() {
-                if (Property.VIEW_THREAD_SET_READ_ON_SCROLL.get()) {
-                    if (!messageData.isRead()) {
-                        MessageUtils.markMessageRead(getId(), messageData, 0);
-                        messageData = messageData.setRead(true);
-                    }
+        Runnable onScrollEnd = () -> {
+            if (Property.VIEW_THREAD_SET_READ_ON_SCROLL.get()) {
+                if (!messageData.isRead()) {
+                    MessageUtils.markMessageRead(getId(), messageData, 0);
+                    messageData = messageData.setRead(true);
                 }
+            }
 
-                if (onScrollEndEvent != null) {
-                    onScrollEndEvent.fired(messageId);
-                }
+            if (onScrollEndEvent != null) {
+                onScrollEndEvent.fired(messageId);
             }
         };
 

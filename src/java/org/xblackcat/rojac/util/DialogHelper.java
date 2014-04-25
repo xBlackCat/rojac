@@ -64,9 +64,9 @@ public class DialogHelper {
     }
 
     /**
-     * Returns a main window of Rojac or <code>null</code> if the window is not found.
+     * Returns a main window of Rojac or {@code null} if the window is not found.
      *
-     * @return a main window of Rojac or <code>null</code> if the window is not found.
+     * @return a main window of Rojac or {@code null} if the window is not found.
      */
     public static Window getMainWindow() {
         for (Frame f : Frame.getFrames()) {

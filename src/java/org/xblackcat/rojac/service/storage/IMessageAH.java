@@ -36,7 +36,7 @@ public interface IMessageAH extends IAH {
      * @param userNick
      * @param userTitle
      * @param message
-     * @param read              read state of the message. <code>true</code> - message is read and <code>false</code> otherwise.
+     * @param read              read state of the message. {@code true} - message is read and {@code false} otherwise.
      * @throws StorageException
      */
     @Sql("INSERT INTO message (id, topic_id, parent_id, user_id, forum_id, article_id, user_title_color, user_role, message_date, update_date, moderated_date, subject, message_name, user_nick, user_title, message, read, rating)\n" +
@@ -101,7 +101,7 @@ public interface IMessageAH extends IAH {
      * @param userNick
      * @param userTitle
      * @param message
-     * @param read              read state of the message. <code>true</code> - message is read and <code>false</code> otherwise.
+     * @param read              read state of the message. {@code true} - message is read and {@code false} otherwise.
      * @param messageId
      * @throws StorageException
      */
@@ -141,7 +141,7 @@ public interface IMessageAH extends IAH {
      * Checks if a message with specified id is exists.
      *
      * @param messageId message id to check
-     * @return <code>true</code> if message already loaded and <code>false</code> elsewise.
+     * @return {@code true} if message already loaded and {@code false} elsewise.
      * @throws StorageException
      */
     @Sql("SELECT COUNT(id)>0 FROM message WHERE id=?")

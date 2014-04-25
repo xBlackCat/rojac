@@ -61,7 +61,7 @@ public class ArrayOfPostModerateInfo {
      */
     public List<PostModerateInfo> getPostModerateInfo() {
         if (postModerateInfo == null) {
-            postModerateInfo = new ArrayList<PostModerateInfo>();
+            postModerateInfo = new ArrayList<>();
         }
         return this.postModerateInfo;
     }

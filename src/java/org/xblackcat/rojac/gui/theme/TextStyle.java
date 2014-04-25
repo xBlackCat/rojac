@@ -20,7 +20,7 @@ public class TextStyle {
     }
 
     /**
-     * Returns customized font. Return <code>null</code> means </b>use default</b>
+     * Returns customized font. Return {@code null} means </b>use default</b>
      *
      * @return
      */
@@ -29,7 +29,7 @@ public class TextStyle {
     }
 
     /**
-     * Returns customized background color. Return <code>null</code> means </b>use default</b>
+     * Returns customized background color. Return {@code null} means </b>use default</b>
      *
      * @return
      */
@@ -38,7 +38,7 @@ public class TextStyle {
     }
 
     /**
-     * Returns customized foreground color. Return <code>null</code> means </b>use default</b>
+     * Returns customized foreground color. Return {@code null} means </b>use default</b>
      *
      * @return
      */

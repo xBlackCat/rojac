@@ -29,7 +29,7 @@ public interface IExecutor {
      * Stops a timer by its id.
      *
      * @param id timer id to identify a timer.
-     * @return <code>true</code> if timer successfully stopped and <code>false</code> if timer with specified id is not
+     * @return {@code true} if timer successfully stopped and {@code false} if timer with specified id is not
      *         set.
      */
     boolean killTimer(String id);

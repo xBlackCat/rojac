@@ -5,8 +5,6 @@ import org.xblackcat.rojac.gui.component.AComplexEditor;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
 
@@ -23,7 +21,7 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
      */
     protected KeyStrokeEditor editorComponent;
     /**
-     * An integer specifying the number of clicks needed to start editing. Even if <code>clickCountToStart</code> is
+     * An integer specifying the number of clicks needed to start editing. Even if {@code clickCountToStart} is
      * defined as zero, it will not initiate until a click occurs.
      */
     protected int clickCountToStart = 2;
@@ -36,17 +34,15 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
         editorComponent = new KeyStrokeEditor();
         this.clickCountToStart = 2;
 
-        editorComponent.addActionListener(new ActionListener() {
-            @SuppressWarnings({"StringEquality"})
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand() == AComplexEditor.ACTION_CANCEL) {
-                    cancelCellEditing();
-                } else if (e.getActionCommand() == AComplexEditor.ACTION_DONE) {
-                    stopCellEditing();
+        editorComponent.addActionListener(
+                e -> {
+                    if (e.getActionCommand() == AComplexEditor.ACTION_CANCEL) {
+                        cancelCellEditing();
+                    } else if (e.getActionCommand() == AComplexEditor.ACTION_DONE) {
+                        stopCellEditing();
+                    }
                 }
-            }
-        });
+        );
     }
 
 //
@@ -55,28 +51,28 @@ class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor 
 //
 
     /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
+     * Forwards the message from the {@code CellEditor} to the {@code delegate}.
      */
     public Object getCellEditorValue() {
         return editorComponent.getValue();
     }
 
     /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
+     * Forwards the message from the {@code CellEditor} to the {@code delegate}.
      */
     public boolean isCellEditable(EventObject anEvent) {
         return !(anEvent instanceof MouseEvent) || ((MouseEvent) anEvent).getClickCount() >= clickCountToStart;
     }
 
     /**
-     * Forwards the message from the <code>CellEditor</code> to the <code>delegate</code>.
+     * Forwards the message from the {@code CellEditor} to the {@code delegate}.
      */
     public boolean shouldSelectCell(EventObject anEvent) {
         return true;
     }
 
     /**
-     * Implements the <code>TableCellEditor</code> interface.
+     * Implements the {@code TableCellEditor} interface.
      */
     public Component getTableCellEditorComponent(JTable table, Object value,
                                                  boolean isSelected,

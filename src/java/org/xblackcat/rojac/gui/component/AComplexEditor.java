@@ -36,12 +36,12 @@ public abstract class AComplexEditor<T> extends JLightPanel {
     public abstract T getValue();
 
     /**
-     * Adds an <code>ActionListener</code>.
+     * Adds an {@code ActionListener}.
      * <p/>
-     * The <code>ActionListener</code> will receive an <code>ActionEvent</code> when a selection has been made. If the
-     * combo box is editable, then an <code>ActionEvent</code> will be fired when editing has stopped.
+     * The {@code ActionListener} will receive an {@code ActionEvent} when a selection has been made. If the
+     * combo box is editable, then an {@code ActionEvent} will be fired when editing has stopped.
      *
-     * @param l the <code>ActionListener</code> that is to be notified
+     * @param l the {@code ActionListener} that is to be notified
      * @see #setSelectedItem
      */
     public void addActionListener(ActionListener l) {
@@ -49,9 +49,9 @@ public abstract class AComplexEditor<T> extends JLightPanel {
     }
 
     /**
-     * Removes an <code>ActionListener</code>.
+     * Removes an {@code ActionListener}.
      *
-     * @param l the <code>ActionListener</code> to remove
+     * @param l the {@code ActionListener} to remove
      */
     public void removeActionListener(ActionListener l) {
         listenerList.remove(ActionListener.class, l);
@@ -59,9 +59,9 @@ public abstract class AComplexEditor<T> extends JLightPanel {
 
 
     /**
-     * Returns an array of all the <code>ActionListener</code>s added to this JTextField with addActionListener().
+     * Returns an array of all the {@code ActionListener}s added to this JTextField with addActionListener().
      *
-     * @return all of the <code>ActionListener</code>s added or an empty array if no listeners have been added
+     * @return all of the {@code ActionListener}s added or an empty array if no listeners have been added
      * @since 1.4
      */
     public synchronized ActionListener[] getActionListeners() {

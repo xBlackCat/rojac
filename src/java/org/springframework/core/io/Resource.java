@@ -47,7 +47,7 @@ public interface Resource extends InputStreamSource {
     /**
      * Return whether this resource actually exists in physical form.
      * <p>This method performs a definitive existence check, whereas the
-     * existence of a <code>Resource</code> handle only guarantees a
+     * existence of a {@code Resource} handle only guarantees a
      * valid descriptor handle.
      */
     boolean exists();
@@ -55,9 +55,9 @@ public interface Resource extends InputStreamSource {
     /**
      * Return whether the contents of this resource can be read,
      * e.g. via {@link #getInputStream()} or {@link #getFile()}.
-     * <p>Will be <code>true</code> for typical resource descriptors;
+     * <p>Will be {@code true} for typical resource descriptors;
      * note that actual content reading may still fail when attempted.
-     * However, a value of <code>false</code> is a definitive indication
+     * However, a value of {@code false} is a definitive indication
      * that the resource content cannot be read.
      */
     boolean isReadable();
@@ -66,7 +66,7 @@ public interface Resource extends InputStreamSource {
      * Return whether this resource represents a handle with an open
      * stream. If true, the InputStream cannot be read multiple times,
      * and must be read and closed to avoid resource leaks.
-     * <p>Will be <code>false</code> for typical resource descriptors.
+     * <p>Will be {@code false} for typical resource descriptors.
      */
     boolean isOpen();
 
@@ -121,7 +121,7 @@ public interface Resource extends InputStreamSource {
      * Return a description for this resource,
      * to be used for error output when working with the resource.
      * <p>Implementations are also encouraged to return this value
-     * from their <code>toString</code> method.
+     * from their {@code toString} method.
      *
      * @see java.lang.Object#toString()
      */

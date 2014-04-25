@@ -71,7 +71,7 @@ public class JanusAT
     /**
      * 
      * @param features
-     *     A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their default values.
+     *     A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy.  Supported features not in the {@code features} parameter will have their default values.
      * @return
      *     returns JanusATSoap
      */

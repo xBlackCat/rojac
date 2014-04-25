@@ -22,7 +22,7 @@ abstract class AGroupItem<T extends AnItem> extends AnItem {
     }
 
     AGroupItem(AnItem parent, Comparator<T> itemComparator, ReadStatusIcon iconSet) {
-        this(parent, itemComparator, new ArrayList<T>(), iconSet);
+        this(parent, itemComparator, new ArrayList<>(), iconSet);
     }
 
     AGroupItem(AnItem parent, Comparator<T> itemComparator, List<T> children) {

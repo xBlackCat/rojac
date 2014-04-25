@@ -194,7 +194,7 @@ public class Post implements Comparable<Post> {
     /**
      * Returns a state of the node: if the node is filled with actual data.
      *
-     * @return <code>true</code> if node have been filled with actual data.
+     * @return {@code true} if node have been filled with actual data.
      */
     public LoadingState getLoadingState() {
         // Post object unlike to Thread object is always have actual data

@@ -38,13 +38,12 @@ public abstract class DatabaseWorker extends RojacWorker<Void, ProgressChangeEve
 
     @Override
     protected final Void perform() throws Exception {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                WindowsUtils.center(processDialog);
-                processDialog.setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(
+                () -> {
+                    WindowsUtils.center(processDialog);
+                    processDialog.setVisible(true);
+                }
+        );
 
         if (doWork()) {
             publish(new ProgressChangeEvent(this, ProgressState.Stop));

@@ -27,7 +27,7 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * {@link Resource} implementation for <code>java.io.File</code> handles.
+ * {@link Resource} implementation for {@code java.io.File} handles.
  * Obviously supports resolution as File, and also as URL.
  *
  * @author Juergen Hoeller

@@ -54,9 +54,9 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
-import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -79,15 +79,12 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private final StartPageView startPageView = new StartPageView(this);
 
     protected final NavigationHistoryTracker history = new NavigationHistoryTracker();
-    protected final IStateListener navigationListener = new IStateListener() {
-        @Override
-        public void stateChanged(ViewId viewId, IState newState) {
-            if (newState.isNavigatable()) {
-                history.addHistoryItem(new NavigationHistoryItem(viewId, newState));
+    protected final IStateListener navigationListener = (viewId, newState) -> {
+        if (newState.isNavigatable()) {
+            history.addHistoryItem(new NavigationHistoryItem(viewId, newState));
 
-                // Update navigation buttons.
-                updateNavigationButtons();
-            }
+            // Update navigation buttons.
+            updateNavigationButtons();
         }
     };
 
@@ -164,12 +161,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         WindowsUtils.centerOnScreen(this);
 
         addWindowStateListener(
-                new WindowStateListener() {
-                    @Override
-                    public void windowStateChanged(WindowEvent e) {
-                        storeWindowState();
-                    }
-                }
+                e -> storeWindowState()
         );
 
         addComponentListener(
@@ -222,11 +214,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                                         @Override
                                         protected void execute(IPacket data) {
                                             SwingUtilities.invokeLater(
-                                                    new Runnable() {
-                                                        public void run() {
-                                                            openMessage(messageId, method);
-                                                        }
-                                                    }
+                                                    () -> openMessage(messageId, method)
                                             );
                                         }
                                     }
@@ -381,12 +369,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         );
 
         toolBar.addPropertyChangeListener(
-                "orientation", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                progressInToolbar.setOrientation(toolBar.getOrientation());
-            }
-        }
+                "orientation", evt -> progressInToolbar.setOrientation(toolBar.getOrientation())
         );
 
         readingPane.add(toolBar, BorderLayout.NORTH);
@@ -694,14 +677,11 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
                     if (response == JOptionPane.YES_OPTION) {
                         DialogHelper.openForumSubscriptionDialog(
                                 MainFrame.this,
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        assert RojacUtils.checkThread(true);
+                                () -> {
+                                    assert RojacUtils.checkThread(true);
 
-                                        // Check again for forum changes
-                                        startSynchronization();
-                                    }
+                                    // Check again for forum changes
+                                    startSynchronization();
                                 }
                         );
                     }
@@ -735,11 +715,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
         @Override
         public void run() {
             SwingUtilities.invokeLater(
-                    new Runnable() {
-                        public void run() {
-                            startSynchronization();
-                        }
-                    }
+                    () -> startSynchronization()
             );
         }
     }

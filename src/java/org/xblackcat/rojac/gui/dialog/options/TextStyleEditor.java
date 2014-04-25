@@ -130,19 +130,9 @@ class TextStyleEditor extends AComplexEditor<TextStyle> {
         JButton confirm = new JButton(OptionsIcon.Confirm);
         JButton cancel = new JButton(OptionsIcon.Cancel);
 
-        confirm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireEditDone();
-            }
-        });
+        confirm.addActionListener(e -> fireEditDone());
 
-        cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireEditCancel();
-            }
-        });
+        cancel.addActionListener(e -> fireEditCancel());
 
         JPanel buttonsPane = WindowsUtils.createColumn(
                 confirm,
@@ -260,12 +250,7 @@ class TextStyleEditor extends AComplexEditor<TextStyle> {
         fontSizeSelector.setEditable(true);
         fontSizeSelector.setEditor(new FontSizeEditor());
 
-        ActionListener fontChanged = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fontChanged();
-            }
-        };
+        ActionListener fontChanged = e -> fontChanged();
         fontSelector.addActionListener(fontChanged);
         fontSizeSelector.addActionListener(fontChanged);
         fontBold.addActionListener(fontChanged);

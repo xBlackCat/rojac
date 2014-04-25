@@ -35,7 +35,7 @@ public interface IModelControl {
     /**
      * Returns root item visibility state.
      *
-     * @return <code>true</code> if root item should be visible and <code>false</code> elsewise.
+     * @return {@code true} if root item should be visible and {@code false} elsewise.
      */
     boolean isRootVisible();
 
@@ -75,7 +75,7 @@ public interface IModelControl {
     /**
      * Flag to indicate if a message could be looked in the view or not.
      *
-     * @return <code>true</code> if message could be searched in the view.
+     * @return {@code true} if message could be searched in the view.
      */
     boolean allowSearch();
 
@@ -85,7 +85,7 @@ public interface IModelControl {
      * Returns an icon to be shown in view title (usually - in tab title)
      *
      * @param model threads model to provide state data.
-     * @return an icon or <code>null</code> if no icon is provided.
+     * @return an icon or {@code null} if no icon is provided.
      */
     Icon getTitleIcon(SortedThreadsModel model);
 
@@ -94,7 +94,7 @@ public interface IModelControl {
      *
      * @param model      threads model to provide state data.
      * @param appControl application control provider.
-     * @return popup menu or <code>null</code> if no popup is provided.
+     * @return popup menu or {@code null} if no popup is provided.
      */
     JPopupMenu getTitlePopup(SortedThreadsModel model, IAppControl appControl);
 
