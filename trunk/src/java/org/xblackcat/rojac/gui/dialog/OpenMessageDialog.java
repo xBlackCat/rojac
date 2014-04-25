@@ -98,7 +98,7 @@ public class OpenMessageDialog extends JDialog {
 
         model = new EnumComboBoxModel<>(OpenMessageMethod.class);
         model.setSelectedItem(Property.OPEN_MESSAGE_BEHAVIOUR_GENERAL.get());
-        JComboBox<OpenMessageMethod> comboBox = new JComboBox<OpenMessageMethod>(model);
+        JComboBox<OpenMessageMethod> comboBox = new JComboBox<>(model);
         comboBox.setRenderer(new DescribableListRenderer());
 
         cp.add(comboBox, BorderLayout.SOUTH);

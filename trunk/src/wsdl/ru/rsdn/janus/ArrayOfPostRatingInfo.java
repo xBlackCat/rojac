@@ -61,7 +61,7 @@ public class ArrayOfPostRatingInfo {
      */
     public List<PostRatingInfo> getPostRatingInfo() {
         if (postRatingInfo == null) {
-            postRatingInfo = new ArrayList<PostRatingInfo>();
+            postRatingInfo = new ArrayList<>();
         }
         return this.postRatingInfo;
     }

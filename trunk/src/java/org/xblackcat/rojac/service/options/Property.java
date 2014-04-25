@@ -10,7 +10,6 @@ import org.xblackcat.rojac.gui.view.message.YoutubePreviewSize;
 import org.xblackcat.rojac.gui.view.model.ViewMode;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.rojac.util.UIUtils;
-import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import javax.swing.*;
 import java.lang.ref.SoftReference;
@@ -20,7 +19,7 @@ import java.util.Set;
 
 /**
  * Class for holding application properties names.
- * <p/>
+ * <p>
  *
  * @author Alexey
  */
@@ -43,8 +42,6 @@ public final class Property<T> {
 
     public static final Property<Boolean> ROJAC_DEBUG_DONT_RESTORE_LAYOUT = createPrivate("rojac.debug.reset_layout", Boolean.FALSE);
     public static final Property<Boolean> ROJAC_DEBUG_SHUTDOWN_OTHER = createPrivate("rojac.debug.shutdown_others", Boolean.FALSE);
-
-    public static final Property<DBConfig> ROJAC_DATABASE_CONNECTION_SETTINGS = createPrivate("rojac.database.connection", DBConfig.class);
 
     // Main GUI properties
     public static final Property<LookAndFeel> ROJAC_GUI_LOOK_AND_FEEL = create(
@@ -414,7 +411,7 @@ public final class Property<T> {
     /**
      * Returns the property checker if any.
      *
-     * @return value checker if the one exists and <code>null</code> elsevise.
+     * @return value checker if the one exists and {@code null} elsevise.
      */
     public IValueChecker<T> getChecker() {
         return checker;
@@ -427,7 +424,7 @@ public final class Property<T> {
     /**
      * Checks if the property is set.
      *
-     * @return <code>true</code> if property is initiated and <code>false</code> if default value will be used.
+     * @return {@code true} if property is initiated and {@code false} if default value will be used.
      */
     public boolean isSet() {
         // If options service is not initialized - consider property is not set.
@@ -469,7 +466,7 @@ public final class Property<T> {
      * Sets a new value to the property.
      *
      * @param val a new value.
-     * @return previous value of the property or <code>null</code> if property was empty.
+     * @return previous value of the property or {@code null} if property was empty.
      */
     public T set(T val) {
         return getOptionsService().setProperty(this, val);

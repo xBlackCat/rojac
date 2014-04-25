@@ -18,12 +18,7 @@ import java.util.List;
 
 public class Thread extends Post {
     private TIntObjectHashMap<Post> threadPosts = new TIntObjectHashMap<>();
-    private final static Comparator<MessageData> SORT_BY_PARENTS = new Comparator<MessageData>() {
-        @Override
-        public int compare(MessageData o1, MessageData o2) {
-            return o1.getParentId() - o2.getParentId();
-        }
-    };
+    private final static Comparator<MessageData> SORT_BY_PARENTS = (o1, o2) -> o1.getParentId() - o2.getParentId();
 
     // State fields
     /**

@@ -82,7 +82,7 @@ class SubscribeForumModel extends AbstractTableModel {
     /**
      * Returns a packet with filled new subscription state for forums.
      *
-     * @return a filled packet or <code>null</code> if no subscription states are changed.
+     * @return a filled packet or {@code null} if no subscription states are changed.
      */
     public SubscriptionChangedPacket getSubscription() {
         Collection<SubscriptionChangedPacket.Subscription> subscriptions = new LinkedList<>();

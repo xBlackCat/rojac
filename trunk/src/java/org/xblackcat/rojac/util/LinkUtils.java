@@ -49,7 +49,7 @@ public final class LinkUtils {
      * Extracts message id either from to-message or to-thread url
      *
      * @param link link to check
-     * @return extracted id or <code>null</code> if url is invalid.
+     * @return extracted id or {@code null} if url is invalid.
      */
     public static Integer getMessageIdFromUrl(String link) {
         return checkLink(link, rsdnLinkAllPatterns);
@@ -67,7 +67,7 @@ public final class LinkUtils {
      * Extracts from text element an URL description text.
      *
      * @param el element of link.
-     * @return description of URL from text. If description can not be obtained the <code>null</code> will be returned.
+     * @return description of URL from text. If description can not be obtained the {@code null} will be returned.
      */
     public static String getUrlText(Element el) {
         int start = el.getStartOffset();
@@ -81,12 +81,12 @@ public final class LinkUtils {
     }
 
     /**
-     * Tests a link with given set of patterns and extracts message id if match has been found. The <code>null</code>
+     * Tests a link with given set of patterns and extracts message id if match has been found. The {@code null}
      * value will be returns if no match has been found.
      *
      * @param link     link to test
      * @param patterns set of patterns
-     * @return message id or <code>null</code> if id cannot be extracted from link.
+     * @return message id or {@code null} if id cannot be extracted from link.
      */
     private static Integer checkLink(String link, Pattern... patterns) {
         if (link == null) {

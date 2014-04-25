@@ -6,7 +6,6 @@ import org.xblackcat.rojac.gui.dialog.options.PropertyUtils;
 import org.xblackcat.rojac.gui.theme.IconPack;
 import org.xblackcat.rojac.gui.theme.TextStyle;
 import org.xblackcat.rojac.service.options.converter.*;
-import org.xblackcat.sjpu.storage.connection.DBConfig;
 
 import java.awt.*;
 import java.util.*;
@@ -42,16 +41,15 @@ abstract class AnOptionsService implements IOptionsService {
         map.put(Locale.class, new LocaleConverter());
         map.put(IconPack.class, new IconPackConverter());
         map.put(TextStyle.class, new TextStyleConverter());
-        map.put(DBConfig.class, new DatabaseSettingsConverter());
 
         converters = Collections.unmodifiableMap(map);
     }
 
     /**
-     * Returns current value of a specified property or <code>null</code> if property is not set.
+     * Returns current value of a specified property or {@code null} if property is not set.
      *
      * @param key property object to identify a property.
-     * @return a value of the specified property or <code>null</code> if property is not set.
+     * @return a value of the specified property or {@code null} if property is not set.
      */
     @SuppressWarnings({"unchecked"})
     @Override
@@ -98,9 +96,7 @@ abstract class AnOptionsService implements IOptionsService {
             }
 
             type = type.getSuperclass();
-        } while (conv == null);
-
-        throw new UnknownPropertyTypeException("Can not identify the property " + key);
+        } while (true);
     }
 
     /**
@@ -156,16 +152,14 @@ abstract class AnOptionsService implements IOptionsService {
             }
 
             type = type.getSuperclass();
-        } while (conv == null);
-
-        throw new UnknownPropertyTypeException("Can not identify the property " + key);
+        } while (true);
     }
 
     /**
      * Implement method for getting property value from a storage.
      *
      * @param key property id.
-     * @return property value as string or <code>null</code> if specified property is not set.
+     * @return property value as string or {@code null} if specified property is not set.
      */
     protected abstract String getProperty(String key);
 

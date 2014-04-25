@@ -9,8 +9,6 @@ import org.xblackcat.rojac.util.ClipboardUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.TimeUnit;
@@ -60,12 +58,7 @@ abstract class AnUrlInfoPane extends JPanel {
                 balloonTip.setContents(new JLabel(Message.PreviewLink_LinkCopied.get()));
                 balloonTip.setVisible(true);
 
-                Timer timer = new Timer((int) TimeUnit.SECONDS.toMillis(3), new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        balloonTip.closeBalloon();
-                    }
-                });
+                Timer timer = new Timer((int) TimeUnit.SECONDS.toMillis(3), e1 -> balloonTip.closeBalloon());
                 timer.setRepeats(false);
                 timer.start();
             }

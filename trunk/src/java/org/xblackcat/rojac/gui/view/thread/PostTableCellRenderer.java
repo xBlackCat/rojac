@@ -19,28 +19,28 @@ import java.io.Serializable;
 
 
 /**
- * The standard class for rendering (displaying) individual cells in a <code>JTable</code>.
+ * The standard class for rendering (displaying) individual cells in a {@code JTable}.
  * <p/>
  * <p/>
- * <strong><a name="override">Implementation Note:</a></strong> This class inherits from <code>JLabel</code>, a standard
- * component class. However <code>JTable</code> employs a unique mechanism for rendering its cells and therefore
+ * <strong><a name="override">Implementation Note:</a></strong> This class inherits from {@code JLabel}, a standard
+ * component class. However {@code JTable} employs a unique mechanism for rendering its cells and therefore
  * requires some slightly modified behavior from its cell renderer. The table class defines a single cell renderer and
  * uses it as a as a rubber-stamp for rendering all cells in the table; it renders the first cell, changes the contents
  * of that cell renderer, shifts the origin to the new location, re-draws it, and so on. The standard
- * <code>JLabel</code> component was not designed to be used this way and we want to avoid triggering a
- * <code>revalidate</code> each time the cell is drawn. This would greatly decrease performance because the
- * <code>revalidate</code> message would be passed up the hierarchy of the container to determine whether any other
+ * {@code JLabel} component was not designed to be used this way and we want to avoid triggering a
+ * {@code revalidate} each time the cell is drawn. This would greatly decrease performance because the
+ * {@code revalidate} message would be passed up the hierarchy of the container to determine whether any other
  * components would be affected. As the renderer is only parented for the lifetime of a painting operation we similarly
  * want to avoid the overhead associated with walking the hierarchy for painting operations. So this class overrides the
- * <code>validate</code>, <code>invalidate</code>, <code>revalidate</code>, <code>repaint</code>, and
- * <code>firePropertyChange</code> methods to be no-ops and override the <code>isOpaque</code> method solely to improve
+ * {@code validate}, {@code invalidate}, {@code revalidate}, {@code repaint}, and
+ * {@code firePropertyChange} methods to be no-ops and override the {@code isOpaque} method solely to improve
  * performance.  If you write your own renderer, please keep this performance consideration in mind.
  * <p/>
  * <p/>
  * <strong>Warning:</strong> Serialized objects of this class will not be compatible with future Swing releases. The
  * current serialization support is appropriate for short term storage or RMI between applications running the same
  * version of Swing.  As of 1.4, support for long term storage of all JavaBeans<sup><font size="-2">TM</font></sup> has
- * been added to the <code>java.beans</code> package. Please see {@link java.beans.XMLEncoder}.
+ * been added to the {@code java.beans} package. Please see {@link java.beans.XMLEncoder}.
  *
  * @author Philip Milne
  * @version 1.48 09/18/08
@@ -50,8 +50,8 @@ public class PostTableCellRenderer extends JLabel
         implements TableCellRenderer, Serializable {
 
     /**
-     * An empty <code>Border</code>. This field might not be used. To change the <code>Border</code> used by this
-     * renderer override the <code>getTableCellRendererComponent</code> method and set the border of the returned
+     * An empty {@code Border}. This field might not be used. To change the {@code Border} used by this
+     * renderer override the {@code getTableCellRendererComponent} method and set the border of the returned
      * component directly.
      */
     private static final Border SAFE_NO_FOCUS_BORDER = new EmptyBorder(1, 1, 1, 1);
@@ -81,8 +81,8 @@ public class PostTableCellRenderer extends JLabel
     }
 
     /**
-     * Notification from the <code>UIManager</code> that the look and feel [L&F] has changed. Replaces the current UI
-     * object with the latest version from the <code>UIManager</code>.
+     * Notification from the {@code UIManager} that the look and feel [L&F] has changed. Replaces the current UI
+     * object with the latest version from the {@code UIManager}.
      *
      * @see javax.swing.JComponent#updateUI
      */
@@ -97,13 +97,13 @@ public class PostTableCellRenderer extends JLabel
     /**
      * Returns the default table cell renderer.
      * <p/>
-     * During a printing operation, this method will be called with <code>isSelected</code> and <code>hasFocus</code>
-     * values of <code>false</code> to prevent selection and focus from appearing in the printed output. To do other
+     * During a printing operation, this method will be called with {@code isSelected} and {@code hasFocus}
+     * values of {@code false} to prevent selection and focus from appearing in the printed output. To do other
      * customization based on whether or not the table is being printed, check the return value from {@link
      * javax.swing.JComponent#isPaintingForPrint()}.
      *
-     * @param table      the <code>JTable</code>
-     * @param value      the value to assign to the cell at <code>[row, column]</code>
+     * @param table      the {@code JTable}
+     * @param value      the value to assign to the cell at {@code [row, column]}
      * @param isSelected true if cell is selected
      * @param hasFocus   true if cell has focus
      * @param row        the row of the cell to render
@@ -278,14 +278,14 @@ public class PostTableCellRenderer extends JLabel
 
 
     /**
-     * A subclass of <code>DefaultTableCellRenderer</code> that implements <code>UIResource</code>.
-     * <code>DefaultTableCellRenderer</code> doesn't implement <code>UIResource</code> directly so that applications can
-     * safely override the <code>cellRenderer</code> property with <code>DefaultTableCellRenderer</code> subclasses.
+     * A subclass of {@code DefaultTableCellRenderer} that implements {@code UIResource}.
+     * {@code DefaultTableCellRenderer} doesn't implement {@code UIResource} directly so that applications can
+     * safely override the {@code cellRenderer} property with {@code DefaultTableCellRenderer} subclasses.
      * <p/>
      * <strong>Warning:</strong> Serialized objects of this class will not be compatible with future Swing releases. The
      * current serialization support is appropriate for short term storage or RMI between applications running the same
      * version of Swing.  As of 1.4, support for long term storage of all JavaBeans<sup><font size="-2">TM</font></sup>
-     * has been added to the <code>java.beans</code> package. Please see {@link java.beans.XMLEncoder}.
+     * has been added to the {@code java.beans} package. Please see {@link java.beans.XMLEncoder}.
      */
     public static class UIResource extends PostTableCellRenderer
             implements javax.swing.plaf.UIResource {

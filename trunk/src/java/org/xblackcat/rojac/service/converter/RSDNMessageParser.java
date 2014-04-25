@@ -31,15 +31,12 @@ public class RSDNMessageParser implements IMessageParser {
     private static final String HYPERLINKS_REPLACEMENT = "$1[url=$2]$2[/url]$4";
 
     private final Map<ITag, ITag[]> availableSubTags;
-    private static final Comparator<ITagInfo> TAG_COMPARATOR = new Comparator<ITagInfo>() {
-        @SuppressWarnings("unchecked")
-        public int compare(ITagInfo o1, ITagInfo o2) {
-            int m = o1.start() - o2.start();
-            if (m == 0) {
-                return o1.getTag().compareTo(o2.getTag());
-            } else {
-                return m;
-            }
+    private static final Comparator<ITagInfo> TAG_COMPARATOR = (o1, o2) -> {
+        int m = o1.start() - o2.start();
+        if (m == 0) {
+            return o1.getTag().compareTo(o2.getTag());
+        } else {
+            return m;
         }
     };
 

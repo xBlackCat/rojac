@@ -21,7 +21,7 @@ package org.springframework.util;
  * Useful for identifying programmer errors early and clearly at runtime.
  * <p/>
  * <p>For example, if the contract of a public method states it does not
- * allow <code>null</code> arguments, Assert can be used to validate that
+ * allow {@code null} arguments, Assert can be used to validate that
  * contract. Doing this clearly indicates a contract violation when it
  * occurs and protects the class's invariants.
  * <p/>
@@ -50,12 +50,12 @@ package org.springframework.util;
 public abstract class Assert {
 
     /**
-     * Assert that an object is not <code>null</code> .
+     * Assert that an object is not {@code null} .
      * <pre class="code">Assert.notNull(clazz, "The class must not be null");</pre>
      *
      * @param object  the object to check
      * @param message the exception message to use if the assertion fails
-     * @throws IllegalArgumentException if the object is <code>null</code>
+     * @throws IllegalArgumentException if the object is {@code null}
      */
     public static void notNull(Object object, String message) {
         if (object == null) {
@@ -65,14 +65,14 @@ public abstract class Assert {
 
 
     /**
-     * Assert a boolean expression, throwing <code>IllegalStateException</code>
-     * if the test result is <code>false</code>. Call isTrue if you wish to
+     * Assert a boolean expression, throwing {@code IllegalStateException}
+     * if the test result is {@code false}. Call isTrue if you wish to
      * throw IllegalArgumentException on an assertion failure.
      * <pre class="code">Assert.state(id == null, "The id property must not already be initialized");</pre>
      *
      * @param expression a boolean expression
      * @param message    the exception message to use if the assertion fails
-     * @throws IllegalStateException if expression is <code>false</code>
+     * @throws IllegalStateException if expression is {@code false}
      */
     public static void state(boolean expression, String message) {
         if (!expression) {

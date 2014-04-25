@@ -34,16 +34,16 @@ public class LanguageTag extends SimpleTag {
 
     /**
      * Constructs a programming language tag. Tag rules:</p> highlight reserved words in the tag body. List of the
-     * reserved words for correspond language reads from the <code>/message/reswords/&lt;tagName&gt;.words</code>
+     * reserved words for correspond language reads from the {@code /message/reswords/&lt;tagName&gt;.words}
      * resource file. Reserved words in line/block comments or in strings are not hihglighted.
      *
      * @param tagName           tag name.
-     * @param lineComment       symbol or sequence of symbols which starts to-line-end comment. Can be <code>null</code>
+     * @param lineComment       symbol or sequence of symbols which starts to-line-end comment. Can be {@code null}
      *                          if the language does not supports to-line-end comments.
      * @param openBlockComment  symbol or sequence of symbols represents start of the block comment. Can be
-     *                          <code>null</code> if the language has no block comment.
+     *                          {@code null} if the language has no block comment.
      * @param closeBlockComment symbol or sequence of symbols represents end of the block comment. Can be
-     *                          <code>null</code> if the language shouldn't handle strings if the language.
+     *                          {@code null} if the language shouldn't handle strings if the language.
      * @param stringBraces      set of characters whitch represent start/end of string literal.
      * @param quoteCharacter    quoting character.
      */
@@ -59,16 +59,16 @@ public class LanguageTag extends SimpleTag {
 
     /**
      * Constructs a programming language tag. Tag rules:</p> highlight reserved words in the tag body. List of the
-     * reserved words for correspond language reads from the <code>/message/reswords/&lt;tagName&gt;.words</code>
+     * reserved words for correspond language reads from the {@code /message/reswords/&lt;tagName&gt;.words}
      * resource file. Reserved words in line/block comments or in strings are not hihglighted.
      *
      * @param tagName           tag name.
-     * @param lineComment       symbol or sequence of symbols which starts to-line-end comment. Can be <code>null</code>
+     * @param lineComment       symbol or sequence of symbols which starts to-line-end comment. Can be {@code null}
      *                          if the language does not supports to-line-end comments.
      * @param openBlockComment  symbol or sequence of symbols represents start of the block comment. Can be
-     *                          <code>null</code> if the language has no block comment.
+     *                          {@code null} if the language has no block comment.
      * @param closeBlockComment symbol or sequence of symbols represents end of the block comment. Can be
-     *                          <code>null</code> if the language shouldn't handle strings if the language.
+     *                          {@code null} if the language shouldn't handle strings if the language.
      * @param stringBraces      set of characters whitch represent start/end of string literal.
      * @param quoteCharacter    quoting character.
      * @param reservedWords

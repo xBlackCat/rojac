@@ -587,7 +587,7 @@ class JanusHTTPSender /*extends BasicHandler */{
      *
      * @param pattern the (non-null) pattern to match against
      * @param str     the (non-null) string that must be matched against the pattern
-     * @return <code>true</code> when the string matches against the pattern, <code>false</code> otherwise.
+     * @return {@code true} when the string matches against the pattern, {@code false} otherwise.
      *//*
     protected static boolean match(String pattern, String str) {
 

@@ -49,7 +49,7 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
     }
 
     private ExecutorService setupMessageLoadingExecutor() {
-        return new ThreadPoolExecutor(10, 30, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+        return new ThreadPoolExecutor(10, 30, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
     }
 
     private ExecutorService setupCommonExecutor() {
@@ -184,7 +184,7 @@ public final class TaskExecutor implements IExecutor, ExecutorService {
      * will not be checked for annotations.
      *
      * @param clazz class to check.
-     * @return TaskTypeEnum value or <code>null</code> if the annotation is not present.
+     * @return TaskTypeEnum value or {@code null} if the annotation is not present.
      */
     private static TaskTypeEnum getTargetType(Class<?> clazz) {
         if (clazz == null) {

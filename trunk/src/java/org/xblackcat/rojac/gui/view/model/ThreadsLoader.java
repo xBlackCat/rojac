@@ -35,16 +35,13 @@ class ThreadsLoader extends RojacWorker<Void, Thread> {
 
     public ThreadsLoader(final Runnable postProcessor, final SortedThreadsModel model, int forumId, boolean forceShowHidden) {
         super(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        model.markInitialized();
+                () -> {
+                    model.markInitialized();
 
-                        model.fireResortModel();
+                    model.fireResortModel();
 
-                        if (postProcessor != null) {
-                            postProcessor.run();
-                        }
+                    if (postProcessor != null) {
+                        postProcessor.run();
                     }
                 }
         );

@@ -25,9 +25,6 @@ public final class ResourceUtils {
     private static final Log log = LogFactory.getLog(ResourceUtils.class);
 
     private static final Pattern PROPERTY_PATTERN = Pattern.compile("\\{\\$([\\w\\.]+)\\}");
-    private static final Pattern TO_KEY_PATTERN = Pattern.compile("_");
-    private static final Pattern DOTS_PATTERN = Pattern.compile("\\.{2,}");
-    private static final Pattern UNDERLINES_PATTERN = Pattern.compile("_{2,}");
 
     private ResourceUtils() {
     }
@@ -65,23 +62,6 @@ public final class ResourceUtils {
             }
         } while (tryAgain);
         return s;
-    }
-
-    /**
-     * Converts constant names to equivalent property key. For example, constant name <code>EXAMPLE_NAME</code> will
-     * converted to <code>example.name</code>. If specified name is <code>null</code> the <code>null</code> will
-     * returned.
-     *
-     * @param name name to convert.
-     *
-     * @return converted name.
-     */
-    public static String constantToProperty(String name) {
-        if (name == null) {
-            return null;
-        }
-
-        return TO_KEY_PATTERN.matcher(name.toLowerCase()).replaceAll(".");
     }
 
     /**
@@ -137,7 +117,7 @@ public final class ResourceUtils {
     }
 
     /**
-     * Returns stream of specified resource or <code>null</code> if resource is not exists.
+     * Returns stream of specified resource or {@code null} if resource is not exists.
      *
      * @param resourceName resource name to open
      *
@@ -164,7 +144,7 @@ public final class ResourceUtils {
         InputStream stream = getResourceAsStream(resourceName);
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-        List<String> strings = new LinkedList<String>();
+        List<String> strings = new LinkedList<>();
 
         String s;
         while ((s = reader.readLine()) != null) {
@@ -248,45 +228,4 @@ public final class ResourceUtils {
     public static String getFullPathToResource(String path) throws MissingResourceException {
         return getResource(path).toString();
     }
-
-    public static String constantCamelToPropertyName(String s) {
-        if (s == null) {
-            return null;
-        }
-
-        StringBuilder result = new StringBuilder(s.length() << 1);
-
-        for (char c : s.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                result.append('.');
-                result.append(Character.toLowerCase(c));
-            } else if (c == '_') {
-                result.append('.');
-            } else {
-                result.append(c);
-            }
-        }
-
-        return DOTS_PATTERN.matcher(result).replaceAll(".").substring(1);
-    }
-
-    public static String camelConstantToUpperConstant(String s) {
-        if (s == null) {
-            return null;
-        }
-
-        StringBuilder result = new StringBuilder(s.length() << 1);
-
-        for (char c : s.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                result.append('_');
-                result.append(c);
-            } else {
-                result.append(Character.toUpperCase(c));
-            }
-        }
-
-        return UNDERLINES_PATTERN.matcher(result).replaceAll("_").substring(1);
-    }
-
 }

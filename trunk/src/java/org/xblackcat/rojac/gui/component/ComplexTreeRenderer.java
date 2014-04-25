@@ -118,9 +118,9 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
 
     /**
      * Configures the renderer based on the passed in components. The value is set from messaging the tree with
-     * <code>convertValueToText</code>, which ultimately invokes <code>toString</code> on <code>value</code>. The
-     * foreground color is set based on the selection and the icon is set based on the <code>leaf</code> and
-     * <code>expanded</code> parameters.
+     * {@code convertValueToText}, which ultimately invokes {@code toString} on {@code value}. The
+     * foreground color is set based on the selection and the icon is set based on the {@code leaf} and
+     * {@code expanded} parameters.
      */
     public Component getTreeCellRendererComponent(JTree tree, Object value,
                                                   boolean sel,
@@ -345,10 +345,10 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
     }
 
     /**
-     * Subclassed to map <code>FontUIResource</code>s to null. If <code>font</code> is null, or a
-     * <code>FontUIResource</code>, this has the effect of letting the font of the JTree show through. On the other
-     * hand, if <code>font</code> is non-null, and not a <code>FontUIResource</code>, the font becomes
-     * <code>font</code>.
+     * Subclassed to map {@code FontUIResource}s to null. If {@code font} is null, or a
+     * {@code FontUIResource}, this has the effect of letting the font of the JTree show through. On the other
+     * hand, if {@code font} is non-null, and not a {@code FontUIResource}, the font becomes
+     * {@code font}.
      */
     public void setFont(Font font) {
         if (font instanceof FontUIResource) {
@@ -374,10 +374,10 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
     }
 
     /**
-     * Subclassed to map <code>ColorUIResource</code>s to null. If <code>color</code> is null, or a
-     * <code>ColorUIResource</code>, this has the effect of letting the background color of the JTree show through. On
-     * the other hand, if <code>color</code> is non-null, and not a <code>ColorUIResource</code>, the background becomes
-     * <code>color</code>.
+     * Subclassed to map {@code ColorUIResource}s to null. If {@code color} is null, or a
+     * {@code ColorUIResource}, this has the effect of letting the background color of the JTree show through. On
+     * the other hand, if {@code color} is non-null, and not a {@code ColorUIResource}, the background becomes
+     * {@code color}.
      */
     public void setBackground(Color color) {
 //        if (color instanceof ColorUIResource) {
@@ -387,7 +387,7 @@ public class ComplexTreeRenderer extends JLightPanel implements TreeCellRenderer
     }
 
     /**
-     * Overrides <code>JComponent.getPreferredSize</code> to return slightly wider preferred size value.
+     * Overrides {@code JComponent.getPreferredSize} to return slightly wider preferred size value.
      */
     public Dimension getPreferredSize() {
         Dimension retDimension = super.getPreferredSize();

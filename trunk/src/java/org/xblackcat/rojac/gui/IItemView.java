@@ -17,11 +17,11 @@ public interface IItemView extends IView, IStateful {
     void loadItem(int itemId);
 
     /**
-     * Searches for item by complex key (forumId, messageId). Returns an item if it found and <code>null</code>
+     * Searches for item by complex key (forumId, messageId). Returns an item if it found and {@code null}
      * elsewise.
      *
      * @param messageId
-     * @return found item or <code>null</code> if item is not exists in the view.
+     * @return found item or {@code null} if item is not exists in the view.
      */
     boolean containsItem(int messageId);
 

@@ -14,13 +14,10 @@ import java.util.Comparator;
  * @author xBlackCat
  */
 class OutboxPostList extends Post {
-    protected final static Comparator<Post> SORT_BY_DATE = new Comparator<Post>() {
-        @Override
-        public int compare(Post o1, Post o2) {
-            long thisVal = o2.getMessageData().getMessageDate();
-            long anotherVal = o1.getMessageData().getMessageDate();
-            return (thisVal > anotherVal ? -1 : (thisVal == anotherVal ? 0 : 1));
-        }
+    protected final static Comparator<Post> SORT_BY_DATE = (o1, o2) -> {
+        long thisVal = o2.getMessageData().getMessageDate();
+        long anotherVal = o1.getMessageData().getMessageDate();
+        return (thisVal > anotherVal ? -1 : (thisVal == anotherVal ? 0 : 1));
     };
     protected TIntObjectHashMap<Post> listPosts = new TIntObjectHashMap<>();
     /**

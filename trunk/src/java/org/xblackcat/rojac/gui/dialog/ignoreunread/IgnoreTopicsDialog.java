@@ -10,8 +10,6 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -45,12 +43,7 @@ public class IgnoreTopicsDialog extends JDialog {
         selectionTypeCB.setRenderer(new DescribableListRenderer());
         final JCheckBox showDialogCB = new JCheckBox(Message.Dialog_IgnoreTopics_RememberSettings.get());
 
-        showDialogCB.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                Property.IGNORE_TOPICS_DIALOG_SHOW.set(!showDialogCB.isSelected());
-            }
-        });
+        showDialogCB.addChangeListener(e -> Property.IGNORE_TOPICS_DIALOG_SHOW.set(!showDialogCB.isSelected()));
 
         centerPane.add(new JLabel(Message.Dialog_IgnoreTopics_SelectionMethod.get()), BorderLayout.WEST);
         centerPane.add(selectionTypeCB, BorderLayout.CENTER);

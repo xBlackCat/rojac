@@ -3,8 +3,6 @@ package org.xblackcat.rojac.gui.hint;
 import org.xblackcat.rojac.gui.theme.HintIcon;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -56,12 +54,7 @@ public class HintContainer extends JPanel {
         MessageHint hintComp = new MessageHint(hintIcon, hint, closeTarget);
 
         if (timer != null) {
-            timer.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    removeHint(info);
-                }
-            });
+            timer.addActionListener(e -> removeHint(info));
 
             timer.setRepeats(false);
             timer.start();

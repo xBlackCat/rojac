@@ -77,10 +77,10 @@ public abstract class ClassUtils {
      * Return the default ClassLoader to use: typically the thread context ClassLoader, if available; the ClassLoader that
      * loaded the ClassUtils class will be used as fallback. <p>Call this method if you intend to use the thread context
      * ClassLoader in a scenario where you absolutely need a non-null ClassLoader reference: for example, for class path
-     * resource loading (but not necessarily for <code>Class.forName</code>, which accepts a <code>null</code> ClassLoader
+     * resource loading (but not necessarily for {@code Class.forName}, which accepts a {@code null} ClassLoader
      * reference as well).
      *
-     * @return the default ClassLoader (never <code>null</code>)
+     * @return the default ClassLoader (never {@code null})
      * @see java.lang.Thread#getContextClassLoader()
      */
     public static ClassLoader getDefaultClassLoader() {
@@ -98,7 +98,7 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Replacement for <code>Class.forName()</code> that also returns Class instances for primitives (like "int") and array
+     * Replacement for {@code Class.forName()} that also returns Class instances for primitives (like "int") and array
      * class names (like "String[]"). <p>Always uses the default class loader: that is, preferably the thread context class
      * loader, or the ClassLoader that loaded the ClassUtils class as fallback.
      *
@@ -114,11 +114,11 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Replacement for <code>Class.forName()</code> that also returns Class instances for primitives (like "int") and array
+     * Replacement for {@code Class.forName()} that also returns Class instances for primitives (like "int") and array
      * class names (like "String[]").
      *
      * @param name        the name of the Class
-     * @param classLoader the class loader to use (may be <code>null</code>, which indicates the default class loader)
+     * @param classLoader the class loader to use (may be {@code null}, which indicates the default class loader)
      * @return Class instance for the supplied name
      * @throws ClassNotFoundException if the class was not found
      * @throws LinkageError           if the class file could not be loaded
@@ -165,7 +165,7 @@ public abstract class ClassUtils {
      * suffix notation for primitive arrays; this is only supported by {@link #forName}.
      *
      * @param name the name of the potentially primitive class
-     * @return the primitive class, or <code>null</code> if the name does not denote a primitive class or primitive array
+     * @return the primitive class, or {@code null} if the name does not denote a primitive class or primitive array
      *         class
      */
     public static Class resolvePrimitiveClassName(String name) {

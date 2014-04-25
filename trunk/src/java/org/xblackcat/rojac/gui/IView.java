@@ -28,14 +28,14 @@ public interface IView extends IDataHandler, ILayoutful {
     /**
      * Returns an icon to be shown in view title (usually - in tab title)
      *
-     * @return an icon or <code>null</code> if no icon is provided.
+     * @return an icon or {@code null} if no icon is provided.
      */
     Icon getTabTitleIcon();
 
     /**
      * Returns a popup menu for view title.
      *
-     * @return popup menu or <code>null</code> if no popup is provided.
+     * @return popup menu or {@code null} if no popup is provided.
      */
     JPopupMenu getTabTitleMenu();
 

@@ -53,7 +53,7 @@ public class ProgressChangeEvent extends EventObject {
     }
 
     /**
-     * Returns a state of the task or <code>null</code> if it is not applicable to the event.
+     * Returns a state of the task or {@code null} if it is not applicable to the event.
      *
      * @return progress state.
      */
@@ -62,7 +62,7 @@ public class ProgressChangeEvent extends EventObject {
     }
 
     /**
-     * Returns a progress value in percentage  or <code>null</code> if it is not applicable to the event.
+     * Returns a progress value in percentage  or {@code null} if it is not applicable to the event.
      *
      * @return progress value.
      */
@@ -75,7 +75,7 @@ public class ProgressChangeEvent extends EventObject {
     }
 
     /**
-     * Returns a message to log  or <code>null</code> if it is not applicable to the event.
+     * Returns a message to log  or {@code null} if it is not applicable to the event.
      *
      * @return log message.
      */

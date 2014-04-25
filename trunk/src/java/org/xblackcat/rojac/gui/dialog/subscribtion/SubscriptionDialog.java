@@ -7,7 +7,10 @@ import org.xblackcat.rojac.gui.component.AnOkAction;
 import org.xblackcat.rojac.gui.component.InvokeExtMarkDialogAction;
 import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.APacket;
+import org.xblackcat.rojac.service.datahandler.ForumsUpdated;
+import org.xblackcat.rojac.service.datahandler.IDataHandler;
+import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
 import org.xblackcat.rojac.service.janus.commands.Request;
 import org.xblackcat.rojac.service.storage.IForumAH;
 import org.xblackcat.rojac.service.storage.Storage;
@@ -16,7 +19,6 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -31,12 +33,9 @@ public class SubscriptionDialog extends JDialog {
     private static final Log log = LogFactory.getLog(SubscriptionDialog.class);
 
     private SubscribeForumModel model = new SubscribeForumModel();
-    private final IDataHandler handler = new IDataHandler() {
-        @Override
-        public void processPacket(IPacket packet) {
-            if (packet instanceof ForumsUpdated) {
-                new ForumLoader(model).execute();
-            }
+    private final IDataHandler handler = packet -> {
+        if (packet instanceof ForumsUpdated) {
+            new ForumLoader(model).execute();
         }
     };
     private final Runnable onClose;
@@ -51,29 +50,28 @@ public class SubscriptionDialog extends JDialog {
         pack();
         setSize(400, 500);
 
-        model.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                // Handle event 'forums loaded'
-                if (e.getFirstRow() == 0 &&
-                        e.getLastRow() == Integer.MAX_VALUE &&
-                        e.getColumn() == TableModelEvent.ALL_COLUMNS &&
-                        e.getType() == TableModelEvent.UPDATE) {
-                    if (model.getRowCount() == 0) {
-                        // No forums exists. Ask for load them
-                        int res = JLOptionPane.showConfirmDialog(
-                                SubscriptionDialog.this,
-                                Message.WarnDialog_NoForums_Question.get(),
-                                Message.WarnDialog_NoForums_Title.get(),
-                                JOptionPane.YES_NO_OPTION);
+        model.addTableModelListener(
+                e -> {
+                    // Handle event 'forums loaded'
+                    if (e.getFirstRow() == 0 &&
+                            e.getLastRow() == Integer.MAX_VALUE &&
+                            e.getColumn() == TableModelEvent.ALL_COLUMNS &&
+                            e.getType() == TableModelEvent.UPDATE) {
+                        if (model.getRowCount() == 0) {
+                            // No forums exists. Ask for load them
+                            int res = JLOptionPane.showConfirmDialog(
+                                    SubscriptionDialog.this,
+                                    Message.WarnDialog_NoForums_Question.get(),
+                                    Message.WarnDialog_NoForums_Title.get(),
+                                    JOptionPane.YES_NO_OPTION);
 
-                        if (res == JOptionPane.YES_OPTION) {
-                            Request.GET_FORUMS_LIST.process(SubscriptionDialog.this);
+                            if (res == JOptionPane.YES_OPTION) {
+                                Request.GET_FORUMS_LIST.process(SubscriptionDialog.this);
+                            }
                         }
                     }
                 }
-            }
-        });
+        );
 
         APacket.getDispatcher().addDataHandler(handler);
 
@@ -95,7 +93,7 @@ public class SubscriptionDialog extends JDialog {
         c2.setPreferredWidth(100);
         c2.setMaxWidth(120);
 
-        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
         forumList.setRowSorter(sorter);
 
         sorter.setSortsOnUpdates(true);

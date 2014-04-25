@@ -20,8 +20,8 @@ class FavoriteCellRenderer extends JLightPanel
         implements TableCellRenderer, Serializable {
 
     /**
-     * An empty <code>Border</code>. This field might not be used. To change the <code>Border</code> used by this
-     * renderer override the <code>getTableCellRendererComponent</code> method and set the border of the returned
+     * An empty {@code Border}. This field might not be used. To change the {@code Border} used by this
+     * renderer override the {@code getTableCellRendererComponent} method and set the border of the returned
      * component directly.
      */
     private static final Border SAFE_NO_FOCUS_BORDER = new EmptyBorder(1, 1, 1, 1);
@@ -63,8 +63,8 @@ class FavoriteCellRenderer extends JLightPanel
     }
 
     /**
-     * Notification from the <code>UIManager</code> that the look and feel [L&F] has changed. Replaces the current UI
-     * object with the latest version from the <code>UIManager</code>.
+     * Notification from the {@code UIManager} that the look and feel [L&F] has changed. Replaces the current UI
+     * object with the latest version from the {@code UIManager}.
      *
      * @see javax.swing.JComponent#updateUI
      */
@@ -109,13 +109,13 @@ class FavoriteCellRenderer extends JLightPanel
     /**
      * Returns the default table cell renderer.
      * <p/>
-     * During a printing operation, this method will be called with <code>isSelected</code> and <code>hasFocus</code>
-     * values of <code>false</code> to prevent selection and focus from appearing in the printed output. To do other
+     * During a printing operation, this method will be called with {@code isSelected} and {@code hasFocus}
+     * values of {@code false} to prevent selection and focus from appearing in the printed output. To do other
      * customization based on whether or not the table is being printed, check the return value from {@link
      * javax.swing.JComponent#isPaintingForPrint()}.
      *
-     * @param table      the <code>JTable</code>
-     * @param value      the value to assign to the cell at <code>[row, column]</code>
+     * @param table      the {@code JTable}
+     * @param value      the value to assign to the cell at {@code [row, column]}
      * @param isSelected true if cell is selected
      * @param hasFocus   true if cell has focus
      * @param row        the row of the cell to render

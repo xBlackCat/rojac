@@ -26,7 +26,6 @@ public class OptionsDialog extends JDialog {
     private final APage[] pages = new APage[]{
             new PropertiesPage(),
             new ShortCutManagerPage(),
-            new DBSettingsPage(),
             new MaintenancePage(this)
     };
 

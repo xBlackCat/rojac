@@ -19,16 +19,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import static org.xblackcat.rojac.i18n.Message.*;
+import static org.xblackcat.rojac.i18n.Message.Dialog_DbSettings_Label_Url;
 
 /**
  * @author xBlackCat
  */
 public class DBSettingsPane extends JPanel {
-
     private JTextField fieldUrl;
-    private JTextField fieldUserName;
-    private JPasswordField fieldPassword;
     private final JButton checkButton;
 
     /**
@@ -54,12 +51,8 @@ public class DBSettingsPane extends JPanel {
         groupLayout.setAutoCreateGaps(true);
 
         fieldUrl = new JTextField(50);
-        fieldUserName = new JTextField(50);
-        fieldPassword = new JPasswordField(50);
 
         JLabel labelUrl = new JLabel(Dialog_DbSettings_Label_Url.get());
-        JLabel labelUserName = new JLabel(Dialog_DbSettings_Label_UserName.get());
-        JLabel labelPassword = new JLabel(Dialog_DbSettings_Label_Password.get());
 
         GroupLayout.SequentialGroup hGroup = groupLayout.createSequentialGroup();
 
@@ -72,14 +65,10 @@ public class DBSettingsPane extends JPanel {
                 .addGroup(
                         groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                 .addComponent(labelUrl)
-                                .addComponent(labelUserName)
-                                .addComponent(labelPassword)
                 )
                 .addGroup(
                         groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
                                 .addComponent(fieldUrl)
-                                .addComponent(fieldUserName)
-                                .addComponent(fieldPassword)
                 );
 
         vGroup
@@ -87,16 +76,6 @@ public class DBSettingsPane extends JPanel {
                         groupLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
                                 .addComponent(labelUrl)
                                 .addComponent(fieldUrl)
-                )
-                .addGroup(
-                        groupLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
-                                .addComponent(labelUserName)
-                                .addComponent(fieldUserName)
-                )
-                .addGroup(
-                        groupLayout.createParallelGroup(GroupLayout.Alignment.CENTER, false)
-                                .addComponent(labelPassword)
-                                .addComponent(fieldPassword)
                 );
 
         return fieldsPane;
@@ -106,8 +85,8 @@ public class DBSettingsPane extends JPanel {
         return new DBConfig(
                 Driver.class.getName(),
                 fieldUrl.getText(),
-                fieldUserName.getText(),
-                new String(fieldPassword.getPassword()),
+                null,
+                null,
                 10
         );
     }
@@ -127,12 +106,7 @@ public class DBSettingsPane extends JPanel {
 
             checkButton.setEnabled(false);
 
-            Runnable buttonEnabler = new Runnable() {
-                @Override
-                public void run() {
-                    checkButton.setEnabled(true);
-                }
-            };
+            Runnable buttonEnabler = () -> checkButton.setEnabled(true);
             new RojacWorker<Void, Throwable>(buttonEnabler) {
                 @Override
                 protected Void perform() throws Exception {
@@ -140,7 +114,7 @@ public class DBSettingsPane extends JPanel {
                         IQueryHelper queryHelper = StorageUtils.buildQueryHelper(curSet);
 
                         final SingletonConsumer<Number> consumer = new SingletonConsumer<>();
-                        queryHelper.execute(consumer, new ToScalarConverter<Number>(), "SELECT 21+21");
+                        queryHelper.execute(consumer, new ToScalarConverter<>(), "SELECT 21+21");
                         Number answer = consumer.getRowsHolder();
 
                         if (answer != null && answer.intValue() == 42) {

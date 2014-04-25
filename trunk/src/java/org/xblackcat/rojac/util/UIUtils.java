@@ -71,16 +71,16 @@ public final class UIUtils {
     }
 
     /**
-     * Creates a new <code>Color</code> that is a brighter version of this <code>Color</code>.
+     * Creates a new {@code Color} that is a brighter version of this {@code Color}.
      * <p/>
-     * This method applies an arbitrary scale factor to each of the three RGB components of this <code>Color</code> to
-     * create a brighter version of this <code>Color</code>. Although <code>brighter</code> and <code>darker</code> are
+     * This method applies an arbitrary scale factor to each of the three RGB components of this {@code Color} to
+     * create a brighter version of this {@code Color}. Although {@code brighter} and {@code darker} are
      * inverse operations, the results of a series of invocations of these two methods might be inconsistent because of
      * rounding errors.
      *
      * @param c      initial color
      * @param factor brightness factor
-     * @return a new <code>Color</code> object that is a brighter version of this <code>Color</code>.
+     * @return a new {@code Color} object that is a brighter version of this {@code Color}.
      * @see java.awt.Color#darker
      * @since JDK1.0
      */

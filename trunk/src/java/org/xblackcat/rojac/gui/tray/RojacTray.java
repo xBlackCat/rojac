@@ -14,8 +14,6 @@ import org.xblackcat.rojac.util.WindowsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -62,14 +60,13 @@ public class RojacTray implements IStatisticListener {
         ServiceFactory.getInstance().getProgressControl().addProgressListener(new TrayProgressListener());
 
         trayIcon.addMouseListener(new TrayListener());
-        trayIcon.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.setVisible(true);
-                mainFrame.setState(Frame.NORMAL);
-                WindowsUtils.toFront(mainFrame);
-            }
-        });
+        trayIcon.addActionListener(
+                e -> {
+                    mainFrame.setVisible(true);
+                    mainFrame.setState(Frame.NORMAL);
+                    WindowsUtils.toFront(mainFrame);
+                }
+        );
     }
 
     private void toggleFrameVisibility() {
@@ -100,45 +97,29 @@ public class RojacTray implements IStatisticListener {
         if (font != null) {
             showHideItem.setFont(font.deriveFont(Font.BOLD));
         }
-        showHideItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toggleFrameVisibility();
-            }
-        });
+        showHideItem.addActionListener(e -> toggleFrameVisibility());
         menu.add(showHideItem);
 
         menu.addSeparator();
 
         JMenuItem optionsItem = new JMenuItem(Message.Tray_Popup_Item_Options.get());
-        optionsItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DialogHelper.showOptionsDialog(mainFrame);
-            }
-        });
+        optionsItem.addActionListener(e -> DialogHelper.showOptionsDialog(mainFrame));
         menu.add(optionsItem);
 
         JMenuItem aboutItem = new JMenuItem(Message.Tray_Popup_Item_About.get());
-        aboutItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DialogHelper.showAboutDialog(mainFrame);
-            }
-        });
+        aboutItem.addActionListener(e -> DialogHelper.showAboutDialog(mainFrame));
         menu.add(aboutItem);
 
         menu.addSeparator();
 
         JMenuItem exitItem = new JMenuItem(Message.Tray_Popup_Item_Exit.get());
-        exitItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                WindowEvent event = new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING);
-                event.setSource(RojacTray.this);
-                mainFrame.dispatchEvent(event);
-            }
-        });
+        exitItem.addActionListener(
+                e -> {
+                    WindowEvent event = new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING);
+                    event.setSource(RojacTray.this);
+                    mainFrame.dispatchEvent(event);
+                }
+        );
         menu.add(exitItem);
 
         return menu;

@@ -96,7 +96,7 @@ class PropertiesModel implements TreeModel {
      *
      * @param changedProperties
      * @param n                 node to recoursivly affect.
-     * @param revert            <code>true</code> - revert value; <code>false</code> - apply value
+     * @param revert            {@code true} - revert value; {@code false} - apply value
      */
     private void affect(Collection<Property<?>> changedProperties, PropertyNode n, boolean revert) {
         if (n == null) {

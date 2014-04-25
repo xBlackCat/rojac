@@ -4,6 +4,7 @@ import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.h2.Driver;
 import org.xblackcat.rojac.gui.MainFrame;
 import org.xblackcat.rojac.gui.component.Windows7Bar;
 import org.xblackcat.rojac.gui.tray.RojacTray;
@@ -22,6 +23,7 @@ import org.xblackcat.rojac.util.*;
 import org.xblackcat.schema.data.DataStreamHandlerFactory;
 import org.xblackcat.sjpu.storage.StorageException;
 import org.xblackcat.sjpu.storage.connection.DBConfig;
+import org.xblackcat.utils.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -153,37 +155,27 @@ public final class RojacLauncher {
         private void perform() {
             final MainFrame mainFrame = new MainFrame();
 
-            final Runnable shutDownAction = new Runnable() {
-                @Override
-                public void run() {
-                    performShutdown(mainFrame);
-                }
-            };
+            final Runnable shutDownAction = () -> performShutdown(mainFrame);
 
             new VersionChecker(mainFrame).execute();
 
             checker.installNewInstanceListener(
                     // Show window
-                    new IRemoteAction() {
-                        public void run(Integer postId) {
-                            WindowsUtils.toFront(mainFrame);
+                    postId -> {
+                        WindowsUtils.toFront(mainFrame);
 
-                            if (postId != null) {
-                                mainFrame.openMessage(postId, Property.OPEN_MESSAGE_BEHAVIOUR_GENERAL.get());
-                            }
+                        if (postId != null) {
+                            mainFrame.openMessage(postId, Property.OPEN_MESSAGE_BEHAVIOUR_GENERAL.get());
                         }
                     },
                     // Shutdown
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                SwingUtilities.invokeAndWait(shutDownAction);
-                            } catch (InterruptedException e) {
-                                log.error("Shutdown process is interrupted", e);
-                            } catch (InvocationTargetException e) {
-                                log.error("Got exception from shutdown script", e);
-                            }
+                    () -> {
+                        try {
+                            SwingUtilities.invokeAndWait(shutDownAction);
+                        } catch (InterruptedException e) {
+                            log.error("Shutdown process is interrupted", e);
+                        } catch (InvocationTargetException e) {
+                            log.error("Got exception from shutdown script", e);
                         }
                     }
             );
@@ -253,8 +245,15 @@ public final class RojacLauncher {
                 mainFrame.applySettings();
             }
 
-            DBConfig settings = ROJAC_DATABASE_CONNECTION_SETTINGS.get();
-            boolean visible = mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported() || settings == null;
+            final String url = "jdbc:h2:{$rojac.db.home}/rojac;MULTI_THREADED=1;LOCK_TIMEOUT=30000;UNDO_LOG=0";
+            DBConfig settings = new DBConfig(
+                    Driver.class.getName(),
+                    ResourceUtils.putSystemProperties(url),
+                    null,
+                    null,
+                    10
+            );
+            boolean visible = mainFrame.getExtendedState() != Frame.ICONIFIED || !tray.isSupported();
             if (visible) {
                 WindowsUtils.toFront(mainFrame);
             }
@@ -264,14 +263,11 @@ public final class RojacLauncher {
             }
 
             new StorageInstaller(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            mainFrame.setupScheduler();
+                    () -> {
+                        mainFrame.setupScheduler();
 
-                            if (postId != null) {
-                                mainFrame.openMessage(postId, Property.OPEN_MESSAGE_BEHAVIOUR_GENERAL.get());
-                            }
+                        if (postId != null) {
+                            mainFrame.openMessage(postId, Property.OPEN_MESSAGE_BEHAVIOUR_GENERAL.get());
                         }
                     },
                     shutDownAction,

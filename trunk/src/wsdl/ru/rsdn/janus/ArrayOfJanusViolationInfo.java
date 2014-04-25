@@ -61,7 +61,7 @@ public class ArrayOfJanusViolationInfo {
      */
     public List<JanusViolationInfo> getJanusViolationInfo() {
         if (janusViolationInfo == null) {
-            janusViolationInfo = new ArrayList<JanusViolationInfo>();
+            janusViolationInfo = new ArrayList<>();
         }
         return this.janusViolationInfo;
     }

@@ -54,7 +54,7 @@ public class DefaultResourceLoader implements ResourceLoader {
     /**
      * Create a new DefaultResourceLoader.
      *
-     * @param classLoader the ClassLoader to load class path resources with, or <code>null</code>
+     * @param classLoader the ClassLoader to load class path resources with, or {@code null}
      *                    for using the thread context class loader at the time of actual resource access
      */
     public DefaultResourceLoader(ClassLoader classLoader) {
@@ -63,7 +63,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 
 
     /**
-     * Specify the ClassLoader to load class path resources with, or <code>null</code>
+     * Specify the ClassLoader to load class path resources with, or {@code null}
      * for using the thread context class loader at the time of actual resource access.
      * <p>The default is that ClassLoader access will happen using the thread context
      * class loader at the time of this ResourceLoader's initialization.
@@ -74,7 +74,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 
     /**
      * Return the ClassLoader to load class path resources with,
-     * or <code>null</code> if using the thread context class loader on actual access
+     * or {@code null} if using the thread context class loader on actual access
      * (applying to the thread that constructs the ClassPathResource object).
      * <p>Will get passed to ClassPathResource's constructor for all
      * ClassPathResource objects created by this resource loader.

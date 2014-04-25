@@ -362,25 +362,19 @@ public class MessagePane extends JPanel {
             }
             final RatingPane rd = new RatingPane(messageData.getMessageId());
 
-            rd.loadRating(new Runnable() {
-                @Override
-                public void run() {
-                    LeftRightRoundedBalloonStyle tipStyle = new LeftRightRoundedBalloonStyle(5, 5, rd.getBackground(), Color.black);
+            rd.loadRating(
+                    () -> {
+                        LeftRightRoundedBalloonStyle tipStyle = new LeftRightRoundedBalloonStyle(5, 5, rd.getBackground(), Color.black);
 
-                    LeftCenterPositioner positioner = new LeftCenterPositioner(15, 15);
-                    JButton closeButton = BalloonTipUtils.balloonTipCloseButton(null);
-                    final BalloonTip tip = new BalloonTip(marksButton, rd, tipStyle, positioner, closeButton);
-                    tip.refreshLocation();
-                    tip.setVisible(true);
+                        LeftCenterPositioner positioner = new LeftCenterPositioner(15, 15);
+                        JButton closeButton = BalloonTipUtils.balloonTipCloseButton(null);
+                        final BalloonTip tip = new BalloonTip(marksButton, rd, tipStyle, positioner, closeButton);
+                        tip.refreshLocation();
+                        tip.setVisible(true);
 
-                    rd.trackFocus(new Runnable() {
-                        @Override
-                        public void run() {
-                            tip.closeBalloon();
-                        }
-                    });
-                }
-            });
+                        rd.trackFocus(() -> tip.closeBalloon());
+                    }
+            );
         }
     }
 

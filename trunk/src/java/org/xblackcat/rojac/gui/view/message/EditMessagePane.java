@@ -77,11 +77,7 @@ public class EditMessagePane extends JPanel {
         }
 
         private void preview() {
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    forcePreview();
-                }
-            });
+            EventQueue.invokeLater(() -> forcePreview());
         }
     }
 }

@@ -29,10 +29,10 @@ import java.net.URL;
  * <p/>
  * <p>Consider using Spring's Resource abstraction in the core package
  * for handling all kinds of file resources in a uniform manner.
- * {@link org.springframework.core.io.ResourceLoader}'s <code>getResource</code>
+ * {@link org.springframework.core.io.ResourceLoader}'s {@code getResource}
  * method can resolve any location to a {@link org.springframework.core.io.Resource}
- * object, which in turn allows to obtain a <code>java.io.File</code> in the
- * file system through its <code>getFile()</code> method.
+ * object, which in turn allows to obtain a {@code java.io.File} in the
+ * file system through its {@code getFile()} method.
  * <p/>
  * <p>The main reason for these utility methods for resource location handling
  * is to support {@link Log4jConfigurer}, which must be able to resolve
@@ -97,7 +97,7 @@ public abstract class ResourceUtils {
 
 
     /**
-     * Resolve the given resource location to a <code>java.io.File</code>,
+     * Resolve the given resource location to a {@code java.io.File},
      * i.e. to a file in the file system.
      * <p>Does not check whether the fil actually exists; simply returns
      * the File that the given location would correspond to.
@@ -131,7 +131,7 @@ public abstract class ResourceUtils {
     }
 
     /**
-     * Resolve the given resource URL to a <code>java.io.File</code>,
+     * Resolve the given resource URL to a {@code java.io.File},
      * i.e. to a file in the file system.
      *
      * @param resourceUrl the resource URL to resolve
@@ -144,7 +144,7 @@ public abstract class ResourceUtils {
     }
 
     /**
-     * Resolve the given resource URL to a <code>java.io.File</code>,
+     * Resolve the given resource URL to a {@code java.io.File},
      * i.e. to a file in the file system.
      *
      * @param resourceUrl the resource URL to resolve
@@ -170,7 +170,7 @@ public abstract class ResourceUtils {
     }
 
     /**
-     * Resolve the given resource URI to a <code>java.io.File</code>,
+     * Resolve the given resource URI to a {@code java.io.File},
      * i.e. to a file in the file system.
      *
      * @param resourceUri the resource URI to resolve
@@ -183,7 +183,7 @@ public abstract class ResourceUtils {
     }
 
     /**
-     * Resolve the given resource URI to a <code>java.io.File</code>,
+     * Resolve the given resource URI to a {@code java.io.File},
      * i.e. to a file in the file system.
      *
      * @param resourceUri the resource URI to resolve
@@ -254,7 +254,7 @@ public abstract class ResourceUtils {
      * Create a URI instance for the given URL,
      * replacing spaces with "%20" quotes first.
      * <p>Furthermore, this method works on JDK 1.4 as well,
-     * in contrast to the <code>URL.toURI()</code> method.
+     * in contrast to the {@code URL.toURI()} method.
      *
      * @param url the URL to convert into a URI instance
      * @return the URI instance

@@ -93,32 +93,27 @@ public class ProgressController implements IProgressController {
                     }
                 } else {
                     processorAimed = true;
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            ProgressChangeEvent e;
-                            do {
-                                synchronized (waitingEvents) {
-                                    e = waitingEvents.poll();
-                                    if (e == null) {
-                                        processorAimed = false;
-                                        break;
+                    SwingUtilities.invokeLater(
+                            () -> {
+                                ProgressChangeEvent e;
+                                do {
+                                    synchronized (waitingEvents) {
+                                        e = waitingEvents.poll();
+                                        if (e == null) {
+                                            processorAimed = false;
+                                            break;
+                                        }
                                     }
-                                }
 
-                                processEvent(e);
-                            } while (true);
-                        }
-                    });
+                                    processEvent(e);
+                                } while (true);
+                            }
+                    );
                 }
             }
 
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        processEvent(event);
-                    }
-                });
+                SwingUtilities.invokeAndWait(() -> processEvent(event));
             } catch (InterruptedException e) {
                 log.error("Process progress event is interrupted.", e);
             } catch (InvocationTargetException e) {

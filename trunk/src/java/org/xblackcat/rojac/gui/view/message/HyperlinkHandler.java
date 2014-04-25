@@ -133,26 +133,18 @@ class HyperlinkHandler implements HyperlinkListener {
                     openBalloons.put(element, balloonTip);
 
                     balloonTip.addHierarchyListener(
-                            new HierarchyListener() {
-                                @Override
-                                public void hierarchyChanged(HierarchyEvent e) {
-                                    if (HierarchyEvent.SHOWING_CHANGED == (HierarchyEvent.SHOWING_CHANGED & e.getChangeFlags())) {
-                                        if (balloonTip.isShowing()) {
-                                            openBalloons.put(element, balloonTip);
-                                        } else {
-                                            openBalloons.remove(element);
-                                        }
+                            e1 -> {
+                                if (HierarchyEvent.SHOWING_CHANGED == (HierarchyEvent.SHOWING_CHANGED & e1.getChangeFlags())) {
+                                    if (balloonTip.isShowing()) {
+                                        openBalloons.put(element, balloonTip);
+                                    } else {
+                                        openBalloons.remove(element);
                                     }
                                 }
                             }
                     );
                     Timer timer = new Timer(
-                            (int) TimeUnit.SECONDS.toMillis(3), new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            balloonTip.closeBalloon();
-                        }
-                    }
+                            (int) TimeUnit.SECONDS.toMillis(3), e1 -> balloonTip.closeBalloon()
                     );
                     timer.setRepeats(false);
                     timer.start();
@@ -174,12 +166,9 @@ class HyperlinkHandler implements HyperlinkListener {
                 final Timer timer = new Timer(delay, null);
                 timer.setRepeats(false);
                 timer.addActionListener(
-                        new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                aimedTimers.remove(element);
-                                showBalloonAction.run();
-                            }
+                        e1 -> {
+                            aimedTimers.remove(element);
+                            showBalloonAction.run();
                         }
                 );
                 aimedTimers.put(element, timer);
@@ -229,17 +218,14 @@ class HyperlinkHandler implements HyperlinkListener {
 
     private void showHtmlPreviewBalloon(final URL url, final Element sourceElement, final int mouseY) {
         AnUrlInfoPane linkPreview = new HtmlPagePreview(
-                url, new Runnable() {
-            @Override
-            public void run() {
-                assert RojacUtils.checkThread(true);
+                url, () -> {
+                    assert RojacUtils.checkThread(true);
 
-                if (SWTUtils.isSwtEnabled) {
-                    SWTUtils.getBrowser().stopLoading();
-                    SWTUtils.getBrowser().navigate("about:blank");
+                    if (SWTUtils.isSwtEnabled) {
+                        SWTUtils.getBrowser().stopLoading();
+                        SWTUtils.getBrowser().navigate("about:blank");
+                    }
                 }
-            }
-        }
         );
 
         setupBalloon(sourceElement, mouseY, linkPreview);
@@ -293,15 +279,12 @@ class HyperlinkHandler implements HyperlinkListener {
         UIUtils.updateBackground(info, color);
 
         balloonTip.addHierarchyListener(
-                new HierarchyListener() {
-                    @Override
-                    public void hierarchyChanged(HierarchyEvent e) {
-                        if (HierarchyEvent.SHOWING_CHANGED == (HierarchyEvent.SHOWING_CHANGED & e.getChangeFlags())) {
-                            if (balloonTip.isShowing()) {
-                                openBalloons.put(sourceElement, balloonTip);
-                            } else {
-                                openBalloons.remove(sourceElement);
-                            }
+                e -> {
+                    if (HierarchyEvent.SHOWING_CHANGED == (HierarchyEvent.SHOWING_CHANGED & e.getChangeFlags())) {
+                        if (balloonTip.isShowing()) {
+                            openBalloons.put(sourceElement, balloonTip);
+                        } else {
+                            openBalloons.remove(sourceElement);
                         }
                     }
                 }

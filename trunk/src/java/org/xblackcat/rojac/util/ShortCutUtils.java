@@ -19,11 +19,11 @@ public class ShortCutUtils {
     private static final Log log = LogFactory.getLog(ShortCutUtils.class);
 
     /**
-     * Merge to InputMaps into a new InputMap with the rule: actions of <code>target</code> will be extended or replaced
-     * with <code>base</code> actions. For example:
+     * Merge to InputMaps into a new InputMap with the rule: actions of {@code target} will be extended or replaced
+     * with {@code base} actions. For example:
      * <p/>
-     * Base: <code>['F1' -> 'help', 'F2' -> 'save']</code>; Target: <code>['F2' -> 'note', 'F3' -> 'open']</code> . As
-     * result will be <code>['F1' -> 'help', 'F2' -> 'save', 'F3' -> 'open']</code>
+     * Base: {@code ['F1' -> 'help', 'F2' -> 'save']}; Target: {@code ['F2' -> 'note', 'F3' -> 'open']} . As
+     * result will be {@code ['F1' -> 'help', 'F2' -> 'save', 'F3' -> 'open']}
      *
      * @param base   master input map.
      * @param target slave input map.

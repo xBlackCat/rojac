@@ -12,7 +12,10 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
+import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
+import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -154,193 +157,164 @@ class SortedForumModelControl extends AThreadsModelControl {
         final int forumId = model.getRoot().getForumId();
 
         new PacketDispatcher(
-                new IPacketProcessor<OptionsUpdatedPacket>() {
-                    @Override
-                    public void process(OptionsUpdatedPacket p) {
-                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
-                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
-                            model.subTreeNodesChanged(model.getRoot());
+                p1 -> {
+                    if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                            p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                        model.subTreeNodesChanged(model.getRoot());
+                    }
+
+                    if (p1.isPropertyAffected(Property.VIEW_THREAD_HIDE_READ_THREADS) ||
+                            p1.isPropertyAffected(Property.HIDE_IGNORED_TOPICS)) {
+                        if (Property.VIEW_THREAD_HIDE_READ_THREADS.get() || Property.HIDE_IGNORED_TOPICS.get()) {
+                            hideReadThreads(model);
                         }
 
-                        if (p.isPropertyAffected(Property.VIEW_THREAD_HIDE_READ_THREADS) ||
-                                p.isPropertyAffected(Property.HIDE_IGNORED_TOPICS)) {
-                            if (Property.VIEW_THREAD_HIDE_READ_THREADS.get() || Property.HIDE_IGNORED_TOPICS.get()) {
-                                hideReadThreads(model);
-                            }
+                        if (!Property.VIEW_THREAD_HIDE_READ_THREADS.get() || !Property.HIDE_IGNORED_TOPICS.get()) {
+                            new ThreadsLoader(postProcessor, model, forumId).execute();
+                        }
+                    }
+                },
+                p1 -> {
+                    if (p1.getForumId() == forumId) {
+                        markForumRead(model, p1.isRead());
+                    }
+                },
+                p1 -> {
+                    if (p1.getForumId() == forumId) {
+                        markThreadRead(model, p1.getPostId(), p1.isRead());
+                    }
+                },
+                p1 -> {
+                    if (p1.getPost().getForumId() == forumId) {
+                        assert RojacUtils.checkThread(true);
 
-                            if (!Property.VIEW_THREAD_HIDE_READ_THREADS.get() || !Property.HIDE_IGNORED_TOPICS.get()) {
+                        final Post post = model.getRoot().getMessageById(p.getPost().getMessageId());
+                        if (post != null) {
+                            post.setRead(p1.isRead());
+                            model.pathToNodeChanged(post);
+                        } else {
+                            Post threadRoot = model.getRoot().getMessageById(p.getPost().getTopicId());
+
+                            if (threadRoot != null) {
+                                assert threadRoot instanceof Thread : "Expected a Thread class instance but got " + threadRoot.getClass().getName();
+                                Thread thread = (Thread) threadRoot;
+                                assert !thread.isFilled() : "Expecting not loaded thread";
+
+                                // Update not-yet-loaded thread statistics
+                                new ThreadStatisticLoader(thread, model, postProcessor).execute();
+                            } else {
+                                // Try to load hidden thread if any
                                 new ThreadsLoader(postProcessor, model, forumId).execute();
                             }
                         }
                     }
                 },
-                new IPacketProcessor<SetForumReadPacket>() {
-                    @Override
-                    public void process(SetForumReadPacket p) {
-                        if (p.getForumId() == forumId) {
-                            markForumRead(model, p.isRead());
+                p1 -> {
+                    if (!p1.isForumAffected(forumId)) {
+                        // Current forum is not changed - have a rest
+                        return;
+                    }
+
+                    boolean newReadState = p.isRead();
+                    Post root = model.getRoot();
+
+                    // First, queue for update a not loaded threads.
+                    for (int topicId : p1.getThreadIds()) {
+                        Post post = root.getMessageById(topicId);
+
+                        if (post == null) {
+                            // Topic from another forum - skip.
+                            continue;
+                        }
+
+                        assert post instanceof Thread : post;
+                        assert post.getThreadRoot() == post : post;
+                        Thread topic = (Thread) post;
+
+                        if (!topic.isFilled()) {
+                            // Queue update stat data.
+                            new ThreadStatisticLoader(topic, model, postProcessor).execute();
+                        }
+                    }
+
+                    // Second - update already loaded posts.
+                    for (int postId : p1.getMessageIds()) {
+                        Post post = root.getMessageById(postId);
+
+                        if (post != null) {
+                            post.setRead(newReadState);
+                            model.pathToNodeChanged(post);
                         }
                     }
                 },
-                new IPacketProcessor<SetSubThreadReadPacket>() {
-                    @Override
-                    public void process(SetSubThreadReadPacket p) {
-                        if (p.getForumId() == forumId) {
-                            markThreadRead(model, p.getPostId(), p.isRead());
-                        }
+                p1 -> {
+                    if (Property.VIEW_THREAD_HIDE_READ_THREADS.get() || Property.HIDE_IGNORED_TOPICS.get()) {
+                        hideReadThreads(model);
                     }
+
+                    if (!p1.isForumAffected(forumId)) {
+                        // Current forum is not changed - have a rest
+                        return;
+                    }
+
+                    updateModel(postProcessor, model, p1.getThreadIds());
                 },
-                new IPacketProcessor<SetPostReadPacket>() {
-                    @Override
-                    public void process(SetPostReadPacket p) {
-                        if (p.getPost().getForumId() == forumId) {
-                            assert RojacUtils.checkThread(true);
+                p1 -> {
+                    final Post root = model.getRoot();
+                    final MessageData data = root.getMessageData();
 
-                            final Post post = model.getRoot().getMessageById(p.getPost().getMessageId());
-                            if (post != null) {
-                                post.setRead(p.isRead());
-                                model.pathToNodeChanged(post);
-                            } else {
-                                Post threadRoot = model.getRoot().getMessageById(p.getPost().getTopicId());
+                    if (data instanceof ForumMessageData) {
+                        Forum f = ((ForumMessageData) data).getForum();
 
-                                if (threadRoot != null) {
-                                    assert threadRoot instanceof Thread : "Expected a Thread class instance but got " + threadRoot.getClass().getName();
-                                    Thread thread = (Thread) threadRoot;
-                                    assert !thread.isFilled() : "Expecting not loaded thread";
+                        for (SubscriptionChangedPacket.Subscription s : p1.getNewSubscriptions()) {
+                            if (s.getForumId() == f.getForumId()) {
+                                f.setSubscribed(s.isSubscribed());
 
-                                    // Update not-yet-loaded thread statistics
-                                    new ThreadStatisticLoader(thread, model, postProcessor).execute();
-                                } else {
-                                    // Try to load hidden thread if any
-                                    new ThreadsLoader(postProcessor, model, forumId).execute();
-                                }
+                                model.nodeChanged(root);
+                                return;
                             }
                         }
                     }
                 },
-                new IPacketProcessor<SetReadExPacket>() {
-                    @Override
-                    public void process(SetReadExPacket p) {
-                        if (!p.isForumAffected(forumId)) {
-                            // Current forum is not changed - have a rest
-                            return;
-                        }
-
-                        boolean newReadState = p.isRead();
-                        Post root = model.getRoot();
-
-                        // First, queue for update a not loaded threads.
-                        for (int topicId : p.getThreadIds()) {
-                            Post post = root.getMessageById(topicId);
-
-                            if (post == null) {
-                                // Topic from another forum - skip.
-                                continue;
-                            }
-
-                            assert post instanceof Thread : post;
-                            assert post.getThreadRoot() == post : post;
-                            Thread topic = (Thread) post;
-
-                            if (!topic.isFilled()) {
-                                // Queue update stat data.
-                                new ThreadStatisticLoader(topic, model, postProcessor).execute();
-                            }
-                        }
-
-                        // Second - update already loaded posts.
-                        for (int postId : p.getMessageIds()) {
-                            Post post = root.getMessageById(postId);
-
-                            if (post != null) {
-                                post.setRead(newReadState);
-                                model.pathToNodeChanged(post);
-                            }
-                        }
+                p1 -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
+                p1 -> {
+                    if (p1.getForumId() != forumId) {
+                        return;
                     }
-                },
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        if (Property.VIEW_THREAD_HIDE_READ_THREADS.get() || Property.HIDE_IGNORED_TOPICS.get()) {
-                            hideReadThreads(model);
-                        }
 
-                        if (!p.isForumAffected(forumId)) {
-                            // Current forum is not changed - have a rest
-                            return;
-                        }
+                    int threadId = p.getThreadId();
 
-                        updateModel(postProcessor, model, p.getThreadIds());
-                    }
-                },
-                new IPacketProcessor<SubscriptionChangedPacket>() {
-                    @Override
-                    public void process(SubscriptionChangedPacket p) {
-                        final Post root = model.getRoot();
-                        final MessageData data = root.getMessageData();
+                    if (Property.HIDE_IGNORED_TOPICS.get()) {
+                        if (p1.isIgnored()) {
+                            ForumRoot root = (ForumRoot) model.getRoot();
 
-                        if (data instanceof ForumMessageData) {
-                            Forum f = ((ForumMessageData) data).getForum();
-
-                            for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
-                                if (s.getForumId() == f.getForumId()) {
-                                    f.setSubscribed(s.isSubscribed());
-
-                                    model.nodeChanged(root);
-                                    return;
-                                }
+                            Post thread = root.getMessageById(threadId);
+                            if (thread == null) {
+                                // No thread
+                                assert false : "Ignore non-existed thread #" + threadId + " in forum #" + forumId;
+                                return;
                             }
-                        }
-                    }
-                },
-                new IPacketProcessor<IgnoreUserUpdatedPacket>() {
-                    @Override
-                    public void process(IgnoreUserUpdatedPacket p) {
-                        PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored());
-                    }
-                },
-                new IPacketProcessor<IgnoreUpdatedPacket>() {
-                    @Override
-                    public void process(IgnoreUpdatedPacket p) {
-                        if (p.getForumId() != forumId) {
-                            return;
-                        }
 
-                        int threadId = p.getThreadId();
-
-                        if (Property.HIDE_IGNORED_TOPICS.get()) {
-                            if (p.isIgnored()) {
-                                ForumRoot root = (ForumRoot) model.getRoot();
-
-                                Post thread = root.getMessageById(threadId);
-                                if (thread == null) {
-                                    // No thread
-                                    assert false : "Ignore non-existed thread #" + threadId + " in forum #" + forumId;
-                                    return;
-                                }
-
-                                int idx = root.removeThread(threadId);
-                                if (idx == -1) {
-                                    // No thread (Again?!)
-                                    assert false : "Ignore non-existed thread #" + threadId + " in forum #" + forumId;
-                                    return;
-                                }
-
-                                model.nodeRemoved(root, idx, thread);
-                            } else {
-                                // load thread back.
-                                // Load it back via SyncComplete packet
-                                new SynchronizationCompletePacket(forumId, threadId, threadId).dispatch();
+                            int idx = root.removeThread(threadId);
+                            if (idx == -1) {
+                                // No thread (Again?!)
+                                assert false : "Ignore non-existed thread #" + threadId + " in forum #" + forumId;
+                                return;
                             }
+
+                            model.nodeRemoved(root, idx, thread);
                         } else {
-                            Post threadRoot = model.getRoot().getMessageById(threadId);
-                            if (threadRoot != null) {
-                                MessageData data = threadRoot.getMessageData();
-                                threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
+                            // load thread back.
+                            // Load it back via SyncComplete packet
+                            new SynchronizationCompletePacket(forumId, threadId, threadId).dispatch();
+                        }
+                    } else {
+                        Post threadRoot = model.getRoot().getMessageById(threadId);
+                        if (threadRoot != null) {
+                            MessageData data = threadRoot.getMessageData();
+                            threadRoot.setMessageData(data.setIgnored(p1.isIgnored()));
 
-                                model.subTreeNodesChanged(threadRoot);
-                            }
+                            model.subTreeNodesChanged(threadRoot);
                         }
                     }
                 }

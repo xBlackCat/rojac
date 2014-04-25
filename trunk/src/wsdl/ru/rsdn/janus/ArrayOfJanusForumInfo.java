@@ -61,7 +61,7 @@ public class ArrayOfJanusForumInfo {
      */
     public List<JanusForumInfo> getJanusForumInfo() {
         if (janusForumInfo == null) {
-            janusForumInfo = new ArrayList<JanusForumInfo>();
+            janusForumInfo = new ArrayList<>();
         }
         return this.janusForumInfo;
     }

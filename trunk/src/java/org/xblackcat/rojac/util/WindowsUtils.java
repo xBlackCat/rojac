@@ -204,7 +204,7 @@ public final class WindowsUtils {
     }
 
     /**
-     * Place specified window at the center of specified component. If component is not visible or <code>null</code> -
+     * Place specified window at the center of specified component. If component is not visible or {@code null} -
      * window will be placed at the center of the screen.
      *
      * @param window window to be centered
@@ -251,7 +251,7 @@ public final class WindowsUtils {
     }
 
     /**
-     * Creates a toolbar and fills it with specified components. If component is <code>null</code> a separator will be
+     * Creates a toolbar and fills it with specified components. If component is {@code null} a separator will be
      * placed.
      *
      * @param components list of components to be placed into a new toolbar.

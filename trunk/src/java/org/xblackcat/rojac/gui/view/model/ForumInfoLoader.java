@@ -39,23 +39,17 @@ class ForumInfoLoader extends ThreadsLoader {
         }
 
         if (failed || forum == null) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    model.setRoot(null);
-                }
-            });
+            SwingUtilities.invokeLater(() -> model.setRoot(null));
             return null;
         }
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                MessageData fd = new ForumMessageData(forum);
-                model.getRoot().setMessageData(fd);
-                model.nodeChanged(model.getRoot());
-            }
-        });
+        SwingUtilities.invokeLater(
+                () -> {
+                    MessageData fd = new ForumMessageData(forum);
+                    model.getRoot().setMessageData(fd);
+                    model.nodeChanged(model.getRoot());
+                }
+        );
 
         // Load threads
         super.perform();

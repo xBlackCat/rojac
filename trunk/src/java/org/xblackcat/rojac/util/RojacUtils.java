@@ -257,7 +257,7 @@ public final class RojacUtils {
     /**
      * Checks if a newer version of rojac is exist on google code server.
      *
-     * @return <code>null</code> if no info should be displayed and integer (revision number) if revision is obtained.
+     * @return {@code null} if no info should be displayed and integer (revision number) if revision is obtained.
      * @throws RojacException thrown if version can not be obtained.
      */
     public static Integer getLastBuild() throws RojacException {
@@ -287,8 +287,8 @@ public final class RojacUtils {
     /**
      * Util class for checking if the method executed in SwingThread or not.
      *
-     * @param swing control flag. If set to <code>true</code> the current method will check if it is executing in the
-     *              EventDispatching thread. If set to <code>false</code> - in the non-EventDispatching thread. If
+     * @param swing control flag. If set to {@code true} the current method will check if it is executing in the
+     *              EventDispatching thread. If set to {@code false} - in the non-EventDispatching thread. If
      *              condition is failed a message will be added into logs.
      * @return true if the method invoked in expected thread
      */
@@ -299,8 +299,8 @@ public final class RojacUtils {
     /**
      * Util class for checking if the method executed in SwingThread or not.
      *
-     * @param swing     control flag. If set to <code>true</code> the current method will check if it is executing in
-     *                  the EventDispatching thread. If set to <code>false</code> - in the non-EventDispatching thread.
+     * @param swing     control flag. If set to {@code true} the current method will check if it is executing in
+     *                  the EventDispatching thread. If set to {@code false} - in the non-EventDispatching thread.
      *                  If condition is failed a message will be added into logs.
      * @param tillClass class object till which a stack trace should be trimmed.
      * @return true if the method invoked in expected thread
@@ -569,12 +569,7 @@ public final class RojacUtils {
                 DialogHelper.showExceptionDialog(t, e);
             } else {
                 SwingUtilities.invokeLater(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                DialogHelper.showExceptionDialog(t, e);
-                            }
-                        }
+                        () -> DialogHelper.showExceptionDialog(t, e)
                 );
             }
         }

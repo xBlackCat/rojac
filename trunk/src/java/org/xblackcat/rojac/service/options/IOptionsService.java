@@ -10,7 +10,7 @@ public interface IOptionsService {
      *
      * @param name name of the property.
      * @return property value.
-     * @throws NullPointerException if property name is <code>null</code>.
+     * @throws NullPointerException if property name is {@code null}.
      */
     <T> T getProperty(Property<T> name);
 
@@ -20,14 +20,14 @@ public interface IOptionsService {
      * @param name     property to set.
      * @param newValue new value to set.
      * @return old value for the property.
-     * @throws NullPointerException if property name is <code>null</code>.
+     * @throws NullPointerException if property name is {@code null}.
      */
     <T> T setProperty(Property<T> name, T newValue);
 
     /**
      * Somehow store settings.
      *
-     * @return <code>true</code> if settings are stored successfuly.
+     * @return {@code true} if settings are stored successfuly.
      */
     boolean storeSettings();
 }

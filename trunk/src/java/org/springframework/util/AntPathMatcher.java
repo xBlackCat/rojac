@@ -32,18 +32,18 @@ package org.springframework.util;
  * <p/>
  * <p>Some examples:<br>
  * <ul>
- * <li><code>com/t?st.jsp</code> - matches <code>com/test.jsp</code> but also
- * <code>com/tast.jsp</code> or <code>com/txst.jsp</code></li>
- * <li><code>com/*.jsp</code> - matches all <code>.jsp</code> files in the
- * <code>com</code> directory</li>
- * <li><code>com/&#42;&#42;/test.jsp</code> - matches all <code>test.jsp</code>
- * files underneath the <code>com</code> path</li>
- * <li><code>org/springframework/&#42;&#42;/*.jsp</code> - matches all <code>.jsp</code>
- * files underneath the <code>org/springframework</code> path</li>
- * <li><code>org/&#42;&#42;/servlet/bla.jsp</code> - matches
- * <code>org/springframework/servlet/bla.jsp</code> but also
- * <code>org/springframework/testing/servlet/bla.jsp</code> and
- * <code>org/servlet/bla.jsp</code></li>
+ * <li>{@code com/t?st.jsp} - matches {@code com/test.jsp} but also
+ * {@code com/tast.jsp} or {@code com/txst.jsp}</li>
+ * <li>{@code com/*.jsp} - matches all {@code .jsp} files in the
+ * {@code com} directory</li>
+ * <li>{@code com/&#42;&#42;/test.jsp} - matches all {@code test.jsp}
+ * files underneath the {@code com} path</li>
+ * <li>{@code org/springframework/&#42;&#42;/*.jsp} - matches all {@code .jsp}
+ * files underneath the {@code org/springframework} path</li>
+ * <li>{@code org/&#42;&#42;/servlet/bla.jsp} - matches
+ * {@code org/springframework/servlet/bla.jsp} but also
+ * {@code org/springframework/testing/servlet/bla.jsp} and
+ * {@code org/servlet/bla.jsp}</li>
  * </ul>
  *
  * @author Alef Arendsen
@@ -57,8 +57,6 @@ public class AntPathMatcher implements PathMatcher {
      * Default path separator: "/"
      */
     public static final String DEFAULT_PATH_SEPARATOR = "/";
-
-    private String pathSeparator = DEFAULT_PATH_SEPARATOR;
 
 
     public boolean isPattern(String path) {
@@ -75,22 +73,23 @@ public class AntPathMatcher implements PathMatcher {
 
 
     /**
-     * Actually match the given <code>path</code> against the given <code>pattern</code>.
+     * Actually match the given {@code path} against the given {@code pattern}.
      *
      * @param pattern   the pattern to match against
      * @param path      the path String to test
      * @param fullMatch whether a full pattern match is required
      *                  (else a pattern match as far as the given base path goes is sufficient)
-     * @return <code>true</code> if the supplied <code>path</code> matched,
-     *         <code>false</code> if it didn't
+     * @return {@code true} if the supplied {@code path} matched,
+     *         {@code false} if it didn't
      */
     protected boolean doMatch(String pattern, String path, boolean fullMatch) {
-        if (path.startsWith(this.pathSeparator) != pattern.startsWith(this.pathSeparator)) {
+        String pathSeparator = DEFAULT_PATH_SEPARATOR;
+        if (path.startsWith(pathSeparator) != pattern.startsWith(pathSeparator)) {
             return false;
         }
 
-        String[] pattDirs = StringUtils.tokenizeToStringArray(pattern, this.pathSeparator);
-        String[] pathDirs = StringUtils.tokenizeToStringArray(path, this.pathSeparator);
+        String[] pattDirs = StringUtils.tokenizeToStringArray(pattern, pathSeparator);
+        String[] pathDirs = StringUtils.tokenizeToStringArray(path, pathSeparator);
 
         int pattIdxStart = 0;
         int pattIdxEnd = pattDirs.length - 1;
@@ -113,14 +112,14 @@ public class AntPathMatcher implements PathMatcher {
         if (pathIdxStart > pathIdxEnd) {
             // Path is exhausted, only match if rest of pattern is * or **'s
             if (pattIdxStart > pattIdxEnd) {
-                return (pattern.endsWith(this.pathSeparator) ?
-                        path.endsWith(this.pathSeparator) : !path.endsWith(this.pathSeparator));
+                return (pattern.endsWith(pathSeparator) ?
+                        path.endsWith(pathSeparator) : !path.endsWith(pathSeparator));
             }
             if (!fullMatch) {
                 return true;
             }
             if (pattIdxStart == pattIdxEnd && pattDirs[pattIdxStart].equals("*") &&
-                    path.endsWith(this.pathSeparator)) {
+                    path.endsWith(pathSeparator)) {
                 return true;
             }
             for (int i = pattIdxStart; i <= pattIdxEnd; i++) {
@@ -215,11 +214,11 @@ public class AntPathMatcher implements PathMatcher {
      * '?' means one and only one character
      *
      * @param pattern pattern to match against.
-     *                Must not be <code>null</code>.
+     *                Must not be {@code null}.
      * @param str     string which must be matched against the pattern.
-     *                Must not be <code>null</code>.
-     * @return <code>true</code> if the string matches against the
-     *         pattern, or <code>false</code> otherwise.
+     *                Must not be {@code null}.
+     * @return {@code true} if the string matches against the
+     *         pattern, or {@code false} otherwise.
      */
     private boolean matchStrings(String pattern, String str) {
         char[] patArr = pattern.toCharArray();

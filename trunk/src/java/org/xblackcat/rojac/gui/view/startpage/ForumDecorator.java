@@ -33,16 +33,13 @@ import java.util.Comparator;
 class ForumDecorator extends ADecorator {
     private static final Log log = LogFactory.getLog(ForumDecorator.class);
 
-    private static final Comparator<ForumItem> FORUM_LIST_COMPARATOR = new Comparator<ForumItem>() {
-        @Override
-        public int compare(ForumItem o1, ForumItem o2) {
-            if (o1 == null || o1.getForum() == null) {
-                return o2 == null || o2.getForum() == null ? 0 : -1;
-            } else if (o2 == null || o2.getForum() == null) {
-                return 1;
-            } else {
-                return o1.getForum().getForumName().compareToIgnoreCase(o2.getForum().getForumName());
-            }
+    private static final Comparator<ForumItem> FORUM_LIST_COMPARATOR = (o1, o2) -> {
+        if (o1 == null || o1.getForum() == null) {
+            return o2 == null || o2.getForum() == null ? 0 : -1;
+        } else if (o2 == null || o2.getForum() == null) {
+            return 1;
+        } else {
+            return o1.getForum().getForumName().compareToIgnoreCase(o2.getForum().getForumName());
         }
     };
 
@@ -51,7 +48,7 @@ class ForumDecorator extends ADecorator {
 
     private final TIntObjectMap<ForumItem> viewedForums = new TIntObjectHashMap<>();
 
-    private final TIntObjectMap<Forum> forumsCache = new TSynchronizedIntObjectMap<>(new TIntObjectHashMap<Forum>());
+    private final TIntObjectMap<Forum> forumsCache = new TSynchronizedIntObjectMap<>(new TIntObjectHashMap<>());
 
     public ForumDecorator(IModelControl modelControl) {
         super(modelControl);

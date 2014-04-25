@@ -36,7 +36,7 @@ import java.io.IOException;
 public class NestedIOException extends IOException {
 
     /**
-     * Construct a <code>NestedIOException</code> with the specified detail message.
+     * Construct a {@code NestedIOException} with the specified detail message.
      *
      * @param msg the detail message
      */
@@ -45,7 +45,7 @@ public class NestedIOException extends IOException {
     }
 
     /**
-     * Construct a <code>NestedIOException</code> with the specified detail message
+     * Construct a {@code NestedIOException} with the specified detail message
      * and nested exception.
      *
      * @param msg   the detail message

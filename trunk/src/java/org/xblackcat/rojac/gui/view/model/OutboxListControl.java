@@ -5,7 +5,8 @@ import org.xblackcat.rojac.gui.IAppControl;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
@@ -22,8 +23,8 @@ import java.util.List;
  */
 class OutboxListControl extends AMessageListControl {
     /**
-     * Creates a post list control. All posts a linked with the specified user. If parameter is <code>true</code> - the
-     * control loads all replies on the user posts. If parameter is <code>false</code> - the control loads all posts of
+     * Creates a post list control. All posts a linked with the specified user. If parameter is {@code true} - the
+     * control loads all replies on the user posts. If parameter is {@code false} - the control loads all posts of
      * the user.
      */
     public OutboxListControl() {
@@ -78,27 +79,14 @@ class OutboxListControl extends AMessageListControl {
     @Override
     public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
-                new IPacketProcessor<OptionsUpdatedPacket>() {
-                    @Override
-                    public void process(OptionsUpdatedPacket p) {
-                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
-                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
-                            model.subTreeNodesChanged(model.getRoot());
-                        }
+                p1 -> {
+                    if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                            p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                        model.subTreeNodesChanged(model.getRoot());
                     }
                 },
-                new IPacketProcessor<NewMessagesUpdatedPacket>() {
-                    @Override
-                    public void process(NewMessagesUpdatedPacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                },
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        updateModel(model, postProcessor);
-                    }
-                }
+                p1 -> updateModel(model, postProcessor),
+                p1 -> updateModel(model, postProcessor)
         ).dispatch(p);
     }
 

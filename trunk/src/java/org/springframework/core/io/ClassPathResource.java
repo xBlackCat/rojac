@@ -32,7 +32,7 @@ import java.net.URL;
  * {@link Resource} implementation for class path resources.
  * Uses either a given ClassLoader or a given Class for loading resources.
  * <p/>
- * <p>Supports resolution as <code>java.io.File</code> if the class path
+ * <p>Supports resolution as {@code java.io.File} if the class path
  * resource resides in the file system, but not for resources in a JAR.
  * Always supports resolution as URL.
  *
@@ -72,7 +72,7 @@ public class ClassPathResource extends AbstractResource {
      *
      * @param path        the absolute path within the classpath
      * @param classLoader the class loader to load the resource with,
-     *                    or <code>null</code> for the thread context class loader
+     *                    or {@code null} for the thread context class loader
      * @see java.lang.ClassLoader#getResourceAsStream(String)
      */
     public ClassPathResource(String path, ClassLoader classLoader) {

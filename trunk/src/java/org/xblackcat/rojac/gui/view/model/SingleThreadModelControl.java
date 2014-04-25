@@ -8,7 +8,8 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
-import org.xblackcat.rojac.service.datahandler.*;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -89,112 +90,86 @@ class SingleThreadModelControl extends AThreadsModelControl {
         final int threadId = model.getRoot().getMessageId();
 
         new PacketDispatcher(
-                new IPacketProcessor<OptionsUpdatedPacket>() {
-                    @Override
-                    public void process(OptionsUpdatedPacket p) {
-                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
-                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
-                            model.subTreeNodesChanged(model.getRoot());
-                        }
+                p1 -> {
+                    if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                            p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                        model.subTreeNodesChanged(model.getRoot());
                     }
                 },
-                new IPacketProcessor<SetForumReadPacket>() {
-                    @Override
-                    public void process(SetForumReadPacket p) {
-                        if (p.getForumId() == forumId) {
-                            assert RojacUtils.checkThread(true);
+                p1 -> {
+                    if (p1.getForumId() == forumId) {
+                        assert RojacUtils.checkThread(true);
 
-                            // Root post is Thread object
-                            model.getRoot().setDeepRead(p.isRead());
+                        // Root post is Thread object
+                        model.getRoot().setDeepRead(p1.isRead());
 
-                            model.subTreeNodesChanged(model.getRoot());
-                        }
+                        model.subTreeNodesChanged(model.getRoot());
                     }
                 },
-                new IPacketProcessor<SetSubThreadReadPacket>() {
-                    @Override
-                    public void process(SetSubThreadReadPacket p) {
-                        if (p.getForumId() == forumId) {
-                            assert RojacUtils.checkThread(true);
+                p1 -> {
+                    if (p1.getForumId() == forumId) {
+                        assert RojacUtils.checkThread(true);
 
-                            // Root post is Thread object
-                            Post root = model.getRoot().getMessageById(p.getPostId());
-                            if (root == null) {
-                                return;
-                            }
-
-                            root.setDeepRead(p.isRead());
-
-                            model.subTreeNodesChanged(root);
-                        }
-                    }
-                },
-                new IPacketProcessor<SetPostReadPacket>() {
-                    @Override
-                    public void process(SetPostReadPacket p) {
-                        MessageData md = p.getPost();
-                        if (md.getForumId() == forumId && md.getThreadRootId() == threadId) {
-                            assert RojacUtils.checkThread(true);
-
-                            final Post post = model.getRoot().getMessageById(md.getMessageId());
-                            if (post != null) {
-                                post.setRead(p.isRead());
-                                model.pathToNodeChanged(post);
-                            }
-                        }
-                    }
-                },
-                new IPacketProcessor<SetReadExPacket>() {
-                    @Override
-                    public void process(SetReadExPacket p) {
-                        if (!p.isTopicAffected(threadId)) {
-                            // Current forum is not changed - have a rest
+                        // Root post is Thread object
+                        Post root = model.getRoot().getMessageById(p.getPostId());
+                        if (root == null) {
                             return;
                         }
 
-                        Post root = model.getRoot();
+                        root.setDeepRead(p1.isRead());
 
-                        // Second - update already loaded posts.
-                        for (int postId : p.getMessageIds()) {
-                            Post post = root.getMessageById(postId);
+                        model.subTreeNodesChanged(root);
+                    }
+                },
+                p1 -> {
+                    MessageData md = p.getPost();
+                    if (md.getForumId() == forumId && md.getThreadRootId() == threadId) {
+                        assert RojacUtils.checkThread(true);
 
-                            if (post != null) {
-                                post.setRead(p.isRead());
-                                model.pathToNodeChanged(post);
-                            }
+                        final Post post = model.getRoot().getMessageById(md.getMessageId());
+                        if (post != null) {
+                            post.setRead(p1.isRead());
+                            model.pathToNodeChanged(post);
                         }
                     }
                 },
-                new IPacketProcessor<SynchronizationCompletePacket>() {
-                    @Override
-                    public void process(SynchronizationCompletePacket p) {
-                        if (!p.isForumAffected(forumId)) {
-                            // Current forum is not changed - have a rest
-                            return;
-                        }
-                        if (!p.isTopicAffected(threadId)) {
-                            return;
-                        }
+                p1 -> {
+                    if (!p1.isTopicAffected(threadId)) {
+                        // Current forum is not changed - have a rest
+                        return;
+                    }
 
-                        reloadThread(model, postProcessor);
+                    Post root = model.getRoot();
+
+                    // Second - update already loaded posts.
+                    for (int postId : p1.getMessageIds()) {
+                        Post post = root.getMessageById(postId);
+
+                        if (post != null) {
+                            post.setRead(p1.isRead());
+                            model.pathToNodeChanged(post);
+                        }
                     }
                 },
-                new IPacketProcessor<IgnoreUserUpdatedPacket>() {
-                    @Override
-                    public void process(IgnoreUserUpdatedPacket p) {
-                        PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored());
+                p1 -> {
+                    if (!p1.isForumAffected(forumId)) {
+                        // Current forum is not changed - have a rest
+                        return;
                     }
-                },
-                new IPacketProcessor<IgnoreUpdatedPacket>() {
-                    @Override
-                    public void process(IgnoreUpdatedPacket p) {
-                        if (p.getThreadId() == threadId) {
-                            Post threadRoot = model.getRoot();
-                            MessageData data = threadRoot.getMessageData();
-                            threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
+                    if (!p1.isTopicAffected(threadId)) {
+                        return;
+                    }
 
-                            model.subTreeNodesChanged(threadRoot);
-                        }
+                    reloadThread(model, postProcessor);
+                },
+                p1 -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
+                p1 -> {
+                    if (p1.getThreadId() == threadId) {
+                        Post threadRoot = model.getRoot();
+                        MessageData data = threadRoot.getMessageData();
+                        threadRoot.setMessageData(data.setIgnored(p1.isIgnored()));
+
+                        model.subTreeNodesChanged(threadRoot);
                     }
                 }
         ).dispatch(p);

@@ -11,16 +11,15 @@ import javax.swing.*;
 public abstract class ASwingThreadedHandler<T> implements IResultHandler<T> {
     @Override
     public void process(final T data) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    execute(data);
-                } catch (Exception e) {
-                    RojacUtils.showExceptionDialog(e);
+        SwingUtilities.invokeLater(
+                () -> {
+                    try {
+                        execute(data);
+                    } catch (Exception e) {
+                        RojacUtils.showExceptionDialog(e);
+                    }
                 }
-            }
-        });
+        );
     }
 
     protected abstract void execute(T data);
