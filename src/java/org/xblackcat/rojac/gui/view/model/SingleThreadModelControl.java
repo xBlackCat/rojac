@@ -8,8 +8,7 @@ import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.MessageChecker;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -85,29 +84,29 @@ class SingleThreadModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
+    public void processPacket(final SortedThreadsModel model, IPacket packet, final Runnable postProcessor) {
         final int forumId = model.getRoot().getForumId();
         final int threadId = model.getRoot().getMessageId();
 
         new PacketDispatcher(
-                p1 -> {
-                    if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
-                            p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                (OptionsUpdatedPacket p) -> {
+                    if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                            p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
                         model.subTreeNodesChanged(model.getRoot());
                     }
                 },
-                p1 -> {
-                    if (p1.getForumId() == forumId) {
+                (SetForumReadPacket p) -> {
+                    if (p.getForumId() == forumId) {
                         assert RojacUtils.checkThread(true);
 
                         // Root post is Thread object
-                        model.getRoot().setDeepRead(p1.isRead());
+                        model.getRoot().setDeepRead(p.isRead());
 
                         model.subTreeNodesChanged(model.getRoot());
                     }
                 },
-                p1 -> {
-                    if (p1.getForumId() == forumId) {
+                (SetSubThreadReadPacket p) -> {
+                    if (p.getForumId() == forumId) {
                         assert RojacUtils.checkThread(true);
 
                         // Root post is Thread object
@@ -116,25 +115,25 @@ class SingleThreadModelControl extends AThreadsModelControl {
                             return;
                         }
 
-                        root.setDeepRead(p1.isRead());
+                        root.setDeepRead(p.isRead());
 
                         model.subTreeNodesChanged(root);
                     }
                 },
-                p1 -> {
+                (SetPostReadPacket p) -> {
                     MessageData md = p.getPost();
                     if (md.getForumId() == forumId && md.getThreadRootId() == threadId) {
                         assert RojacUtils.checkThread(true);
 
                         final Post post = model.getRoot().getMessageById(md.getMessageId());
                         if (post != null) {
-                            post.setRead(p1.isRead());
+                            post.setRead(p.isRead());
                             model.pathToNodeChanged(post);
                         }
                     }
                 },
-                p1 -> {
-                    if (!p1.isTopicAffected(threadId)) {
+                (SetReadExPacket p) -> {
+                    if (!p.isTopicAffected(threadId)) {
                         // Current forum is not changed - have a rest
                         return;
                     }
@@ -142,37 +141,37 @@ class SingleThreadModelControl extends AThreadsModelControl {
                     Post root = model.getRoot();
 
                     // Second - update already loaded posts.
-                    for (int postId : p1.getMessageIds()) {
+                    for (int postId : p.getMessageIds()) {
                         Post post = root.getMessageById(postId);
 
                         if (post != null) {
-                            post.setRead(p1.isRead());
+                            post.setRead(p.isRead());
                             model.pathToNodeChanged(post);
                         }
                     }
                 },
-                p1 -> {
-                    if (!p1.isForumAffected(forumId)) {
+                (SynchronizationCompletePacket p) -> {
+                    if (!p.isForumAffected(forumId)) {
                         // Current forum is not changed - have a rest
                         return;
                     }
-                    if (!p1.isTopicAffected(threadId)) {
+                    if (!p.isTopicAffected(threadId)) {
                         return;
                     }
 
                     reloadThread(model, postProcessor);
                 },
-                p1 -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
-                p1 -> {
-                    if (p1.getThreadId() == threadId) {
+                (IgnoreUserUpdatedPacket p) -> PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored()),
+                (IgnoreUpdatedPacket p) -> {
+                    if (p.getThreadId() == threadId) {
                         Post threadRoot = model.getRoot();
                         MessageData data = threadRoot.getMessageData();
-                        threadRoot.setMessageData(data.setIgnored(p1.isIgnored()));
+                        threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
 
                         model.subTreeNodesChanged(threadRoot);
                     }
                 }
-        ).dispatch(p);
+        ).dispatch(packet);
     }
 
     private void reloadThread(final SortedThreadsModel model, final Runnable postProcessor) {

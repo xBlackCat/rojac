@@ -14,15 +14,16 @@ import java.util.Map;
 public class PacketDispatcher {
     private final Map<Class<?>, IPacketProcessor<IPacket>> processors = new HashMap<>();
 
-    @SuppressWarnings({"unchecked"})
-    public PacketDispatcher(IPacketProcessor... processors) {
+    @SafeVarargs
+    public PacketDispatcher(IPacketProcessor<? extends IPacket>... processors) {
         if (processors == null) {
             return;
         }
 
-        for (IPacketProcessor<IPacket> processor : processors) {
+        for (IPacketProcessor<? extends IPacket> processor : processors) {
             if (processor != null) {
-                this.processors.put(RojacUtils.getGenericClass(processor.getClass()), processor);
+                @SuppressWarnings("unchecked") final IPacketProcessor<IPacket> p = (IPacketProcessor<IPacket>) processor;
+                this.processors.put(RojacUtils.getGenericClass(processor.getClass()), p);
             }
         }
     }

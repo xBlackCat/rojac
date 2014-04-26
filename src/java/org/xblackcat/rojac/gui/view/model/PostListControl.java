@@ -8,8 +8,7 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.executor.TaskType;
 import org.xblackcat.rojac.service.executor.TaskTypeEnum;
 import org.xblackcat.rojac.service.options.Property;
@@ -138,19 +137,19 @@ class PostListControl extends AMessageListControl {
     }
 
     @Override
-    public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
+    public void processPacket(final SortedThreadsModel model, IPacket packet, final Runnable postProcessor) {
         new PacketDispatcher(
-                p1 -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
-                p1 -> {
+                (IgnoreUserUpdatedPacket p1) -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
+                (OptionsUpdatedPacket p1) -> {
                     if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
                             p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
                         model.subTreeNodesChanged(model.getRoot());
                     }
                 },
-                p1 -> updateModel(model, postProcessor),
-                p1 -> updateModel(model, postProcessor),
-                p1 -> markPostRead(model, p1.getPost().getMessageId(), p1.isRead()),
-                p1 -> {
+                (SetForumReadPacket p1) -> updateModel(model, postProcessor),
+                (SetSubThreadReadPacket p1) -> updateModel(model, postProcessor),
+                (SetPostReadPacket p1) -> markPostRead(model, p1.getPost().getMessageId(), p1.isRead()),
+                (SetReadExPacket p1) -> {
                     Post root = model.getRoot();
 
                     // Second - update already loaded posts.
@@ -163,8 +162,8 @@ class PostListControl extends AMessageListControl {
                         }
                     }
                 },
-                p1 -> updateModel(model, postProcessor)
-        ).dispatch(p);
+                (SynchronizationCompletePacket p1) -> updateModel(model, postProcessor)
+        ).dispatch(packet);
     }
 
     @TaskType(TaskTypeEnum.Initialization)
