@@ -10,9 +10,7 @@ import org.xblackcat.rojac.gui.view.AnItemView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
-import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 
 import javax.swing.*;
@@ -40,41 +38,41 @@ public class StartPageView extends AnItemView {
     private final StatisticUpdateListener statisticUpdateListener = new StatisticUpdateListener(navigationModel);
 
     private final PacketDispatcher packetDispatcher = new PacketDispatcher(
-            p -> {
+            (OptionsUpdatedPacket p) -> {
                 if (p.isPropertyAffected(Property.VIEW_RECENT_TOPIC_LIST_SIZE)) {
                     reloadLastPosts();
                 }
             },
-            p -> {
+            (IgnoreUserUpdatedPacket p) -> {
                 new LoadTaskExecutor(
                         navigationModel.forumDecorator.reloadForums(),
                         navigationModel.personalDecorator.reloadInfo(false)
                 ).execute();
                 reloadLastPosts();
             },
-            p -> new LoadTaskExecutor(
+            (FavoritesUpdatedPacket p) -> new LoadTaskExecutor(
                     navigationModel.favoritesDecorator.reloadFavorites()
             ).execute(),
-            p -> new LoadTaskExecutor(
+            (FavoriteCategoryUpdatedPacket p) -> new LoadTaskExecutor(
                     navigationModel.favoritesDecorator.updateFavoriteData(FavoriteType.Category)
             ).execute(),
-            p -> new LoadTaskExecutor(
+            (NewMessagesUpdatedPacket p) -> new LoadTaskExecutor(
                     navigationModel.personalDecorator.reloadOutbox()
             ).execute(),
-            p -> new LoadTaskExecutor(
+            (IgnoreUpdatedPacket p) -> new LoadTaskExecutor(
                     navigationModel.forumDecorator.loadForumStatistic(p.getForumId()),
                     navigationModel.personalDecorator.reloadInfo(false),
                     navigationModel.personalDecorator.reloadIgnored()
             ).execute(),
-            p -> new LoadTaskExecutor(
+            (SetForumReadPacket p) -> new LoadTaskExecutor(
                     navigationModel.personalDecorator.reloadInfo(false),
                     navigationModel.favoritesDecorator.updateFavoriteData(null),
                     navigationModel.forumDecorator.loadForumStatistic(p.getForumId())
             ).execute(),
-            p -> new LoadTaskExecutor(
+            (ForumsUpdated p) -> new LoadTaskExecutor(
                     navigationModel.forumDecorator.reloadForums()
             ).execute(),
-            p -> {
+            (IForumUpdatePacket p) -> {
                 new LoadTaskExecutor(
                         navigationModel.personalDecorator.reloadInfo(true),
                         navigationModel.favoritesDecorator.updateFavoriteData(null),
@@ -82,17 +80,17 @@ public class StartPageView extends AnItemView {
                 ).execute();
                 reloadLastPosts();
             },
-            p -> new LoadTaskExecutor(
+            (SetSubThreadReadPacket p) -> new LoadTaskExecutor(
                     navigationModel.personalDecorator.reloadInfo(false),
                     navigationModel.favoritesDecorator.updateFavoriteData(null),
                     navigationModel.forumDecorator.loadForumStatistic(p.getForumId())
             ).execute(),
-            p -> new LoadTaskExecutor(
+            (SetPostReadPacket p) -> new LoadTaskExecutor(
                     navigationModel.favoritesDecorator.alterReadStatus(p.getPost(), p.isRead()),
                     navigationModel.forumDecorator.alterReadStatus(p.getPost(), p.isRead()),
                     navigationModel.personalDecorator.alterReadStatus(p.getPost(), p.isRead())
             ).execute(),
-            p -> {
+            (SubscriptionChangedPacket p) -> {
                 Collection<ILoadTask> tasks = new ArrayList<>();
                 for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
                     ILoadTask task = navigationModel.forumDecorator.updateSubscribed(
@@ -108,7 +106,7 @@ public class StartPageView extends AnItemView {
                     new LoadTaskExecutor(tasks).execute();
                 }
             },
-            p -> {
+            (ReloadDataPacket p) -> {
                 new LoadTaskExecutor(
                         navigationModel.personalDecorator.reloadIgnored(),
                         navigationModel.personalDecorator.reloadInfo(true),

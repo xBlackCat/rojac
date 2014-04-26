@@ -1,8 +1,12 @@
 package org.xblackcat.rojac.util;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.NewRating;
+import org.xblackcat.rojac.service.datahandler.IPacket;
+import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
+import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import ru.rsdn.janus.PostRatingInfo;
 
 import java.util.*;
@@ -71,6 +75,29 @@ public class RojacUtilsTest extends TestCase {
             assertTrue(l.remove(new Locale("un", "CC")));
             assertTrue(l.isEmpty());
 
+        }
+    }
+
+    public void testLambdaRSDNable() throws Exception {
+        {
+            IPacketProcessor<? extends IPacket> pp = new IPacketProcessor<OptionsUpdatedPacket>() {
+                @Override
+                public void process(OptionsUpdatedPacket p) {
+
+                }
+            };
+
+            final Class<?> genericClass = RojacUtils.getGenericClass(pp.getClass());
+            Assert.assertEquals(OptionsUpdatedPacket.class, genericClass);
+        }
+        if (false) {
+            // Not working :(
+
+            IPacketProcessor<? extends IPacket> pp = (OptionsUpdatedPacket p) -> {
+            };
+
+            final Class<?> genericClass = RojacUtils.getGenericClass(pp.getClass());
+            Assert.assertEquals(OptionsUpdatedPacket.class, genericClass);
         }
     }
 }

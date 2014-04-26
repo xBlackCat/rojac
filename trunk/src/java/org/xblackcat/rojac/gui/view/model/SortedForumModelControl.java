@@ -12,10 +12,7 @@ import org.xblackcat.rojac.gui.OpenMessageMethod;
 import org.xblackcat.rojac.gui.popup.PopupMenuBuilder;
 import org.xblackcat.rojac.gui.theme.ReadStatusIcon;
 import org.xblackcat.rojac.gui.view.thread.ThreadToolbarActions;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
-import org.xblackcat.rojac.service.datahandler.SubscriptionChangedPacket;
-import org.xblackcat.rojac.service.datahandler.SynchronizationCompletePacket;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.util.RojacUtils;
 
@@ -157,7 +154,7 @@ class SortedForumModelControl extends AThreadsModelControl {
         final int forumId = model.getRoot().getForumId();
 
         new PacketDispatcher(
-                p1 -> {
+                (OptionsUpdatedPacket p1) -> {
                     if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
                             p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
                         model.subTreeNodesChanged(model.getRoot());
@@ -174,26 +171,26 @@ class SortedForumModelControl extends AThreadsModelControl {
                         }
                     }
                 },
-                p1 -> {
+                (SetForumReadPacket p1) -> {
                     if (p1.getForumId() == forumId) {
                         markForumRead(model, p1.isRead());
                     }
                 },
-                p1 -> {
+                (SetSubThreadReadPacket p1) -> {
                     if (p1.getForumId() == forumId) {
                         markThreadRead(model, p1.getPostId(), p1.isRead());
                     }
                 },
-                p1 -> {
+                (SetPostReadPacket p1) -> {
                     if (p1.getPost().getForumId() == forumId) {
                         assert RojacUtils.checkThread(true);
 
-                        final Post post = model.getRoot().getMessageById(p.getPost().getMessageId());
+                        final Post post = model.getRoot().getMessageById(p1.getPost().getMessageId());
                         if (post != null) {
                             post.setRead(p1.isRead());
                             model.pathToNodeChanged(post);
                         } else {
-                            Post threadRoot = model.getRoot().getMessageById(p.getPost().getTopicId());
+                            Post threadRoot = model.getRoot().getMessageById(p1.getPost().getTopicId());
 
                             if (threadRoot != null) {
                                 assert threadRoot instanceof Thread : "Expected a Thread class instance but got " + threadRoot.getClass().getName();
@@ -209,13 +206,13 @@ class SortedForumModelControl extends AThreadsModelControl {
                         }
                     }
                 },
-                p1 -> {
+                (SetReadExPacket p1) -> {
                     if (!p1.isForumAffected(forumId)) {
                         // Current forum is not changed - have a rest
                         return;
                     }
 
-                    boolean newReadState = p.isRead();
+                    boolean newReadState = p1.isRead();
                     Post root = model.getRoot();
 
                     // First, queue for update a not loaded threads.
@@ -247,7 +244,7 @@ class SortedForumModelControl extends AThreadsModelControl {
                         }
                     }
                 },
-                p1 -> {
+                (SynchronizationCompletePacket p1) -> {
                     if (Property.VIEW_THREAD_HIDE_READ_THREADS.get() || Property.HIDE_IGNORED_TOPICS.get()) {
                         hideReadThreads(model);
                     }
@@ -259,7 +256,7 @@ class SortedForumModelControl extends AThreadsModelControl {
 
                     updateModel(postProcessor, model, p1.getThreadIds());
                 },
-                p1 -> {
+                (SubscriptionChangedPacket p1) -> {
                     final Post root = model.getRoot();
                     final MessageData data = root.getMessageData();
 
@@ -276,13 +273,13 @@ class SortedForumModelControl extends AThreadsModelControl {
                         }
                     }
                 },
-                p1 -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
-                p1 -> {
+                (IgnoreUserUpdatedPacket p1) -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
+                (IgnoreUpdatedPacket p1) -> {
                     if (p1.getForumId() != forumId) {
                         return;
                     }
 
-                    int threadId = p.getThreadId();
+                    int threadId = p1.getThreadId();
 
                     if (Property.HIDE_IGNORED_TOPICS.get()) {
                         if (p1.isIgnored()) {
