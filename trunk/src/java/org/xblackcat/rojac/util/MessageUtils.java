@@ -15,7 +15,7 @@ import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.IMessageAH;
 import org.xblackcat.rojac.service.storage.IRatingAH;
 import org.xblackcat.rojac.service.storage.Storage;
-import org.xblackcat.sjpu.storage.IBatch;
+import org.xblackcat.sjpu.storage.ITx;
 import org.xblackcat.sjpu.storage.StorageException;
 
 import javax.swing.*;
@@ -146,7 +146,7 @@ public final class MessageUtils {
     }
 
     public static RatingCache updateRatingCache(int id) throws StorageException {
-        try (IBatch batch = Storage.startBatch()) {
+        try (ITx batch = Storage.startBatch()) {
             boolean done = false;
             try {
                 RatingCache cache = updateRatingCache(batch, id);
@@ -163,7 +163,7 @@ public final class MessageUtils {
         }
     }
 
-    public static RatingCache updateRatingCache(IBatch batch, int id) throws StorageException {
+    public static RatingCache updateRatingCache(ITx batch, int id) throws StorageException {
         IMessageAH mAH = batch.get(IMessageAH.class);
         IRatingAH rAH = batch.get(IRatingAH.class);
 

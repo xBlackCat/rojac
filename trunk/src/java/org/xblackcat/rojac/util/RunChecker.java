@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.function.Consumer;
 
 /**
  * @author xBlackCat Date: 12.07.11
@@ -48,7 +49,7 @@ public final class RunChecker {
         this.responseShutdownString = responseShutdownString;
     }
 
-    public boolean installNewInstanceListener(IRemoteAction process, Runnable shutdownProcess) {
+    public boolean installNewInstanceListener(Consumer<Integer> process, Runnable shutdownProcess) {
         final ServerSocket serverSocket;
 
         try {
@@ -120,10 +121,10 @@ public final class RunChecker {
 
     private class LaunchListener implements Runnable {
         private final ServerSocket serverSocket;
-        private final IRemoteAction process;
+        private final Consumer<Integer> process;
         private final Runnable shutdownProcess;
 
-        public LaunchListener(ServerSocket serverSocket, IRemoteAction process, Runnable shutdownProcess) {
+        public LaunchListener(ServerSocket serverSocket, Consumer<Integer> process, Runnable shutdownProcess) {
             if (process == null) {
                 throw new NullPointerException("Actions after establishing connection is not defined");
             }
@@ -155,7 +156,7 @@ public final class RunChecker {
                                             // Just move to front
                                             postId = null;
                                         }
-                                        process.run(postId);
+                                        process.accept(postId);
 
                                         try (DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream())) {
                                             outputStream.writeUTF(responseString);
