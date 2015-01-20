@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,73 +8,47 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for ViolationRequest complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="ViolationRequest">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="LastRowVersion" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
  *         &lt;element name="UserName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="Password" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="SubscribedForums" type="{http://rsdn.ru/Janus/}ArrayOfRequestForumInfo" minOccurs="0"/>
+ *         &lt;element name="LastRowVersion" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ViolationRequest", propOrder = {
-    "lastRowVersion",
-    "userName",
-    "password",
-    "subscribedForums"
+        "userName",
+        "password",
+        "subscribedForums",
+        "lastRowVersion"
 })
 public class ViolationRequest {
 
-    @XmlElement(name = "LastRowVersion")
-    protected byte[] lastRowVersion;
     @XmlElement(name = "UserName")
     protected String userName;
     @XmlElement(name = "Password")
     protected String password;
     @XmlElement(name = "SubscribedForums")
     protected ArrayOfRequestForumInfo subscribedForums;
-
-    /**
-     * Gets the value of the lastRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
-     */
-    public byte[] getLastRowVersion() {
-        return lastRowVersion;
-    }
-
-    /**
-     * Sets the value of the lastRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
-     */
-    public void setLastRowVersion(byte[] value) {
-        this.lastRowVersion = value;
-    }
+    @XmlElement(name = "LastRowVersion")
+    protected byte[] lastRowVersion;
 
     /**
      * Gets the value of the userName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserName() {
         return userName;
@@ -83,11 +56,9 @@ public class ViolationRequest {
 
     /**
      * Sets the value of the userName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserName(String value) {
         this.userName = value;
@@ -95,11 +66,9 @@ public class ViolationRequest {
 
     /**
      * Gets the value of the password property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPassword() {
         return password;
@@ -107,11 +76,9 @@ public class ViolationRequest {
 
     /**
      * Sets the value of the password property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPassword(String value) {
         this.password = value;
@@ -119,11 +86,9 @@ public class ViolationRequest {
 
     /**
      * Gets the value of the subscribedForums property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfRequestForumInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfRequestForumInfo }
      */
     public ArrayOfRequestForumInfo getSubscribedForums() {
         return subscribedForums;
@@ -131,14 +96,32 @@ public class ViolationRequest {
 
     /**
      * Sets the value of the subscribedForums property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfRequestForumInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfRequestForumInfo }
      */
     public void setSubscribedForums(ArrayOfRequestForumInfo value) {
         this.subscribedForums = value;
+    }
+
+    /**
+     * Gets the value of the lastRowVersion property.
+     *
+     * @return possible object is
+     * byte[]
+     */
+    public byte[] getLastRowVersion() {
+        return lastRowVersion;
+    }
+
+    /**
+     * Sets the value of the lastRowVersion property.
+     *
+     * @param value allowed object is
+     *              byte[]
+     */
+    public void setLastRowVersion(byte[] value) {
+        this.lastRowVersion = value;
     }
 
 }

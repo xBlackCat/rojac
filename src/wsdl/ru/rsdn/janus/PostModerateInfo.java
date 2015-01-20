@@ -1,10 +1,7 @@
 
 package ru.rsdn.janus;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
@@ -47,6 +44,7 @@ public class PostModerateInfo {
     @XmlElement(name = "MessageId")
     protected int messageId;
     @XmlElement(name = "ModerateAction", required = true)
+    @XmlSchemaType(name = "string")
     protected ModerateActionType moderateAction;
     @XmlElement(name = "ModerateToForumId")
     protected int moderateToForumId;

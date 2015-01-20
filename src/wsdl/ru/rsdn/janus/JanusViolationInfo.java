@@ -17,8 +17,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *       &lt;sequence>
  *         &lt;element name="MessageID" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="Reason" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="PenaltyType" type="{http://rsdn.ru/Janus/}PenaltyType"/>
  *         &lt;element name="CreatedOn" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *         &lt;element name="PenaltyType" type="{http://rsdn.ru/Janus/}PenaltyType"/>
  *         &lt;element name="RowVersion" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -32,8 +32,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlType(name = "JanusViolationInfo", propOrder = {
     "messageID",
     "reason",
-    "penaltyType",
     "createdOn",
+    "penaltyType",
     "rowVersion"
 })
 public class JanusViolationInfo {
@@ -42,11 +42,12 @@ public class JanusViolationInfo {
     protected int messageID;
     @XmlElement(name = "Reason")
     protected String reason;
-    @XmlElement(name = "PenaltyType", required = true)
-    protected PenaltyType penaltyType;
     @XmlElement(name = "CreatedOn", required = true)
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar createdOn;
+    @XmlElement(name = "PenaltyType", required = true)
+    @XmlSchemaType(name = "string")
+    protected PenaltyType penaltyType;
     @XmlElement(name = "RowVersion")
     protected byte[] rowVersion;
 
@@ -91,30 +92,6 @@ public class JanusViolationInfo {
     }
 
     /**
-     * Gets the value of the penaltyType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PenaltyType }
-     *     
-     */
-    public PenaltyType getPenaltyType() {
-        return penaltyType;
-    }
-
-    /**
-     * Sets the value of the penaltyType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PenaltyType }
-     *     
-     */
-    public void setPenaltyType(PenaltyType value) {
-        this.penaltyType = value;
-    }
-
-    /**
      * Gets the value of the createdOn property.
      * 
      * @return
@@ -136,6 +113,30 @@ public class JanusViolationInfo {
      */
     public void setCreatedOn(XMLGregorianCalendar value) {
         this.createdOn = value;
+    }
+
+    /**
+     * Gets the value of the penaltyType property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link PenaltyType }
+     *     
+     */
+    public PenaltyType getPenaltyType() {
+        return penaltyType;
+    }
+
+    /**
+     * Sets the value of the penaltyType property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link PenaltyType }
+     *     
+     */
+    public void setPenaltyType(PenaltyType value) {
+        this.penaltyType = value;
     }
 
     /**
