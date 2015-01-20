@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.*;
@@ -7,9 +6,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * <p>Java class for JanusMessageInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="JanusMessageInfo">
  *   &lt;complexContent>
@@ -37,28 +36,26 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JanusMessageInfo", propOrder = {
-    "messageId",
-    "topicId",
-    "parentId",
-    "userId",
-    "forumId",
-    "subject",
-    "messageName",
-    "userNick",
-    "message",
-    "articleId",
-    "messageDate",
-    "updateDate",
-    "userRole",
-    "userTitle",
-    "userTitleColor",
-    "lastModerated",
-    "closed"
+        "messageId",
+        "topicId",
+        "parentId",
+        "userId",
+        "forumId",
+        "subject",
+        "messageName",
+        "userNick",
+        "message",
+        "articleId",
+        "messageDate",
+        "updateDate",
+        "userRole",
+        "userTitle",
+        "userTitleColor",
+        "lastModerated",
+        "closed"
 })
 public class JanusMessageInfo {
 
@@ -79,6 +76,7 @@ public class JanusMessageInfo {
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar updateDate;
     @XmlElement(required = true)
+    @XmlSchemaType(name = "string")
     protected UserRole userRole;
     protected String userTitle;
     protected int userTitleColor;
@@ -89,7 +87,6 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the messageId property.
-     * 
      */
     public int getMessageId() {
         return messageId;
@@ -97,7 +94,6 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the messageId property.
-     * 
      */
     public void setMessageId(int value) {
         this.messageId = value;
@@ -105,7 +101,6 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the topicId property.
-     * 
      */
     public int getTopicId() {
         return topicId;
@@ -113,7 +108,6 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the topicId property.
-     * 
      */
     public void setTopicId(int value) {
         this.topicId = value;
@@ -121,7 +115,6 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the parentId property.
-     * 
      */
     public int getParentId() {
         return parentId;
@@ -129,7 +122,6 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the parentId property.
-     * 
      */
     public void setParentId(int value) {
         this.parentId = value;
@@ -137,7 +129,6 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the userId property.
-     * 
      */
     public int getUserId() {
         return userId;
@@ -145,7 +136,6 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the userId property.
-     * 
      */
     public void setUserId(int value) {
         this.userId = value;
@@ -153,7 +143,6 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the forumId property.
-     * 
      */
     public int getForumId() {
         return forumId;
@@ -161,7 +150,6 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the forumId property.
-     * 
      */
     public void setForumId(int value) {
         this.forumId = value;
@@ -169,11 +157,9 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the subject property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getSubject() {
         return subject;
@@ -181,11 +167,9 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the subject property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setSubject(String value) {
         this.subject = value;
@@ -193,11 +177,9 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the messageName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getMessageName() {
         return messageName;
@@ -205,11 +187,9 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the messageName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setMessageName(String value) {
         this.messageName = value;
@@ -217,11 +197,9 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the userNick property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserNick() {
         return userNick;
@@ -229,11 +207,9 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the userNick property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserNick(String value) {
         this.userNick = value;
@@ -241,11 +217,9 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the message property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getMessage() {
         return message;
@@ -253,11 +227,9 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the message property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setMessage(String value) {
         this.message = value;
@@ -265,7 +237,6 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the articleId property.
-     * 
      */
     public int getArticleId() {
         return articleId;
@@ -273,7 +244,6 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the articleId property.
-     * 
      */
     public void setArticleId(int value) {
         this.articleId = value;
@@ -281,11 +251,9 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the messageDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLGregorianCalendar }
      */
     public XMLGregorianCalendar getMessageDate() {
         return messageDate;
@@ -293,11 +261,9 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the messageDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLGregorianCalendar }
      */
     public void setMessageDate(XMLGregorianCalendar value) {
         this.messageDate = value;
@@ -305,11 +271,9 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the updateDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLGregorianCalendar }
      */
     public XMLGregorianCalendar getUpdateDate() {
         return updateDate;
@@ -317,11 +281,9 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the updateDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLGregorianCalendar }
      */
     public void setUpdateDate(XMLGregorianCalendar value) {
         this.updateDate = value;
@@ -329,11 +291,9 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the userRole property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link UserRole }
-     *     
+     *
+     * @return possible object is
+     * {@link UserRole }
      */
     public UserRole getUserRole() {
         return userRole;
@@ -341,11 +301,9 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the userRole property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link UserRole }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link UserRole }
      */
     public void setUserRole(UserRole value) {
         this.userRole = value;
@@ -353,11 +311,9 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the userTitle property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserTitle() {
         return userTitle;
@@ -365,11 +321,9 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the userTitle property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserTitle(String value) {
         this.userTitle = value;
@@ -377,7 +331,6 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the userTitleColor property.
-     * 
      */
     public int getUserTitleColor() {
         return userTitleColor;
@@ -385,7 +338,6 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the userTitleColor property.
-     * 
      */
     public void setUserTitleColor(int value) {
         this.userTitleColor = value;
@@ -393,11 +345,9 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the lastModerated property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLGregorianCalendar }
      */
     public XMLGregorianCalendar getLastModerated() {
         return lastModerated;
@@ -405,11 +355,9 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the lastModerated property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLGregorianCalendar }
      */
     public void setLastModerated(XMLGregorianCalendar value) {
         this.lastModerated = value;
@@ -417,7 +365,6 @@ public class JanusMessageInfo {
 
     /**
      * Gets the value of the closed property.
-     * 
      */
     public boolean isClosed() {
         return closed;
@@ -425,7 +372,6 @@ public class JanusMessageInfo {
 
     /**
      * Sets the value of the closed property.
-     * 
      */
     public void setClosed(boolean value) {
         this.closed = value;

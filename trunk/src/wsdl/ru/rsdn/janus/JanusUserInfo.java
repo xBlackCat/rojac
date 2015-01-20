@@ -26,6 +26,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="whereFrom" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="origin" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="userClass" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="gravatarHash" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="countryCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -45,7 +47,9 @@ import javax.xml.bind.annotation.XmlType;
     "specialization",
     "whereFrom",
     "origin",
-    "userClass"
+    "userClass",
+    "gravatarHash",
+    "countryCode"
 })
 public class JanusUserInfo {
 
@@ -59,6 +63,8 @@ public class JanusUserInfo {
     protected String whereFrom;
     protected String origin;
     protected int userClass;
+    protected String gravatarHash;
+    protected String countryCode;
 
     /**
      * Gets the value of the userId property.
@@ -282,6 +288,54 @@ public class JanusUserInfo {
      */
     public void setUserClass(int value) {
         this.userClass = value;
+    }
+
+    /**
+     * Gets the value of the gravatarHash property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getGravatarHash() {
+        return gravatarHash;
+    }
+
+    /**
+     * Sets the value of the gravatarHash property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setGravatarHash(String value) {
+        this.gravatarHash = value;
+    }
+
+    /**
+     * Gets the value of the countryCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    /**
+     * Sets the value of the countryCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCountryCode(String value) {
+        this.countryCode = value;
     }
 
 }
