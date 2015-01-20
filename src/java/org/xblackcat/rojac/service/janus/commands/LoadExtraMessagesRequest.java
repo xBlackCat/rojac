@@ -17,7 +17,7 @@ import org.xblackcat.rojac.service.janus.data.UsersList;
 import org.xblackcat.rojac.service.options.Property;
 import org.xblackcat.rojac.service.storage.*;
 import org.xblackcat.rojac.util.MessageUtils;
-import org.xblackcat.sjpu.storage.IBatch;
+import org.xblackcat.sjpu.storage.ITx;
 import org.xblackcat.sjpu.storage.StorageException;
 import ru.rsdn.janus.JanusMessageInfo;
 import ru.rsdn.janus.JanusModerateInfo;
@@ -93,7 +93,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
     ) throws StorageException, RsdnProcessorException {
         int portion = Property.SYNCHRONIZER_LOAD_TOPICS_PORTION.get();
 
-        try (IBatch batch = Storage.startBatch()) {
+        try (ITx batch = Storage.startBatch()) {
             IMiscAH miscAH = batch.get(IMiscAH.class);
             IMessageAH mAH = batch.get(IMessageAH.class);
 
@@ -142,7 +142,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
     }
 
     protected void storeNewPosts(ILogTracker tracker, TopicMessages newPosts) throws StorageException {
-        try (IBatch batch = Storage.startBatch()) {
+        try (ITx batch = Storage.startBatch()) {
             boolean done = false;
             try {
                 storeNewPosts(batch, tracker, newPosts);
@@ -157,7 +157,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         }
     }
 
-    private void storeNewPosts(IBatch batch, ILogTracker tracker, TopicMessages newPosts) throws StorageException {
+    private void storeNewPosts(ITx batch, ILogTracker tracker, TopicMessages newPosts) throws StorageException {
         IModerateAH modAH = batch.get(IModerateAH.class);
         IMessageAH mAH = batch.get(IMessageAH.class);
         IRatingAH rAH = batch.get(IRatingAH.class);
@@ -329,7 +329,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
 
                 // Try to loads users from JanusAT
                 userIds = usersToLoad.toArray();
-                try (IBatch batch = Storage.startBatch()) {
+                try (ITx batch = Storage.startBatch()) {
                     IUserAH userAH = batch.get(IUserAH.class);
                     try {
                         int portion = Property.SYNCHRONIZER_LOAD_USERS_PORTION.get();
@@ -383,7 +383,7 @@ class LoadExtraMessagesRequest extends ARequest<IPacket> {
         int idx = 0;
         int total = ratingCacheUpdate.size();
         tracker.addLodMessage(Message.Synchronize_Message_UpdateCaches);
-        try (IBatch batch = Storage.startBatch()) {
+        try (ITx batch = Storage.startBatch()) {
             try {
                 for (int anInt : ratingCacheUpdate.toArray()) {
                     MessageUtils.updateRatingCache(batch, anInt);

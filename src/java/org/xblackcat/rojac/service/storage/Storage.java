@@ -29,10 +29,10 @@ public final class Storage {
         }
     }
 
-    public static IBatch startBatch() throws StorageException {
+    public static ITx startBatch() throws StorageException {
         try {
             lock.readLock().lock();
-            return storage.openTransaction();
+            return storage.beginTransaction();
         } finally {
             lock.readLock().unlock();
         }
@@ -75,7 +75,7 @@ public final class Storage {
         builder.addMapper(new IDictMapper());
         builder.addMapper(new VersionMapper());
         builder.addRowSetConsumer(int[].class, IntArrayConsumer.class);
-        builder.setQueryHelper(StorageUtils.buildQueryHelper(settings));
+        builder.setConnectionFactory(StorageUtils.buildConnectionFactory(settings));
 
         return builder.build();
     }

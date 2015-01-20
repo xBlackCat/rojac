@@ -7,11 +7,9 @@ import org.xblackcat.rojac.i18n.JLOptionPane;
 import org.xblackcat.rojac.i18n.Message;
 import org.xblackcat.rojac.util.RojacWorker;
 import org.xblackcat.rojac.util.WindowsUtils;
-import org.xblackcat.sjpu.storage.IQueryHelper;
-import org.xblackcat.sjpu.storage.StorageUtils;
+import org.xblackcat.sjpu.storage.IStorage;
+import org.xblackcat.sjpu.storage.StorageBuilder;
 import org.xblackcat.sjpu.storage.connection.DBConfig;
-import org.xblackcat.sjpu.storage.consumer.SingletonConsumer;
-import org.xblackcat.sjpu.storage.converter.ToScalarConverter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -111,11 +109,10 @@ public class DBSettingsPane extends JPanel {
                 @Override
                 protected Void perform() throws Exception {
                     try {
-                        IQueryHelper queryHelper = StorageUtils.buildQueryHelper(curSet);
+                        IStorage storage = StorageBuilder.defaultStorage(curSet);
 
-                        final SingletonConsumer<Number> consumer = new SingletonConsumer<>();
-                        queryHelper.execute(consumer, new ToScalarConverter<>(), "SELECT 21+21");
-                        Number answer = consumer.getRowsHolder();
+                        ITestConnectionAH ah = storage.get(ITestConnectionAH.class);
+                        Number answer = ah.getAnswerToTheUltimateQuestionOfLifeTheUniverseAndEverything();
 
                         if (answer != null && answer.intValue() == 42) {
                             publish((Throwable) null);
@@ -123,8 +120,7 @@ public class DBSettingsPane extends JPanel {
                             publish(new IllegalStateException("Database math is wrong!"));
                         }
 
-                        queryHelper.shutdown();
-
+                        storage.shutdown();
                     } catch (Exception e1) {
                         publish(e1);
                     }
