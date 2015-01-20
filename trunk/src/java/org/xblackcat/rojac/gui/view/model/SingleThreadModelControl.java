@@ -84,18 +84,23 @@ class SingleThreadModelControl extends AThreadsModelControl {
     }
 
     @Override
-    public void processPacket(final SortedThreadsModel model, IPacket packet, final Runnable postProcessor) {
+    public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
         final int forumId = model.getRoot().getForumId();
         final int threadId = model.getRoot().getMessageId();
 
         new PacketDispatcher(
-                (OptionsUpdatedPacket p) -> {
+                new APacketProcessor<OptionsUpdatedPacket>() {
+                    @Override
+                    public void process(OptionsUpdatedPacket p) {
                     if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
                             p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
                         model.subTreeNodesChanged(model.getRoot());
                     }
+                    }
                 },
-                (SetForumReadPacket p) -> {
+                new APacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
                     if (p.getForumId() == forumId) {
                         assert RojacUtils.checkThread(true);
 
@@ -104,8 +109,11 @@ class SingleThreadModelControl extends AThreadsModelControl {
 
                         model.subTreeNodesChanged(model.getRoot());
                     }
+                    }
                 },
-                (SetSubThreadReadPacket p) -> {
+                new APacketProcessor<SetSubThreadReadPacket>() {
+                    @Override
+                    public void process(SetSubThreadReadPacket p) {
                     if (p.getForumId() == forumId) {
                         assert RojacUtils.checkThread(true);
 
@@ -119,8 +127,11 @@ class SingleThreadModelControl extends AThreadsModelControl {
 
                         model.subTreeNodesChanged(root);
                     }
+                    }
                 },
-                (SetPostReadPacket p) -> {
+                new APacketProcessor<SetPostReadPacket>() {
+                    @Override
+                    public void process(SetPostReadPacket p) {
                     MessageData md = p.getPost();
                     if (md.getForumId() == forumId && md.getThreadRootId() == threadId) {
                         assert RojacUtils.checkThread(true);
@@ -131,8 +142,11 @@ class SingleThreadModelControl extends AThreadsModelControl {
                             model.pathToNodeChanged(post);
                         }
                     }
+                    }
                 },
-                (SetReadExPacket p) -> {
+                new APacketProcessor<SetReadExPacket>() {
+                    @Override
+                    public void process(SetReadExPacket p) {
                     if (!p.isTopicAffected(threadId)) {
                         // Current forum is not changed - have a rest
                         return;
@@ -149,8 +163,11 @@ class SingleThreadModelControl extends AThreadsModelControl {
                             model.pathToNodeChanged(post);
                         }
                     }
+                    }
                 },
-                (SynchronizationCompletePacket p) -> {
+                new APacketProcessor<SynchronizationCompletePacket>() {
+                    @Override
+                    public void process(SynchronizationCompletePacket p) {
                     if (!p.isForumAffected(forumId)) {
                         // Current forum is not changed - have a rest
                         return;
@@ -160,9 +177,17 @@ class SingleThreadModelControl extends AThreadsModelControl {
                     }
 
                     reloadThread(model, postProcessor);
+                    }
                 },
-                (IgnoreUserUpdatedPacket p) -> PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored()),
-                (IgnoreUpdatedPacket p) -> {
+                new APacketProcessor<IgnoreUserUpdatedPacket>() {
+                    @Override
+                    public void process(IgnoreUserUpdatedPacket p) {
+                        PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored());
+                    }
+                },
+                new APacketProcessor<IgnoreUpdatedPacket>() {
+                    @Override
+                    public void process(IgnoreUpdatedPacket p) {
                     if (p.getThreadId() == threadId) {
                         Post threadRoot = model.getRoot();
                         MessageData data = threadRoot.getMessageData();
@@ -171,7 +196,8 @@ class SingleThreadModelControl extends AThreadsModelControl {
                         model.subTreeNodesChanged(threadRoot);
                     }
                 }
-        ).dispatch(packet);
+    }
+        ).dispatch(p);
     }
 
     private void reloadThread(final SortedThreadsModel model, final Runnable postProcessor) {
@@ -180,7 +206,8 @@ class SingleThreadModelControl extends AThreadsModelControl {
         root.setLoadingState(LoadingState.Loading);
 
         // Thread always filled in.
-        new ThreadPostsLoader(model, root, new Runnable() {
+        new ThreadPostsLoader(
+                model, root, new Runnable() {
             @Override
             public void run() {
                 model.markInitialized();
@@ -190,7 +217,8 @@ class SingleThreadModelControl extends AThreadsModelControl {
                     postProcessor.run();
                 }
             }
-        }).execute();
+        }
+        ).execute();
     }
 
     @Override

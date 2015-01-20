@@ -2,11 +2,9 @@ package org.xblackcat.rojac.service.storage;
 
 import org.xblackcat.rojac.data.Favorite;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
-import org.xblackcat.rojac.service.storage.database.convert.ToFavoriteConverter;
 import org.xblackcat.sjpu.storage.IAH;
 import org.xblackcat.sjpu.storage.StorageException;
 import org.xblackcat.sjpu.storage.ann.Sql;
-import org.xblackcat.sjpu.storage.ann.ToObjectConverter;
 
 import java.util.List;
 
@@ -21,7 +19,6 @@ public interface IFavoriteAH extends IAH {
      * @return array of favorites object.
      * @throws StorageException
      */
-    @ToObjectConverter(ToFavoriteConverter.class)
     @Sql("SELECT\n" +
                  "  id, type, config\n" +
                  "FROM favorite")
@@ -54,7 +51,6 @@ public interface IFavoriteAH extends IAH {
      * @return favorite object.
      * @throws StorageException
      */
-    @ToObjectConverter(ToFavoriteConverter.class)
     @Sql("SELECT id, type, config FROM favorite WHERE id=?")
     Favorite getFavorite(int favoriteId) throws StorageException;
 }

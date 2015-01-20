@@ -88,7 +88,7 @@ public class DBStructureChecker implements IStructureChecker {
             try {
                 m.invoke(ah);
             } catch (ReflectiveOperationException e) {
-                throw new StorageCheckException("Can't initialize database", e);
+                throw new StorageCheckException("Can't initialize database [" + m.getName() + "]", e);
             }
         }
     }

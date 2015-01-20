@@ -40,8 +40,13 @@ public class MessageView extends AnItemView {
     private String messageTitle;
 
     private final PacketDispatcher packetDispatcher = new PacketDispatcher(
-            p -> loadItem(getId().getId()),
-            new IPacketProcessor<IMessageUpdatePacket>() {
+            new APacketProcessor<ReloadDataPacket>() {
+                @Override
+                public void process(ReloadDataPacket p) {
+                    loadItem(getId().getId());
+                }
+            },
+            new APacketProcessor<IMessageUpdatePacket>() {
                 @Override
                 public void process(IMessageUpdatePacket p) {
                     if (p.isMessageAffected(messageId)) {
@@ -53,7 +58,7 @@ public class MessageView extends AnItemView {
                     }
                 }
             },
-            new IPacketProcessor<SetPostReadPacket>() {
+            new APacketProcessor<SetPostReadPacket>() {
                 @Override
                 public void process(SetPostReadPacket p) {
                     if (p.getPost().getMessageId() == messageId) {
@@ -61,7 +66,7 @@ public class MessageView extends AnItemView {
                     }
                 }
             },
-            new IPacketProcessor<SetSubThreadReadPacket>() {
+            new APacketProcessor<SetSubThreadReadPacket>() {
                 @Override
                 public void process(SetSubThreadReadPacket p) {
                     // ???

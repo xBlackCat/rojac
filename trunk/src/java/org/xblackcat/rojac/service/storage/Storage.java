@@ -7,6 +7,7 @@ import org.xblackcat.rojac.service.storage.database.VersionMapper;
 import org.xblackcat.rojac.util.RojacUtils;
 import org.xblackcat.sjpu.storage.*;
 import org.xblackcat.sjpu.storage.connection.DBConfig;
+import org.xblackcat.sjpu.storage.typemap.EnumToStringMapper;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -74,6 +75,7 @@ public final class Storage {
         // TODO: add mappers
         builder.addMapper(new IDictMapper());
         builder.addMapper(new VersionMapper());
+        builder.addMapper(new EnumToStringMapper<>());
         builder.addRowSetConsumer(int[].class, IntArrayConsumer.class);
         builder.setConnectionFactory(StorageUtils.buildConnectionFactory(settings));
 

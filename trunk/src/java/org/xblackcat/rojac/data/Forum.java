@@ -1,5 +1,6 @@
 package org.xblackcat.rojac.data;
 
+import org.xblackcat.sjpu.storage.ann.DefaultRowMap;
 import ru.rsdn.janus.JanusForumInfo;
 
 /**
@@ -16,6 +17,7 @@ public final class Forum {
     private final int rateLimit;
     private final boolean subscribed;
 
+    @DefaultRowMap
     public Forum(
             int forumId,
             int forumGroupId,

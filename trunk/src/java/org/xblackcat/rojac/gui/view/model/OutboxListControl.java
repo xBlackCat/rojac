@@ -78,14 +78,27 @@ class OutboxListControl extends AMessageListControl {
     @Override
     public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
-                (OptionsUpdatedPacket p1) -> {
-                    if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
-                            p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
-                        model.subTreeNodesChanged(model.getRoot());
+                new APacketProcessor<OptionsUpdatedPacket>() {
+                    @Override
+                    public void process(OptionsUpdatedPacket p) {
+                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                            model.subTreeNodesChanged(model.getRoot());
+                        }
                     }
                 },
-                (NewMessagesUpdatedPacket p1) -> updateModel(model, postProcessor),
-                (SynchronizationCompletePacket p1) -> updateModel(model, postProcessor)
+                new APacketProcessor<NewMessagesUpdatedPacket>() {
+                    @Override
+                    public void process(NewMessagesUpdatedPacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                },
+                new APacketProcessor<SynchronizationCompletePacket>() {
+                    @Override
+                    public void process(SynchronizationCompletePacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                }
         ).dispatch(p);
     }
 
