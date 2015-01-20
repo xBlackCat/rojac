@@ -11,8 +11,7 @@ import org.xblackcat.rojac.gui.view.AView;
 import org.xblackcat.rojac.gui.view.ViewType;
 import org.xblackcat.rojac.gui.view.model.FavoriteType;
 import org.xblackcat.rojac.i18n.Message;
-import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.PacketDispatcher;
+import org.xblackcat.rojac.service.datahandler.*;
 import org.xblackcat.rojac.service.storage.IFavoriteAH;
 import org.xblackcat.rojac.service.storage.Storage;
 import org.xblackcat.rojac.util.RojacWorker;
@@ -29,13 +28,48 @@ import java.util.List;
 public class FavoritesView extends AView {
     private final FavoritesModel favoritesModel = new FavoritesModel();
     private final PacketDispatcher packetDispatcher = new PacketDispatcher(
-            p -> reloadFavorites(),
-            p -> favoritesModel.updateFavoriteData(null),
-            p -> favoritesModel.updateFavoriteData(null),
-            p -> favoritesModel.updateFavoriteData(null),
-            p -> favoritesModel.updateFavoriteData(null),
-            p -> favoritesModel.updateFavoriteData(FavoriteType.Category),
-            p -> favoritesModel.updateFavoriteData(null)
+            new APacketProcessor<FavoritesUpdatedPacket>() {
+                @Override
+                public void process(FavoritesUpdatedPacket p) {
+                    reloadFavorites();
+                }
+            },
+            new APacketProcessor<SetForumReadPacket>() {
+                @Override
+                public void process(SetForumReadPacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            },
+            new APacketProcessor<SetPostReadPacket>() {
+                @Override
+                public void process(SetPostReadPacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            },
+            new APacketProcessor<SetSubThreadReadPacket>() {
+                @Override
+                public void process(SetSubThreadReadPacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            },
+            new APacketProcessor<SetReadExPacket>() {
+                @Override
+                public void process(SetReadExPacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            },
+            new APacketProcessor<FavoriteCategoryUpdatedPacket>() {
+                @Override
+                public void process(FavoriteCategoryUpdatedPacket p) {
+                    favoritesModel.updateFavoriteData(FavoriteType.Category);
+                }
+            },
+            new APacketProcessor<SynchronizationCompletePacket>() {
+                @Override
+                public void process(SynchronizationCompletePacket p) {
+                    favoritesModel.updateFavoriteData(null);
+                }
+            }
     );
 
     public FavoritesView(final IAppControl appControl) {

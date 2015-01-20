@@ -4,8 +4,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.NewRating;
+import org.xblackcat.rojac.service.datahandler.APacketProcessor;
 import org.xblackcat.rojac.service.datahandler.IPacket;
-import org.xblackcat.rojac.service.datahandler.IPacketProcessor;
 import org.xblackcat.rojac.service.datahandler.OptionsUpdatedPacket;
 import ru.rsdn.janus.PostRatingInfo;
 
@@ -80,20 +80,11 @@ public class RojacUtilsTest extends TestCase {
 
     public void testLambdaRSDNable() throws Exception {
         {
-            IPacketProcessor<? extends IPacket> pp = new IPacketProcessor<OptionsUpdatedPacket>() {
+            APacketProcessor<? extends IPacket> pp = new APacketProcessor<OptionsUpdatedPacket>() {
                 @Override
                 public void process(OptionsUpdatedPacket p) {
 
                 }
-            };
-
-            final Class<?> genericClass = RojacUtils.getGenericClass(pp.getClass());
-            Assert.assertEquals(OptionsUpdatedPacket.class, genericClass);
-        }
-        if (false) {
-            // Not working :(
-
-            IPacketProcessor<? extends IPacket> pp = (OptionsUpdatedPacket p) -> {
             };
 
             final Class<?> genericClass = RojacUtils.getGenericClass(pp.getClass());

@@ -137,33 +137,64 @@ class PostListControl extends AMessageListControl {
     }
 
     @Override
-    public void processPacket(final SortedThreadsModel model, IPacket packet, final Runnable postProcessor) {
+    public void processPacket(final SortedThreadsModel model, IPacket p, final Runnable postProcessor) {
         new PacketDispatcher(
-                (IgnoreUserUpdatedPacket p1) -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
-                (OptionsUpdatedPacket p1) -> {
-                    if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
-                            p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
-                        model.subTreeNodesChanged(model.getRoot());
+                new APacketProcessor<IgnoreUserUpdatedPacket>() {
+                    @Override
+                    public void process(IgnoreUserUpdatedPacket p) {
+                        PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored());
                     }
                 },
-                (SetForumReadPacket p1) -> updateModel(model, postProcessor),
-                (SetSubThreadReadPacket p1) -> updateModel(model, postProcessor),
-                (SetPostReadPacket p1) -> markPostRead(model, p1.getPost().getMessageId(), p1.isRead()),
-                (SetReadExPacket p1) -> {
+                new APacketProcessor<OptionsUpdatedPacket>() {
+                    @Override
+                    public void process(OptionsUpdatedPacket p) {
+                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                        model.subTreeNodesChanged(model.getRoot());
+                    }
+                    }
+                },
+                new APacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                },
+                new APacketProcessor<SetSubThreadReadPacket>() {
+                    @Override
+                    public void process(SetSubThreadReadPacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                },
+                new APacketProcessor<SetPostReadPacket>() {
+                    @Override
+                    public void process(SetPostReadPacket p) {
+                        markPostRead(model, p.getPost().getMessageId(), p.isRead());
+                    }
+                },
+                new APacketProcessor<SetReadExPacket>() {
+                    @Override
+                    public void process(SetReadExPacket p) {
                     Post root = model.getRoot();
 
                     // Second - update already loaded posts.
-                    for (int postId : p1.getMessageIds()) {
+                        for (int postId : p.getMessageIds()) {
                         Post post = root.getMessageById(postId);
 
                         if (post != null) {
-                            post.setRead(p1.isRead());
+                                post.setRead(p.isRead());
                             model.pathToNodeChanged(post);
                         }
                     }
+                    }
                 },
-                (SynchronizationCompletePacket p1) -> updateModel(model, postProcessor)
-        ).dispatch(packet);
+                new APacketProcessor<SynchronizationCompletePacket>() {
+                    @Override
+                    public void process(SynchronizationCompletePacket p) {
+                        updateModel(model, postProcessor);
+                    }
+                }
+        ).dispatch(p);
     }
 
     @TaskType(TaskTypeEnum.Initialization)

@@ -20,7 +20,7 @@ public interface INewMessageAH extends IAH {
     void updateNewMessage(String subject, String message, boolean draft, int localMessageId) throws StorageException;
 
     @Sql("DELETE FROM new_message WHERE id=?")
-    boolean removeNewMessage(int id) throws StorageException;
+    int removeNewMessage(int id) throws StorageException;
 
     @Sql("DELETE FROM new_message")
     void purgeNewMessage() throws StorageException;

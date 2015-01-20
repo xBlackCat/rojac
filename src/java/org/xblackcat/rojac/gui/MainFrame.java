@@ -93,7 +93,7 @@ public class MainFrame extends JFrame implements IStateful, IAppControl, IDataHa
     private ProgressComponent progressInToolbar;
 
     private final PacketDispatcher mainDispatcher = new PacketDispatcher(
-            new IPacketProcessor<OptionsUpdatedPacket>() {
+            new APacketProcessor<OptionsUpdatedPacket>() {
                 @Override
                 public void process(OptionsUpdatedPacket p) {
                     if (p.isPropertyAffected(VIEW_THREAD_TAB_TITLE_LIMIT)) {

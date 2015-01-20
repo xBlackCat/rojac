@@ -154,14 +154,16 @@ class SortedForumModelControl extends AThreadsModelControl {
         final int forumId = model.getRoot().getForumId();
 
         new PacketDispatcher(
-                (OptionsUpdatedPacket p1) -> {
-                    if (p1.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
-                            p1.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
+                new APacketProcessor<OptionsUpdatedPacket>() {
+                    @Override
+                    public void process(OptionsUpdatedPacket p) {
+                        if (p.isPropertyAffected(Property.SKIP_IGNORED_USER_REPLY) ||
+                                p.isPropertyAffected(Property.SKIP_IGNORED_USER_THREAD)) {
                         model.subTreeNodesChanged(model.getRoot());
                     }
 
-                    if (p1.isPropertyAffected(Property.VIEW_THREAD_HIDE_READ_THREADS) ||
-                            p1.isPropertyAffected(Property.HIDE_IGNORED_TOPICS)) {
+                        if (p.isPropertyAffected(Property.VIEW_THREAD_HIDE_READ_THREADS) ||
+                                p.isPropertyAffected(Property.HIDE_IGNORED_TOPICS)) {
                         if (Property.VIEW_THREAD_HIDE_READ_THREADS.get() || Property.HIDE_IGNORED_TOPICS.get()) {
                             hideReadThreads(model);
                         }
@@ -170,27 +172,36 @@ class SortedForumModelControl extends AThreadsModelControl {
                             new ThreadsLoader(postProcessor, model, forumId).execute();
                         }
                     }
-                },
-                (SetForumReadPacket p1) -> {
-                    if (p1.getForumId() == forumId) {
-                        markForumRead(model, p1.isRead());
                     }
                 },
-                (SetSubThreadReadPacket p1) -> {
-                    if (p1.getForumId() == forumId) {
-                        markThreadRead(model, p1.getPostId(), p1.isRead());
+                new APacketProcessor<SetForumReadPacket>() {
+                    @Override
+                    public void process(SetForumReadPacket p) {
+                        if (p.getForumId() == forumId) {
+                            markForumRead(model, p.isRead());
+                    }
                     }
                 },
-                (SetPostReadPacket p1) -> {
-                    if (p1.getPost().getForumId() == forumId) {
+                new APacketProcessor<SetSubThreadReadPacket>() {
+                    @Override
+                    public void process(SetSubThreadReadPacket p) {
+                        if (p.getForumId() == forumId) {
+                            markThreadRead(model, p.getPostId(), p.isRead());
+                    }
+                    }
+                },
+                new APacketProcessor<SetPostReadPacket>() {
+                    @Override
+                    public void process(SetPostReadPacket p) {
+                        if (p.getPost().getForumId() == forumId) {
                         assert RojacUtils.checkThread(true);
 
-                        final Post post = model.getRoot().getMessageById(p1.getPost().getMessageId());
+                            final Post post = model.getRoot().getMessageById(p.getPost().getMessageId());
                         if (post != null) {
-                            post.setRead(p1.isRead());
+                                post.setRead(p.isRead());
                             model.pathToNodeChanged(post);
                         } else {
-                            Post threadRoot = model.getRoot().getMessageById(p1.getPost().getTopicId());
+                                Post threadRoot = model.getRoot().getMessageById(p.getPost().getTopicId());
 
                             if (threadRoot != null) {
                                 assert threadRoot instanceof Thread : "Expected a Thread class instance but got " + threadRoot.getClass().getName();
@@ -205,18 +216,21 @@ class SortedForumModelControl extends AThreadsModelControl {
                             }
                         }
                     }
+                    }
                 },
-                (SetReadExPacket p1) -> {
-                    if (!p1.isForumAffected(forumId)) {
+                new APacketProcessor<SetReadExPacket>() {
+                    @Override
+                    public void process(SetReadExPacket p) {
+                        if (!p.isForumAffected(forumId)) {
                         // Current forum is not changed - have a rest
                         return;
                     }
 
-                    boolean newReadState = p1.isRead();
+                        boolean newReadState = p.isRead();
                     Post root = model.getRoot();
 
                     // First, queue for update a not loaded threads.
-                    for (int topicId : p1.getThreadIds()) {
+                        for (int topicId : p.getThreadIds()) {
                         Post post = root.getMessageById(topicId);
 
                         if (post == null) {
@@ -235,7 +249,7 @@ class SortedForumModelControl extends AThreadsModelControl {
                     }
 
                     // Second - update already loaded posts.
-                    for (int postId : p1.getMessageIds()) {
+                        for (int postId : p.getMessageIds()) {
                         Post post = root.getMessageById(postId);
 
                         if (post != null) {
@@ -243,27 +257,33 @@ class SortedForumModelControl extends AThreadsModelControl {
                             model.pathToNodeChanged(post);
                         }
                     }
+                    }
                 },
-                (SynchronizationCompletePacket p1) -> {
+                new APacketProcessor<SynchronizationCompletePacket>() {
+                    @Override
+                    public void process(SynchronizationCompletePacket p) {
                     if (Property.VIEW_THREAD_HIDE_READ_THREADS.get() || Property.HIDE_IGNORED_TOPICS.get()) {
                         hideReadThreads(model);
                     }
 
-                    if (!p1.isForumAffected(forumId)) {
+                        if (!p.isForumAffected(forumId)) {
                         // Current forum is not changed - have a rest
                         return;
                     }
 
-                    updateModel(postProcessor, model, p1.getThreadIds());
+                        updateModel(postProcessor, model, p.getThreadIds());
+                    }
                 },
-                (SubscriptionChangedPacket p1) -> {
+                new APacketProcessor<SubscriptionChangedPacket>() {
+                    @Override
+                    public void process(SubscriptionChangedPacket p) {
                     final Post root = model.getRoot();
                     final MessageData data = root.getMessageData();
 
                     if (data instanceof ForumMessageData) {
                         Forum f = ((ForumMessageData) data).getForum();
 
-                        for (SubscriptionChangedPacket.Subscription s : p1.getNewSubscriptions()) {
+                            for (SubscriptionChangedPacket.Subscription s : p.getNewSubscriptions()) {
                             if (s.getForumId() == f.getForumId()) {
                                 f.setSubscribed(s.isSubscribed());
 
@@ -272,17 +292,25 @@ class SortedForumModelControl extends AThreadsModelControl {
                             }
                         }
                     }
+                    }
                 },
-                (IgnoreUserUpdatedPacket p1) -> PostUtils.setIgnoreUserFlag(model, p1.getUserId(), p1.isIgnored()),
-                (IgnoreUpdatedPacket p1) -> {
-                    if (p1.getForumId() != forumId) {
+                new APacketProcessor<IgnoreUserUpdatedPacket>() {
+                    @Override
+                    public void process(IgnoreUserUpdatedPacket p) {
+                        PostUtils.setIgnoreUserFlag(model, p.getUserId(), p.isIgnored());
+                    }
+                },
+                new APacketProcessor<IgnoreUpdatedPacket>() {
+                    @Override
+                    public void process(IgnoreUpdatedPacket p) {
+                        if (p.getForumId() != forumId) {
                         return;
                     }
 
-                    int threadId = p1.getThreadId();
+                        int threadId = p.getThreadId();
 
                     if (Property.HIDE_IGNORED_TOPICS.get()) {
-                        if (p1.isIgnored()) {
+                            if (p.isIgnored()) {
                             ForumRoot root = (ForumRoot) model.getRoot();
 
                             Post thread = root.getMessageById(threadId);
@@ -309,11 +337,12 @@ class SortedForumModelControl extends AThreadsModelControl {
                         Post threadRoot = model.getRoot().getMessageById(threadId);
                         if (threadRoot != null) {
                             MessageData data = threadRoot.getMessageData();
-                            threadRoot.setMessageData(data.setIgnored(p1.isIgnored()));
+                                threadRoot.setMessageData(data.setIgnored(p.isIgnored()));
 
                             model.subTreeNodesChanged(threadRoot);
                         }
                     }
+                }
                 }
         ).dispatch(p);
     }
