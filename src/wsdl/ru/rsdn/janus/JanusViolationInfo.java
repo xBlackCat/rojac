@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.*;
@@ -7,9 +6,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * <p>Java class for JanusViolationInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="JanusViolationInfo">
  *   &lt;complexContent>
@@ -25,16 +24,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JanusViolationInfo", propOrder = {
-    "messageID",
-    "reason",
-    "createdOn",
-    "penaltyType",
-    "rowVersion"
+        "messageID",
+        "reason",
+        "createdOn",
+        "penaltyType",
+        "rowVersion"
 })
 public class JanusViolationInfo {
 
@@ -53,7 +50,6 @@ public class JanusViolationInfo {
 
     /**
      * Gets the value of the messageID property.
-     * 
      */
     public int getMessageID() {
         return messageID;
@@ -61,7 +57,6 @@ public class JanusViolationInfo {
 
     /**
      * Sets the value of the messageID property.
-     * 
      */
     public void setMessageID(int value) {
         this.messageID = value;
@@ -69,11 +64,9 @@ public class JanusViolationInfo {
 
     /**
      * Gets the value of the reason property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getReason() {
         return reason;
@@ -81,11 +74,9 @@ public class JanusViolationInfo {
 
     /**
      * Sets the value of the reason property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setReason(String value) {
         this.reason = value;
@@ -93,11 +84,9 @@ public class JanusViolationInfo {
 
     /**
      * Gets the value of the createdOn property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLGregorianCalendar }
      */
     public XMLGregorianCalendar getCreatedOn() {
         return createdOn;
@@ -105,11 +94,9 @@ public class JanusViolationInfo {
 
     /**
      * Sets the value of the createdOn property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLGregorianCalendar }
      */
     public void setCreatedOn(XMLGregorianCalendar value) {
         this.createdOn = value;
@@ -117,11 +104,9 @@ public class JanusViolationInfo {
 
     /**
      * Gets the value of the penaltyType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PenaltyType }
-     *     
+     *
+     * @return possible object is
+     * {@link PenaltyType }
      */
     public PenaltyType getPenaltyType() {
         return penaltyType;
@@ -129,11 +114,9 @@ public class JanusViolationInfo {
 
     /**
      * Sets the value of the penaltyType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PenaltyType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link PenaltyType }
      */
     public void setPenaltyType(PenaltyType value) {
         this.penaltyType = value;
@@ -141,10 +124,9 @@ public class JanusViolationInfo {
 
     /**
      * Gets the value of the rowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getRowVersion() {
         return rowVersion;
@@ -152,10 +134,9 @@ public class JanusViolationInfo {
 
     /**
      * Sets the value of the rowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setRowVersion(byte[] value) {
         this.rowVersion = value;

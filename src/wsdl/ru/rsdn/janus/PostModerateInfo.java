@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.*;
@@ -6,9 +5,9 @@ import javax.xml.bind.annotation.*;
 
 /**
  * <p>Java class for PostModerateInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="PostModerateInfo">
  *   &lt;complexContent>
@@ -25,17 +24,15 @@ import javax.xml.bind.annotation.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PostModerateInfo", propOrder = {
-    "localModerateId",
-    "messageId",
-    "moderateAction",
-    "moderateToForumId",
-    "description",
-    "asModerator"
+        "localModerateId",
+        "messageId",
+        "moderateAction",
+        "moderateToForumId",
+        "description",
+        "asModerator"
 })
 public class PostModerateInfo {
 
@@ -55,7 +52,6 @@ public class PostModerateInfo {
 
     /**
      * Gets the value of the localModerateId property.
-     * 
      */
     public int getLocalModerateId() {
         return localModerateId;
@@ -63,7 +59,6 @@ public class PostModerateInfo {
 
     /**
      * Sets the value of the localModerateId property.
-     * 
      */
     public void setLocalModerateId(int value) {
         this.localModerateId = value;
@@ -71,7 +66,6 @@ public class PostModerateInfo {
 
     /**
      * Gets the value of the messageId property.
-     * 
      */
     public int getMessageId() {
         return messageId;
@@ -79,7 +73,6 @@ public class PostModerateInfo {
 
     /**
      * Sets the value of the messageId property.
-     * 
      */
     public void setMessageId(int value) {
         this.messageId = value;
@@ -87,11 +80,9 @@ public class PostModerateInfo {
 
     /**
      * Gets the value of the moderateAction property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ModerateActionType }
-     *     
+     *
+     * @return possible object is
+     * {@link ModerateActionType }
      */
     public ModerateActionType getModerateAction() {
         return moderateAction;
@@ -99,11 +90,9 @@ public class PostModerateInfo {
 
     /**
      * Sets the value of the moderateAction property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ModerateActionType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ModerateActionType }
      */
     public void setModerateAction(ModerateActionType value) {
         this.moderateAction = value;
@@ -111,7 +100,6 @@ public class PostModerateInfo {
 
     /**
      * Gets the value of the moderateToForumId property.
-     * 
      */
     public int getModerateToForumId() {
         return moderateToForumId;
@@ -119,7 +107,6 @@ public class PostModerateInfo {
 
     /**
      * Sets the value of the moderateToForumId property.
-     * 
      */
     public void setModerateToForumId(int value) {
         this.moderateToForumId = value;
@@ -127,11 +114,9 @@ public class PostModerateInfo {
 
     /**
      * Gets the value of the description property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getDescription() {
         return description;
@@ -139,11 +124,9 @@ public class PostModerateInfo {
 
     /**
      * Sets the value of the description property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setDescription(String value) {
         this.description = value;
@@ -151,7 +134,6 @@ public class PostModerateInfo {
 
     /**
      * Gets the value of the asModerator property.
-     * 
      */
     public boolean isAsModerator() {
         return asModerator;
@@ -159,7 +141,6 @@ public class PostModerateInfo {
 
     /**
      * Sets the value of the asModerator property.
-     * 
      */
     public void setAsModerator(boolean value) {
         this.asModerator = value;

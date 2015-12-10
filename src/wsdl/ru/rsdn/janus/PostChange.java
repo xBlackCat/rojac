@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -23,12 +22,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "postRequest"
+        "postRequest"
 })
 @XmlRootElement(name = "PostChange")
 public class PostChange {
@@ -37,11 +34,9 @@ public class PostChange {
 
     /**
      * Gets the value of the postRequest property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PostRequest }
-     *     
+     *
+     * @return possible object is
+     * {@link PostRequest }
      */
     public PostRequest getPostRequest() {
         return postRequest;
@@ -49,11 +44,9 @@ public class PostChange {
 
     /**
      * Sets the value of the postRequest property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PostRequest }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link PostRequest }
      */
     public void setPostRequest(PostRequest value) {
         this.postRequest = value;

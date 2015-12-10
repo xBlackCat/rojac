@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.*;
@@ -6,9 +5,9 @@ import javax.xml.bind.annotation.*;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -20,12 +19,10 @@ import javax.xml.bind.annotation.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "postChangeCommitResult"
+        "postChangeCommitResult"
 })
 @XmlRootElement(name = "PostChangeCommitResponse")
 public class PostChangeCommitResponse {
@@ -35,11 +32,9 @@ public class PostChangeCommitResponse {
 
     /**
      * Gets the value of the postChangeCommitResult property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PostResponse }
-     *     
+     *
+     * @return possible object is
+     * {@link PostResponse }
      */
     public PostResponse getPostChangeCommitResult() {
         return postChangeCommitResult;
@@ -47,11 +42,9 @@ public class PostChangeCommitResponse {
 
     /**
      * Sets the value of the postChangeCommitResult property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PostResponse }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link PostResponse }
      */
     public void setPostChangeCommitResult(PostResponse value) {
         this.postChangeCommitResult = value;

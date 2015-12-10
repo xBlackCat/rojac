@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for ChangeResponse complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="ChangeResponse">
  *   &lt;complexContent>
@@ -28,18 +27,16 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ChangeResponse", propOrder = {
-    "newMessages",
-    "newRating",
-    "newModerate",
-    "lastRatingRowVersion",
-    "lastForumRowVersion",
-    "lastModerateRowVersion",
-    "userId"
+        "newMessages",
+        "newRating",
+        "newModerate",
+        "lastRatingRowVersion",
+        "lastForumRowVersion",
+        "lastModerateRowVersion",
+        "userId"
 })
 public class ChangeResponse {
 
@@ -53,11 +50,9 @@ public class ChangeResponse {
 
     /**
      * Gets the value of the newMessages property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfJanusMessageInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfJanusMessageInfo }
      */
     public ArrayOfJanusMessageInfo getNewMessages() {
         return newMessages;
@@ -65,11 +60,9 @@ public class ChangeResponse {
 
     /**
      * Sets the value of the newMessages property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfJanusMessageInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfJanusMessageInfo }
      */
     public void setNewMessages(ArrayOfJanusMessageInfo value) {
         this.newMessages = value;
@@ -77,11 +70,9 @@ public class ChangeResponse {
 
     /**
      * Gets the value of the newRating property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfJanusRatingInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfJanusRatingInfo }
      */
     public ArrayOfJanusRatingInfo getNewRating() {
         return newRating;
@@ -89,11 +80,9 @@ public class ChangeResponse {
 
     /**
      * Sets the value of the newRating property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfJanusRatingInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfJanusRatingInfo }
      */
     public void setNewRating(ArrayOfJanusRatingInfo value) {
         this.newRating = value;
@@ -101,11 +90,9 @@ public class ChangeResponse {
 
     /**
      * Gets the value of the newModerate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfJanusModerateInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfJanusModerateInfo }
      */
     public ArrayOfJanusModerateInfo getNewModerate() {
         return newModerate;
@@ -113,11 +100,9 @@ public class ChangeResponse {
 
     /**
      * Sets the value of the newModerate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfJanusModerateInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfJanusModerateInfo }
      */
     public void setNewModerate(ArrayOfJanusModerateInfo value) {
         this.newModerate = value;
@@ -125,10 +110,9 @@ public class ChangeResponse {
 
     /**
      * Gets the value of the lastRatingRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getLastRatingRowVersion() {
         return lastRatingRowVersion;
@@ -136,10 +120,9 @@ public class ChangeResponse {
 
     /**
      * Sets the value of the lastRatingRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setLastRatingRowVersion(byte[] value) {
         this.lastRatingRowVersion = value;
@@ -147,10 +130,9 @@ public class ChangeResponse {
 
     /**
      * Gets the value of the lastForumRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getLastForumRowVersion() {
         return lastForumRowVersion;
@@ -158,10 +140,9 @@ public class ChangeResponse {
 
     /**
      * Sets the value of the lastForumRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setLastForumRowVersion(byte[] value) {
         this.lastForumRowVersion = value;
@@ -169,10 +150,9 @@ public class ChangeResponse {
 
     /**
      * Gets the value of the lastModerateRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getLastModerateRowVersion() {
         return lastModerateRowVersion;
@@ -180,10 +160,9 @@ public class ChangeResponse {
 
     /**
      * Sets the value of the lastModerateRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setLastModerateRowVersion(byte[] value) {
         this.lastModerateRowVersion = value;
@@ -191,7 +170,6 @@ public class ChangeResponse {
 
     /**
      * Gets the value of the userId property.
-     * 
      */
     public int getUserId() {
         return userId;
@@ -199,7 +177,6 @@ public class ChangeResponse {
 
     /**
      * Sets the value of the userId property.
-     * 
      */
     public void setUserId(int value) {
         this.userId = value;

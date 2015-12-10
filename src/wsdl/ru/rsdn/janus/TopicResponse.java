@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for TopicResponse complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="TopicResponse">
  *   &lt;complexContent>
@@ -25,14 +24,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TopicResponse", propOrder = {
-    "messages",
-    "rating",
-    "moderate"
+        "messages",
+        "rating",
+        "moderate"
 })
 public class TopicResponse {
 
@@ -45,11 +42,9 @@ public class TopicResponse {
 
     /**
      * Gets the value of the messages property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfJanusMessageInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfJanusMessageInfo }
      */
     public ArrayOfJanusMessageInfo getMessages() {
         return messages;
@@ -57,11 +52,9 @@ public class TopicResponse {
 
     /**
      * Sets the value of the messages property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfJanusMessageInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfJanusMessageInfo }
      */
     public void setMessages(ArrayOfJanusMessageInfo value) {
         this.messages = value;
@@ -69,11 +62,9 @@ public class TopicResponse {
 
     /**
      * Gets the value of the rating property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfJanusRatingInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfJanusRatingInfo }
      */
     public ArrayOfJanusRatingInfo getRating() {
         return rating;
@@ -81,11 +72,9 @@ public class TopicResponse {
 
     /**
      * Sets the value of the rating property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfJanusRatingInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfJanusRatingInfo }
      */
     public void setRating(ArrayOfJanusRatingInfo value) {
         this.rating = value;
@@ -93,11 +82,9 @@ public class TopicResponse {
 
     /**
      * Gets the value of the moderate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfJanusModerateInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfJanusModerateInfo }
      */
     public ArrayOfJanusModerateInfo getModerate() {
         return moderate;
@@ -105,11 +92,9 @@ public class TopicResponse {
 
     /**
      * Sets the value of the moderate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfJanusModerateInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfJanusModerateInfo }
      */
     public void setModerate(ArrayOfJanusModerateInfo value) {
         this.moderate = value;

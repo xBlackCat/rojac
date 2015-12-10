@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for ForumRequest complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="ForumRequest">
  *   &lt;complexContent>
@@ -24,14 +23,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ForumRequest", propOrder = {
-    "userName",
-    "password",
-    "forumsRowVersion"
+        "userName",
+        "password",
+        "forumsRowVersion"
 })
 public class ForumRequest {
 
@@ -41,11 +38,9 @@ public class ForumRequest {
 
     /**
      * Gets the value of the userName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserName() {
         return userName;
@@ -53,11 +48,9 @@ public class ForumRequest {
 
     /**
      * Sets the value of the userName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserName(String value) {
         this.userName = value;
@@ -65,11 +58,9 @@ public class ForumRequest {
 
     /**
      * Gets the value of the password property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPassword() {
         return password;
@@ -77,11 +68,9 @@ public class ForumRequest {
 
     /**
      * Sets the value of the password property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPassword(String value) {
         this.password = value;
@@ -89,10 +78,9 @@ public class ForumRequest {
 
     /**
      * Gets the value of the forumsRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getForumsRowVersion() {
         return forumsRowVersion;
@@ -100,10 +88,9 @@ public class ForumRequest {
 
     /**
      * Sets the value of the forumsRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setForumsRowVersion(byte[] value) {
         this.forumsRowVersion = value;

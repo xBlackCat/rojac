@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -23,12 +22,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "forumRequest"
+        "forumRequest"
 })
 @XmlRootElement(name = "GetForumList")
 public class GetForumList {
@@ -37,11 +34,9 @@ public class GetForumList {
 
     /**
      * Gets the value of the forumRequest property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ForumRequest }
-     *     
+     *
+     * @return possible object is
+     * {@link ForumRequest }
      */
     public ForumRequest getForumRequest() {
         return forumRequest;
@@ -49,11 +44,9 @@ public class GetForumList {
 
     /**
      * Sets the value of the forumRequest property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ForumRequest }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ForumRequest }
      */
     public void setForumRequest(ForumRequest value) {
         this.forumRequest = value;

@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.*;
@@ -6,9 +5,9 @@ import javax.xml.bind.annotation.*;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -20,12 +19,10 @@ import javax.xml.bind.annotation.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "getForumListResult"
+        "getForumListResult"
 })
 @XmlRootElement(name = "GetForumListResponse")
 public class GetForumListResponse {
@@ -35,11 +32,9 @@ public class GetForumListResponse {
 
     /**
      * Gets the value of the getForumListResult property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ForumResponse }
-     *     
+     *
+     * @return possible object is
+     * {@link ForumResponse }
      */
     public ForumResponse getGetForumListResult() {
         return getForumListResult;
@@ -47,11 +42,9 @@ public class GetForumListResponse {
 
     /**
      * Sets the value of the getForumListResult property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ForumResponse }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ForumResponse }
      */
     public void setGetForumListResult(ForumResponse value) {
         this.getForumListResult = value;

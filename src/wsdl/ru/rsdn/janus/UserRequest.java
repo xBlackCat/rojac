@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for UserRequest complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="UserRequest">
  *   &lt;complexContent>
@@ -25,15 +24,13 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "UserRequest", propOrder = {
-    "userName",
-    "password",
-    "lastRowVersion",
-    "maxOutput"
+        "userName",
+        "password",
+        "lastRowVersion",
+        "maxOutput"
 })
 public class UserRequest {
 
@@ -44,11 +41,9 @@ public class UserRequest {
 
     /**
      * Gets the value of the userName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserName() {
         return userName;
@@ -56,11 +51,9 @@ public class UserRequest {
 
     /**
      * Sets the value of the userName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserName(String value) {
         this.userName = value;
@@ -68,11 +61,9 @@ public class UserRequest {
 
     /**
      * Gets the value of the password property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPassword() {
         return password;
@@ -80,11 +71,9 @@ public class UserRequest {
 
     /**
      * Sets the value of the password property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPassword(String value) {
         this.password = value;
@@ -92,10 +81,9 @@ public class UserRequest {
 
     /**
      * Gets the value of the lastRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getLastRowVersion() {
         return lastRowVersion;
@@ -103,10 +91,9 @@ public class UserRequest {
 
     /**
      * Sets the value of the lastRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setLastRowVersion(byte[] value) {
         this.lastRowVersion = value;
@@ -114,7 +101,6 @@ public class UserRequest {
 
     /**
      * Gets the value of the maxOutput property.
-     * 
      */
     public int getMaxOutput() {
         return maxOutput;
@@ -122,7 +108,6 @@ public class UserRequest {
 
     /**
      * Sets the value of the maxOutput property.
-     * 
      */
     public void setMaxOutput(int value) {
         this.maxOutput = value;

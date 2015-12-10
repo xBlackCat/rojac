@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for ViolationResponse complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="ViolationResponse">
  *   &lt;complexContent>
@@ -23,12 +22,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ViolationResponse", propOrder = {
-    "violations"
+        "violations"
 })
 public class ViolationResponse {
 
@@ -37,11 +34,9 @@ public class ViolationResponse {
 
     /**
      * Gets the value of the violations property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfJanusViolationInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfJanusViolationInfo }
      */
     public ArrayOfJanusViolationInfo getViolations() {
         return violations;
@@ -49,11 +44,9 @@ public class ViolationResponse {
 
     /**
      * Sets the value of the violations property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfJanusViolationInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfJanusViolationInfo }
      */
     public void setViolations(ArrayOfJanusViolationInfo value) {
         this.violations = value;

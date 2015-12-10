@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for PostMessageInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="PostMessageInfo">
  *   &lt;complexContent>
@@ -26,16 +25,14 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PostMessageInfo", propOrder = {
-    "localMessageId",
-    "parentId",
-    "forumId",
-    "subject",
-    "message"
+        "localMessageId",
+        "parentId",
+        "forumId",
+        "subject",
+        "message"
 })
 public class PostMessageInfo {
 
@@ -47,7 +44,6 @@ public class PostMessageInfo {
 
     /**
      * Gets the value of the localMessageId property.
-     * 
      */
     public int getLocalMessageId() {
         return localMessageId;
@@ -55,7 +51,6 @@ public class PostMessageInfo {
 
     /**
      * Sets the value of the localMessageId property.
-     * 
      */
     public void setLocalMessageId(int value) {
         this.localMessageId = value;
@@ -63,7 +58,6 @@ public class PostMessageInfo {
 
     /**
      * Gets the value of the parentId property.
-     * 
      */
     public int getParentId() {
         return parentId;
@@ -71,7 +65,6 @@ public class PostMessageInfo {
 
     /**
      * Sets the value of the parentId property.
-     * 
      */
     public void setParentId(int value) {
         this.parentId = value;
@@ -79,7 +72,6 @@ public class PostMessageInfo {
 
     /**
      * Gets the value of the forumId property.
-     * 
      */
     public int getForumId() {
         return forumId;
@@ -87,7 +79,6 @@ public class PostMessageInfo {
 
     /**
      * Sets the value of the forumId property.
-     * 
      */
     public void setForumId(int value) {
         this.forumId = value;
@@ -95,11 +86,9 @@ public class PostMessageInfo {
 
     /**
      * Gets the value of the subject property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getSubject() {
         return subject;
@@ -107,11 +96,9 @@ public class PostMessageInfo {
 
     /**
      * Sets the value of the subject property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setSubject(String value) {
         this.subject = value;
@@ -119,11 +106,9 @@ public class PostMessageInfo {
 
     /**
      * Gets the value of the message property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getMessage() {
         return message;
@@ -131,11 +116,9 @@ public class PostMessageInfo {
 
     /**
      * Sets the value of the message property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setMessage(String value) {
         this.message = value;

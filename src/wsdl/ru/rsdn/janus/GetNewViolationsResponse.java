@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.*;
@@ -6,9 +5,9 @@ import javax.xml.bind.annotation.*;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -20,12 +19,10 @@ import javax.xml.bind.annotation.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "getNewViolationsResult"
+        "getNewViolationsResult"
 })
 @XmlRootElement(name = "GetNewViolationsResponse")
 public class GetNewViolationsResponse {
@@ -35,11 +32,9 @@ public class GetNewViolationsResponse {
 
     /**
      * Gets the value of the getNewViolationsResult property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ViolationResponse }
-     *     
+     *
+     * @return possible object is
+     * {@link ViolationResponse }
      */
     public ViolationResponse getGetNewViolationsResult() {
         return getNewViolationsResult;
@@ -47,11 +42,9 @@ public class GetNewViolationsResponse {
 
     /**
      * Sets the value of the getNewViolationsResult property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ViolationResponse }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ViolationResponse }
      */
     public void setGetNewViolationsResult(ViolationResponse value) {
         this.getNewViolationsResult = value;

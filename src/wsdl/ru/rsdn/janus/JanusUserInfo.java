@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for JanusUserInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="JanusUserInfo">
  *   &lt;complexContent>
@@ -33,23 +32,21 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JanusUserInfo", propOrder = {
-    "userId",
-    "userName",
-    "userNick",
-    "realName",
-    "publicEmail",
-    "homePage",
-    "specialization",
-    "whereFrom",
-    "origin",
-    "userClass",
-    "gravatarHash",
-    "countryCode"
+        "userId",
+        "userName",
+        "userNick",
+        "realName",
+        "publicEmail",
+        "homePage",
+        "specialization",
+        "whereFrom",
+        "origin",
+        "userClass",
+        "gravatarHash",
+        "countryCode"
 })
 public class JanusUserInfo {
 
@@ -68,7 +65,6 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the userId property.
-     * 
      */
     public int getUserId() {
         return userId;
@@ -76,7 +72,6 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the userId property.
-     * 
      */
     public void setUserId(int value) {
         this.userId = value;
@@ -84,11 +79,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the userName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserName() {
         return userName;
@@ -96,11 +89,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the userName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserName(String value) {
         this.userName = value;
@@ -108,11 +99,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the userNick property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserNick() {
         return userNick;
@@ -120,11 +109,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the userNick property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserNick(String value) {
         this.userNick = value;
@@ -132,11 +119,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the realName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getRealName() {
         return realName;
@@ -144,11 +129,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the realName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setRealName(String value) {
         this.realName = value;
@@ -156,11 +139,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the publicEmail property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPublicEmail() {
         return publicEmail;
@@ -168,11 +149,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the publicEmail property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPublicEmail(String value) {
         this.publicEmail = value;
@@ -180,11 +159,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the homePage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getHomePage() {
         return homePage;
@@ -192,11 +169,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the homePage property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setHomePage(String value) {
         this.homePage = value;
@@ -204,11 +179,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the specialization property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getSpecialization() {
         return specialization;
@@ -216,11 +189,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the specialization property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setSpecialization(String value) {
         this.specialization = value;
@@ -228,11 +199,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the whereFrom property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getWhereFrom() {
         return whereFrom;
@@ -240,11 +209,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the whereFrom property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setWhereFrom(String value) {
         this.whereFrom = value;
@@ -252,11 +219,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the origin property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getOrigin() {
         return origin;
@@ -264,11 +229,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the origin property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setOrigin(String value) {
         this.origin = value;
@@ -276,7 +239,6 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the userClass property.
-     * 
      */
     public int getUserClass() {
         return userClass;
@@ -284,7 +246,6 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the userClass property.
-     * 
      */
     public void setUserClass(int value) {
         this.userClass = value;
@@ -292,11 +253,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the gravatarHash property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getGravatarHash() {
         return gravatarHash;
@@ -304,11 +263,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the gravatarHash property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setGravatarHash(String value) {
         this.gravatarHash = value;
@@ -316,11 +273,9 @@ public class JanusUserInfo {
 
     /**
      * Gets the value of the countryCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getCountryCode() {
         return countryCode;
@@ -328,11 +283,9 @@ public class JanusUserInfo {
 
     /**
      * Sets the value of the countryCode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setCountryCode(String value) {
         this.countryCode = value;

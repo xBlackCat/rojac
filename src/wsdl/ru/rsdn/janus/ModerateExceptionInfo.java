@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for ModerateExceptionInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="ModerateExceptionInfo">
  *   &lt;complexContent>
@@ -25,14 +24,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ModerateExceptionInfo", propOrder = {
-    "exceptionMessage",
-    "localModerateId",
-    "info"
+        "exceptionMessage",
+        "localModerateId",
+        "info"
 })
 public class ModerateExceptionInfo {
 
@@ -45,11 +42,9 @@ public class ModerateExceptionInfo {
 
     /**
      * Gets the value of the exceptionMessage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getExceptionMessage() {
         return exceptionMessage;
@@ -57,11 +52,9 @@ public class ModerateExceptionInfo {
 
     /**
      * Sets the value of the exceptionMessage property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setExceptionMessage(String value) {
         this.exceptionMessage = value;
@@ -69,7 +62,6 @@ public class ModerateExceptionInfo {
 
     /**
      * Gets the value of the localModerateId property.
-     * 
      */
     public int getLocalModerateId() {
         return localModerateId;
@@ -77,7 +69,6 @@ public class ModerateExceptionInfo {
 
     /**
      * Sets the value of the localModerateId property.
-     * 
      */
     public void setLocalModerateId(int value) {
         this.localModerateId = value;
@@ -85,11 +76,9 @@ public class ModerateExceptionInfo {
 
     /**
      * Gets the value of the info property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getInfo() {
         return info;
@@ -97,11 +86,9 @@ public class ModerateExceptionInfo {
 
     /**
      * Sets the value of the info property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setInfo(String value) {
         this.info = value;

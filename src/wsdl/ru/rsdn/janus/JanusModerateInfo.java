@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.*;
@@ -7,9 +6,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * <p>Java class for JanusModerateInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="JanusModerateInfo">
  *   &lt;complexContent>
@@ -25,16 +24,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JanusModerateInfo", propOrder = {
-    "messageId",
-    "topicId",
-    "userId",
-    "forumId",
-    "create"
+        "messageId",
+        "topicId",
+        "userId",
+        "forumId",
+        "create"
 })
 public class JanusModerateInfo {
 
@@ -48,7 +45,6 @@ public class JanusModerateInfo {
 
     /**
      * Gets the value of the messageId property.
-     * 
      */
     public int getMessageId() {
         return messageId;
@@ -56,7 +52,6 @@ public class JanusModerateInfo {
 
     /**
      * Sets the value of the messageId property.
-     * 
      */
     public void setMessageId(int value) {
         this.messageId = value;
@@ -64,7 +59,6 @@ public class JanusModerateInfo {
 
     /**
      * Gets the value of the topicId property.
-     * 
      */
     public int getTopicId() {
         return topicId;
@@ -72,7 +66,6 @@ public class JanusModerateInfo {
 
     /**
      * Sets the value of the topicId property.
-     * 
      */
     public void setTopicId(int value) {
         this.topicId = value;
@@ -80,7 +73,6 @@ public class JanusModerateInfo {
 
     /**
      * Gets the value of the userId property.
-     * 
      */
     public int getUserId() {
         return userId;
@@ -88,7 +80,6 @@ public class JanusModerateInfo {
 
     /**
      * Sets the value of the userId property.
-     * 
      */
     public void setUserId(int value) {
         this.userId = value;
@@ -96,7 +87,6 @@ public class JanusModerateInfo {
 
     /**
      * Gets the value of the forumId property.
-     * 
      */
     public int getForumId() {
         return forumId;
@@ -104,7 +94,6 @@ public class JanusModerateInfo {
 
     /**
      * Sets the value of the forumId property.
-     * 
      */
     public void setForumId(int value) {
         this.forumId = value;
@@ -112,11 +101,9 @@ public class JanusModerateInfo {
 
     /**
      * Gets the value of the create property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLGregorianCalendar }
      */
     public XMLGregorianCalendar getCreate() {
         return create;
@@ -124,11 +111,9 @@ public class JanusModerateInfo {
 
     /**
      * Sets the value of the create property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLGregorianCalendar }
      */
     public void setCreate(XMLGregorianCalendar value) {
         this.create = value;

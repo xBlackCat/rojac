@@ -22,7 +22,7 @@ public interface JanusATSoap {
 
 
     /**
-     * Вытягивание топиков по ID сообщений
+     * \u00c2\u00fb\u00f2\u00ff\u00e3\u00e8\u00e2\u00e0\u00ed\u00e8\u00e5 \u00f2\u00ee\u00ef\u00e8\u00ea\u00ee\u00e2 \u00ef\u00ee ID \u00f1\u00ee\u00ee\u00e1\u00f9\u00e5\u00ed\u00e8\u00e9
      *
      * @param topicRequest
      * @return returns ru.rsdn.janus.TopicResponse
@@ -37,7 +37,7 @@ public interface JanusATSoap {
     );
 
     /**
-     * Изменения в форуме с момента последней синхронизации
+     * \u00c8\u00e7\u00ec\u00e5\u00ed\u00e5\u00ed\u00e8\u00ff \u00e2 \u00f4\u00ee\u00f0\u00f3\u00ec\u00e5 \u00f1 \u00ec\u00ee\u00ec\u00e5\u00ed\u00f2\u00e0 \u00ef\u00ee\u00f1\u00eb\u00e5\u00e4\u00ed\u00e5\u00e9 \u00f1\u00e8\u00ed\u00f5\u00f0\u00ee\u00ed\u00e8\u00e7\u00e0\u00f6\u00e8\u00e8
      *
      * @param changeRequest
      * @return returns ru.rsdn.janus.ChangeResponse
@@ -52,7 +52,7 @@ public interface JanusATSoap {
     );
 
     /**
-     * Список форумов и групп форумов
+     * \u00d1\u00ef\u00e8\u00f1\u00ee\u00ea \u00f4\u00ee\u00f0\u00f3\u00ec\u00ee\u00e2 \u00e8 \u00e3\u00f0\u00f3\u00ef\u00ef \u00f4\u00ee\u00f0\u00f3\u00ec\u00ee\u00e2
      *
      * @param forumRequest
      * @return returns ru.rsdn.janus.ForumResponse
@@ -67,7 +67,7 @@ public interface JanusATSoap {
     );
 
     /**
-     * Получение новых пользователей с момента последней синхронизации
+     * \u00cf\u00ee\u00eb\u00f3\u00f7\u00e5\u00ed\u00e8\u00e5 \u00ed\u00ee\u00e2\u00fb\u00f5 \u00ef\u00ee\u00eb\u00fc\u00e7\u00ee\u00e2\u00e0\u00f2\u00e5\u00eb\u00e5\u00e9 \u00f1 \u00ec\u00ee\u00ec\u00e5\u00ed\u00f2\u00e0 \u00ef\u00ee\u00f1\u00eb\u00e5\u00e4\u00ed\u00e5\u00e9 \u00f1\u00e8\u00ed\u00f5\u00f0\u00ee\u00ed\u00e8\u00e7\u00e0\u00f6\u00e8\u00e8
      *
      * @param userRequest
      * @return returns ru.rsdn.janus.UserResponse
@@ -82,7 +82,7 @@ public interface JanusATSoap {
     );
 
     /**
-     * Получение пользователей по списку их идентификаторов
+     * \u00cf\u00ee\u00eb\u00f3\u00f7\u00e5\u00ed\u00e8\u00e5 \u00ef\u00ee\u00eb\u00fc\u00e7\u00ee\u00e2\u00e0\u00f2\u00e5\u00eb\u00e5\u00e9 \u00ef\u00ee \u00f1\u00ef\u00e8\u00f1\u00ea\u00f3 \u00e8\u00f5 \u00e8\u00e4\u00e5\u00ed\u00f2\u00e8\u00f4\u00e8\u00ea\u00e0\u00f2\u00ee\u00f0\u00ee\u00e2
      *
      * @param request
      * @return returns ru.rsdn.janus.UserResponse
@@ -97,7 +97,7 @@ public interface JanusATSoap {
     );
 
     /**
-     * Добавление изменений в форумы
+     * \u00c4\u00ee\u00e1\u00e0\u00e2\u00eb\u00e5\u00ed\u00e8\u00e5 \u00e8\u00e7\u00ec\u00e5\u00ed\u00e5\u00ed\u00e8\u00e9 \u00e2 \u00f4\u00ee\u00f0\u00f3\u00ec\u00fb
      *
      * @param postRequest
      */
@@ -110,7 +110,7 @@ public interface JanusATSoap {
     );
 
     /**
-     * Подтверждение добавления изменений в форумы
+     * \u00cf\u00ee\u00e4\u00f2\u00e2\u00e5\u00f0\u00e6\u00e4\u00e5\u00ed\u00e8\u00e5 \u00e4\u00ee\u00e1\u00e0\u00e2\u00eb\u00e5\u00ed\u00e8\u00ff \u00e8\u00e7\u00ec\u00e5\u00ed\u00e5\u00ed\u00e8\u00e9 \u00e2 \u00f4\u00ee\u00f0\u00f3\u00ec\u00fb
      *
      * @return returns ru.rsdn.janus.PostResponse
      */
@@ -121,7 +121,7 @@ public interface JanusATSoap {
     public PostResponse postChangeCommit();
 
     /**
-     * Проверка активности
+     * \u00cf\u00f0\u00ee\u00e2\u00e5\u00f0\u00ea\u00e0 \u00e0\u00ea\u00f2\u00e8\u00e2\u00ed\u00ee\u00f1\u00f2\u00e8
      */
     @WebMethod(operationName = "Check", action = "http://rsdn.ru/Janus/Check")
     @RequestWrapper(localName = "Check", targetNamespace = "http://rsdn.ru/Janus/", className = "ru.rsdn.janus.Check")
@@ -129,7 +129,7 @@ public interface JanusATSoap {
     public void check();
 
     /**
-     * Возвращает новые сообщения о нарушениях
+     * ���������� ����� ��������� � ����������
      *
      * @param request
      * @return returns ru.rsdn.janus.ViolationResponse

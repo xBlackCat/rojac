@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for PostResponse complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="PostResponse">
  *   &lt;complexContent>
@@ -27,17 +26,15 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PostResponse", propOrder = {
-    "commitedIds",
-    "exceptions",
-    "commitedRatingIds",
-    "ratingExceptions",
-    "commitedModerateIds",
-    "moderateExceptions"
+        "commitedIds",
+        "exceptions",
+        "commitedRatingIds",
+        "ratingExceptions",
+        "commitedModerateIds",
+        "moderateExceptions"
 })
 public class PostResponse {
 
@@ -50,11 +47,9 @@ public class PostResponse {
 
     /**
      * Gets the value of the commitedIds property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfInt }
      */
     public ArrayOfInt getCommitedIds() {
         return commitedIds;
@@ -62,11 +57,9 @@ public class PostResponse {
 
     /**
      * Sets the value of the commitedIds property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfInt }
      */
     public void setCommitedIds(ArrayOfInt value) {
         this.commitedIds = value;
@@ -74,11 +67,9 @@ public class PostResponse {
 
     /**
      * Gets the value of the exceptions property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfPostExceptionInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfPostExceptionInfo }
      */
     public ArrayOfPostExceptionInfo getExceptions() {
         return exceptions;
@@ -86,11 +77,9 @@ public class PostResponse {
 
     /**
      * Sets the value of the exceptions property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfPostExceptionInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfPostExceptionInfo }
      */
     public void setExceptions(ArrayOfPostExceptionInfo value) {
         this.exceptions = value;
@@ -98,11 +87,9 @@ public class PostResponse {
 
     /**
      * Gets the value of the commitedRatingIds property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfInt }
      */
     public ArrayOfInt getCommitedRatingIds() {
         return commitedRatingIds;
@@ -110,11 +97,9 @@ public class PostResponse {
 
     /**
      * Sets the value of the commitedRatingIds property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfInt }
      */
     public void setCommitedRatingIds(ArrayOfInt value) {
         this.commitedRatingIds = value;
@@ -122,11 +107,9 @@ public class PostResponse {
 
     /**
      * Gets the value of the ratingExceptions property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfRatingExceptionInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfRatingExceptionInfo }
      */
     public ArrayOfRatingExceptionInfo getRatingExceptions() {
         return ratingExceptions;
@@ -134,11 +117,9 @@ public class PostResponse {
 
     /**
      * Sets the value of the ratingExceptions property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfRatingExceptionInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfRatingExceptionInfo }
      */
     public void setRatingExceptions(ArrayOfRatingExceptionInfo value) {
         this.ratingExceptions = value;
@@ -146,11 +127,9 @@ public class PostResponse {
 
     /**
      * Gets the value of the commitedModerateIds property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfInt }
      */
     public ArrayOfInt getCommitedModerateIds() {
         return commitedModerateIds;
@@ -158,11 +137,9 @@ public class PostResponse {
 
     /**
      * Sets the value of the commitedModerateIds property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfInt }
      */
     public void setCommitedModerateIds(ArrayOfInt value) {
         this.commitedModerateIds = value;
@@ -170,11 +147,9 @@ public class PostResponse {
 
     /**
      * Gets the value of the moderateExceptions property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfModerateExceptionInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfModerateExceptionInfo }
      */
     public ArrayOfModerateExceptionInfo getModerateExceptions() {
         return moderateExceptions;
@@ -182,11 +157,9 @@ public class PostResponse {
 
     /**
      * Sets the value of the moderateExceptions property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfModerateExceptionInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfModerateExceptionInfo }
      */
     public void setModerateExceptions(ArrayOfModerateExceptionInfo value) {
         this.moderateExceptions = value;

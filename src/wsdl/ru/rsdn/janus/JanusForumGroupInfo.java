@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for JanusForumGroupInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="JanusForumGroupInfo">
  *   &lt;complexContent>
@@ -24,14 +23,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JanusForumGroupInfo", propOrder = {
-    "forumGroupId",
-    "forumGroupName",
-    "sortOrder"
+        "forumGroupId",
+        "forumGroupName",
+        "sortOrder"
 })
 public class JanusForumGroupInfo {
 
@@ -41,7 +38,6 @@ public class JanusForumGroupInfo {
 
     /**
      * Gets the value of the forumGroupId property.
-     * 
      */
     public int getForumGroupId() {
         return forumGroupId;
@@ -49,7 +45,6 @@ public class JanusForumGroupInfo {
 
     /**
      * Sets the value of the forumGroupId property.
-     * 
      */
     public void setForumGroupId(int value) {
         this.forumGroupId = value;
@@ -57,11 +52,9 @@ public class JanusForumGroupInfo {
 
     /**
      * Gets the value of the forumGroupName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getForumGroupName() {
         return forumGroupName;
@@ -69,11 +62,9 @@ public class JanusForumGroupInfo {
 
     /**
      * Sets the value of the forumGroupName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setForumGroupName(String value) {
         this.forumGroupName = value;
@@ -81,7 +72,6 @@ public class JanusForumGroupInfo {
 
     /**
      * Gets the value of the sortOrder property.
-     * 
      */
     public int getSortOrder() {
         return sortOrder;
@@ -89,7 +79,6 @@ public class JanusForumGroupInfo {
 
     /**
      * Sets the value of the sortOrder property.
-     * 
      */
     public void setSortOrder(int value) {
         this.sortOrder = value;

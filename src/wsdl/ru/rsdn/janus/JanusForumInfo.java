@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for JanusForumInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="JanusForumInfo">
  *   &lt;complexContent>
@@ -28,18 +27,16 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JanusForumInfo", propOrder = {
-    "forumId",
-    "forumGroupId",
-    "shortForumName",
-    "forumName",
-    "rated",
-    "inTop",
-    "rateLimit"
+        "forumId",
+        "forumGroupId",
+        "shortForumName",
+        "forumName",
+        "rated",
+        "inTop",
+        "rateLimit"
 })
 public class JanusForumInfo {
 
@@ -53,7 +50,6 @@ public class JanusForumInfo {
 
     /**
      * Gets the value of the forumId property.
-     * 
      */
     public int getForumId() {
         return forumId;
@@ -61,7 +57,6 @@ public class JanusForumInfo {
 
     /**
      * Sets the value of the forumId property.
-     * 
      */
     public void setForumId(int value) {
         this.forumId = value;
@@ -69,7 +64,6 @@ public class JanusForumInfo {
 
     /**
      * Gets the value of the forumGroupId property.
-     * 
      */
     public int getForumGroupId() {
         return forumGroupId;
@@ -77,7 +71,6 @@ public class JanusForumInfo {
 
     /**
      * Sets the value of the forumGroupId property.
-     * 
      */
     public void setForumGroupId(int value) {
         this.forumGroupId = value;
@@ -85,11 +78,9 @@ public class JanusForumInfo {
 
     /**
      * Gets the value of the shortForumName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getShortForumName() {
         return shortForumName;
@@ -97,11 +88,9 @@ public class JanusForumInfo {
 
     /**
      * Sets the value of the shortForumName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setShortForumName(String value) {
         this.shortForumName = value;
@@ -109,11 +98,9 @@ public class JanusForumInfo {
 
     /**
      * Gets the value of the forumName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getForumName() {
         return forumName;
@@ -121,11 +108,9 @@ public class JanusForumInfo {
 
     /**
      * Sets the value of the forumName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setForumName(String value) {
         this.forumName = value;
@@ -133,7 +118,6 @@ public class JanusForumInfo {
 
     /**
      * Gets the value of the rated property.
-     * 
      */
     public int getRated() {
         return rated;
@@ -141,7 +125,6 @@ public class JanusForumInfo {
 
     /**
      * Sets the value of the rated property.
-     * 
      */
     public void setRated(int value) {
         this.rated = value;
@@ -149,7 +132,6 @@ public class JanusForumInfo {
 
     /**
      * Gets the value of the inTop property.
-     * 
      */
     public int getInTop() {
         return inTop;
@@ -157,7 +139,6 @@ public class JanusForumInfo {
 
     /**
      * Sets the value of the inTop property.
-     * 
      */
     public void setInTop(int value) {
         this.inTop = value;
@@ -165,7 +146,6 @@ public class JanusForumInfo {
 
     /**
      * Gets the value of the rateLimit property.
-     * 
      */
     public int getRateLimit() {
         return rateLimit;
@@ -173,7 +153,6 @@ public class JanusForumInfo {
 
     /**
      * Sets the value of the rateLimit property.
-     * 
      */
     public void setRateLimit(int value) {
         this.rateLimit = value;

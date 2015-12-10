@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for RatingExceptionInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="RatingExceptionInfo">
  *   &lt;complexContent>
@@ -24,14 +23,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RatingExceptionInfo", propOrder = {
-    "exception",
-    "localRatingId",
-    "info"
+        "exception",
+        "localRatingId",
+        "info"
 })
 public class RatingExceptionInfo {
 
@@ -41,11 +38,9 @@ public class RatingExceptionInfo {
 
     /**
      * Gets the value of the exception property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getException() {
         return exception;
@@ -53,11 +48,9 @@ public class RatingExceptionInfo {
 
     /**
      * Sets the value of the exception property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setException(String value) {
         this.exception = value;
@@ -65,7 +58,6 @@ public class RatingExceptionInfo {
 
     /**
      * Gets the value of the localRatingId property.
-     * 
      */
     public int getLocalRatingId() {
         return localRatingId;
@@ -73,7 +65,6 @@ public class RatingExceptionInfo {
 
     /**
      * Sets the value of the localRatingId property.
-     * 
      */
     public void setLocalRatingId(int value) {
         this.localRatingId = value;
@@ -81,11 +72,9 @@ public class RatingExceptionInfo {
 
     /**
      * Gets the value of the info property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getInfo() {
         return info;
@@ -93,11 +82,9 @@ public class RatingExceptionInfo {
 
     /**
      * Sets the value of the info property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setInfo(String value) {
         this.info = value;

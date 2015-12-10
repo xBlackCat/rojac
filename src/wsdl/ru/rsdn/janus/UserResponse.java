@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for UserResponse complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="UserResponse">
  *   &lt;complexContent>
@@ -23,13 +22,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "UserResponse", propOrder = {
-    "lastRowVersion",
-    "users"
+        "lastRowVersion",
+        "users"
 })
 public class UserResponse {
 
@@ -38,10 +35,9 @@ public class UserResponse {
 
     /**
      * Gets the value of the lastRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getLastRowVersion() {
         return lastRowVersion;
@@ -49,10 +45,9 @@ public class UserResponse {
 
     /**
      * Sets the value of the lastRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setLastRowVersion(byte[] value) {
         this.lastRowVersion = value;
@@ -60,11 +55,9 @@ public class UserResponse {
 
     /**
      * Gets the value of the users property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfJanusUserInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfJanusUserInfo }
      */
     public ArrayOfJanusUserInfo getUsers() {
         return users;
@@ -72,11 +65,9 @@ public class UserResponse {
 
     /**
      * Sets the value of the users property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfJanusUserInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfJanusUserInfo }
      */
     public void setUsers(ArrayOfJanusUserInfo value) {
         this.users = value;

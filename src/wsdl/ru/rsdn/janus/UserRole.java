@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlEnum;
@@ -8,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for UserRole.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
@@ -24,7 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- * 
  */
 @XmlType(name = "UserRole")
 @XmlEnum
@@ -55,7 +53,7 @@ public enum UserRole {
     }
 
     public static UserRole fromValue(String v) {
-        for (UserRole c: UserRole.values()) {
+        for (UserRole c : UserRole.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

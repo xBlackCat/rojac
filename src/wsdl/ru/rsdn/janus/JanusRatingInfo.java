@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.*;
@@ -7,9 +6,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * <p>Java class for JanusRatingInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="JanusRatingInfo">
  *   &lt;complexContent>
@@ -26,17 +25,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JanusRatingInfo", propOrder = {
-    "messageId",
-    "topicId",
-    "userId",
-    "userRating",
-    "rate",
-    "rateDate"
+        "messageId",
+        "topicId",
+        "userId",
+        "userRating",
+        "rate",
+        "rateDate"
 })
 public class JanusRatingInfo {
 
@@ -51,7 +48,6 @@ public class JanusRatingInfo {
 
     /**
      * Gets the value of the messageId property.
-     * 
      */
     public int getMessageId() {
         return messageId;
@@ -59,7 +55,6 @@ public class JanusRatingInfo {
 
     /**
      * Sets the value of the messageId property.
-     * 
      */
     public void setMessageId(int value) {
         this.messageId = value;
@@ -67,7 +62,6 @@ public class JanusRatingInfo {
 
     /**
      * Gets the value of the topicId property.
-     * 
      */
     public int getTopicId() {
         return topicId;
@@ -75,7 +69,6 @@ public class JanusRatingInfo {
 
     /**
      * Sets the value of the topicId property.
-     * 
      */
     public void setTopicId(int value) {
         this.topicId = value;
@@ -83,7 +76,6 @@ public class JanusRatingInfo {
 
     /**
      * Gets the value of the userId property.
-     * 
      */
     public int getUserId() {
         return userId;
@@ -91,7 +83,6 @@ public class JanusRatingInfo {
 
     /**
      * Sets the value of the userId property.
-     * 
      */
     public void setUserId(int value) {
         this.userId = value;
@@ -99,7 +90,6 @@ public class JanusRatingInfo {
 
     /**
      * Gets the value of the userRating property.
-     * 
      */
     public int getUserRating() {
         return userRating;
@@ -107,7 +97,6 @@ public class JanusRatingInfo {
 
     /**
      * Sets the value of the userRating property.
-     * 
      */
     public void setUserRating(int value) {
         this.userRating = value;
@@ -115,7 +104,6 @@ public class JanusRatingInfo {
 
     /**
      * Gets the value of the rate property.
-     * 
      */
     public int getRate() {
         return rate;
@@ -123,7 +111,6 @@ public class JanusRatingInfo {
 
     /**
      * Sets the value of the rate property.
-     * 
      */
     public void setRate(int value) {
         this.rate = value;
@@ -131,11 +118,9 @@ public class JanusRatingInfo {
 
     /**
      * Gets the value of the rateDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLGregorianCalendar }
      */
     public XMLGregorianCalendar getRateDate() {
         return rateDate;
@@ -143,11 +128,9 @@ public class JanusRatingInfo {
 
     /**
      * Sets the value of the rateDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLGregorianCalendar }
      */
     public void setRateDate(XMLGregorianCalendar value) {
         this.rateDate = value;

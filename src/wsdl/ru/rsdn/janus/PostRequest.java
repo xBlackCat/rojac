@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for PostRequest complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="PostRequest">
  *   &lt;complexContent>
@@ -26,16 +25,14 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PostRequest", propOrder = {
-    "userName",
-    "password",
-    "writedMessages",
-    "rates",
-    "moderates"
+        "userName",
+        "password",
+        "writedMessages",
+        "rates",
+        "moderates"
 })
 public class PostRequest {
 
@@ -47,11 +44,9 @@ public class PostRequest {
 
     /**
      * Gets the value of the userName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserName() {
         return userName;
@@ -59,11 +54,9 @@ public class PostRequest {
 
     /**
      * Sets the value of the userName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserName(String value) {
         this.userName = value;
@@ -71,11 +64,9 @@ public class PostRequest {
 
     /**
      * Gets the value of the password property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPassword() {
         return password;
@@ -83,11 +74,9 @@ public class PostRequest {
 
     /**
      * Sets the value of the password property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPassword(String value) {
         this.password = value;
@@ -95,11 +84,9 @@ public class PostRequest {
 
     /**
      * Gets the value of the writedMessages property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfPostMessageInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfPostMessageInfo }
      */
     public ArrayOfPostMessageInfo getWritedMessages() {
         return writedMessages;
@@ -107,11 +94,9 @@ public class PostRequest {
 
     /**
      * Sets the value of the writedMessages property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfPostMessageInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfPostMessageInfo }
      */
     public void setWritedMessages(ArrayOfPostMessageInfo value) {
         this.writedMessages = value;
@@ -119,11 +104,9 @@ public class PostRequest {
 
     /**
      * Gets the value of the rates property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfPostRatingInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfPostRatingInfo }
      */
     public ArrayOfPostRatingInfo getRates() {
         return rates;
@@ -131,11 +114,9 @@ public class PostRequest {
 
     /**
      * Sets the value of the rates property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfPostRatingInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfPostRatingInfo }
      */
     public void setRates(ArrayOfPostRatingInfo value) {
         this.rates = value;
@@ -143,11 +124,9 @@ public class PostRequest {
 
     /**
      * Gets the value of the moderates property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfPostModerateInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfPostModerateInfo }
      */
     public ArrayOfPostModerateInfo getModerates() {
         return moderates;
@@ -155,11 +134,9 @@ public class PostRequest {
 
     /**
      * Sets the value of the moderates property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfPostModerateInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfPostModerateInfo }
      */
     public void setModerates(ArrayOfPostModerateInfo value) {
         this.moderates = value;

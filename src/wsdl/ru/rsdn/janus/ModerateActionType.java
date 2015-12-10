@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlEnum;
@@ -8,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for ModerateActionType.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
@@ -24,7 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- * 
  */
 @XmlType(name = "ModerateActionType")
 @XmlEnum
@@ -55,7 +53,7 @@ public enum ModerateActionType {
     }
 
     public static ModerateActionType fromValue(String v) {
-        for (ModerateActionType c: ModerateActionType.values()) {
+        for (ModerateActionType c : ModerateActionType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

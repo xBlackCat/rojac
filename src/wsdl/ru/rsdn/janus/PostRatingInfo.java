@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for PostRatingInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="PostRatingInfo">
  *   &lt;complexContent>
@@ -24,14 +23,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PostRatingInfo", propOrder = {
-    "localRatingId",
-    "messageId",
-    "rate"
+        "localRatingId",
+        "messageId",
+        "rate"
 })
 public class PostRatingInfo {
 
@@ -41,7 +38,6 @@ public class PostRatingInfo {
 
     /**
      * Gets the value of the localRatingId property.
-     * 
      */
     public int getLocalRatingId() {
         return localRatingId;
@@ -49,7 +45,6 @@ public class PostRatingInfo {
 
     /**
      * Sets the value of the localRatingId property.
-     * 
      */
     public void setLocalRatingId(int value) {
         this.localRatingId = value;
@@ -57,7 +52,6 @@ public class PostRatingInfo {
 
     /**
      * Gets the value of the messageId property.
-     * 
      */
     public int getMessageId() {
         return messageId;
@@ -65,7 +59,6 @@ public class PostRatingInfo {
 
     /**
      * Sets the value of the messageId property.
-     * 
      */
     public void setMessageId(int value) {
         this.messageId = value;
@@ -73,7 +66,6 @@ public class PostRatingInfo {
 
     /**
      * Gets the value of the rate property.
-     * 
      */
     public int getRate() {
         return rate;
@@ -81,7 +73,6 @@ public class PostRatingInfo {
 
     /**
      * Sets the value of the rate property.
-     * 
      */
     public void setRate(int value) {
         this.rate = value;

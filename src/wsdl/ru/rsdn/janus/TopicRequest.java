@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for TopicRequest complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="TopicRequest">
  *   &lt;complexContent>
@@ -24,14 +23,12 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TopicRequest", propOrder = {
-    "userName",
-    "password",
-    "messageIds"
+        "userName",
+        "password",
+        "messageIds"
 })
 public class TopicRequest {
 
@@ -41,11 +38,9 @@ public class TopicRequest {
 
     /**
      * Gets the value of the userName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserName() {
         return userName;
@@ -53,11 +48,9 @@ public class TopicRequest {
 
     /**
      * Sets the value of the userName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserName(String value) {
         this.userName = value;
@@ -65,11 +58,9 @@ public class TopicRequest {
 
     /**
      * Gets the value of the password property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPassword() {
         return password;
@@ -77,11 +68,9 @@ public class TopicRequest {
 
     /**
      * Sets the value of the password property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPassword(String value) {
         this.password = value;
@@ -89,11 +78,9 @@ public class TopicRequest {
 
     /**
      * Gets the value of the messageIds property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfInt }
      */
     public ArrayOfInt getMessageIds() {
         return messageIds;
@@ -101,11 +88,9 @@ public class TopicRequest {
 
     /**
      * Sets the value of the messageIds property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfInt }
      */
     public void setMessageIds(ArrayOfInt value) {
         this.messageIds = value;

@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for RequestForumInfo complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="RequestForumInfo">
  *   &lt;complexContent>
@@ -23,13 +22,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RequestForumInfo", propOrder = {
-    "forumId",
-    "isFirstRequest"
+        "forumId",
+        "isFirstRequest"
 })
 public class RequestForumInfo {
 
@@ -38,7 +35,6 @@ public class RequestForumInfo {
 
     /**
      * Gets the value of the forumId property.
-     * 
      */
     public int getForumId() {
         return forumId;
@@ -46,7 +42,6 @@ public class RequestForumInfo {
 
     /**
      * Sets the value of the forumId property.
-     * 
      */
     public void setForumId(int value) {
         this.forumId = value;
@@ -54,7 +49,6 @@ public class RequestForumInfo {
 
     /**
      * Gets the value of the isFirstRequest property.
-     * 
      */
     public boolean isIsFirstRequest() {
         return isFirstRequest;
@@ -62,7 +56,6 @@ public class RequestForumInfo {
 
     /**
      * Sets the value of the isFirstRequest property.
-     * 
      */
     public void setIsFirstRequest(boolean value) {
         this.isFirstRequest = value;

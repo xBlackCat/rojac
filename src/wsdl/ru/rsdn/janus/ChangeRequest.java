@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for ChangeRequest complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="ChangeRequest">
  *   &lt;complexContent>
@@ -30,20 +29,18 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ChangeRequest", propOrder = {
-    "userName",
-    "password",
-    "subscribedForums",
-    "ratingRowVersion",
-    "messageRowVersion",
-    "moderateRowVersion",
-    "breakMsgIds",
-    "breakTopicIds",
-    "maxOutput"
+        "userName",
+        "password",
+        "subscribedForums",
+        "ratingRowVersion",
+        "messageRowVersion",
+        "moderateRowVersion",
+        "breakMsgIds",
+        "breakTopicIds",
+        "maxOutput"
 })
 public class ChangeRequest {
 
@@ -59,11 +56,9 @@ public class ChangeRequest {
 
     /**
      * Gets the value of the userName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getUserName() {
         return userName;
@@ -71,11 +66,9 @@ public class ChangeRequest {
 
     /**
      * Sets the value of the userName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setUserName(String value) {
         this.userName = value;
@@ -83,11 +76,9 @@ public class ChangeRequest {
 
     /**
      * Gets the value of the password property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getPassword() {
         return password;
@@ -95,11 +86,9 @@ public class ChangeRequest {
 
     /**
      * Sets the value of the password property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setPassword(String value) {
         this.password = value;
@@ -107,11 +96,9 @@ public class ChangeRequest {
 
     /**
      * Gets the value of the subscribedForums property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfRequestForumInfo }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfRequestForumInfo }
      */
     public ArrayOfRequestForumInfo getSubscribedForums() {
         return subscribedForums;
@@ -119,11 +106,9 @@ public class ChangeRequest {
 
     /**
      * Sets the value of the subscribedForums property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfRequestForumInfo }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfRequestForumInfo }
      */
     public void setSubscribedForums(ArrayOfRequestForumInfo value) {
         this.subscribedForums = value;
@@ -131,10 +116,9 @@ public class ChangeRequest {
 
     /**
      * Gets the value of the ratingRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getRatingRowVersion() {
         return ratingRowVersion;
@@ -142,10 +126,9 @@ public class ChangeRequest {
 
     /**
      * Sets the value of the ratingRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setRatingRowVersion(byte[] value) {
         this.ratingRowVersion = value;
@@ -153,10 +136,9 @@ public class ChangeRequest {
 
     /**
      * Gets the value of the messageRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getMessageRowVersion() {
         return messageRowVersion;
@@ -164,10 +146,9 @@ public class ChangeRequest {
 
     /**
      * Sets the value of the messageRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setMessageRowVersion(byte[] value) {
         this.messageRowVersion = value;
@@ -175,10 +156,9 @@ public class ChangeRequest {
 
     /**
      * Gets the value of the moderateRowVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
+     *
+     * @return possible object is
+     * byte[]
      */
     public byte[] getModerateRowVersion() {
         return moderateRowVersion;
@@ -186,10 +166,9 @@ public class ChangeRequest {
 
     /**
      * Sets the value of the moderateRowVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
+     *
+     * @param value allowed object is
+     *              byte[]
      */
     public void setModerateRowVersion(byte[] value) {
         this.moderateRowVersion = value;
@@ -197,11 +176,9 @@ public class ChangeRequest {
 
     /**
      * Gets the value of the breakMsgIds property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfInt }
      */
     public ArrayOfInt getBreakMsgIds() {
         return breakMsgIds;
@@ -209,11 +186,9 @@ public class ChangeRequest {
 
     /**
      * Sets the value of the breakMsgIds property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfInt }
      */
     public void setBreakMsgIds(ArrayOfInt value) {
         this.breakMsgIds = value;
@@ -221,11 +196,9 @@ public class ChangeRequest {
 
     /**
      * Gets the value of the breakTopicIds property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfInt }
      */
     public ArrayOfInt getBreakTopicIds() {
         return breakTopicIds;
@@ -233,11 +206,9 @@ public class ChangeRequest {
 
     /**
      * Sets the value of the breakTopicIds property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfInt }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfInt }
      */
     public void setBreakTopicIds(ArrayOfInt value) {
         this.breakTopicIds = value;
@@ -245,7 +216,6 @@ public class ChangeRequest {
 
     /**
      * Gets the value of the maxOutput property.
-     * 
      */
     public int getMaxOutput() {
         return maxOutput;
@@ -253,7 +223,6 @@ public class ChangeRequest {
 
     /**
      * Sets the value of the maxOutput property.
-     * 
      */
     public void setMaxOutput(int value) {
         this.maxOutput = value;

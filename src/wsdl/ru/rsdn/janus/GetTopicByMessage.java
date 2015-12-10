@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -23,12 +22,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "topicRequest"
+        "topicRequest"
 })
 @XmlRootElement(name = "GetTopicByMessage")
 public class GetTopicByMessage {
@@ -37,11 +34,9 @@ public class GetTopicByMessage {
 
     /**
      * Gets the value of the topicRequest property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TopicRequest }
-     *     
+     *
+     * @return possible object is
+     * {@link TopicRequest }
      */
     public TopicRequest getTopicRequest() {
         return topicRequest;
@@ -49,11 +44,9 @@ public class GetTopicByMessage {
 
     /**
      * Sets the value of the topicRequest property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TopicRequest }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link TopicRequest }
      */
     public void setTopicRequest(TopicRequest value) {
         this.topicRequest = value;

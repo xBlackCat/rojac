@@ -1,4 +1,3 @@
-
 package ru.rsdn.janus;
 
 import javax.xml.bind.annotation.*;
@@ -6,9 +5,9 @@ import javax.xml.bind.annotation.*;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -20,12 +19,10 @@ import javax.xml.bind.annotation.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "getTopicByMessageResult"
+        "getTopicByMessageResult"
 })
 @XmlRootElement(name = "GetTopicByMessageResponse")
 public class GetTopicByMessageResponse {
@@ -35,11 +32,9 @@ public class GetTopicByMessageResponse {
 
     /**
      * Gets the value of the getTopicByMessageResult property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TopicResponse }
-     *     
+     *
+     * @return possible object is
+     * {@link TopicResponse }
      */
     public TopicResponse getGetTopicByMessageResult() {
         return getTopicByMessageResult;
@@ -47,11 +42,9 @@ public class GetTopicByMessageResponse {
 
     /**
      * Sets the value of the getTopicByMessageResult property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TopicResponse }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link TopicResponse }
      */
     public void setGetTopicByMessageResult(TopicResponse value) {
         this.getTopicByMessageResult = value;
