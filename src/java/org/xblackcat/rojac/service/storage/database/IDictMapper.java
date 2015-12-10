@@ -5,6 +5,8 @@ import org.xblackcat.sjpu.storage.typemap.ATypeMap;
 import org.xblackcat.sjpu.storage.typemap.IMapFactory;
 import org.xblackcat.sjpu.storage.typemap.ITypeMap;
 
+import java.sql.Connection;
+
 public class IDictMapper<T extends Enum<T> & IDictionary> implements IMapFactory<T, Integer> {
     @Override
     public boolean isAccepted(Class<?> obj) {
@@ -15,7 +17,7 @@ public class IDictMapper<T extends Enum<T> & IDictionary> implements IMapFactory
     public ITypeMap<T, Integer> mapper(Class<T> clazz) {
         return new ATypeMap<T, Integer>(clazz, Integer.class) {
             @Override
-            public Integer forStore(T obj) {
+            public Integer forStore(Connection c, T obj) {
                 if (obj == null) {
                     return null;
                 }

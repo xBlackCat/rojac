@@ -1,9 +1,9 @@
 package org.xblackcat.rojac.service.storage.database;
 
 import org.xblackcat.rojac.data.Version;
-import org.xblackcat.sjpu.storage.typemap.ATypeMap;
 import org.xblackcat.sjpu.storage.typemap.IMapFactory;
 import org.xblackcat.sjpu.storage.typemap.ITypeMap;
+import org.xblackcat.sjpu.storage.typemap.NullPassTypeMap;
 
 public class VersionMapper implements IMapFactory<Version, byte[]> {
     @Override
@@ -13,23 +13,6 @@ public class VersionMapper implements IMapFactory<Version, byte[]> {
 
     @Override
     public ITypeMap<Version, byte[]> mapper(Class<Version> clazz) {
-        return new ATypeMap<Version, byte[]>(clazz, byte[].class) {
-            @Override
-            public byte[] forStore(Version obj) {
-                if (obj == null) {
-                    return null;
-                }
-                return obj.getBytes();
-            }
-
-            @Override
-            public Version forRead(byte[] obj) {
-                if (obj == null) {
-                    return null;
-                }
-
-                return new Version(obj);
-            }
-        };
+        return new NullPassTypeMap<>(Version.class, byte[].class, Version::getBytes, Version::new);
     }
 }

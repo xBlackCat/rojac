@@ -1,12 +1,12 @@
 package org.xblackcat.rojac.service.converter;
+
+import junit.framework.TestCase;
+import org.junit.Assert;
+
 /**
- *
  * @author xBlackCat
  */
 
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class RSDNMessageParserFactoryTest extends TestCase {
     public void testLoadingTags() throws Exception {

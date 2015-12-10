@@ -1,7 +1,7 @@
 package org.xblackcat.rojac.util;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import org.xblackcat.rojac.data.Mark;
 import org.xblackcat.rojac.data.NewRating;
 import org.xblackcat.rojac.service.datahandler.APacketProcessor;

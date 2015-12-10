@@ -16,7 +16,6 @@
 
 package org.springframework.core.io;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
@@ -27,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Objects;
 
 /**
  * {@link Resource} implementation for class path resources.
@@ -223,28 +223,19 @@ public class ClassPathResource extends AbstractResource {
     }
 
 
-    /**
-     * This implementation compares the underlying class path locations.
-     */
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof ClassPathResource) {
-            ClassPathResource otherRes = (ClassPathResource) obj;
-            return (this.path.equals(otherRes.path) &&
-                    ObjectUtils.equals(this.classLoader, otherRes.classLoader) &&
-                    ObjectUtils.equals(this.clazz, otherRes.clazz));
-        }
-        return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ClassPathResource that = (ClassPathResource) o;
+        return Objects.equals(path, that.path) &&
+                Objects.equals(classLoader, that.classLoader) &&
+                Objects.equals(clazz, that.clazz);
     }
 
-    /**
-     * This implementation returns the hash code of the underlying
-     * class path location.
-     */
+    @Override
     public int hashCode() {
-        return this.path.hashCode();
+        return Objects.hash(super.hashCode(), path, classLoader, clazz);
     }
-
 }

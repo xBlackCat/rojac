@@ -3,7 +3,7 @@ package org.xblackcat.rojac.gui.view.message;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.java.balloontip.BalloonTip;
-import net.java.balloontip.TablecellBalloonTip;
+import net.java.balloontip.TableCellBalloonTip;
 import net.java.balloontip.styles.BalloonTipStyle;
 import org.xblackcat.rojac.data.Rating;
 import org.xblackcat.rojac.data.User;
@@ -81,7 +81,7 @@ class RatingPane extends JPanel {
                         BalloonTipStyle tipStyle = BalloonTipUtils.createTipStyle(userInfo.getBackground());
 
                         LeftCenterPositioner positioner = new LeftCenterPositioner(15, 15);
-                        final BalloonTip tip = new TablecellBalloonTip(marksList, userInfo, row, 1,
+                        final BalloonTip tip = new TableCellBalloonTip(marksList, userInfo, row, 1,
                                 tipStyle, BalloonTip.Orientation.RIGHT_ABOVE,
                                 BalloonTip.AttachLocation.EAST, 15, 15, false);
 //                        final BalloonTip tip = new TablecellBalloonTip(marksList, userInfo, row, 0, tipStyle, positioner, null);
