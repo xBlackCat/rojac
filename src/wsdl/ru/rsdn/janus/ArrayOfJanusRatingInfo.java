@@ -56,7 +56,7 @@ public class ArrayOfJanusRatingInfo {
      */
     public List<JanusRatingInfo> getJanusRatingInfo() {
         if (janusRatingInfo == null) {
-            janusRatingInfo = new ArrayList<>();
+            janusRatingInfo = new ArrayList<JanusRatingInfo>();
         }
         return this.janusRatingInfo;
     }

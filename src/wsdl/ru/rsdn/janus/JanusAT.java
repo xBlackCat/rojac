@@ -11,7 +11,7 @@ import java.net.URL;
  * JAX-WS RI 2.2.9-b130926.1035
  * Generated source version: 2.2
  */
-@WebServiceClient(name = "JanusAT", targetNamespace = "http://rsdn.ru/Janus/", wsdlLocation = "http://rsdn.ru/ws/janusAT.asmx?wsdl")
+@WebServiceClient(name = "JanusAT", targetNamespace = "http://rsdn.ru/Janus/", wsdlLocation = "file:/P:/Personal.projects/Rojac/src/wsdl/janusAT.wsdl")
 public class JanusAT
         extends Service {
 
@@ -23,7 +23,7 @@ public class JanusAT
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://rsdn.ru/ws/janusAT.asmx?wsdl");
+            url = new URL("file:/P:/Personal.projects/Rojac/src/wsdl/janusAT.wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

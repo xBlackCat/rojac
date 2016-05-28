@@ -56,7 +56,7 @@ public class ArrayOfModerateExceptionInfo {
      */
     public List<ModerateExceptionInfo> getModerateExceptionInfo() {
         if (moderateExceptionInfo == null) {
-            moderateExceptionInfo = new ArrayList<>();
+            moderateExceptionInfo = new ArrayList<ModerateExceptionInfo>();
         }
         return this.moderateExceptionInfo;
     }

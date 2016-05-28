@@ -56,7 +56,7 @@ public class ArrayOfPostExceptionInfo {
      */
     public List<PostExceptionInfo> getPostExceptionInfo() {
         if (postExceptionInfo == null) {
-            postExceptionInfo = new ArrayList<>();
+            postExceptionInfo = new ArrayList<PostExceptionInfo>();
         }
         return this.postExceptionInfo;
     }

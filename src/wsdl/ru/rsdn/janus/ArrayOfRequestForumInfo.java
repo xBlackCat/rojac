@@ -56,7 +56,7 @@ public class ArrayOfRequestForumInfo {
      */
     public List<RequestForumInfo> getRequestForumInfo() {
         if (requestForumInfo == null) {
-            requestForumInfo = new ArrayList<>();
+            requestForumInfo = new ArrayList<RequestForumInfo>();
         }
         return this.requestForumInfo;
     }

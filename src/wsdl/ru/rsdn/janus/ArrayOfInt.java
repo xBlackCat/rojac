@@ -56,7 +56,7 @@ public class ArrayOfInt {
      */
     public List<Integer> getInt() {
         if (_int == null) {
-            _int = new ArrayList<>();
+            _int = new ArrayList<Integer>();
         }
         return this._int;
     }

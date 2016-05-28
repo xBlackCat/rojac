@@ -33,7 +33,7 @@ public interface JanusATSoap {
     @ResponseWrapper(localName = "GetTopicByMessageResponse", targetNamespace = "http://rsdn.ru/Janus/", className = "ru.rsdn.janus.GetTopicByMessageResponse")
     public TopicResponse getTopicByMessage(
             @WebParam(name = "topicRequest", targetNamespace = "http://rsdn.ru/Janus/")
-            TopicRequest topicRequest
+                    TopicRequest topicRequest
     );
 
     /**
@@ -48,7 +48,7 @@ public interface JanusATSoap {
     @ResponseWrapper(localName = "GetNewDataResponse", targetNamespace = "http://rsdn.ru/Janus/", className = "ru.rsdn.janus.GetNewDataResponse")
     public ChangeResponse getNewData(
             @WebParam(name = "changeRequest", targetNamespace = "http://rsdn.ru/Janus/")
-            ChangeRequest changeRequest
+                    ChangeRequest changeRequest
     );
 
     /**
@@ -63,11 +63,12 @@ public interface JanusATSoap {
     @ResponseWrapper(localName = "GetForumListResponse", targetNamespace = "http://rsdn.ru/Janus/", className = "ru.rsdn.janus.GetForumListResponse")
     public ForumResponse getForumList(
             @WebParam(name = "forumRequest", targetNamespace = "http://rsdn.ru/Janus/")
-            ForumRequest forumRequest
+                    ForumRequest forumRequest
     );
 
     /**
-     * \u00cf\u00ee\u00eb\u00f3\u00f7\u00e5\u00ed\u00e8\u00e5 \u00ed\u00ee\u00e2\u00fb\u00f5 \u00ef\u00ee\u00eb\u00fc\u00e7\u00ee\u00e2\u00e0\u00f2\u00e5\u00eb\u00e5\u00e9 \u00f1 \u00ec\u00ee\u00ec\u00e5\u00ed\u00f2\u00e0 \u00ef\u00ee\u00f1\u00eb\u00e5\u00e4\u00ed\u00e5\u00e9 \u00f1\u00e8\u00ed\u00f5\u00f0\u00ee\u00ed\u00e8\u00e7\u00e0\u00f6\u00e8\u00e8
+     * \u00cf\u00ee\u00eb\u00f3\u00f7\u00e5\u00ed\u00e8\u00e5 \u00ed\u00ee\u00e2\u00fb\u00f5 \u00ef\u00ee\u00eb\u00fc\u00e7\u00ee\u00e2\u00e0\u00f2\u00e5\u00eb\u00e5\u00e9 \u00f1 \u00ec\u00ee\u00ec\u00e5\u00ed\u00f2\u00e0 \u00ef\u00ee\u00f1\u00eb\u00e5\u00e4\u00ed\u00e5\u00e9
+     * \u00f1\u00e8\u00ed\u00f5\u00f0\u00ee\u00ed\u00e8\u00e7\u00e0\u00f6\u00e8\u00e8
      *
      * @param userRequest
      * @return returns ru.rsdn.janus.UserResponse
@@ -78,7 +79,7 @@ public interface JanusATSoap {
     @ResponseWrapper(localName = "GetNewUsersResponse", targetNamespace = "http://rsdn.ru/Janus/", className = "ru.rsdn.janus.GetNewUsersResponse")
     public UserResponse getNewUsers(
             @WebParam(name = "userRequest", targetNamespace = "http://rsdn.ru/Janus/")
-            UserRequest userRequest
+                    UserRequest userRequest
     );
 
     /**
@@ -93,7 +94,7 @@ public interface JanusATSoap {
     @ResponseWrapper(localName = "GetUserByIdsResponse", targetNamespace = "http://rsdn.ru/Janus/", className = "ru.rsdn.janus.GetUserByIdsResponse")
     public UserResponse getUserByIds(
             @WebParam(name = "request", targetNamespace = "http://rsdn.ru/Janus/")
-            UserByIdsRequest request
+                    UserByIdsRequest request
     );
 
     /**
@@ -106,7 +107,7 @@ public interface JanusATSoap {
     @ResponseWrapper(localName = "PostChangeResponse", targetNamespace = "http://rsdn.ru/Janus/", className = "ru.rsdn.janus.PostChangeResponse")
     public void postChange(
             @WebParam(name = "postRequest", targetNamespace = "http://rsdn.ru/Janus/")
-            PostRequest postRequest
+                    PostRequest postRequest
     );
 
     /**
@@ -140,7 +141,7 @@ public interface JanusATSoap {
     @ResponseWrapper(localName = "GetNewViolationsResponse", targetNamespace = "http://rsdn.ru/Janus/", className = "ru.rsdn.janus.GetNewViolationsResponse")
     public ViolationResponse getNewViolations(
             @WebParam(name = "request", targetNamespace = "http://rsdn.ru/Janus/")
-            ViolationRequest request
+                    ViolationRequest request
     );
 
 }

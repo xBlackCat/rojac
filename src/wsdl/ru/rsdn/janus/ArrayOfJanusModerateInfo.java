@@ -56,7 +56,7 @@ public class ArrayOfJanusModerateInfo {
      */
     public List<JanusModerateInfo> getJanusModerateInfo() {
         if (janusModerateInfo == null) {
-            janusModerateInfo = new ArrayList<>();
+            janusModerateInfo = new ArrayList<JanusModerateInfo>();
         }
         return this.janusModerateInfo;
     }

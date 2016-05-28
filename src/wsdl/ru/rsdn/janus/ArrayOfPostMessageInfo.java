@@ -56,7 +56,7 @@ public class ArrayOfPostMessageInfo {
      */
     public List<PostMessageInfo> getPostMessageInfo() {
         if (postMessageInfo == null) {
-            postMessageInfo = new ArrayList<>();
+            postMessageInfo = new ArrayList<PostMessageInfo>();
         }
         return this.postMessageInfo;
     }

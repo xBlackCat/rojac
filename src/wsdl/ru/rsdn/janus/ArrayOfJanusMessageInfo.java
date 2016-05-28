@@ -56,7 +56,7 @@ public class ArrayOfJanusMessageInfo {
      */
     public List<JanusMessageInfo> getJanusMessageInfo() {
         if (janusMessageInfo == null) {
-            janusMessageInfo = new ArrayList<>();
+            janusMessageInfo = new ArrayList<JanusMessageInfo>();
         }
         return this.janusMessageInfo;
     }

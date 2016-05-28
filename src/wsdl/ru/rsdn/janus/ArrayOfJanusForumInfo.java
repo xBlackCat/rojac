@@ -56,7 +56,7 @@ public class ArrayOfJanusForumInfo {
      */
     public List<JanusForumInfo> getJanusForumInfo() {
         if (janusForumInfo == null) {
-            janusForumInfo = new ArrayList<>();
+            janusForumInfo = new ArrayList<JanusForumInfo>();
         }
         return this.janusForumInfo;
     }
