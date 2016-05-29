@@ -56,7 +56,7 @@ public class ArrayOfRatingExceptionInfo {
      */
     public List<RatingExceptionInfo> getRatingExceptionInfo() {
         if (ratingExceptionInfo == null) {
-            ratingExceptionInfo = new ArrayList<RatingExceptionInfo>();
+            ratingExceptionInfo = new ArrayList<>();
         }
         return this.ratingExceptionInfo;
     }
